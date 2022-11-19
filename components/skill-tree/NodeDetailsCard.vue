@@ -54,7 +54,7 @@
 			</Btn>
 		</article>
 
-		<ClientOnly>
+		<LazyClientOnly>
 			<Teleport to="#app-level">
 				<Transition>
 					<Modal v-if="openConfirmDialog">
@@ -100,7 +100,7 @@
 					</Modal>
 				</Transition>
 			</Teleport>
-		</ClientOnly>
+		</LazyClientOnly>
 	</div>
 </template>
 
