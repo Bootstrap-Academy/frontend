@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"RootSkillTree": "Root-Fähigkeitsbaum",
 		"WelcomeBack": "Wir freuen uns, dich wiederzusehen!",
 		"Signup": "Erstelle dir einen Account",
 		"WelcomeTo": "Willkommen bei der",
@@ -158,6 +159,8 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"RootSkillTreeLoading": "Root Skill Tree wird geladen",
+		"SubSkillTreeLoading": "Teilbaum {placeholder} wird geladen",
 		"MorphcoinsToolTip": "Jobs, die von uns angeboten und nur mit der Währung dieser Plattform bezahlt werden",
 		"WantToDisable": "Wenn Sie Ihre MFA jemals deaktivieren möchten, können Sie zu Ihrer Kontoseite gehen unter:",
 		"ChallengesNickname": "Alle Accounts von the-morpheus.cc wurden in die Bootstrap Academy migriert, du kannst dich also weiterhin mit deinem alten Coding Challenges-Account anmelden.",

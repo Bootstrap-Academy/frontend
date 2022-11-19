@@ -1,14 +1,14 @@
 <template>
-	<main
-		v-if="(nodes && nodes.length) || loading"
-		class="relative h-screen-main min"
-	>
-		<aside class="skill-tree-aside fixed right-container rounded-lg">
-			<SkillTreeZoomLevel @zoomLevel="zoomLevel = $event" />
-		</aside>
+	<main class="relative h-screen-main min grid place-items-center">
+		<SkillTreeHeader @zoomLevel="zoomLevel = $event" :breadcrumbs="breadcrumbs" />
+
+		<LoadingDots v-if="loading">
+			{{ t('Body.RootSkillTreeLoading') }}
+		</LoadingDots>
 
 		<section
-			class="w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-scroll"
+			v-else-if="nodes && nodes.length"
+			class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-scroll"
 			ref="mainRef"
 		>
 			<svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
@@ -39,9 +39,9 @@
 				</template>
 			</svg>
 		</section>
-	</main>
 
-	<h1 v-else>No Data</h1>
+		<h1 v-else>No Data</h1>
+	</main>
 </template>
 
 <script lang="ts">
@@ -58,6 +58,13 @@ export default {
 	},
 	components: { PlusCircleIcon, ArrowUpTrayIcon },
 	setup() {
+		const breadcrumbs = computed(() => {
+			return [
+				{
+					label: 'Headings.RootSkillTree',
+				},
+			];
+		});
 		const { t } = useI18n();
 		const user = useUser();
 
@@ -279,6 +286,7 @@ export default {
 			t,
 			onclickUploadCertificates,
 			ArrowUpTrayIcon,
+			breadcrumbs,
 		};
 	},
 };
@@ -286,23 +294,23 @@ export default {
 
 <style scoped>
 /* width */
-::-webkit-scrollbar {
+.map::-webkit-scrollbar {
 	width: 5px;
 	height: 5px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+.map::-webkit-scrollbar-track {
 	background: var(--color-tertiary);
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+.map::-webkit-scrollbar-thumb {
 	background: var(--color-accent);
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+.map::-webkit-scrollbar-thumb:hover {
 	background: var(--color-accent);
 }
 </style>

@@ -1,5 +1,7 @@
 <template>
-	<article class="flex gap-2.5 w-full justify-between items-center">
+	<article
+		class="flex gap-card-sm w-fit p-3 justify-between items-center rounded-2xl bg-primary overflow-hidden"
+	>
 		<button
 			@click="zoomIn"
 			class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-xl bg-tertiary text-accent text-3xl flex justify-center items-center"

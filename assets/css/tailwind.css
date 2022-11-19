@@ -294,14 +294,14 @@
 		--n-lines: 4;
 	}
 	.h-screen-main {
-		--bar-language-height: 40px;
-		--bar-navigation-height: 86px;
+		--bar-language-height: 28px;
+		--bar-navigation-height: 79px;
 		--total: calc(var(--bar-language-height) + var(--bar-navigation-height));
 		--screen-height: calc(100vh - var(--total));
 		height: var(--screen-height);
 	}
 	.h-screen-main.min {
-		height: fit-content;
+		height: 100%;
 		min-height: var(--screen-height);
 	}
 	.h-screen-main.max {

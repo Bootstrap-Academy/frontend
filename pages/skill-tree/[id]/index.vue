@@ -1,23 +1,21 @@
 <template>
-	<main
-		v-if="(nodes && nodes.length) || loading"
-		class="relative h-screen-main min"
-	>
+	<main class="relative h-screen-main grid place-items-center">
 		<Head>
 			<Title>Sub Skill Tree - {{ subTreeName }}</Title>
 		</Head>
 
-		<aside class="skill-tree-aside fixed right-container rounded-lg">
-			<SkillTreeZoomLevel @zoomLevel="zoomLevel = $event" />
-		</aside>
+		<SkillTreeHeader
+			@zoomLevel="zoomLevel = $event"
+			:breadcrumbs="breadcrumbs"
+		/>
 
-		<header class="flex gap-box flex-wrap items-center container-fluid mt-main">
-			<NuxtLink to="/skill-tree">Root Skill tree /</NuxtLink>
-			<h1 class="text-heading-2 capitalize">{{ subTreeName }}</h1>
-		</header>
+		<LoadingDots v-if="loading">
+			{{ t('Body.SubSkillTreeLoading', { placeholder: subTreeName }) }}
+		</LoadingDots>
 
 		<section
-			class="w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-scroll"
+			v-else-if="nodes && nodes.length"
+			class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-scroll"
 			ref="mainRef"
 		>
 			<svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
@@ -54,19 +52,19 @@
 				</template>
 			</svg>
 		</section>
-	</main>
 
-	<article
-		v-else
-		class="w-full flex flex-col gap-container justify-center items-center mx-auto mt-main mb-main"
-	>
-		<SvgSkillTree class="max-w-sm" />
-		<SectionTitle
-			center
-			heading="EmptyStates.SkillTree.Heading"
-			body="EmptyStates.SkillTree.Body"
-		/>
-	</article>
+		<article
+			v-else
+			class="w-full h-full flex flex-col gap-container justify-center items-center"
+		>
+			<SvgSkillTree class="max-w-sm" />
+			<SectionTitle
+				center
+				heading="EmptyStates.SkillTree.Heading"
+				body="EmptyStates.SkillTree.Body"
+			/>
+		</article>
+	</main>
 </template>
 
 <script lang="ts">
@@ -78,6 +76,26 @@ export default {
 		title: 'Sub Skill Tree',
 	},
 	setup() {
+		const subTreeId = computed(() => {
+			return <string>(route.params?.id ?? '');
+		});
+
+		const subTreeName = computed(() => {
+			return subTreeId.value.replace(/_/g, ' ');
+		});
+
+		const breadcrumbs = computed(() => {
+			return [
+				{
+					label: 'Headings.RootSkillTree',
+					to: '/skill-tree',
+				},
+				{
+					label: subTreeName.value,
+				},
+			];
+		});
+
 		const { t } = useI18n();
 
 		// ! ======================================================= Set Up
@@ -179,14 +197,6 @@ export default {
 			},
 			{ deep: true }
 		);
-
-		const subTreeId = computed(() => {
-			return <string>(route.params?.id ?? '');
-		});
-
-		const subTreeName = computed(() => {
-			return subTreeId.value.replace(/_/g, ' ');
-		});
 
 		onMounted(async () => {
 			if (!!!subTreeId.value) {
@@ -377,29 +387,31 @@ export default {
 			zoomLevel,
 			t,
 			subTreeName,
+			breadcrumbs,
 		};
 	},
 };
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
+/* width */
+.map::-webkit-scrollbar {
 	width: 5px;
 	height: 5px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+.map::-webkit-scrollbar-track {
 	background: var(--color-tertiary);
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+.map::-webkit-scrollbar-thumb {
 	background: var(--color-accent);
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+.map::-webkit-scrollbar-thumb:hover {
 	background: var(--color-accent);
 }
 </style>

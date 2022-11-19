@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"RootSkillTree": "Root Skill Tree",
 		"WelcomeBack": "Welcome Back!",
 		"Signup": "Let's Create An Account",
 		"WelcomeTo": "Welcome To",
@@ -158,6 +159,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"RootSkillTreeLoading": "Loading Root Skill Tree",
+		"SubSkillTreeLoading": "Loading {placeholder} Subtree",
 		"MorphcoinsToolTip": "Jobs offered by us and payed with the currency of this platform only",
 		"WantToDisable": "If you ever want to disable your MFA, you can go to your account page at: ",
 		"ChallengesNickname": "All user accounts from the-morpheus.cc have been migrated to the Academy, so you can still login with your Coding Challenges account.",

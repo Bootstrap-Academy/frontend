@@ -1,48 +1,47 @@
 <template>
-	<div class="w-screen h-fit lg:h-screen-main container-fluid mt-main mb-main">
+	<main
+		class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container"
+	>
 		<Head>
 			<Title>Skill Details - {{ skillName }}</Title>
 		</Head>
 
-		<header class="flex gap-box flex-wrap items-center mb-container">
-			<NuxtLink to="/skill-tree">Root Skill tree /</NuxtLink>
-			<NuxtLink :to="`/skill-tree/${rootSkillID}`">
-				{{ subTreeName }} /
-			</NuxtLink>
-			<h1 class="text-heading-2 capitalize">{{ skillName }}</h1>
-		</header>
+		<SkillTreeHeader
+			class="pt-card lg:col-span-3 justify-self-start h-fit"
+			:absolute="false"
+			no-zoom-level
+			:breadcrumbs="breadcrumbs"
+		/>
 
-		<section
-			class="grid grid-rows-[auto_auto_auto)auto] lg:grid-rows-1 grid-cols-1 lg:grid-cols-3 justify-items-center lg:place-items-center gap-10 md:gap-container"
-		>
-			<SkillTreeNodeDetailsStepper
-				:activeStepper="activeStepper"
-				@activeStepper="activeStepper = $event"
+		<SkillTreeNodeDetailsStepper
+			class="h-fit"
+			:activeStepper="activeStepper"
+			@activeStepper="activeStepper = $event"
+		/>
+
+		<div class="h-fit">
+			<SkillTreeNodeSvg
+				:size="nodeSize"
+				:node="subSkill"
+				:active="true"
+				:completed="subSkill?.completed ?? false"
 			/>
+			<h6
+				class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm"
+			>
+				{{ subSkill?.name ?? '' }}
+			</h6>
+		</div>
 
-			<div>
-				<SkillTreeNodeSvg
-					:size="nodeSize"
-					:node="subSkill"
-					:active="true"
-					:completed="subSkill?.completed ?? false"
-				/>
-				<h6
-					class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm"
-				>
-					{{ subSkill?.name ?? '' }}
-				</h6>
-			</div>
-
-			<SkillTreeNodeDetailsStepperContent
-				:activeStepper="activeStepper"
-				:courses="courses"
-				:coachings="coachings"
-				:webinars="webinars"
-				:subSkillID="subSkillID"
-			/>
-		</section>
-	</div>
+		<SkillTreeNodeDetailsStepperContent
+			class="h-fit"
+			:activeStepper="activeStepper"
+			:courses="courses"
+			:coachings="coachings"
+			:webinars="webinars"
+			:subSkillID="subSkillID"
+		/>
+	</main>
 </template>
 
 <script lang="ts">
@@ -95,29 +94,45 @@ export default defineComponent({
 			return subSkill.value?.courses ?? [];
 		});
 
+		const breadcrumbs = computed(() => {
+			return [
+				{
+					label: 'Headings.RootSkillTree',
+					to: '/skill-tree',
+				},
+				{
+					label: subTreeName.value,
+					to: `/skill-tree/${rootSkillID.value}`,
+				},
+				{
+					label: skillName.value,
+				},
+			];
+		});
+
 		const loading = ref(true);
 
 		const windowWidth = ref(process.client && window ? window.innerWidth : 0);
 
 		function updateWindowWidth() {
 			windowWidth.value = window?.innerWidth ?? 0;
+
+			if (windowWidth.value >= 1440) {
+				nodeSize.value = 300;
+			} else if (windowWidth.value >= 1024 && windowWidth.value < 1440) {
+				nodeSize.value = 250;
+			} else if (windowWidth.value >= 524 && windowWidth.value < 1024) {
+				nodeSize.value = 200;
+			} else {
+				nodeSize.value = 150;
+			}
 		}
 
-		const nodeSize = computed(() => {
-			if (windowWidth.value >= 1440) {
-				return 300;
-			} else if (windowWidth.value >= 1024 && windowWidth.value < 1440) {
-				return 250;
-			} else if (windowWidth.value >= 524 && windowWidth.value < 1024) {
-				return 200;
-			} else {
-				return 150;
-			}
-		});
+		const nodeSize = ref(150);
 
 		onMounted(async () => {
 			if (window) {
-				windowWidth.value = window?.innerWidth ?? 0;
+				updateWindowWidth();
 				window.addEventListener('resize', updateWindowWidth);
 			}
 
@@ -155,6 +170,7 @@ export default defineComponent({
 			subTreeName,
 			subSkillID,
 			skillName,
+			breadcrumbs,
 		};
 	},
 });
