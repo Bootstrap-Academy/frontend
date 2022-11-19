@@ -1,0 +1,45 @@
+<template>
+	<article class="relative w-fit" @focusout="show = false" tabindex="0">
+		<div class="box -mt-2 md:-mt-3 -mr-4 cursor-pointer" @click="show = !show">
+			<EllipsisVerticalIcon class="w-5 h-5 text-body" />
+		</div>
+
+		<transition name="slide-up" mode="in-out">
+			<button
+				v-if="show"
+				class="appearance-none absolute right-[100%] top-[-40%] bg-tertiary p-4 style-box w-fit grid gap-2 z-50"
+			>
+				<p
+					class="text-body-2 text-heading text-left cursor-pointer whitespace-nowrap"
+					v-for="(item, i) of list"
+					:key="i"
+					@click="item.onclick"
+				>
+					{{ t(item.label) }}
+				</p>
+			</button>
+		</transition>
+	</article>
+</template>
+
+<script lang="ts">
+import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from 'vue';
+import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline/index.js';
+
+export default defineComponent({
+	components: { EllipsisVerticalIcon },
+	props: {
+		list: { type: Array as PropType<any[]>, default: [] },
+	},
+	setup(props) {
+		const { t } = useI18n();
+
+		const show = ref(false);
+
+		return { t, show };
+	},
+});
+</script>
+
+<style scoped></style>

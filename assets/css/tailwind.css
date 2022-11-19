@@ -1,0 +1,408 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--color-primary: #0b192e;
+	--color-secondary: #182b45;
+	--color-tertiary: #0b3341;
+	--color-accent: #0cc9ab;
+
+	--color-black: #202121;
+	--color-dark: #0f1a2c;
+	--color-transparent: #ffffff00;
+	--color-light: #20395f;
+	--color-white: #ffffff;
+
+	--color-heading: #cdd7f5;
+	--color-subheading: #707a94;
+	--color-body: #959bb0;
+
+	--color-error: #eb5857;
+	--color-success: #00cc99;
+	--color-warning: #b68b09;
+	--color-info: #177edc;
+}
+
+/* ======================================================= Fonts */
+@font-face {
+	font-family: 'Ubuntu Mono';
+	font-style: normal;
+	font-weight: 200;
+	font-display: swap;
+	src: url(/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf) format('truetype');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+		U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Space Mono';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url(/fonts/Space_Mono/SpaceMono-Regular.ttf) format('truetype');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+		U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+
+/* ======================================================= Transitions */
+.slide-up-enter-active,
+.slide-up-leave-active {
+	transition: all 0.5s ease-out;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+	opacity: 0;
+	transform: translateY(25%);
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+	transition: all 0.5s ease-out;
+}
+
+.slide-left-enter-from,
+.slide-left-leave-to {
+	opacity: 0;
+	transform: translateX(-25%);
+}
+
+.slide-up-down-enter-active,
+.slide-up-down-leave-active {
+	transition: all 0.25s ease-out;
+}
+
+.slide-u-down-enter-from {
+	opacity: 0;
+	transform: translateY(30px);
+}
+
+.slide-up-down-leave-to {
+	opacity: 0;
+	transform: translateY(-30px);
+}
+
+.fade-in-enter-active,
+.fade-in-leave-active {
+	transition: all 0.25s ease-out;
+}
+
+.fade-in-enter-from,
+.fade-in-leave-to {
+	opacity: 0;
+}
+
+/*** iPhone and iOS Form Input Zoom Fixes ***/
+/* Fix Input Zoom on devices older than iPhone 5: */
+@media screen and (device-aspect-ratio: 2/3) {
+	select,
+	textarea,
+	input[type='text'],
+	input[type='password'],
+	input[type='datetime'],
+	input[type='datetime-local'],
+	input[type='date'],
+	input[type='month'],
+	input[type='time'],
+	input[type='week'],
+	input[type='number'],
+	input[type='email'],
+	input[type='url'] {
+		font-size: 16px;
+	}
+}
+
+/* Fix Input Zoom on iPhone 5, 5C, 5S, iPod Touch 5g */
+@media screen and (device-aspect-ratio: 40/71) {
+	select,
+	textarea,
+	input[type='text'],
+	input[type='password'],
+	input[type='datetime'],
+	input[type='datetime-local'],
+	input[type='date'],
+	input[type='month'],
+	input[type='time'],
+	input[type='week'],
+	input[type='number'],
+	input[type='email'],
+	input[type='url'] {
+		font-size: 16px;
+	}
+}
+
+/* Fix Input Zoom on iPhone 6, iPhone 6s, iPhone 7  */
+@media screen and (device-aspect-ratio: 375/667) {
+	select,
+	textarea,
+	input[type='text'],
+	input[type='password'],
+	input[type='datetime'],
+	input[type='datetime-local'],
+	input[type='date'],
+	input[type='month'],
+	input[type='time'],
+	input[type='week'],
+	input[type='number'],
+	input[type='email'],
+	input[type='tel'],
+	input[type='url'] {
+		font-size: 16px;
+	}
+}
+
+/* Fix Input Zoom on iPhone 6 Plus, iPhone 6s Plus, iPhone 7 Plus, iPhone 8, iPhone X, XS, XS Max  */
+@media screen and (device-aspect-ratio: 9/16) {
+	select,
+	textarea,
+	input[type='text'],
+	input[type='password'],
+	input[type='datetime'],
+	input[type='datetime-local'],
+	input[type='date'],
+	input[type='month'],
+	input[type='time'],
+	input[type='week'],
+	input[type='number'],
+	input[type='email'],
+	input[type='tel'],
+	input[type='url'] {
+		font-size: 16px;
+	}
+}
+
+@media (resolution > 2dppx) {
+	body {
+		/* @apply bg-info; */
+	}
+}
+
+@media (resolution > 1.5dppx) and (resolution <= 2dppx) {
+	html {
+	}
+}
+
+@media (resolution > 1dppx) and (resolution <= 1.5dppx) and (min-height: 1000px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+@media (resolution <= 1dppx) {
+	body {
+		/* @apply bg-warning; */
+	}
+}
+
+/* ======================================================= Tailwind CSS */
+@layer base {
+	body {
+		overflow-x: hidden;
+		width: 100vw;
+		@apply bg-primary;
+	}
+
+	img {
+		@apply select-none;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply text-heading font-heading font-medium;
+	}
+
+	p,
+	li,
+	ul,
+	ol {
+		@apply text-body font-body text-body-1 font-light leading-[1.8] sm:leading-[1.8] md:leading-[1.8] lg:leading-[1.8] xl:leading-[1.8];
+	}
+
+	hr {
+		@apply text-[#20395f];
+	}
+
+	a {
+		@apply transition-basic font-body text-base text-body hover:text-heading;
+	}
+
+	::selection {
+		background-color: var(--color-accent);
+		color: var(--color-secondary);
+	}
+
+	input[type='number']::-webkit-inner-spin-button,
+	input[type='number']::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+}
+
+@layer utilities {
+	.form-submitting * {
+		@apply opacity-70 pointer-events-none;
+	}
+	.underline-link {
+		@apply pb-2 relative cursor-pointer;
+	}
+	.underline-link::after {
+		content: '';
+		position: absolute;
+		width: max(50%, 25px);
+		height: 1px;
+		background-color: var(--color-accent);
+		bottom: 0;
+		left: 0;
+	}
+	.clamp {
+		--n-lines: 1;
+		margin: 0;
+		overflow: hidden;
+		line-height: 1.5;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: var(--n-lines); /* number of lines to show */
+		line-clamp: var(--n-lines);
+	}
+	.clamp.line-1 {
+		--n-lines: 1;
+	}
+	.clamp.line-2 {
+		--n-lines: 2;
+	}
+	.clamp.line-3 {
+		--n-lines: 3;
+	}
+	.clamp.line-4 {
+		--n-lines: 4;
+	}
+	.h-screen-main {
+		--bar-language-height: 40px;
+		--bar-navigation-height: 86px;
+		--total: calc(var(--bar-language-height) + var(--bar-navigation-height));
+		--screen-height: calc(100vh - var(--total));
+		height: var(--screen-height);
+	}
+	.h-screen-main.min {
+		height: fit-content;
+		min-height: var(--screen-height);
+	}
+	.h-screen-main.max {
+		height: fit-content;
+		max-height: var(--screen-height);
+	}
+	.mt-main {
+		@apply mt-2 md:mt-4 lg:mt-6 xl:mt-8;
+	}
+	.mb-main {
+		@apply mb-6 sm:mb-10 md:mb-12 xl:mb-14;
+	}
+
+	.h-screen-inner {
+		--bar-language-height: 46px;
+		--bar-navigation-height: 28px;
+		--total: calc(var(--bar-language-height) + var(--bar-navigation-height));
+		--screen-height: calc(100vh - var(--total));
+		height: var(--screen-height);
+	}
+	.h-screen-inner.min {
+		height: fit-content;
+		min-height: var(--screen-height);
+	}
+	.h-screen-inner.max {
+		height: fit-content;
+		max-height: var(--screen-height);
+	}
+
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.hide-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	[data-tooltip] {
+		--triangle-width: 15px;
+		--spacing: 10px;
+		--tooltip-width: 45vw;
+		position: relative;
+		width: fit-content;
+	}
+
+	@media screen and (min-width: 425px) {
+		[data-tooltip] {
+			--tooltip-width: 250px;
+		}
+	}
+
+	[data-tooltip]:hover::after {
+		@apply box style-box bg-info text-white font-body absolute text-xs leading-[1.6];
+		content: attr(data-tooltip); /* magic! */
+		left: calc(
+			100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
+		);
+		top: -50%;
+		z-index: 9998;
+		width: var(--tooltip-width);
+	}
+
+	[data-tooltip]::before {
+		@apply absolute text-sm;
+		content: '?';
+		left: calc(100% + var(--spacing));
+		top: 2.5px;
+		z-index: 9999;
+
+		background-color: var(--color-info);
+		color: var(--color-white);
+		border-radius: 50px;
+		width: 17.5px;
+		height: 17.5px;
+		display: grid;
+		place-items: center;
+		place-content: center;
+	}
+
+	[data-tooltip]:hover::before {
+		/* background-color: var(--color-transparent);
+		color: var(--color-transparent);
+		border-radius: initial;
+		display: initial;
+		place-items: initial;
+		place-content: initial;
+
+		content: '';
+		top: 12%;
+		width: 0;
+		height: 0;
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-right: var(--triangle-width) solid var(--color-info); */
+	}
+
+	[data-tooltip='']::before,
+	[data-tooltip='']::after {
+		display: none !important;
+	}
+}
