@@ -1,20 +1,27 @@
-<!--  
+<!--
 ✅ Responsive UI
 ✅ Page Title
 ✅ Translation
 ❌ Animation
-✅ Tested on chrome
-✅ Tested on firefox
-✅ Tested on safari
 
-✅ Recaptcha
-✅ Api implemented
-✅ Form Client Side Error Handling
-✅ Form Submission Process
-✅ Form Post Api Error Handling + ✅ Translation
-✅ Form Post Api Success Handling + ✅ Translation
+❌ Tested on chrome
+❌ Tested on firefox
+❌ Tested on safari
+❌ Tested on android mobile
+❌ Tested on apple mobile
+
+❌ Handle loading if data already exists
+❌ Handle loading if data is empty
+❌ Display data
+❌ Handle empty state
+
+❌ Recaptcha
+❌ Api implemented
+❌ Form Client Side Error Handling
+❌ Form Submission Process
+❌ Form Post Api Error Handling + ❌ Translation
+❌ Form Post Api Success Handling + ❌ Translation
 -->
-
 <template>
 	<main
 		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container place-items-center grid-cols-1 midXl:grid-cols-[auto_minmax(0,0.8fr)]"

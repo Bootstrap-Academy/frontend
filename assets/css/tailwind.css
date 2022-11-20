@@ -185,7 +185,7 @@
 	}
 }
 
-@media (resolution > 1dppx) and (resolution <= 1.5dppx) and (min-height: 800px) {
+@media (resolution > 1dppx) and (resolution <= 1.5dppx) and (min-height: 550px) {
 	html {
 		font-size: 12px;
 	}
