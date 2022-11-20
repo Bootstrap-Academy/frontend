@@ -57,7 +57,7 @@ export default defineComponent({
 		});
 
 		const types = computed(() => {
-			return [webinar, coaching, exam];
+			return [webinar, coaching];
 		});
 
 		return { t, types };
