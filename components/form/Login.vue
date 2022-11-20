@@ -255,7 +255,7 @@ export default defineComponent({
 		function errorHandler(res: any) {
 			let msg = res?.detail ?? '';
 
-			let isMFA = msg.toLocaleLowerCase().includes('invalid code');
+			let isMFA = msg == 'Error.InvalidCode';
 
 			if (!!isMFA && !!needMFA.value) {
 				openSnackbar('error', msg);

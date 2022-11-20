@@ -231,7 +231,7 @@ export default defineComponent({
 				openDialog(
 					'success',
 					'Headings.AddedEmail',
-					'Body.AddedEmail',
+					t('Body.AddedEmail', { placeholder: res?.email ?? 'new email' }),
 					true,
 					{
 						label: 'Buttons.VerifyAccount',

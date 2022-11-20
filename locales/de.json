@@ -216,7 +216,7 @@
 		"CookiePolicyLink": "Datenschutzerklärung.",
 		"UnableSubscribedToNewsLetter": "Anmeldung zum Newsletter nicht möglich",
 		"MissingEmail": "Bitte füge deinem Profil eine E-Mail-Adresse hinzu, um dein Konto zu verifizieren.",
-		"AddedEmail": "Deine E-Mail-Adresse wurde deinem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde dir an Ihre hinzugefügte E-Mail-Adresse gesendet. Bitte verwende diesen Code, um dein Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
+		"AddedEmail": "Ihre E-Mail-Adresse wurde Ihrem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde Ihnen an {placeholder} gesendet. Bitte verwenden Sie diesen Code, um Ihr Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
 		"NotLoggedIn": "Bitte melden Sie sich an, um fortzufahren.",
 		"EditNickname": "kann nach dem {placeholder} geändert werden",
 		"ActiveSkills": "Alle Fähigkeiten, an denen Sie gerade arbeiten.",

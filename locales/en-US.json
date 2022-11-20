@@ -215,7 +215,7 @@
 		"CookiePolicyLink": "privacy declaration.",
 		"UnableSubscribedToNewsLetter": "Unable to register for newsLetter",
 		"MissingEmail": "Please add e-mail to your profile in order to verify your account.",
-		"AddedEmail": "Your email has been successfully added to your profile. A verification code has been sent to you on your added email. Please use this code to verify your account in order to get all benefits of Bootstrap Academy.",
+		"AddedEmail": "Your email has been successfully added to your profile. A verification code has been sent to you at {placeholder}. Please use this code to verify your account in order to get all benefits of Bootstrap Academy.",
 		"NotLoggedIn": "Please login in order to move forward.",
 		"EditNickname": "can be changed after {placeholder}",
 		"ActiveSkills": "All skills you are currently working on.",

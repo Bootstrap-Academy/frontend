@@ -38,10 +38,15 @@ export default defineComponent({
 			}
 		}
 		function setBackRoute(to: string, from: string) {
+			console.log('from', from);
+
 			// ! Auth
 			if (to == '/auth/signup' || to == '/auth/forgot-password') {
 				pathname.value = '/auth/login';
 				label.value = 'Links.Login';
+			} else if (to == '/auth/verify-account' && from == '/profile/edit') {
+				pathname.value = '/profile';
+				label.value = 'Links.GoToProfile';
 			} else if (to == '/auth/verify-account') {
 				pathname.value = '/auth/signup';
 				label.value = 'Links.Signup';
