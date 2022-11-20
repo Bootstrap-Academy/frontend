@@ -1,12 +1,18 @@
-<!--  
+<!--
 ✅ Responsive UI
 ✅ Page Title
 ✅ Translation
-✅ Animation
+❌ Animation
+
 ✅ Tested on chrome
 ✅ Tested on firefox
 ✅ Tested on safari
+✅ Tested on android mobile
+✅ Tested on apple mobile
+
+✅ Display data
 -->
+
 <template>
 	<main ref="aos" class="grid gap-container allow-scroll h-auto">
 		<HeroLanding class="pt-container" />

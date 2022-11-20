@@ -132,7 +132,6 @@ export default {
 						},
 						// handler error
 						onError: function (err) {
-							console.log('onError of paypal', err);
 							success.value = false;
 						},
 					})

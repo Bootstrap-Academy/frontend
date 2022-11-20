@@ -124,8 +124,6 @@ export default {
 				...paramFilters,
 			});
 
-			console.log('filters', filters);
-
 			cookie_filters.value = JSON.stringify(filters);
 
 			// loading.value = !(jobs.value && jobs.value.length > 0);

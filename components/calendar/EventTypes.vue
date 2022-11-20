@@ -17,7 +17,7 @@
 			</h3>
 		</article>
 
-		<a :href="calendarICS" download>
+		<a :href="calendarICS" download type="text/calendar">
 			<Btn full class="mt-box">{{ t('Buttons.LinkCalendar') }}</Btn>
 		</a>
 	</div>

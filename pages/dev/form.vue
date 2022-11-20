@@ -332,8 +332,6 @@ export default {
 		});
 
 		async function onclickSubmitForm() {
-			console.log(form.body());
-
 			if (form.validate()) {
 				form.submitting = true;
 				setTimeout(() => {

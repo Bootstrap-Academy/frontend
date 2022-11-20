@@ -1,8 +1,9 @@
 <!--
-✅ Responsive UI
+❌ Responsive UI
 ✅ Page Title
-✅ Translation
+❌ Translation
 ❌ Animation
+❌ middleware
 
 ❌ Tested on chrome
 ❌ Tested on firefox
@@ -22,9 +23,10 @@
 ❌ Form Post Api Error Handling + ❌ Translation
 ❌ Form Post Api Success Handling + ❌ Translation
 -->
+
 <template>
 	<main
-		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container place-items-center grid-cols-1 midXl:grid-cols-[auto_minmax(0,0.8fr)]"
+		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container grid-cols-1 midXl:grid-cols-[auto_minmax(0,0.8fr)] items-center"
 	>
 		<section class="container-form">
 			<h3 class="text-center text-heading-3 mb-2">

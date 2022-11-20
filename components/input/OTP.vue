@@ -118,8 +118,6 @@ export default defineComponent({
 				});
 
 			DOM_INPUTS.value[0].setCustomValidity(msg);
-			console.log(!!!msg);
-
 			emit('valid', !!!msg);
 			error.value = msg;
 		}

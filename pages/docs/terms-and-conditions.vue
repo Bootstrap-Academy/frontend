@@ -1,3 +1,15 @@
+<!--
+✅ Responsive UI
+✅ Page Title
+✅ Animation
+
+❌ Tested on chrome
+❌ Tested on firefox
+❌ Tested on safari
+❌ Tested on android mobile
+❌ Tested on apple mobile
+-->
+
 <template>
 	<main class="container mt-main mb-main">
 		<h1>
@@ -196,15 +208,15 @@
 		<article>
 			<h2>8. Coins innerhalb der Plattform</h2>
 			<p>
-				8.1 Innerhalb der Plattform erhält der Kunde die Möglichkeit,
-				sogenannte Coins zu erwerben und diese als Tauschmittel innerhalb der
-				Plattform nutzen. Der Anbieter entscheidet im freien Ermessen darüber,
-				welche Leistungen mit Coins erworben werden können und für welche
-				Leistungen die Nutzer Coins erhalten können. Dienstleistungen, die mit
-				den Coins erworben werden können und Leistungen, für die man Coins
-				erhält, sind auf der Plattform entsprechend ausgewiesen; fehlt ein
-				solcher Hinweis ist davon auszugehen, dass die betreffende Leistung
-				nicht am Coin-System teilnimmt.
+				8.1 Innerhalb der Plattform erhält der Kunde die Möglichkeit, sogenannte
+				Coins zu erwerben und diese als Tauschmittel innerhalb der Plattform
+				nutzen. Der Anbieter entscheidet im freien Ermessen darüber, welche
+				Leistungen mit Coins erworben werden können und für welche Leistungen
+				die Nutzer Coins erhalten können. Dienstleistungen, die mit den Coins
+				erworben werden können und Leistungen, für die man Coins erhält, sind
+				auf der Plattform entsprechend ausgewiesen; fehlt ein solcher Hinweis
+				ist davon auszugehen, dass die betreffende Leistung nicht am Coin-System
+				teilnimmt.
 			</p>
 			<p>
 				8.2 Sofern nicht anders angegeben sind die Coins nicht übertragbar. Eine
@@ -518,10 +530,6 @@
 </template>
 
 <script>
-definePageMeta({
-	layout: 'inner',
-});
-
 export default {
 	setup() {
 		const config = useRuntimeConfig();

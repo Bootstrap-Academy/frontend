@@ -1,11 +1,20 @@
-<!--  
+<!--
 ❌ Responsive UI
-✅  Page Title
+✅ Page Title
 ❌ Translation
 ❌ Animation
+❌ middleware
+
 ❌ Tested on chrome
 ❌ Tested on firefox
 ❌ Tested on safari
+❌ Tested on android mobile
+❌ Tested on apple mobile
+
+❌ Handle loading if data already exists
+❌ Handle loading if data is empty
+❌ Display data
+❌ Handle empty state
 
 ❌ Recaptcha
 ❌ Api implemented
@@ -17,7 +26,7 @@
 
 <template>
 	<main
-		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container place-items-center grid-cols-1 midXl:grid-cols-[minmax(0,0.8fr)_auto]"
+		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container grid-cols-1 midXl:grid-cols-[minmax(0,0.8fr)_auto] items-center justify-items-end"
 	>
 		<article class="hidden midXl:flex gap-8 flex-col items-center">
 			<SectionTitle

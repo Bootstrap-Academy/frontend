@@ -9,7 +9,7 @@
 
 		<div class="overflow-hidden max-h-[175px] md:max-h-fit md:overflow-auto">
 			<div
-				class="overflow-x-scroll snap-x snap-mandatory flex md:grid md:grid-cols-4 gap-card-sm"
+				class="overflow-x-scroll snap-x snap-mandatory flex md:grid md:grid-cols-4 gap-card-sm hide-scrollbar"
 			>
 				<template v-if="loading">
 					<CourseCardSmSkeleton

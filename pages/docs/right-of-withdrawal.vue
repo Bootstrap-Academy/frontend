@@ -1,3 +1,15 @@
+<!--
+✅ Responsive UI
+✅ Page Title
+✅ Animation
+
+❌ Tested on chrome
+❌ Tested on firefox
+❌ Tested on safari
+❌ Tested on android mobile
+❌ Tested on apple mobile
+-->
+
 <template>
 	<main class="container mt-main mb-main">
 		<h1>Widerrufsbelehrung</h1>
@@ -130,10 +142,6 @@
 </template>
 
 <script>
-definePageMeta({
-	layout: 'inner',
-});
-
 export default {
 	setup() {
 		return {};

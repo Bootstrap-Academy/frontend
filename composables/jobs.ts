@@ -51,9 +51,6 @@ export async function getFilteredJobs(filters: any[]) {
 			}
 		}
 
-		console.log('query', query);
-		console.log('-------');
-
 		const response = await GET(`/jobs/jobs?${query}`);
 
 		const jobs = useJobs();

@@ -62,7 +62,7 @@ const onRequest = async ({ request, options }) => {
 
 const onResponse = async ({ request, options, response }) => {
 	let status = response?.ok ?? null;
-	if (status == true) console.log('onResponse', response._data);
+	if (status == true) console.log('success', response._data);
 };
 
 const onResponseError = async ({ request, options, response }) => {
@@ -77,7 +77,7 @@ const onResponseError = async ({ request, options, response }) => {
 		details = details.toLocaleLowerCase();
 	}
 
-	console.log('onResponseError', details);
+	console.log('error', details);
 
 	if (
 		details.includes('invalid token') ||

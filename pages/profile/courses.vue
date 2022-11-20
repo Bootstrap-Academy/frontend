@@ -1,24 +1,28 @@
 <!--
-✅ Responsive UI
+❌ Responsive UI
 ✅ Page Title
-✅ Translation
+❌ Translation
 ❌ Animation
-✅ middleware
+❌ middleware
 
-✅ Tested on chrome
-✅ Tested on firefox
-✅ Tested on safari
-✅ Tested on android mobile
-✅ Tested on apple mobile
+❌ Tested on chrome
+❌ Tested on firefox
+❌ Tested on safari
+❌ Tested on android mobile
+❌ Tested on apple mobile
 
-✅ Handle loading if data already exists
-✅ Handle loading if data is empty
-✅ Display data
-✅ Handle empty state
+❌ Handle loading if data already exists
+❌ Handle loading if data is empty
+❌ Display data
+❌ Handle empty state
 
-✅ Api implemented
+❌ Recaptcha
+❌ Api implemented
+❌ Form Client Side Error Handling
+❌ Form Submission Process
+❌ Form Post Api Error Handling + ❌ Translation
+❌ Form Post Api Success Handling + ❌ Translation
 -->
-
 <template>
 	<main
 		class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
