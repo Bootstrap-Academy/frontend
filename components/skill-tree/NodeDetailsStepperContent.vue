@@ -2,7 +2,11 @@
 	<section
 		class="max-max-h-[70vh] h-fit w-full flex justify-between items-center"
 	>
-		<div class="content-container" v-if="activeStepper == 0">
+		<div
+			class="content-container"
+			v-if="activeStepper == 0"
+			:class="{ 'hide-scrollbar': !!!courses || courses.length <= 0 }"
+		>
 			<template v-if="courses && courses.length > 0">
 				<NuxtLink
 					class="content"
@@ -19,7 +23,11 @@
 			</h3>
 		</div>
 
-		<div class="content-container" v-else-if="activeStepper == 1">
+		<div
+			class="content-container"
+			v-else-if="activeStepper == 1"
+			:class="{ 'hide-scrollbar': !!!coachings || coachings.length <= 0 }"
+		>
 			<template v-if="coachings && coachings.length > 0">
 				<CalendarEvent
 					class="content"
@@ -35,7 +43,11 @@
 			</h3>
 		</div>
 
-		<div class="content-container" v-else-if="activeStepper == 2">
+		<div
+			class="content-container"
+			v-else-if="activeStepper == 2"
+			:class="{ 'hide-scrollbar': !!!webinars || webinars.length <= 0 }"
+		>
 			<template v-if="webinars && webinars.length > 0">
 				<CalendarEvent
 					class="content"
@@ -76,7 +88,7 @@ export default defineComponent({
 
 <style scoped>
 .content-container {
-	@apply flex lg:flex-col gap-card w-full max-w-full max-h-[70vh] overflow-x-scroll snap-x lg:overflow-y-scroll lg:snap-y snap-mandatory;
+	@apply flex lg:flex-col gap-card w-full max-w-full max-h-[70vh] overflow-x-scroll lg:overflow-x-auto snap-x lg:overflow-y-scroll lg:snap-y snap-mandatory;
 }
 .content {
 	@apply flex-shrink-0 block snap-center w-fit lg:w-full max-w-[300px];

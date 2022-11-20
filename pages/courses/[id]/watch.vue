@@ -21,7 +21,7 @@
 
 <template>
 	<main
-		v-if="course && activeLecture"
+		v-if="course"
 		class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] place-items-center place-content-center pt-container pb-container"
 	>
 		<Head>
@@ -29,7 +29,7 @@
 		</Head>
 
 		<div class="grid gap-card">
-			<header class="flex gap-card justify-between">
+			<header class="flex gap-card justify-between" v-if="activeLecture">
 				<div class="flex gap-box flex-wrap items-center">
 					<NuxtLink
 						:to="`/courses/${course?.id ?? ''}?section=${
@@ -71,25 +71,23 @@
 				</div>
 			</header>
 
-      
-
 			<iframe
-				v-if="videoSRC && activeLecture.type == 'youtube'"
+				v-if="videoSRC && activeLecture && activeLecture.type == 'youtube'"
 				class="style-card"
 				:src="videoSRC"
-				title="YouTube video player"
+				title="YouTube player"
 				frameborder="0"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 				allowfullscreen
 			></iframe>
 
 			<video
-				v-else-if="videoSRC && activeLecture.type == 'mp4'"
+				v-else-if="videoSRC && activeLecture && activeLecture.type == 'mp4'"
 				:poster="course.image"
 				controls
 				playsInline
 				class="style-card"
-				title="YouTube video player"
+				title="video player"
 				allowfullscreen
 			>
 				<track kind="captions" />
@@ -119,7 +117,7 @@
 		</div>
 
 		<CourseCurriculum
-			class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-scroll"
+			class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-y-scroll"
 			:data="course"
 			@watch="watchThisLecture($event)"
 		/>
@@ -403,13 +401,14 @@ export default {
 <style scoped>
 video,
 iframe {
-	@apply w-full h-fit max-w-full;
+	@apply w-full h-fit max-w-full md:min-h-[60vh] min-w-[50vw];
 }
 /* portrait */
 @media only screen and (max-width: 768px) and (max-aspect-ratio: 1/1) {
 	video,
 	iframe {
-		@apply w-full h-auto max-w-full;
+		@apply w-full max-w-full;
+		height: calc(100vw * 0.5);
 	}
 }
 

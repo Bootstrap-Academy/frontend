@@ -153,11 +153,7 @@ export default defineComponent({
 
 				router.push(`${link.value}`);
 			} else {
-				router.push(
-					`${link.value}?lecture=${
-						props.data?.sections[0]?.lectures[0]?.id ?? ''
-					}`
-				);
+				router.push(`${link.value}`);
 			}
 		}
 

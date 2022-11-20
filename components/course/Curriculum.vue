@@ -150,6 +150,12 @@ export default defineComponent({
 				lectureID: lectureID,
 			});
 		}
+
+		onMounted(() => {
+			if (!!!activeSection.value) {
+				activeSection.value = sections.value[0]?.id ?? '';
+			}
+		});
 		return {
 			t,
 			sections,

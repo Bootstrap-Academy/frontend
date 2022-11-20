@@ -70,7 +70,7 @@ export default defineComponent({
 				Object.assign(header, {
 					heading: 'EmptyStates.CourseCardSM.Heading',
 					body: 'EmptyStates.CourseCardSM.Body',
-					link: { to: '/skill-tree', text: 'Links.SkillTree' },
+					link: { to: '/profile/courses', text: 'Buttons.ViewAll' },
 				});
 			}
 		});
