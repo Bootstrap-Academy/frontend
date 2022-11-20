@@ -1,6 +1,9 @@
 <template>
 	<main class="relative h-screen-main min grid place-items-center">
-		<SkillTreeHeader @zoomLevel="zoomLevel = $event" :breadcrumbs="breadcrumbs" />
+		<SkillTreeHeader
+			@zoomLevel="zoomLevel = $event"
+			:breadcrumbs="breadcrumbs"
+		/>
 
 		<LoadingDots v-if="loading">
 			{{ t('Body.RootSkillTreeLoading') }}
@@ -85,7 +88,6 @@ export default {
 
 		const setupComplete = ref(false);
 		const loading = useLoading();
-		setLoading(true);
 
 		const cookie_nextNode = useCookie<{ row: number; column: number }>(
 			'rootTree_nextNode'
@@ -99,19 +101,22 @@ export default {
 			},
 		});
 
-		const skillTree: Ref<any> = useSkillTree();
+		const rootSkillTree: Ref<any> = useRootSkillTree();
+
+		setLoading(true);
+
 		const nodes: any[] = reactive([]);
 		const nodeSize = ref(0);
 
 		onMounted(async () => {
-			const [success, error] = await getSkillTree('root');
+			const [success, error] = await getRootSkillTree();
 
 			if (!!error || !!!success) {
 				setLoading(false);
 				return;
 			}
 
-			Object.assign(nodes, [...skillTree.value.skills]);
+			Object.assign(nodes, [...rootSkillTree.value.skills]);
 
 			resetMap();
 
@@ -174,18 +179,18 @@ export default {
 		// ! ======================================================= Rows & Columns
 		const totalRows = computed({
 			get() {
-				return skillTree?.value?.rows ?? 5;
+				return rootSkillTree?.value?.rows ?? 5;
 			},
 			set(data: number) {
-				skillTree.value.rows = data;
+				rootSkillTree.value.rows = data;
 			},
 		});
 		const totalColumns = computed({
 			get() {
-				return skillTree?.value?.columns ?? 5;
+				return rootSkillTree?.value?.columns ?? 5;
 			},
 			set(data: number) {
-				skillTree.value.columns = data;
+				rootSkillTree.value.columns = data;
 			},
 		});
 

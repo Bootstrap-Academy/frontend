@@ -5,7 +5,12 @@
 		<article class="grid gap-card-sm xl:gap-box">
 			<h2 class="text-heading-2">{{ t('Headings.UpcomingEvents') }}</h2>
 
-			<CalendarEvent v-for="(event, i) of events" :key="i" full :data="event" />
+			<CalendarEvent
+				v-for="(event, i) of events"
+				:key="i"
+				hide-actions
+				:data="event"
+			/>
 		</article>
 	</aside>
 </template>

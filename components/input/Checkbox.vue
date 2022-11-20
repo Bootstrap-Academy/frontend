@@ -21,7 +21,7 @@
 				</div>
 			</div>
 			<label class="flex gap-3 text-body font-body" :for="id ?? label">
-				<span :class="sm ? 'text-xs' : 'text-base'">{{ $t(label) }}</span>
+				<span :class="sm ? 'text-xs' : 'text-body-1'">{{ $t(label) }}</span>
 				<NuxtLink
 					v-if="link"
 					:to="link?.to ?? '/'"

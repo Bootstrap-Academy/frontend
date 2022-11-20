@@ -375,6 +375,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"JoinLink": "Link beitreten",
 		"Safe": "Speichern",
 		"Login": "Login",
 		"CreateAccount": "Account erstellen",

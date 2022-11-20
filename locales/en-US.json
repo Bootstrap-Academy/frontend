@@ -90,7 +90,7 @@
 		"Participant": "Participant",
 		"From": "From",
 		"To": "to",
-		"Time": "time",
+		"Time": "Time",
 		"Courses": "Courses",
 		"Coachings": "Coachings",
 		"Exams": "Exams",
@@ -374,6 +374,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"JoinLink": "Join Link",
 		"Safe": "Safe",
 		"Login": "Login",
 		"CreateAccount": "Create Account",

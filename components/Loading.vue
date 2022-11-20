@@ -2,7 +2,7 @@
 	<Transition name="fade-in">
 		<div
 			v-if="loading"
-			class="w-screen h-screen fixed top-0 left-0 bg-[#0b192edd] pointer-events-none"
+			class="w-screen h-screen fixed z-[9999999] top-0 left-0 bg-[#0b192edd] pointer-events-none"
 		>
 			<div class="loader h-2 w-full"></div>
 		</div>

@@ -115,7 +115,7 @@ export default {
 			},
 		});
 
-		const skillTree: Ref<any> = useSkillTree();
+		const subSkillTree: Ref<any> = useSubSkillTree();
 		const nodes: any[] = reactive([]);
 
 		// ! ======================================================= Node
@@ -204,14 +204,14 @@ export default {
 				return;
 			}
 
-			const [success, error] = await getSkillTree(subTreeId.value);
+			const [success, error] = await getSubSkillTree(subTreeId.value);
 
 			if (!!error) {
 				setLoading(false);
 				return;
 			}
 
-			Object.assign(nodes, [...skillTree.value.skills]);
+			Object.assign(nodes, [...subSkillTree.value.skills]);
 
 			resetMap();
 
@@ -274,18 +274,18 @@ export default {
 		// ! ======================================================= Rows & Columns
 		const totalRows = computed({
 			get() {
-				return skillTree?.value?.rows ?? 5;
+				return subSkillTree?.value?.rows ?? 5;
 			},
 			set(data: number) {
-				skillTree.value.rows = data;
+				subSkillTree.value.rows = data;
 			},
 		});
 		const totalColumns = computed({
 			get() {
-				return skillTree?.value?.columns ?? 5;
+				return subSkillTree?.value?.columns ?? 5;
 			},
 			set(data: number) {
-				skillTree.value.columns = data;
+				subSkillTree.value.columns = data;
 			},
 		});
 

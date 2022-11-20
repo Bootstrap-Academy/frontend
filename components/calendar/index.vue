@@ -45,7 +45,7 @@
 				</p>
 
 				<template v-for="(event, i) of events" :key="i">
-					<CalendarEvent v-if="isEvent(event, date)" :data="event" />
+					<CalendarEventDots v-if="isEvent(event, date)" :data="event" />
 				</template>
 			</article>
 		</section>

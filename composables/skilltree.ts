@@ -1,27 +1,14 @@
 import { ref } from 'vue';
 
-export const useSkillTree = () => useState('skillTree', () => null);
-export const useSkillTreeId = () => useState('skillTreeId', () => '');
-export const useCertificates = () => useState('certificates', () => []);
+export const useSubSkillTree = () => useState('subSkillTree', () => null);
+export const useRootSkillTree = () => useState('rootSkillTree', () => null);
 
-export async function getSkillTree(id: string) {
-	const skillTreeId = useSkillTreeId();
-	skillTreeId.value = id;
-
+export async function getRootSkillTree() {
 	try {
-		if (!!!skillTreeId.value) {
-			throw { data: { detail: 'Missing root skill id' } };
-		}
+		const response = await GET('/skills/skilltree');
 
-		let url =
-			skillTreeId.value == 'root'
-				? `/skills/skilltree`
-				: `/skills/skilltree/${skillTreeId.value}`;
-
-		const response = await GET(url);
-
-		const skillTree = useSkillTree();
-		skillTree.value = response;
+		const rootSkillTree = useRootSkillTree();
+		rootSkillTree.value = response;
 
 		return [response, null];
 	} catch (error: any) {
@@ -29,86 +16,16 @@ export async function getSkillTree(id: string) {
 	}
 }
 
-export async function updateSkillTreeSettings(body: any) {
-	const skillTreeId = useSkillTreeId();
-
+export async function getSubSkillTree(id: string) {
 	try {
-		if (!!!skillTreeId.value) {
-			throw { data: { detail: 'Missing root skill id' } };
+		if (!!!id) {
+			throw { data: { detail: 'Missing sub skill id' } };
 		}
 
-		let url =
-			skillTreeId.value == 'root'
-				? `/skills/skilltree`
-				: `/skills/skilltree/${skillTreeId.value}`;
+		const response = await GET(`/skills/skilltree/${id}`);
 
-		const response = await PATCH(url, body);
-
-		// const skillTree = useSkillTree();
-		// skillTree.value = response;
-
-		return [response, null];
-	} catch (error: any) {
-		return [null, error.data];
-	}
-}
-
-export async function addSkill(body: any) {
-	const skillTreeId = useSkillTreeId();
-
-	try {
-		if (!!!skillTreeId.value) {
-			throw { data: { detail: 'Missing root skill id' } };
-		}
-
-		let url =
-			skillTreeId.value == 'root'
-				? `/skills/skilltree`
-				: `/skills/skilltree/${skillTreeId.value}`;
-
-		const response = await POST(url, body);
-
-		return [response, null];
-	} catch (error: any) {
-		return [null, error.data];
-	}
-}
-
-export async function updateSkill(id: string, body: any) {
-	const skillTreeId = useSkillTreeId();
-
-	try {
-		if (!!!skillTreeId.value) {
-			throw { data: { detail: 'Missing root skill id' } };
-		}
-
-		let url =
-			skillTreeId.value == 'root'
-				? `/skills/skilltree/${id}`
-				: `/skills/skilltree/${skillTreeId.value}/${id}`;
-
-		const response = await PATCH(url, body);
-
-		return [response, null];
-	} catch (error: any) {
-		return [null, error.data];
-	}
-}
-
-export async function deleteSkill(id: string) {
-	const skillTreeId = useSkillTreeId();
-
-	try {
-		if (!!!skillTreeId.value) {
-			throw { data: { detail: 'Missing root skill id' } };
-		}
-
-		let url =
-			skillTreeId.value == 'root'
-				? `/skills/skilltree/${id}`
-				: `/skills/skilltree/${skillTreeId.value}/${id}`;
-
-		const response = await DELETE(url);
+		const subSkillTree = useSubSkillTree();
+		subSkillTree.value = response;
 
 		return [response, null];
 	} catch (error: any) {

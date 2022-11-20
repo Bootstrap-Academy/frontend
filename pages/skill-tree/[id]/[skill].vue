@@ -61,7 +61,7 @@ export default defineComponent({
 
 		const activeStepper = ref(0);
 
-		const skillTree: Ref<any> = useSkillTree();
+		const subSkillTree: Ref<any> = useSubSkillTree();
 
 		const courses = useCourses();
 		const coachings = useCoachings();
@@ -86,7 +86,7 @@ export default defineComponent({
 		});
 
 		const subSkill = computed(() => {
-			let skills: any[] = skillTree.value?.skills ?? [];
+			let skills: any[] = subSkillTree.value?.skills ?? [];
 			return skills.find((skill) => skill.id == subSkillID.value);
 		});
 
@@ -138,7 +138,7 @@ export default defineComponent({
 
 			courses.value = [];
 
-			const [success, error] = await getSkillTree(rootSkillID.value);
+			const [success, error] = await getSubSkillTree(rootSkillID.value);
 
 			if (!!success) {
 				await Promise.all([

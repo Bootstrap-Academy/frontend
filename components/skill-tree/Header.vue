@@ -1,6 +1,6 @@
 <template>
 	<header
-		class="flex gap-card items-center justify-between"
+		class="flex gap-card items-center justify-between flex-wrap"
 		:class="{ 'absolute left-0 top-card w-screen container-fluid': absolute }"
 	>
 		<div class="py-2 px-4 md:py-3 md:px-6 bg-secondary style-box">
