@@ -38,7 +38,7 @@
 				/>
 
 				<JobFilter
-					class="bg-secondary w-full max-w-[80vw] sm:max-w-[350px] slide-left"
+					class="bg-secondary w-full max-w-[80vw] sm:max-w-[350px] slide-left min-h-screen"
 					:filters="filters"
 					@filters="setFilters($event)"
 				/>

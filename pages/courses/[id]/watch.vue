@@ -133,7 +133,7 @@
 				/>
 
 				<CourseCurriculum
-					class="card style-card bg-secondary max-w-[80vw] sm:max-w-[350px] slide-right h-fit"
+					class="card style-card bg-secondary max-w-[80vw] sm:max-w-[350px] slide-right h-fit min-h-screen"
 					:data="course"
 					@watch="watchThisLecture($event)"
 				/>
