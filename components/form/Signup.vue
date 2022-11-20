@@ -133,7 +133,6 @@ export default defineComponent({
 				value: '',
 				rules: [
 					(v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
-					(v: string) => v.length >= 8 || 'Error.InputMinLength_8',
 					(v: string) =>
 						/^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
 						'Error.InputPasswordError',
