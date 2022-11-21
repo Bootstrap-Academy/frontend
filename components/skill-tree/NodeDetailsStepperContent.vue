@@ -26,7 +26,7 @@
 		<div
 			class="content-container"
 			v-else-if="activeStepper == 1"
-			:class="{ 'hide-scrollbar': !!!coachings || coachings.length <= 0 }"
+			:class="{ 'hide-scrollbar': !!!coachings || coachings.length <= 1 }"
 		>
 			<template v-if="coachings && coachings.length > 0">
 				<CalendarEvent
@@ -46,7 +46,7 @@
 		<div
 			class="content-container"
 			v-else-if="activeStepper == 2"
-			:class="{ 'hide-scrollbar': !!!webinars || webinars.length <= 0 }"
+			:class="{ 'hide-scrollbar': !!!webinars || webinars.length <= 1 }"
 		>
 			<template v-if="webinars && webinars.length > 0">
 				<CalendarEvent
