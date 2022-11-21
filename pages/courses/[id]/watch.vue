@@ -238,9 +238,12 @@ export default {
 				loading.value = true;
 				clearInterval(videoInterval);
 
-				await getLectureVideoSRC(courseID.value, newValue);
-				refSource.value.setAttribute('src', videoSRC.value);
+				await Promise.all([
+					getCourseByID(courseID.value),
+					getLectureVideoSRC(courseID.value, newValue),
+				]);
 
+				refSource.value.setAttribute('src', videoSRC.value);
 				videoInterval = setInterval(async () => {
 					await getLectureVideoSRC(courseID.value, newValue);
 					refSource.value.setAttribute('src', videoSRC.value);

@@ -252,6 +252,30 @@
 	input[type='number'] {
 		-moz-appearance: textfield;
 	}
+
+	*::-webkit-scrollbar {
+		width: 5px;
+	}
+	*::-webkit-scrollbar-thumb {
+		background: var(--color-transparent);
+	}
+	*:hover::-webkit-scrollbar-thumb {
+		background: var(--color-accent);
+		opacity: 0.6;
+		border-radius: 20px;
+	}
+	body:hover::-webkit-scrollbar-thumb {
+		background: var(--color-tertiary);
+	}
+	*:hover {
+		-ms-overflow-style: var(--color-accent) !important;
+		scrollbar-width: 5px !important;
+		scrollbar-color: var(--color-accent);
+	}
+	body:hover {
+		-ms-overflow-style: var(--color-tertiary) !important;
+		scrollbar-color: var(--color-tertiary);
+	}
 }
 
 @layer utilities {

@@ -108,4 +108,7 @@ export default defineComponent({
 .btn-type.sm .icon {
 	@apply right-3 top-3.5;
 }
+input {
+	color-scheme: light;
+}
 </style>

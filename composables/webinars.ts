@@ -12,28 +12,45 @@ export async function getCalendarICS() {
 		calendarICS.value = response ?? '';
 
 		return [response, null];
-	} catch (error) {
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function createWebinar(body: any) {
+	try {
+		const response = await POST(`/events/webinars`, body);
+
+		return [response, null];
+	} catch (error: any) {
 		return [null, error.data];
 	}
 }
 
 export async function getMyWebinars() {
+	const user = <any>useUser();
+	let user_id = user?.value?.id ?? null;
+
 	try {
-		const response = await GET(`/events/webinars?booked_only=true`);
+		if (!!!user_id) {
+			throw { data: { detail: 'Invalid User Id' } };
+		}
+
+		const response = await GET(`/events/webinars?creator=${user_id}`);
 
 		const myWebinars = useMyWebinars();
 		myWebinars.value = response ?? [];
 
 		return [response, null];
-	} catch (error) {
+	} catch (error: any) {
 		return [null, error.data];
 	}
 }
 
-export async function getWebinarsForThisSubSkill(subSkillID) {
+export async function getWebinarsForThisSubSkill(subSkillID: string) {
 	try {
 		if (!!!subSkillID) {
-			throw { data: 'Invalid sub skill ID' };
+			throw { data: { detail: 'Invalid sub skill ID' } };
 		}
 
 		const response = await GET(`/events/webinars?skill_id=${subSkillID}`);
@@ -42,7 +59,7 @@ export async function getWebinarsForThisSubSkill(subSkillID) {
 		webinars.value = response ?? [];
 
 		return [response, null];
-	} catch (error) {
+	} catch (error: any) {
 		return [null, error.data];
 	}
 }
@@ -55,12 +72,12 @@ export async function getAllWebinars() {
 		webinars.value = response ?? [];
 
 		return [response, null];
-	} catch (error) {
+	} catch (error: any) {
 		return [null, error.data];
 	}
 }
 
-export async function registerForWebinarByID(webinarID) {
+export async function registerForWebinarByID(webinarID: string) {
 	try {
 		if (!!!webinarID) {
 			throw { data: 'Invalid webinar ID' };
@@ -69,7 +86,7 @@ export async function registerForWebinarByID(webinarID) {
 		const response = await POST(`/events/webinars/${webinarID}/participants`);
 
 		return [response, null];
-	} catch (error) {
+	} catch (error: any) {
 		return [null, error.data];
 	}
 }

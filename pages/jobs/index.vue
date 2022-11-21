@@ -113,7 +113,7 @@ export default {
 				search_term: '',
 				requirements_met: false,
 				professional_level: [],
-				salary_min: 0,
+				salary_max: 0,
 				salary_unit: '---',
 			}
 		);
@@ -128,7 +128,7 @@ export default {
 
 			// loading.value = !(jobs.value && jobs.value.length > 0);
 			loading.value = true;
-			await getFilteredJobs(filters);
+			await Promise.all([getFilteredJobs(filters), getJobMaxSalary()]);
 			loading.value = false;
 		}
 
@@ -143,7 +143,14 @@ export default {
 		}
 
 		const show = ref(false);
-		return { loading, jobs, filters, setFilters, onSelectedOption, show };
+		return {
+			loading,
+			jobs,
+			filters,
+			setFilters,
+			onSelectedOption,
+			show,
+		};
 	},
 };
 </script>

@@ -31,11 +31,11 @@
 				</h3>
 				<InputRange
 					class="-mt-6 ml-6"
-					:min="form.salary_min.min"
-					:max="form.salary_min.max"
+					:min="form.salary_max.min"
+					:max="jobMaxSalary"
 					:reduce="0"
 					sm
-					v-model="form.salary_min.value"
+					v-model="form.salary_max.value"
 				/>
 			</article>
 
@@ -89,13 +89,15 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const jobMaxSalary = useJobMaxSalary();
+
 		const refForm = ref<HTMLFormElement | null>(null);
 
 		const form: any = reactive({
-			salary_min: {
+			salary_max: {
 				min: 0,
 				max: 10000,
-				value: props.filters?.salary_min ?? 0,
+				value: props.filters?.salary_max ?? 0,
 			},
 			salary_unit: {
 				value: props.filters?.salary_unit ?? '---',
@@ -205,7 +207,7 @@ export default defineComponent({
 		const refType = ref();
 		const refProfessionalLevel = ref();
 		function reset() {
-			form.salary_min.value = 0;
+			form.salary_max.value = 0;
 			form.salary_unit.value = '---';
 			form.remote.value = false;
 
@@ -216,7 +218,7 @@ export default defineComponent({
 			refProfessionalLevel.value.reset();
 		}
 
-		return { t, reset, form, refType, refProfessionalLevel };
+		return { t, reset, form, refType, refProfessionalLevel, jobMaxSalary };
 	},
 });
 </script>

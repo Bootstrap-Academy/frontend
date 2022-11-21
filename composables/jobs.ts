@@ -2,6 +2,7 @@ import { useState } from '#app';
 
 export const useJobs = () => useState<any[]>('jobs', () => []);
 export const useJob = () => useState<any>('job', () => null);
+export const useJobMaxSalary = () => useState<any>('jobMaxSalary', () => 10000);
 
 export async function getJob(id: string) {
 	try {
@@ -24,6 +25,23 @@ export async function getJobs() {
 		jobs.value = response ?? [];
 
 		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function getJobMaxSalary() {
+	try {
+		const response: any[] = await GET('/jobs/jobs');
+
+		const jobMaxSalary = useJobMaxSalary();
+
+		if (!!!response || response.length <= 0) {
+			jobMaxSalary.value = 10000;
+		} else {
+			jobMaxSalary.value = Math.max(...response.map((job) => job.salary.max));
+		}
+		return [jobMaxSalary.value, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

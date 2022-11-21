@@ -23,11 +23,25 @@
 			class="card style-card bg-secondary grid gap-card-sm"
 		>
 			<SectionTitle sub :heading="heading" :body="body" class="mb-0" />
+
 			<template v-if="loading">
 				<SkillTreeProgressSkeleton v-for="n in 3" :key="n" />
 			</template>
 
 			<template v-else-if="skills && skills.length > 0">
+				<div v-if="!heading.includes('Other')">
+					<p
+						class="text-sm py-2 px-3 text-warning bg-warning-light rounded w-fit"
+					>
+						{{ t('Body.GiveWebinarsMsg') }}
+					</p>
+					<p
+						class="text-body-2 py-2 px-3 text-info bg-info-light rounded w-fit mt-box"
+					>
+						{{ t('Body.GiveCoachingMsg') }}
+					</p>
+				</div>
+
 				<SkillTreeProgress
 					v-for="(skill, i) of skills"
 					:key="`${heading}-${i}`"

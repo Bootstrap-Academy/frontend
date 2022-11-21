@@ -55,6 +55,14 @@ let months = [
 	'December',
 ];
 
+export function convertDateToTimestamp(date: string) {
+	const dateObject = new Date(date);
+
+	const timestampInMS = dateObject.getTime();
+
+	return timestampInMS / 1000;
+}
+
 export function convertTimestampToDate(timestamp: number) {
 	let dateObj = new Date(timestamp * 1000);
 

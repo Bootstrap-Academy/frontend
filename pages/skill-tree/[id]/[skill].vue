@@ -19,7 +19,7 @@
 			@activeStepper="activeStepper = $event"
 		/>
 
-		<div class="h-fit">
+		<div class="h-fit pointer-events-none">
 			<SkillTreeNodeSvg
 				:size="nodeSize"
 				:node="subSkill"

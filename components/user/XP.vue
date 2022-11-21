@@ -1,8 +1,8 @@
 <template>
 	<article
-		class="flex items-center p-2 bg-warning-light text-warning rounded-md md:rounded-lg"
+		class="flex items-center p-2 bg-success-light text-success rounded-md md:rounded-lg"
 	>
-		<BoltIcon class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 text-[#f2c94c]" />
+		<BoltIcon class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 text-success" />
 		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5">
 			{{ abbreviateNumber(xp) }} XP
 		</h6>

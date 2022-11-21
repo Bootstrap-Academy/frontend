@@ -36,31 +36,44 @@
 				</div>
 			</h6>
 
-			<Chip xs class="place-self-start" :color="level.color">
-				{{ t(level.text) }}
-			</Chip>
+			<div class="flex gap-box flex-wrap place-self-start">
+				<Chip xs :color="level.color">{{ t(level.text) }}</Chip>
+				<CheckCircleIcon
+					v-if="level.number >= 15"
+					class="w-[28px] h-[28px] text-warning"
+				/>
+				<CheckCircleIcon
+					v-if="level.number >= 42"
+					class="w-[28px] h-[28px] text-info -ml-2"
+				/>
+			</div>
 
 			<SubMenu :list="list" />
 		</article>
 
 		<!-- sub skill table -->
 		<article
-			class="grid grid-cols-[1fr_auto_auto] gap-card md:grid-cols-3 md:gap-box card pt-0"
+			class="grid grid-cols-[1fr_auto_auto_auto] gap-x-container gap-y-card-sm card pt-0"
 			v-if="show"
 		>
-			<hr class="col-span-3 mb-box mt-box" />
-			<h3 class="col-span-3 text-heading-4">Sub Skill Information</h3>
+			<hr class="col-span-4 mt-box" />
 
+			<h3 class="col-span-4 text-heading-4">Sub Skill Information</h3>
 			<h2 class="text-heading-5">Skill</h2>
 			<h2 class="text-heading-5 text-center">Level</h2>
 			<h2 class="text-heading-5 text-center">XP</h2>
+			<h2 class="text-heading-5 text-center"></h2>
 
 			<template v-for="(skill, i) of skills" :key="skill.skill ?? i">
 				<p class="capitalize text-body-2 break-words">
 					{{ (skill.skill ?? '---').replace(/_/g, ' ') }}
 				</p>
 
-				<Chip v-if="skill && skill.completed" color="chip-color-1">
+				<Chip
+					v-if="skill && skill.completed"
+					color="chip-color-1"
+					class="w-fit"
+				>
 					{{ t('Headings.Completed') }}
 				</Chip>
 				<p class="text-body-2 text-center" v-else>{{ skill.level ?? 0 }}</p>
@@ -68,6 +81,10 @@
 				<p class="text-body-2 text-center">
 					{{ abbreviateNumber(skill.xp ?? 0) }}
 				</p>
+
+				<NuxtLink :to="`/skill-tree/${id}/${skill.skill}`">
+					<Btn secondary sm>{{ t('Links.ViewSkill') }}</Btn>
+				</NuxtLink>
 			</template>
 		</article>
 	</article>
@@ -85,6 +102,8 @@ import {
 	EllipsisVerticalIcon,
 } from '@heroicons/vue/24/outline/index.js';
 
+import { CheckCircleIcon } from '@heroicons/vue/24/solid/index.js';
+
 export default defineComponent({
 	components: {
 		FolderOpenIcon,
@@ -92,6 +111,7 @@ export default defineComponent({
 		PlayIcon,
 		ArrowUturnLeftIcon,
 		EllipsisVerticalIcon,
+		CheckCircleIcon,
 	},
 	props: {
 		data: { type: Object as PropType<any>, default: null },
@@ -141,7 +161,7 @@ export default defineComponent({
 		});
 
 		const list = computed(() => {
-			return [
+			let arr = [
 				{
 					label: 'Links.ViewSkillPath',
 					onclick: () => {
@@ -157,6 +177,28 @@ export default defineComponent({
 					},
 				},
 			];
+
+			if (level.value.number >= 15) {
+				{
+					arr.push({
+						label: 'Buttons.CreateWebinar',
+						onclick: () => {
+							router.push(`/webinars/create/${id.value}`);
+						},
+					});
+				}
+			}
+
+			if (level.value.number >= 42) {
+				{
+					arr.push({
+						label: 'Buttons.HoldCoachings',
+						onclick: () => {},
+					});
+				}
+			}
+
+			return arr;
 		});
 
 		const level = computed((): any => {
@@ -239,7 +281,9 @@ export default defineComponent({
 		});
 
 		const completed = computed(() => {
-			return skills.value.filter((skill: any) => skill.progress == 1).length;
+			return skills.value.filter(
+				(skill: any) => skill.level >= 50 || skill.completed == true
+			).length;
 		});
 
 		const progress = computed(() => {
@@ -262,6 +306,7 @@ export default defineComponent({
 			xp,
 			skills,
 			show,
+			id,
 		};
 	},
 });
@@ -288,7 +333,7 @@ export default defineComponent({
 }
 .box > *:nth-child(4) {
 	grid-area: submenu;
-	@apply mt-2 sm:mt-0;
+	@apply mt-2 sm:-mt-2 md:-mt-2 -mr-4;
 }
 
 @media screen and (min-width: 525px) {

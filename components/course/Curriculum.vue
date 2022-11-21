@@ -152,7 +152,7 @@ export default defineComponent({
 		}
 
 		onMounted(() => {
-			if (!!!activeSection.value) {
+			if (!!!activeSection.value || !!!activeLecture.value) {
 				activeSection.value = sections.value[0]?.id ?? '';
 			}
 		});

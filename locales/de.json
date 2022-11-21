@@ -11,6 +11,8 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"CreateWebinar": "Webinar erstellen",
+		"EditWebinar": "Webinar bearbeiten",
 		"RootSkillTree": "Root-Fähigkeitsbaum",
 		"WelcomeBack": "Wir freuen uns, dich wiederzusehen!",
 		"Signup": "Erstelle dir einen Account",
@@ -159,6 +161,8 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"GiveWebinarsMsg": "Holen Sie sich Sub-Skill-Level 15 oder senden Sie uns Ihre Anmeldeinformationen, um Webinare zu erstellen",
+		"GiveCoachingMsg": "Holen Sie sich das Sub-Skill-Level 42 oder senden Sie uns Ihre Referenzen, um Coachings abzuhalten",
 		"RootSkillTreeLoading": "Root Skill Tree wird geladen",
 		"SubSkillTreeLoading": "Teilbaum {placeholder} wird geladen",
 		"MorphcoinsToolTip": "Jobs, die von uns angeboten und nur mit der Währung dieser Plattform bezahlt werden",
@@ -354,6 +358,11 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Link": "Verknüpfung",
+		"StartDate": "Anfangsdatum",
+		"Duration": "Dauer",
+		"MaxParticipants": "Max. Teilnehmer",
+		"Price": "Preis",
 		"About": "Um",
 		"CourseVideo": "Kursvideo",
 		"EmailOrUsername": "E-Mail-Adresse oder Nickname",
@@ -375,6 +384,8 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"CreateWebinar": "Webinar erstellen",
+		"HoldCoachings": "Coachings abhalten",
 		"JoinLink": "Link beitreten",
 		"Safe": "Speichern",
 		"Login": "Login",
@@ -432,6 +443,8 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
+		"ViewSkill": "Fähigkeit anzeigen",
+		"ViewSubSkill": "Sub-Skill anzeigen",
 		"GoToJobs": "Gehen Sie zu Jobs",
 		"CloseProgressDetails": "Fortschrittsdetails schließen",
 		"ViewSkillPath": "Fertigkeitspfad anzeigen",
@@ -488,6 +501,7 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"CreateWebinar": "Webinar erfolgreich erstellt.",
 		"MessageSubmitted": "Nachricht übermittelt",
 		"ContactUs": "Dein Formular wurde erfolgreich übermittelt.",
 		"SignupSuccessful": "Registrierung erfolgreich",

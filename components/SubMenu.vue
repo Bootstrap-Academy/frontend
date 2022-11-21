@@ -1,6 +1,10 @@
 <template>
-	<article class="relative w-fit" @focusout="show = false" tabindex="0">
-		<div class="box -mt-2 md:-mt-3 -mr-4 cursor-pointer" @click="show = !show">
+	<article class="relative w-fit h-fit" @focusout="show = false" tabindex="0">
+		<div
+			class="cursor-pointer h-fit"
+			@click="show = !show"
+			:class="[sm ? 'p-2' : 'p-3', { 'bg-secondary rounded ': filled }]"
+		>
 			<EllipsisVerticalIcon class="w-5 h-5 text-body" />
 		</div>
 
@@ -8,6 +12,7 @@
 			<button
 				v-if="show"
 				class="appearance-none absolute right-[100%] top-[-40%] bg-tertiary p-4 style-box w-fit grid gap-2 z-50"
+				:class="filled ? 'right-[150%]' : 'right-[100%]'"
 			>
 				<p
 					class="text-body-2 text-heading text-left cursor-pointer whitespace-nowrap"
@@ -31,6 +36,8 @@ export default defineComponent({
 	components: { EllipsisVerticalIcon },
 	props: {
 		list: { type: Array as PropType<any[]>, default: [] },
+		sm: { type: Boolean, default: false },
+		filled: { type: Boolean, default: false },
 	},
 	setup(props) {
 		const { t } = useI18n();

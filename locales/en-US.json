@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"CreateWebinar": "Create Webinar",
+		"EditWebinar": "Edit Webinar",
 		"RootSkillTree": "Root Skill Tree",
 		"WelcomeBack": "Welcome Back!",
 		"Signup": "Let's Create An Account",
@@ -159,6 +161,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"GiveWebinarsMsg": "Get sub skill level 15 or send us your credentials to create webinars",
+		"GiveCoachingMsg": "Get sub skill level 42 or send us your credentials to hold coachings",
 		"RootSkillTreeLoading": "Loading Root Skill Tree",
 		"SubSkillTreeLoading": "Loading {placeholder} Subtree",
 		"MorphcoinsToolTip": "Jobs offered by us and payed with the currency of this platform only",
@@ -353,6 +357,11 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Link": "Link",
+		"StartDate": "Start Date",
+		"Duration": "Duration",
+		"MaxParticipants": "Max Participants",
+		"Price": "Price",
 		"About": "About",
 		"CourseVideo": "Course Video",
 		"EmailOrUsername": "E-mail Address or Nickname",
@@ -374,6 +383,8 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"CreateWebinar": "Create Webinar",
+		"HoldCoachings": "Hold Coachings",
 		"JoinLink": "Join Link",
 		"Safe": "Safe",
 		"Login": "Login",
@@ -431,6 +442,8 @@
 		"AddEmail": "Add Email"
 	},
 	"Links": {
+		"ViewSkill": "View Skill",
+		"ViewSubSkill": "View Sub Skill",
 		"GoToJobs": "Go to Jobs",
 		"CloseProgressDetails": "Close Progress Details",
 		"ViewSkillPath": "View Skill Path",
@@ -483,6 +496,7 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"CreateWebinar": "Webinar created successfully.",
 		"MessageSubmitted": "Message Submitted",
 		"ContactUs": "Your form has been submitted successfully.",
 		"SignupSuccessful": "Signup Successful",

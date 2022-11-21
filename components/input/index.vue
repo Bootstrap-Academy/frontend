@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -58,7 +58,7 @@ export default defineComponent({
 		noTrim: { type: Boolean, default: false },
 		placeholder: { type: String, default: '' },
 		rules: { type: Array, default: [] },
-		modelValue: { type: String, default: '' },
+		modelValue: { default: '' },
 	},
 	emits: ['update:modelValue', 'valid'],
 	setup(props, { emit }) {
@@ -69,10 +69,19 @@ export default defineComponent({
 				return props.modelValue;
 			},
 			set(value: string) {
-				emit(
-					'update:modelValue',
-					props.noTrim || props.type == 'password' ? value : value.trim()
-				);
+				let finalValue: string | number;
+
+				if (
+					props.noTrim ||
+					props.type == 'password' ||
+					props.type == 'number'
+				) {
+					finalValue = value;
+				} else {
+					finalValue = value.trim();
+				}
+
+				emit('update:modelValue', finalValue);
 			},
 		});
 
@@ -115,4 +124,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+::-webkit-calendar-picker-indicator {
+	filter: invert(1);
+}
+</style>
