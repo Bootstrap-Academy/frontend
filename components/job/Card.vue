@@ -13,9 +13,10 @@
 				<span :class="{ capitalize: stat.capitalize }">{{ stat.value }}</span>
 			</IconText>
 		</article>
-		<p class="clamp line-2 w-full text-body-2 h-full">
+		<!-- <p class="clamp line-2 w-full text-body-2 h-full">
 			{{ jobDescription }}
-		</p>
+		</p> -->
+
 		<NuxtLink :to="link" class="self-end mt-box">
 			<Btn sm>{{ t('Buttons.ViewDetails') }}</Btn>
 		</NuxtLink>

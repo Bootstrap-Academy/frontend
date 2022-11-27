@@ -100,7 +100,7 @@ button {
 	@apply fill-primary;
 }
 .secondary .icon {
-	@apply fill-white;
+	@apply fill-accent;
 }
 .tertiary .icon {
 	@apply fill-accent;

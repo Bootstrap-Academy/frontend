@@ -9,6 +9,7 @@
 		"postinstall": "nuxt prepare"
 	},
 	"devDependencies": {
+		"@nuxt/content": "^2.2.2",
 		"nuxt": "3.0.0-rc.13",
 		"vue-i18n": "^9.2.2"
 	},
@@ -18,6 +19,7 @@
 		"async-mutex": "^0.4.0",
 		"gleap": "^8.2.6",
 		"jwt-decode": "^3.1.2",
+		"markdown-it": "^13.0.1",
 		"qrcode.vue": "^3.3.3",
 		"vue-recaptcha-v3": "^2.0.1"
 	}

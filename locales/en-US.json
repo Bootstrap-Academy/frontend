@@ -44,6 +44,8 @@
 		"LearningGoals": "Learning Goals",
 		"Requirements": "Requirements",
 		"Price": "Price",
+		"PricePerParticipantMsg": "Add price and max participants to calculate morphcoins/participant",
+		"PricePerParticipant": "morphcoins/participant",
 		"Morphcoins": "Free | {n} Morphcoin | {n} Morphcoins",
 		"Hours": "{n} Hour | {n} Hours",
 		"Lectures": "No lectures | {n} Lecture | {n} Lectures",
@@ -314,16 +316,16 @@
 				"Body": "Host webinars as an instructor. You're an expert, maybe already did some jobs and want to share your knowledge in webinars? Contact me, if you've got the skills, I'm happy to have you. You yourself decide about the prices you take from the participants. You keep 80%! Only limitation: The webinar may not be for free - you know, we do want to keep developing this site."
 			},
 			"5": {
-				"Heading": "Examiner",
-				"Body": "Apply and become an examiner. You can guess how well some can code? You know all the questions to put someone to test? Contact me as an examiner - you only need the according skill and some soft skills"
-			},
-			"6": {
 				"Heading": "Coach",
 				"Body": "Apply and become a coach. Want to help people individually? You only need the skills you want to coach, some soft skills and you can start. Rates are totally up to you!"
 			},
-			"7": {
+			"6": {
 				"Heading": "Bug Bounty",
 				"Body": "Find Bugs of any sorts and report those. You're hacker or you just found a bug, a security vulnerability or a mistake in text or ordering of any sorts? Use the Icon on the right to report it to us! Depending on the severity, you get a reward. Disclaimer: You may NOT use any services, that might crash the server or network or count as denial of service tools! All data you might have access to, need to be removed immediately(!) and completely from your systems. Data on our systems may NOT be changed! Please try to keep other user out of this, try and exploit yourselves, if it is a user based exploit. Also, please limit yourselves to the bootstrap academy. Everything that's not from the academy is out of scope. Example: We use Youtube videos, but we don't own Youtube, so it's out of scope. Also: Only the first reporter will be rewarded and if you are a third party provider, there will probably be no reward. Speaking of rewards: Rewards are most commonly paid out in morphcoins. The amount is defined by the severity of the bug and the quality of the report and how easy you make it for us to fix it. In cases where we discussed that you do bug hunting for us, a payout in euro is possible. Please contact us, if you want this BEFORE you search for a bug!"
+			},
+			"7": {
+				"Heading": "Examiner",
+				"Body": "Apply and become an examiner. You can guess how well some can code? You know all the questions to put someone to test? Contact me as an examiner - you only need the according skill and some soft skills"
 			}
 		},
 		"Filter": {

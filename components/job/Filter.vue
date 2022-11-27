@@ -108,12 +108,12 @@ export default defineComponent({
 					},
 					{
 						label: 'List.Filter.Morphcoins',
-						value: 'MorphCoins',
+						value: 'MC',
 						tooltip: 'Body.MorphcoinsToolTip',
 					},
 					{
 						label: 'List.Filter.Euros',
-						value: 'eur',
+						value: 'EUR',
 					},
 				],
 			},

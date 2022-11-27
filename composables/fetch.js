@@ -62,7 +62,10 @@ const onRequest = async ({ request, options }) => {
 
 const onResponse = async ({ request, options, response }) => {
 	let status = response?.ok ?? null;
-	if (status == true) console.log('success', response._data);
+	const config = useRuntimeConfig();
+	if (config.NODE_ENV == 'development' && status == true) {
+		console.log('success', response._data);
+	}
 };
 
 const onResponseError = async ({ request, options, response }) => {
@@ -77,7 +80,10 @@ const onResponseError = async ({ request, options, response }) => {
 		details = details.toLocaleLowerCase();
 	}
 
-	console.log('error', details);
+	const config = useRuntimeConfig();
+	if (config.NODE_ENV == 'development') {
+		console.log('error', details);
+	}
 
 	if (
 		details.includes('invalid token') ||

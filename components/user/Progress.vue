@@ -10,13 +10,6 @@
 			<UserXP :data="xp" />
 		</div>
 
-		<p class="text-sm py-2 px-3 text-warning bg-warning-light rounded w-fit">
-			{{ t('Body.GiveWebinarsMsg') }}
-		</p>
-		<p class="text-body-2 py-2 px-3 text-info bg-info-light rounded w-fit">
-			{{ t('Body.GiveCoachingMsg') }}
-		</p>
-
 		<template v-if="loading">
 			<SkillTreeProgressSkeleton v-for="n in 3" :key="n" />
 		</template>

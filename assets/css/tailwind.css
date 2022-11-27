@@ -199,6 +199,9 @@
 
 /* ======================================================= Tailwind CSS */
 @layer base {
+	html {
+		scroll-behavior: smooth;
+	}
 	body {
 		overflow-x: hidden;
 		width: 100vw;

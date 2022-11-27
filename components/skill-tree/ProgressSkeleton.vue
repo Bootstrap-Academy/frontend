@@ -62,18 +62,22 @@
 				<span class="text-transparent">---</span>
 			</Chip>
 
-			<SubMenu />
+			<!-- <SubMenu /> -->
+			<div class="flex items-center gap-2 place-self-start">
+				<Icon rounded sm :icon="EyeIcon" />
+				<Icon rounded sm :icon="ChevronDownIcon" />
+			</div>
 		</article>
 	</article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline/index.js';
+import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline/index.js';
 
 export default defineComponent({
 	props: { noAnimate: { type: Boolean, default: false } },
-	components: { EllipsisVerticalIcon },
+	components: { EyeIcon, ChevronDownIcon },
 	setup() {
 		const total = computed(() => {
 			return getRandomNumber(20, 50);
@@ -89,7 +93,7 @@ export default defineComponent({
 		const progressBar = computed(() => {
 			return `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${progress.value}%, var(--color-tertiary) ${progress.value}%,  var(--color-tertiary) 100%)`;
 		});
-		return { total, completed, progressBar };
+		return { total, completed, progressBar, EyeIcon, ChevronDownIcon };
 	},
 });
 </script>

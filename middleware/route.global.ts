@@ -6,10 +6,15 @@ export default defineNuxtRouteMiddleware((to, from) => {
 				left: 0,
 				behavior: 'smooth',
 			});
-		}, 400);
+		}, 450);
 	}
 
 	if (to.path == '/privacy' || to.path == '/datenschutz') {
 		return navigateTo('/docs/privacy');
+	}
+
+	const cookie_accessToken = useCookie('accessToken');
+	if (to.path == '/auth/login' && !!cookie_accessToken.value) {
+		return navigateTo('/profile');
 	}
 });

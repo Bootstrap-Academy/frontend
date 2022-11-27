@@ -63,6 +63,7 @@ import {
 	ChatBubbleLeftIcon,
 } from '@heroicons/vue/24/outline/index.js';
 import IconBug from '~/components/icon/Bug.vue';
+import IconCoaching from '~/components/icon/Coaching.vue';
 import { useI18n } from 'vue-i18n';
 
 export default {
@@ -76,6 +77,7 @@ export default {
 		IdentificationIcon,
 		ShoppingCartIcon,
 		IconBug,
+		IconCoaching,
 		ChatBubbleLeftIcon,
 	},
 	setup() {
@@ -107,7 +109,7 @@ export default {
 				type: 'webinars',
 			},
 			{
-				icon: ChatBubbleLeftIcon,
+				icon: IconCoaching,
 				button: 'Buttons.ExploreSkill',
 				pathname: '/skill-tree/it_paedagoge_und_dozent',
 				type: 'coach',

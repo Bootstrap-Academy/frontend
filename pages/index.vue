@@ -19,7 +19,7 @@
 		<HeroSponsors />
 		<HeroAbout class="pt-container" />
 		<HeroFeatures class="pt-container" />
-		<HeroFAQS class="pt-container mb-main" />
+		<HeroFAQS class="pt-container mb-main pb-container" />
 	</main>
 </template>
 

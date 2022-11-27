@@ -59,6 +59,18 @@
 			:rules="form.price.rules"
 		/>
 
+		<p
+			class="text-body-1 py-2 px-4 text-warning bg-warning-light rounded-sm w-fit"
+		>
+			<span v-if="pricePerParticipant <= 0">
+				{{ t('Headings.PricePerParticipantMsg') }}
+			</span>
+			<span v-else>
+				{{ abbreviateNumber(pricePerParticipant) }}
+				{{ t('Headings.PricePerParticipant') }}
+			</span>
+		</p>
+
 		<InputBtn
 			:loading="form.submitting"
 			class="self-end"
@@ -134,8 +146,7 @@ export default defineComponent({
 				value: 0,
 				valid: false,
 				rules: [
-					(v: number) => !!v || 'Error.InputEmpty_Inputs.Price',
-					(v: number) => !v || v >= 0 || 'Error.InputMinLength_0',
+					(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price',
 				],
 			},
 			submitting: false,
@@ -180,16 +191,14 @@ export default defineComponent({
 		const route = useRoute();
 		const router = useRouter();
 
-		const skill_id = computed(() => {
-			return <string>(route.query?.skill ?? '');
-		});
+		console.log('route.params?.skill ??', route.params?.skill ?? '');
 
 		async function onclickSubmitForm() {
 			if (form.validate()) {
 				form.submitting = true;
 				const [success, error] = await createWebinar({
 					...form.body(),
-					skill_id: skill_id.value,
+					skill_id: route.params?.skill ?? '',
 					start: convertDateToTimestamp(form.body().start),
 				});
 				form.submitting = false;
@@ -209,11 +218,26 @@ export default defineComponent({
 			openSnackbar('error', res?.detail ?? '');
 		}
 
+		const pricePerParticipant = computed(() => {
+			const price = parseInt(form.price.value ?? 0);
+			const maxParticipants = parseInt(form.max_participants.value ?? 0);
+
+			if (!!!price || price <= 0) return 0;
+			if (!!!maxParticipants || maxParticipants <= 0) return 0;
+			// if (price < maxParticipants) return 0;
+
+			let ans = price / maxParticipants;
+			ans = Number(ans.toFixed(2));
+
+			return ans;
+		});
+
 		return {
 			form,
 			onclickSubmitForm,
 			refForm,
 			t,
+			pricePerParticipant,
 		};
 	},
 });

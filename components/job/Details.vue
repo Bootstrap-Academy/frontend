@@ -7,7 +7,7 @@
 			<h2 class="mb-box text-heading-3 truncate">
 				{{ t('Headings.Description') }}
 			</h2>
-			<p class="break-all">{{ description }}</p>
+			<p class="break-all" v-html="description"></p>
 		</article>
 
 		<article v-if="responsibilities.length">
@@ -31,6 +31,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
+import MarkdownIt from 'markdown-it';
 
 export default defineComponent({
 	props: {
@@ -40,7 +41,8 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const description = computed(() => {
-			return props.data?.description ?? '';
+			const md = new MarkdownIt();
+			return md.render(props.data?.description ?? '');
 		});
 
 		const responsibilities = computed(() => {

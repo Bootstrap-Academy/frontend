@@ -3,16 +3,21 @@
 		<section v-for="(section, i) of sections" :key="section.id">
 			<hr v-if="i > 0" class="mb-card" />
 
-			<header
-				class="flex justify-between items-center cursor-pointer"
-				@click="activeSection = section.id"
-			>
+			<header class="cursor-pointer" @click="activeSection = section.id">
 				<div>
 					<p class="text-xs mb-1 uppercase tracking-[2px]">
 						{{ t('Headings.Sections', { n: ' ' }, 1) }} {{ i + 1 }}
 					</p>
 					<h3 class="text-heading-4">{{ section.title }}</h3>
 				</div>
+
+				<p
+					v-if="!!section.duration"
+					class="h-fit text-xs text-warning flex-shrink-0 w-fit mb-1 bg-warning-light rounded py-1 px-2"
+				>
+					{{ section.duration }}
+				</p>
+
 				<ChevronDownIcon
 					class="w-5 h-5"
 					:class="
@@ -68,9 +73,14 @@ export default defineComponent({
 		const sections: Ref<any[]> = computed(() => {
 			return (props.data?.sections ?? []).map((section: any, i: number) => {
 				// if section has no id, then a custom id is made using title and index
+
 				return !!!section.id && !!section.title
-					? { ...section, id: `${section.title.replace(/ /g, '_')}-${i}` }
-					: { ...section };
+					? {
+							...section,
+							id: `${section.title.replace(/ /g, '_')}-${i}`,
+							duration: getTotalDurationOfThisSection(section),
+					  }
+					: { ...section, duration: getTotalDurationOfThisSection(section) };
 			});
 		});
 
@@ -130,6 +140,48 @@ export default defineComponent({
 			},
 		});
 
+		function getTotalDurationOfThisSection(section: any) {
+			if (!!!section) return '';
+
+			const lectures = section.lectures ?? [];
+			if (!!!lectures || lectures.length <= 0) return '';
+
+			const totalDuration = lectures.reduce(
+				(previousValue: number, currentValue: any) =>
+					previousValue + currentValue.duration ?? 0,
+				0
+			);
+
+			const { minutes, hours } = convertTimestampToDate(totalDuration);
+
+			let roundedHours = Math.round(hours);
+			let minutesLeftInHours = hours - roundedHours;
+			minutesLeftInHours = Math.round(minutesLeftInHours * 60);
+
+			let hoursString =
+				roundedHours > 0
+					? t(
+							'Headings.Hours',
+							{ n: roundedHours },
+							roundedHours
+					  ).toLocaleLowerCase()
+					: '';
+			let minsString =
+				minutesLeftInHours > 0
+					? t(
+							'Headings.Mins',
+							{ n: minutesLeftInHours },
+							minutesLeftInHours
+					  ).toLocaleLowerCase()
+					: '';
+
+			return `${hoursString} ${
+				!!hoursString && !!minsString
+					? t('Headings.And').toLocaleLowerCase()
+					: ''
+			} ${minsString}`;
+		}
+
 		function getActiveLectureForThisSection(sectionID: string) {
 			let lectures: any[] = getLecturesOfThisSection(sectionID);
 			if (!!!lectures || lectures.length <= 0) return '';
@@ -163,9 +215,35 @@ export default defineComponent({
 			activeLecture,
 			getLecturesOfThisSection,
 			onclickWatchThisLecture,
+			getTotalDurationOfThisSection,
 		};
 	},
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+header {
+	@apply grid grid-cols-[1fr_auto] gap-2;
+	grid-template-areas:
+		'duration arrow'
+		'title arrow';
+}
+header > *:nth-child(1) {
+	grid-area: title;
+}
+header > *:nth-child(2) {
+	grid-area: duration;
+}
+header > *:nth-child(3) {
+	grid-area: arrow;
+	@apply justify-self-end;
+}
+
+@media screen and (min-width: 768px) {
+	header {
+		grid-template-areas:
+			'title duration'
+			'title arrow';
+	}
+}
+</style>
