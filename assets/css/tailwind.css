@@ -282,6 +282,34 @@
 }
 
 @layer utilities {
+	.markdown h1 {
+		@apply text-heading-1;
+	}
+	.markdown h2 {
+		@apply text-heading-2;
+	}
+	.markdown h3 {
+		@apply text-heading-3;
+	}
+	.markdown h4 {
+		@apply text-heading-4;
+	}
+	.markdown h5 {
+		@apply text-heading-5;
+	}
+
+	.markdown h6,
+	.markdown p,
+	.markdown li,
+	.markdown a {
+		@apply text-body-1;
+	}
+
+	.markdown th,
+	.markdown td {
+		@apply text-body-2 text-body;
+	}
+
 	.form-submitting * {
 		@apply opacity-70 pointer-events-none;
 	}
