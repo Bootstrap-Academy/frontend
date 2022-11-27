@@ -54,20 +54,22 @@ export default defineComponent({
 			async (newValue, oldValue) => {
 				if (!!!newValue) return;
 
-				clearInterval(videoInterval);
-
 				const courseID = props.course?.id ?? '';
 
 				if (!!!courseID) return;
 
 				await getLectureVideoSRC(courseID, newValue);
 
-				refSource.value.setAttribute('src', videoSRC.value);
-				videoInterval = setInterval(async () => {
-					await getLectureVideoSRC(courseID, newValue);
+				if ((props.activeLecture?.type ?? '') == 'mp4') {
+					clearInterval(videoInterval);
+
 					refSource.value.setAttribute('src', videoSRC.value);
-					refSource.value.src = videoSRC.value;
-				}, 40000);
+					videoInterval = setInterval(async () => {
+						await getLectureVideoSRC(courseID, newValue);
+						refSource.value.setAttribute('src', videoSRC.value);
+						refSource.value.src = videoSRC.value;
+					}, 40000);
+				}
 			},
 			{ deep: true, immediate: true }
 		);

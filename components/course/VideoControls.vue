@@ -35,8 +35,14 @@
 				<p class="text-accent text-body-2 justify-self-end">Content</p>
 			</div>
 			<div class="flex gap-2">
-				<ArrowLeftCircleIcon class="w-10 h-10 text-accent" />
-				<ArrowRightCircleIcon class="w-10 h-10 text-accent" />
+				<ArrowLeftCircleIcon
+					@click="goToPrevLecture"
+					class="w-10 h-10 text-accent cursor-pointer"
+				/>
+				<ArrowRightCircleIcon
+					@click="goToNextLecture"
+					class="w-10 h-10 text-accent cursor-pointer"
+				/>
 			</div>
 		</article>
 

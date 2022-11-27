@@ -27,11 +27,11 @@
 <template>
 	<main
 		ref="aos"
-		class="container-fluid pb-container mt-main grid gap-container grid-cols-1 lg:grid-cols-[275px_1fr] xl:grid-cols-[350px_1fr]"
+		class="container-fluid pb-container mt-main grid gap-container grid-cols-1 midXl:grid-cols-[275px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)]"
 	>
 		<UserProfile
 			:data="user"
-			class="lg:row-span-4 lg:sticky lg:top-container lg:self-start"
+			class="midXl:row-span-4 midXl:sticky midXl:top-container midXl:self-start"
 		/>
 
 		<UserProgress />
