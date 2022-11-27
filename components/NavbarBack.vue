@@ -38,8 +38,6 @@ export default defineComponent({
 			}
 		}
 		function setBackRoute(to: string, from: string) {
-			console.log('from', from);
-
 			// ! Auth
 			if (to == '/auth/signup' || to == '/auth/forgot-password') {
 				pathname.value = '/auth/login';

@@ -9,12 +9,15 @@ export default defineNuxtRouteMiddleware((to, from) => {
 		}, 450);
 	}
 
-	if (to.path == '/privacy' || to.path == '/datenschutz') {
+	if (
+		(!to.path.includes('/docs/privacy') && to.path.includes('/privacy')) ||
+		to.path.includes('/datenschutz')
+	) {
 		return navigateTo('/docs/privacy');
 	}
 
 	const cookie_accessToken = useCookie('accessToken');
-	if (to.path == '/auth/login' && !!cookie_accessToken.value) {
+	if (to.path.includes('/auth/login') && !!cookie_accessToken.value) {
 		return navigateTo('/profile');
 	}
 });

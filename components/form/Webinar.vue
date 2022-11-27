@@ -191,8 +191,6 @@ export default defineComponent({
 		const route = useRoute();
 		const router = useRouter();
 
-		console.log('route.params?.skill ??', route.params?.skill ?? '');
-
 		async function onclickSubmitForm() {
 			if (form.validate()) {
 				form.submitting = true;

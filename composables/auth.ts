@@ -38,11 +38,9 @@ export async function refresh() {
 		});
 
 		setStates(response);
-		console.log('refreshed token successfull');
 		return [response, null];
 	} catch (error: any) {
 		setStates(null);
-		console.log('unable to refresh token');
 		return [null, error.data];
 	}
 }
