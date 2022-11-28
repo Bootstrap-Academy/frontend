@@ -63,7 +63,7 @@ export default {
 			heading: 'Headings.DisableMFA',
 			body: 'Success.DisabledMFA',
 			primaryBtn: {
-				label: 'Links.GoToLogin',
+				label: 'Links.Okay',
 				onclick: () => {
 					router.push('/auth/login');
 				},

@@ -128,7 +128,7 @@ export default defineComponent({
 			openDialog(
 				'success',
 				'Success.PasswordChanged',
-				'Success.PasswordChanged',
+				'Success.PasswordChangedBody',
 				true,
 				{
 					label: 'Buttons.Okay',

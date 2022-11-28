@@ -82,7 +82,7 @@ export default {
 			heading: 'Success.EnabledMFA',
 			body: 'Success.EnableMFACode',
 			primaryBtn: {
-				label: 'Links.GoToLogin',
+				label: 'Buttons.Okay',
 				onclick: () => {
 					router.push('/auth/login');
 				},
