@@ -1,27 +1,22 @@
 <!--
 ❌ Responsive UI
 ✅ Page Title
-❌ Translation
+✅ Translation
 ❌ Animation
-❌ middleware
+✅ middleware
 
-❌ Tested on chrome
+✅ Tested on chrome
 ❌ Tested on firefox
-❌ Tested on safari
+✅ Tested on safari
 ❌ Tested on android mobile
 ❌ Tested on apple mobile
 
-❌ Handle loading if data already exists
-❌ Handle loading if data is empty
-❌ Display data
-❌ Handle empty state
-
-❌ Recaptcha
-❌ Api implemented
-❌ Form Client Side Error Handling
-❌ Form Submission Process
-❌ Form Post Api Error Handling + ❌ Translation
-❌ Form Post Api Success Handling + ❌ Translation
+✅ Recaptcha
+✅ Api implemented
+✅ Form Client Side Error Handling
+✅ Form Submission Process
+✅ Form Post Api Error Handling + ✅ Translation
+✅ Form Post Api Success Handling + ✅ Translation
 -->
 
 <template>
@@ -63,7 +58,7 @@ export default {
 			heading: 'Headings.DisableMFA',
 			body: 'Success.DisabledMFA',
 			primaryBtn: {
-				label: 'Links.Okay',
+				label: 'Buttons.Okay',
 				onclick: () => {
 					router.push('/auth/login');
 				},

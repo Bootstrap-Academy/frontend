@@ -33,7 +33,6 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useReCaptcha } from 'vue-recaptcha-v3';
 import { IForm } from '~/types/form';
 
 export default defineComponent({
@@ -87,9 +86,13 @@ export default defineComponent({
 			if (form.validate()) {
 				form.submitting = true;
 				const [success, error] = await enableMFA(form.body());
-				form.submitting = false;
 
-				success ? successHandler(success) : errorHandler(error);
+				if (!!success) {
+					await refresh();
+					successHandler(success);
+				} else {
+					errorHandler(error);
+				}
 			} else {
 				openSnackbar('error', 'Error.InvalidForm');
 			}
@@ -97,10 +100,12 @@ export default defineComponent({
 
 		function successHandler(res: any) {
 			emit('recovery_code', res);
+			form.submitting = false;
 		}
 
 		function errorHandler(res: any) {
 			openSnackbar('error', res?.detail ?? '');
+			form.submitting = false;
 		}
 
 		return {

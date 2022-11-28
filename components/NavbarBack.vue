@@ -57,13 +57,13 @@ export default defineComponent({
 			}
 
 			// ! MFA
-			else if (to == '/account/mfa/disabled') {
+			else if (to.includes('/account/mfa/disabled')) {
 				pathname.value = '/profile';
 				label.value = 'Links.GoToProfile';
 			}
 
 			// ! Profile
-			else if (to == '/profile/edit') {
+			else if (to.includes('/profile/edit')) {
 				pathname.value = '/profile';
 				label.value = 'Links.GoToProfile';
 			}

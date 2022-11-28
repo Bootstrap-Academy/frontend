@@ -175,8 +175,6 @@ export default defineComponent({
 					recaptcha_response: recaptcha_response,
 				});
 
-				form.submitting = false;
-
 				success ? successHandler(success) : errorHandler(error);
 			} else {
 				openSnackbar('error', 'Error.InvalidForm');
@@ -186,7 +184,9 @@ export default defineComponent({
 		async function successHandler(res: any) {
 			const [success, error] = await disableMFA();
 			if (success) {
+				await refresh();
 				emit('isSuccess', true);
+				form.submitting = false;
 			} else {
 				errorHandler(error);
 			}
@@ -197,6 +197,7 @@ export default defineComponent({
 		function errorHandler(res: any) {
 			openSnackbar('error', res?.detail ?? '');
 			emit('isSuccess', false);
+			form.submitting = false;
 		}
 
 		return {
