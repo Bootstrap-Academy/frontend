@@ -42,12 +42,9 @@ export default defineComponent({
 			if (to == '/auth/signup' || to == '/auth/forgot-password') {
 				pathname.value = '/auth/login';
 				label.value = 'Links.Login';
-			} else if (to == '/auth/verify-account' && from == '/profile/edit') {
-				pathname.value = '/profile';
-				label.value = 'Links.GoToProfile';
 			} else if (to == '/auth/verify-account') {
-				pathname.value = '/auth/signup';
-				label.value = 'Links.Signup';
+				pathname.value = '/auth/login';
+				label.value = 'Links.GoBack';
 			} else if (to == '/auth/reset-password') {
 				pathname.value = '/auth/forgot-password';
 				label.value = 'Links.ForgotPassword';
