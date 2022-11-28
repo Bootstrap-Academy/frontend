@@ -1,6 +1,8 @@
 <template>
 	<!-- <SkillTreeProgressSkeleton no-animate /> -->
-	<Btn class="w-fit">{{ t('Links.ExploreSkillTree') }}</Btn>
+	<NuxtLink to="/skill-tree">
+		<Btn class="w-fit">{{ t('Links.ExploreSkillTree') }}</Btn>
+	</NuxtLink>
 </template>
 
 <script lang="ts">
