@@ -5,7 +5,7 @@
 ❌ Animation
 
 ✅ Tested on chrome
-❌ Tested on firefox
+✅ Tested on firefox
 ✅ Tested on safari
 ❌ Tested on android mobile
 ❌ Tested on apple mobile
