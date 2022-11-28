@@ -81,7 +81,7 @@ export default {
 			Object.assign(dialog, {
 				type: 'error',
 				heading: 'Headings.UnableToOAuth',
-				body: `${t('Error.UnableToOAuth')}: ${res?.detail ?? ''}`,
+				body: `${t('Error.UnableToOAuth')}: ${t(res?.detail ?? '')}`,
 				primaryBtn: {
 					label: 'Links.GoBack',
 					onclick: () => {
