@@ -154,6 +154,10 @@ export default defineComponent({
 			validate: () => {
 				let isValid = true;
 
+				if (!!register_token.value) {
+					form.password.valid = true;
+				}
+
 				for (const key in form) {
 					if (
 						key != 'validate' &&
