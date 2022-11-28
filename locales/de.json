@@ -512,6 +512,7 @@
 		"RequestSubmitted": "Anfrage eingereicht",
 		"ResetPasswordRequestSent": "Wenn das Benutzerkonto existiert, wird dir eine E-Mail mit einem Code zugesandt. Klicke hier, um zur Seite zum Zurücksetzen zu gelangen, auf der du diesen Code zusammen mit deinem neuen Passwort eingeben kannst.",
 		"PasswordChanged": "Das Passwort wurde erfolgreich geändert",
+		"PasswordChangedBody": "Ab sofort können Sie sich mit Ihrem neuen Passwort anmelden.",
 		"LoginWithNewPassword": "Melde dich mit deinem neuen Passwort an.",
 		"Subscribed": "Du hast die Bootstrap Academy erfolgreich abonniert.",
 		"VerifyAccount": "Dein Account wurde verifiziert. Du kannst jetzt deine Lernreise beginnen.",

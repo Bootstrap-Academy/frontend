@@ -34,13 +34,8 @@
 			mt
 			mb
 		>
-			{{ t('Buttons.GetInstructions') }}
+			{{ t('Buttons.ResetPassword') }}
 		</InputBtn>
-
-		<NuxtLink to="/auth/signup" class="self-center">
-			{{ t('Links.DontHaveAccount') }}
-			<span class="text-accent">{{ t('Links.CreateOne') }}</span>
-		</NuxtLink>
 	</form>
 </template>
 
@@ -133,10 +128,10 @@ export default defineComponent({
 			openDialog(
 				'success',
 				'Success.PasswordChanged',
-				'Success.LoginWithNewPassword',
+				'Success.PasswordChanged',
 				true,
 				{
-					label: 'Links.GoToLogin',
+					label: 'Buttons.Okay',
 					onclick: () => {
 						router.push('/auth/login');
 					},

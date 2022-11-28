@@ -507,6 +507,7 @@
 		"RequestSubmitted": "Request Submitted",
 		"ResetPasswordRequestSent": "If your user account exists, an email will be sent to you with a code. Click to go to reset page where you will enter that code along with your new password.",
 		"PasswordChanged": "Password Changed Successfully",
+		"PasswordChangedBody": "From now on you can login with your new password.",
 		"LoginWithNewPassword": "Login with your new password.",
 		"Subscribed": "You have successfully subscribed to Bootstrap Academy.",
 		"VerifyAccount": "Your account has been verified. You can now start your learning journey.",
