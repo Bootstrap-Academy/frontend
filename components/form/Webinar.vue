@@ -37,6 +37,7 @@
 
 		<Input
 			:label="t('Inputs.Duration')"
+			hint="Inputs.DurationHint"
 			type="number"
 			v-model="form.duration.value"
 			@valid="form.duration.valid = $event"
@@ -45,6 +46,7 @@
 
 		<Input
 			:label="t('Inputs.MaxParticipants')"
+			hint="(0 - 50)"
 			type="number"
 			v-model="form.max_participants.value"
 			@valid="form.max_participants.valid = $event"
@@ -53,6 +55,7 @@
 
 		<Input
 			:label="t('Inputs.Price')"
+			hint="Inputs.PriceHint"
 			type="number"
 			v-model="form.price.value"
 			@valid="form.price.valid = $event"
@@ -129,8 +132,8 @@ export default defineComponent({
 				valid: false,
 				rules: [
 					(v: number) => !!v || 'Error.InputEmpty_Inputs.Duration',
-					(v: number) => !v || v >= 0 || 'Error.InputMinLength_0',
-					(v: number) => v <= 1440 || 'Error.InputMaxLength_1440',
+					(v: number) => !v || v >= 5 || 'Error.InputMinMins_5',
+					(v: number) => v <= 1440 || 'Error.InputMaxMins_1440',
 				],
 			},
 			max_participants: {
@@ -138,8 +141,8 @@ export default defineComponent({
 				valid: false,
 				rules: [
 					(v: number) => !!v || 'Error.InputEmpty_Inputs.MaxParticipants',
-					(v: number) => !v || v >= 4 || 'Error.InputMinLength_4',
-					(v: number) => v <= 50 || 'Error.InputMaxLength_50',
+					(v: number) => !v || v >= 4 || 'Error.InputMinParticipants_4',
+					(v: number) => v <= 50 || 'Error.InputMaxParticipants_50',
 				],
 			},
 			price: {
@@ -147,6 +150,7 @@ export default defineComponent({
 				valid: false,
 				rules: [
 					(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price',
+					(v: number) => !v || v >= 1 || 'Error.InputMinPrice_1',
 				],
 			},
 			submitting: false,
