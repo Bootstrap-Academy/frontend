@@ -72,7 +72,9 @@ export default {
 					: 'Headings.UnableSubscribedToNewsLetter',
 				body: !!success
 					? 'Body.SubscribedToNewsLetter'
-					: `${t('Body.UnableSubscribedToNewsLetter')}: ${error?.detail ?? ''}`,
+					: `${t('Body.UnableSubscribedToNewsLetter')}: ${t(
+							error?.detail ?? ''
+					  )}`,
 				primaryBtn: {
 					label: !!success ? 'Buttons.Okay' : 'Links.BackToAccount',
 					onclick: () => {
