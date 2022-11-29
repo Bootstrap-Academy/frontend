@@ -113,7 +113,7 @@ export default {
 				search_term: '',
 				requirements_met: false,
 				professional_level: [],
-				salary_max: 0,
+				salary_min: 0,
 				salary_unit: '---',
 			}
 		);
