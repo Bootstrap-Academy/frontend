@@ -9,7 +9,7 @@
 ✅ Tested on firefox
 ✅ Tested on safari
 ✅ Tested on android mobile
-❌ Tested on apple mobile
+✅ Tested on apple mobile
 
 ✅ Handle loading if data already exists
 ✅ Handle loading if data is empty
