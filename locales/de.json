@@ -44,7 +44,7 @@
 		"LearningGoals": "Lernziele",
 		"Requirements": "Requirements",
 		"Price": "Preis",
-		"PricePerParticipantMsg": "Fügen Sie den Preis und die maximale Teilnehmerzahl hinzu, um Morphcoins pro Teilnehmer zu berechnen",
+		"PricePerParticipantMsg": "Gib den Preis und die maximale Teilnehmerzahl an, damit der Preis in Morphcoins pro Teilnehmer berechnet werden können",
 		"PricePerParticipant": "Morphcoins pro Teilnehmer",
 		"Morphcoins": "Kostenlos | {n} Morphcoin | {n} Morphcoins",
 		"Hours": "{n} Stunde | {n} Std",
@@ -89,7 +89,7 @@
 		"Euros": "Euro",
 		"TotalBill": "Gesamte Rechnung",
 		"UploadCertificates": "Zertifikate hochladen",
-		"Link": "Verknüpfung",
+		"Link": "Link",
 		"Participants": "Teilnehmer",
 		"Participant": "Teilnehmer",
 		"From": "Von",
@@ -163,12 +163,12 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
-		"GiveWebinarsMsg": "Holen Sie sich Sub-Skill-Level 15 oder senden Sie uns Ihre Anmeldeinformationen, um Webinare zu erstellen",
-		"GiveCoachingMsg": "Holen Sie sich das Sub-Skill-Level 42 oder senden Sie uns Ihre Referenzen, um Coachings abzuhalten",
+		"GiveWebinarsMsg": "Werde Sub-Skill-Level 15 oder schick uns über das Kontakt-Formular Nachweise zu, um Webinare erstellen zu können",
+		"GiveCoachingMsg": "Werde Sub-Skill-Level 42 oder schick uns über das Kontakt-Formular Referenzen zu, um Coachings anbieten zu können",
 		"RootSkillTreeLoading": "Root Skill Tree wird geladen",
 		"SubSkillTreeLoading": "Teilbaum {placeholder} wird geladen",
 		"MorphcoinsToolTip": "Jobs, die von uns angeboten und nur mit der Währung dieser Plattform bezahlt werden",
-		"WantToDisable": "Wenn Sie Ihre MFA jemals deaktivieren möchten, können Sie zu Ihrer Kontoseite gehen unter:",
+		"WantToDisable": "Wenn du MFA jemals deaktivieren möchtest, geht das auf der Kontoseite unter:",
 		"ChallengesNickname": "Alle Accounts von the-morpheus.cc wurden in die Bootstrap Academy migriert, du kannst dich also weiterhin mit deinem alten Coding Challenges-Account anmelden.",
 		"Download": "Hier gibt's die gratis App",
 		"ComingSoon": "Demnächst!",
@@ -194,7 +194,7 @@
 		"SearchJobs": "nach Jobs suchen",
 		"SearchCourses": "Kurse suchen",
 		"SearchCertificates": "Zertifikate suchen",
-		"ApplyForJob": "Bewerben Sie sich unter: {placeholder}",
+		"ApplyForJob": "Bewirb dich unter: {placeholder}",
 		"AddTags": "Drück Leertaste, um ein neues Tag hinzuzufügen",
 		"DeleteAccount": "Möchtest du dein Konto wirklich löschen? Alle deine Fortschritte und Kurse, die du gekauft hast, gehen verloren. Diese Aktion kann nicht rückgängig gemacht werden.",
 		"VerifyAccountCard": "Dein Profil ist nicht verifiziert. Bitte verifiziere dein Konto, um Coins zu kaufen, Kurse anzusehen und mehr!",
@@ -222,11 +222,11 @@
 		"CookiePolicyLink": "Datenschutzerklärung.",
 		"UnableSubscribedToNewsLetter": "Anmeldung zum Newsletter nicht möglich",
 		"MissingEmail": "Bitte füge deinem Profil eine E-Mail-Adresse hinzu, um dein Konto zu verifizieren.",
-		"AddedEmail": "Ihre E-Mail-Adresse wurde Ihrem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde Ihnen an {placeholder} gesendet. Bitte verwenden Sie diesen Code, um Ihr Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
-		"NotLoggedIn": "Bitte melden Sie sich an, um fortzufahren.",
+		"AddedEmail": "Deine E-Mail-Adresse wurde deinem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde dir an Ihre hinzugefügte E-Mail-Adresse gesendet. Bitte verwende diesen Code, um dein Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
+		"NotLoggedIn": "Bitte melde dich an, um fortzufahren.",
 		"EditNickname": "kann nach dem {placeholder} geändert werden",
-		"ActiveSkills": "Alle Fähigkeiten, an denen Sie gerade arbeiten.",
-		"CompletedSkills": "Alle Fähigkeiten, die Sie abgeschlossen haben.",
+		"ActiveSkills": "Alle Fähigkeiten, die du gerade verbesserst.",
+		"CompletedSkills": "Alle Fähigkeiten, die du schon abgeschlossen hast.",
 		"OtherSkills": "Rest der Fähigkeiten, die zum Erkunden verfügbar sind."
 	},
 	"List": {
@@ -301,32 +301,32 @@
 		},
 		"GetMorphcoins": {
 			"1": {
-				"Heading": "Kaufen Sie MorphCoins",
-				"Body": "Sie können MorphCoins mit Euro im Shop kaufen."
+				"Heading": "MorphCoins kaufen",
+				"Body": "Du kannst MorphCoins auch mit Euros kaufen."
 			},
 			"2": {
-				"Heading": "Arbeitsplätze",
-				"Body": "Erledigen Sie Jobs, die von uns gehostet werden. Was Sie tun müssen, ist sehr unterschiedlich und was Sie bekommen, hängt von der Aufgabe ab, die Sie erfüllen. Alle Infos findest du auf der Job-Detailseite. Wie wäre es mit dem Schreiben des Codes für eine Programmierherausforderung?"
+				"Heading": "Jobs",
+				"Body": "Erledige eine Aufgabe für uns. Was du tun musst, ist extrem von den Jobs abhängig und dementsprechend ist auch die Belohnung sehr unterschiedlich. Du findest alle Informationen zum jeweiligen Job auf seiner Seite. Wir können aber auch immer neue Coding Challenges brauchen."
 			},
 			"3": {
-				"Heading": "Vorlesungen",
-				"Body": "Alles für einen Vortrag bereitstellen. Sie haben immer noch den Code Ihres letzten Python-Projekts, in dem Sie coole Bibliotheken verwenden? Oder Sie haben gerade etwas auf Ihrem Server installiert und Screenshots oder sogar ein Video von jedem Ihrer Schritte erstellt? Senden Sie es mir und ich teile es mit der Community. Bitte beachten Sie jedoch, dass diese Informationen dann öffentlich sind! Du überträgst also Rechte an mich, d.h. die musst du erst haben! Also bitte nur Originalarbeiten. Und wenn ich zu viele Fehler beheben muss, muss ich deine Belohnung reduzieren."
+				"Heading": "Lektionen",
+				"Body": "Schick mir alles, was ich für eine Lektion brauche. Du hast noch den Code eines kleinen Python Projekts, wo du spannende Bibliotheken nutzt? Oder hast gerade etwas auf dem Server installiert und Screenshots oder sogar ein Video von jedem Schritt gemacht? Schick es mir und ich teile es mit der Community. Beachte, dass das danach ein öffentliches Projekt ist und du mir die Rechte abgeben musst! Dazu musst du auch erstmal die Rechte haben! Also bitte nur original work. Wenn ich außerdem noch zu viele Bugs fixen muss, muss ich deine Belohnung reduzieren."
 			},
 			"4": {
 				"Heading": "Webinare",
-				"Body": "Hosten Sie Webinare als Dozent. Sie sind Experte, haben vielleicht schon einige Jobs hinter sich und möchten Ihr Wissen in Webinaren teilen? Kontaktieren Sie mich, wenn Sie die Fähigkeiten haben, ich freue mich, Sie zu haben. Sie selbst entscheiden über die Preise, die Sie den Teilnehmern abnehmen. Sie behalten 80%! Einzige Einschränkung: Das Webinar ist möglicherweise nicht kostenlos - Sie wissen, dass wir diese Website ständig weiterentwickeln möchten."
+				"Body": "Halte Webinare als Dozent. Du kannst etwas schon richtig gut, vielleicht hast du schon gearbeitet und willst dein Wissen in Webinaren teilen? Wenn du Level 15 in einem Skill erreicht hast, bekommst du die Fähigkeit selbst Webinare zu halten! Das Beste: Den Großteil der MorphCoin darfst du behalten!"
 			},
 			"5": {
-				"Heading": "Trainer",
-				"Body": "Bewerben Sie sich und werden Sie Coach. Sie möchten Menschen individuell helfen? Sie brauchen nur die Fähigkeiten, die Sie coachen möchten, einige Soft Skills und schon kann es losgehen. Die Preise liegen ganz bei Ihnen!Bewerben Sie sich und werden Sie Coach. Sie möchten Menschen individuell helfen? Sie brauchen nur die Fähigkeiten, die Sie coachen möchten, einige Soft Skills und schon kann es losgehen. Die Preise liegen ganz bei Ihnen!"
+				"Heading": "Betreuer",
+				"Body": "Bewirb dich und werde Betreuer. Du möchtest den Menschen direkt und individuell helfen? Dazu brauchst du nur den Skill - auf Level 42 - und ein paar Softskills. Was du verlangst, liegt ganz bei dir (und deinem Rating)!"
 			},
 			"6": {
-				"Heading": "Fehlerprämie",
-				"Body": "Finden Sie Fehler jeglicher Art und melden Sie diese. Sie sind Hacker oder haben gerade einen Bug, eine Sicherheitslücke oder einen Fehler in Text oder Bestellung jeglicher Art gefunden? Verwenden Sie das Symbol auf der rechten Seite, um es uns zu melden! Je nach Schweregrad erhalten Sie eine Belohnung. Haftungsausschluss: Sie dürfen KEINE Dienste verwenden, die den Server oder das Netzwerk zum Absturz bringen oder als Denial-of-Service-Tools gelten können! Alle Daten, auf die Sie möglicherweise Zugriff haben, müssen sofort (!) und vollständig von Ihren Systemen entfernt werden. Daten auf unseren Systemen dürfen NICHT verändert werden! Bitte versuchen Sie, andere Benutzer davon fernzuhalten, versuchen Sie sich selbst auszunutzen, wenn es sich um einen benutzerbasierten Exploit handelt. Bitte beschränken Sie sich auch auf die Bootstrap-Akademie. Alles, was nicht von der Akademie stammt, ist außerhalb des Geltungsbereichs. Beispiel: Wir verwenden Youtube-Videos, aber wir besitzen kein Youtube, also liegt es außerhalb des Geltungsbereichs. Außerdem: Nur der erste Melder wird belohnt und wenn Sie ein Drittanbieter sind, wird es wahrscheinlich keine Belohnung geben. Apropos Rewards: Rewards werden am häufigsten in Morphcoins ausgezahlt. Der Betrag richtet sich nach der Schwere des Fehlers und der Qualität des Berichts und wie einfach Sie es uns machen, ihn zu beheben. In Fällen, in denen wir besprochen haben, dass Sie für uns nach Fehlern suchen, ist eine Auszahlung in Euro möglich. Bitte kontaktieren Sie uns, wenn Sie dies wünschen, BEVOR Sie nach einem Fehler suchen!"
+				"Heading": "Bug Bounty",
+				"Body": "Finde Bugs aller Art, melde sie und hilf uns, sie zu reparieren. Du bist Hacker? Du hast einen Bug gefunden, eine Sicherheitslücke oder einen Fehler im Text oder in der Sortierung? Nutze das Icon unten rechts um es an uns zu melden! Je nach Schwere gibt's auch ne Belohnung. Disclaimer: Du darfst keine Tools nutzen, die den Server oder das Netzwerk potentiell zerstören oder stören würden oder sogennante Denial-of-Service tools! Alle Daten, die du vielleicht aus Versehen lesen kannst, müssen sofort(!) von deinen Systemen restlos gelöscht werden! Grundsätzlich dürfen Informationen über alle Funde nicht weitergegeben werden, nur an uns. Daten auf unseren Systemen dürfen NICHT verändert werden! Bitte versucht auch, möglichst andere Teilnehmer im Netz nicht anzugreifen. Limitiert euch auf euchselbst. Limitiert euch auch bitte auf diese Website, das heißt alles, was nicht zur Bootstrap Academy gehört, ist out of scope - Youtube beispielweise. Wir nutzen Youtube-Videos, aber ihr habt keine Erlaubnis das anzugreifen. Zudem wird nur der Erste, der was meldet belohnt. Drittanbieter, denen ihr die Lücke vielleicht verkauft werden meist keinen Reward bekommen. Apropos Rewards: Normalerweise werden Belohnungen ausschließlich in MorphCoins ausgezahlt, die Summe richtet sich nach der Schwere des Bugs, aber auch nach der Qualität des Reports und wie gut er uns beim reparieren hilft. Eine Höhe lässt sich im Vorfeld nicht angeben. In Fällen, wo wir zuvor eine Abmachung getroffen haben, kommt eine Auszahlung in Euro in Frage. Falls ihr das wollt, meldet euch bei uns BEVOR ihr nach Bugs sucht!"
 			},
 			"7": {
 				"Heading": "Prüfer",
-				"Body": "Bewerben Sie sich und werden Sie Prüfer. Können Sie sich vorstellen, wie gut manche codieren können? Du kennst alle Fragen, um jemanden auf die Probe zu stellen? Kontaktieren Sie mich als Prüfer – Sie benötigen lediglich die entsprechenden Skills und einige Soft Skills"
+				"Body": "Bewirb dich und werde Prüfer. Du kannst gut einschätzen, wie gut jemand ist? Du kennst die Fragen, die alle aus der Reserve locken? Melde dich bei mir als Prüfer - du brauchst dazu nur den passenden Skill und ein paar softskills."
 			}
 		},
 		"Filter": {
@@ -389,7 +389,7 @@
 	},
 	"Buttons": {
 		"CreateWebinar": "Webinar erstellen",
-		"HoldCoachings": "Coachings abhalten",
+		"HoldCoachings": "Coachings anbieten",
 		"JoinLink": "Link beitreten",
 		"Safe": "Speichern",
 		"Login": "Login",
@@ -514,7 +514,7 @@
 		"RequestSubmitted": "Anfrage eingereicht",
 		"ResetPasswordRequestSent": "Wenn das Benutzerkonto existiert, wird dir eine E-Mail mit einem Code zugesandt. Klicke hier, um zur Seite zum Zurücksetzen zu gelangen, auf der du diesen Code zusammen mit deinem neuen Passwort eingeben kannst.",
 		"PasswordChanged": "Das Passwort wurde erfolgreich geändert",
-		"PasswordChangedBody": "Ab sofort können Sie sich mit Ihrem neuen Passwort anmelden.",
+		"PasswordChangedBody": "Ab sofort kannst du dich mit deinem neuen Passwort anmelden.",
 		"LoginWithNewPassword": "Melde dich mit deinem neuen Passwort an.",
 		"Subscribed": "Du hast die Bootstrap Academy erfolgreich abonniert.",
 		"VerifyAccount": "Dein Account wurde verifiziert. Du kannst jetzt deine Lernreise beginnen.",
