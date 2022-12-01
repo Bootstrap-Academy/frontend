@@ -8,6 +8,7 @@ module.exports = {
 		'./pages/**/*.vue',
 	],
 	darkMode: 'class',
+	mode: 'jit',
 	theme: {
 		screens: {
 			xs: '425px',

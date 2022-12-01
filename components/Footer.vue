@@ -106,6 +106,6 @@ export default defineComponent({
 
 <style scoped>
 footer a {
-	@apply transition-basic font-body text-base text-body hover:text-heading;
+	@apply transition-basic font-body text-base text-body;
 }
 </style>
