@@ -9,8 +9,6 @@
 		</Modal>
 		<Snackbar />
 		<Loading />
-
-		<div id="app-level"></div>
 	</NuxtLayout>
 </template>
 
