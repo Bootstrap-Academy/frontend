@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"CourseCompleted": "Course Completed",
 		"CreateWebinar": "Create Webinar",
 		"EditWebinar": "Edit Webinar",
 		"RootSkillTree": "Root Skill Tree",
@@ -163,6 +164,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"ThisIsFirstLecture": "This is the first lecture",
+		"CourseCompleted": "You have reached the end of course.",
 		"GiveWebinarsMsg": "Get sub skill level 15 or send us your credentials to create webinars",
 		"GiveCoachingMsg": "Get sub skill level 42 or send us your credentials to hold coachings",
 		"RootSkillTreeLoading": "Loading Root Skill Tree",
@@ -387,6 +390,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"ViewMoreCourses": "View More Courses",
 		"CreateWebinar": "Create Webinar",
 		"HoldCoachings": "Hold Coachings",
 		"JoinLink": "Join Link",

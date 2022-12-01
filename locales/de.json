@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"CourseCompleted": "Kurs abgeschlossen",
 		"CreateWebinar": "Webinar erstellen",
 		"EditWebinar": "Webinar bearbeiten",
 		"RootSkillTree": "Root-Fähigkeitsbaum",
@@ -163,6 +164,8 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"ThisIsFirstLecture": "Dies ist die erste Vorlesung",
+		"CourseCompleted": "Sie sind natürlich am Ende angelangt.",
 		"GiveWebinarsMsg": "Werde Sub-Skill-Level 15 oder schick uns über das Kontakt-Formular Nachweise zu, um Webinare erstellen zu können",
 		"GiveCoachingMsg": "Werde Sub-Skill-Level 42 oder schick uns über das Kontakt-Formular Referenzen zu, um Coachings anbieten zu können",
 		"RootSkillTreeLoading": "Root Skill Tree wird geladen",
@@ -388,6 +391,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"ViewMoreCourses": "Weitere Kurse anzeigen",
 		"CreateWebinar": "Webinar erstellen",
 		"HoldCoachings": "Coachings anbieten",
 		"JoinLink": "Link beitreten",
