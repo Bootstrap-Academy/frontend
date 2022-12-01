@@ -16,6 +16,16 @@ export default defineComponent({
 	setup() {
 		const loading = useLoading();
 
+		watch(
+			() => loading.value,
+			(newValue, oldValue) => {
+				console.log('from loading component', newValue);
+			},
+			{
+				immediate: true,
+			}
+		);
+
 		return { loading };
 	},
 });

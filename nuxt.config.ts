@@ -7,12 +7,12 @@ export default defineNuxtConfig({
 	buildModules: ['@nuxtjs/tailwindcss'],
 	runtimeConfig: {
 		public: {
-			BASE_API_URL: 'https://api-test.bootstrap.academy',
-			BASE_WEB_URL: 'https://bootstrap-academy-frontend.pages.dev',
+			BASE_API_URL: 'https://api.bootstrap.academy',
+			BASE_WEB_URL: 'https://bootstrap.academy',
 			Gleap_API_KEY: '8TVLuULNmWxZHIifA1PW6TYHUCKEb5so',
-			Vue3ReCaptcha_SITE_KEY: '6Ldb070iAAAAAKsAt_M_ilgDbnWcF-N_Pj2DBBeP',
-			ChallengesLoginURL: 'https://develop.coding-challenges.pages.dev/login',
-			NODE_ENV: 'production',
+			Vue3ReCaptcha_SITE_KEY: '6Le9pMIiAAAAAAMmaH3J7ZCsQk6JcBdQtAJNXaQJ',
+			ChallengesLoginURL: 'https://the-morpheus.cc/login',
+			NODE_ENV: 'development',
 		},
 	},
 });
