@@ -1,5 +1,7 @@
 import { useState } from '#app';
 
+export const useListOfCompletedCourses = () =>
+	useState('listOfCompletedCourses', (): any[] => []);
 export const useMyCourses = () => useState('myCourses', (): any[] => []);
 export const useCourses = () => useState('courses', (): any[] => []);
 export const useCourse = () => useState('course', (): any => null);

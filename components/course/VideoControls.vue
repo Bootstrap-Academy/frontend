@@ -10,7 +10,7 @@
 			<Chip
 				v-if="
 					activeLecture.completed ||
-					listOfCompletedLectureIds.find((lec) => lec == activeLecture.id)
+					listOfCompletedCourses.find((lec) => lec == activeLecture.id)
 				"
 				:icon="CheckIcon"
 				color="bg-info"
@@ -130,7 +130,7 @@ export default defineComponent({
 			}
 		});
 
-		const listOfCompletedLectureIds: Ref<string[]> = ref([]);
+		const listOfCompletedCourses = useListOfCompletedCourses();
 
 		async function markLectureAsComplete() {
 			setLoading(true);
@@ -141,7 +141,7 @@ export default defineComponent({
 			setLoading(false);
 
 			if (success) {
-				listOfCompletedLectureIds.value.push(activeLectureID.value);
+				listOfCompletedCourses.value.push(activeLectureID.value);
 			}
 		}
 
@@ -235,7 +235,7 @@ export default defineComponent({
 			t,
 			emit,
 			path,
-			listOfCompletedLectureIds,
+			listOfCompletedCourses,
 			CheckIcon,
 			markLectureAsComplete,
 			goToPrevLecture,

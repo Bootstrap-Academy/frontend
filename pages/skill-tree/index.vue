@@ -109,13 +109,10 @@ export default {
 		const nodeSize = ref(0);
 
 		onMounted(async () => {
-			console.log('running onMounted');
-
 			const [success, error] = await getRootSkillTree();
 
 			if (!!error || !!!success) {
 				setLoading(false);
-				console.log('skill tree loading', loading.value);
 				return;
 			}
 
@@ -124,8 +121,6 @@ export default {
 			resetMap();
 
 			setLoading(false);
-
-			console.log('skill tree loading', loading.value);
 		});
 
 		// ! ======================================================= Nodes

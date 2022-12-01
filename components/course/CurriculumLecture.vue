@@ -47,12 +47,21 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
+		const listOfCompletedCourses = useListOfCompletedCourses();
+
 		const id = computed(() => {
 			return props.data?.id ?? '';
 		});
 
 		const completed = computed(() => {
-			return props.data?.completed ?? false;
+			let isCompleted = props.data?.completed ?? false;
+
+			if (isCompleted == false) {
+				isCompleted = !!listOfCompletedCourses.value.find(
+					(itemID) => itemID == id.value
+				);
+			}
+			return isCompleted;
 		});
 
 		const title = computed(() => {
