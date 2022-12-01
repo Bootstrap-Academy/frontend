@@ -3,8 +3,10 @@
 		<Language />
 		<Navbar :links="links" :authorized="authorized" />
 		<slot />
-		<Download />
-		<Footer />
+		<client-only>
+			<Download />
+			<Footer />
+		</client-only>
 	</div>
 </template>
 
