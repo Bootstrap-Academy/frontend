@@ -449,7 +449,7 @@
 	"Links": {
 		"ViewSkill": "Fähigkeit anzeigen",
 		"ViewSubSkill": "Sub-Skill anzeigen",
-		"GoToJobs": "Gehen Sie zu Jobs",
+		"GoToJobs": "Zu den Jobs",
 		"CloseProgressDetails": "Fortschrittsdetails schließen",
 		"ViewSkillPath": "Fertigkeitspfad anzeigen",
 		"ViewProgressDetails": "Fortschrittsdetails anzeigen",
@@ -523,7 +523,7 @@
 		"DeleteAccount": "Dein Konto wurde erfolgreich gelöscht.",
 		"DisabledMFA": "Deine MFA wurde erfolgreich deaktiviert.",
 		"InitializeMFA": "Deine Multi-Faktor-Authentifizierung (MFA) wurde erfolgreich eingerichtet. Um MFA zu aktivieren, gib bitte diesen TOTP-Schlüssel in deine TOTP-App ein, z. B. Google Authenticator oder Authy. Darin wird ein kurzlebiger Authentifizierungscode generiert, mit dem du MFA aktivieren kannst.",
-		"EnableMFACode": "Ihr MFA-Code wurde erfolgreich aktiviert. Von nun an geben Sie zur Anmeldung Ihren 6-stelligen MFA-Code zusammen mit Ihrem Passwort und Ihrer E-Mail-Adresse ein.",
+		"EnableMFACode": "Ihr MFA-Code wurde erfolgreich aktiviert. Von nun an geben , zur Anmeldung Ihren 6-stelligen MFA-Code zusammen mit Ihrem Passwort und Ihrer E-Mail-Adresse ein.",
 		"EnabledMFA": "MFA aktiviert",
 		"EnabledMFASuccessfully": "MFA erfolgreich aktiviert",
 		"Success": "Yey",
@@ -539,7 +539,7 @@
 	"Error": {
 		"NoLecturesAvailable": "Keine Vorlesungen vorhanden",
 		"NoDescriptionAvailable": "Keine Beschreibung verfügbar",
-		"VerifyEmail": "Konto konnte nicht bestätigt werden. Versuchen Sie es später noch einmal",
+		"VerifyEmail": "Konto konnte nicht bestätigt werden. Versuche es später noch einmal",
 		"InputCodeFormat": "Ungültiges Codeformat",
 		"InputEmpty": "{placeholder} ist erforderlich",
 		"InputMinLength": "Muss länger als {placeholder} Zeichen sein",
@@ -571,9 +571,9 @@
 		"InputNicknameError": "Nickname darf keine Sonderzeichen oder Leerzeichen enthalten",
 		"InputEmailOrUsername": "E-Mail Adresse oder Nickname darf nicht leer sein",
 		"MustAgreeToBothPointsInOrderToMoveForward": "Du musst allen Punkten zustimmen, um fortzufahren",
-		"NicknameAlreadyExists": "Spitzname existiert bereits, bitte versuchen Sie es mit einem anderen.",
+		"NicknameAlreadyExists": "Spitzname existiert bereits, bitte versuche es mit einem anderen.",
 		"EmailAlreadyExists": "Ein Benutzer mit dieser E-Mail existiert bereits.",
-		"InvalidEmail": "Diese E-Mail ist ungültig, bitte verwenden Sie eine andere.",
+		"InvalidEmail": "Diese E-Mail ist ungültig, bitte verwende eine andere.",
 		"InvalidOAuthToken": "Dein OAuth-Token ist ungültig.",
 		"RegistrationDisabled": "Die Registrierung ist derzeit deaktiviert.",
 		"NoLoginMethod": "Keine Anmeldemethode",
@@ -582,16 +582,16 @@
 		"RecaptchaFailed": "Das Captcha ist fehlgeschlagen.",
 		"AccountNotVerified": "Bitte verifiziere dein Konto, um fortzufahren.",
 		"UserNotFound": "Benutzer wurde nicht gefunden",
-		"PermissionDenied": "Sie haben keine Berechtigung für diese Aktion",
-		"InvalidVerificationCode": "Dieser Bestätigungscode ist ungültig. Bitte verwenden Sie eine gültige.",
+		"PermissionDenied": "Du hast keine Berechtigung für diese Aktion",
+		"InvalidVerificationCode": "Dieser Bestätigungscode ist ungültig. Bitte verwende einen gültigen.",
 		"EmailAlreadyVerified": "Diese E-Mail wurde bereits bestätigt",
-		"NewsletterAlreadySubscribed": "Sie haben den Newsletter der Bootstrap Academy bereits abonniert",
+		"NewsletterAlreadySubscribed": "Du hast den Newsletter der Bootstrap Academy bereits abonniert",
 		"MFAAlreadyEnabled": "MFA ist bereits aktiviert",
-		"MFANotInitialized": "Bitte initialisieren Sie MFA, bevor Sie es aktivieren",
+		"MFANotInitialized": "MFA ist noch nicht eingerichtet",
 		"MFANotEnabled": "MFA ist nicht aktiviert",
-		"PasswordResetFailed": "Kennwort kann nicht zurückgesetzt werden. Bitte versuchen Sie es später erneut.",
-		"InvalidCode": "Dieser Code ist ungültig. Bitte verwenden Sie eine gültige",
-		"ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden. Bitte wählen Sie eine andere aus."
+		"PasswordResetFailed": "Kennwort kann nicht zurückgesetzt werden. Bitte probier es später erneut.",
+		"InvalidCode": "Dieser Code ist ungültig.",
+		"ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden."
 	},
 	"Months": {
 		"January": "Januar",
@@ -619,11 +619,11 @@
 	"EmptyStates": {
 		"SkillTree": {
 			"Heading": "Fertigkeitsbaum in Bearbeitung",
-			"Body": "Dieser Fähigkeitsbaum wird derzeit erstellt. Bitte versuchen Sie es später noch einmal!"
+			"Body": "Dieser Fähigkeitsbaum wird derzeit erstellt. Bitte versuche es später noch einmal!"
 		},
 		"SkillProgress": {
 			"Heading": "@:Headings.SkillPoints",
-			"Body": "Erkunden Sie den Fähigkeitsbaum, um loszulegen."
+			"Body": "Erkunde den Fähigkeitsbaum, um loszulegen."
 		},
 		"Course": {
 			"Heading": "Kurs nicht gefunden",
@@ -631,7 +631,7 @@
 		},
 		"CourseCardSM": {
 			"Heading": "Keine beobachteten Kurse",
-			"Body": "Sie haben sich keine Kurse angesehen. Erkunden Sie den Fähigkeitsbaum, um loszulegen."
+			"Body": "Du hast dir noch keine Kurse angesehen. Erkunde den Fähigkeitsbaum, um loszulegen."
 		},
 		"Courses": {
 			"Heading": "Keine passenden Kurse",
