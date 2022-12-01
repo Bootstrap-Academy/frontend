@@ -106,11 +106,11 @@ export function scrollMapToNode(
 	let centerTop = cy - screenCenterTop;
 	let centerLeft = cx - screenCenterLeft;
 
-	setTimeout(() => {
+	nextTick(() => {
 		mapRef.scroll({
 			top: centerTop,
 			left: centerLeft,
 			behavior: smooth ? 'smooth' : 'auto',
 		});
-	}, 0);
+	});
 }
