@@ -96,7 +96,7 @@ export function scrollMapToNode(
 	} else if (zoomLevel == 2) {
 		shiftBy = nodeSize * 0.5;
 	} else {
-		shiftBy = nodeSize * 0.45;
+		shiftBy = nodeSize * 0.5;
 	}
 
 	let cx = parseInt(ref.getAttribute('x') ?? 0) + shiftBy;
@@ -106,11 +106,9 @@ export function scrollMapToNode(
 	let centerTop = cy - screenCenterTop;
 	let centerLeft = cx - screenCenterLeft;
 
-	nextTick(() => {
-		mapRef.scroll({
-			top: centerTop,
-			left: centerLeft,
-			behavior: smooth ? 'smooth' : 'auto',
-		});
+	mapRef.scroll({
+		top: centerTop,
+		left: centerLeft,
+		behavior: smooth ? 'smooth' : 'auto',
 	});
 }
