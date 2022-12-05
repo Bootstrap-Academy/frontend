@@ -1,6 +1,12 @@
 <template>
 	<div class="mt-4 flex justify-end">
-		<Chip v-if="isEventBooked" :icon="CheckIcon" color="bg-success">
+		<NuxtLink :to="`/webinars/${data.id}`" v-if="mine">
+			<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
+				{{ t('Buttons.EditWebinar') }}
+			</Btn>
+		</NuxtLink>
+
+		<Chip v-else-if="isEventBooked" :icon="CheckIcon" color="bg-success">
 			{{ t('Headings.Booked') }}
 		</Chip>
 
@@ -11,7 +17,7 @@
 		</Chip>
 
 		<Btn
-			v-else
+			v-else-if="!noBooking"
 			:bgColor="theme.bg"
 			:borderColor="theme.border"
 			sm
@@ -57,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CheckIcon } from '@heroicons/vue/24/outline/index.js';
 
@@ -71,9 +77,19 @@ export default defineComponent({
 		type: { type: String, default: 'webinar' },
 		id: { type: String, default: '' },
 		link: { type: String, default: '' },
+		noBooking: { type: Boolean, default: false },
 	},
 	setup(props) {
 		const { t } = useI18n();
+
+		const user: Ref<any> = useUser();
+
+		const mine = computed(() => {
+			let instructorID = props.data?.instructor?.id ?? '';
+			if (!!!instructorID) return false;
+
+			return user.value.id == instructorID;
+		});
 
 		const btn = computed(() => {
 			switch (props.type) {
@@ -197,6 +213,7 @@ export default defineComponent({
 			confirm,
 			confirmRightToWithdrawal,
 			confirmDontUseRightToWithdrawal,
+			mine,
 		};
 	},
 });

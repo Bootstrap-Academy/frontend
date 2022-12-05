@@ -2,7 +2,7 @@
 	<article
 		class="p-4 style-card lg:style-box bg-secondary border-l-4"
 		:class="[theme.border, { 'cursor-pointer': !!link }]"
-		@click="onclickCard"
+		@click.self="onclickCard"
 	>
 		<header class="flex items-center justify-between gap-card">
 			<div v-if="type == 'coaching'" class="flex gap-box">
@@ -23,7 +23,7 @@
 			<h3
 				v-if="!!link"
 				:class="[theme.text, theme.bgLight]"
-				class="py-1 px-2 rounded text-body-2"
+				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0"
 			>
 				{{ t('Buttons.JoinLink') }}
 			</h3>
@@ -50,7 +50,7 @@
 			:subSkillID="subSkillID"
 			:stats="stats"
 			:link="link"
-			v-if="!hideActions"
+			:noBooking="noBooking"
 		/>
 	</article>
 </template>
@@ -66,7 +66,7 @@ export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
 		subSkillID: { type: String, default: '' },
-		hideActions: { type: Boolean, default: false },
+		noBooking: { type: Boolean, default: false },
 	},
 	setup(props) {
 		const { t } = useI18n();

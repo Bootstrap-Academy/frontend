@@ -8,7 +8,7 @@
 			<CalendarEvent
 				v-for="(event, i) of events"
 				:key="i"
-				hide-actions
+				no-booking
 				:data="event"
 			/>
 		</article>
