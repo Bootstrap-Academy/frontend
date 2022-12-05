@@ -147,7 +147,17 @@ export default defineComponent({
 			});
 		}
 
+		const route = useRoute();
 		onMounted(() => {
+			let startQuery = <string>(route?.query?.start ?? '0');
+			let start = parseInt(startQuery);
+			if (start > 0 && typeof start == 'number') {
+				const { date, month, year } = convertTimestampToDate(start);
+				activeDate.value = date;
+				activeMonth.value = month.number;
+				activeYear.value = year;
+			}
+
 			emit('selected', {
 				date: activeDate.value,
 				month: activeMonth.value,

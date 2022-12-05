@@ -12,7 +12,7 @@ export default defineNuxtConfig({
 			Gleap_API_KEY: '8TVLuULNmWxZHIifA1PW6TYHUCKEb5so',
 			Vue3ReCaptcha_SITE_KEY: '6Ldb070iAAAAAKsAt_M_ilgDbnWcF-N_Pj2DBBeP',
 			ChallengesLoginURL: 'https://develop.coding-challenges.pages.dev/login',
-			NODE_ENV: 'production',
+			NODE_ENV: 'development',
 		},
 	},
 });

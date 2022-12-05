@@ -30,9 +30,15 @@
 		<Input
 			:label="t('Inputs.StartDate')"
 			type="date"
-			v-model="form.start.value"
+			v-model="date"
 			@valid="form.start.valid = $event"
 			:rules="form.start.rules"
+		/>
+
+		<InputTime
+			label="Inputs.StartTime"
+			v-model="time"
+			@valid="form.start.valid = $event"
 		/>
 
 		<Input
@@ -53,16 +59,22 @@
 			:rules="form.max_participants.rules"
 		/>
 
-		<Input
-			:label="t('Inputs.Price')"
-			hint="Inputs.PriceHint"
-			type="number"
-			v-model="form.price.value"
-			@valid="form.price.valid = $event"
-			:rules="form.price.rules"
-		/>
+		<div class="md:flex">
+			<Rating :rating="rating" class="mb-3 md:mb-0 md:mt-8 md:mr-6" />
+
+			<Input
+				:label="t('Inputs.Price')"
+				:hint="inputPriceHint"
+				type="number"
+				v-model="form.price.value"
+				@valid="form.price.valid = $event"
+				:rules="form.price.rules"
+				data-tooltip="Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit. "
+			/>
+		</div>
 
 		<p
+			v-if="maxPrice > 0"
 			class="text-body-1 py-2 px-4 text-warning bg-warning-light rounded-sm w-fit"
 		>
 			<span v-if="pricePerParticipant <= 0">
@@ -80,7 +92,7 @@
 			@click="onclickSubmitForm()"
 			mt
 		>
-			{{ t('Buttons.Safe') }}
+			{{ t(!!data ? 'Buttons.EditWebinar' : 'Buttons.CreateWebinar') }}
 		</InputBtn>
 	</form>
 </template>
@@ -91,9 +103,26 @@ import { useI18n } from 'vue-i18n';
 import { IForm } from '~/types/form';
 
 export default defineComponent({
-	props: { data: { type: Object as PropType<any>, default: null } },
+	props: {
+		data: { type: Object as PropType<any>, default: null },
+		skillID: { type: String, default: '' },
+		rating: { type: Number, default: 0 },
+	},
 	setup(props) {
 		const { t } = useI18n();
+
+		const maxPrice = computed(() => {
+			if (props.rating >= 4.5) return -1;
+			else if (props.rating >= 4 && props.rating < 4.5) return 10000;
+			else if (props.rating >= 3 && props.rating < 4) return 5000;
+			else return 0;
+		});
+
+		const inputPriceHint = computed(() => {
+			return t('Inputs.PriceHint', {
+				placeholder: abbreviateNumber(maxPrice.value),
+			});
+		});
 
 		// ============================================================= refs
 		const refForm = ref<HTMLFormElement | null>(null);
@@ -147,10 +176,13 @@ export default defineComponent({
 			},
 			price: {
 				value: 0,
-				valid: false,
+				valid: maxPrice.value <= 0,
 				rules: [
 					(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price',
 					(v: number) => !v || v >= 1 || 'Error.InputMinPrice_1',
+					(v: number) =>
+						(maxPrice.value != -1 && v <= maxPrice.value) ||
+						`Error.InputMaxPrice_${maxPrice.value}`,
 				],
 			},
 			submitting: false,
@@ -181,7 +213,22 @@ export default defineComponent({
 			},
 		});
 
-		// // ============================================================= Setting Form
+		// ============================================================= Calculating Start Time
+		const date = ref('');
+		const time = ref('00:00:00');
+
+		const startTime = computed(() => {
+			const [hrs, mins, secs] = time.value.split(':');
+
+			let dateObj = new Date(date.value);
+			dateObj.setHours(parseInt(hrs));
+			dateObj.setMinutes(parseInt(mins));
+			dateObj.setSeconds(parseInt(secs));
+
+			return convertDateToTimestamp(dateObj);
+		});
+
+		// ============================================================= Setting Form
 		// function setFormInputs(data: any) {}
 		// watch(
 		// 	() => props.data,
@@ -192,7 +239,6 @@ export default defineComponent({
 		// );
 
 		// ============================================================= functions
-		const route = useRoute();
 		const router = useRouter();
 
 		async function onclickSubmitForm() {
@@ -200,8 +246,8 @@ export default defineComponent({
 				form.submitting = true;
 				const [success, error] = await createWebinar({
 					...form.body(),
-					skill_id: route.params?.skill ?? '',
-					start: convertDateToTimestamp(form.body().start),
+					skill_id: props.skillID,
+					start: startTime.value,
 				});
 				form.submitting = false;
 
@@ -213,7 +259,7 @@ export default defineComponent({
 
 		async function successHandler(res: any) {
 			openSnackbar('success', 'Success.CreateWebinar');
-			router.push('/webinars');
+			router.push(`/calendar?start=${res.start}`);
 		}
 
 		function errorHandler(res: any) {
@@ -226,7 +272,6 @@ export default defineComponent({
 
 			if (!!!price || price <= 0) return 0;
 			if (!!!maxParticipants || maxParticipants <= 0) return 0;
-			// if (price < maxParticipants) return 0;
 
 			let ans = price / maxParticipants;
 			ans = Number(ans.toFixed(2));
@@ -240,6 +285,11 @@ export default defineComponent({
 			refForm,
 			t,
 			pricePerParticipant,
+			maxPrice,
+			inputPriceHint,
+			date,
+			time,
+			startTime,
 		};
 	},
 });

@@ -35,7 +35,7 @@
 				size="sm"
 				class="mb-card mx-auto"
 			/>
-			<FormWebinar :data="user" />
+			<FormWebinar :skillID="skillID" :rating="rating" />
 		</section>
 	</section>
 </template>
@@ -51,9 +51,18 @@ export default {
 		title: 'Manage Webinar',
 	},
 	setup() {
-		const user = useUser();
+		const route = useRoute();
+		const rating = ref(0);
+		const skillID = computed(() => {
+			return <string>(route.params?.skill ?? '');
+		});
 
-		return { user };
+		onMounted(async () => {
+			const [success, error] = await getRating(skillID.value);
+			if (!!success) rating.value = success;
+		});
+
+		return { skillID, rating };
 	},
 };
 </script>

@@ -7,6 +7,8 @@
 				@submit.prevent="onclickSubmitForm"
 				ref="refForm"
 			>
+				<InputTime />
+				
 				<InputMedia
 					class="mx-auto"
 					id="image"

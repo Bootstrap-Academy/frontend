@@ -2,16 +2,21 @@ import { useState } from '#app';
 
 export const useMyWebinars = () => useState('myWebinars', () => []);
 export const useWebinars = () => useState('webinars', () => []);
-export const useCalendarICS = () => useState('calendarICS', () => '');
 
-export async function getCalendarICS() {
+export async function getRating(skill_id: string) {
+	const user = <any>useUser();
+	let user_id = user?.value?.id ?? null;
+
 	try {
-		const response = await GET(`/events/calendar`);
+		if (!!!user_id) {
+			throw { data: { detail: 'Invalid User Id' } };
+		}
+		if (!!!skill_id) {
+			throw { data: { detail: 'Invalid Skill Id' } };
+		}
+		const response = await GET(`/events/ratings/${user_id}/${skill_id}`);
 
-		const calendarICS = useCalendarICS();
-		calendarICS.value = response ?? '';
-
-		return [response, null];
+		return [!!response ? response : 0, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

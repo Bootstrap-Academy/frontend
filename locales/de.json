@@ -49,6 +49,7 @@
 		"PricePerParticipant": "Morphcoins pro Teilnehmer",
 		"Morphcoins": "Kostenlos | {n} Morphcoin | {n} Morphcoins",
 		"Hours": "{n} Stunde | {n} Std",
+		"Stars": "{n} Stern | {n} Stern | {n} Sterne",
 		"Lectures": "Keine Vorlesungen | {n} Vorlesung | {n} Vorlesungen",
 		"FullTimeAccess": "Für immer Zugriff",
 		"Free": "Kostenlos",
@@ -363,13 +364,14 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"StartTime": "Start Time",
 		"Link": "Verknüpfung",
 		"StartDate": "Anfangsdatum",
 		"Duration": "Dauer",
 		"DurationHint": "in Minuten",
 		"MaxParticipants": "Max. Teilnehmer",
 		"Price": "Preis",
-		"PriceHint": "bei Morphcoins",
+		"PriceHint": "Der Höchstpreis beträgt {placeholder} Morphcoins",
 		"About": "Um",
 		"CourseVideo": "Kursvideo",
 		"EmailOrUsername": "E-Mail-Adresse oder Nickname",
