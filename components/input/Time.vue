@@ -82,6 +82,15 @@ export default defineComponent({
 		});
 
 		watch(
+			() => props.modelValue,
+			(newValue, oldValue) => {
+				const [hrs, mins, secs] = newValue.split(':');
+				hours.value = parseInt(hrs);
+				minutes.value = parseInt(mins);
+			},
+			{ deep: true, immediate: true }
+		);
+		watch(
 			() => hours.value,
 			(newValue, oldValue) => {
 				emit('update:modelValue', `${newValue}:${minutes.value}:00`);

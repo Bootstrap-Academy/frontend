@@ -229,14 +229,53 @@ export default defineComponent({
 		});
 
 		// ============================================================= Setting Form
-		// function setFormInputs(data: any) {}
-		// watch(
-		// 	() => props.data,
-		// 	(newValue, oldValue) => {
-		// 		setFormInputs(newValue);
-		// 	},
-		// 	{ deep: true, immediate: true }
-		// );
+		function setFormInputs(data: any) {
+			form.name.value = data?.name ?? '';
+			form.name.valid = !!form.name.value;
+
+			form.description.value = data?.description ?? '';
+			form.description.valid = !!form.description.value;
+
+			form.link.value = data?.link ?? '';
+			form.link.valid = !!form.link.value;
+
+			form.max_participants.value = data?.max_participants ?? 0;
+			form.max_participants.valid = !!form.max_participants.value;
+
+			form.price.value = data?.price ?? 0;
+			form.price.valid = true;
+
+			let start = data?.start ?? 0;
+			let end = data?.end ?? 0;
+
+			if (!!start && start > 0) {
+				const dateObj = convertTimestampToDate(start);
+				const startDateObj = new Date(start * 1000);
+
+				date.value = `${dateObj.year}-${dateObj.month.number + 1}-${
+					dateObj.date
+				}`;
+				time.value = `${startDateObj.getHours()}:${startDateObj.getMinutes()}:00`;
+				console.log('date', date.value);
+				console.log('time', time.value);
+
+				form.start.value = data?.start ?? 0;
+				form.start.valid = !!form.start.value;
+
+				start = start * 1000;
+				end = end * 1000;
+
+				form.duration.value = Math.round((end - start) / 60000);
+				form.duration.valid = !!form.duration.value;
+			}
+		}
+		watch(
+			() => props.data,
+			(newValue, oldValue) => {
+				setFormInputs(newValue);
+			},
+			{ deep: true, immediate: true }
+		);
 
 		// ============================================================= functions
 		const router = useRouter();
@@ -244,11 +283,17 @@ export default defineComponent({
 		async function onclickSubmitForm() {
 			if (form.validate()) {
 				form.submitting = true;
-				const [success, error] = await createWebinar({
-					...form.body(),
-					skill_id: props.skillID,
-					start: startTime.value,
-				});
+
+				const [success, error] = !!props.data
+					? await editWebinar(props.data.id, {
+							...form.body(),
+							start: startTime.value,
+					  })
+					: await createWebinar({
+							...form.body(),
+							skill_id: props.skillID,
+							start: startTime.value,
+					  });
 				form.submitting = false;
 
 				success ? successHandler(success) : errorHandler(error);

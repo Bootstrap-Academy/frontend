@@ -393,6 +393,7 @@
 	},
 	"Buttons": {
 		"ViewMoreCourses": "View More Courses",
+		"EditWebinar": "Edit Webinar",
 		"CreateWebinar": "Create Webinar",
 		"HoldCoachings": "Hold Coachings",
 		"JoinLink": "Join Link",
