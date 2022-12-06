@@ -17,7 +17,7 @@ export async function getRating(skill_id: string) {
 		}
 		const response = await GET(`/events/ratings/${user_id}/${skill_id}`);
 
-		return [!!response ? response : 0, null];
+		return [response == null ? 0 : response, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

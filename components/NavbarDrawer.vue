@@ -10,11 +10,6 @@
 			>
 				<aside class="h-full w-72 bg-tertiary p-[5vw] sm:p-9 shadow-2xl">
 					<NuxtLink to="/" class="flex gap-card-sm items-center">
-						<h6
-							class="italic px-3 py-1 bg-accent rounded text-white font-heading text-heading-4"
-						>
-							Beta
-						</h6>
 						<img
 							src="/images/logo-text.png"
 							alt="bootstrap academy logo"

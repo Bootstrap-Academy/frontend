@@ -1,8 +1,8 @@
 <!--
 ❌ Responsive UI
 ✅ Page Title
-❌ Translation
-❌ Animation
+⬜ Translation
+🔲 Animation
 ❌ middleware
 
 ❌ Tested on chrome

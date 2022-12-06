@@ -2,9 +2,6 @@
 	<section class="container-fluid py-4 flex items-center justify-between">
 		<!-- START -->
 		<NuxtLink to="/" class="hidden lg:flex gap-card-sm items-center">
-			<p class="italic px-3 py-1 bg-success rounded text-heading text-body-2">
-				Beta
-			</p>
 			<img
 				src="/images/logo-text.png"
 				alt="bootstrap academy logo"

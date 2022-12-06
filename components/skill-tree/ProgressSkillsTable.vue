@@ -24,10 +24,13 @@
 			<h2 class="text-heading-5 text-center">XP</h2>
 			<h2 class="text-heading-5 text-center">Actions</h2>
 
-			<template v-for="(skill, i) of data" :key="skill.skill ?? i">
-				<p class="capitalize text-body-2 break-words">
-					{{ (skill.skill ?? '---').replace(/_/g, ' ') }}
-				</p>
+			<template v-for="(skill, i) of skills" :key="skill.skill ?? i">
+				<div class="flex flex-wrap items-center gap-box">
+					<p class="capitalize text-body-2 break-words">
+						{{ (skill.skill ?? '---').replace(/_/g, ' ') }}
+					</p>
+					<Rating v-if="skill.rating != null" :rating="skill.rating" sm />
+				</div>
 
 				<Chip
 					v-if="skill && skill.completed"
@@ -77,9 +80,13 @@
 		<div class="grid md:hidden gap-card-sm grid-cols-[1fr_auto]">
 			<template v-for="(skill, i) of data" :key="skill.skill ?? i">
 				<h2 class="text-heading-5">Skill</h2>
-				<p class="capitalize text-body-2 break-words text-right">
-					{{ (skill.skill ?? '---').replace(/_/g, ' ') }}
-				</p>
+
+				<div class="flex flex-wrap items-center gap-box">
+					<p class="capitalize text-body-2 break-words text-right">
+						{{ (skill.skill ?? '---').replace(/_/g, ' ') }}
+					</p>
+					<Rating v-if="skill.rating != null" :rating="skill.rating" sm />
+				</div>
 
 				<h2 class="text-heading-5">Level</h2>
 				<Chip
@@ -159,6 +166,27 @@ export default defineComponent({
 		}
 		function onclickHoldCoachingForThisSubSkill(subSkillID: string) {}
 
+		const rating = ref(-1);
+
+		const skills: any[] = reactive(props.data ?? []);
+
+		onMounted(async () => {
+			let arr = await Promise.all(
+				props.data.map(async (skill: any) => {
+					if (skill.level < 15) return { ...skill };
+
+					const [rating, error] = await getRating(skill.skill);
+					return {
+						...skill,
+						rating: rating,
+					};
+				})
+			);
+
+			Object.assign(skills, arr);
+
+			console.log('skills', skills);
+		});
 		return {
 			t,
 			onclickViewThisSubSkillPath,
@@ -167,6 +195,8 @@ export default defineComponent({
 			EyeIcon,
 			IconCoaching,
 			UserGroupIcon,
+			rating,
+			skills,
 		};
 	},
 });

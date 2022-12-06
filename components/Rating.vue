@@ -1,13 +1,23 @@
 <template>
 	<article
-		class="flex items-center p-2.5 rounded-md w-fit h-fit"
-		:class="[theme.bgLight, theme.text]"
+		class="flex items-center w-fit h-fit"
+		:class="[
+			theme.bgLight,
+			theme.text,
+			sm ? 'px-1.5  rounded' : 'p-2.5 rounded-md',
+		]"
 	>
 		<StarIcon
-			class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0"
-			:class="[theme.text]"
+			class="flex-shrink-0"
+			:class="[
+				theme.text,
+				sm ? 'w-3 h-3 md:w-4 md:h-4' : 'w-5 h-5 md:w-6 md:h-6',
+			]"
 		/>
-		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5">
+		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-if="sm">
+			{{ rating }}
+		</h6>
+		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-else>
 			{{ t('Headings.Stars', { n: rating }, rating) }}
 		</h6>
 	</article>
@@ -21,6 +31,7 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
 	props: {
 		rating: { type: Number, default: 0 },
+		sm: { type: Boolean, default: false },
 	},
 	components: { StarIcon },
 
