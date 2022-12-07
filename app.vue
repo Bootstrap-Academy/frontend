@@ -1,6 +1,9 @@
 <template>
 	<NuxtLayout>
 		<NuxtLoadingIndicator />
+		<client-only>
+			<Loading />
+		</client-only>
 		<NuxtPage />
 
 		<CookiePolicy v-if="isPageLoaded" />
@@ -8,7 +11,6 @@
 			<Dialog :dialog="dialog" />
 		</Modal>
 		<Snackbar />
-		<Loading />
 	</NuxtLayout>
 </template>
 

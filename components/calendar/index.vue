@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, Ref } from 'vue';
 import {
 	ArrowLeftIcon,
 	ArrowRightIcon,
@@ -200,15 +200,28 @@ export default defineComponent({
 			return arr;
 		});
 
+		const eventFilter = useEventFilter();
+		const user: Ref<any> = useUser();
+
 		const events = computed(() => {
-			return props.events.map((event: any) => {
-				let start = event?.start ?? -1;
-				let date = start != 1 ? convertTimestampToDate(start).date : '';
-				let month = start != 1 ? convertTimestampToDate(start).month.number : 0;
-				let year = start != 1 ? convertTimestampToDate(start).year : '';
-				return { ...event, date, month, year };
-			});
-			// .filter((event) => event.booked == true);
+			return props.events
+				.map((event: any) => {
+					let start = event?.start ?? -1;
+					let date = start != 1 ? convertTimestampToDate(start).date : '';
+					let month =
+						start != 1 ? convertTimestampToDate(start).month.number : 0;
+					let year = start != 1 ? convertTimestampToDate(start).year : '';
+					return { ...event, date, month, year };
+				})
+				.filter((event) => {
+					if (eventFilter.value == 'booked') {
+						return event.booked == true;
+					} else if (eventFilter.value == 'mine') {
+						return (event?.instructor?.id ?? '-') == (user.value?.id ?? '');
+					} else {
+						return true;
+					}
+				});
 		});
 
 		function isEvent(event: any, date: any) {

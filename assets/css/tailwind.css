@@ -412,17 +412,6 @@
 		}
 	}
 
-	[data-tooltip]:hover::after {
-		@apply box style-box bg-info text-white font-body absolute text-xs leading-[1.6];
-		content: attr(data-tooltip); /* magic! */
-		left: calc(
-			100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
-		);
-		top: -50%;
-		z-index: 9998;
-		width: var(--tooltip-width);
-	}
-
 	[data-tooltip]::before {
 		@apply absolute text-sm;
 		content: '?';
@@ -438,6 +427,17 @@
 		display: grid;
 		place-items: center;
 		place-content: center;
+	}
+
+	[data-tooltip]:hover::after {
+		@apply box style-box bg-info text-white font-body absolute text-xs leading-[1.6];
+		content: attr(data-tooltip); /* magic! */
+		left: calc(
+			100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
+		);
+		top: -50%;
+		z-index: 9998;
+		width: var(--tooltip-width);
 	}
 
 	[data-tooltip]:hover::before {

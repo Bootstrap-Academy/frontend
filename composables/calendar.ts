@@ -3,6 +3,7 @@ import { useState } from '#app';
 export const useCalendar = () => useState('calendar', () => null);
 export const useICS = () => useState('ics', () => '');
 export const useEvents = () => useState('events', () => []);
+export const useEventFilter = () => useState('eventFilter', () => 'all');
 
 export async function getCalendar() {
 	try {

@@ -165,6 +165,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"BookedEventsFilterToolTip": "Shows events that are booked by you",
+		"MyEventsFilterToolTip": "Shows events that are created by you",
 		"ThisIsFirstLecture": "This is the first lecture",
 		"CourseCompleted": "You have reached the end of course.",
 		"GiveWebinarsMsg": "Get sub skill level 15 or send us your credentials to create webinars",
@@ -348,7 +350,10 @@
 			"Euros": "Euros",
 			"Dollars": "Dollars",
 			"MiniJob": "Mini Job",
-			"Any": "Any"
+			"Any": "Any",
+			"All": "All",
+			"Booked": "Booked",
+			"Mine": "Mine"
 		},
 		"Sort": {
 			"Any": "@:List.Filter.Any",

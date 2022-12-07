@@ -1,6 +1,7 @@
 <template>
 	<aside class="grid gap-container h-fit">
 		<CalendarEventTypes :calendarICS="calendarICS" />
+		<CalendarFilter />
 
 		<article class="grid gap-card-sm xl:gap-box">
 			<h2 class="text-heading-2">{{ t('Headings.UpcomingEvents') }}</h2>
@@ -16,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -34,17 +35,29 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const events = computed(() => {
-			return props.events.filter((event: any) => {
-				let dates = convertTimestampToDate(event.start);
+		const eventFilter = useEventFilter();
+		const user: Ref<any> = useUser();
 
-				return (
-					dates.date == props.selected.date &&
-					dates.month.number == props.selected.month &&
-					dates.year == props.selected.year
-					// && event.booked == true
-				);
-			});
+		const events = computed(() => {
+			return props.events
+				.filter((event: any) => {
+					let dates = convertTimestampToDate(event.start);
+
+					return (
+						dates.date == props.selected.date &&
+						dates.month.number == props.selected.month &&
+						dates.year == props.selected.year
+					);
+				})
+				.filter((event: any) => {
+					if (eventFilter.value == 'booked') {
+						return event.booked == true;
+					} else if (eventFilter.value == 'mine') {
+						return (event?.instructor?.id ?? '-') == (user.value?.id ?? '');
+					} else {
+						return true;
+					}
+				});
 		});
 
 		return { t, events };
