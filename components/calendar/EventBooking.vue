@@ -6,9 +6,20 @@
 			</Btn>
 		</NuxtLink>
 
-		<Chip v-else-if="isEventBooked" :icon="CheckIcon" color="bg-success">
-			{{ t('Headings.Booked') }}
-		</Chip>
+		<div v-else-if="isEventBooked" class="flex gap-card-sm">
+			<Btn
+				:bgColor="theme.bg"
+				:borderColor="theme.border"
+				sm
+				tertiary
+				@click="onclickCancel"
+			>
+				{{ t('Buttons.Cancel') }}
+			</Btn>
+			<Chip :icon="CheckIcon" color="bg-success">
+				{{ t('Headings.Booked') }}
+			</Chip>
+		</div>
 
 		<Chip v-else-if="isFilled" :color="theme.bg">
 			<span class="w-20 text-center">
@@ -59,11 +70,35 @@
 				</template>
 			</Dialog>
 		</Modal>
+
+		<Modal v-if="confirmCancellation" class="z-100">
+			<Dialog :dialog="dialog">
+				<template #content>
+					<div class="flex gap-box mt-card-sm">
+						<p class="text-body-2">Today's Date:</p>
+						<h6 class="text-body-1">{{ todayDate }}</h6>
+					</div>
+					<div class="flex gap-box">
+						<p class="text-body-2">Event Start Date:</p>
+						<h6 class="text-body-1">{{ startDate }}</h6>
+					</div>
+					<div class="flex gap-box">
+						<p class="text-body-2">Days Remaining:</p>
+						<h6 class="text-body-1">{{ numberOfDaysUntil }} days</h6>
+					</div>
+
+					<hr class="mt-card mb-card" />
+
+					<h4 class="text-heading-4 mb-box">Cancellation Policy</h4>
+					<List :items="cancellationPolicy" id="cancellationPolicy" />
+				</template>
+			</Dialog>
+		</Modal>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CheckIcon } from '@heroicons/vue/24/outline/index.js';
 
@@ -78,18 +113,10 @@ export default defineComponent({
 		id: { type: String, default: '' },
 		link: { type: String, default: '' },
 		noBooking: { type: Boolean, default: false },
+		mine: { type: Boolean, default: false },
 	},
 	setup(props) {
 		const { t } = useI18n();
-
-		const user: Ref<any> = useUser();
-
-		const mine = computed(() => {
-			let instructorID = props.data?.instructor?.id ?? '';
-			if (!!!instructorID) return false;
-
-			return user.value.id == instructorID;
-		});
 
 		const btn = computed(() => {
 			switch (props.type) {
@@ -202,6 +229,81 @@ export default defineComponent({
 			isEventBooked.value = !!success;
 		}
 
+		const confirmCancellation = ref(false);
+		const cancellationPolicy = reactive([
+			'List.EventCancellationPolicy.1',
+			'List.EventCancellationPolicy.2',
+			'List.EventCancellationPolicy.3',
+		]);
+
+		const todayDate = ref('');
+		const startDate = ref('');
+		const numberOfDaysUntil = ref(0);
+
+		function onclickCancel() {
+			confirmCancellation.value = true;
+			let btnText = '';
+			let headingText = '';
+			let type = '';
+
+			switch (props.type) {
+				case 'coaching':
+					btnText = 'Buttons.YesCancelCoaching';
+					headingText = 'Headings.CancelCoaching';
+					type = 'info';
+					break;
+				default:
+					btnText = 'Buttons.YesCancelWebinar';
+					headingText = 'Headings.CancelWebinar';
+					type = 'warning';
+					break;
+			}
+
+			let refund = getCancellationRefundStatus();
+			let body = t('Body.CancelEvent');
+
+			if (refund == 100) {
+				body = `${body} ${t('Body.CancelEvent100%')}`;
+			} else if (refund == 50) {
+				body = `${body} ${t('Body.CancelEvent50%')}`;
+			} else {
+				body = `${body} ${t('Body.CancelEvent0%')}`;
+			}
+
+			Object.assign(dialog, {
+				type: type,
+				heading: headingText,
+				body: body,
+				primaryBtn: {
+					label: btnText,
+					onclick: () => {},
+				},
+				secondaryBtn: {
+					label: 'Buttons.Back',
+					onclick: () => {
+						confirmCancellation.value = false;
+					},
+				},
+			});
+		}
+
+		function getCancellationRefundStatus() {
+			let start = convertTimestampToDate(props.data.start);
+			let today = convertTimestampToDate(new Date().getTime() / 1000);
+
+			numberOfDaysUntil.value = start.date - today.date;
+			todayDate.value = `${today.date} ${today.month.string}, ${today.year}`;
+			startDate.value = `${start.date} ${start.month.string}, ${start.year}`;
+
+			if (numberOfDaysUntil.value > 7) {
+				return 100;
+			} else if (numberOfDaysUntil.value > 1 && numberOfDaysUntil.value <= 7) {
+				return 50;
+			} else {
+				return 0;
+			}
+		}
+
 		return {
 			t,
 			btn,
@@ -213,7 +315,12 @@ export default defineComponent({
 			confirm,
 			confirmRightToWithdrawal,
 			confirmDontUseRightToWithdrawal,
-			mine,
+			onclickCancel,
+			confirmCancellation,
+			cancellationPolicy,
+			todayDate,
+			startDate,
+			numberOfDaysUntil,
 		};
 	},
 });

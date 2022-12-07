@@ -11,6 +11,8 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"CancelCoaching": "Coaching abbrechen",
+		"CancelWebinar": "Webinar abbrechen",
 		"CourseCompleted": "Kurs abgeschlossen",
 		"CreateWebinar": "Webinar erstellen",
 		"EditWebinar": "Webinar bearbeiten",
@@ -165,6 +167,10 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"CancelEvent": "Bist du sicher, dass du abbrechen möchtest?",
+		"CancelEvent100%": "Sie haben Anspruch auf 100% Rückerstattung.",
+		"CancelEvent50%": "Sie haben Anspruch auf 50 % Rückerstattung.",
+		"CancelEvent0%": "Sie erhalten keine Rückerstattung.",
 		"BookedEventsFilterToolTip": "Zeigt Veranstaltungen an, die von Ihnen gebucht wurden",
 		"MyEventsFilterToolTip": "Zeigt Ereignisse an, die von Ihnen erstellt wurden",
 		"ThisIsFirstLecture": "Dies ist die erste Vorlesung",
@@ -236,6 +242,11 @@
 		"OtherSkills": "Rest der Fähigkeiten, die zum Erkunden verfügbar sind."
 	},
 	"List": {
+		"EventCancellationPolicy": {
+			"1": "7 Tage vor der Veranstaltung oder früher: 100 % Rückerstattung",
+			"2": "1 - 7 Tage vor der Veranstaltung: 50 % Rückerstattung",
+			"3": "weniger als 24 Stunden: 0% Rückerstattung"
+		},
 		"Contact": {
 			"1": {
 				"Heading": "Adresse"
@@ -398,6 +409,9 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"YesCancelCoaching": "Ja, Coaching abbrechen",
+		"YesCancelWebinar": "Ja, Webinar abbrechen",
+		"MyWebinarLink": "Mein Webinar-Link",
 		"ViewMoreCourses": "Weitere Kurse anzeigen",
 		"EditWebinar": "Webinar bearbeiten",
 		"CreateWebinar": "Webinar erstellen",

@@ -4,7 +4,7 @@
 		:class="[theme.border, { 'cursor-pointer': !!link }]"
 		@click.self="onclickCard"
 	>
-		<header class="flex items-center justify-between gap-card">
+		<header class="flex justify-between gap-card">
 			<div v-if="type == 'coaching'" class="flex gap-box">
 				<img
 					:src="instructor?.avatar_url ?? '/images/about-2.webp'"
@@ -21,11 +21,12 @@
 			</h3>
 
 			<h3
+				@click.self="onclickCard"
 				v-if="!!link"
 				:class="[theme.text, theme.bgLight]"
-				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0"
+				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
 			>
-				{{ t('Buttons.JoinLink') }}
+				{{ t(mine ? 'Buttons.MyWebinarLink' : 'Buttons.JoinLink') }}
 			</h3>
 		</header>
 
@@ -51,12 +52,13 @@
 			:stats="stats"
 			:link="link"
 			:noBooking="noBooking"
+			:mine="mine"
 		/>
 	</article>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ClockIcon, CalendarIcon } from '@heroicons/vue/24/outline/index.js';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
@@ -104,6 +106,15 @@ export default defineComponent({
 
 		const instructor = computed(() => {
 			return props.data?.coaching?.instructor ?? props.data?.instructor ?? null;
+		});
+
+		const user: Ref<any> = useUser();
+
+		const mine = computed(() => {
+			let instructorID = instructor.value?.id ?? '';
+			if (!!!instructorID) return false;
+
+			return user.value.id == instructorID;
 		});
 
 		const start = computed(() => {
@@ -180,6 +191,7 @@ export default defineComponent({
 			stats,
 			link,
 			onclickCard,
+			mine,
 		};
 	},
 });

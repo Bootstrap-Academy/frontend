@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"CancelCoaching": "Cancel Coaching",
+		"CancelWebinar": "Cancel Webinar",
 		"CourseCompleted": "Course Completed",
 		"CreateWebinar": "Create Webinar",
 		"EditWebinar": "Edit Webinar",
@@ -165,6 +167,10 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"CancelEvent": "Are you sure you want to cancel?",
+		"CancelEvent100%": "Your are eligible for 100% refund.",
+		"CancelEvent50%": "Your are eligible for 50% refund.",
+		"CancelEvent0%": "You will not get any refund.",
 		"BookedEventsFilterToolTip": "Shows events that are booked by you",
 		"MyEventsFilterToolTip": "Shows events that are created by you",
 		"ThisIsFirstLecture": "This is the first lecture",
@@ -235,6 +241,11 @@
 		"OtherSkills": "Rest of the skills which are available for exploring."
 	},
 	"List": {
+		"EventCancellationPolicy": {
+			"1": "7 days before event or earlier: 100% refund",
+			"2": "1 - 7 days before the event: 50% refund",
+			"3": "less than 24 hours: 0% refund"
+		},
 		"Contact": {
 			"1": {
 				"Heading": "Address"
@@ -397,6 +408,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"YesCancelCoaching": "Yes, Cancel Coaching",
+		"YesCancelWebinar": "Yes, Cancel Webinar",
+		"MyWebinarLink": "My Webinar Link",
 		"ViewMoreCourses": "View More Courses",
 		"EditWebinar": "Edit Webinar",
 		"CreateWebinar": "Create Webinar",

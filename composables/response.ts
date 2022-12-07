@@ -42,22 +42,8 @@ export function closeSnackbar() {
 }
 
 export const useDialog = () =>
-	useState('dialog', () => {
-		return {
-			show: false,
-			type: 'info',
-			heading: '',
-			body: '',
-			triggerPrimaryActionOnBackdropClick: false,
-			primaryBtn: {
-				label: '',
-				onclick: () => {},
-			},
-			secondaryBtn: {
-				label: '',
-				onclick: () => {},
-			},
-		};
+	useState('dialog', (): any => {
+		return null;
 	});
 
 export function openDialog(
@@ -82,19 +68,5 @@ export function openDialog(
 
 export function closeDialog() {
 	const dialog = useDialog();
-	dialog.value = {
-		show: false,
-		type: '',
-		heading: '',
-		body: '',
-		triggerPrimaryActionOnBackdropClick: false,
-		primaryBtn: {
-			label: '',
-			onclick: () => {},
-		},
-		secondaryBtn: {
-			label: '',
-			onclick: () => {},
-		},
-	};
+	dialog.value = null;
 }

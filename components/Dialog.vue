@@ -22,7 +22,7 @@
 
 		<div class="card flex gap-card justify-end bg-[#1c3250]">
 			<Btn
-				v-if="!!secondaryBtn.label && !!secondaryBtn.onclick"
+				v-if="!!secondaryBtn.label"
 				:bgColor="theme.bg"
 				:borderColor="theme.border"
 				secondary
@@ -34,7 +34,7 @@
 				{{ t(secondaryBtn.label) }}
 			</Btn>
 			<Btn
-				v-if="!!primaryBtn.label && !!primaryBtn.onclick"
+				v-if="!!primaryBtn.label"
 				:bgColor="theme.bg"
 				:borderColor="theme.border"
 				@click="
@@ -78,14 +78,14 @@ export default defineComponent({
 		const primaryBtn = computed(() => {
 			return {
 				label: props.dialog?.primaryBtn?.label ?? '',
-				onclick: props.dialog?.primaryBtn?.onclick ?? null,
+				onclick: props.dialog.primaryBtn.onclick,
 			};
 		});
 
 		const secondaryBtn = computed(() => {
 			return {
 				label: props.dialog?.secondaryBtn?.label ?? '',
-				onclick: props.dialog?.secondaryBtn?.onclick ?? null,
+				onclick: props.dialog.secondaryBtn.onclick,
 			};
 		});
 
