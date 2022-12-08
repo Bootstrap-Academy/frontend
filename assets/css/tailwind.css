@@ -417,7 +417,7 @@
 		content: '?';
 		left: calc(100% + var(--spacing));
 		top: 2.5px;
-		z-index: 9;
+		z-index: 99;
 
 		background-color: var(--color-info);
 		color: var(--color-white);
@@ -436,7 +436,7 @@
 			100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
 		);
 		top: -50%;
-		z-index: 8;
+		z-index: 98;
 		width: var(--tooltip-width);
 	}
 

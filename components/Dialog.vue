@@ -1,5 +1,5 @@
 <template>
-	<article class="style-card bg-secondary w-full max-w-3xl">
+	<article class="style-card bg-secondary w-full max-w-3xl relative">
 		<div class="card grid gap-x-4 md:gap-x-6 grid-cols-[auto_1fr]">
 			<component
 				class="h-10 w-10 row-span-2 md:row-span-3"

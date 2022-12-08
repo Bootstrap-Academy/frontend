@@ -10,7 +10,7 @@
 		<Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
 			<Dialog :dialog="dialog" />
 		</Modal>
-		<Snackbar />
+		<Snackbar class="z-[999]" />
 	</NuxtLayout>
 </template>
 

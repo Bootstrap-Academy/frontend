@@ -7,7 +7,7 @@
 			ref="refForm"
 		>
 			<Input
-				:label="t('Inputs.Name')"
+				:label="t('Inputs.WebinarName')"
 				v-model="form.name.value"
 				@valid="form.name.valid = $event"
 				:rules="form.name.rules"
@@ -60,8 +60,8 @@
 				:rules="form.max_participants.rules"
 			/>
 
-			<div class="md:flex">
-				<Rating :rating="rating" class="mb-3 md:mb-0 md:mt-8 md:mr-6" />
+			<div>
+				<Rating stars :rating="rating" class="mb-3" />
 
 				<Input
 					:label="t('Inputs.Price')"
@@ -70,7 +70,7 @@
 					v-model="form.price.value"
 					@valid="form.price.valid = $event"
 					:rules="form.price.rules"
-					data-tooltip="Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit. "
+					:data-tooltip="t('Body.WebinarPriceTooltip')"
 				/>
 			</div>
 
@@ -98,7 +98,7 @@
 				</InputBtn>
 			</div>
 		</form>
-		<Modal v-if="confirm">
+		<Modal v-if="confirm" class="z-[150]">
 			<Dialog :dialog="dialog">
 				<template #content>
 					<div class="flex gap-box mt-card-sm">
@@ -162,7 +162,7 @@ export default defineComponent({
 				value: '',
 				valid: false,
 				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
+					(v: string) => !!v || 'Error.InputEmpty_Inputs.WebinarName',
 					(v: string) => v.length >= 2 || 'Error.InputMinLength_2',
 				],
 			},
@@ -199,7 +199,7 @@ export default defineComponent({
 				valid: false,
 				rules: [
 					(v: number) => !!v || 'Error.InputEmpty_Inputs.MaxParticipants',
-					(v: number) => !v || v >= 4 || 'Error.InputMinParticipants_4',
+					(v: number) => !v || v >= 4 || 'Error.InputMinParticipants_3',
 					(v: number) => v <= 50 || 'Error.InputMaxParticipants_50',
 				],
 			},

@@ -173,6 +173,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"WebinarPriceTooltip": "Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit.",
 		"ConfirmDeleteWebinarLessThan0": "Are you sure you want to delete webinar? Since total participants are 0, you will not face any penalty.",
 		"ConfirmDeleteWebinarGreaterThan0": "Are you sure you want to delete webinar? Since total participants are greater than 0, you might have to face penalty. Please read the cancellation policy below before deleting webinar.",
 		"CancelEvent": "Are you sure you want to cancel?",
@@ -391,6 +392,7 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"WebinarName": "Webinar Name",
 		"StartTime": "Start Time",
 		"Link": "Link",
 		"StartDate": "Start Date",

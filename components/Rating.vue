@@ -1,5 +1,17 @@
 <template>
+	<article v-if="stars" class="flex gap-2">
+		<StarIcon
+			v-for="n in 5"
+			:key="n"
+			class="flex-shrink-0"
+			:class="[
+				sm ? 'w-3 h-3 md:w-4 md:h-4' : 'w-5 h-5 md:w-6 md:h-6',
+				n <= rating ? theme.text : 'text-subheading',
+			]"
+		/>
+	</article>
 	<article
+		v-else
 		class="flex items-center w-fit h-fit"
 		:class="[
 			theme.bgLight,
@@ -32,6 +44,7 @@ export default defineComponent({
 	props: {
 		rating: { type: Number, default: 0 },
 		sm: { type: Boolean, default: false },
+		stars: { type: Boolean, default: false },
 	},
 	components: { StarIcon },
 

@@ -173,6 +173,7 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"WebinarPriceTooltip": "Sterne < 3, Höchstpreis = 0 MC. 3 - 4 Sterne, der Höchstpreis beträgt 5000 MC. 4 - 4,5 Sterne, der Höchstpreis beträgt 10000 MC. 4,5 Sterne und höher haben keine Höchstpreisgrenze.",
 		"ConfirmDeleteWebinarLessThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, wird Ihnen keine Strafe auferlegt.",
 		"ConfirmDeleteWebinarGreaterThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer größer als 0 ist, müssen Sie möglicherweise mit einer Strafe rechnen. Bitte lesen Sie die Stornierungsbedingungen unten, bevor Sie das Webinar löschen.",
 		"CancelEvent": "Bist du sicher, dass du abbrechen möchtest?",
@@ -392,6 +393,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"WebinarName": "Webinar-Name",
 		"StartTime": "Start Time",
 		"Link": "Verknüpfung",
 		"StartDate": "Anfangsdatum",
