@@ -11,6 +11,12 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"CancellationPolicy": "Cancellation Policy",
+		"TodayDate": "Today's Date",
+		"EventStartDate": "Event Start Date",
+		"DaysRemaining": "Days Remaining",
+		"TotalParticipants": "Total Participants",
+		"DeleteWebinar": "Delete Webinar",
 		"CancelCoaching": "Cancel Coaching",
 		"CancelWebinar": "Cancel Webinar",
 		"CourseCompleted": "Course Completed",
@@ -167,6 +173,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"ConfirmDeleteWebinarLessThan0": "Are you sure you want to delete webinar? Since total participants are 0, you will not face any penalty.",
+		"ConfirmDeleteWebinarGreaterThan0": "Are you sure you want to delete webinar? Since total participants are greater than 0, you might have to face penalty. Please read the cancellation policy below before deleting webinar.",
 		"CancelEvent": "Are you sure you want to cancel?",
 		"CancelEvent100%": "Your are eligible for 100% refund.",
 		"CancelEvent50%": "Your are eligible for 50% refund.",
@@ -241,6 +249,10 @@
 		"OtherSkills": "Rest of the skills which are available for exploring."
 	},
 	"List": {
+		"WebinarCancellationByOwnerPolicy": {
+			"1": "If no user has booked this webinar, then you can cancel without any penalty.",
+			"2": "If one or more user(s) have booked this webinar, then you can cancel only in case of emergencies or in case of illness. Otherwise the next webinar has to be free."
+		},
 		"EventCancellationPolicy": {
 			"1": "7 days before event or earlier: 100% refund",
 			"2": "1 - 7 days before the event: 50% refund",
@@ -408,6 +420,8 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"DeleteWebinar": "Delete Webinar",
+		"YesDeleteWebinar": "Yes, Delete Webinar",
 		"YesCancelCoaching": "Yes, Cancel Coaching",
 		"YesCancelWebinar": "Yes, Cancel Webinar",
 		"MyWebinarLink": "My Webinar Link",
@@ -472,6 +486,7 @@
 		"AddEmail": "Add Email"
 	},
 	"Links": {
+		"IHaveReadWebinarDeletePolicy": "I have read Webinar Cancellation/Delete policy and I agree to it.",
 		"ViewSkill": "View Skill",
 		"ViewSubSkill": "View Sub Skill",
 		"GoToJobs": "Go to Jobs",
@@ -526,6 +541,8 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"EditWebinar": "Webinar edited successfully",
+		"DeleteWebinar": "Webinar deleted successfully.",
 		"CreateWebinar": "Webinar created successfully.",
 		"MessageSubmitted": "Message Submitted",
 		"ContactUs": "Your form has been submitted successfully.",
@@ -558,6 +575,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"MustAgreeBeforeInOrderToDeleteWebinar": "You must agree in order to delete webinar.",
 		"NoLecturesAvailable": "No lectures available",
 		"NoDescriptionAvailable": "No description available",
 		"VerifyEmail": "Unable to verify account. Try again later",

@@ -23,6 +23,20 @@ export async function getRating(skill_id: string) {
 	}
 }
 
+export async function deleteWebinar(id: string) {
+	try {
+		if (!!!id) {
+			throw { data: { detail: 'Invalid webinar Id' } };
+		}
+
+		const response = await DELETE(`/events/webinars/${id}`);
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
 export async function getWebinar(id: string) {
 	try {
 		if (!!!id) {

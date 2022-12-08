@@ -75,21 +75,23 @@
 			<Dialog :dialog="dialog">
 				<template #content>
 					<div class="flex gap-box mt-card-sm">
-						<p class="text-body-2">Today's Date:</p>
+						<p class="text-body-2">{{ t('Headings.TodayDate') }}:</p>
 						<h6 class="text-body-1">{{ todayDate }}</h6>
 					</div>
 					<div class="flex gap-box">
-						<p class="text-body-2">Event Start Date:</p>
+						<p class="text-body-2">{{ t('Headings.EventStartDate') }}:</p>
 						<h6 class="text-body-1">{{ startDate }}</h6>
 					</div>
 					<div class="flex gap-box">
-						<p class="text-body-2">Days Remaining:</p>
+						<p class="text-body-2">{{ t('Headings.DaysRemaining') }}:</p>
 						<h6 class="text-body-1">{{ numberOfDaysUntil }} days</h6>
 					</div>
 
 					<hr class="mt-card mb-card" />
 
-					<h4 class="text-heading-4 mb-box">Cancellation Policy</h4>
+					<h4 class="text-heading-4 mb-box">
+						{{ t('Headings.CancellationPolicy') }}
+					</h4>
 					<List :items="cancellationPolicy" id="cancellationPolicy" />
 				</template>
 			</Dialog>

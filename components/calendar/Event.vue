@@ -4,7 +4,9 @@
 		:class="[theme.border, { 'cursor-pointer': !!link }]"
 		@click.self="onclickCard"
 	>
-		<header class="flex justify-between gap-card">
+		<header
+			class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
+		>
 			<div v-if="type == 'coaching'" class="flex gap-box">
 				<img
 					:src="instructor?.avatar_url ?? '/images/about-2.webp'"

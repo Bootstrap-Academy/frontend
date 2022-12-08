@@ -11,6 +11,12 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"CancellationPolicy": "Stornierungsbedingungen",
+		"TodayDate": "Heutiges Datum",
+		"EventStartDate": "Startdatum der Veranstaltung",
+		"DaysRemaining": "verbleibende Tage",
+		"TotalParticipants": "Teilnehmer insgesamt",
+		"DeleteWebinar": "Webinar löschen",
 		"CancelCoaching": "Coaching abbrechen",
 		"CancelWebinar": "Webinar abbrechen",
 		"CourseCompleted": "Kurs abgeschlossen",
@@ -167,6 +173,8 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"ConfirmDeleteWebinarLessThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, wird Ihnen keine Strafe auferlegt.",
+		"ConfirmDeleteWebinarGreaterThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer größer als 0 ist, müssen Sie möglicherweise mit einer Strafe rechnen. Bitte lesen Sie die Stornierungsbedingungen unten, bevor Sie das Webinar löschen.",
 		"CancelEvent": "Bist du sicher, dass du abbrechen möchtest?",
 		"CancelEvent100%": "Sie haben Anspruch auf 100% Rückerstattung.",
 		"CancelEvent50%": "Sie haben Anspruch auf 50 % Rückerstattung.",
@@ -242,6 +250,10 @@
 		"OtherSkills": "Rest der Fähigkeiten, die zum Erkunden verfügbar sind."
 	},
 	"List": {
+		"WebinarCancellationByOwnerPolicy": {
+			"1": "Wenn kein Benutzer dieses Webinar gebucht hat, können Sie es ohne Strafe stornieren.",
+			"2": "Wenn ein oder mehrere Benutzer dieses Webinar gebucht haben, dann können Sie nur in Notfällen oder im Krankheitsfall stornieren. Andernfalls muss das nächste Webinar kostenlos sein."
+		},
 		"EventCancellationPolicy": {
 			"1": "7 Tage vor der Veranstaltung oder früher: 100 % Rückerstattung",
 			"2": "1 - 7 Tage vor der Veranstaltung: 50 % Rückerstattung",
@@ -409,6 +421,8 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"DeleteWebinar": "Webinar löschen",
+		"YesDeleteWebinar": "Ja, Webinar löschen",
 		"YesCancelCoaching": "Ja, Coaching abbrechen",
 		"YesCancelWebinar": "Ja, Webinar abbrechen",
 		"MyWebinarLink": "Mein Webinar-Link",
@@ -473,6 +487,7 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
+		"IHaveReadWebinarDeletePolicy": "Ich habe die Webinar-Stornierungs-/Löschrichtlinie gelesen und stimme ihr zu.",
 		"ViewSkill": "Fähigkeit anzeigen",
 		"ViewSubSkill": "Sub-Skill anzeigen",
 		"GoToJobs": "Zu den Jobs",
@@ -531,6 +546,8 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"EditWebinar": "Webinar erfolgreich bearbeitet",
+		"DeleteWebinar": "Webinar erfolgreich gelöscht.",
 		"CreateWebinar": "Webinar erfolgreich erstellt.",
 		"MessageSubmitted": "Nachricht übermittelt",
 		"ContactUs": "Dein Formular wurde erfolgreich übermittelt.",
@@ -563,6 +580,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"MustAgreeBeforeInOrderToDeleteWebinar": "Sie müssen zustimmen, um das Webinar zu löschen.",
 		"NoLecturesAvailable": "Keine Vorlesungen vorhanden",
 		"NoDescriptionAvailable": "Keine Beschreibung verfügbar",
 		"VerifyEmail": "Konto konnte nicht bestätigt werden. Versuche es später noch einmal",

@@ -1,100 +1,129 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Name')"
-			v-model="form.name.value"
-			@valid="form.name.valid = $event"
-			:rules="form.name.rules"
-		/>
+	<div>
+		<form
+			class="flex flex-col gap-box"
+			:class="{ 'form-submitting': form.submitting }"
+			@submit.prevent="onclickSubmitForm()"
+			ref="refForm"
+		>
+			<Input
+				:label="t('Inputs.Name')"
+				v-model="form.name.value"
+				@valid="form.name.valid = $event"
+				:rules="form.name.rules"
+			/>
 
-		<InputTextarea
-			label="Inputs.Description"
-			v-model="form.description.value"
-			@valid="form.description.valid = $event"
-			:rules="form.description.rules"
-			:max="250"
-		/>
-
-		<Input
-			:label="t('Inputs.Link')"
-			v-model="form.link.value"
-			@valid="form.link.valid = $event"
-			:rules="form.link.rules"
-		/>
-
-		<Input
-			:label="t('Inputs.StartDate')"
-			type="date"
-			v-model="date"
-			@valid="form.start.valid = $event"
-			:rules="form.start.rules"
-		/>
-
-		<InputTime
-			label="Inputs.StartTime"
-			v-model="time"
-			@valid="form.start.valid = $event"
-		/>
-
-		<Input
-			:label="t('Inputs.Duration')"
-			hint="Inputs.DurationHint"
-			type="number"
-			v-model="form.duration.value"
-			@valid="form.duration.valid = $event"
-			:rules="form.duration.rules"
-		/>
-
-		<Input
-			:label="t('Inputs.MaxParticipants')"
-			hint="(0 - 50)"
-			type="number"
-			v-model="form.max_participants.value"
-			@valid="form.max_participants.valid = $event"
-			:rules="form.max_participants.rules"
-		/>
-
-		<div class="md:flex">
-			<Rating :rating="rating" class="mb-3 md:mb-0 md:mt-8 md:mr-6" />
+			<InputTextarea
+				label="Inputs.Description"
+				v-model="form.description.value"
+				@valid="form.description.valid = $event"
+				:rules="form.description.rules"
+				:max="250"
+			/>
 
 			<Input
-				:label="t('Inputs.Price')"
-				:hint="inputPriceHint"
-				type="number"
-				v-model="form.price.value"
-				@valid="form.price.valid = $event"
-				:rules="form.price.rules"
-				data-tooltip="Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit. "
+				:label="t('Inputs.Link')"
+				v-model="form.link.value"
+				@valid="form.link.valid = $event"
+				:rules="form.link.rules"
 			/>
-		</div>
 
-		<p
-			v-if="maxPrice > 0"
-			class="text-body-1 py-2 px-4 text-warning bg-warning-light rounded-sm w-fit"
-		>
-			<span v-if="pricePerParticipant <= 0">
-				{{ t('Headings.PricePerParticipantMsg') }}
-			</span>
-			<span v-else>
-				{{ abbreviateNumber(pricePerParticipant) }}
-				{{ t('Headings.PricePerParticipant') }}
-			</span>
-		</p>
+			<Input
+				:label="t('Inputs.StartDate')"
+				type="date"
+				v-model="date"
+				@valid="form.start.valid = $event"
+				:rules="form.start.rules"
+			/>
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-end"
-			@click="onclickSubmitForm()"
-			mt
-		>
-			{{ t(!!data ? 'Buttons.EditWebinar' : 'Buttons.CreateWebinar') }}
-		</InputBtn>
-	</form>
+			<InputTime
+				label="Inputs.StartTime"
+				v-model="time"
+				@valid="form.start.valid = $event"
+			/>
+
+			<Input
+				:label="t('Inputs.Duration')"
+				hint="Inputs.DurationHint"
+				type="number"
+				v-model="form.duration.value"
+				@valid="form.duration.valid = $event"
+				:rules="form.duration.rules"
+			/>
+
+			<Input
+				:label="t('Inputs.MaxParticipants')"
+				hint="(0 - 50)"
+				type="number"
+				v-model="form.max_participants.value"
+				@valid="form.max_participants.valid = $event"
+				:rules="form.max_participants.rules"
+			/>
+
+			<div class="md:flex">
+				<Rating :rating="rating" class="mb-3 md:mb-0 md:mt-8 md:mr-6" />
+
+				<Input
+					:label="t('Inputs.Price')"
+					:hint="inputPriceHint"
+					type="number"
+					v-model="form.price.value"
+					@valid="form.price.valid = $event"
+					:rules="form.price.rules"
+					data-tooltip="Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit. "
+				/>
+			</div>
+
+			<p
+				v-if="maxPrice > 0"
+				class="text-body-1 py-2 px-4 text-warning bg-warning-light rounded-sm w-fit"
+			>
+				<span v-if="pricePerParticipant <= 0">
+					{{ t('Headings.PricePerParticipantMsg') }}
+				</span>
+				<span v-else>
+					{{ abbreviateNumber(pricePerParticipant) }}
+					{{ t('Headings.PricePerParticipant') }}
+				</span>
+			</p>
+
+			<div
+				class="self-end flex gap-card items-center mt-card flex-wrap justify-center sm:justify-end"
+			>
+				<InputBtn tertiary @click="onclickDeleteWebinar" v-if="isEdit">
+					{{ t('Buttons.DeleteWebinar') }}
+				</InputBtn>
+				<InputBtn :loading="form.submitting" @click="onclickSubmitForm()">
+					{{ t(isEdit ? 'Buttons.EditWebinar' : 'Buttons.CreateWebinar') }}
+				</InputBtn>
+			</div>
+		</form>
+		<Modal v-if="confirm">
+			<Dialog :dialog="dialog">
+				<template #content>
+					<div class="flex gap-box mt-card-sm">
+						<p class="text-body-2">{{ t('Headings.TotalParticipants') }}</p>
+						<h6 class="text-body-1">{{ numberOfUsers }}</h6>
+					</div>
+
+					<hr class="mt-card mb-card" />
+
+					<h4 class="text-heading-4 mb-box">
+						{{ t('Headings.CancellationPolicy') }}
+					</h4>
+					<List :items="cancellationPolicy" id="cancellationPolicy" />
+
+					<hr class="mt-card mb-card" />
+
+					<InputCheckbox
+						id="IHaveReadWebinarDeletePolicy"
+						label="Links.IHaveReadWebinarDeletePolicy"
+						v-model="cancellationConfirmationCheck"
+					/>
+				</template>
+			</Dialog>
+		</Modal>
+	</div>
 </template>
 
 <script lang="ts">
@@ -229,6 +258,10 @@ export default defineComponent({
 		});
 
 		// ============================================================= Setting Form
+		const isEdit = computed(() => {
+			return !!props.data;
+		});
+
 		function setFormInputs(data: any) {
 			form.name.value = data?.name ?? '';
 			form.name.valid = !!form.name.value;
@@ -256,8 +289,6 @@ export default defineComponent({
 					dateObj.date
 				}`;
 				time.value = `${startDateObj.getHours()}:${startDateObj.getMinutes()}:00`;
-				console.log('date', date.value);
-				console.log('time', time.value);
 
 				form.start.value = data?.start ?? 0;
 				form.start.valid = !!form.start.value;
@@ -284,7 +315,7 @@ export default defineComponent({
 			if (form.validate()) {
 				form.submitting = true;
 
-				const [success, error] = !!props.data
+				const [success, error] = isEdit.value
 					? await editWebinar(props.data.id, {
 							...form.body(),
 							start: startTime.value,
@@ -303,7 +334,10 @@ export default defineComponent({
 		}
 
 		async function successHandler(res: any) {
-			openSnackbar('success', 'Success.CreateWebinar');
+			openSnackbar(
+				'success',
+				isEdit.value ? 'Success.EditWebinar' : 'Success.CreateWebinar'
+			);
 			router.push(`/calendar?start=${res.start}`);
 		}
 
@@ -324,6 +358,66 @@ export default defineComponent({
 			return ans;
 		});
 
+		// ============================================================= Delete Webinar
+		const confirm = ref(false);
+		const dialog = <any>reactive({});
+		const cancellationPolicy = reactive([
+			'List.WebinarCancellationByOwnerPolicy.1',
+			'List.WebinarCancellationByOwnerPolicy.2',
+		]);
+
+		const numberOfUsers = computed(() => {
+			return props.data?.participants ?? 0;
+		});
+
+		const cancellationConfirmationCheck = ref(false);
+
+		function onclickDeleteWebinar() {
+			Object.assign(dialog, {
+				type: 'warning',
+				heading: 'Headings.DeleteWebinar',
+				body:
+					numberOfUsers.value > 0
+						? 'Body.ConfirmDeleteWebinarGreaterThan0'
+						: 'Body.ConfirmDeleteWebinarLessThan0',
+				primaryBtn: {
+					label: 'Buttons.YesDeleteWebinar',
+					onclick: async () => {
+						if (cancellationConfirmationCheck.value == false) {
+							openSnackbar(
+								'error',
+								'Error.MustAgreeBeforeInOrderToDeleteWebinar'
+							);
+							return;
+						}
+						setLoading(true);
+
+						const [success, error] = await deleteWebinar(props.data?.id ?? '');
+						setLoading(false);
+						confirm.value = false;
+
+						if (success) {
+							router.push(`/calendar`);
+						}
+
+						setTimeout(() => {
+							openSnackbar(
+								success ? 'success' : 'error',
+								success ? 'Success.DeleteWebinar' : error?.details ?? ''
+							);
+						}, 1000);
+					},
+				},
+				secondaryBtn: {
+					label: 'Buttons.Cancel',
+					onclick: () => {
+						confirm.value = false;
+					},
+				},
+			});
+			confirm.value = true;
+		}
+
 		return {
 			form,
 			onclickSubmitForm,
@@ -335,6 +429,13 @@ export default defineComponent({
 			date,
 			time,
 			startTime,
+			onclickDeleteWebinar,
+			numberOfUsers,
+			dialog,
+			cancellationPolicy,
+			confirm,
+			cancellationConfirmationCheck,
+			isEdit,
 		};
 	},
 });
