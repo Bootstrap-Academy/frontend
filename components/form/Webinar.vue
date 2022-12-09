@@ -6,6 +6,13 @@
 			@submit.prevent="onclickSubmitForm()"
 			ref="refForm"
 		>
+			<p
+				v-if="isEdit"
+				class="mb-card style-card text-body-1 py-2 px-4 text-warning bg-warning-light w-fit"
+			>
+				{{ t('Headings.Skill') }}: {{ skill }}
+			</p>
+
 			<Input
 				:label="t('Inputs.WebinarName')"
 				v-model="form.name.value"
@@ -229,6 +236,9 @@ export default defineComponent({
 					}
 				}
 
+				if (!!!date.value) isValid = false;
+				if (!!!time.value || time.value == '00:00:00') isValid = false;
+
 				if (refForm.value) refForm.value.reportValidity();
 				return isValid;
 			},
@@ -260,6 +270,11 @@ export default defineComponent({
 		// ============================================================= Setting Form
 		const isEdit = computed(() => {
 			return !!props.data;
+		});
+
+		const skill = computed(() => {
+			let skillID = props.data?.skill_id ?? '';
+			return skillID.replace(/_/g, ' ');
 		});
 
 		function setFormInputs(data: any) {
@@ -342,7 +357,17 @@ export default defineComponent({
 		}
 
 		function errorHandler(res: any) {
-			openSnackbar('error', res?.detail ?? '');
+			let msg = res?.detail ?? '';
+
+			openSnackbar(
+				'error',
+				msg == 'Error.WebinarPrice'
+					? t(msg, {
+							rating: props.rating,
+							maxPrice: maxPrice.value,
+					  })
+					: msg
+			);
 		}
 
 		const pricePerParticipant = computed(() => {
@@ -353,9 +378,8 @@ export default defineComponent({
 			if (!!!maxParticipants || maxParticipants <= 0) return 0;
 
 			let ans = price / maxParticipants;
-			ans = Number(ans.toFixed(2));
 
-			return ans;
+			return roundOffTo(ans, 2);
 		});
 
 		// ============================================================= Delete Webinar
@@ -436,6 +460,7 @@ export default defineComponent({
 			confirm,
 			cancellationConfirmationCheck,
 			isEdit,
+			skill,
 		};
 	},
 });

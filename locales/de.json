@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"Skill": "Können",
 		"WebinarRating": "Webinar bewerten",
 		"CancellationPolicy": "Stornierungsbedingungen",
 		"TodayDate": "Heutiges Datum",
@@ -174,6 +175,7 @@
 		"OtherSkills": "Andere Fähigkeiten"
 	},
 	"Body": {
+		"WebinarNotParticipated": "Ich habe nicht teilgenommen",
 		"WebinarPriceTooltip": "Sterne < 3, Höchstpreis = 0 MC. 3 - 4 Sterne, der Höchstpreis beträgt 5000 MC. 4 - 4,5 Sterne, der Höchstpreis beträgt 10000 MC. 4,5 Sterne und höher haben keine Höchstpreisgrenze.",
 		"ConfirmDeleteWebinarLessThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, wird Ihnen keine Strafe auferlegt.",
 		"ConfirmDeleteWebinarGreaterThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer größer als 0 ist, müssen Sie möglicherweise mit einer Strafe rechnen. Bitte lesen Sie die Stornierungsbedingungen unten, bevor Sie das Webinar löschen.",
@@ -379,7 +381,7 @@
 			"Any": "Egal",
 			"All": "Alle",
 			"Booked": "Gebucht",
-			"Mine": "Mine"
+			"Mine": "Eigene Ereignisse"
 		},
 		"Sort": {
 			"Any": "@:List.Filter.Any",
@@ -586,6 +588,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"WebinarPrice": "Für die Bewertung {rating} beträgt der Höchstpreis {maxPrice}MC",
 		"WebinarRating": "Die Bewertung muss größer als 0 sein",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "Sie müssen zustimmen, um das Webinar zu löschen.",
 		"NoLecturesAvailable": "Keine Vorlesungen vorhanden",

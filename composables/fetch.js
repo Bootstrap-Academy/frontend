@@ -72,8 +72,9 @@ const onResponseError = async ({ request, options, response }) => {
 	let details = response?._data?.detail ?? '';
 
 	if (typeof details == 'object') {
-		response._data.detail = details[0].msg;
-		details = details[0].msg;
+		let msg = details[0]?.msg ?? details?.msg ?? '';
+		response._data.detail = msg;
+		details = msg;
 	} else if (details == '') {
 		response._data.detail = 'No error msg';
 	} else {
@@ -144,6 +145,8 @@ const onResponseError = async ({ request, options, response }) => {
 		response._data.detail = 'Error.InvalidCode';
 	} else if (details.includes('provider not found')) {
 		response._data.detail = 'Error.ProviderNotFound';
+	} else if (details.includes('Insufficient rating')) {
+		response._data.detail = 'Error.WebinarPrice';
 	}
 };
 

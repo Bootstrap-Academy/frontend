@@ -1,7 +1,9 @@
 <template>
 	<Modal class="z-100">
-		<section class="style-card bg-secondary max-w-full w-fit relative">
-			<div class="card grid justify-items-center">
+		<section
+			class="style-card bg-secondary max-w-full w-fit md:min-w-[400px] relative"
+		>
+			<div class="card grid justify-items-center w-full">
 				<h6 class="text-heading-2 text-heading font-heading">
 					{{ t('Headings.WebinarRating') }}
 				</h6>
@@ -19,9 +21,18 @@
 				</h4>
 
 				<InputRating v-model="rating.value" @valid="rating.valid = $event" />
+
+				<Btn
+					:bgColor="theme.bg"
+					:borderColor="theme.border"
+					tertiary
+					@click="onclickCancelWebinarRating"
+				>
+					{{ t('Body.WebinarNotParticipated') }}
+				</Btn>
 			</div>
 
-			<div class="card flex gap-card justify-end bg-[#1c3250]">
+			<div class="card flex gap-card justify-center bg-[#1c3250]">
 				<Btn
 					:bgColor="theme.bg"
 					:borderColor="theme.border"
@@ -110,6 +121,8 @@ export default defineComponent({
 		}
 
 		function errorHandler(res: any) {
+			console.log('res', res);
+
 			openSnackbar('error', res?.detail ?? '');
 		}
 

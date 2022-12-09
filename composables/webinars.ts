@@ -46,7 +46,7 @@ export async function getWebinar(id: string) {
 		const response = await GET(`/events/webinars/${id}`);
 
 		const webinar = useWebinar();
-		webinar.value = response ?? [];
+		webinar.value = response ?? null;
 
 		return [response, null];
 	} catch (error: any) {

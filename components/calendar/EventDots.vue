@@ -1,5 +1,6 @@
 <template>
 	<article
+		v-if="index <= 4"
 		class="max-w-full p-0 lg:py-1 lg:px-2 rounded shadow-lg flex lg:gap-2 justify-between items-center h-fit"
 		:class="theme.bgLight"
 	>
@@ -11,6 +12,19 @@
 			{{ heading }}
 		</h3>
 	</article>
+
+	<article
+		v-else-if="index == 5"
+		class="max-w-full p-0 rounded shadow-lg flex justify-center items-center h-1.5 sm:h-2 w-fit lg:w-full"
+	>
+		<h6
+			class="text-heading-3 flex-shrink-0 block m-0 p-0"
+			:class="theme.text"
+			style="margin-top: -1px"
+		>
+			+
+		</h6>
+	</article>
 </template>
 
 <script lang="ts">
@@ -20,6 +34,7 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
+		index: { type: Number, default: 0 },
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -29,7 +44,9 @@ export default defineComponent({
 		});
 
 		const heading = computed(() => {
-			return props.data?.title ?? props.data?.name ?? type.value;
+			// return props.data?.title ?? props.data?.name ?? type.value;
+			let skillID = props.data?.skill_id ?? '';
+			return skillID.replace(/_/g, ' ');
 		});
 
 		const theme = computed(() => {

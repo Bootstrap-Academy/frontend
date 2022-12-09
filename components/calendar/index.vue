@@ -27,7 +27,7 @@
 				<span class="block md:hidden">{{ day[0] }}{{ day[1] }}</span>
 			</h2>
 			<article
-				class="pt-1 pb-1 px-1 md:pt-2 md:pb-4 md:px-3 h-12 md:h-20 lg:h-40 border flex flex-wrap gap-x-1 md:gap-2 overflow-clip"
+				class="pt-1 pb-1 px-1 md:pt-2 md:pb-4 md:px-3 h-12 md:h-20 lg:h-40 border flex flex-wrap gap-x-1 md:gap-2 overflow-hidden"
 				v-for="(date, i) of dates"
 				:key="i"
 				@click="setActiveDate(date.date)"
@@ -45,7 +45,11 @@
 				</p>
 
 				<template v-for="(event, i) of events" :key="i">
-					<CalendarEventDots v-if="isEvent(event, date)" :data="event" />
+					<CalendarEventDots
+						v-if="isEvent(event, date)"
+						:data="event"
+						:index="i"
+					/>
 				</template>
 			</article>
 		</section>
@@ -225,6 +229,7 @@ export default defineComponent({
 		});
 
 		function isEvent(event: any, date: any) {
+			if (!!!event) return false;
 			return (
 				event.date == date.date &&
 				event.month == date.month &&

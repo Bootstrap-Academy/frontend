@@ -57,6 +57,58 @@ export async function logout() {
 
 		setStates(null);
 
+		// Calendar Composable
+		const calendar = useCalendar();
+		calendar.value = null;
+		const ics = useICS();
+		ics.value = '';
+		const events = useEvents();
+		events.value = [];
+		const eventFilter = useEventFilter();
+		eventFilter.value = 'all';
+
+		// Coaching Composable
+		const coachings = useCoachings();
+		coachings.value = [];
+
+		// Coins Composable
+		const coins = useCoins();
+		coins.value = 0;
+		const paypalClientID = usePaypalClientID();
+		paypalClientID.value = '';
+
+		// Course Composable
+		const myCourses = useMyCourses();
+		myCourses.value = [];
+		const courses = useCourses();
+		courses.value = [];
+		const course = useCourse();
+		course.value = null;
+		const videoSRC = useVideoSRC();
+		videoSRC.value = '';
+
+		// Jobs Composable
+		const job = useJob();
+		job.value = null;
+		const jobs = useJobs();
+		jobs.value = [];
+
+		// Ratings Composable
+		const unratedWebinars = useUnratedWebinars();
+		unratedWebinars.value = [];
+
+		// Webinars Composable
+		const webinar = useWebinar();
+		webinar.value = null;
+		const webinars = useWebinars();
+		webinars.value = [];
+		const myWebinars = useMyWebinars();
+		myWebinars.value = [];
+
+		// XP Composable
+		const xp = useXP();
+		xp.value = 0;
+
 		return [response, null];
 	} catch (error) {
 		return [null, error];

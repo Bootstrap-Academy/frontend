@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Skill": "Skill",
 		"WebinarRating": "Rate Webinar",
 		"CancellationPolicy": "Cancellation Policy",
 		"TodayDate": "Today's Date",
@@ -174,6 +175,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"WebinarNotParticipated": "I have not participated",
 		"WebinarPriceTooltip": "Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit.",
 		"ConfirmDeleteWebinarLessThan0": "Are you sure you want to delete webinar? Since total participants are 0, you will not face any penalty.",
 		"ConfirmDeleteWebinarGreaterThan0": "Are you sure you want to delete webinar? Since total participants are greater than 0, you might have to face penalty. Please read the cancellation policy below before deleting webinar.",
@@ -581,6 +583,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",
 		"WebinarRating": "Rating must be greater than 0",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "You must agree in order to delete webinar.",
 		"NoLecturesAvailable": "No lectures available",

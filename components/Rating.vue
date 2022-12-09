@@ -27,7 +27,7 @@
 			]"
 		/>
 		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-if="sm">
-			{{ rating }}
+			{{ roundOffTo(rating, 1) }}
 		</h6>
 		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-else>
 			{{ t('Headings.Stars', { n: rating }, rating) }}

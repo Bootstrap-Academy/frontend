@@ -4,6 +4,10 @@ export function getRandomNumber(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function roundOffTo(value: any, points: number) {
+	return value % 1 == 0 ? value : parseFloat(value.toString()).toFixed(points);
+}
+
 export function abbreviateNumber(number: number) {
 	if (number < 1e3) return number;
 	if (number >= 1e3 && number < 1e6) return +(number / 1e3).toFixed(1) + 'K';

@@ -74,6 +74,8 @@ export default defineComponent({
 			} else if (minutes.value > 59) {
 				msg = 'Minutes must be less than 59';
 				if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
+			} else {
+				msg = '';
 			}
 
 			emit('valid', !!!msg);

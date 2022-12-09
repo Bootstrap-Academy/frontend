@@ -64,9 +64,10 @@ import { defineComponent, PropType, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ClockIcon, CalendarIcon } from '@heroicons/vue/24/outline/index.js';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
+import IconSkill from '~/components/icon/Skill.vue';
 
 export default defineComponent({
-	components: { ClockIcon, CalendarIcon, IconMorphcoin },
+	components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
 	props: {
 		data: { type: Object as PropType<any>, default: null },
 		subSkillID: { type: String, default: '' },
@@ -114,9 +115,15 @@ export default defineComponent({
 
 		const mine = computed(() => {
 			let instructorID = instructor.value?.id ?? '';
-			if (!!!instructorID) return false;
+			let userID = user.value?.id ?? '';
+			if (!!!instructorID || !!!userID) return false;
 
-			return user.value.id == instructorID;
+			return userID == instructorID;
+		});
+
+		const skill = computed(() => {
+			let skillID = props.data?.skill_id ?? '';
+			return skillID.replace(/_/g, ' ');
 		});
 
 		const start = computed(() => {
@@ -148,6 +155,11 @@ export default defineComponent({
 
 		const stats = computed(() => {
 			return [
+				{
+					icon: IconSkill,
+					value: skill.value,
+					heading: 'Headings.Skill',
+				},
 				{
 					icon: CalendarIcon,
 					value:

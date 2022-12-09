@@ -6,6 +6,7 @@ export async function getUnratedWebinars() {
 
 		const unratedWebinars = useUnratedWebinars();
 		unratedWebinars.value = response ?? [];
+
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
