@@ -66,7 +66,7 @@ export default defineComponent({
 					refSource.value.setAttribute('src', videoSRC.value);
 					videoInterval = setInterval(async () => {
 						await getLectureVideoSRC(courseID, newValue);
-						refSource.value.setAttribute('src', videoSRC.value);
+						// refSource.value.setAttribute('src', videoSRC.value);
 						refSource.value.src = videoSRC.value;
 					}, 40000);
 				}
@@ -97,7 +97,7 @@ iframe {
 @media only screen and (max-width: 768px) and (min-aspect-ratio: 1/1) {
 	video,
 	iframe {
-		@apply w-full h-full max-w-full;
+		@apply w-full h-[90vh] max-w-full;
 	}
 }
 </style>

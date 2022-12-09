@@ -138,7 +138,7 @@ export default defineComponent({
 				loading.value = true;
 
 				const [success, error] = await enrollIntoCourse(props.data?.id ?? '');
-
+				if (success) await getCourseByID(props.data?.id ?? '');
 				loading.value = false;
 
 				if (error) {

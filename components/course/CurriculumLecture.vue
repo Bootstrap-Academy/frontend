@@ -19,7 +19,10 @@
 			]"
 		/>
 
-		<p class="text-body-1 clamp line-1 transition-basic text-body">
+		<p
+			class="text-body-1 clamp line-1 transition-basic text-body"
+			:title="title"
+		>
 			{{ title }}
 		</p>
 		<p class="text-body-2 text-subheading flex-shrink-0 w-fit">

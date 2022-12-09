@@ -184,8 +184,6 @@ export default defineComponent({
 			);
 
 			Object.assign(skills, arr);
-
-			console.log('skills', skills);
 		});
 		return {
 			t,

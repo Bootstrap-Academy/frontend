@@ -13,13 +13,13 @@
 		/>
 
 		<article
-			class="w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[auto_auto_1fr] items-center"
+			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center"
 		>
 			<img src="/images/euro.png" alt="coin" class="w-8 h-8 object-contain" />
 			<h3 class="text-heading-3">{{ t('Headings.Euros') }}</h3>
 			<input
 				type="number"
-				class="bg-transparent text-right outline-none border-none appearance-none min-w-full"
+				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
 				v-model="form.euros.value"
 			/>
 		</article>
@@ -29,13 +29,13 @@
 		/>
 
 		<article
-			class="w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[auto_auto_1fr] items-center"
+			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center"
 		>
 			<img src="/images/coin.png" alt="coin" class="w-8 h-8 object-contain" />
 			<h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>
 			<input
 				type="number"
-				class="bg-transparent text-right outline-none border-none appearance-none min-w-full"
+				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
 				v-model="form.morphCoins.value"
 				@input="form.morphCoins.valid = form.morphCoins.value >= 500"
 			/>

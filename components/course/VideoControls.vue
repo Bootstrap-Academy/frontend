@@ -124,9 +124,9 @@ export default defineComponent({
 			if (!!!courseID.value) {
 				return '/profile/courses';
 			} else if (!!!activeSectionID.value || !!!activeLectureID.value) {
-				return `/courses/${courseID}`;
+				return `/courses/${courseID.value}`;
 			} else {
-				return `/courses/${courseID}?section=${activeSectionID}&lecture=${activeLectureID}`;
+				return `/courses/${courseID.value}?section=${activeSectionID.value}&lecture=${activeLectureID.value}`;
 			}
 		});
 
