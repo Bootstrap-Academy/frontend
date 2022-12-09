@@ -1,7 +1,6 @@
 <template>
 	<aside class="grid gap-container h-fit">
-		<CalendarEventTypes :calendarICS="calendarICS" />
-		<CalendarFilter />
+		<CalendarFeatures />
 
 		<article class="grid gap-card-sm xl:gap-box">
 			<h2 class="text-heading-2">{{ t('Headings.UpcomingEvents') }}</h2>
@@ -22,7 +21,6 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
-		calendarICS: { default: '' },
 		events: { default: [] },
 		selected: {
 			default: {

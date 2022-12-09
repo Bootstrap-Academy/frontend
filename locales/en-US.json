@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"WebinarRating": "Rate Webinar",
 		"CancellationPolicy": "Cancellation Policy",
 		"TodayDate": "Today's Date",
 		"EventStartDate": "Event Start Date",
@@ -422,6 +423,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"SubmitWebinarRating": "Submit Rating",
 		"DeleteWebinar": "Delete Webinar",
 		"YesDeleteWebinar": "Yes, Delete Webinar",
 		"YesCancelCoaching": "Yes, Cancel Coaching",
@@ -543,6 +545,8 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"SubmitWebinarRating": "Webinar Rating submitted successfully",
+		"CancelWebinarRating": "Cancelled webinar rating.",
 		"EditWebinar": "Webinar edited successfully",
 		"DeleteWebinar": "Webinar deleted successfully.",
 		"CreateWebinar": "Webinar created successfully.",
@@ -577,6 +581,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"WebinarRating": "Rating must be greater than 0",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "You must agree in order to delete webinar.",
 		"NoLecturesAvailable": "No lectures available",
 		"NoDescriptionAvailable": "No description available",

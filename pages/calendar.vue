@@ -30,7 +30,6 @@
 		/>
 		<CalendarAside
 			class="xl:sticky xl:top-container xl:self-start"
-			:calendarICS="ics"
 			:events="events"
 			:selected="selected"
 		/>
@@ -51,7 +50,6 @@ export default {
 	components: { Calendar },
 	setup() {
 		const loading = ref(true);
-		const ics = useICS();
 		const events = useEvents();
 
 		const selected = reactive({
@@ -68,7 +66,7 @@ export default {
 		function setSelected(sel) {
 			Object.assign(selected, { ...sel });
 		}
-		return { ics, loading, events, setSelected, selected };
+		return { loading, events, setSelected, selected };
 	},
 };
 </script>

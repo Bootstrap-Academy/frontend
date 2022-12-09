@@ -17,9 +17,18 @@
 			</h3>
 		</article>
 
-		<a :href="calendarICS" download type="text/calendar">
+		<a :href="ics" download type="text/calendar">
 			<Btn full class="mt-box">{{ t('Buttons.LinkCalendar') }}</Btn>
 		</a>
+
+		<h2 class="text-heading-2 mt-card">{{ t('Headings.FilterBy') }}</h2>
+
+		<InputRadioGroup
+			sm
+			name="eventFilter"
+			v-model="eventFilter"
+			:options="eventFilterOptions"
+		/>
 	</div>
 </template>
 
@@ -28,9 +37,10 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: { calendarICS: { default: '' } },
 	setup() {
 		const { t } = useI18n();
+
+		const ics = useICS();
 
 		const coaching = reactive({
 			label: 'Headings.Coaching',
@@ -60,7 +70,25 @@ export default defineComponent({
 			return [webinar, coaching];
 		});
 
-		return { t, types };
+		const eventFilter = useEventFilter();
+
+		const eventFilterOptions = reactive([
+			{
+				label: 'List.Filter.All',
+				value: 'all',
+			},
+			{
+				label: 'List.Filter.Booked',
+				value: 'booked',
+				tooltip: 'Body.BookedEventsFilterToolTip',
+			},
+			{
+				label: 'List.Filter.Mine',
+				value: 'mine',
+				tooltip: 'Body.MyEventsFilterToolTip',
+			},
+		]);
+		return { t, types, eventFilter, eventFilterOptions, ics };
 	},
 });
 </script>

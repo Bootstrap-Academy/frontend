@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"WebinarRating": "Webinar bewerten",
 		"CancellationPolicy": "Stornierungsbedingungen",
 		"TodayDate": "Heutiges Datum",
 		"EventStartDate": "Startdatum der Veranstaltung",
@@ -423,6 +424,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"SubmitWebinarRating": "Bewertung abgeben",
 		"DeleteWebinar": "Webinar löschen",
 		"YesDeleteWebinar": "Ja, Webinar löschen",
 		"YesCancelCoaching": "Ja, Coaching abbrechen",
@@ -548,6 +550,8 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"SubmitWebinarRating": "Webinarbewertung erfolgreich übermittelt",
+		"CancelWebinarRating": "Abgebrochene Webinar-Bewertung.",
 		"EditWebinar": "Webinar erfolgreich bearbeitet",
 		"DeleteWebinar": "Webinar erfolgreich gelöscht.",
 		"CreateWebinar": "Webinar erfolgreich erstellt.",
@@ -582,6 +586,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"WebinarRating": "Die Bewertung muss größer als 0 sein",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "Sie müssen zustimmen, um das Webinar zu löschen.",
 		"NoLecturesAvailable": "Keine Vorlesungen vorhanden",
 		"NoDescriptionAvailable": "Keine Beschreibung verfügbar",

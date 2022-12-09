@@ -11,10 +11,18 @@
 			<Dialog :dialog="dialog" />
 		</Modal>
 		<Snackbar class="z-[999]" />
+
+		<FormWebinarRating
+			v-for="unratedWebinar of unratedWebinars"
+			:key="unratedWebinar.id"
+			:data="unratedWebinar"
+			@done="ondoneRmWebinar($event)"
+		/>
 	</NuxtLayout>
 </template>
 
-<script>
+<script lang="ts">
+import { Ref } from 'vue';
 export default {
 	setup() {
 		const dialog = useDialog();
@@ -26,11 +34,11 @@ export default {
 				dialog.value.primaryBtn.onclick();
 		}
 
-		const user = useUser();
+		const user: Ref<any> = useUser();
 		const cookie_user = useCookie('user');
 		user.value = cookie_user.value ?? null;
 
-		const session = useSession();
+		const session: Ref<any> = useSession();
 		const cookie_session = useCookie('session');
 		session.value = cookie_session.value ?? null;
 
@@ -45,11 +53,28 @@ export default {
 		const isPageLoaded = ref(false);
 		const nuxtApp = useNuxtApp();
 
-		nuxtApp.hook('page:finish', () => {
+		nuxtApp.hook('page:finish', async () => {
 			isPageLoaded.value = true;
+			if (!!accessToken.value) {
+				await getUnratedWebinars();
+			}
 		});
 
-		return { dialog, handleDialogOnBackdrop, isPageLoaded };
+		const unratedWebinars: Ref<any[]> = useUnratedWebinars();
+
+		function ondoneRmWebinar(id: string) {
+			let index = unratedWebinars.value.findIndex((web) => web.id == id);
+			if (index < 0) return;
+			unratedWebinars.value.splice(index, 1);
+		}
+
+		return {
+			dialog,
+			handleDialogOnBackdrop,
+			isPageLoaded,
+			unratedWebinars,
+			ondoneRmWebinar,
+		};
 	},
 };
 </script>

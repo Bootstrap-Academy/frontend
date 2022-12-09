@@ -78,14 +78,14 @@ export default defineComponent({
 		const primaryBtn = computed(() => {
 			return {
 				label: props.dialog?.primaryBtn?.label ?? '',
-				onclick: props.dialog.primaryBtn.onclick,
+				onclick: props.dialog?.primaryBtn?.onclick ?? null,
 			};
 		});
 
 		const secondaryBtn = computed(() => {
 			return {
 				label: props.dialog?.secondaryBtn?.label ?? '',
-				onclick: props.dialog.secondaryBtn.onclick,
+				onclick: props.dialog?.secondaryBtn?.onclick ?? null,
 			};
 		});
 
