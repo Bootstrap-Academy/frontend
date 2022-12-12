@@ -1,9 +1,9 @@
 <template>
 	<NuxtLayout>
 		<NuxtLoadingIndicator />
-		<client-only>
+		<LazyClientOnly>
 			<Loading />
-		</client-only>
+		</LazyClientOnly>
 		<NuxtPage />
 
 		<CookiePolicy v-if="isPageLoaded" />

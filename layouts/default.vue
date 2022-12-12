@@ -3,10 +3,10 @@
 		<Language />
 		<Navbar :links="links" :authorized="authorized" />
 		<slot />
-		<client-only>
+		<LazyClientOnly>
 			<Download />
 			<Footer />
-		</client-only>
+		</LazyClientOnly>
 	</div>
 </template>
 
