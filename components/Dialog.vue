@@ -83,9 +83,11 @@ export default defineComponent({
 		});
 
 		const secondaryBtn = computed(() => {
+			let label = props.dialog?.secondaryBtn?.label ?? '';
+
 			return {
-				label: props.dialog?.secondaryBtn?.label ?? '',
-				onclick: props.dialog?.secondaryBtn?.onclick ?? null,
+				label: label,
+				onclick: !!label ? props.dialog.secondaryBtn.onclick : () => {},
 			};
 		});
 
