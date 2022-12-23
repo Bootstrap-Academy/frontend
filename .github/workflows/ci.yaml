@@ -25,7 +25,7 @@ jobs:
 
       - run: npm ci
 
-      - run: nuxt generate
+      - run: npm run generate
 
       - uses: actions/upload-artifact@v2
         with:
