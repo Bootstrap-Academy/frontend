@@ -426,6 +426,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"EditCoaching": "Edit Coach",
 		"SubmitWebinarRating": "Submit Rating",
 		"DeleteWebinar": "Delete Webinar",
 		"YesDeleteWebinar": "Yes, Delete Webinar",

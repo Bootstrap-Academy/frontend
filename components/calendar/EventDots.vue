@@ -1,6 +1,5 @@
 <template>
 	<article
-		v-if="index <= 4"
 		class="max-w-full p-0 lg:py-1 lg:px-2 rounded shadow-lg flex lg:gap-2 justify-between items-center h-fit"
 		:class="theme.bgLight"
 	>
@@ -11,19 +10,6 @@
 		<h3 class="text-xs capitalize hidden lg:clamp line-1" :class="theme.text">
 			{{ heading }}
 		</h3>
-	</article>
-
-	<article
-		v-else-if="index == 5"
-		class="max-w-full p-0 rounded shadow-lg flex justify-center items-center h-1.5 sm:h-2 w-fit lg:w-full"
-	>
-		<h6
-			class="text-heading-3 flex-shrink-0 block m-0 p-0"
-			:class="theme.text"
-			style="margin-top: -1px"
-		>
-			+
-		</h6>
 	</article>
 </template>
 

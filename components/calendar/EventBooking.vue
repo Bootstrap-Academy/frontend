@@ -1,41 +1,55 @@
 <template>
 	<div class="mt-4 flex justify-end">
-		<NuxtLink :to="`/webinars/${data.id}`" v-if="mine">
-			<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
-				{{ t('Buttons.EditWebinar') }}
-			</Btn>
-		</NuxtLink>
+		<!-- if its your own event, then you can edit it -->
+		<template v-if="isMine">
+			<NuxtLink v-if="type == 'webinar'" :to="`/webinars/${id}`">
+				<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
+					{{ t('Buttons.EditWebinar') }}
+				</Btn>
+			</NuxtLink>
 
-		<div v-else-if="isEventBooked" class="flex gap-card-sm">
+			<NuxtLink v-else-if="type == 'coaching'" :to="`/coachings/${id}`">
+				<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
+					{{ t('Buttons.EditCoaching') }}
+				</Btn>
+			</NuxtLink>
+		</template>
+
+		<template v-else>
+			<!-- else if user can book event and event is not booked yet -->
 			<Btn
+				v-if="bookable && !booked && !isEventBooked"
 				:bgColor="theme.bg"
 				:borderColor="theme.border"
 				sm
-				tertiary
-				@click="onclickCancel"
+				@click="onclickConfirm"
 			>
-				{{ t('Buttons.Cancel') }}
+				{{ t(btn) }}
 			</Btn>
-			<Chip :icon="CheckIcon" color="bg-success">
-				{{ t('Headings.Booked') }}
+
+			<!-- else if event is booked already -->
+			<div v-else-if="booked || isEventBooked" class="flex gap-card-sm">
+				<Btn
+					:bgColor="theme.bg"
+					:borderColor="theme.border"
+					sm
+					tertiary
+					@click="onclickCancel"
+				>
+					{{ t('Buttons.Cancel') }}
+				</Btn>
+				<Chip :icon="CheckIcon" color="bg-success">
+					{{ t('Headings.Booked') }}
+				</Chip>
+			</div>
+
+			<!-- else if user cannot book event -->
+			<Chip v-else :color="theme.bg">
+				<span class="w-20 text-center">
+					{{ t('Headings.Full') }}
+				</span>
 			</Chip>
-		</div>
-
-		<Chip v-else-if="isBookable" :color="theme.bg">
-			<span class="w-20 text-center">
-				{{ t('Headings.Full') }}
-			</span>
-		</Chip>
-
-		<Btn
-			v-else-if="!noBooking"
-			:bgColor="theme.bg"
-			:borderColor="theme.border"
-			sm
-			@click="onclickConfirm"
-		>
-			{{ t(btn) }}
-		</Btn>
+		</template>
 
 		<Modal v-if="confirm" class="z-100">
 			<Dialog :dialog="dialog">
@@ -107,15 +121,17 @@ import { CheckIcon } from '@heroicons/vue/24/outline/index.js';
 export default defineComponent({
 	components: { CheckIcon },
 	props: {
-		data: { type: Object as PropType<any>, default: null },
-		theme: { type: Object as PropType<any>, default: null },
-		stats: { type: Array as PropType<any[]>, default: [] },
-		subSkillID: { type: String, default: '' },
-		type: { type: String, default: 'webinar' },
+		isMine: { type: Boolean, default: false },
+		booked: { type: Boolean, default: false },
+		bookable: { type: Boolean, default: false },
+
 		id: { type: String, default: '' },
-		link: { type: String, default: '' },
-		noBooking: { type: Boolean, default: false },
-		mine: { type: Boolean, default: false },
+		type: { type: String, default: 'webinar' },
+		theme: { type: Object as PropType<any>, default: null },
+		subSkillID: { type: String, default: '' },
+		start: { type: Number, default: 0 },
+
+		stats: { type: Array as PropType<any[]>, default: [] },
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -129,11 +145,7 @@ export default defineComponent({
 			}
 		});
 
-		const isEventBooked = ref(props.data?.booked ?? false);
-
-		const isBookable = computed(() => {
-			return props.data?.bookable ?? false;
-		});
+		const isEventBooked = ref(props.booked ?? false);
 
 		const dialog = <any>reactive({});
 		const confirm = ref(false);
@@ -284,7 +296,7 @@ export default defineComponent({
 		}
 
 		function getCancellationRefundStatus() {
-			let start = convertTimestampToDate(props.data.start);
+			let start = convertTimestampToDate(props.start);
 			let today = convertTimestampToDate(new Date().getTime() / 1000);
 
 			numberOfDaysUntil.value = start.date - today.date;
@@ -305,7 +317,6 @@ export default defineComponent({
 			btn,
 			CheckIcon,
 			isEventBooked,
-			isBookable,
 			onclickConfirm,
 			dialog,
 			confirm,

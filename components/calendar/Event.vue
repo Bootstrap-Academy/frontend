@@ -46,15 +46,16 @@
 		</IconText>
 
 		<CalendarEventBooking
-			:type="type"
+			:key="id"
+			:isMine="isMine"
+			:booked="data.booked"
+			:bookable="data.bookable"
 			:id="id"
+			:type="type"
 			:theme="theme"
-			:data="data"
-			:subSkillID="subSkillID"
+			:subSkillID="skillID"
+			:start="data.start"
 			:stats="stats"
-			:link="link"
-			:noBooking="noBooking"
-			:mine="isMine"
 		/>
 	</article>
 </template>
@@ -70,7 +71,6 @@ export default defineComponent({
 	components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
 	props: {
 		data: { type: Object as PropType<any>, default: null },
-		subSkillID: { type: String, default: '' },
 		noBooking: { type: Boolean, default: false },
 	},
 	setup(props) {
@@ -210,6 +210,7 @@ export default defineComponent({
 			onclickCard,
 			admin_link,
 			isMine,
+			skillID,
 		};
 	},
 });
