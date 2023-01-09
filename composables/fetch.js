@@ -64,7 +64,7 @@ const onResponse = async ({ request, options, response }) => {
 	let status = response?.ok ?? null;
 	const config = useRuntimeConfig();
 	if (config.NODE_ENV == 'development' && status == true) {
-		console.log('success', response._data);
+		// console.log('success', response._data);
 	}
 };
 
@@ -83,7 +83,7 @@ const onResponseError = async ({ request, options, response }) => {
 
 	const config = useRuntimeConfig();
 	if (config.NODE_ENV == 'development') {
-		console.log('error', details);
+		// console.log('error', details);
 	}
 
 	if (

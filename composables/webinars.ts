@@ -104,8 +104,9 @@ export async function getWebinarsForThisSubSkill(subSkillID: string) {
 			throw { data: { detail: 'Invalid sub skill ID' } };
 		}
 
-		const response = await GET(`/events/webinars?skill_id=${subSkillID}`);
-
+		const response = await GET(
+			`/events/calendar?type=webinar&skill_id=${subSkillID}`
+		);
 		const webinars = useWebinars();
 		webinars.value = response ?? [];
 

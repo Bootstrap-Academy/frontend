@@ -36,6 +36,13 @@
 			/>
 
 			<Input
+				:label="t('Inputs.AdminLink')"
+				v-model="form.admin_link.value"
+				@valid="form.admin_link.valid = $event"
+				:rules="form.admin_link.rules"
+			/>
+
+			<Input
 				:label="t('Inputs.StartDate')"
 				type="date"
 				v-model="date"
@@ -187,6 +194,11 @@ export default defineComponent({
 				valid: false,
 				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Link'],
 			},
+			admin_link: {
+				value: '',
+				valid: false,
+				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.AdminLink'],
+			},
 			start: {
 				value: '',
 				valid: false,
@@ -278,7 +290,7 @@ export default defineComponent({
 		});
 
 		function setFormInputs(data: any) {
-			form.name.value = data?.name ?? '';
+			form.name.value = data?.title ?? '';
 			form.name.valid = !!form.name.value;
 
 			form.description.value = data?.description ?? '';
@@ -287,34 +299,25 @@ export default defineComponent({
 			form.link.value = data?.link ?? '';
 			form.link.valid = !!form.link.value;
 
+			form.admin_link.value = data?.admin_link ?? '';
+			form.admin_link.valid = !!form.admin_link.value;
+
 			form.max_participants.value = data?.max_participants ?? 0;
 			form.max_participants.valid = !!form.max_participants.value;
 
 			form.price.value = data?.price ?? 0;
 			form.price.valid = true;
 
+			form.duration.value = data?.duration ?? 0;
+			form.duration.valid = !!form.duration.value;
+
 			let start = data?.start ?? 0;
-			let end = data?.end ?? 0;
+			let startDateObj = new Date(start * 1000);
 
-			if (!!start && start > 0) {
-				const dateObj = convertTimestampToDate(start);
-				const startDateObj = new Date(start * 1000);
-
-				date.value = `${dateObj.year}-${dateObj.month.number + 1}-${
-					dateObj.date
-				}`;
-				time.value = `${startDateObj.getHours()}:${startDateObj.getMinutes()}:00`;
-
-				form.start.value = data?.start ?? 0;
-				form.start.valid = !!form.start.value;
-
-				start = start * 1000;
-				end = end * 1000;
-
-				form.duration.value = Math.round((end - start) / 60000);
-				form.duration.valid = !!form.duration.value;
-			}
+			date.value = startDateObj.toISOString().split('T')[0];
+			time.value = startDateObj.toLocaleTimeString();
 		}
+
 		watch(
 			() => props.data,
 			(newValue, oldValue) => {

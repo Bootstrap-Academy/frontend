@@ -105,7 +105,6 @@ export default {
 			if (!!!sections || sections.length <= 0) return null;
 
 			let section = sections.find((sec) => sec.id == sectionID);
-			console.log('activeSection', section);
 
 			return !!section ? section : null;
 		});
@@ -116,8 +115,6 @@ export default {
 			if (!!!lectures || lectures.length <= 0) return null;
 
 			let lecture = lectures.find((lec) => lec.id == lectureID);
-
-			console.log('activeLecture', lecture);
 
 			return !!lecture ? lecture : null;
 		});

@@ -19,7 +19,7 @@
 				</h3>
 			</div>
 			<h3 v-else class="capitalize text-heading-4">
-				{{ heading }}
+				{{ title }}
 			</h3>
 
 			<h3
@@ -28,7 +28,7 @@
 				:class="[theme.text, theme.bgLight]"
 				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
 			>
-				{{ t(mine ? 'Buttons.MyWebinarLink' : 'Buttons.JoinLink') }}
+				{{ t(isMine ? 'Buttons.MyWebinarLink' : 'Buttons.JoinLink') }}
 			</h3>
 		</header>
 
@@ -54,7 +54,7 @@
 			:stats="stats"
 			:link="link"
 			:noBooking="noBooking"
-			:mine="mine"
+			:mine="isMine"
 		/>
 	</article>
 </template>
@@ -81,17 +81,7 @@ export default defineComponent({
 		});
 
 		const type = computed(() => {
-			let eventType = props.data?.type ?? '';
-			if (!!eventType) {
-				return eventType;
-			}
-
-			let isWebinar = props.data?.participants ?? null;
-			if (isWebinar != null) {
-				return 'webinar';
-			} else {
-				return 'coaching';
-			}
+			return props.data?.type ?? '';
 		});
 
 		const theme = computed(() => {
@@ -103,27 +93,28 @@ export default defineComponent({
 			}
 		});
 
-		const heading = computed(() => {
-			return props.data?.title ?? props.data?.name ?? type.value;
+		const title = computed(() => {
+			return props.data?.title ?? '';
 		});
 
 		const instructor = computed(() => {
-			return props.data?.coaching?.instructor ?? props.data?.instructor ?? null;
+			return props.data?.instructor ?? null;
 		});
 
-		const user: Ref<any> = useUser();
-
-		const mine = computed(() => {
-			let instructorID = instructor.value?.id ?? '';
-			let userID = user.value?.id ?? '';
-			if (!!!instructorID || !!!userID) return false;
-
-			return userID == instructorID;
+		const admin_link = computed(() => {
+			return props.data?.admin_link ?? '';
 		});
 
-		const skill = computed(() => {
-			let skillID = props.data?.skill_id ?? '';
-			return skillID.replace(/_/g, ' ');
+		const isMine = computed(() => {
+			return !!admin_link.value;
+		});
+
+		const skillID = computed(() => {
+			return props.data?.skill_id ?? '';
+		});
+
+		const skillName = computed(() => {
+			return skillID.value.replace(/_/g, ' ');
 		});
 
 		const start = computed(() => {
@@ -157,20 +148,30 @@ export default defineComponent({
 			return [
 				{
 					icon: IconSkill,
-					value: skill.value,
+					value: skillName.value,
 					heading: 'Headings.Skill',
 				},
+				// {
+				// 	icon: CalendarIcon,
+				// 	value:
+				// 		start.value.date != end.value.date
+				// 			? `${start.value.date} - ${end.value.date}`
+				// 			: start.value.date,
+				// 	heading: 'Headings.Date',
+				// },
+				// {
+				// 	icon: ClockIcon,
+				// 	value: `${start.value.time} - ${end.value.time}`,
+				// 	heading: 'Headings.Time',
+				// },
 				{
 					icon: CalendarIcon,
-					value:
-						start.value.date != end.value.date
-							? `${start.value.date} - ${end.value.date}`
-							: start.value.date,
+					value: start.value.date,
 					heading: 'Headings.Date',
 				},
 				{
 					icon: ClockIcon,
-					value: `${start.value.time} - ${end.value.time}`,
+					value: start.value.time,
 					heading: 'Headings.Time',
 				},
 				{
@@ -190,7 +191,9 @@ export default defineComponent({
 		});
 
 		function onclickCard() {
-			if (!!window && !!link.value) {
+			if (!!window && !!admin_link.value) {
+				window.open(admin_link.value, '_blank');
+			} else if (!!window && !!link.value) {
 				window.open(link.value, '_blank');
 			}
 		}
@@ -200,12 +203,13 @@ export default defineComponent({
 			id,
 			type,
 			theme,
-			heading,
+			title,
 			instructor,
 			stats,
 			link,
 			onclickCard,
-			mine,
+			admin_link,
+			isMine,
 		};
 	},
 });

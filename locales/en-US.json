@@ -395,6 +395,7 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"AdminLink": "Admin Link",
 		"WebinarName": "Webinar Name",
 		"StartTime": "Start Time",
 		"Link": "Link",

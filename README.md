@@ -4,6 +4,7 @@
 ⬜ Translation
 🔲 Animation
 ❌ middleware
+🗒️
 
 ❌ Tested on chrome
 ❌ Tested on firefox

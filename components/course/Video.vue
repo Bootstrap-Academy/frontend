@@ -16,6 +16,8 @@
 			playsInline
 			title="video player"
 			allowfullscreen
+			controlsList="nodownload"
+			oncontextmenu="return false;"
 		>
 			<track kind="captions" />
 			<source ref="refSource" :src="videoSRC" type="video/mp4" alt="Video" />

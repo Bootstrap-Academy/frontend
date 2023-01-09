@@ -21,7 +21,7 @@
 			</Chip>
 		</div>
 
-		<Chip v-else-if="isFilled" :color="theme.bg">
+		<Chip v-else-if="isBookable" :color="theme.bg">
 			<span class="w-20 text-center">
 				{{ t('Headings.Full') }}
 			</span>
@@ -129,16 +129,10 @@ export default defineComponent({
 			}
 		});
 
-		const isEventBooked = ref(props.type == 'webinar' && !!props.link);
+		const isEventBooked = ref(props.data?.booked ?? false);
 
-		const isFilled = computed(() => {
-			return (
-				props.data &&
-				props.type == 'webinar' &&
-				!!props.data.participants &&
-				!!props.data.max_participants &&
-				props.data.participants >= props.data.max_participants
-			);
+		const isBookable = computed(() => {
+			return props.data?.bookable ?? false;
 		});
 
 		const dialog = <any>reactive({});
@@ -311,7 +305,7 @@ export default defineComponent({
 			btn,
 			CheckIcon,
 			isEventBooked,
-			isFilled,
+			isBookable,
 			onclickConfirm,
 			dialog,
 			confirm,
