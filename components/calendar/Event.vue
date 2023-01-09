@@ -28,7 +28,7 @@
 				:class="[theme.text, theme.bgLight]"
 				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
 			>
-				{{ t(isMine ? 'Buttons.MyWebinarLink' : 'Buttons.JoinLink') }}
+				{{ t('Links.Link') }}
 			</h3>
 		</header>
 
@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ClockIcon, CalendarIcon } from '@heroicons/vue/24/outline/index.js';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';

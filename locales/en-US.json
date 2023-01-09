@@ -494,6 +494,7 @@
 		"AddEmail": "Add Email"
 	},
 	"Links": {
+		"Link": "Link",
 		"IHaveReadWebinarDeletePolicy": "I have read Webinar Cancellation/Delete policy and I agree to it.",
 		"ViewSkill": "View Skill",
 		"ViewSubSkill": "View Sub Skill",
