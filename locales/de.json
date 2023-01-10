@@ -606,6 +606,7 @@
 		"InputMinParticipants": "Muss größer sein als {placeholder} Teilnehmer",
 		"InputMaxParticipants": "Muss weniger als {placeholder} Teilnehmer sein",
 		"InputMinPrice": "Muss größer als {placeholder} Morphcoins sein",
+		"InputMaxPrice": "Muss kleiner als {placeholder} Morphcoins sein",
 		"InputMaxTags": "Max {placeholder} Tags erlaubt",
 		"InputMinTags": "Min. {placeholder} Tags erlaubt",
 		"InputEmailForm": "E-Mail-Format ist ungültig",
