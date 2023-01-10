@@ -29,6 +29,7 @@
 			v-model="input"
 			@blur="touched = true"
 			:autocomplete="autocomplete"
+			:min="min"
 		/>
 
 		<p
@@ -48,6 +49,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
+		min: { type: String || Number, default: '' },
 		autocomplete: { type: String, default: 'true' },
 		hint: { type: String, default: '' },
 		name: { type: String, default: '' },

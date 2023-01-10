@@ -48,12 +48,14 @@
 				v-model="date"
 				@valid="form.start.valid = $event"
 				:rules="form.start.rules"
+				:min="currentDate"
 			/>
 
 			<InputTime
 				label="Inputs.StartTime"
 				v-model="time"
 				@valid="form.start.valid = $event"
+				:min="currentTime"
 			/>
 
 			<Input
@@ -267,6 +269,8 @@ export default defineComponent({
 		// ============================================================= Calculating Start Time
 		const date = ref('');
 		const time = ref('00:00:00');
+		const currentDate = ref('');
+		const currentTime = ref('');
 
 		const startTime = computed(() => {
 			const [hrs, mins, secs] = time.value.split(':');
@@ -311,11 +315,20 @@ export default defineComponent({
 			form.duration.value = data?.duration ?? 0;
 			form.duration.valid = !!form.duration.value;
 
-			let start = data?.start ?? 0;
-			let startDateObj = new Date(start * 1000);
+			let currentDateObj = new Date(Date.now());
+			currentDate.value = currentDateObj.toISOString().split('T')[0];
+			currentTime.value = currentDateObj.toLocaleTimeString();
 
-			date.value = startDateObj.toISOString().split('T')[0];
-			time.value = startDateObj.toLocaleTimeString();
+			let start = data?.start ?? 0;
+
+			if (start == 0) {
+				date.value = currentDate.value;
+				time.value = currentTime.value;
+			} else {
+				let startDateObj = new Date(start * 1000);
+				date.value = startDateObj.toISOString().split('T')[0];
+				time.value = startDateObj.toLocaleTimeString();
+			}
 		}
 
 		watch(
@@ -464,6 +477,8 @@ export default defineComponent({
 			cancellationConfirmationCheck,
 			isEdit,
 			skill,
+			currentDate,
+			currentTime,
 		};
 	},
 });

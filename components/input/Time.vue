@@ -10,8 +10,6 @@
 				type="number"
 				min="0"
 				max="23"
-				maxlength="2"
-				minlength="1"
 				class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
 			/>
 			<h3 class="text-heading-1">:</h3>
@@ -21,8 +19,6 @@
 				type="number"
 				min="0"
 				max="59"
-				maxlength="2"
-				minlength="1"
 				class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
 			/>
 		</div>
@@ -45,6 +41,7 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
 	props: {
 		label: { type: String, default: 'Inputs.StartTime' },
+		min: { type: String, default: '' },
 		modelValue: { type: String, default: '' },
 	},
 	emits: ['update:modelValue', 'valid'],
@@ -59,29 +56,64 @@ export default defineComponent({
 
 		// ============================================================= computed
 
-		const error = computed(() => {
+		const minHrs = computed(() => {
+			if (!!!props.min) return -1;
+			let [hrs, mins, secs] = props.min.split(':');
+			return parseInt(hrs);
+		});
+
+		const minMins = computed(() => {
+			if (!!!props.min) return -1;
+			let [hrs, mins, secs] = props.min.split(':');
+			return parseInt(mins);
+		});
+
+		const error = ref('');
+
+		function checkMinValidityAfterBlur(hrs: number, mins: number) {
 			let msg: string = '';
 
-			if (hours.value < 0) {
+			// checking hrs
+			if (hrs < 0) {
 				msg = 'Hours must be greater than 0';
 				if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
-			} else if (hours.value > 23) {
+			} else if (hrs > 23) {
 				msg = 'Hours must be less than 23';
 				if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
-			} else if (minutes.value < 0) {
+			}
+			// checking minutes
+			else if (mins < 0) {
 				msg = 'Minutes must be greater than 0';
 				if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
-			} else if (minutes.value > 59) {
+			} else if (mins > 59) {
 				msg = 'Minutes must be less than 59';
 				if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
-			} else {
+			}
+
+			// Min time checking
+			else if (minHrs.value != -1 && minMins.value != 1) {
+				if (hrs < minHrs.value) {
+					msg = 'Hours cannot be set in the past';
+					if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+				} else if (hrs == minHrs.value && mins < minMins.value) {
+					msg = 'Minutes cannot be set in the past';
+					if (!!DOM_INPUT_MINS.value)
+						DOM_INPUT_MINS.value.setCustomValidity(msg);
+				}
+			}
+
+			// Otherwise no error
+			else {
 				msg = '';
 			}
 
+			if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
+			if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+
 			emit('valid', !!!msg);
 
-			return msg;
-		});
+			error.value = msg;
+		}
 
 		watch(
 			() => props.modelValue,
@@ -89,6 +121,7 @@ export default defineComponent({
 				const [hrs, mins, secs] = newValue.split(':');
 				hours.value = parseInt(hrs);
 				minutes.value = parseInt(mins);
+				checkMinValidityAfterBlur(hours.value, minutes.value);
 			},
 			{ deep: true, immediate: true }
 		);
@@ -105,7 +138,15 @@ export default defineComponent({
 			}
 		);
 
-		return { t, hours, minutes, DOM_INPUT_HRS, DOM_INPUT_MINS, error };
+		return {
+			t,
+			hours,
+			minutes,
+			DOM_INPUT_HRS,
+			DOM_INPUT_MINS,
+			error,
+			checkMinValidityAfterBlur,
+		};
 	},
 });
 </script>
