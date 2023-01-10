@@ -276,7 +276,7 @@
 		},
 		"About": {
 			"1": "Videokurse in allen Schwierigkeitsgraden.",
-			"2": "Webinare, Betreuungen, Zertifikate, Job-Angebote.",
+			"2": "Webinare, Betreuungen, Job-Angebote.",
 			"3": "Übungen",
 			"4": "Vollständig kostenfrei, wenn du dich engagierst"
 		},
@@ -600,7 +600,7 @@
 		"VerifyEmail": "Konto konnte nicht bestätigt werden. Versuche es später noch einmal",
 		"InputCodeFormat": "Ungültiges Codeformat",
 		"InputEmpty": "{placeholder} ist erforderlich",
-		"InputMinLength": "Muss länger als {placeholder} Zeichen sein",
+		"InputMinLength": "Muss {placeholder} oder mehr Zeichen sein",
 		"InputMaxLength": "Muss weniger als {placeholder} Zeichen sein",
 		"InputMinMins": "Muss größer als {placeholder} Minuten sein",
 		"InputMaxMins": "Muss weniger als {placeholder} Minuten sein",

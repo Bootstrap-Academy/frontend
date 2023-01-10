@@ -275,7 +275,7 @@
 		},
 		"About": {
 			"1": "Full-time video-based courses in every difficulty",
-			"2": "Webinars, coaching, certificates, job offers",
+			"2": "Webinars, coaching, job offers",
 			"3": "Exercises",
 			"4": "Completely for free, if you're helping"
 		},
@@ -595,7 +595,7 @@
 		"VerifyEmail": "Unable to verify account. Try again later",
 		"InputCodeFormat": "Invalid code format",
 		"InputEmpty": "{placeholder} is required",
-		"InputMinLength": "Must be greater than {placeholder} characters",
+		"InputMinLength": "Must {placeholder} or more characters",
 		"InputMaxLength": "Must be less than {placeholder} characters",
 		"InputMinMins": "Must be greater than {placeholder} mins",
 		"InputMaxMins": "Must be less than {placeholder} mins",
