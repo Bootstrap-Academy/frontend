@@ -36,7 +36,7 @@
 					tertiary
 					@click="onclickCancel"
 				>
-					{{ t('Buttons.Cancel') }}
+					{{ t('Buttons.CancelEventCard') }}
 				</Btn>
 				<Chip :icon="CheckIcon" color="bg-success">
 					{{ t('Headings.Booked') }}
