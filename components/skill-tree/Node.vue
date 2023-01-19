@@ -16,7 +16,7 @@
 			:height="active || completed ? 200 : 100"
 		>
 			<h6
-				class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none"
+				class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize"
 				:class="{
 					'pt-6': active,
 					'pt-7': completed,

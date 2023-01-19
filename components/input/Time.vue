@@ -35,13 +35,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
 		label: { type: String, default: 'Inputs.StartTime' },
 		min: { type: String, default: '' },
+		minDate: { type: String, default: '' },
 		modelValue: { type: String, default: '' },
 	},
 	emits: ['update:modelValue', 'valid'],
@@ -73,6 +74,11 @@ export default defineComponent({
 		function checkMinValidityAfterBlur(hrs: number, mins: number) {
 			let msg: string = '';
 
+			const selectedDate = new Date(props.minDate);
+			const currentDate = new Date();
+			const isFutureDate =
+				currentDate.getMilliseconds() - selectedDate.getMilliseconds() > 0;
+
 			// checking hrs
 			if (hrs < 0) {
 				msg = 'Hours must be greater than 0';
@@ -91,7 +97,7 @@ export default defineComponent({
 			}
 
 			// Min time checking
-			else if (minHrs.value != -1 && minMins.value != 1) {
+			else if (!isFutureDate && minHrs.value != -1 && minMins.value != 1) {
 				if (hrs < minHrs.value) {
 					msg = 'Hours cannot be set in the past';
 					if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
@@ -135,6 +141,12 @@ export default defineComponent({
 			() => minutes.value,
 			(newValue, oldValue) => {
 				emit('update:modelValue', `${hours.value}:${newValue}:00`);
+			}
+		);
+		watch(
+			() => props.minDate,
+			(newValue, oldValue) => {
+				checkMinValidityAfterBlur(hours.value, minutes.value);
 			}
 		);
 

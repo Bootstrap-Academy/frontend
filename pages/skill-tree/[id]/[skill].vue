@@ -25,6 +25,7 @@
 				:node="subSkill"
 				:active="true"
 				:completed="subSkill?.completed ?? false"
+				class="mx-auto"
 			/>
 			<h6
 				class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm"

@@ -16,6 +16,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
 		return navigateTo('/docs/privacy');
 	}
 
+	if (to.path.includes('impressum')) {
+		return navigateTo('/docs/imprint');
+	}
+
 	const cookie_accessToken = useCookie('accessToken');
 	if (to.path.includes('/auth/login') && !!cookie_accessToken.value) {
 		return navigateTo('/profile');

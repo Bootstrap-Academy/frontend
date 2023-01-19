@@ -56,6 +56,7 @@
 				v-model="time"
 				@valid="form.start.valid = $event"
 				:min="currentTime"
+				:minDate="date"
 			/>
 
 			<Input
@@ -80,7 +81,7 @@
 				<Rating stars :rating="rating" class="mb-3" />
 
 				<Input
-					:label="t('Inputs.Price')"
+					:label="t('Inputs.PricePerParticipant')"
 					:hint="inputPriceHint"
 					type="number"
 					v-model="form.price.value"
@@ -89,19 +90,6 @@
 					:data-tooltip="t('Body.WebinarPriceTooltip')"
 				/>
 			</div>
-
-			<p
-				v-if="maxPrice > 0"
-				class="text-body-1 py-2 px-4 text-warning bg-warning-light rounded-sm w-fit"
-			>
-				<span v-if="pricePerParticipant <= 0">
-					{{ t('Headings.PricePerParticipantMsg') }}
-				</span>
-				<span v-else>
-					{{ abbreviateNumber(pricePerParticipant) }}
-					{{ t('Headings.PricePerParticipant') }}
-				</span>
-			</p>
 
 			<div
 				class="self-end flex gap-card items-center mt-card flex-wrap justify-center sm:justify-end"
@@ -386,18 +374,6 @@ export default defineComponent({
 			);
 		}
 
-		const pricePerParticipant = computed(() => {
-			const price = parseInt(form.price.value ?? 0);
-			const maxParticipants = parseInt(form.max_participants.value ?? 0);
-
-			if (!!!price || price <= 0) return 0;
-			if (!!!maxParticipants || maxParticipants <= 0) return 0;
-
-			let ans = price / maxParticipants;
-
-			return roundOffTo(ans, 2);
-		});
-
 		// ============================================================= Delete Webinar
 		const confirm = ref(false);
 		const dialog = <any>reactive({});
@@ -432,12 +408,14 @@ export default defineComponent({
 						}
 						setLoading(true);
 
+						let startDate = props.data?.start ?? '';
+
 						const [success, error] = await deleteWebinar(props.data?.id ?? '');
 						setLoading(false);
 						confirm.value = false;
 
 						if (success) {
-							router.push(`/calendar`);
+							router.push(`/calendar?start=${startDate}`);
 						}
 
 						setTimeout(() => {
@@ -463,7 +441,6 @@ export default defineComponent({
 			onclickSubmitForm,
 			refForm,
 			t,
-			pricePerParticipant,
 			maxPrice,
 			inputPriceHint,
 			date,

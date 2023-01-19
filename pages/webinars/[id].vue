@@ -62,7 +62,7 @@ export default {
 		const webinar: Ref<any> = useWebinar();
 
 		const rating = computed(() => {
-			return webinar.value?.rating ?? 0;
+			return webinar.value?.instructor_rating ?? 0;
 		});
 
 		const skillID = computed(() => {

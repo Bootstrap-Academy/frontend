@@ -29,7 +29,7 @@ export async function deleteWebinar(id: string) {
 			throw { data: { detail: 'Invalid webinar Id' } };
 		}
 
-		const response = await DELETE(`/events/webinars/${id}`);
+		const response = await DELETE(`/events/calendar/${id}`);
 
 		return [response, null];
 	} catch (error: any) {
@@ -136,6 +136,7 @@ export async function registerForWebinarByID(webinarID: string) {
 		}
 
 		const response = await POST(`/events/webinars/${webinarID}/participants`);
+		await getBalance();
 
 		return [response, null];
 	} catch (error: any) {

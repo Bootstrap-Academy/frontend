@@ -284,7 +284,16 @@ export default defineComponent({
 				body: body,
 				primaryBtn: {
 					label: btnText,
-					onclick: () => {},
+					onclick: async () => {
+						setLoading(true);
+						const [success, error] = await cancelCalendarEvent(props.id);
+						setLoading(false);
+
+						openSnackbar(
+							success ? 'success' : 'error',
+							success ? 'Success.EventCancelled' : error?.detail ?? ''
+						);
+					},
 				},
 				secondaryBtn: {
 					label: 'Buttons.Back',

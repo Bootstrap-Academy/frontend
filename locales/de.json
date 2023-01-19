@@ -396,6 +396,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"PricePerParticipant": "Preis pro Teilnehmer",
 		"AdminLink": "Admin-Link",
 		"WebinarName": "Webinar-Name",
 		"StartTime": "Start Time",
@@ -556,6 +557,7 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"EventCancelled": "Veranstaltung wurde erfolgreich abgesagt.",
 		"SubmitWebinarRating": "Webinarbewertung erfolgreich übermittelt",
 		"CancelWebinarRating": "Abgebrochene Webinar-Bewertung.",
 		"EditWebinar": "Webinar erfolgreich bearbeitet",

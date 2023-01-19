@@ -41,7 +41,7 @@ export async function bookCoachingForThisSubSkillWithThisInstructor(
 		}
 
 		const response = await POST(`/events/coachings/${subSkillID}/${slot_id}`);
-
+		await getBalance();
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
