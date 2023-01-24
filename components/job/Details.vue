@@ -56,7 +56,7 @@ export default defineComponent({
 
 			let updatedArr = arr.map((item) => {
 				return {
-					text: item[1],
+					text: `${item[1]} level ${item[2]}`,
 					link: `/skill-tree/${item[0]}?subSkillID=${item[1]}`,
 				};
 			});
