@@ -46,7 +46,7 @@
 		"Rejected": "Abgelehnt",
 		"MyCertificates": "Zertifikate",
 		"EventTypes": "Event-Arten",
-		"Coaching": "Betreuung",
+		"Coaching": "Coaching",
 		"Exam": "Prüfung",
 		"Webinar": "Webinar",
 		"UpcomingEvents": "Kommende Veranstaltungen",
@@ -276,7 +276,7 @@
 		},
 		"About": {
 			"1": "Videokurse in allen Schwierigkeitsgraden.",
-			"2": "Webinare, Betreuungen, Job-Angebote.",
+			"2": "Webinare, Coachings, Job-Angebote.",
 			"3": "Übungen",
 			"4": "Vollständig kostenfrei, wenn du dich engagierst"
 		},
@@ -290,8 +290,8 @@
 				"Body": "Manchmal bleiben Fragen offen, manchmal möchte man Erfahrungsberichte hören. Dafür gibt es Webinare. Von euch, für euch. Gehalten von Experten für die, die es werden wollen."
 			},
 			"3": {
-				"Heading": "Betreuungen",
-				"Body": "Du brauchst diese ganz besondere, individuelle Hilfe? Du möchtest ein Mentoring von einem Experten direkt für dich? Dafür gibt's die Betreuungen."
+				"Heading": "Coachings",
+				"Body": "Du brauchst diese ganz besondere, individuelle Hilfe? Du möchtest ein Mentoring von einem Experten direkt für dich? Dafür gibt's die Coachings."
 			},
 			"4": {
 				"Heading": "Job-Angebote",
