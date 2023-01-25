@@ -177,16 +177,16 @@
 	"Body": {
 		"WebinarNotParticipated": "Ich habe nicht teilgenommen",
 		"WebinarPriceTooltip": "Sterne < 3, Höchstpreis = 0 MC. 3 - 4 Sterne, der Höchstpreis beträgt 5000 MC. 4 - 4,5 Sterne, der Höchstpreis beträgt 10000 MC. 4,5 Sterne und höher haben keine Höchstpreisgrenze.",
-		"ConfirmDeleteWebinarLessThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, wird Ihnen keine Strafe auferlegt.",
-		"ConfirmDeleteWebinarGreaterThan0": "Möchten Sie das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer größer als 0 ist, müssen Sie möglicherweise mit einer Strafe rechnen. Bitte lesen Sie die Stornierungsbedingungen unten, bevor Sie das Webinar löschen.",
+		"ConfirmDeleteWebinarLessThan0": "Möchtest du das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, passiert sonst nichts.",
+		"ConfirmDeleteWebinarGreaterThan0": "Möchtest du das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer größer als 0 ist, musst du möglicherweise mit einer Strafe rechnen. Bitte lies die Stornierungsbedingungen aufmerksam, bevor du das Webinar löschst.",
 		"CancelEvent": "Bist du sicher, dass du abbrechen möchtest?",
-		"CancelEvent100%": "Sie haben Anspruch auf 100% Rückerstattung.",
-		"CancelEvent50%": "Sie haben Anspruch auf 50 % Rückerstattung.",
-		"CancelEvent0%": "Sie erhalten keine Rückerstattung.",
+		"CancelEvent100%": "Du hast Anspruch auf 100% Rückerstattung.",
+		"CancelEvent50%": "Du hast Anspruch auf 50 % Rückerstattung.",
+		"CancelEvent0%": "Du erhälst keine Rückerstattung.",
 		"BookedEventsFilterToolTip": "Zeigt Veranstaltungen an, die von Ihnen gebucht wurden",
 		"MyEventsFilterToolTip": "Zeigt Ereignisse an, die von Ihnen erstellt wurden",
 		"ThisIsFirstLecture": "Dies ist die erste Vorlesung",
-		"CourseCompleted": "Sie sind natürlich am Ende angelangt.",
+		"CourseCompleted": "Du hast das Ende erreicht.",
 		"GiveWebinarsMsg": "Werde Sub-Skill-Level 15 oder schick uns über das Kontakt-Formular Nachweise zu, um Webinare erstellen zu können",
 		"GiveCoachingMsg": "Werde Sub-Skill-Level 42 oder schick uns über das Kontakt-Formular Referenzen zu, um Coachings anbieten zu können",
 		"RootSkillTreeLoading": "Root Skill Tree wird geladen",
@@ -255,8 +255,8 @@
 	},
 	"List": {
 		"WebinarCancellationByOwnerPolicy": {
-			"1": "Wenn kein Benutzer dieses Webinar gebucht hat, können Sie es ohne Strafe stornieren.",
-			"2": "Wenn ein oder mehrere Benutzer dieses Webinar gebucht haben, dann können Sie nur in Notfällen oder im Krankheitsfall stornieren. Andernfalls muss das nächste Webinar kostenlos sein."
+			"1": "Wenn kein Benutzer dieses Webinar gebucht hat, kannst du es ohne Strafe stornieren.",
+			"2": "Wenn ein oder mehrere Benutzer dieses Webinar gebucht haben, dann kannst du nur in Notfällen oder im Krankheitsfall stornieren. Andernfalls muss das nächste Webinar kostenlos sein."
 		},
 		"EventCancellationPolicy": {
 			"1": "7 Tage vor der Veranstaltung oder früher: 100 % Rückerstattung",
@@ -596,7 +596,7 @@
 	"Error": {
 		"WebinarPrice": "Für die Bewertung {rating} beträgt der Höchstpreis {maxPrice}MC",
 		"WebinarRating": "Die Bewertung muss größer als 0 sein",
-		"MustAgreeBeforeInOrderToDeleteWebinar": "Sie müssen zustimmen, um das Webinar zu löschen.",
+		"MustAgreeBeforeInOrderToDeleteWebinar": "Du musst zustimmen, um das Webinar zu löschen.",
 		"NoLecturesAvailable": "Keine Vorlesungen vorhanden",
 		"NoDescriptionAvailable": "Keine Beschreibung verfügbar",
 		"VerifyEmail": "Konto konnte nicht bestätigt werden. Versuche es später noch einmal",
