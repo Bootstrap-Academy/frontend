@@ -396,6 +396,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"NoPriceLimit": "Keine Preisbegrenzung",
 		"PricePerParticipant": "Preis pro Teilnehmer",
 		"AdminLink": "Admin-Link",
 		"WebinarName": "Webinar-Name",

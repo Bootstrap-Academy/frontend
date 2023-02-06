@@ -152,9 +152,11 @@ export default defineComponent({
 		});
 
 		const inputPriceHint = computed(() => {
-			return t('Inputs.PriceHint', {
-				placeholder: abbreviateNumber(maxPrice.value),
-			});
+			return maxPrice.value == -1
+				? t('Inputs.NoPriceLimit')
+				: t('Inputs.PriceHint', {
+						placeholder: abbreviateNumber(maxPrice.value),
+				  });
 		});
 
 		// ============================================================= refs
