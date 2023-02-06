@@ -162,7 +162,7 @@ export default defineComponent({
 		// ============================================================= refs
 		const refForm = ref<HTMLFormElement | null>(null);
 
-		// ============================================================= reactive
+		// ============================================================= reactive form
 		const form = reactive<IForm>({
 			name: {
 				value: '',
