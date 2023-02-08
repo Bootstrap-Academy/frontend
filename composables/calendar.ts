@@ -13,7 +13,11 @@ export async function getCalendar() {
 		calendar.value = response ?? null;
 
 		const ics = useICS();
-		ics.value = response?.ics_booked_only ?? '';
+		ics.value = `https://api-test.bootstrap.academy/events/calendar/${
+			response?.ics_token ?? ''
+		}/academy.ics`;
+
+		console.log('ics.value', ics.value);
 
 		const events = useEvents();
 		events.value = response?.events ?? [];

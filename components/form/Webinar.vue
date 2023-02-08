@@ -86,7 +86,7 @@
 					type="number"
 					v-model="form.price.value"
 					@valid="form.price.valid = $event"
-					:rules="form.price.rules"
+					:rules="inputPriceRules"
 					:data-tooltip="t('Body.WebinarPriceTooltip')"
 				/>
 			</div>
@@ -159,6 +159,17 @@ export default defineComponent({
 				  });
 		});
 
+		const inputPriceRules = computed(() => {
+			return maxPrice.value == -1
+				? [(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price']
+				: [
+						(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price',
+						(v: number) => !v || v >= 1 || 'Error.InputMinPrice_1',
+						(v: number) =>
+							v <= maxPrice.value || `Error.InputMaxPrice_${maxPrice.value}`,
+				  ];
+		});
+
 		// ============================================================= refs
 		const refForm = ref<HTMLFormElement | null>(null);
 
@@ -217,13 +228,6 @@ export default defineComponent({
 			price: {
 				value: 0,
 				valid: maxPrice.value <= 0,
-				rules: [
-					(v: number) => !!v || v >= 0 || 'Error.InputEmpty_Inputs.Price',
-					(v: number) => !v || v >= 1 || 'Error.InputMinPrice_1',
-					(v: number) =>
-						(maxPrice.value != -1 && v <= maxPrice.value) ||
-						`Error.InputMaxPrice_${maxPrice.value}`,
-				],
 			},
 			submitting: false,
 			validate: () => {
@@ -458,6 +462,7 @@ export default defineComponent({
 			skill,
 			currentDate,
 			currentTime,
+			inputPriceRules,
 		};
 	},
 });
