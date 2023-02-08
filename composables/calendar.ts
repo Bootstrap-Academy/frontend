@@ -17,8 +17,6 @@ export async function getCalendar() {
 			response?.ics_token ?? ''
 		}/academy.ics`;
 
-		console.log('ics.value', ics.value);
-
 		const events = useEvents();
 		events.value = response?.events ?? [];
 
