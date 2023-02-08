@@ -4,7 +4,13 @@ export default defineNuxtConfig({
 		pageTransition: { name: 'page', mode: 'out-in' },
 		layoutTransition: { name: 'layout', mode: 'out-in' },
 	},
-	buildModules: ['@nuxtjs/tailwindcss'],
+	css: ['~/assets/css/tailwind.css'],
+	postcss: {
+		plugins: {
+			tailwindcss: {},
+			autoprefixer: {},
+		},
+	},
 	runtimeConfig: {
 		public: {
 			BASE_API_URL: 'https://api-test.bootstrap.academy',

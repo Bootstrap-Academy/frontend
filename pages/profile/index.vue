@@ -19,7 +19,6 @@
 
 <template>
 	<main
-		ref="aos"
 		class="container-fluid pb-container mt-main grid gap-container grid-cols-1 midXl:grid-cols-[275px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)]"
 	>
 		<UserProfile
@@ -45,13 +44,7 @@ export default {
 	setup() {
 		const user = useUser();
 
-		const aos = ref<HTMLDivElement | null>(null);
-
-		onMounted(() => {
-			setAOSViaParent(aos.value, 'aos', 'show', []);
-		});
-
-		return { user, aos };
+		return { user };
 	},
 };
 </script>

@@ -103,12 +103,12 @@ export default {
 
 		const rootSkillTree: Ref<any> = useRootSkillTree();
 
-		setLoading(true);
-
 		const nodes: any[] = reactive([]);
 		const nodeSize = ref(0);
 
 		onMounted(async () => {
+			setLoading(true);
+
 			const [success, error] = await getRootSkillTree();
 
 			if (!!error || !!!success) {
