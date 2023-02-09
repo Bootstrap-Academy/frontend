@@ -112,9 +112,7 @@ export default {
 			}
 
 			Object.assign(nodes, [...rootSkillTree.value.skills]);
-
 			resetMap();
-
 			loading.value = false;
 		});
 
