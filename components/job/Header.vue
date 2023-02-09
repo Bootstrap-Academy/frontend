@@ -40,7 +40,7 @@ import {
 	BriefcaseIcon,
 	CurrencyDollarIcon,
 	MapPinIcon,
-} from '@heroicons/vue/24/solid/index.js';
+} from '@heroicons/vue/24/solid';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 
 import { useI18n } from 'vue-i18n';

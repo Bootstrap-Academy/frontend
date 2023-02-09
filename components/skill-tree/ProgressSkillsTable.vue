@@ -144,7 +144,7 @@
 import { useI18n } from 'vue-i18n';
 
 import { defineComponent, PropType } from 'vue';
-import { EyeIcon, UserGroupIcon } from '@heroicons/vue/24/outline/index.js';
+import { EyeIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import IconCoaching from '~/components/icon/Coaching.vue';
 
 export default defineComponent({

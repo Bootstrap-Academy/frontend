@@ -73,7 +73,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline/index.js';
+import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
 	props: { noAnimate: { type: Boolean, default: false } },

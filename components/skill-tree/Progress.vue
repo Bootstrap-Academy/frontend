@@ -74,7 +74,7 @@
 import { useI18n } from 'vue-i18n';
 
 import { defineComponent, PropType } from 'vue';
-import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline/index.js';
+import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
 	components: {

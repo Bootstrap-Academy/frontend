@@ -38,7 +38,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { PlayIcon } from '@heroicons/vue/24/outline/index.js';
+import { PlayIcon } from '@heroicons/vue/24/outline';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 import { useI18n } from 'vue-i18n';
 

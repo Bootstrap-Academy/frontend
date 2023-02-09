@@ -61,7 +61,7 @@ import {
 	IdentificationIcon,
 	ShoppingCartIcon,
 	ChatBubbleLeftIcon,
-} from '@heroicons/vue/24/outline/index.js';
+} from '@heroicons/vue/24/outline';
 import IconBug from '~/components/icon/Bug.vue';
 import IconCoaching from '~/components/icon/Coaching.vue';
 import { useI18n } from 'vue-i18n';

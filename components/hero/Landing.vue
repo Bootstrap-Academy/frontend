@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { ArrowRightIcon } from '@heroicons/vue/24/solid/index.js';
+import { ArrowRightIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

@@ -30,7 +30,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
-import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline/index.js';
+import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
 	components: { EllipsisVerticalIcon },

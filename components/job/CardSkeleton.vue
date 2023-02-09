@@ -37,7 +37,7 @@ import {
 	BriefcaseIcon,
 	CurrencyDollarIcon,
 	MapPinIcon,
-} from '@heroicons/vue/24/solid/index.js';
+} from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	components: { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon },

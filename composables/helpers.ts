@@ -116,7 +116,7 @@ import {
 	InformationCircleIcon,
 	XCircleIcon,
 	CheckCircleIcon,
-} from '@heroicons/vue/24/solid/index.js';
+} from '@heroicons/vue/24/solid';
 
 function useSuccessTheme() {
 	return {

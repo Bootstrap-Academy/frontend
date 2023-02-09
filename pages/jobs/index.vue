@@ -86,10 +86,7 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
-import {
-	AdjustmentsVerticalIcon,
-	XCircleIcon,
-} from '@heroicons/vue/24/solid/index.js';
+import { AdjustmentsVerticalIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({
 	middleware: ['auth'],

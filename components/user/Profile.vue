@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { EnvelopeIcon, CalendarIcon } from '@heroicons/vue/24/outline/index.js';
+import { EnvelopeIcon, CalendarIcon } from '@heroicons/vue/24/outline';
 import { useI18n } from 'vue-i18n';
 
 export default {

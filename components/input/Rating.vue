@@ -28,7 +28,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { StarIcon } from '@heroicons/vue/24/solid/index.js';
+import { StarIcon } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	props: {

@@ -76,7 +76,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { XCircleIcon } from '@heroicons/vue/24/solid/index.js';
+import { XCircleIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({
 	middleware: ['auth'],

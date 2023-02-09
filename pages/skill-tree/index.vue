@@ -49,10 +49,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import {
-	PlusCircleIcon,
-	ArrowUpTrayIcon,
-} from '@heroicons/vue/24/solid/index.js';
+import { PlusCircleIcon, ArrowUpTrayIcon } from '@heroicons/vue/24/solid';
 import { Ref } from 'vue';
 
 export default {
@@ -107,8 +104,6 @@ export default {
 		const nodeSize = ref(0);
 
 		onMounted(async () => {
-			setLoading(true);
-
 			const [success, error] = await getRootSkillTree();
 
 			if (!!error || !!!success) {

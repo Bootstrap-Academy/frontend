@@ -68,7 +68,7 @@ import {
 	ArrowRightCircleIcon,
 	ArrowLeftIcon,
 	ArrowRightIcon,
-} from '@heroicons/vue/24/solid/index.js';
+} from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	components: {

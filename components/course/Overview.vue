@@ -86,7 +86,7 @@ import {
 	KeyIcon,
 	LanguageIcon,
 	Square3Stack3DIcon,
-} from '@heroicons/vue/24/outline/index.js';
+} from '@heroicons/vue/24/outline';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

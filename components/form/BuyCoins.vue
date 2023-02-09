@@ -106,7 +106,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid/index.js';
+import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 import { IForm } from '~~/types/form';
 

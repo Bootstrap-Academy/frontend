@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid/index.js';
+import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {

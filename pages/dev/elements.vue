@@ -48,10 +48,7 @@
 </template>
 
 <script>
-import {
-	ArrowRightIcon,
-	ArrowLeftIcon,
-} from '@heroicons/vue/24/solid/index.js';
+import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({
 	layout: 'inner',

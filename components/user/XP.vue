@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { BoltIcon } from '@heroicons/vue/24/outline/index.js';
+import { BoltIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
 	props: {

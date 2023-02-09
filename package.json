@@ -16,7 +16,7 @@
 		"vue-i18n": "^9.2.2"
 	},
 	"dependencies": {
-		"@heroicons/vue": "^2.0.13",
+		"@heroicons/vue": "^2.0.15",
 		"async-mutex": "^0.4.0",
 		"dompurify": "^2.4.1",
 		"gleap": "^8.2.6",

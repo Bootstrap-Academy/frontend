@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { ChevronDownIcon } from '@heroicons/vue/24/solid/index.js';
+import { ChevronDownIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {

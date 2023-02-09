@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { PlayIcon } from '@heroicons/vue/24/outline/index.js';
+import { PlayIcon } from '@heroicons/vue/24/outline';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 
 export default defineComponent({

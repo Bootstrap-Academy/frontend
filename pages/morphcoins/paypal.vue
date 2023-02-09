@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { XCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/solid/index.js';
+import { XCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 import { computed, defineComponent } from 'vue';
 

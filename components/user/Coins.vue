@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { PlusIcon } from '@heroicons/vue/24/solid/index.js';
+import { PlusIcon } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	props: {

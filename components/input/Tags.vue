@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { XMarkIcon } from '@heroicons/vue/24/solid/index.js';
+import { XMarkIcon } from '@heroicons/vue/24/solid';
 import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
