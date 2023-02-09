@@ -131,7 +131,7 @@ export default defineComponent({
 			}
 
 			let { date, month, year } = convertTimestampToDate(timestamp);
-			let time = new Date(timestamp * 1000).toLocaleTimeString();
+			let time = new Date(timestamp * 1000).toTimeString();
 			let [hr, min, sec] = time.split(':');
 
 			return {
