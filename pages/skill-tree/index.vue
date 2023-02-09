@@ -87,7 +87,7 @@ export default {
 		}
 
 		const setupComplete = ref(false);
-		const loading = useLoading();
+		const loading = ref(true);
 
 		const cookie_nextNode = useCookie<{ row: number; column: number }>(
 			'rootTree_nextNode'
@@ -103,8 +103,6 @@ export default {
 
 		const rootSkillTree: Ref<any> = useRootSkillTree();
 
-		setLoading(true);
-
 		const nodes: any[] = reactive([]);
 		const nodeSize = ref(0);
 
@@ -112,7 +110,7 @@ export default {
 			const [success, error] = await getRootSkillTree();
 
 			if (!!error || !!!success) {
-				setLoading(false);
+				loading.value = false;
 				return;
 			}
 
@@ -120,7 +118,7 @@ export default {
 
 			resetMap();
 
-			setLoading(false);
+			loading.value = false;
 		});
 
 		// ! ======================================================= Nodes

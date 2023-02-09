@@ -311,7 +311,7 @@ export default defineComponent({
 
 			let currentDateObj = new Date(Date.now());
 			currentDate.value = currentDateObj.toISOString().split('T')[0];
-			currentTime.value = currentDateObj.toLocaleTimeString();
+			currentTime.value = currentDateObj.toTimeString();
 
 			let start = data?.start ?? 0;
 
@@ -321,7 +321,7 @@ export default defineComponent({
 			} else {
 				let startDateObj = new Date(start * 1000);
 				date.value = startDateObj.toISOString().split('T')[0];
-				time.value = startDateObj.toLocaleTimeString();
+				time.value = startDateObj.toTimeString();
 			}
 		}
 

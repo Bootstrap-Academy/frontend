@@ -100,8 +100,7 @@ export default {
 
 		// ! ======================================================= Set Up
 		const setupComplete = ref(false);
-		const loading = useLoading();
-		setLoading(true);
+		const loading = ref(true);
 
 		const cookie_nextNode = useCookie<{ row: number; column: number }>(
 			'subTree_nextNode'
@@ -200,14 +199,14 @@ export default {
 
 		onMounted(async () => {
 			if (!!!subTreeId.value) {
-				setLoading(false);
+				loading.value = false;
 				return;
 			}
 
 			const [success, error] = await getSubSkillTree(subTreeId.value);
 
 			if (!!error) {
-				setLoading(false);
+				loading.value = false;
 				return;
 			}
 
@@ -215,7 +214,7 @@ export default {
 
 			resetMap();
 
-			setLoading(false);
+			loading.value = false;
 		});
 
 		// ! ======================================================= Nodes
