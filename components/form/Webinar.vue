@@ -314,7 +314,6 @@ export default defineComponent({
 			currentTime.value = currentDateObj.toTimeString();
 
 			let start = data?.start ?? 0;
-
 			if (start == 0) {
 				date.value = currentDate.value;
 				time.value = currentTime.value;
