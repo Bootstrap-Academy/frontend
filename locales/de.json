@@ -11,7 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
-		"Skill": "Können",
+		"Skill": "Skill",
 		"WebinarRating": "Webinar bewerten",
 		"CancellationPolicy": "Stornierungsbedingungen",
 		"TodayDate": "Heutiges Datum",
@@ -24,7 +24,7 @@
 		"CourseCompleted": "Kurs abgeschlossen",
 		"CreateWebinar": "Webinar erstellen",
 		"EditWebinar": "Webinar bearbeiten",
-		"RootSkillTree": "Root-Fähigkeitsbaum",
+		"RootSkillTree": "Root-Skilltree",
 		"WelcomeBack": "Wir freuen uns, dich wiederzusehen!",
 		"Signup": "Erstelle dir einen Account",
 		"WelcomeTo": "Willkommen bei der",
@@ -170,9 +170,9 @@
 		"Full": "Voll",
 		"Mins": "{n} Min | {n} Mins",
 		"And": "And",
-		"ActiveSkills": "Aktive Fähigkeiten",
-		"CompletedSkills": "Abgeschlossene Fähigkeiten",
-		"OtherSkills": "Andere Fähigkeiten"
+		"ActiveSkills": "Aktive Skills",
+		"CompletedSkills": "Abgeschlossene Skills",
+		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
 		"WebinarNotParticipated": "Ich habe nicht teilgenommen",
@@ -249,9 +249,9 @@
 		"AddedEmail": "Deine E-Mail-Adresse wurde deinem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde dir an Ihre hinzugefügte E-Mail-Adresse gesendet. Bitte verwende diesen Code, um dein Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
 		"NotLoggedIn": "Bitte melde dich an, um fortzufahren.",
 		"EditNickname": "kann nach dem {placeholder} geändert werden",
-		"ActiveSkills": "Alle Fähigkeiten, die du gerade verbesserst.",
-		"CompletedSkills": "Alle Fähigkeiten, die du schon abgeschlossen hast.",
-		"OtherSkills": "Rest der Fähigkeiten, die zum Erkunden verfügbar sind."
+		"ActiveSkills": "Alle Skills, die du gerade verbesserst.",
+		"CompletedSkills": "Alle Skills, die du schon abgeschlossen hast.",
+		"OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind."
 	},
 	"List": {
 		"WebinarCancellationByOwnerPolicy": {
@@ -350,8 +350,8 @@
 				"Body": "Halte Webinare als Dozent. Du kannst etwas schon richtig gut, vielleicht hast du schon gearbeitet und willst dein Wissen in Webinaren teilen? Wenn du Level 15 in einem Skill erreicht hast, bekommst du die Fähigkeit selbst Webinare zu halten! Das Beste: Den Großteil der MorphCoin darfst du behalten!"
 			},
 			"5": {
-				"Heading": "Betreuer",
-				"Body": "Bewirb dich und werde Betreuer. Du möchtest den Menschen direkt und individuell helfen? Dazu brauchst du nur den Skill - auf Level 42 - und ein paar Softskills. Was du verlangst, liegt ganz bei dir (und deinem Rating)!"
+				"Heading": "Coachings",
+				"Body": "Bewirb dich und werde Coach. Du möchtest den Menschen direkt und individuell helfen? Dazu brauchst du nur den Skill - auf Level 42 - und ein paar Softskills. Was du verlangst, liegt ganz bei dir (und deinem Rating)!"
 			},
 			"6": {
 				"Heading": "Bug Bounty",
@@ -400,7 +400,7 @@
 		"PricePerParticipant": "Preis pro Teilnehmer",
 		"AdminLink": "Admin-Link",
 		"WebinarName": "Webinar-Name",
-		"StartTime": "Start Time",
+		"StartTime": "Startzeit",
 		"Link": "Verknüpfung",
 		"StartDate": "Anfangsdatum",
 		"Duration": "Dauer",
@@ -429,7 +429,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
-		"EditCoaching": "Trainer bearbeiten",
+		"EditCoaching": "Coaching bearbeiten",
 		"SubmitWebinarRating": "Bewertung abgeben",
 		"DeleteWebinar": "Webinar löschen",
 		"YesDeleteWebinar": "Ja, Webinar löschen",
@@ -498,9 +498,9 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
-		"Link": "Verknüpfung",
+		"Link": "Link",
 		"IHaveReadWebinarDeletePolicy": "Ich habe die Webinar-Stornierungs-/Löschrichtlinie gelesen und stimme ihr zu.",
-		"ViewSkill": "Fähigkeit anzeigen",
+		"ViewSkill": "Skill anzeigen",
 		"ViewSubSkill": "Sub-Skill anzeigen",
 		"GoToJobs": "Zu den Jobs",
 		"CloseProgressDetails": "Fortschrittsdetails schließen",
@@ -680,12 +680,12 @@
 	},
 	"EmptyStates": {
 		"SkillTree": {
-			"Heading": "Fertigkeitsbaum in Bearbeitung",
-			"Body": "Dieser Fähigkeitsbaum wird derzeit erstellt. Bitte versuche es später noch einmal!"
+			"Heading": "Skilltree in Bearbeitung",
+			"Body": "Dieser Skilltree wird derzeit erstellt. Bitte versuche es später noch einmal!"
 		},
 		"SkillProgress": {
 			"Heading": "@:Headings.SkillPoints",
-			"Body": "Erkunde den Fähigkeitsbaum, um loszulegen."
+			"Body": "Erkunde den Skilltree, um loszulegen."
 		},
 		"Course": {
 			"Heading": "Kurs nicht gefunden",
@@ -693,7 +693,7 @@
 		},
 		"CourseCardSM": {
 			"Heading": "Keine beobachteten Kurse",
-			"Body": "Du hast dir noch keine Kurse angesehen. Erkunde den Fähigkeitsbaum, um loszulegen."
+			"Body": "Du hast dir noch keine Kurse angesehen. Erkunde den Skilltree, um loszulegen."
 		},
 		"Courses": {
 			"Heading": "Keine passenden Kurse",
