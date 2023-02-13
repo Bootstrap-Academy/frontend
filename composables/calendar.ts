@@ -13,7 +13,8 @@ export async function getCalendar() {
 		calendar.value = response ?? null;
 
 		const ics = useICS();
-		ics.value = `https://api-test.bootstrap.academy/events/calendar/${
+		const config = useRuntimeConfig();
+		ics.value = `${config.BASE_API_URL}/events/calendar/${
 			response?.ics_token ?? ''
 		}/academy.ics`;
 
