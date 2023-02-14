@@ -11,6 +11,11 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"EnterInformation": "Information eingeben",
+		"PurchaseMorphcoins": "Kaufe Morphcoins",
+		"SelectType": "Typ auswählen",
+		"Person": "Privatperson",
+		"Business": "Gewerbe",
 		"Skill": "Skill",
 		"WebinarRating": "Webinar bewerten",
 		"CancellationPolicy": "Stornierungsbedingungen",
@@ -175,6 +180,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"BuyCoins": "Bitte geben Sie die erforderlichen Informationen ein, um Münzen von der Bootstrap Academy zu kaufen",
 		"WebinarNotParticipated": "Ich habe nicht teilgenommen",
 		"WebinarPriceTooltip": "Sterne < 3, Höchstpreis = 0 MC. 3 - 4 Sterne, der Höchstpreis beträgt 5000 MC. 4 - 4,5 Sterne, der Höchstpreis beträgt 10000 MC. 4,5 Sterne und höher haben keine Höchstpreisgrenze.",
 		"ConfirmDeleteWebinarLessThan0": "Möchtest du das Webinar wirklich löschen? Da die Gesamtzahl der Teilnehmer 0 beträgt, passiert sonst nichts.",
@@ -396,6 +402,9 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Country": "Land",
+		"Address": "Adresse",
+		"VAT_ID": "Umsatzsteuer-ID",
 		"NoPriceLimit": "Keine Preisbegrenzung",
 		"PricePerParticipant": "Preis pro Teilnehmer",
 		"AdminLink": "Admin-Link",

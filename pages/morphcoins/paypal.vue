@@ -3,12 +3,76 @@
 		class="h-screen-inner container grid place-items-center w-full overflow-scroll pt-container pb-container"
 		:class="success == null ? 'bg-white' : ''"
 	>
-		<div
-			v-if="success == null"
-			id="paypal-button-container"
-			ref="paypal"
-			class="w-full max-w-xl"
-		></div>
+		<div v-if="success == null">
+			<h1 v-if="locale == 'de'" class="mb-2 text-heading-1 text-subheading">
+				<span class="text-black font-black font-body">
+					{{ t('Headings.Morphcoins', { n: coinsToBuy }, coinsToBuy) }}
+				</span>
+				für
+				<span class="text-black font-black font-body">{{ inEuros }} euros</span>
+				kaufen
+			</h1>
+			<h1 v-else class="mb-2 text-heading-1 text-subheading">
+				Buying
+				<span class="text-black font-black font-body">
+					{{ t('Headings.Morphcoins', { n: coinsToBuy }, coinsToBuy) }}
+				</span>
+				for
+				<span class="text-black font-black font-body">{{ inEuros }} euros</span>
+			</h1>
+			<p class="mb-2 text-subheading mb-card">
+				{{ t('Body.BuyCoins') }}
+			</p>
+
+			<article class="mb-card">
+				<h2 class="text-heading-2 text-black font-black mb-2">
+					(1) {{ t('Headings.SelectType') }}
+				</h2>
+				<button
+					class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box mr-4 min-w-[125px] cursor-pointer border-4 border-accent"
+					:class="type == 'person' ? 'bg-accent scale-105' : ''"
+					@click="
+						type = 'person';
+						formData = null;
+					"
+				>
+					{{ t('Headings.Person') }}
+				</button>
+				<button
+					class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box min-w-[125px] cursor-pointer border-4 border-accent"
+					:class="type == 'business' ? 'bg-accent scale-105' : ''"
+					@click="
+						type = 'business';
+						formData = null;
+					"
+				>
+					{{ t('Headings.Business') }}
+				</button>
+			</article>
+
+			<article class="mb-card max-w-lg pt-box">
+				<h2 class="text-heading-2 text-black font-black mb-2">
+					(2) {{ t('Headings.EnterInformation') }}
+				</h2>
+
+				<FormBuyCoinsPerson v-if="type == 'person'" @data="formData = $event" />
+				<FormBuyCoinsBusiness v-else @data="formData = $event" />
+			</article>
+
+			<article class="mb-card">
+				<h2 class="text-heading-2 text-black font-black mb-4">
+					(3) {{ t('Headings.PurchaseMorphcoins') }}
+				</h2>
+				<div
+					id="paypal-button-container"
+					ref="paypal"
+					class="w-full max-w-md"
+					:class="{
+						' pointer-events-none opacity-70': !!!formData,
+					}"
+				></div>
+			</article>
+		</div>
 
 		<article
 			v-else
@@ -70,9 +134,12 @@ export default {
 	},
 	components: { XCircleIcon, CheckCircleIcon },
 	setup() {
-		const { t } = useI18n();
+		const { t, locale } = useI18n();
 		const route = useRoute();
 		const router = useRouter();
+
+		const type = ref('person');
+		const formData = ref(null);
 
 		const success = ref(null);
 
@@ -82,6 +149,11 @@ export default {
 		const coins = useCoins();
 
 		const coinsToBuy = ref(0);
+
+		const inEuros = computed(() => {
+			let coins = coinsToBuy.value ?? 0;
+			return Number((coins / 100).toFixed(2));
+		});
 
 		onMounted(async () => {
 			// setting paypal client ID
@@ -182,6 +254,10 @@ export default {
 			onclick,
 			coins,
 			coinsToBuy,
+			inEuros,
+			type,
+			formData,
+			locale,
 		};
 	},
 };

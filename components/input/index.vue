@@ -17,10 +17,15 @@
 			</p>
 		</div>
 		<input
-			class="block w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent"
-			:class="{
-				'invalid:ring-error valid:ring-accent': (touched && input) || error,
-			}"
+			class="block w-full px-4 py-3 text-base rounded-md relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 focus:ring-offset-2"
+			:class="[
+				{
+					'invalid:ring-error valid:ring-accent': (touched && input) || error,
+				},
+				light
+					? 'text-subheading bg-white ring-subheading focus:ring-offset-subheading focus:ring-subheading'
+					: 'text-white bg-secondary ring-tertiary focus:ring-offset-tertiary focus:ring-accent',
+			]"
 			ref="DOM_INPUT"
 			:placeholder="noLabel ? t(label) : t(placeholder)"
 			:type="type"
@@ -58,6 +63,7 @@ export default defineComponent({
 		label: { type: String, default: '' },
 		noLabel: { type: Boolean, default: false },
 		noTrim: { type: Boolean, default: false },
+		light: { type: Boolean, default: false },
 		placeholder: { type: String, default: '' },
 		rules: { type: Array, default: [] },
 		modelValue: { default: '' },

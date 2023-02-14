@@ -11,6 +11,11 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"EnterInformation": "Enter Information",
+		"PurchaseMorphcoins": "Purchase Morphcoins",
+		"SelectType": "Select Type",
+		"Person": "Private Person",
+		"Business": "Business",
 		"Skill": "Skill",
 		"WebinarRating": "Rate Webinar",
 		"CancellationPolicy": "Cancellation Policy",
@@ -175,6 +180,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"BuyCoins": "Please enter the required information in order to purchase coins from Bootstrap Academy",
 		"WebinarNotParticipated": "I have not participated",
 		"WebinarPriceTooltip": "Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit.",
 		"ConfirmDeleteWebinarLessThan0": "Are you sure you want to delete webinar? Since total participants are 0, you will not face any penalty.",
@@ -395,6 +401,9 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Country": "Country",
+		"Address": "Address",
+		"VAT_ID": "VAT ID",
 		"NoPriceLimit": "No price limit",
 		"PricePerParticipant": "Price per participant",
 		"AdminLink": "Admin Link",
