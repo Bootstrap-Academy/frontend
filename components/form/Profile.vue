@@ -55,6 +55,78 @@
 			:rules="form.tags.rules"
 		/>
 
+		<article class="mt-card">
+			<h2 class="text-heading-2 font-black mb-box">
+				{{ t('Headings.UserType') }}
+			</h2>
+			<button
+				type="button"
+				class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box mr-7 min-w-[125px] cursor-pointer border-4 border-accent"
+				:class="
+					userType == 'person' ? 'bg-accent scale-105 text-black' : 'text-white'
+				"
+				@click="userType = 'person'"
+			>
+				{{ t('Headings.Person') }}
+			</button>
+			<button
+				type="button"
+				class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box min-w-[125px] cursor-pointer border-4 border-accent"
+				:class="
+					userType == 'business'
+						? 'bg-accent scale-105 text-black'
+						: 'text-white'
+				"
+				@click="userType = 'business'"
+			>
+				{{ t('Headings.Business') }}
+			</button>
+		</article>
+
+		<Input
+			v-if="userType == 'business'"
+			:label="t('Inputs.VAT_ID')"
+			v-model="form.vatID.value"
+			@valid="form.vatID.valid = $event"
+			:rules="form.vatID.rules"
+		/>
+
+		<article class="mt-card mb-card">
+			<h2 class="text-heading-2 font-black mb-box">
+				{{ t('Inputs.Address') }}
+			</h2>
+			<Input
+				:label="t('Inputs.Country')"
+				v-model="form.country.value"
+				@valid="form.country.valid = $event"
+				:rules="form.country.rules"
+			/>
+			<Input
+				:label="t('Inputs.AddressPrename')"
+				v-model="form.addressPrename.value"
+				@valid="form.addressPrename.valid = $event"
+				:rules="form.addressPrename.rules"
+			/>
+			<Input
+				:label="t('Inputs.AddressName')"
+				v-model="form.addressName.value"
+				@valid="form.addressName.valid = $event"
+				:rules="form.addressName.rules"
+			/>
+			<Input
+				:label="t('Inputs.AddressStreet')"
+				v-model="form.addressStreet.value"
+				@valid="form.addressStreet.valid = $event"
+				:rules="form.addressStreet.rules"
+			/>
+			<Input
+				:label="t('Inputs.AddressPLZ')"
+				v-model="form.addressPLZ.value"
+				@valid="form.addressPLZ.valid = $event"
+				:rules="form.addressPLZ.rules"
+			/>
+		</article>
+
 		<InputBtn
 			:loading="form.submitting"
 			class="self-end"
@@ -75,6 +147,8 @@ export default defineComponent({
 	props: { data: { type: Object as PropType<any>, default: null } },
 	setup(props) {
 		const { t } = useI18n();
+
+		const userType = ref('person');
 
 		// ============================================================= refs
 		const refForm = ref<HTMLFormElement | null>(null);
@@ -127,6 +201,36 @@ export default defineComponent({
 						form.tags.value.length < 7 ||
 						'Error.InputMaxTags_7',
 				],
+			},
+			country: {
+				value: '',
+				valid: true,
+				rules: [],
+			},
+			addressPrename: {
+				value: '',
+				valid: true,
+				rules: [],
+			},
+			addressName: {
+				value: '',
+				valid: true,
+				rules: [],
+			},
+			addressStreet: {
+				value: '',
+				valid: true,
+				rules: [],
+			},
+			addressPLZ: {
+				value: '',
+				valid: true,
+				rules: [],
+			},
+			vatID: {
+				value: '',
+				valid: true,
+				rules: [],
 			},
 			submitting: false,
 			validate: () => {
@@ -266,6 +370,7 @@ export default defineComponent({
 			t,
 			image,
 			hintNickname,
+			userType,
 		};
 	},
 });

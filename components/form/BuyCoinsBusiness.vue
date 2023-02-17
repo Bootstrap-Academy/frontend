@@ -8,11 +8,33 @@
 			light
 		/>
 
+		<h3 class="text-black text-heading-3">{{ t('Inputs.Address') }}</h3>
 		<Input
-			:label="t('Inputs.Address')"
-			v-model="form.address.value"
-			@valid="form.address.valid = $event"
-			:rules="form.address.rules"
+			:label="t('Inputs.AddressPrename')"
+			v-model="form.addressPrename.value"
+			@valid="form.addressPrename.valid = $event"
+			:rules="form.addressPrename.rules"
+			light
+		/>
+		<Input
+			:label="t('Inputs.AddressName')"
+			v-model="form.addressName.value"
+			@valid="form.addressName.valid = $event"
+			:rules="form.addressName.rules"
+			light
+		/>
+		<Input
+			:label="t('Inputs.AddressStreet')"
+			v-model="form.addressStreet.value"
+			@valid="form.addressStreet.valid = $event"
+			:rules="form.addressStreet.rules"
+			light
+		/>
+		<Input
+			:label="t('Inputs.AddressPLZ')"
+			v-model="form.addressPLZ.value"
+			@valid="form.addressPLZ.valid = $event"
+			:rules="form.addressPLZ.rules"
 			light
 		/>
 
@@ -46,10 +68,25 @@ export default defineComponent({
 				value: '',
 				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Name'],
 			},
-			address: {
+			addressPrename: {
 				value: '',
 				valid: false,
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Address'],
+				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.AddressPrename'],
+			},
+			addressName: {
+				value: '',
+				valid: false,
+				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.AddressName'],
+			},
+			addressStreet: {
+				value: '',
+				valid: false,
+				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.AddressStreet'],
+			},
+			addressPLZ: {
+				value: '',
+				valid: false,
+				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.AddressPLZ'],
 			},
 			vatID: {
 				value: '',

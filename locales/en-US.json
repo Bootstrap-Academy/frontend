@@ -11,9 +11,10 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"UserType": "User Type",
 		"EnterInformation": "Enter Information",
 		"PurchaseMorphcoins": "Purchase Morphcoins",
-		"SelectType": "Select Type",
+		"SelectType": "Select User Type",
 		"Person": "Private Person",
 		"Business": "Business",
 		"Skill": "Skill",
@@ -401,6 +402,10 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"AddressPrename": "Prename",
+		"AddressName": "Name",
+		"AddressStreet": "Street",
+		"AddressPLZ": "PLZ",
 		"Country": "Country",
 		"Address": "Address",
 		"VAT_ID": "VAT ID",
