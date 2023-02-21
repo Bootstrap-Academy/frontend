@@ -165,15 +165,3 @@ function useWarningTheme() {
 		icon: ExclamationCircleIcon,
 	};
 }
-
-export function getTheme(type: string) {
-	if (type == 'success') {
-		return useSuccessTheme();
-	} else if (type == 'error') {
-		return useErrorTheme();
-	} else if (type == 'warning') {
-		return useWarningTheme();
-	} else {
-		return useInfoTheme();
-	}
-}

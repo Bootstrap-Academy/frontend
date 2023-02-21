@@ -84,7 +84,14 @@ export default defineComponent({
 		});
 
 		const theme = computed(() => {
-			return getTheme('warning');
+			return {
+				bg: 'bg-warning',
+				bgLight: 'bg-warning-light',
+				fill: 'fill-warning',
+				stroke: 'stroke-warning',
+				border: 'border-warning',
+				text: 'text-warning',
+			};
 		});
 
 		// ============================================================= functions

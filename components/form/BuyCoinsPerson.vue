@@ -1,6 +1,9 @@
 <template>
 	<form class="flex flex-col gap-box" ref="refForm">
 		<Input
+			:class="{
+				'pointer-events-none': user && user.country,
+			}"
 			:label="t('Inputs.Country')"
 			v-model="form.country.value"
 			@valid="form.country.valid = $event"
@@ -9,7 +12,9 @@
 		/>
 
 		<Input
-			class="pointer-events-none"
+			:class="{
+				'pointer-events-none': user && user.email,
+			}"
 			:label="t('Inputs.EmailAddress')"
 			v-model="form.email.value"
 			@valid="form.email.valid = $event"
@@ -37,7 +42,7 @@ export default defineComponent({
 		// ============================================================= reactive
 		const form = reactive<IForm>({
 			country: {
-				valid: false,
+				valid: user.value?.country ?? '',
 				value: '',
 				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Country'],
 			},
@@ -86,6 +91,20 @@ export default defineComponent({
 				} else {
 					emit('data', null);
 				}
+			},
+			{ immediate: true, deep: true }
+		);
+
+		watch(
+			() => user.value,
+			(newValue, oldValue) => {
+				if (!!!newValue) return;
+
+				form.country.value = newValue.country
+					? newValue.country
+					: form.country.value;
+
+				form.email.value = newValue.email ? newValue.email : form.email.value;
 			},
 			{ immediate: true, deep: true }
 		);

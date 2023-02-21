@@ -37,8 +37,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { StarIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
+import {
+	StarIcon,
+	ExclamationCircleIcon,
+	InformationCircleIcon,
+	XCircleIcon,
+	CheckCircleIcon,
+} from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	props: {
@@ -46,8 +52,13 @@ export default defineComponent({
 		sm: { type: Boolean, default: false },
 		stars: { type: Boolean, default: false },
 	},
-	components: { StarIcon },
-
+	components: {
+		StarIcon,
+		ExclamationCircleIcon,
+		InformationCircleIcon,
+		XCircleIcon,
+		CheckCircleIcon,
+	},
 	setup(props) {
 		const { t } = useI18n();
 
@@ -58,7 +69,37 @@ export default defineComponent({
 		});
 
 		const theme = computed(() => {
-			return getTheme(type.value);
+			if (type.value == 'success') {
+				return {
+					bg: 'bg-success',
+					bgLight: 'bg-success-light',
+					fill: 'fill-success',
+					stroke: 'stroke-success',
+					border: 'border-success',
+					text: 'text-success',
+					icon: CheckCircleIcon,
+				};
+			} else if (type.value == 'error') {
+				return {
+					bg: 'bg-error',
+					bgLight: 'bg-error-light',
+					fill: 'fill-error',
+					stroke: 'stroke-error',
+					border: 'border-error',
+					text: 'text-error',
+					icon: XCircleIcon,
+				};
+			} else {
+				return {
+					bg: 'bg-info',
+					bgLight: 'bg-info-light',
+					fill: 'fill-info',
+					stroke: 'stroke-info',
+					border: 'border-info',
+					text: 'text-info',
+					icon: InformationCircleIcon,
+				};
+			}
 		});
 
 		return { theme, t };

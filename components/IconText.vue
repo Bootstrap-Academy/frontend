@@ -16,14 +16,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
 	props: {
 		sm: { type: Boolean, default: false },
 		md: { type: Boolean, default: true },
 		lg: { type: Boolean, default: false },
-		icon: { default: null },
+		icon: { type: Object as PropType<any>, default: null },
 		highlightLabel: { type: Boolean, default: false },
 		highlightIcon: { type: Boolean, default: true },
 		labelColor: { type: String, default: 'text-subheading' },

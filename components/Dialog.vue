@@ -49,12 +49,25 @@
 </template>
 
 <script lang="ts">
+import {
+	ExclamationCircleIcon,
+	InformationCircleIcon,
+	XCircleIcon,
+	CheckCircleIcon,
+} from '@heroicons/vue/24/solid';
+
 import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
 		dialog: { type: Object as PropType<any>, default: null },
+	},
+	components: {
+		ExclamationCircleIcon,
+		InformationCircleIcon,
+		XCircleIcon,
+		CheckCircleIcon,
 	},
 	setup(props) {
 		const { t } = useI18n();
@@ -64,7 +77,47 @@ export default defineComponent({
 		});
 
 		const theme = computed(() => {
-			return getTheme(type.value);
+			if (type.value == 'success') {
+				return {
+					bg: 'bg-success',
+					bgLight: 'bg-success-light',
+					fill: 'fill-success',
+					stroke: 'stroke-success',
+					border: 'border-success',
+					text: 'text-success',
+					icon: CheckCircleIcon,
+				};
+			} else if (type.value == 'error') {
+				return {
+					bg: 'bg-error',
+					bgLight: 'bg-error-light',
+					fill: 'fill-error',
+					stroke: 'stroke-error',
+					border: 'border-error',
+					text: 'text-error',
+					icon: XCircleIcon,
+				};
+			} else if (type.value == 'warning') {
+				return {
+					bg: 'bg-warning',
+					bgLight: 'bg-warning-light',
+					fill: 'fill-warning',
+					stroke: 'stroke-warning',
+					border: 'border-warning',
+					text: 'text-warning',
+					icon: ExclamationCircleIcon,
+				};
+			} else {
+				return {
+					bg: 'bg-info',
+					bgLight: 'bg-info-light',
+					fill: 'fill-info',
+					stroke: 'stroke-info',
+					border: 'border-info',
+					text: 'text-info',
+					icon: InformationCircleIcon,
+				};
+			}
 		});
 
 		const heading = computed(() => {

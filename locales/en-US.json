@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Missing": "Missing",
+		"YourProfileInformation": "Your Profile Information",
 		"UserType": "User Type",
 		"EnterInformation": "Enter Information",
 		"PurchaseMorphcoins": "Purchase Morphcoins",
@@ -181,7 +183,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
-		"BuyCoins": "Please enter the required information in order to purchase coins from Bootstrap Academy",
+		"MissingProfileInfo": "Please fill in the missing profile information in order to buy coins",
+		"BuyCoins": "Please verify your profile information below in order to purchase coins from Bootstrap Academy",
 		"WebinarNotParticipated": "I have not participated",
 		"WebinarPriceTooltip": "Stars < 3, max price = 0MC. 3 - 4 stars max price is 5000MC. 4 - 4.5 stars max price is 10000MC. 4.5 and above stars have no max price limit.",
 		"ConfirmDeleteWebinarLessThan0": "Are you sure you want to delete webinar? Since total participants are 0, you will not face any penalty.",
@@ -402,6 +405,11 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"FirstName": "First Name",
+		"LastName": "Last Name",
+		"City": "City",
+		"Street": "Street",
+		"ZipCode": "Zip Code",
 		"AddressPrename": "Prename",
 		"AddressName": "Name",
 		"AddressStreet": "Street",

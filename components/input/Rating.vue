@@ -69,7 +69,34 @@ export default defineComponent({
 		});
 
 		const theme = computed(() => {
-			return getTheme(type.value);
+			if (type.value == 'success') {
+				return {
+					bg: 'bg-success',
+					bgLight: 'bg-success-light',
+					fill: 'fill-success',
+					stroke: 'stroke-success',
+					border: 'border-success',
+					text: 'text-success',
+				};
+			} else if (type.value == 'error') {
+				return {
+					bg: 'bg-error',
+					bgLight: 'bg-error-light',
+					fill: 'fill-error',
+					stroke: 'stroke-error',
+					border: 'border-error',
+					text: 'text-error',
+				};
+			} else {
+				return {
+					bg: 'bg-info',
+					bgLight: 'bg-info-light',
+					fill: 'fill-info',
+					stroke: 'stroke-info',
+					border: 'border-info',
+					text: 'text-info',
+				};
+			}
 		});
 
 		return { t, input, error, theme };

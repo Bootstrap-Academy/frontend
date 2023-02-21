@@ -34,6 +34,19 @@
 		/>
 
 		<Input
+			:label="t('Inputs.FirstName')"
+			v-model="form.first_name.value"
+			@valid="form.first_name.valid = $event"
+			:rules="form.first_name.rules"
+		/>
+		<Input
+			:label="t('Inputs.LastName')"
+			v-model="form.last_name.value"
+			@valid="form.last_name.valid = $event"
+			:rules="form.last_name.rules"
+		/>
+
+		<Input
 			:label="t('Inputs.EmailAddress')"
 			v-model="form.email.value"
 			@valid="form.email.valid = $event"
@@ -62,33 +75,27 @@
 			<button
 				type="button"
 				class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box mr-7 min-w-[125px] cursor-pointer border-4 border-accent"
-				:class="
-					userType == 'person' ? 'bg-accent scale-105 text-black' : 'text-white'
-				"
-				@click="userType = 'person'"
+				:class="!business ? 'bg-accent scale-105 text-black' : 'text-white'"
+				@click="business = false"
 			>
 				{{ t('Headings.Person') }}
 			</button>
 			<button
 				type="button"
 				class="inline-block transition-basic font-heading text-xl py-3 px-4 style-box min-w-[125px] cursor-pointer border-4 border-accent"
-				:class="
-					userType == 'business'
-						? 'bg-accent scale-105 text-black'
-						: 'text-white'
-				"
-				@click="userType = 'business'"
+				:class="business ? 'bg-accent scale-105 text-black' : 'text-white'"
+				@click="business = true"
 			>
 				{{ t('Headings.Business') }}
 			</button>
 		</article>
 
 		<Input
-			v-if="userType == 'business'"
+			v-if="business"
 			:label="t('Inputs.VAT_ID')"
-			v-model="form.vatID.value"
-			@valid="form.vatID.valid = $event"
-			:rules="form.vatID.rules"
+			v-model="form.vat_id.value"
+			@valid="form.vat_id.valid = $event"
+			:rules="form.vat_id.rules"
 		/>
 
 		<article class="mt-card mb-card">
@@ -102,28 +109,23 @@
 				:rules="form.country.rules"
 			/>
 			<Input
-				:label="t('Inputs.AddressPrename')"
-				v-model="form.addressPrename.value"
-				@valid="form.addressPrename.valid = $event"
-				:rules="form.addressPrename.rules"
+				:label="t('Inputs.City')"
+				v-model="form.city.value"
+				@valid="form.city.valid = $event"
+				:rules="form.city.rules"
+			/>
+
+			<Input
+				:label="t('Inputs.Street')"
+				v-model="form.street.value"
+				@valid="form.street.valid = $event"
+				:rules="form.street.rules"
 			/>
 			<Input
-				:label="t('Inputs.AddressName')"
-				v-model="form.addressName.value"
-				@valid="form.addressName.valid = $event"
-				:rules="form.addressName.rules"
-			/>
-			<Input
-				:label="t('Inputs.AddressStreet')"
-				v-model="form.addressStreet.value"
-				@valid="form.addressStreet.valid = $event"
-				:rules="form.addressStreet.rules"
-			/>
-			<Input
-				:label="t('Inputs.AddressPLZ')"
-				v-model="form.addressPLZ.value"
-				@valid="form.addressPLZ.valid = $event"
-				:rules="form.addressPLZ.rules"
+				:label="t('Inputs.ZipCode')"
+				v-model="form.zip_code.value"
+				@valid="form.zip_code.valid = $event"
+				:rules="form.zip_code.rules"
 			/>
 		</article>
 
@@ -148,7 +150,7 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const userType = ref('person');
+		const business = ref(false);
 
 		// ============================================================= refs
 		const refForm = ref<HTMLFormElement | null>(null);
@@ -169,7 +171,7 @@ export default defineComponent({
 				rules: [
 					(v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
 					(v: string) => v.length >= 3 || 'Error.InputMinLength_3',
-					(v: string) => v.length <= 32 || 'Error.InputMinLength_32',
+					(v: string) => v.length <= 32 || 'Error.InputMaxLength_32',
 					(v: string) =>
 						/^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
 				],
@@ -202,35 +204,41 @@ export default defineComponent({
 						'Error.InputMaxTags_7',
 				],
 			},
+
+			first_name: {
+				value: '',
+				valid: true,
+				rules: [(v: string) => v.length <= 128 || 'Error.InputMaxLength_129'],
+			},
+			last_name: {
+				value: '',
+				valid: true,
+				rules: [(v: string) => v.length <= 128 || 'Error.InputMaxLength_129'],
+			},
+			street: {
+				value: '',
+				valid: true,
+				rules: [(v: string) => v.length <= 256 || 'Error.InputMaxLength_257'],
+			},
+			zip_code: {
+				value: '',
+				valid: true,
+				rules: [(v: string) => v.length <= 16 || 'Error.InputMaxLength_17'],
+			},
+			city: {
+				value: '',
+				valid: true,
+				rules: [(v: string) => v.length <= 64 || 'Error.InputMaxLength_65'],
+			},
 			country: {
 				value: '',
 				valid: true,
-				rules: [],
+				rules: [(v: string) => v.length <= 64 || 'Error.InputMaxLength_65'],
 			},
-			addressPrename: {
+			vat_id: {
 				value: '',
 				valid: true,
-				rules: [],
-			},
-			addressName: {
-				value: '',
-				valid: true,
-				rules: [],
-			},
-			addressStreet: {
-				value: '',
-				valid: true,
-				rules: [],
-			},
-			addressPLZ: {
-				value: '',
-				valid: true,
-				rules: [],
-			},
-			vatID: {
-				value: '',
-				valid: true,
-				rules: [],
+				rules: [(v: string) => v.length <= 64 || 'Error.InputMaxLength_65'],
 			},
 			submitting: false,
 			validate: () => {
@@ -290,8 +298,16 @@ export default defineComponent({
 			form.name.valid = !!form.name.value;
 
 			form.description.value = data?.description ?? '';
-
 			form.tags.value = data?.tags ?? [];
+
+			form.country.value = data?.country ?? '';
+			form.city.value = data?.city ?? '';
+			form.vat_id.value = data?.vat_id ?? '';
+			form.street.value = data?.street ?? '';
+			form.zip_code.value = data?.zip_code ?? '';
+			form.first_name.value = data?.first_name ?? '';
+			form.last_name.value = data?.last_name ?? '';
+			business.value = data?.business ?? false;
 		}
 
 		watch(
@@ -309,7 +325,10 @@ export default defineComponent({
 
 				const hasEmailChanged = form.email.value != (props.data?.email ?? '');
 
-				const [success, error] = await editUser(form.body());
+				const [success, error] = await editUser({
+					...form.body(),
+					business: business.value,
+				});
 				form.submitting = false;
 
 				success
@@ -321,10 +340,14 @@ export default defineComponent({
 		}
 
 		const router = useRouter();
+		const route = useRoute();
 
 		async function successHandler(res: any, hasEmailChanged: boolean) {
 			if (!hasEmailChanged) {
 				openSnackbar('success', 'Success.EditProfile');
+				if (route.query && route.query.coins) {
+					router.push(`/morphcoins/paypal?coins=${route.query.coins}`);
+				}
 				return;
 			}
 
@@ -370,7 +393,7 @@ export default defineComponent({
 			t,
 			image,
 			hintNickname,
-			userType,
+			business,
 		};
 	},
 });
