@@ -58,27 +58,52 @@
 					<h3 class="text-body m-0 text-body-1">
 						{{ t('Inputs.FirstName') }}:
 					</h3>
-					<p class="text-black m-0 text-body-1">{{ user.first_name }}</p>
+					<p v-if="user && user.first_name" class="text-black m-0 text-body-1">
+						{{ user.first_name }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 
 				<div class="flex gap-box">
 					<h3 class="text-body m-0 text-body-1">{{ t('Inputs.LastName') }}:</h3>
-					<p class="text-black m-0 text-body-1">{{ user.last_name }}</p>
+					<p v-if="user && user.last_name" class="text-black m-0 text-body-1">
+						{{ user.last_name }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 
 				<div class="flex gap-box">
 					<h3 class="text-body m-0 text-body-1">{{ t('Inputs.Street') }}:</h3>
-					<p class="text-black m-0 text-body-1">{{ user.street }}</p>
+					<p v-if="user && user.street" class="text-black m-0 text-body-1">
+						{{ user.street }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 
 				<div class="flex gap-box">
 					<h3 class="text-body m-0 text-body-1">{{ t('Inputs.ZipCode') }}:</h3>
-					<p class="text-black m-0 text-body-1">{{ user.zip_code }}</p>
+					<p v-if="user && user.zip_code" class="text-black m-0 text-body-1">
+						{{ user.zip_code }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 
 				<div class="flex gap-box">
 					<h3 class="text-body m-0 text-body-1">{{ t('Inputs.VAT_ID') }}:</h3>
-					<p class="text-black m-0 text-body-1">{{ user.vat_id }}</p>
+					<p v-if="user && user.vat_id" class="text-black m-0 text-body-1">
+						{{ user.vat_id }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 			</template>
 
@@ -97,7 +122,12 @@
 					<h3 class="text-body m-0 text-body-1">
 						{{ t('Inputs.EmailAddress') }}
 					</h3>
-					<p class="text-black m-0 text-body-1">{{ user.email }}</p>
+					<p v-if="user && user.email" class="text-black m-0 text-body-1">
+						{{ user.email }}
+					</p>
+					<p v-else class="text-error m-0 text-body-1">
+						{{ t('Headings.Missing') }}
+					</p>
 				</div>
 			</template>
 		</article>

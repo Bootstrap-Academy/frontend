@@ -4,22 +4,24 @@
 	>
 		<Transition mode="out-in" name="slide-up-down">
 			<Dialog v-if="dialog && dialog.type" :dialog="dialog">
-				<p>
-					{{ t('Headings.Purchased') }}:
-					<span class="text-heading">
-						{{ coinsToBuy }}
-						{{ t('Headings.Morphcoins').toLocaleLowerCase() }}
-						{{ t('Headings.For').toLocaleLowerCase() }}
-						{{ coinsToBuy / 100 }}
-						{{ t('Headings.Euros').toLocaleLowerCase() }}
-					</span>
-				</p>
-				<p>
-					{{ t('Headings.TotalMorphcoins') }}:
-					<span class="font-bold text-accent">
-						{{ coins }} {{ t('Headings.Morphcoins') }}
-					</span>
-				</p>
+				<template #content>
+					<p>
+						{{ t('Headings.Purchased') }}:
+						<span class="text-heading">
+							{{ coinsToBuy }}
+							{{ t('Headings.Morphcoins').toLocaleLowerCase() }}
+							{{ t('Headings.For').toLocaleLowerCase() }}
+							{{ coinsToBuy / 100 }}
+							{{ t('Headings.Euros').toLocaleLowerCase() }}
+						</span>
+					</p>
+					<p>
+						{{ t('Headings.TotalMorphcoins') }}:
+						<span class="font-bold text-accent">
+							{{ coins }} {{ t('Headings.Morphcoins') }}
+						</span>
+					</p>
+				</template>
 			</Dialog>
 		</Transition>
 	</section>

@@ -68,14 +68,14 @@
 				:rules="form.duration.rules"
 			/>
 
-			<Input
+			<!-- <Input
 				:label="t('Inputs.MaxParticipants')"
 				hint="(0 - 50)"
 				type="number"
 				v-model="form.max_participants.value"
 				@valid="form.max_participants.valid = $event"
 				:rules="form.max_participants.rules"
-			/>
+			/> -->
 
 			<div>
 				<Rating stars :rating="rating" class="mb-3" />
@@ -216,15 +216,15 @@ export default defineComponent({
 					(v: number) => v <= 1440 || 'Error.InputMaxMins_1440',
 				],
 			},
-			max_participants: {
-				value: 0,
-				valid: false,
-				rules: [
-					(v: number) => !!v || 'Error.InputEmpty_Inputs.MaxParticipants',
-					(v: number) => !v || v >= 4 || 'Error.InputMinParticipants_3',
-					(v: number) => v <= 50 || 'Error.InputMaxParticipants_50',
-				],
-			},
+			// max_participants: {
+			// 	value: 0,
+			// 	valid: false,
+			// 	rules: [
+			// 		(v: number) => !!v || 'Error.InputEmpty_Inputs.MaxParticipants',
+			// 		(v: number) => !v || v >= 4 || 'Error.InputMinParticipants_3',
+			// 		(v: number) => v <= 50 || 'Error.InputMaxParticipants_50',
+			// 	],
+			// },
 			price: {
 				value: 0,
 				valid: maxPrice.value <= 0,
@@ -300,8 +300,8 @@ export default defineComponent({
 			form.admin_link.value = data?.admin_link ?? '';
 			form.admin_link.valid = !!form.admin_link.value;
 
-			form.max_participants.value = data?.max_participants ?? 0;
-			form.max_participants.valid = !!form.max_participants.value;
+			// form.max_participants.value = data?.max_participants ?? 0;
+			// form.max_participants.valid = !!form.max_participants.value;
 
 			form.price.value = data?.price ?? 0;
 			form.price.valid = true;

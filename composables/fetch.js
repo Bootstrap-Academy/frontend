@@ -72,8 +72,14 @@ const onResponseError = async ({ request, options, response }) => {
 	let details = response?._data?.detail ?? '';
 
 	if (typeof details == 'object') {
+		console.log('details', details);
+		let loc = details[0]?.loc ?? [];
+		loc = loc.toString();
+		loc = loc.replace(/_/g, ' ');
+		loc = loc.replace('body,', '');
+		loc = loc.replace(/,/g, ' ');
 		let msg = details[0]?.msg ?? details?.msg ?? '';
-		response._data.detail = msg;
+		response._data.detail = `${loc} : ${msg}`;
 		details = msg;
 	} else if (details == '') {
 		response._data.detail = 'No error msg';
