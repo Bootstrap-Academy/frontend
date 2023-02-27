@@ -46,6 +46,12 @@ export default defineComponent({
 				bgColor: 'bg-warning',
 				borderColor: 'border-warning',
 			},
+			{
+				level: 3,
+				label: 'Headings.QuizQuestions',
+				bgColor: 'bg-error',
+				borderColor: 'border-error',
+			},
 		]);
 
 		const _activeStepper = ref(props.activeStepper ?? 0);

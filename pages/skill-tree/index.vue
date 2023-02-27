@@ -3,6 +3,7 @@
 		<SkillTreeHeader
 			@zoomLevel="zoomLevel = $event"
 			:breadcrumbs="breadcrumbs"
+			:quizzesQuickStart="true"
 		/>
 
 		<LoadingDots v-if="loading">

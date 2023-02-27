@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"QuizQuestions": "Quiz Questions",
+		"QuizQuestionsComingSoon": "Quiz Questions Coming Soon",
 		"Missing": "Missing",
 		"YourProfileInformation": "Your Profile Information",
 		"UserType": "User Type",
@@ -405,6 +407,7 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"ShowFreeQuizzesOnly": "Show Free Quizzes Only",
 		"FirstName": "First Name",
 		"LastName": "Last Name",
 		"City": "City",
@@ -450,6 +453,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"SubmitAnswer": "Submit Answer",
+		"Continue": "Continue",
+		"AddQuizQuestion": "Add Quiz Question",
 		"EditCoaching": "Edit Coach",
 		"SubmitWebinarRating": "Submit Rating",
 		"DeleteWebinar": "Delete Webinar",

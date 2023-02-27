@@ -18,6 +18,8 @@
 			</template>
 		</div>
 
+		<Btn v-if="quizzesQuickStart">View Quizzes for Last View Course</Btn>
+
 		<SkillTreeZoomLevel
 			v-if="!noZoomLevel"
 			@zoomLevel="emit('zoomLevel', $event)"
@@ -34,6 +36,7 @@ export default defineComponent({
 		breadcrumbs: { type: Array as PropType<any[]>, default: [] },
 		noZoomLevel: { type: Boolean, default: false },
 		absolute: { type: Boolean, default: true },
+		quizzesQuickStart: { type: Boolean, default: false },
 	},
 	emits: ['zoomLevel'],
 	setup(props, { emit }) {

@@ -11,6 +11,8 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"QuizQuestions": "Quizfragen",
+		"QuizQuestionsComingSoon": "Quizfragen folgen in Kürze",
 		"Missing": "Fehlt",
 		"YourProfileInformation": "Ihre Profilinformationen",
 		"UserType": "Benutzertyp",
@@ -406,6 +408,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"ShowFreeQuizzesOnly": "Nur kostenlose Quizze anzeigen",
 		"FirstName": "Vorname",
 		"LastName": "Familienname, Nachname",
 		"City": "Stadt",
@@ -451,6 +454,9 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"SubmitAnswer": "Antwort einreichen",
+		"Continue": "Weitermachen",
+		"AddQuizQuestion": "Quizfrage hinzufügen",
 		"EditCoaching": "Coaching bearbeiten",
 		"SubmitWebinarRating": "Bewertung abgeben",
 		"DeleteWebinar": "Webinar löschen",

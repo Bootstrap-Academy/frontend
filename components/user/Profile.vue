@@ -27,6 +27,14 @@
 		>
 			<Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
 		</article>
+
+		<article class="mt-card">
+			<p class="mb-2">{{ t('Inputs.ShowFreeQuizzesOnly') }}</p>
+			<InputSwitch
+				label="Inputs.ShowFreeQuizzesOnly"
+				v-model="showFreeQuizzesOnly"
+			/>
+		</article>
 	</section>
 </template>
 
@@ -81,6 +89,7 @@ export default {
 			return props.data?.tags ?? ['	Web Developer', '	UI UX', 'Computer'];
 		});
 
+		const showFreeQuizzesOnly = ref(false);
 		return {
 			image,
 			username,
@@ -90,6 +99,7 @@ export default {
 			email,
 			tags,
 			t,
+			showFreeQuizzesOnly,
 		};
 	},
 };
