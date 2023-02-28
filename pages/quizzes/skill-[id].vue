@@ -10,34 +10,48 @@
 		<FormQuizAnswer :data="selectedQuiz ?? quizzes[0]" class="row-span-2" />
 
 		<aside class="grid gap-card max-h-full overflow-scroll">
-			<QuizCard
-				v-for="(quiz, i) of quizzes"
-				:key="i"
-				full
-				:data="quiz"
-				@click="selectedQuiz = quiz"
-			/>
-			<QuizCard
-				v-for="(quiz, i) of quizzes"
-				:key="i"
-				full
-				:data="quiz"
-				@click="selectedQuiz = quiz"
-			/>
-			<QuizCard
-				v-for="(quiz, i) of quizzes"
-				:key="i"
-				full
-				:data="quiz"
-				@click="selectedQuiz = quiz"
-			/>
-			<QuizCard
-				v-for="(quiz, i) of quizzes"
-				:key="i"
-				full
-				:data="quiz"
-				@click="selectedQuiz = quiz"
-			/>
+			<template v-if="loading">
+				<QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
+				<QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
+				<QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
+			</template>
+
+			<template v-else-if="quizzes && quizzes.length > 0">
+				<QuizCard
+					v-for="(quiz, i) of quizzes"
+					:key="i"
+					full
+					:data="quiz"
+					@click="selectedQuiz = quiz"
+				/>
+				<QuizCard
+					v-for="(quiz, i) of quizzes"
+					:key="i"
+					full
+					:data="quiz"
+					@click="selectedQuiz = quiz"
+				/>
+				<QuizCard
+					v-for="(quiz, i) of quizzes"
+					:key="i"
+					full
+					:data="quiz"
+					@click="selectedQuiz = quiz"
+				/>
+				<QuizCard
+					v-for="(quiz, i) of quizzes"
+					:key="i"
+					full
+					:data="quiz"
+					@click="selectedQuiz = quiz"
+				/>
+			</template>
+
+			<template v-else>
+				<QuizCardSkeleton class="child opacity-60" no-animate />
+				<QuizCardSkeleton class="child opacity-40" no-animate />
+				<QuizCardSkeleton class="child opacity-20" no-animate />
+			</template>
 		</aside>
 	</main>
 </template>
@@ -62,47 +76,17 @@ export default {
 
 		const selectedQuiz = ref();
 
-		const quizzes = [
-			{
-				question: 'What is Vue?',
-				type: 'multi-choice',
-				price: 0,
-				options: [
-					{
-						answer: 'Framework',
-						correct: false,
-					},
-					{
-						answer: 'Node JS',
-						correct: false,
-					},
-					{
-						answer: 'Library',
-						correct: true,
-					},
-				],
-			},
-			{
-				question: 'Which is the powerhouse of cell?',
-				type: 'multi-choice',
-				price: 1,
-				options: [
-					{
-						answer: 'Mitochondria',
-						correct: true,
-					},
-					{
-						answer: 'Plasma',
-						correct: false,
-					},
-					{
-						answer: 'Brain',
-						correct: false,
-					},
-				],
-			},
-		];
-		return { t, skillID, quizzes, selectedQuiz };
+		const quizzes = useQuizzes();
+
+		const loading = ref(true);
+
+		onMounted(async () => {
+			loading.value = true;
+			await getQuizzes();
+			loading.value = false;
+		});
+
+		return { t, skillID, quizzes, selectedQuiz, loading };
 	},
 };
 </script>

@@ -70,17 +70,17 @@
 			<div
 				class="content-container mt-card"
 				:class="{
-					'hide-scrollbar': !!!quizQuestions || quizQuestions.length <= 1,
+					'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
 				}"
 			>
-				<template v-if="quizQuestions && quizQuestions.length > 0">
+				<template v-if="quizzes && quizzes.length > 0">
 					<NuxtLink
 						to="/quizzes/skill-23424"
 						class="content"
-						v-for="(quizQuestion, i) of quizQuestions"
+						v-for="(quiz, i) of quizzes"
 						:key="i"
 					>
-						<QuizCard full :data="quizQuestion" :subSkillID="subSkillID" />
+						<QuizCard full :data="quiz" :subSkillID="subSkillID" />
 					</NuxtLink>
 				</template>
 				<h3 v-else class="text-center text-heading-3">
@@ -100,50 +100,9 @@ export default defineComponent({
 		subSkillID: { default: '' },
 		activeStepper: { default: 0 },
 		courses: { type: Array as PropType<any[]>, default: [] },
-		coachings: { default: [] },
-		webinars: { default: [] },
-		quizQuestions: {
-			default: [
-				{
-					question: 'What is Vue?',
-					type: 'multi-choice',
-					price: 0,
-					options: [
-						{
-							answer: 'Framework',
-							correct: false,
-						},
-						{
-							answer: 'Node JS',
-							correct: false,
-						},
-						{
-							answer: 'Library',
-							correct: true,
-						},
-					],
-				},
-				{
-					question: 'Which is the powerhouse of cell?',
-					type: 'multi-choice',
-					price: 1,
-					options: [
-						{
-							answer: 'Mitochondria',
-							correct: true,
-						},
-						{
-							answer: 'Plasma',
-							correct: false,
-						},
-						{
-							answer: 'Brain',
-							correct: false,
-						},
-					],
-				},
-			],
-		},
+		coachings: { type: Array as PropType<any[]>, default: [] },
+		webinars: { type: Array as PropType<any[]>, default: [] },
+		quizzes: { type: Array as PropType<any[]>, default: [] },
 	},
 	emits: [],
 	setup(props, { emit }) {

@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Oldest": "Oldest",
+		"MyQuizQuestions": "My Quiz Questions",
 		"QuizQuestions": "Quiz Questions",
 		"QuizQuestionsComingSoon": "Quiz Questions Coming Soon",
 		"Missing": "Missing",
@@ -185,6 +187,8 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"SearchQuizzes":"Search for Quizzes",
+		"MyQuizQuestions": "Here are the latest quiz questions you have created.",
 		"MissingProfileInfo": "Please fill in the missing profile information in order to buy coins",
 		"BuyCoins": "Please verify your profile information below in order to purchase coins from Bootstrap Academy",
 		"WebinarNotParticipated": "I have not participated",
@@ -453,6 +457,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"CreateQuizQuestion": "Create Quiz Question",
 		"SubmitAnswer": "Submit Answer",
 		"Continue": "Continue",
 		"AddQuizQuestion": "Add Quiz Question",
@@ -738,6 +743,10 @@
 			"Line1": "You have no certificates",
 			"Line2": "Explore skill tree",
 			"Line3": "to get started."
+		},
+		"MyQuizQuestions": {
+			"Heading": "No Quiz Questions",
+			"Body": ""
 		}
 	}
 }

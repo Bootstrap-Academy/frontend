@@ -11,6 +11,8 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"Oldest": "Älteste",
+		"MyQuizQuestions": "Meine Quizfragen",
 		"QuizQuestions": "Quizfragen",
 		"QuizQuestionsComingSoon": "Quizfragen folgen in Kürze",
 		"Missing": "Fehlt",
@@ -185,6 +187,8 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"SearchQuizzes": "Suchen Sie nach Quiz",
+		"MyQuizQuestions": "Hier sind die neuesten Quizfragen, die Sie erstellt haben.",
 		"MissingProfileInfo": "Bitte füllen Sie die fehlenden Profilinformationen aus, um Münzen zu kaufen",
 		"BuyCoins": "Bitte überprüfen Sie unten Ihre Profilinformationen, um Münzen von der Bootstrap Academy zu kaufen",
 		"WebinarNotParticipated": "Ich habe nicht teilgenommen",
@@ -454,6 +458,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"CreateQuizQuestion": "Quizfrage erstellen",
 		"SubmitAnswer": "Antwort einreichen",
 		"Continue": "Weitermachen",
 		"AddQuizQuestion": "Quizfrage hinzufügen",
@@ -748,6 +753,10 @@
 			"Line1": "Leg beim",
 			"Line2": "Skilltree",
 			"Line3": "los."
+		},
+		"MyQuizQuestions": {
+			"Heading": "Keine Quizfragen",
+			"Body": ""
 		}
 	}
 }

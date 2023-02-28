@@ -18,7 +18,9 @@
 			</template>
 		</div>
 
-		<Btn v-if="quizzesQuickStart">View Quizzes for Last View Course</Btn>
+		<NuxtLink v-if="quizzesQuickStart" to="/skill-tree/web_developer/angular">
+			<Btn>View Quizzes for Last View Course</Btn>
+		</NuxtLink>
 
 		<SkillTreeZoomLevel
 			v-if="!noZoomLevel"

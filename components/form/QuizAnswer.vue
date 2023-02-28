@@ -12,13 +12,15 @@
 		/>
 		<h4 class="text-heading-3">Q). {{ data?.question ?? '' }}</h4>
 
-		<article class="grid grid-cols-1 gap-card-sm">
+		<article
+			class="grid grid-cols-1 gap-card-sm overflow-scroll h-[45vh] place-content-start"
+		>
 			<button
 				v-for="option of data?.options ?? []"
 				:key="option.answer"
 				@click="selected = option.answer"
 				type="button"
-				class="box style-box border-4 border-tertiary text-heading"
+				class="box style-box border-4 border-tertiary text-heading h-fit"
 				:class="{
 					'bg-success text-primary':
 						option.correct == true && answer == option.answer,
@@ -36,29 +38,47 @@
 			<InputBtn
 				v-if="!!!answer"
 				:loading="loading"
-				class="self-center"
 				@click="onclickSubmitForm()"
 				mt
 			>
 				{{ t('Buttons.SubmitAnswer') }}
 			</InputBtn>
 
-			<template v-else>
-				<div class="flex gap-4 h-full items-center">
-					<button type="button" class="text-heading-3 py-1 px-2">👍</button>
-					<button type="button" class="text-heading-3 py-1 px-2">👎</button>
-					<button type="button" class="text-heading-3 py-1 px-2">😐</button>
-					<button type="button" class="text-heading-3 py-1 px-2">🚩</button>
-				</div>
-				<InputBtn
-					:loading="loading"
-					class="self-center"
-					@click="onclickSubmitForm()"
-					mt
+			<div v-if="answer" class="flex gap-4 items-center mt-8">
+				<button
+					type="button"
+					class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
 				>
-					{{ t('Buttons.Continue') }}
-				</InputBtn>
-			</template>
+					👍
+				</button>
+				<button
+					type="button"
+					class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
+				>
+					👎
+				</button>
+				<button
+					type="button"
+					class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
+				>
+					😐
+				</button>
+				<button
+					type="button"
+					class="w-10 h-10 pl-2 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
+				>
+					🚩
+				</button>
+			</div>
+			<InputBtn
+				v-if="answer"
+				:loading="loading"
+				class="self-center"
+				@click="onclickSubmitForm()"
+				mt
+			>
+				{{ t('Buttons.Continue') }}
+			</InputBtn>
 		</article>
 	</form>
 </template>

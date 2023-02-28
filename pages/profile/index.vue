@@ -29,6 +29,8 @@
 		<UserProgress />
 
 		<UserCourses />
+
+		<UserQuizzes />
 	</main>
 </template>
 

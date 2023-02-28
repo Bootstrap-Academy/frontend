@@ -41,6 +41,7 @@
 			:coachings="coachings"
 			:webinars="webinars"
 			:subSkillID="subSkillID"
+			:quizzes="quizzes"
 		/>
 	</main>
 </template>
@@ -67,6 +68,7 @@ export default defineComponent({
 		const courses = useCourses();
 		const coachings = useCoachings();
 		const webinars = useWebinars();
+		const quizzes = useQuizzes();
 
 		const route = useRoute();
 
@@ -146,6 +148,7 @@ export default defineComponent({
 					getTheseCourses(courseIDs.value),
 					getCoachingsForThisSubSkill(subSkillID.value),
 					getWebinarsForThisSubSkill(subSkillID.value),
+					getQuizzes(),
 				]);
 			}
 
@@ -172,6 +175,7 @@ export default defineComponent({
 			subSkillID,
 			skillName,
 			breadcrumbs,
+			quizzes,
 		};
 	},
 });
