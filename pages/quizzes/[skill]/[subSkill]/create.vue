@@ -9,7 +9,7 @@
 				size="sm"
 				class="mb-card mx-auto"
 			/>
-			<FormQuiz :data="quiz" />
+			<FormQuiz />
 		</section>
 	</section>
 </template>
@@ -25,22 +25,7 @@ export default {
 		title: 'Create Quiz',
 	},
 	setup() {
-		const route = useRoute();
-
-		const quizID = computed(() => {
-			return (route.params?.id ?? '').toString();
-		});
-
-		const quiz = useQuiz();
-
-		const loading = ref(true);
-
-		onMounted(async () => {
-			loading.value = true;
-			await getQuiz(quizID.value);
-			loading.value = false;
-		});
-		return { quiz };
+		return {};
 	},
 };
 </script>

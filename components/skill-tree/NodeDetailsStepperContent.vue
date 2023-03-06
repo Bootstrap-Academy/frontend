@@ -64,8 +64,8 @@
 		</div>
 
 		<article v-else-if="activeStepper == 3">
-			<NuxtLink to="/quizzes/create">
-				<Btn>+ {{ t('Buttons.AddQuizQuestion') }}</Btn>
+			<NuxtLink :to="`/quizzes/${skillID}/${subSkillID}/create`">
+				<Btn sm>{{ t('Buttons.AddQuizQuestion') }}</Btn>
 			</NuxtLink>
 			<div
 				class="content-container mt-card"
@@ -97,6 +97,7 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
+		skillID: { default: '' },
 		subSkillID: { default: '' },
 		activeStepper: { default: 0 },
 		courses: { type: Array as PropType<any[]>, default: [] },

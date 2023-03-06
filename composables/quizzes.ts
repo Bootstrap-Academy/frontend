@@ -40,14 +40,17 @@ export async function getQuizzes() {
 				price: 0,
 				options: [
 					{
+						id: '23432443',
 						answer: 'Framework',
 						correct: false,
 					},
 					{
+						id: '9284ruh3ifjcnio3hprv',
 						answer: 'Node JS',
 						correct: false,
 					},
 					{
+						id: '2343229ru389gfuhbvwjcio2hc19vg443',
 						answer: 'Library',
 						correct: true,
 					},
@@ -60,14 +63,17 @@ export async function getQuizzes() {
 				price: 1,
 				options: [
 					{
+						id: ';3qjfnvjr noi2vhg7re3refbi1rf',
 						answer: 'Mitochondria',
 						correct: true,
 					},
 					{
+						id: '0982j2lfmlef',
 						answer: 'Plasma',
 						correct: false,
 					},
 					{
+						id: '01tu',
 						answer: 'Brain',
 						correct: false,
 					},
@@ -107,6 +113,49 @@ export async function getFilteredQuizzes(filters: any[]) {
 		const response = quizzes.value;
 
 		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function createQuiz(body: any) {
+	try {
+		// const response = await POST(`/quizzes/quizzes`,body);
+
+		// const quiz = useQuiz();
+		// quiz.value = response ?? null;
+
+		// return [response, null];
+
+		await getQuizzes();
+		const quizzes = useQuizzes();
+		quizzes.value.push(body);
+		const quiz = useQuiz();
+		quiz.value = body;
+		return [body, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function editQuiz(id: string, body: any) {
+	try {
+		// const response = await PATCH(`/quizzes/quizzes/${id}`,body);
+
+		// const quiz = useQuiz();
+		// quiz.value = response ?? null;
+
+		// return [response, null];
+
+		await getQuizzes();
+		const quizzes = useQuizzes();
+		quizzes.value = quizzes.value.map((q) => {
+			return q.id == id ? body : q;
+		});
+
+		const quiz = useQuiz();
+		quiz.value = body;
+		return [body, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

@@ -41,6 +41,7 @@
 			:coachings="coachings"
 			:webinars="webinars"
 			:subSkillID="subSkillID"
+			:skillID="rootSkillID"
 			:quizzes="quizzes"
 		/>
 	</main>

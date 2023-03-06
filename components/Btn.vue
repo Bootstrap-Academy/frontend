@@ -1,5 +1,5 @@
 <template>
-	<button :class="classes" @click="onclick">
+	<button :class="classes" @click="onclick" type="button">
 		<component v-if="icon" :is="icon" class="icon"></component>
 		<slot></slot>
 	</button>

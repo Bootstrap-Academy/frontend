@@ -11,6 +11,9 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"MultiChoice": "Multi Choice",
+		"SingleChoice": "Single Choice",
+		"CreateQuiz": "Create Quiz",
 		"Oldest": "Oldest",
 		"MyQuizQuestions": "My Quiz Questions",
 		"QuizQuestions": "Quiz Questions",
@@ -187,7 +190,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
-		"SearchQuizzes":"Search for Quizzes",
+		"SearchQuizzes": "Search for Quizzes",
 		"MyQuizQuestions": "Here are the latest quiz questions you have created.",
 		"MissingProfileInfo": "Please fill in the missing profile information in order to buy coins",
 		"BuyCoins": "Please verify your profile information below in order to purchase coins from Bootstrap Academy",
@@ -411,6 +414,15 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Payed": "Payed",
+		"Option": "Option",
+		"Correct": "Correct",
+		"Question": "Question",
+		"Skill": "Skill",
+		"SubSkill": "SubSkill",
+		"Course": "Course",
+		"Section": "Section",
+		"Lecture": "Lecture",
 		"ShowFreeQuizzesOnly": "Show Free Quizzes Only",
 		"FirstName": "First Name",
 		"LastName": "Last Name",
@@ -457,6 +469,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"CreateQuiz": "Create Quiz",
 		"CreateQuizQuestion": "Create Quiz Question",
 		"SubmitAnswer": "Submit Answer",
 		"Continue": "Continue",
@@ -586,6 +599,7 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"CreatedQuiz": "Successfully created quiz question",
 		"EventCancelled": "Event has been cancelled successfully.",
 		"SubmitWebinarRating": "Webinar Rating submitted successfully",
 		"CancelWebinarRating": "Cancelled webinar rating.",
@@ -623,6 +637,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"AddQuizQuestionOptions": "Add Quiz Question Options",
 		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",
 		"WebinarRating": "Rating must be greater than 0",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "You must agree in order to delete webinar.",

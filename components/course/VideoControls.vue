@@ -7,16 +7,21 @@
 				{{ activeLecture?.title ?? '' }}
 			</h1>
 
-			<Chip
+			<template
 				v-if="
 					activeLecture.completed ||
 					listOfCompletedCourses.find((lec) => lec == activeLecture.id)
 				"
-				:icon="CheckIcon"
-				color="bg-info"
 			>
-				{{ t('Headings.Completed') }}
-			</Chip>
+				<Chip :icon="CheckIcon" color="bg-info">
+					{{ t('Headings.Completed') }}
+				</Chip> 
+				<NuxtLink
+					:to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}`"
+				>
+					<Btn sm>{{ t('Buttons.AddQuizQuestion') }}</Btn>
+				</NuxtLink>
+			</template>
 			<Btn
 				sm
 				v-else-if="!activeLecture.completed"
@@ -242,6 +247,9 @@ export default defineComponent({
 			goToNextLecture,
 			ArrowLeftIcon,
 			ArrowRightIcon,
+			activeLectureID,
+			courseID,
+			activeSectionID,
 		};
 	},
 });
