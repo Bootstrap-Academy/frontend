@@ -6,18 +6,20 @@
 		</LazyClientOnly>
 		<NuxtPage />
 
-		<CookiePolicy v-if="isPageLoaded" />
+		<CookiePolicy />
 		<Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
 			<Dialog :dialog="dialog" />
 		</Modal>
 		<Snackbar class="z-[999]" />
 
-		<FormWebinarRating
-			v-for="unratedWebinar of unratedWebinars"
-			:key="unratedWebinar.id"
-			:data="unratedWebinar"
-			@done="ondoneRmWebinar($event)"
-		/>
+		<div>
+			<FormWebinarRating
+				v-for="unratedWebinar of unratedWebinars"
+				:key="unratedWebinar.id"
+				:data="unratedWebinar"
+				@done="ondoneRmWebinar($event)"
+			/>
+		</div>
 	</NuxtLayout>
 </template>
 
@@ -50,11 +52,9 @@ export default {
 		const cookie_refreshToken = useCookie('refreshToken');
 		refreshToken.value = cookie_refreshToken.value ?? '';
 
-		const isPageLoaded = ref(false);
 		const nuxtApp = useNuxtApp();
 
 		nuxtApp.hook('page:finish', async () => {
-			isPageLoaded.value = true;
 			if (!!accessToken.value) {
 				await getUnratedWebinars();
 			}
@@ -71,7 +71,6 @@ export default {
 		return {
 			dialog,
 			handleDialogOnBackdrop,
-			isPageLoaded,
 			unratedWebinars,
 			ondoneRmWebinar,
 		};

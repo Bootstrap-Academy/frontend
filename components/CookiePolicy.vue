@@ -1,20 +1,22 @@
 <template>
-	<Modal v-if="!isPrivacy && !agreed">
-		<Dialog :dialog="dialog">
-			<template #content="{ t }">
-				<p class="text-body-1 text-body font-body m-0 mt-box">
-					{{ t('Body.CookiePolicy') }}
+	<div>
+		<Modal v-if="!agreed && route.name != 'docs-privacy'">
+			<Dialog :dialog="dialog">
+				<template #content="{ t }">
+					<p class="text-body-1 text-body font-body m-0 mt-box">
+						{{ t('Body.CookiePolicy') }}
 
-					<NuxtLink
-						to="/docs/privacy"
-						class="underline-link w-fit inline-block"
-					>
-						{{ t('Body.CookiePolicyLink') }}
-					</NuxtLink>
-				</p>
-			</template>
-		</Dialog>
-	</Modal>
+						<NuxtLink
+							to="/docs/privacy"
+							class="underline-link w-fit inline-block"
+						>
+							{{ t('Body.CookiePolicyLink') }}
+						</NuxtLink>
+					</p>
+				</template>
+			</Dialog>
+		</Modal>
+	</div>
 </template>
 
 <script lang="ts">
@@ -50,12 +52,8 @@ export default defineComponent({
 			'agreedToCookiePolicy'
 		);
 
-		const isPrivacy = ref(false);
-
 		const router = useRouter();
 		const route = useRoute();
-
-		isPrivacy.value = !!route.path.includes('privacy');
 
 		const agreed = computed({
 			get() {
@@ -66,7 +64,7 @@ export default defineComponent({
 			},
 		});
 
-		return { agreed, isPrivacy, dialog };
+		return { agreed, dialog, route };
 	},
 });
 </script>
