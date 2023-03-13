@@ -13,7 +13,7 @@ export async function getCoachingsForThisSubSkill(subSkillID: string) {
 		);
 
 		const coachings = useCoachings();
-		coachings.value = response ?? [];
+		coachings.value = response?.events ?? [];
 
 		if (coachings.value.length > 0) {
 			coachings.value = coachings.value.sort(function (x, y) {

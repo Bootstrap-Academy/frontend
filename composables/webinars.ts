@@ -108,9 +108,9 @@ export async function getWebinarsForThisSubSkill(subSkillID: string) {
 			`/events/calendar?type=webinar&skill_id=${subSkillID}`
 		);
 		const webinars = useWebinars();
-		webinars.value = response ?? [];
+		webinars.value = response?.events ?? [];
 
-		return [response, null];
+		return [webinars.value, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}
