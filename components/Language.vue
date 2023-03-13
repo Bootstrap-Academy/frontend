@@ -8,6 +8,7 @@
 				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
 				:class="locale == 'en-US' ? 'opacity-100' : 'opacity-60'"
 			/>
+
 			<img
 				@click="locale = 'de'"
 				src="/images/de.webp"
