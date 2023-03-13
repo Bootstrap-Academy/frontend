@@ -12,7 +12,7 @@
 				@click="locale = 'de'"
 				src="/images/de.webp"
 				alt="french translation"
-				class=""
+				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
 				:class="locale == 'de' ? 'opacity-100' : 'opacity-60'"
 			/>
 		</article>
