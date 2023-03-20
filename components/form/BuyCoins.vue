@@ -13,14 +13,19 @@
 		/>
 
 		<article
-			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center"
+			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+			:class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
 		>
-			<img src="/images/euro.png" alt="coin" class="w-8 h-8 object-contain" />
+			<img src="/images/euro.png" alt="euro" class="w-8 h-8 object-contain" />
 			<h3 class="text-heading-3">{{ t('Headings.Euros') }}</h3>
 			<input
+				id="Euros"
+				name="Euros"
 				type="number"
 				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
-				v-model="form.euros.value"
+				@change="onchangeValidateEuros()"
+				@input="oninputValidateEuros($event)"
+				:value="form.euros.value"
 			/>
 		</article>
 
@@ -29,15 +34,23 @@
 		/>
 
 		<article
-			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center"
+			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+			:class="[!form.morphCoins.valid ? 'border-error' : 'border-transparent']"
 		>
-			<img src="/images/coin.png" alt="coin" class="w-8 h-8 object-contain" />
+			<img
+				src="/images/coin.png"
+				alt="morphcoins"
+				class="w-8 h-8 object-contain"
+			/>
 			<h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>
 			<input
+				id="Morphcoins"
+				name="Morphcoins"
 				type="number"
 				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
-				v-model="form.morphCoins.value"
-				@input="form.morphCoins.valid = form.morphCoins.value >= 500"
+				@change="onchangeValidateMorphcoins()"
+				@input="oninputValidateMorphcoins($event)"
+				:value="form.morphCoins.value"
 			/>
 		</article>
 
@@ -64,7 +77,8 @@
 				label: 'Links.TermsAndConditions',
 			}"
 			target="_blank"
-			v-model="termsAndConditions"
+			v-model="form.termsAndConditions.value"
+			@valid="form.termsAndConditions.valid = $event"
 		/>
 
 		<InputCheckbox
@@ -76,13 +90,15 @@
 				label: 'Links.RightToWithdrawalLink',
 			}"
 			target="_blank"
-			v-model="confirmRightToWithdrawal"
+			v-model="form.confirmRightToWithdrawal.value"
+			@valid="form.confirmRightToWithdrawal.valid = $event"
 		/>
 		<InputCheckbox
 			class="mb-card"
 			id="DontUseRightToWithdrawal"
 			label="Links.DontUseRightToWithdrawal"
-			v-model="confirmDontUseRightToWithdrawal"
+			v-model="form.confirmDontUseRightToWithdrawal.value"
+			@valid="form.confirmDontUseRightToWithdrawal.valid = $event"
 		/>
 
 		<Btn
@@ -115,16 +131,9 @@ export default defineComponent({
 	props: {},
 	setup(props) {
 		const { t } = useI18n();
-		const loading = ref(true);
 
-		// ============================================================= refs
 		const formRef = ref<HTMLFormElement | null>(null);
 
-		const termsAndConditions = ref(false);
-		const confirmRightToWithdrawal = ref(false);
-		const confirmDontUseRightToWithdrawal = ref(false);
-
-		// ============================================================= reactive
 		const form = reactive<IForm>({
 			euros: {
 				valid: true,
@@ -134,13 +143,31 @@ export default defineComponent({
 				valid: true,
 				value: 500,
 			},
+			termsAndConditions: {
+				value: false,
+				valid: false,
+			},
+			confirmRightToWithdrawal: {
+				value: false,
+				valid: false,
+			},
+			confirmDontUseRightToWithdrawal: {
+				value: false,
+				valid: false,
+			},
 			submitting: false,
 			validate: () => {
 				let isValid = true;
 
 				for (const key in form) {
-					if (key != 'validate' && key != 'body' && !form[key].valid) {
+					if (
+						key != 'validate' &&
+						key != 'body' &&
+						key != 'submitting' &&
+						!form[key].valid
+					) {
 						isValid = false;
+						console.log(key);
 					}
 				}
 
@@ -149,100 +176,26 @@ export default defineComponent({
 			body: () => {
 				let obj: any = {};
 				for (const key in form) {
-					if (key != 'validate' && key != 'body') obj[key] = form[key].value;
+					if (key != 'validate' && key != 'body' && key != 'submitting') {
+						obj[key] = form[key].value;
+					}
 				}
 				return obj;
 			},
 		});
 
-		const snackbar = useSnackbar();
+		// ============================================================= Form
 		const user = <any>useUser();
-
-		watch(
-			() => form.euros.value,
-			(newValue, oldValue) => {
-				if (!!!newValue) return;
-
-				form.euros.value = Number(newValue.toFixed(2));
-
-				if (newValue > 10_000) {
-					form.euros.value = oldValue;
-					form.euros.valid = false;
-					snackbar.value = {
-						show: true,
-						type: 'error',
-						heading: 'Error.MaxEuros',
-						body: '',
-					};
-				} else if (newValue < 5) {
-					form.euros.valid = false;
-					snackbar.value = {
-						show: true,
-						type: 'error',
-						heading: 'Error.MinEuros',
-						body: '',
-					};
-				} else {
-					form.euros.valid = true;
-				}
-
-				form.morphCoins.value = form.euros.value * 100;
-			},
-			{ deep: true }
-		);
-
-		watch(
-			() => form.morphCoins.value,
-			(newValue, oldValue) => {
-				if (!!!newValue) return;
-
-				form.morphCoins.value = Number(newValue.toFixed(2));
-
-				if (newValue > 1000_000) {
-					form.morphCoins.value = oldValue;
-					form.morphCoins.valid = false;
-					snackbar.value = {
-						show: true,
-						type: 'error',
-						heading: 'Error.MaxMorphcoins',
-						body: '',
-					};
-				} else if (newValue < 500) {
-					form.morphCoins.valid = false;
-					snackbar.value = {
-						show: true,
-						type: 'error',
-						heading: 'Error.MinMorphcoins',
-						body: '',
-					};
-				} else {
-					form.morphCoins.valid = true;
-				}
-
-				form.euros.value = form.morphCoins.value / 100;
-			},
-			{ deep: true }
-		);
-
-		// ============================================================= functions
 		const router = useRouter();
+
 		async function onclickSubmitForm() {
 			let email_verified = user?.value?.email_verified ?? false;
 			if (!email_verified) {
-				snackbar.value = {
-					show: true,
-					type: 'error',
-					heading: 'Error.AccountNotVerified',
-					body: '',
-				};
+				openSnackbar('error', 'Error.AccountNotVerified');
 				return;
 			}
 
-			if (
-				termsAndConditions.value &&
-				confirmRightToWithdrawal.value &&
-				confirmDontUseRightToWithdrawal.value
-			) {
+			if (form.validate()) {
 				router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
 			} else {
 				openSnackbar(
@@ -252,15 +205,76 @@ export default defineComponent({
 			}
 		}
 
+		// ============================================================= Handling Euros
+		const MAX_EUROS = 10_000;
+		const MIN_EUROS = 5;
+		let euroErrorMsg = '';
+		function oninputValidateEuros(event: any) {
+			let currentVal = event?.target?.value ?? form.euros.value;
+			currentVal = roundOffTo(currentVal, 2);
+
+			if (currentVal > MAX_EUROS) {
+				currentVal = form.euros.value;
+				openSnackbar('error', 'Error.MaxEuros');
+				euroErrorMsg = '';
+			} else if (currentVal < MIN_EUROS) {
+				form.euros.valid = false;
+				euroErrorMsg = 'Error.MinEuros';
+			} else {
+				form.euros.valid = true;
+				euroErrorMsg = '';
+			}
+
+			event.target.value = currentVal;
+			form.euros.value = currentVal;
+
+			form.morphCoins.value = form.euros.value * 100;
+		}
+
+		function onchangeValidateEuros() {
+			if (!!euroErrorMsg) openSnackbar('error', euroErrorMsg);
+		}
+
+		// ============================================================= Handling Morphcoins
+		const MAX_MORPHCOINS = 1000_000;
+		const MIN_MORPHCOINS = 500;
+		let morphcoinsErrorMsg = '';
+		function oninputValidateMorphcoins(event: any) {
+			let currentVal = event?.target?.value ?? form.morphCoins.value;
+			currentVal = roundOffTo(currentVal, 2);
+
+			if (currentVal > MAX_MORPHCOINS) {
+				currentVal = form.morphCoins.value;
+				openSnackbar('error', 'Error.MaxMorphcoins');
+				morphcoinsErrorMsg = '';
+			} else if (currentVal < MIN_MORPHCOINS) {
+				form.morphCoins.valid = false;
+				morphcoinsErrorMsg = 'Error.MinMorphcoins';
+			} else {
+				form.morphCoins.valid = true;
+			}
+
+			event.target.value = currentVal;
+			form.morphCoins.value = currentVal;
+
+			form.euros.value = form.morphCoins.value / 100;
+		}
+
+		function onchangeValidateMorphcoins() {
+			if (!!morphcoinsErrorMsg) openSnackbar('error', morphcoinsErrorMsg);
+		}
+
 		return {
-			form,
-			onclickSubmitForm,
-			formRef,
-			loading,
 			t,
-			termsAndConditions,
-			confirmRightToWithdrawal,
-			confirmDontUseRightToWithdrawal,
+			form,
+			formRef,
+			onclickSubmitForm,
+
+			oninputValidateEuros,
+			onchangeValidateEuros,
+
+			oninputValidateMorphcoins,
+			onchangeValidateMorphcoins,
 		};
 	},
 });
