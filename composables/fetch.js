@@ -93,8 +93,8 @@ const onResponseError = async ({ request, options, response }) => {
 	}
 
 	if (
-		details.includes('invalid token') ||
-		details.includes('invalid refresh token')
+		details.toLocaleLowerCase().includes('invalid token') ||
+		details.toLocaleLowerCase().includes('invalid refresh token')
 	) {
 		const router = useRouter();
 		const route = useRoute();
@@ -105,6 +105,7 @@ const onResponseError = async ({ request, options, response }) => {
 			route.fullPath == '/skill-tree'
 		) {
 		} else {
+			setStates(null);
 			router.push(`/auth/login?redirect=${route.fullPath}`);
 		}
 	}
