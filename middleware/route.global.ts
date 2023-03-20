@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
 	if (
 		(!to.path.includes('/docs/privacy') && to.path.includes('/privacy')) ||
-		to.path.includes('/datenschutz')
+		(to.path.includes('/datenschutz') && !to.path.includes('/skill-tree'))
 	) {
 		return navigateTo('/docs/privacy');
 	}
