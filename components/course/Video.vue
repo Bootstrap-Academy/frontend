@@ -7,6 +7,7 @@
 			frameborder="0"
 			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 			allowfullscreen
+			:key="`youtube-${activeLecture.id}`"
 		></iframe>
 
 		<video
@@ -18,6 +19,7 @@
 			allowfullscreen
 			controlsList="nodownload"
 			oncontextmenu="return false;"
+			:key="`video-${activeLecture.id}`"
 		>
 			<track kind="captions" />
 			<source ref="refSource" :src="videoSRC" type="video/mp4" alt="Video" />
@@ -54,6 +56,8 @@ export default defineComponent({
 		watch(
 			() => props.activeLecture,
 			async (newValue, oldValue) => {
+				console.log('newValue', newValue);
+
 				if (!!!newValue) return;
 
 				const courseID = props.course?.id ?? '';

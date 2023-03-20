@@ -8,7 +8,7 @@
 		class="group cursor-pointer relative outline-none"
 		@click="onclickToggleActive"
 		role="button"
-		tabindex="2"
+		tabindex="0"
 	>
 		<path
 			id="dashed"

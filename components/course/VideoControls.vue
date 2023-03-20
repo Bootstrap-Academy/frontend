@@ -1,11 +1,13 @@
 <template>
-	<header class="flex gap-card justify-between flex-wrap">
+	<header class="flex gap-card justify-between flex-wrap md:flex-nowrap">
 		<div class="flex gap-box flex-wrap items-center">
-			<NuxtLink :to="path">{{ course?.title ?? '' }} /</NuxtLink>
+			<div class="flex flex-wrap items-center">
+				<NuxtLink :to="path">{{ course?.title ?? '' }} /</NuxtLink>
 
-			<h1 class="text-heading-2 capitalize mr-6">
-				{{ activeLecture?.title ?? '' }}
-			</h1>
+				<h1 class="text-heading-2 capitalize mr-6">
+					{{ activeLecture?.title ?? '' }}
+				</h1>
+			</div>
 
 			<template
 				v-if="
@@ -15,7 +17,7 @@
 			>
 				<Chip :icon="CheckIcon" color="bg-info">
 					{{ t('Headings.Completed') }}
-				</Chip> 
+				</Chip>
 				<NuxtLink
 					:to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}`"
 				>
