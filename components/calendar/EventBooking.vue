@@ -55,6 +55,12 @@
 			<Dialog :dialog="dialog">
 				<template #content>
 					<hr class="mt-card text-transparent" />
+					<h4 class="font-bold text-heading">
+						{{ t('Headings.Description') }}
+					</h4>
+					<p>{{ description }}</p>
+
+					<hr class="mt-card text-transparent" />
 
 					<p v-for="(stat, i) of stats" :key="i">
 						{{ t(stat.heading) }}
@@ -126,6 +132,7 @@ export default defineComponent({
 		bookable: { type: Boolean, default: false },
 
 		id: { type: String, default: '' },
+		description: { type: String, default: '' },
 		type: { type: String, default: 'webinar' },
 		theme: { type: Object as PropType<any>, default: null },
 		subSkillID: { type: String, default: '' },
@@ -293,6 +300,10 @@ export default defineComponent({
 							success ? 'success' : 'error',
 							success ? 'Success.EventCancelled' : error?.detail ?? ''
 						);
+
+						if (success) {
+							confirmCancellation.value = false;
+						}
 					},
 				},
 				secondaryBtn: {

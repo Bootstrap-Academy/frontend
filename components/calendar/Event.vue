@@ -18,13 +18,13 @@
 					{{ instructor?.display_name ?? type }}
 				</h3>
 			</div>
+
 			<h3 v-else class="capitalize text-heading-4">
 				{{ title }}
 			</h3>
-
 			<h3
 				@click.self="onclickCard"
-				v-if="!!link"
+				v-if="link"
 				:class="[theme.text, theme.bgLight]"
 				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
 			>
@@ -56,6 +56,7 @@
 			:subSkillID="skillID"
 			:start="data.start"
 			:stats="stats"
+			:description="description"
 		/>
 	</article>
 </template>
@@ -158,6 +159,10 @@ export default defineComponent({
 			return props.data?.price ?? props.data?.coaching?.price ?? 0;
 		});
 
+		const description = computed(() => {
+			return props.data?.description ?? '';
+		});
+
 		const stats = computed(() => {
 			return [
 				{
@@ -225,6 +230,7 @@ export default defineComponent({
 			admin_link,
 			isMine,
 			skillID,
+			description,
 		};
 	},
 });
