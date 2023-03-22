@@ -1,14 +1,14 @@
 <template>
 	<header class="flex gap-card justify-between flex-wrap md:flex-nowrap">
-		<div class="flex gap-box flex-wrap items-center">
-			<div class="flex flex-wrap items-center">
-				<NuxtLink :to="path">{{ course?.title ?? '' }} /</NuxtLink>
+		<div class="flex flex-wrap">
+			<NuxtLink :to="path">{{ course?.title ?? '' }} /</NuxtLink>
 
-				<h1 class="text-heading-2 capitalize mr-6">
-					{{ activeLecture?.title ?? '' }}
-				</h1>
-			</div>
+			<h1 class="text-heading-2 capitalize mr-6">
+				{{ activeLecture?.title ?? '' }}
+			</h1>
+		</div>
 
+		<div class="flex gap-box flex-wrap h-fit flex-shrink-0 mt-0.5">
 			<template
 				v-if="
 					activeLecture.completed ||
@@ -34,7 +34,7 @@
 			</Btn>
 		</div>
 
-		<article class="flex midXl:hidden gap-card items-center">
+		<article class="flex midXl:hidden gap-card items-center h-fit">
 			<div
 				class="block midXl:hidden bg-tertiary py-1 px-2 rounded-lg h-fit w-fit cursor-pointer"
 				@click="emit('update:modelValue', !modelValue)"
