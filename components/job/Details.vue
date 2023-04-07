@@ -7,7 +7,7 @@
 			<h2 class="mb-box text-heading-3 truncate">
 				{{ t('Headings.Description') }}
 			</h2>
-			<div class="break-all markdown" v-html="description"></div>
+			<div class="break-all markdown" v-html="$md.render(description)"></div>
 		</article>
 
 		<article v-if="responsibilities.length">
@@ -31,8 +31,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MarkdownIt from 'markdown-it';
-import DOMPurify from 'dompurify';
 
 export default defineComponent({
 	props: {
@@ -42,9 +40,7 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const description = computed(() => {
-			const md = new MarkdownIt();
-			const htmlText = md.render(props.data?.description ?? '');
-			return DOMPurify.sanitize(htmlText);
+			return props.data?.description ?? '';
 		});
 
 		const responsibilities = computed(() => {

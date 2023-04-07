@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import katex from 'katex';
 import hljs from 'highlight.js';
+import DOMPurify from 'dompurify';
 
 export default defineNuxtPlugin((app) => {
 	const md = new MarkdownIt({
@@ -43,8 +44,9 @@ export default defineNuxtPlugin((app) => {
 
 		try {
 			const html = katex.renderToString(tex);
+			const sanitizedHtml = DOMPurify.sanitize(html);
 			const token = state.push('html_inline', '', 0);
-			token.content = html;
+			token.content = sanitizedHtml;
 		} catch (err) {
 			if (!silent) console.error(err);
 			return false;

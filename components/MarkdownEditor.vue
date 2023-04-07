@@ -1,7 +1,7 @@
 <template>
-	<section class="markdown">
+	<section class="markdown flex gap-card">
 		<textarea v-model="markdown" class="w-full h-full" rows="20"></textarea>
-		<div v-html="$mdRenderer.render(markdown)"></div>
+		<div v-html="$md.render(markdown)"></div>
 	</section>
 </template>
 
@@ -10,9 +10,6 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { TrophyIcon } from '@heroicons/vue/24/outline';
 import { PropType } from 'vue';
-import MarkdownIt from 'markdown-it';
-import DOMPurify from 'dompurify';
-``;
 
 export default defineComponent({
 	props: {
