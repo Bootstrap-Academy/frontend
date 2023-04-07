@@ -19,7 +19,11 @@ export default defineNuxtPlugin((app) => {
 				} catch (__) {}
 			}
 
-			return '';
+			return (
+				'<pre class="hljs"><code>' +
+				hljs.highlightAuto(str).value +
+				'</code></pre>'
+			);
 		},
 	});
 

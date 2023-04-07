@@ -318,6 +318,18 @@
 		@apply py-1 px-2 rounded w-fit;
 	}
 
+	.markdown code {
+		@apply py-1 px-2 rounded w-fit bg-[#0d1117] text-white;
+	}
+
+	.markdown pre > code {
+		@apply py-0 px-0 rounded-none w-fit bg-transparent;
+	}
+
+	.markdown strong {
+		@apply font-bold text-heading;
+	}
+
 	.form-submitting * {
 		@apply opacity-70 pointer-events-none;
 	}
