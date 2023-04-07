@@ -11,6 +11,15 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"Score": "Punktzahl: {score}",
+		"ChallengesSolved": "Gelöste Herausforderungen",
+		"CategoriesCompleted": "Abgeschlossene Kategorien",
+		"Solved": "Gelöst",
+		"Incorrect": "Falsch",
+		"Untried": "Unversucht",
+		"Locked": "Verschlossen",
+		"MyRank": "Mein Rang: {rank}",
+		"MyChallengesStats": "Meine Herausforderungsstatistiken",
 		"MultiChoice": "Mehrfachauswahl",
 		"SingleChoice": "Einzelauswahl",
 		"CreateQuiz": "Quiz erstellen",
@@ -190,6 +199,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"MyChallengesStats": "Sehen Sie sich die Statistiken und Fortschritte Ihrer Herausforderungen an.",
 		"SearchQuizzes": "Suchen Sie nach Quiz",
 		"MyQuizQuestions": "Hier sind die neuesten Quizfragen, die Sie erstellt haben.",
 		"MissingProfileInfo": "Bitte füllen Sie die fehlenden Profilinformationen aus, um Münzen zu kaufen",
@@ -470,6 +480,9 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"MyChallenges": "Meine Herausforderungen",
+		"Challenges": "Herausforderungen",
+		"LeaderBoard": "Bestenliste",
 		"CreateQuiz": "Quiz erstellen",
 		"CreateQuizQuestion": "Quizfrage erstellen",
 		"SubmitAnswer": "Antwort einreichen",

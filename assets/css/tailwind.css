@@ -305,9 +305,17 @@
 		@apply text-body-1;
 	}
 
+	.markdown li {
+		@apply list-disc list-item list-inside pl-4;
+	}
+
 	.markdown th,
 	.markdown td {
 		@apply text-body-2 text-body;
+	}
+
+	.markdown pre {
+		@apply py-1 px-2 rounded w-fit;
 	}
 
 	.form-submitting * {

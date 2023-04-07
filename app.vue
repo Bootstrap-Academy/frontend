@@ -25,6 +25,9 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
+// import 'highlight.js/styles/darcula.css';
+import 'highlight.js/styles/github-dark.css';
+
 export default {
 	setup() {
 		const dialog = useDialog();

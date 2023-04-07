@@ -34,7 +34,7 @@ export default {
 						},
 						{
 							label: 'Links.Challenges',
-							pathname: '/challenges',
+							pathname: '/challenges/all',
 						},
 				  ]
 				: [
@@ -50,10 +50,10 @@ export default {
 							label: 'Links.Contact',
 							pathname: '/contact',
 						},
-						{
-							label: 'Links.Challenges',
-							pathname: '/challenges',
-						},
+						// {
+						// 	label: 'Links.Challenges',
+						// 	pathname: '/challenges',
+						// },
 				  ];
 		});
 

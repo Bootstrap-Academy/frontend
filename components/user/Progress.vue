@@ -1,11 +1,11 @@
 <template>
 	<section class="bg-secondary card style-card grid gap-card-sm">
-		<div class="flex gap-box items-start justify-between">
+		<div class="flex gap-box items-start justify-between mb-2">
 			<SectionTitle
 				sub
 				:heading="header.heading"
 				:body="header.body"
-				class="mb-0"
+				class="!m-0"
 			/>
 			<UserXP :data="xp" />
 		</div>
@@ -21,7 +21,7 @@
 				:data="skill"
 			/>
 
-			<NuxtLink to="/skill-tree/progress">
+			<NuxtLink to="/skill-tree/progress" class="mt-4">
 				<Btn full class="w-full max-w-[175px]">
 					{{ t('Buttons.ViewAll') }}
 				</Btn>

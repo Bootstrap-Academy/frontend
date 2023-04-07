@@ -11,6 +11,15 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Score": "Score: {score}",
+		"ChallengesSolved": "Challenges Solved",
+		"CategoriesCompleted": "Categories Completed",
+		"Solved": "Solved",
+		"Incorrect": "Incorrect",
+		"Untried": "Untried",
+		"Locked": "Locked",
+		"MyRank": "My Rank: {rank}",
+		"MyChallengesStats": "My Challenges Stats",
 		"MultiChoice": "Multi Choice",
 		"SingleChoice": "Single Choice",
 		"CreateQuiz": "Create Quiz",
@@ -190,6 +199,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"MyChallengesStats": "View your challenges' statistics and progress.",
 		"SearchQuizzes": "Search for Quizzes",
 		"MyQuizQuestions": "Here are the latest quiz questions you have created.",
 		"MissingProfileInfo": "Please fill in the missing profile information in order to buy coins",
@@ -469,6 +479,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"MyChallenges": "My Challenges",
+		"Challenges": "Challenges",
+		"LeaderBoard": "LeaderBoard",
 		"CreateQuiz": "Create Quiz",
 		"CreateQuizQuestion": "Create Quiz Question",
 		"SubmitAnswer": "Submit Answer",
