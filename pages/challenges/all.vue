@@ -20,7 +20,7 @@
 -->
 <template>
 	<main
-		class="markdown grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container"
+		class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container"
 	>
 		<template v-for="(category, i) of challengesCategories" :key="category.id">
 			<ChallengesCategory :data="category" />

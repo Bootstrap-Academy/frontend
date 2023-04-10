@@ -1,11 +1,15 @@
 <template>
 	<article>
-		<h4 class="text-heading-3">{{ t('Headings.Description') }}</h4>
-		<div
-			class="markdown"
-			v-if="typeof description == 'string'"
-			v-html="$md.render(description)"
-		></div>
+		<h4 class="text-heading-3">{{ t('Headings.Submissions') }}</h4>
+		<ul>
+			<li
+				v-for="limit of limits"
+				:key="limit"
+				class="list-item list-disc list-inside pl-4"
+			>
+				{{ limit }}
+			</li>
+		</ul>
 	</article>
 </template>
 
@@ -21,11 +25,11 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
-		const description = computed(() => {
-			return props.data?.description ?? '';
+		const limits = computed(() => {
+			return props.data?.limits ?? '';
 		});
 
-		return { t, description };
+		return { t, limits };
 	},
 });
 </script>

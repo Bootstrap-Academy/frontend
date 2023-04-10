@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* .katex {
+	color: var(--color-info);
+	background-color: rgb(27, 42, 56);
+} */
 :root {
 	--color-primary: #0b192e;
 	--color-secondary: #182b45;

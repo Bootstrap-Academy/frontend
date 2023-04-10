@@ -130,9 +130,7 @@ export async function getChallengesByCategory(categoryID: string) {
 				tasks: [
 					{
 						name: 'Exponential',
-						description: `\`\`\`sh
-						n ≤ 20
-						\`\`\``,
+						description: '$$ n ≤ 20 $$',
 						score: {
 							current: 0,
 							total: 5,
@@ -142,13 +140,16 @@ export async function getChallengesByCategory(categoryID: string) {
 				],
 				examples: [
 					{
-						input: `\`\`\`JAVASCRIPT
-						let a = "hello world"
-						console.log(a)
-						\`\`\``,
-						output: `\`\`\`sh
-						"hello world"
-						\`\`\``,
+						heading: '',
+						input:
+							'```JAVASCRIPT \nlet a = "hello world" \nconsole.log(a) \n```',
+						output: '```sh \n"hello world" \n ```',
+					},
+					{
+						heading: 'My New Example',
+						input:
+							'```JAVASCRIPT \nlet a = "hello world" \nconsole.log(a)\n```',
+						output: '```sh \n"hello world"\n ```',
 					},
 				],
 			},
@@ -185,14 +186,8 @@ export async function getChallengesByCategory(categoryID: string) {
 				],
 				examples: [
 					{
-						input: `\`\`\`JAVASCRIPT
-						2
-						4
-						5
-						\`\`\``,
-						output: `\`\`\`sh
-						9
-						\`\`\``,
+						input: '```JAVASCRIPT \nlet a = "hello world" console.log(a)\n ```',
+						output: '```sh \n"hello world"\n ```',
 						explanation: `4 + 5 = 9`,
 					},
 				],

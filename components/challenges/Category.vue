@@ -17,7 +17,6 @@
 				v-for="challenge of challenges"
 				:key="challenge.id"
 				:data="challenge"
-				:activeCategory="activeCategory"
 			/>
 		</div>
 	</section>
@@ -82,7 +81,6 @@ export default defineComponent({
 			challenges,
 			showChallenges,
 			toggleShowChallenges,
-			activeCategory,
 		};
 	},
 });

@@ -10,8 +10,16 @@
 			</p>
 		</header>
 
-		<div v-if="showChallengeContent">
+		<div
+			v-if="showChallengeContent"
+			class="grid gap-card grid-cols-1 pt-card-sm"
+		>
+			<Btn class="w-fit" :icon="CodeBracketIcon">{{ t('Buttons.Solve') }}</Btn>
 			<ChallengesItemDescription :data="data" />
+			<ChallengesItemLimits :data="data" />
+			<ChallengesItemDuration :data="data" />
+			<ChallengesItemTasks :data="data" />
+			<ChallengesItemExamples :data="data" />
 		</div>
 	</section>
 </template>
@@ -19,15 +27,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TrophyIcon } from '@heroicons/vue/24/outline';
+import { CodeBracketIcon, TrophyIcon } from '@heroicons/vue/24/outline';
 import { PropType } from 'vue';
 
 export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
-		activeCategory: { type: String, default: '' },
 	},
-	components: { TrophyIcon },
+	components: { TrophyIcon, CodeBracketIcon },
 	setup(props) {
 		const { t } = useI18n();
 
@@ -46,21 +53,32 @@ export default defineComponent({
 			return activeChallenge.value == challenge.value;
 		});
 
+		const baseQuery = computed(() => {
+			return {
+				category: route.query?.category ?? '',
+			};
+		});
+
 		function toggleShowChallengeContent() {
 			router.replace({
 				path: route.path,
 				query: showChallengeContent.value
 					? {
-							category: props.activeCategory,
+							...baseQuery.value,
 					  }
 					: {
-							category: props.activeCategory,
+							...baseQuery.value,
 							challenge: challenge.value,
 					  },
 			});
 		}
 
-		return { t, showChallengeContent, toggleShowChallengeContent };
+		return {
+			t,
+			showChallengeContent,
+			toggleShowChallengeContent,
+			CodeBracketIcon,
+		};
 	},
 });
 </script>
