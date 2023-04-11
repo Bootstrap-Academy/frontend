@@ -136,6 +136,9 @@ export async function getChallengesByCategory(categoryID: string) {
 							total: 5,
 						},
 						attempts: 0,
+						solvedOnFirstTry: false,
+						solved: true,
+						correct: true,
 					},
 				],
 				examples: [
@@ -157,8 +160,7 @@ export async function getChallengesByCategory(categoryID: string) {
 				id: '197f6eca-6276-4993-bfeb-53cbbbba6f02',
 				category: '497f6eca-6276-4993-bfeb-53cbbbba6f01',
 				title: 'Input',
-				description:
-					'most challenges, the goal is not only to write a program that produces a certain output for a given input, but also to make this program as efficient as possible. Only a limited time is available for the execution of the program (see below). If the program is not finished after this time limit (in this introduction challenge one second), the corresponding test case and thus the subtask is considered as failed. In this challenge, the task is to calculate the sum of the first ***n*** natural numbers for a given natural number ***n***. A possible solution for this is to iterate over the first ***n*** natural numbers, adding them together. However, the execution time of this solution is proportional to ***n***, which becomes problematic in the second sub-task, since up to two billion numbers would have to be added, which would take an extremely long time. A better solution here would be, for example, the Gaussian summation formula $$sum_{k=1}^{n}k=\\frac{n(n+1)}{2}$$ , which can be used to calculate the sum of the first ***n*** natural numbers in constant time. **Note**: When implementing the Gaussian summation formula, it is essential to make sure that you exclusively use integers and not floats in your calculations, since the latter are too imprecise for the numbers relevant in Task 2. A frequently occurring problem, especially in Python, is that dividing by 2 results in a float at the end, which is unfortunately too inaccurate. Instead of dividing by 2 using the `/` operator (float division) and then converting the float into an integer, the `//` operator (integer division) can be used, which directly returns an integer when dividing, whereby no precision should be lost. ### Input: - Line 1: The number ***n*** ### Output: - Line 1: The sum of the first ***n*** natural numbers $$sum_{k=1}^{n}k$$',
+				description: description,
 				creator: '1dccd4a6-75d2-43aa-a088-76d941f1b60a',
 				creation_timestamp: '2019-08-24T14:15:22Z',
 				skills: [],
@@ -173,6 +175,9 @@ export async function getChallengesByCategory(categoryID: string) {
 							total: 5,
 						},
 						attempts: 0,
+						solvedOnFirstTry: false,
+						solved: false,
+						correct: false,
 					},
 					{
 						name: 'Linear',
@@ -182,6 +187,9 @@ export async function getChallengesByCategory(categoryID: string) {
 							total: 20,
 						},
 						attempts: 3,
+						solvedOnFirstTry: false,
+						solved: true,
+						correct: false,
 					},
 				],
 				examples: [

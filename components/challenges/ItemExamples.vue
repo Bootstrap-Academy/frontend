@@ -18,7 +18,7 @@
 
 				<h6 class="text-heading-5">
 					{{ t('Headings.ExpectedOutput') }}
-				</h6>
+				</h6> 
 				<div v-html="$md.render(example.output)" class="markdown"></div>
 
 				<hr v-if="example && example.explanation" class="mt-box mb-box" />

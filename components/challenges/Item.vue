@@ -1,11 +1,16 @@
 <template>
 	<section class="box px-4 xl:px-5 style-box bg-secondary">
 		<header
-			class="flex gap-card justify-between cursor-pointer"
+			class="grid gap-card grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
 			@click="toggleShowChallengeContent"
 		>
-			<h2 class="!m-0 text-heading-3">{{ t(data?.title ?? '') }}</h2>
-			<p class="!m-0 flex-shrink-0">
+			<h2 class="!m-0 text-heading-3">
+				{{ t(data?.title ?? '') }}
+			</h2>
+
+			<ChallengesItemProgress :data="data" />
+
+			<p class="!m-0 text-right">
 				{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}
 			</p>
 		</header>

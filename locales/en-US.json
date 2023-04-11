@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"SolvedFirst": "Solved First",
+		"Correct": "Correct",
 		"Score": "Score: {score}",
 		"ChallengesSolved": "Challenges Solved",
 		"CategoriesCompleted": "Categories Completed",
