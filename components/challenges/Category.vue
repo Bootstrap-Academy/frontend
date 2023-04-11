@@ -17,6 +17,7 @@
 				v-for="challenge of challenges"
 				:key="challenge.id"
 				:data="challenge"
+				:mine="mine"
 			/>
 		</div>
 	</section>
@@ -31,6 +32,7 @@ import { PropType } from 'vue';
 export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
+		mine: { type: Boolean, default: false },
 	},
 	components: { TrophyIcon },
 	setup(props) {

@@ -20,7 +20,7 @@
 -->
 <template>
 	<main
-		class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
+		class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
 	>
 		<FormSearch
 			class="justify-self-end col-span-full"
@@ -30,26 +30,15 @@
 
 		<Sort
 			class="mb-card-sm col-span-full"
-			:quantity="myCourses.length"
+			:quantity="challengesCategories.length"
 			:options="options"
 			@selected="onSelectedOption($event)"
 		/>
 
-		<template v-if="loading">
-			<CourseCardSkeleton v-for="n in 5" :key="n" />
+		<template v-for="(category, i) of challengesCategories" :key="category.id">
+			<ChallengesCategory :data="category" mine />
+			<hr class="mt-box" v-if="i < challengesCategories.length - 1" />
 		</template>
-
-		<template v-else-if="myCourses && myCourses.length > 0">
-			<NuxtLink
-				v-for="(course, i) of myCourses"
-				:key="i"
-				:to="`/courses/${course.id}`"
-			>
-				<CourseCard :data="course" />
-			</NuxtLink>
-		</template>
-
-		<CourseCardEmptyState class="col-span-full" v-else />
 	</main>
 </template>
 
@@ -64,9 +53,8 @@ export default {
 		title: 'My Challenges',
 	},
 	setup() {
-		const myCourses = useMyCourses();
-
-		const loading = ref(myCourses.value.length <= 0);
+		const challengesCategories = useChallengesCategories();
+		const loading = ref(challengesCategories.value.length <= 0);
 
 		function onSelectedOption(option: string) {
 			filters.free = option == 'free';
@@ -83,7 +71,7 @@ export default {
 			() => filters,
 			async (newValue, oldValue) => {
 				loading.value = true;
-				await getFilteredMyCourses(newValue);
+				await getChallengesCategories();
 				loading.value = false;
 			},
 			{ deep: true }
@@ -100,7 +88,13 @@ export default {
 			},
 		]);
 
-		return { loading, myCourses, onSelectedOption, filters, options };
+		return {
+			loading,
+			challengesCategories,
+			onSelectedOption,
+			filters,
+			options,
+		};
 	},
 };
 </script>

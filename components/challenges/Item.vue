@@ -19,11 +19,18 @@
 			v-if="showChallengeContent"
 			class="grid gap-card grid-cols-1 pt-card-sm"
 		>
-			<NuxtLink :to="to">
-				<Btn class="w-fit" :icon="CodeBracketIcon">
-					{{ t('Buttons.Solve') }}
-				</Btn>
-			</NuxtLink>
+			<div class="flex gap-card">
+				<NuxtLink :to="to">
+					<Btn class="w-fit" :icon="CodeBracketIcon">
+						{{ t('Buttons.Solve') }}
+					</Btn>
+				</NuxtLink>
+				<NuxtLink :to="editTo" v-if="mine">
+					<Btn secondary class="w-fit" :icon="PencilIcon">
+						{{ t('Buttons.EditChallenge') }}
+					</Btn>
+				</NuxtLink>
+			</div>
 			<ChallengesItemDescription :data="data" />
 			<ChallengesItemLimits :data="data" />
 			<ChallengesItemDuration :data="data" />
@@ -38,12 +45,14 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CodeBracketIcon, TrophyIcon } from '@heroicons/vue/24/outline';
 import { PropType } from 'vue';
+import { PencilIcon } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
+		mine: { type: Boolean, default: false },
 	},
-	components: { TrophyIcon, CodeBracketIcon },
+	components: { TrophyIcon, CodeBracketIcon, PencilIcon },
 	setup(props) {
 		const { t } = useI18n();
 
@@ -71,6 +80,9 @@ export default defineComponent({
 		const to = computed(() => {
 			return `/challenges/${baseQuery.value.category}/${activeChallenge.value}`;
 		});
+		const editTo = computed(() => {
+			return `/challenges/edit-${activeChallenge.value}`;
+		});
 
 		function toggleShowChallengeContent() {
 			router.replace({
@@ -92,6 +104,8 @@ export default defineComponent({
 			toggleShowChallengeContent,
 			CodeBracketIcon,
 			to,
+			PencilIcon,
+			editTo,
 		};
 	},
 });

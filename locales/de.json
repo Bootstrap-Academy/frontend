@@ -499,6 +499,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"EditChallenge": "Herausforderung bearbeiten",
 		"Details": "Details",
 		"Load": "Laden",
 		"Solve": "Lösen",

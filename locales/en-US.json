@@ -498,6 +498,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"EditChallenge":"Edit Challenge",
 		"Details": "Details",
 		"Load": "Load",
 		"Solve": "Solve",
