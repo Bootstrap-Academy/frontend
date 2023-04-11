@@ -11,6 +11,23 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Submissions": "Submissions",
+		"Timestamp": "Timestamp",
+		"Language": "Language",
+		"Status": "Status",
+		"Actions": "Actions",
+		"Active": "Active",
+		"Challenges": "Challenges",
+		"Challenge": "Challenge",
+		"Explanation": "Explanation",
+		"Input": "Input",
+		"ExpectedOutput": "Expected Output",
+		"Name": "Name",
+		"Attempts": "Attempts",
+		"Tasks": "Tasks",
+		"Examples": "Examples",
+		"Duration": "Duration",
+		"Limits": "Limits",
 		"SolvedFirst": "Solved First",
 		"Correct": "Correct",
 		"Score": "Score: {score}",
@@ -481,6 +498,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"Details": "Details",
+		"Load": "Load",
+		"Solve": "Solve",
 		"MyChallenges": "My Challenges",
 		"Challenges": "Challenges",
 		"LeaderBoard": "LeaderBoard",

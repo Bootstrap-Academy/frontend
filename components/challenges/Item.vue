@@ -19,7 +19,11 @@
 			v-if="showChallengeContent"
 			class="grid gap-card grid-cols-1 pt-card-sm"
 		>
-			<Btn class="w-fit" :icon="CodeBracketIcon">{{ t('Buttons.Solve') }}</Btn>
+			<NuxtLink :to="to">
+				<Btn class="w-fit" :icon="CodeBracketIcon">
+					{{ t('Buttons.Solve') }}
+				</Btn>
+			</NuxtLink>
 			<ChallengesItemDescription :data="data" />
 			<ChallengesItemLimits :data="data" />
 			<ChallengesItemDuration :data="data" />
@@ -64,6 +68,10 @@ export default defineComponent({
 			};
 		});
 
+		const to = computed(() => {
+			return `/challenges/${baseQuery.value.category}/${activeChallenge.value}`;
+		});
+
 		function toggleShowChallengeContent() {
 			router.replace({
 				path: route.path,
@@ -83,6 +91,7 @@ export default defineComponent({
 			showChallengeContent,
 			toggleShowChallengeContent,
 			CodeBracketIcon,
+			to,
 		};
 	},
 });

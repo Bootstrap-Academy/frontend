@@ -20,11 +20,56 @@
 -->
 <template>
 	<main
-		class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
-	></main>
+		class="grid grid-cols-2 grid-rows-[auto_minmax(0,1fr)] gap-card card h-screen-inner"
+	>
+		<Head>
+			<Title>Solve Challenge - {{ challenge?.title ?? '' }}</Title>
+		</Head>
+
+		<header class="w-fit flex items-items gap-card">
+			<div>
+				<template v-for="(path, i) of breadcrumbs" :key="i">
+					<NuxtLink
+						v-if="path.to"
+						:to="path.to"
+						class="inline-block text-body-2"
+					>
+						{{ t(path.label) }}
+					</NuxtLink>
+					<h1 v-else class="text-heading-2 capitalize inline-block">
+						{{ t(path.label) }}
+					</h1>
+
+					<span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
+						/
+					</span>
+				</template>
+			</div>
+			<p class="py-1 px-3 bg-warning rounded text-primary w-fit">
+				{{ t('Headings.Active') }}
+			</p>
+		</header>
+
+		<ChallengesItemProgress :data="challenge" class="!w-fit justify-self-end" />
+
+		<aside
+			class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
+		>
+			<ChallengesItemSubmission :data="challenge" />
+			<ChallengesItemDescription :data="challenge" />
+			<ChallengesItemLimits :data="challenge" />
+			<ChallengesItemDuration :data="challenge" />
+			<ChallengesItemTasks :data="challenge" />
+			<ChallengesItemExamples :data="challenge" />
+		</aside>
+
+		<section class="w-full h-full bg-info style-card"></section>
+	</main>
 </template>
 
 <script lang="ts">
+import { useI18n } from 'vue-i18n';
+
 definePageMeta({
 	layout: 'inner',
 	middleware: ['auth'],
@@ -35,7 +80,52 @@ export default {
 		title: 'Solve Challenge',
 	},
 	setup() {
-		return {};
+		const { t } = useI18n();
+
+		const loading = ref(true);
+
+		const challenge = useChallenge();
+		const challengesCategories = useChallengesCategories();
+
+		const route = useRoute();
+		const categoryID = computed((): string => {
+			return <string>route?.params?.category ?? '';
+		});
+		const challengeID = computed((): string => {
+			return <string>route?.params?.challenge ?? '';
+		});
+
+		const category = computed(() => {
+			return challengesCategories.value.find((c) => c.id == categoryID.value);
+		});
+
+		onMounted(async () => {
+			await Promise.all([
+				getChallengesCategories(),
+				getChallenge(categoryID.value, challengeID.value),
+			]);
+			loading.value = false;
+		});
+
+		const breadcrumbs = computed(() => {
+			return [
+				{
+					label: 'Headings.Challenges',
+					to: '/challenges/all',
+				},
+				{
+					label: category.value?.title ?? '',
+					to: `/challenges/all?category=${category.value?.id ?? ''}&challenge=${
+						challenge.value?.id ?? ''
+					}`,
+				},
+				{
+					label: challenge.value?.title ?? '',
+				},
+			];
+		});
+
+		return { t, loading, challenge, category, breadcrumbs };
 	},
 };
 </script>

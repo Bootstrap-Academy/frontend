@@ -13,6 +13,9 @@ export const useChallengesCategories: () => Ref<any[]> = () =>
 export const useChallenges: () => Ref<any[]> = () =>
 	useState('challenges', () => []);
 
+export const useChallenge: () => Ref<any> = () =>
+	useState('challenge', () => null);
+
 export async function getMyChallengesStats() {
 	try {
 		const response = await GET('/auth/sessions/challenges/login_url');
@@ -203,6 +206,20 @@ export async function getChallengesByCategory(categoryID: string) {
 		];
 
 		return [challenges.value, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function getChallenge(categoryID: string, challengeID: string) {
+	try {
+		const response = await getChallengesByCategory(categoryID);
+
+		const challenges = useChallenges();
+		const challenge = useChallenge();
+		challenge.value = challenges.value.find((c) => c.id == challengeID);
+
+		return [challenge.value, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}
