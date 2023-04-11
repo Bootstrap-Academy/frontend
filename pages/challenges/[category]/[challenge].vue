@@ -63,7 +63,7 @@
 			<ChallengesItemExamples :data="challenge" />
 		</aside>
 
-		<section class="w-full h-full bg-info style-card"></section>
+		<ChallengesCodeEditor v-model="code" />
 	</main>
 </template>
 
@@ -125,7 +125,16 @@ export default {
 			];
 		});
 
-		return { t, loading, challenge, category, breadcrumbs };
+		const code = ref('console.log("Hello, world!");');
+
+		return {
+			t,
+			loading,
+			challenge,
+			category,
+			breadcrumbs,
+			code,
+		};
 	},
 };
 </script>
