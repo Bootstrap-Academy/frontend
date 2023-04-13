@@ -1,14 +1,12 @@
 <template>
-	<section class="markdown grid grid-cols-2 gap-card">
+	<section class="markdown grid md:grid-cols-2 gap-card">
 		<textarea
 			ref="DOM_TEXTAREA"
 			v-model="markdown"
-			class="w-full h-full"
+			class="w-full h-full resize-none"
 			rows="20"
 		></textarea>
 		<div v-html="$md.render(markdown)"></div>
-
-		<Btn @click="onclickGetMarkdownAsString">get markdown As string</Btn>
 	</section>
 </template>
 
@@ -21,29 +19,25 @@ import { PropType } from 'vue';
 export default defineComponent({
 	props: {
 		data: { type: Object as PropType<any>, default: null },
+		modelValue: { default: '' },
 	},
 	components: { TrophyIcon },
-	setup(props) {
+	emits: ['update:modelValue'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const markdown = ref('');
-
-		const DOM_TEXTAREA = ref<HTMLTextAreaElement | null>(null);
-
-		const markdownString = computed(() => {
-			return markdown.value.replace(/\n/g, '\\n');
+		const markdown = computed({
+			get() {
+				return props.modelValue;
+			},
+			set(value: string) {
+				emit('update:modelValue', value);
+			},
 		});
-
-		function onclickGetMarkdownAsString() {
-			console.log(markdownString.value);
-		}
 
 		return {
 			t,
 			markdown,
-			onclickGetMarkdownAsString,
-			DOM_TEXTAREA,
-			markdownString,
 		};
 	},
 });

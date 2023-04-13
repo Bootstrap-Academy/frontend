@@ -51,7 +51,14 @@
 					class="markdown clamp line-1 col-span-2"
 					v-html="$md.render(task.description)"
 				></div>
-				<Btn tertiary class="!pt-0 !pb-1 w-fit">
+				<Btn
+					tertiary
+					class="!pt-0 !pb-1 w-fit"
+					@click="
+						taskIndex = i;
+						description = task.description;
+					"
+				>
 					{{ t('Buttons.ManageDescription') }}
 				</Btn>
 			</article>
@@ -61,6 +68,26 @@
 				class="mt-10 w-8 h-8 text-subheading hover:text-error cursor-pointer flex-shrink-0"
 			/>
 		</div>
+
+		<Modal v-if="taskIndex > -1">
+			<div class="card style-card bg-secondary max-w-screen-lg w-full">
+				<MarkdownEditor v-model="description" />
+				<div class="flex gap-card flex-wrap">
+					<Btn @click="onclickSaveDescription">
+						{{ t('Buttons.SaveDescription') }}
+					</Btn>
+					<Btn secondary @click="taskIndex = -1">
+						{{ t('Buttons.Cancel') }}
+					</Btn>
+
+					<div class="flex-1"></div>
+
+					<Btn tertiary @click="onclickDeleteDescription">
+						{{ t('Buttons.DeleteDescription') }}
+					</Btn>
+				</div>
+			</div>
+		</Modal>
 	</section>
 </template>
 
@@ -73,6 +100,7 @@ import {
 } from '@heroicons/vue/24/solid';
 import { defineComponent, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { description } from '~~/description';
 
 export default defineComponent({
 	props: {
@@ -165,7 +193,40 @@ export default defineComponent({
 			return msg;
 		});
 
+		const openMarkdown = ref(false);
+		const taskIndex = ref(-1);
+
+		const description = ref('');
+
+		function onclickSaveDescription() {
+			let arr = tasks.value.map((t, index) => {
+				return {
+					...t,
+					description:
+						index == taskIndex.value ? description.value : t.description,
+				};
+			});
+
+			tasks.value = [...arr];
+
+			taskIndex.value = -1;
+		}
+
+		function onclickDeleteDescription() {
+			let arr = tasks.value.map((t, index) => {
+				return {
+					...t,
+					description: index == taskIndex.value ? '' : t.description,
+				};
+			});
+
+			tasks.value = [...arr];
+
+			taskIndex.value = -1;
+		}
+
 		return {
+			description,
 			t,
 			tasks,
 			PlusIcon,
@@ -173,6 +234,10 @@ export default defineComponent({
 			onclickRemoveTask,
 			nameErrorMsg,
 			pointsErrorMsg,
+			openMarkdown,
+			taskIndex,
+			onclickSaveDescription,
+			onclickDeleteDescription,
 		};
 	},
 });
