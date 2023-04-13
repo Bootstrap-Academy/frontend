@@ -36,13 +36,29 @@
 			:rules="form.end.rules"
 		/>
 
+		<InputList
+			:label="t('Inputs.Limits')"
+			v-model="form.limits.value"
+			@valid="form.limits.valid = $event"
+			:rules="form.limits.rules"
+			:max="10"
+		/>
+
+		<ChallengesInputTasks
+			:label="t('Inputs.Tasks')"
+			v-model="form.tasks.value"
+			@valid="form.tasks.valid = $event"
+			:rules="form.tasks.rules"
+			:max="10"
+		/>
+
 		<InputBtn
 			:loading="form.submitting"
-			class="self-center"
+			class="self-end"
 			@click="onclickSubmitForm()"
 			mt
 		>
-			{{ t('Buttons.AddChallenge') }}
+			{{ t('Buttons.CreateChallenge') }}
 		</InputBtn>
 	</form>
 </template>
@@ -61,10 +77,6 @@ export default defineComponent({
 		// ============================================================= Handling Categories
 		const challengesCategories = useChallengesCategories();
 		const loading = ref(challengesCategories.value.length <= 0);
-		onMounted(async () => {
-			await getChallengesCategories();
-			loading.value = false;
-		});
 
 		const categoryOptions = computed(() => {
 			return (challengesCategories.value ?? [])
@@ -122,6 +134,21 @@ export default defineComponent({
 				valid: false,
 				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.EndTime'],
 			},
+			limits: {
+				value: [],
+				valid: false,
+				rules: [],
+			},
+			tasks: {
+				value: [],
+				valid: false,
+				rules: [],
+			},
+			examples: {
+				value: [],
+				valid: false,
+				rules: [],
+			},
 			submitting: false,
 			validate: () => {
 				let isValid = true;
@@ -174,6 +201,7 @@ export default defineComponent({
 			openSnackbar('error', res?.detail ?? '');
 		}
 
+		// ============================================================= Handling Form State
 		watch(
 			() => form,
 			(newValue, oldValue) => {
@@ -185,22 +213,31 @@ export default defineComponent({
 						title: newValue?.title?.value ?? '',
 						start: newValue?.start?.value ?? '',
 						end: newValue?.end?.value ?? '',
+						limits: newValue?.limits?.value ?? [],
+						tasks: newValue?.tasks?.value ?? [],
+						examples: newValue?.examples?.value ?? [],
 					})
 				);
 			},
 			{ deep: true }
 		);
 
-		onMounted(() => {
-			if (!!!localStorage) return;
+		onMounted(async () => {
+			if (!!localStorage) {
+				const localForm = JSON.parse(localStorage?.getItem('form') ?? '');
 
-			const localForm = JSON.parse(localStorage?.getItem('form') ?? '');
+				if (!!!localForm) return;
 
-			if (!!!localForm) return;
+				if (!!localForm.title) form.title.value = localForm.title;
+				if (!!localForm.start) form.start.value = localForm.start;
+				if (!!localForm.end) form.end.value = localForm.end;
+				if (!!localForm.limits) form.limits.value = localForm.limits;
+				if (!!localForm.tasks) form.tasks.value = localForm.tasks;
+				if (!!localForm.examples) form.examples.value = localForm.examples;
+			}
 
-			if (!!localForm.title) form.title.value = localForm.title;
-			if (!!localForm.start) form.start.value = localForm.start;
-			if (!!localForm.end) form.end.value = localForm.end;
+			await getChallengesCategories();
+			loading.value = false;
 		});
 
 		return {

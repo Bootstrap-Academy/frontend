@@ -17,7 +17,12 @@ export const useSnackbar = () =>
 		};
 	});
 
-export function openSnackbar(type: string, heading: string, body: string = '') {
+export function openSnackbar(
+	type: string,
+	heading: string,
+	body: string = '',
+	noTimeout?: boolean
+) {
 	const snackbar = useSnackbar();
 	snackbar.value = {
 		show: true,
@@ -26,9 +31,11 @@ export function openSnackbar(type: string, heading: string, body: string = '') {
 		body,
 	};
 
-	setTimeout(() => {
-		closeSnackbar();
-	}, 5000);
+	if (!!!noTimeout) {
+		setTimeout(() => {
+			closeSnackbar();
+		}, 5000);
+	}
 }
 
 export function closeSnackbar() {

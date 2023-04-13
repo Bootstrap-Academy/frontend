@@ -446,6 +446,18 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Title": "Titel",
+		"Category": "Kategorie",
+		"EndTime": "Endzeit",
+		"Limits": "Grenzwerte",
+		"Tasks": "Aufgaben",
+		"TaskName": "Name",
+		"TaskDescription": "Beschreibung",
+		"TaskTotalPoints": "Gesamtpunktzahl",
+		"Examples": "Beispiele",
+		"ExampleName": "Name",
+		"ExampleInput": "Eingabe",
+		"ExampleOutput": "Erwartete Ausgabe",
 		"Payed": "Bezahlt",
 		"Option": "Möglichkeit",
 		"Correct": "Richtig",
@@ -501,6 +513,10 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"AddTask": "Aufgabe hinzufügen",
+		"SaveDescription": "Beschreibung speichern",
+		"DeleteDescription": "Beschreibung löschen",
+		"ManageDescription": "Beschreibung verwalten",
 		"SaveChallenge": "Herausforderung speichern",
 		"DeleteChallenge": "Herausforderung löschen",
 		"CreateChallenge": "Herausforderung erstellen",

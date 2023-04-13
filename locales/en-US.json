@@ -445,6 +445,18 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Title": "Title",
+		"Category": "Category",
+		"EndTime": "EndTime",
+		"Limits": "Limits",
+		"Tasks": "Tasks",
+		"TaskName": "Name",
+		"TaskDescription": "Description",
+		"TaskTotalPoints": "Total Points",
+		"Examples": "Examples",
+		"ExampleName": "Name",
+		"ExampleInput": "Input",
+		"ExampleOutput": "Expected Output",
 		"Payed": "Payed",
 		"Option": "Option",
 		"Correct": "Correct",
@@ -500,6 +512,10 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"AddTask": "Add Task",
+		"SaveDescription": "Save Description",
+		"DeleteDescription": "Delete Description",
+		"ManageDescription": "Manage Description",
 		"SaveChallenge": "Save Challenge",
 		"DeleteChallenge": "Delete Challenge",
 		"CreateChallenge": "Create Challenge",
