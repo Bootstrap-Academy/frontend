@@ -1,26 +1,39 @@
 <template>
-	<div
-		class="relative h-fit w-fit cursor-pointer"
-		:class="[
-			btnType ? 'btn-type' : 'input-type',
-			{
-				sm: sm,
-			},
-		]"
-	>
-		<select
-			:name="id"
-			:id="id"
-			v-model="input"
-			class="relative z-20 appearance-none bg-transparent cursor-pointer"
-		>
-			<option v-for="{ label, value } of options" :key="value" :value="value">
+	<article class="pb-5">
+		<div class="flex flex-wrap gap-card-sm items-center" v-if="!!label">
+			<label
+				class="text-body-2 text-body font-body block mb-2"
+				:for="id ?? label"
+			>
 				{{ t(label) }}
-			</option>
-		</select>
+			</label>
+			<p v-if="hint" class="pb-2 text-xs text-body relative z-0 text-right">
+				{{ t(hint) }}
+			</p>
+		</div>
+		<div
+			class="relative h-fit w-fit cursor-pointer"
+			:class="[
+				btnType ? 'btn-type' : 'input-type',
+				{
+					sm: sm,
+				},
+			]"
+		>
+			<select
+				:name="id"
+				:id="id"
+				v-model="input"
+				class="relative z-20 appearance-none bg-transparent cursor-pointer"
+			>
+				<option v-for="{ label, value } of options" :key="value" :value="value">
+					{{ t(label) }}
+				</option>
+			</select>
 
-		<ChevronDownIcon class="icon absolute z-10" />
-	</div>
+			<ChevronDownIcon class="icon absolute z-10" />
+		</div>
+	</article>
 </template>
 
 <script lang="ts">
@@ -30,6 +43,8 @@ import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
 	props: {
+		hint: { type: String, default: '' },
+		label: { type: String, default: '' },
 		id: { type: String, default: 'select' },
 		sm: { type: Boolean, default: false },
 		btnType: { type: Boolean, default: false },

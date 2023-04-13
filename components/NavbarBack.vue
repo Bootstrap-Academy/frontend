@@ -5,7 +5,7 @@
 		<Btn tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
 			<img src="/images/logo.png" class="w-6 h-auto object-contain" alt="" />
 
-			{{ t(label) }}
+			{{ t(backRoute.label) }}
 		</Btn>
 
 		<div id="navbar-back-end"></div>
@@ -23,83 +23,78 @@ export default defineComponent({
 		const { t } = useI18n();
 
 		const router = useRouter();
-
-		const pathname = ref('');
-		const label = ref('');
+		const route = useRoute();
 
 		function hasHistory() {
 			return window.history.length > 2;
 		}
 		function onclickNavigate() {
-			if (!!!pathname.value) {
+			if (!!!backRoute.value.pathname) {
 				hasHistory() ? router.go(-1) : router.push('/');
 			} else {
-				router.push(pathname.value);
+				router.push(backRoute.value.pathname);
 			}
 		}
-		function setBackRoute(to: string, from: string) {
+
+		const backRoute = computed(() => {
+			let pathname = '/';
+			let label = 'Links.GoBack';
+
+			let name = route.name;
+
 			// ! Auth
-			if (to == '/auth/signup' || to == '/auth/forgot-password') {
-				pathname.value = '/auth/login';
-				label.value = 'Links.Login';
-			} else if (to == '/auth/verify-account') {
-				pathname.value = '/auth/login';
-				label.value = 'Links.GoBack';
-			} else if (to == '/auth/reset-password') {
-				pathname.value = '/auth/forgot-password';
-				label.value = 'Links.ForgotPassword';
-			} else if (to == '/auth/login') {
-				pathname.value = '/';
-				label.value = 'Links.Home';
+			if (name == 'auth-signup' || name == 'auth-forgot-password') {
+				pathname = '/auth/login';
+				label = 'Links.Login';
+			} else if (name == 'auth-verify-account') {
+				pathname = '/auth/login';
+				label = 'Links.GoBack';
+			} else if (name == 'auth-reset-password') {
+				pathname = '/auth/forgot-password';
+				label = 'Links.ForgotPassword';
+			} else if (name == 'auth-login') {
+				pathname = '/';
+				label = 'Links.Home';
 			}
 
 			// ! MFA
-			else if (to.includes('/account/mfa/disabled')) {
-				pathname.value = '/profile';
-				label.value = 'Links.GoToProfile';
+			else if (name == 'account-mfa-disabled') {
+				pathname = '/profile';
+				label = 'Links.GoToProfile';
 			}
-
 			// ! Profile
-			else if (to.includes('/profile/edit')) {
-				pathname.value = '/profile';
-				label.value = 'Links.GoToProfile';
+			else if (name == 'profile-edit') {
+				pathname = '/profile';
+				label = 'Links.GoToProfile';
 			}
-
 			// ! Job
-			else if (to.includes('/jobs/')) {
-				pathname.value = '/jobs';
-				label.value = 'Links.GoToJobs';
+			else if (name == 'jobs-id') {
+				pathname = '/jobs';
+				label = 'Links.GoToJobs';
 			}
-
 			// ! Morphcoins
-			else if (to.includes('/morphcoins/paypal')) {
-				pathname.value = '/morphcoins/buy';
-				label.value = 'Links.GoBack';
+			else if (name == 'morphcoins-paypal') {
+				pathname = '/morphcoins/buy';
+				label = 'Links.GoBack';
 			}
-
 			// ! Courses
-			else if (to.includes('/profile/courses')) {
-				pathname.value = '/profile';
-				label.value = 'Links.GoToProfile';
+			else if (name == 'profile-courses') {
+				pathname = '/profile';
+				label = 'Links.GoToProfile';
+			}
+			// ! Challenges
+			else if (name == 'challenges-category-create') {
+				pathname = `/challenges/all?category${route?.params?.category ?? ''}`;
+				label = 'Links.GoToChallenges';
 			}
 
-			// ! Default
-			else {
-				pathname.value = '';
-				label.value = 'Links.GoBack';
-			}
-		}
-
-		router.afterEach((to, from) => {
-			setBackRoute(to.path, from.path);
+			return {
+				pathname,
+				label,
+			};
 		});
 
-		onMounted(() => {
-			const route = useRoute();
-			setBackRoute(route.path, '');
-		});
-
-		return { ArrowLeftIcon, t, onclickNavigate, pathname, label };
+		return { ArrowLeftIcon, t, onclickNavigate, backRoute };
 	},
 });
 </script>

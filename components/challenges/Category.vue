@@ -12,7 +12,13 @@
 			<p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p>
 		</header>
 
-		<div class="grid gap-box grid-cols-1 pt-box" v-if="showChallenges">
+		<NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="canCreate">
+			<Btn :icon="PlusIcon" class="mt-box" sm>
+				{{ t('Buttons.AddChallenge') }}
+			</Btn>
+		</NuxtLink>
+
+		<div class="grid gap-box grid-cols-1 pt-box" v-show="showChallenges">
 			<ChallengesItem
 				v-for="challenge of challenges"
 				:key="challenge.id"
@@ -26,7 +32,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TrophyIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, TrophyIcon } from '@heroicons/vue/24/outline';
 import { PropType } from 'vue';
 
 export default defineComponent({
@@ -34,7 +40,7 @@ export default defineComponent({
 		data: { type: Object as PropType<any>, default: null },
 		mine: { type: Boolean, default: false },
 	},
-	components: { TrophyIcon },
+	components: { TrophyIcon, PlusIcon },
 	setup(props) {
 		const { t } = useI18n();
 
@@ -66,6 +72,11 @@ export default defineComponent({
 			return activeCategory.value == category.value;
 		});
 
+		const canCreate = computed(() => {
+			let currentPoints = props.data?.points?.current ?? 0;
+			return currentPoints >= 100;
+		});
+
 		function toggleShowChallenges() {
 			router.replace({
 				path: route.path,
@@ -83,6 +94,8 @@ export default defineComponent({
 			challenges,
 			showChallenges,
 			toggleShowChallenges,
+			canCreate,
+			PlusIcon,
 		};
 	},
 });

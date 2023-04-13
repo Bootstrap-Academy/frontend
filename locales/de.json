@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"CreateChallenge": "Herausforderung erstellen",
 		"Submissions": "Einreichungen",
 		"Timestamp": "Zeitstempel",
 		"Language": "Sprache",
@@ -218,6 +219,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"AddChallengeRequirement": "Sie können jeder Kategorie mit 100 Punkten oder mehr eine neue Herausforderung hinzufügen!",
 		"MyChallengesStats": "Sehen Sie sich die Statistiken und Fortschritte Ihrer Herausforderungen an.",
 		"SearchQuizzes": "Suchen Sie nach Quiz",
 		"MyQuizQuestions": "Hier sind die neuesten Quizfragen, die Sie erstellt haben.",
@@ -499,6 +501,10 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"SaveChallenge": "Herausforderung speichern",
+		"DeleteChallenge": "Herausforderung löschen",
+		"CreateChallenge": "Herausforderung erstellen",
+		"AddChallenge": "Herausforderung hinzufügen",
 		"EditChallenge": "Herausforderung bearbeiten",
 		"Details": "Details",
 		"Load": "Laden",
@@ -580,6 +586,7 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
+		"GoToChallenges": "Zurück zu den Herausforderungen",
 		"Link": "Link",
 		"IHaveReadWebinarDeletePolicy": "Ich habe die Webinar-Stornierungs-/Löschrichtlinie gelesen und stimme ihr zu.",
 		"ViewSkill": "Skill anzeigen",

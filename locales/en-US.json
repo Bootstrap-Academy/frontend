@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"CreateChallenge": "Create Challenge",
 		"Submissions": "Submissions",
 		"Timestamp": "Timestamp",
 		"Language": "Language",
@@ -218,6 +219,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"AddChallengeRequirement": "You can add a new challenge to any category with 100 points or above!",
 		"MyChallengesStats": "View your challenges' statistics and progress.",
 		"SearchQuizzes": "Search for Quizzes",
 		"MyQuizQuestions": "Here are the latest quiz questions you have created.",
@@ -498,7 +500,11 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
-		"EditChallenge":"Edit Challenge",
+		"SaveChallenge": "Save Challenge",
+		"DeleteChallenge": "Delete Challenge",
+		"CreateChallenge": "Create Challenge",
+		"AddChallenge": "Add Challenge",
+		"EditChallenge": "Edit Challenge",
 		"Details": "Details",
 		"Load": "Load",
 		"Solve": "Solve",
@@ -579,6 +585,7 @@
 		"AddEmail": "Add Email"
 	},
 	"Links": {
+		"GoToChallenges": "Back To Challenges",
 		"Link": "Link",
 		"IHaveReadWebinarDeletePolicy": "I have read Webinar Cancellation/Delete policy and I agree to it.",
 		"ViewSkill": "View Skill",

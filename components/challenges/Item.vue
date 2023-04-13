@@ -16,7 +16,7 @@
 		</header>
 
 		<div
-			v-if="showChallengeContent"
+			v-show="showChallengeContent"
 			class="grid gap-card grid-cols-1 pt-card-sm"
 		>
 			<div class="flex gap-card">

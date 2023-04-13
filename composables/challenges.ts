@@ -59,42 +59,70 @@ export async function getChallengesCategories() {
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f01',
 				title: 'Introduction Challenges',
+				points: {
+					total: 50,
+					current: 34,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f02',
 				title: 'Easy',
+				points: {
+					total: 100,
+					current: 40,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f03',
 				title: 'Medium',
+				points: {
+					total: 200,
+					current: 100,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f04',
 				title: 'Hard',
+				points: {
+					total: 50,
+					current: 35,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f05',
 				title: 'Reverse Challenges',
+				points: {
+					total: 100,
+					current: 80,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f06',
 				title: 'Optimization Challenges',
+				points: {
+					total: 50,
+					current: 15,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
 			{
 				id: '497f6eca-6276-4993-bfeb-53cbbbba6f07',
 				title: 'Refactoring Challenges',
+				points: {
+					total: 50,
+					current: 15,
+				},
 				description:
 					'Simple introductory challenges to familiarize yourself with this platform',
 			},
