@@ -512,6 +512,14 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"SaveOutput": "Save Output",
+		"SaveInput": "Save Input",
+		"Save": "Save",
+		"Delete": "Delete",
+		"AddExample": "Add Example",
+		"ManageInput": "Manage Input",
+		"ManageOutput": "Manage Output",
+
 		"AddTask": "Add Task",
 		"SaveDescription": "Save Description",
 		"DeleteDescription": "Delete Description",

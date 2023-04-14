@@ -52,6 +52,14 @@
 			:max="10"
 		/>
 
+		<ChallengesInputExamples
+			:label="t('Inputs.Examples')"
+			v-model="form.examples.value"
+			@valid="form.examples.valid = $event"
+			:rules="form.examples.rules"
+			:max="10"
+		/>
+
 		<InputBtn
 			:loading="form.submitting"
 			class="self-end"

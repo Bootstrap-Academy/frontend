@@ -64,7 +64,7 @@
 			</article>
 
 			<XMarkIcon
-				@click="onclickRemoveTask(task.name)"
+				@click="onclickRemoveTask(i)"
 				class="mt-10 w-8 h-8 text-subheading hover:text-error cursor-pointer flex-shrink-0"
 			/>
 		</div>
@@ -149,10 +149,9 @@ export default defineComponent({
 				},
 			];
 		}
-		function onclickRemoveTask(taskName: string) {
-			let arr = tasks.value.filter((t) => {
-				return t.name.toLocaleLowerCase() != taskName.toLocaleLowerCase();
-			});
+		function onclickRemoveTask(index: number) {
+			let arr = [...tasks.value];
+			arr.splice(index, 1);
 			tasks.value = [...arr];
 		}
 
@@ -190,6 +189,7 @@ export default defineComponent({
 			} else if (lastTask.totalPoints > 100) {
 				msg = 'must be <= 100';
 			}
+
 			return msg;
 		});
 
