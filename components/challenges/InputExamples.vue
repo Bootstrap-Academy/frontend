@@ -220,7 +220,7 @@ export default defineComponent({
 
 		const nameErrorMsg = computed(() => {
 			let msg = '';
-
+ 
 			if (!!!lastItemInList.value) return msg;
 
 			let arrOfThisItem = filterListBasedOnKey('name');

@@ -704,6 +704,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"NoChallengesAvailable": "No Challenges Available",
 		"AddQuizQuestionOptions": "Add Quiz Question Options",
 		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",
 		"WebinarRating": "Rating must be greater than 0",

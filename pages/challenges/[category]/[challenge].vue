@@ -58,8 +58,6 @@
 			<ChallengesItemSubmission :data="challenge" />
 			<ChallengesItemDescription :data="challenge" />
 			<ChallengesItemLimits :data="challenge" />
-			<ChallengesItemDuration :data="challenge" />
-			<ChallengesItemTasks :data="challenge" />
 			<ChallengesItemExamples :data="challenge" />
 		</aside>
 
@@ -85,7 +83,7 @@ export default {
 		const loading = ref(true);
 
 		const challenge = useChallenge();
-		const challengesCategories = useChallengesCategories();
+		const category = useChallengeCategory();
 
 		const route = useRoute();
 		const categoryID = computed((): string => {
@@ -95,13 +93,9 @@ export default {
 			return <string>route?.params?.challenge ?? '';
 		});
 
-		const category = computed(() => {
-			return challengesCategories.value.find((c) => c.id == categoryID.value);
-		});
-
 		onMounted(async () => {
 			await Promise.all([
-				getChallengesCategories(),
+				getChallengeCategory(categoryID.value),
 				getChallenge(categoryID.value, challengeID.value),
 			]);
 			loading.value = false;
@@ -125,7 +119,7 @@ export default {
 			];
 		});
 
-		const code = ref('console.log("Hello, world!");');
+		const code = ref('// write your code here');
 
 		return {
 			t,

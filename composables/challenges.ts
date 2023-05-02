@@ -10,6 +10,9 @@ export const useMyChallengesStats: () => Ref<any> = () =>
 export const useChallengesCategories: () => Ref<any[]> = () =>
 	useState('challengesCategories', () => []);
 
+export const useChallengeCategory: () => Ref<any> = () =>
+	useState('challengeCategory', () => null);
+
 export const useChallenges: () => Ref<any[]> = () =>
 	useState('challenges', () => []);
 
@@ -51,82 +54,25 @@ export async function getMyChallengesStats() {
 
 export async function getChallengesCategories() {
 	try {
-		// const response = await GET('/challenges/categories');
-		const response = await GET('/auth/sessions/challenges/login_url');
+		const response = await GET('/challenges/categories');
 
 		const challengesCategories = useChallengesCategories();
-		challengesCategories.value = [
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f01',
-				title: 'Introduction Challenges',
-				points: {
-					total: 50,
-					current: 34,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f02',
-				title: 'Easy',
-				points: {
-					total: 100,
-					current: 40,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f03',
-				title: 'Medium',
-				points: {
-					total: 200,
-					current: 100,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f04',
-				title: 'Hard',
-				points: {
-					total: 50,
-					current: 35,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f05',
-				title: 'Reverse Challenges',
-				points: {
-					total: 100,
-					current: 80,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f06',
-				title: 'Optimization Challenges',
-				points: {
-					total: 50,
-					current: 15,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-			{
-				id: '497f6eca-6276-4993-bfeb-53cbbbba6f07',
-				title: 'Refactoring Challenges',
-				points: {
-					total: 50,
-					current: 15,
-				},
-				description:
-					'Simple introductory challenges to familiarize yourself with this platform',
-			},
-		];
+		challengesCategories.value = response ?? [];
+
+		console.log('response', response);
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function getChallengeCategory(categoryID: string) {
+	try {
+		const response = await GET(`/challenges/categories/${categoryID}`);
+
+		const category = useChallengeCategory();
+		category.value = response ?? null;
 
 		return [response, null];
 	} catch (error: any) {
@@ -136,118 +82,30 @@ export async function getChallengesCategories() {
 
 export async function getChallengesByCategory(categoryID: string) {
 	try {
-		// const response = await GET('/challenges/categories');
-		const response = await getChallengesCategories();
+		const response = await GET(
+			`/challenges/categories/${categoryID}/challenges`
+		);
 
-		const challengesCategories = useChallengesCategories();
 		const challenges = useChallenges();
-		challenges.value = [
-			{
-				id: '197f6eca-6276-4993-bfeb-53cbbbba6f01',
-				category: '497f6eca-6276-4993-bfeb-53cbbbba6f01',
-				title: 'Hello World!',
-				description: description,
-				creator: '1dccd4a6-75d2-43aa-a088-76d941f1b60a',
-				created: '2019-08-24T14:15:22Z',
-				start: '2019-08-24T14:15:22Z',
-				end: '2019-08-24T14:15:22Z',
-				skills: [],
-				limits: [
-					'Time limit: 1 second',
-					'Memory limit: 256 MB',
-					'Maximum 50 Submissions (50 left)',
-					'Maximum submission size: 5000 bytes',
-				],
-				tasks: [
-					{
-						name: 'Exponential',
-						description: '$$ n ≤ 20 $$',
-						score: {
-							current: 0,
-							total: 5,
-						},
-						attempts: 0,
-						solvedOnFirstTry: false,
-						solved: true,
-						correct: true,
-					},
-				],
-				examples: [
-					{
-						heading: '',
-						input:
-							'```JAVASCRIPT \nlet a = "hello world" \nconsole.log(a) \n```',
-						output: '```sh \n"hello world" \n ```',
-					},
-					{
-						heading: 'My New Example',
-						input:
-							'```JAVASCRIPT \nlet a = "hello world" \nconsole.log(a)\n```',
-						output: '```sh \n"hello world"\n ```',
-					},
-				],
-			},
-			{
-				id: '197f6eca-6276-4993-bfeb-53cbbbba6f02',
-				category: '497f6eca-6276-4993-bfeb-53cbbbba6f01',
-				title: 'Input',
-				description: description,
-				creator: '1dccd4a6-75d2-43aa-a088-76d941f1b60a',
-				creation_timestamp: '2019-08-24T14:15:22Z',
-				skills: [],
-				tasks: [
-					{
-						name: 'Exponential',
-						description: `\`\`\`sh
-						n ≤ 20
-						\`\`\``,
-						score: {
-							current: 0,
-							total: 5,
-						},
-						attempts: 0,
-						solvedOnFirstTry: false,
-						solved: false,
-						correct: false,
-					},
-					{
-						name: 'Linear',
-						description: 'n ≤ 10^5',
-						score: {
-							current: 5,
-							total: 20,
-						},
-						attempts: 3,
-						solvedOnFirstTry: false,
-						solved: true,
-						correct: false,
-					},
-				],
-				examples: [
-					{
-						input: '```JAVASCRIPT \nlet a = "hello world" console.log(a)\n ```',
-						output: '```sh \n"hello world"\n ```',
-						explanation: `4 + 5 = 9`,
-					},
-				],
-			},
-		];
+		challenges.value = response ?? [];
+
+		console.log('getChallengesByCategory', response);
 
 		return [challenges.value, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}
 }
-
 export async function getChallenge(categoryID: string, challengeID: string) {
 	try {
-		const response = await getChallengesByCategory(categoryID);
+		const response = await GET(
+			`/challenges/categories/${categoryID}/challenges/${challengeID}`
+		);
 
-		const challenges = useChallenges();
 		const challenge = useChallenge();
-		challenge.value = challenges.value.find((c) => c.id == challengeID);
+		challenge.value = response ?? null;
 
-		return [challenge.value, null];
+		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}
@@ -259,6 +117,19 @@ export async function getChallengesLoginUrl() {
 
 		const challengesLoginUrl = useChallengesLoginUrl();
 		challengesLoginUrl.value = response ?? '';
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function createChallenge(categoryID: string, body: any) {
+	try {
+		const response = await POST(
+			`/challenges/categories/${categoryID}/challenges`,
+			body
+		);
 
 		return [response, null];
 	} catch (error: any) {

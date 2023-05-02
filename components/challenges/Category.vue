@@ -19,12 +19,41 @@
 		</NuxtLink>
 
 		<div class="grid gap-box grid-cols-1 pt-box" v-show="showChallenges">
-			<ChallengesItem
-				v-for="challenge of challenges"
-				:key="challenge.id"
-				:data="challenge"
-				:mine="mine"
-			/>
+			<div v-if="loading" class="box px-4 xl:px-5 style-box bg-secondary">
+				<header
+					class="grid gap-card grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
+				>
+					<h2 class="mt-1.5 text-heading-3">
+						<SkeletonText />
+					</h2>
+
+					<SkeletonText
+						class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5"
+						body
+					/>
+
+					<p
+						class="!m-0 text-right flex items-center gap-2 w-fit place-self-end"
+					>
+						<SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" />
+						/
+						<SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" body />
+					</p>
+				</header>
+			</div>
+
+			<template v-else-if="challenges && challenges.length > 0">
+				<ChallengesItem
+					v-for="challenge of challenges"
+					:key="challenge.id"
+					:data="challenge"
+					:mine="mine"
+				/>
+			</template>
+
+			<p v-else class="py-2 px-4 text-warning style-box bg-warning-light w-fit">
+				{{ t('Error.NoChallengesAvailable') }}
+			</p>
 		</div>
 	</section>
 </template>

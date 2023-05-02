@@ -87,14 +87,20 @@ export default defineComponent({
 		const loading = ref(challengesCategories.value.length <= 0);
 
 		const categoryOptions = computed(() => {
-			return (challengesCategories.value ?? [])
-				.filter((c) => {
-					let points = c?.points?.current ?? 0;
-					return points >= 100;
-				})
-				.map((c) => {
-					return { label: c.title, value: c.id };
-				});
+			// return (challengesCategories.value ?? [])
+			// 	.filter((c) => {
+			// 		let points = c?.points?.current ?? 0;
+			// 		return points >= 100;
+			// 	})
+			// 	.map((c) => {
+			// 		return { label: c.title, value: c.id };
+			// 	});
+
+			// return (challengesCategories.value ?? []).map((c) => {
+			// 	return { label: c.title, value: c.id };
+			// });
+
+			return [{ label: 'hello', value: 'hello' }];
 		});
 
 		function setCategory(categoryID: string) {

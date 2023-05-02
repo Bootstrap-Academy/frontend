@@ -33,8 +33,6 @@
 			</div>
 			<ChallengesItemDescription :data="data" />
 			<ChallengesItemLimits :data="data" />
-			<ChallengesItemDuration :data="data" />
-			<ChallengesItemTasks :data="data" />
 			<ChallengesItemExamples :data="data" />
 		</div>
 	</section>
