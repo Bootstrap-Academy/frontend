@@ -79,6 +79,7 @@ export default defineComponent({
 			},
 			set(value: Array<string>) {
 				emit('update:modelValue', value);
+				emit('valid', value && value.length > 0 && value.length <= props.max);
 			},
 		});
 

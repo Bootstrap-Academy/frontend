@@ -20,20 +20,11 @@
 			@update:model-value="setCategory"
 		/>
 
-		<Input
-			:label="t('Inputs.StartTime')"
-			type="datetime-local"
-			v-model="form.start.value"
-			@valid="form.start.valid = $event"
-			:rules="form.start.rules"
-		/>
-
-		<Input
-			:label="t('Inputs.EndTime')"
-			type="datetime-local"
-			v-model="form.end.value"
-			@valid="form.end.valid = $event"
-			:rules="form.end.rules"
+		<InputTextarea
+			label="Inputs.Description"
+			v-model="form.description.value"
+			@valid="form.description.valid = $event"
+			:rules="form.description.rules"
 		/>
 
 		<InputList
@@ -44,12 +35,12 @@
 			:max="10"
 		/>
 
-		<ChallengesInputTasks
-			:label="t('Inputs.Tasks')"
-			v-model="form.tasks.value"
-			@valid="form.tasks.valid = $event"
-			:rules="form.tasks.rules"
-			:max="10"
+		<InputList
+			:label="t('Inputs.Skills')"
+			v-model="form.skills.value"
+			@valid="form.skills.valid = $event"
+			:rules="form.skills.rules"
+			:max="8"
 		/>
 
 		<ChallengesInputExamples
@@ -96,11 +87,11 @@ export default defineComponent({
 			// 		return { label: c.title, value: c.id };
 			// 	});
 
-			// return (challengesCategories.value ?? []).map((c) => {
-			// 	return { label: c.title, value: c.id };
-			// });
+			console.log('challengesCategories.value', challengesCategories.value);
 
-			return [{ label: 'hello', value: 'hello' }];
+			return (challengesCategories.value ?? []).map((c) => {
+				return { label: c.title, value: c.id };
+			});
 		});
 
 		function setCategory(categoryID: string) {
@@ -123,37 +114,14 @@ export default defineComponent({
 			},
 			category: {
 				value: route?.params?.category ?? '',
-				options: [
-					{
-						label: 'List.Sort.Any',
-						value: '---',
-					},
-					{
-						label: 'List.Sort.Latest',
-						value: 'latest',
-					},
-					{
-						label: 'List.Sort.Free',
-						value: 'free',
-					},
-				],
-			},
-			start: {
-				value: '',
-				valid: false,
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.StartTime'],
-			},
-			end: {
-				value: '',
-				valid: false,
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.EndTime'],
+				options: [],
 			},
 			limits: {
 				value: [],
 				valid: false,
 				rules: [],
 			},
-			tasks: {
+			skills: {
 				value: [],
 				valid: false,
 				rules: [],
@@ -162,6 +130,15 @@ export default defineComponent({
 				value: [],
 				valid: false,
 				rules: [],
+			},
+			description: {
+				valid: false,
+				value: '',
+				rules: [
+					(v: string) => !!v || 'Error.InputEmpty_Inputs.Description',
+					(v: string) => v.length >= 10 || 'Error.InputMinLength_10',
+					(v: string) => v.length <= 4096 || 'Error.InputMaxLength_4096',
+				],
 			},
 			submitting: false,
 			validate: () => {
@@ -174,6 +151,8 @@ export default defineComponent({
 						key != 'submitting' &&
 						!form[key].valid
 					) {
+						console.log(key);
+
 						isValid = false;
 					}
 				}
@@ -195,7 +174,12 @@ export default defineComponent({
 		async function onclickSubmitForm() {
 			if (form.validate()) {
 				form.submitting = true;
-				const [success, error] = await signup(form.body());
+				// const [success, error] = await createChallenge(form.body());
+				const [success, error] = await createChallenge(form.category.value, {
+					title: form.title.value,
+					description: form.description.value,
+					skills: form.skills.value,
+				});
 				form.submitting = false;
 
 				success ? successHandler(success) : errorHandler(error);
@@ -225,10 +209,9 @@ export default defineComponent({
 					'form',
 					JSON.stringify({
 						title: newValue?.title?.value ?? '',
-						start: newValue?.start?.value ?? '',
-						end: newValue?.end?.value ?? '',
+						description: newValue?.description?.value ?? '',
+						skills: newValue?.skills?.value ?? [],
 						limits: newValue?.limits?.value ?? [],
-						tasks: newValue?.tasks?.value ?? [],
 						examples: newValue?.examples?.value ?? [],
 					})
 				);
@@ -238,16 +221,40 @@ export default defineComponent({
 
 		onMounted(async () => {
 			if (!!localStorage) {
-				const localForm = JSON.parse(localStorage?.getItem('form') ?? '');
+				const localForm = JSON.parse(localStorage?.getItem('form') ?? 'null');
 
-				if (!!!localForm) return;
+				if (!!localForm) {
+					if (!!localForm.title) {
+						form.title.value = localForm.title;
+						form.title.valid = !!form.title.value;
+					}
 
-				if (!!localForm.title) form.title.value = localForm.title;
-				if (!!localForm.start) form.start.value = localForm.start;
-				if (!!localForm.end) form.end.value = localForm.end;
-				if (!!localForm.limits) form.limits.value = localForm.limits;
-				if (!!localForm.tasks) form.tasks.value = localForm.tasks;
-				if (!!localForm.examples) form.examples.value = localForm.examples;
+					form.category.value = route.params?.category ?? '';
+					form.category.valid = !!form.category.value;
+
+					if (!!localForm.description) {
+						form.description.value = localForm.description;
+						form.description.valid = !!form.description.value;
+					}
+
+					if (!!localForm.limits) {
+						form.limits.value = localForm.limits;
+						form.limits.valid =
+							form.limits.value && form.limits.value.length > 0;
+					}
+
+					if (!!localForm.skills) {
+						form.skills.value = localForm.skills;
+						form.skills.valid =
+							form.skills.value && form.skills.value.length > 0;
+					}
+
+					if (!!localForm.examples) {
+						form.examples.value = localForm.examples;
+						form.examples.valid =
+							form.examples.value && form.examples.value.length > 0;
+					}
+				}
 			}
 
 			await getChallengesCategories();

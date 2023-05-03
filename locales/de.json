@@ -446,6 +446,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Skills": "Fähigkeiten",
 		"Title": "Titel",
 		"Category": "Kategorie",
 		"EndTime": "Endzeit",
