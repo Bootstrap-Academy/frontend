@@ -20,7 +20,7 @@
 -->
 <template>
 	<main
-		class="grid grid-cols-2 grid-rows-[auto_minmax(0,1fr)] gap-card card h-screen-inner"
+		class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
 	>
 		<Head>
 			<Title>Solve Challenge - {{ challenge?.title ?? '' }}</Title>
@@ -45,12 +45,17 @@
 					</span>
 				</template>
 			</div>
-			<p class="py-1 px-3 bg-warning rounded text-primary w-fit">
+			<p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
 				{{ t('Headings.Active') }}
 			</p>
 		</header>
 
-		<ChallengesItemProgress :data="challenge" class="!w-fit justify-self-end" />
+		<div class="bg-secondary style-box w-fit h-fit">
+			<ChallengesItemProgress
+				:data="challenge"
+				class="!w-fit justify-self-end"
+			/>
+		</div>
 
 		<aside
 			class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"

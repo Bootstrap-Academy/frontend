@@ -1,3 +1,4 @@
 {
-	"cSpell.words": ["coachings", "Morphcoin", "morphcoins", "Recaptcha", "TOTP"]
+	"cSpell.words": ["coachings", "Morphcoin", "morphcoins", "Recaptcha", "TOTP"],
+	"vue.codeActions.enabled": false
 }
