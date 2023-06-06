@@ -89,7 +89,7 @@ export default {
 			},
 			{
 				icon: PhoneIcon,
-				body: '+49 89 24 88 62 51 - 0',
+				body: '+49 89 24 88 62 51 - 8',
 			},
 		];
 
