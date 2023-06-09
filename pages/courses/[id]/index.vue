@@ -20,128 +20,128 @@
 -->
 
 <template>
-	<CourseSkeleton v-if="loading" />
+  <CourseSkeleton v-if="loading" />
 
-	<main
-		v-else-if="course"
-		class="relative container-fluid h-screen-main min mt-main mb-main"
-	>
-		<Head>
-			<Title>Course Details - {{ course?.title ?? '' }}</Title>
-		</Head>
+  <main
+    v-else-if="course"
+    class="relative container-fluid h-screen-main min mt-main mb-main"
+  >
+    <Head>
+      <Title>Course Details - {{ course?.title ?? "" }}</Title>
+    </Head>
 
-		<CourseHeader :data="course" />
+    <CourseHeader :data="course" />
 
-		<CourseDetails :data="course" />
+    <CourseDetails :data="course" />
 
-		<CourseOverview
-			:data="course"
-			:isCourseAccessible="isCourseAccessible"
-			class="md:sticky md:top-container md:self-start"
-		/>
+    <CourseOverview
+      :data="course"
+      :isCourseAccessible="isCourseAccessible"
+      class="md:sticky md:top-container md:self-start"
+    />
 
-		<section>
-			<h2 class="mb-box text-heading-3">
-				{{ t('Headings.CourseCurriculum') }}
-			</h2>
+    <section>
+      <h2 class="mb-box text-heading-3">
+        {{ t("Headings.CourseCurriculum") }}
+      </h2>
 
-			<div class="card style-card bg-secondary">
-				<CourseCurriculum
-					:data="course"
-					:isCourseAccessible="isCourseAccessible"
-					@watch="watchThisLecture($event)"
-				/>
-			</div>
-		</section>
-	</main>
+      <div class="card style-card bg-secondary">
+        <CourseCurriculum
+          :data="course"
+          :isCourseAccessible="isCourseAccessible"
+          @watch="watchThisLecture($event)"
+        />
+      </div>
+    </section>
+  </main>
 
-	<CourseEmptyState v-else />
+  <CourseEmptyState v-else />
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ["auth"],
 });
 
 export default {
-	head: {
-		title: 'Course Details',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: "Course Details",
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const loading = ref(true);
-		const course = useCourse();
-		const isCourseAccessible = ref(false);
+    const loading = ref(true);
+    const course = useCourse();
+    const isCourseAccessible = ref(false);
 
-		const route = useRoute();
-		const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
 
-		const id = computed(() => {
-			return <string>(route.params?.id ?? '');
-		});
+    const id = computed(() => {
+      return <string>(route.params?.id ?? "");
+    });
 
-		onMounted(async () => {
-			if (!!!id.value) {
-				loading.value = false;
-				return;
-			}
+    onMounted(async () => {
+      if (!!!id.value) {
+        loading.value = false;
+        return;
+      }
 
-			const [success, error] = await getCourseByID(id.value);
+      const [success, error] = await getCourseByID(id.value);
 
-			if (error) {
-				await getCourseSummaryByID(id.value);
-			} else {
-				isCourseAccessible.value = true;
-			}
+      if (error) {
+        await getCourseSummaryByID(id.value);
+      } else {
+        isCourseAccessible.value = true;
+      }
 
-			loading.value = false;
-		});
+      loading.value = false;
+    });
 
-		function watchThisLecture({ sectionID, lectureID }: any) {
-			router.push({
-				path: `${route.path}/watch`,
-				query: { section: sectionID, lecture: lectureID },
-			});
-		}
+    function watchThisLecture({ sectionID, lectureID }: any) {
+      router.push({
+        path: `${route.path}/watch`,
+        query: { section: sectionID, lecture: lectureID },
+      });
+    }
 
-		return { loading, course, t, isCourseAccessible, watchThisLecture };
-	},
+    return { loading, course, t, isCourseAccessible, watchThisLecture };
+  },
 };
 </script>
 
 <style scoped>
 main {
-	@apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
+  @apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
 
-	grid-template-areas:
-		'header'
-		'overview'
-		'details'
-		'curriculum';
+  grid-template-areas:
+    "header"
+    "overview"
+    "details"
+    "curriculum";
 }
 
 main > *:nth-child(1) {
-	grid-area: header;
+  grid-area: header;
 }
 main > *:nth-child(2) {
-	grid-area: details;
+  grid-area: details;
 }
 main > *:nth-child(3) {
-	grid-area: overview;
+  grid-area: overview;
 }
 main > *:nth-child(4) {
-	grid-area: curriculum;
+  grid-area: curriculum;
 }
 
 @media screen and (min-width: 768px) {
-	main {
-		grid-template-areas:
-			'header header'
-			'details overview'
-			'curriculum overview';
-	}
+  main {
+    grid-template-areas:
+      "header header"
+      "details overview"
+      "curriculum overview";
+  }
 }
 </style>

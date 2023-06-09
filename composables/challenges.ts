@@ -96,6 +96,7 @@ export async function getChallengesByCategory(categoryID: string) {
 		return [null, error.data];
 	}
 }
+
 export async function getChallenge(categoryID: string, challengeID: string) {
 	try {
 		const response = await GET(
@@ -110,6 +111,32 @@ export async function getChallenge(categoryID: string, challengeID: string) {
 		return [null, error.data];
 	}
 }
+
+export async function updateChallenge(categoryID: string, challengeID: string, body: any) {
+	try {
+		const response = await PATCH(
+			`/challenges/categories/${categoryID}/challenges/${challengeID}`,
+			body
+		);
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function deleteChallenge(categoryID: string, challengeID: string) {
+	try {
+		const response = await DELETE(
+			`/challenges/categories/${categoryID}/challenges/${challengeID}`,
+		);
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
 
 export async function getChallengesLoginUrl() {
 	try {

@@ -25,7 +25,7 @@
 		"gleap": "^8.2.6",
 		"highlight.js": "^11.7.0",
 		"jwt-decode": "^3.1.2",
-		"katex": "^0.16.4",
+		"katex": "^0.16.4",  
 		"markdown-it": "^13.0.1",
 		"monaco-editor": "^0.37.1",
 		"qrcode.vue": "^3.3.3",

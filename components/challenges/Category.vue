@@ -1,132 +1,137 @@
 <template>
-	<section>
-		<header
-			class="flex gap-card justify-between cursor-pointer"
-			@click="toggleShowChallenges()"
-		>
-			<div>
-				<h2 class="text-heading-2">{{ data?.title ?? '' }}</h2>
-				<p>{{ data?.description ?? '' }}</p>
-			</div>
+  <section>
+    <header
+      class="flex gap-card justify-between cursor-pointer"
+      @click="toggleShowChallenges()"
+    >
+      <div>
+        <h2 class="text-heading-2">{{ data?.title ?? "" }}</h2>
+        <p>{{ data?.description ?? "" }}</p>
+      </div>
 
-			<p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p>
-		</header>
+      <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p>
+    </header>
 
-		<NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="canCreate">
-			<Btn :icon="PlusIcon" class="mt-box" sm>
-				{{ t('Buttons.AddChallenge') }}
-			</Btn>
-		</NuxtLink>
+    <NuxtLink
+      :to="`/challenges/${data?.id ?? ''}/create`"
+      v-if="canCreate || user?.admin"
+    >
+      <Btn :icon="PlusIcon" class="mt-box" sm>
+        {{ t("Buttons.AddChallenge") }}
+      </Btn>
+    </NuxtLink>
 
-		<div class="grid gap-box grid-cols-1 pt-box" v-show="showChallenges">
-			<div v-if="loading" class="box px-4 xl:px-5 style-box bg-secondary">
-				<header
-					class="grid gap-card grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
-				>
-					<h2 class="mt-1.5 text-heading-3">
-						<SkeletonText />
-					</h2>
+    <div class="grid gap-box grid-cols-1 pt-box" v-show="showChallenges">
+      <div v-if="loading" class="box px-4 xl:px-5 style-box bg-secondary">
+        <header
+          class="grid gap-card grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
+        >
+          <h2 class="mt-1.5 text-heading-3">
+            <SkeletonText />
+          </h2>
 
-					<SkeletonText
-						class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5"
-						body
-					/>
+          <SkeletonText
+            class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5"
+            body
+          />
 
-					<p
-						class="!m-0 text-right flex items-center gap-2 w-fit place-self-end"
-					>
-						<SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" />
-						/
-						<SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" body />
-					</p>
-				</header>
-			</div>
+          <p
+            class="!m-0 text-right flex items-center gap-2 w-fit place-self-end"
+          >
+            <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" />
+            /
+            <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" body />
+          </p>
+        </header>
+      </div>
 
-			<template v-else-if="challenges && challenges.length > 0">
-				<ChallengesItem
-					v-for="challenge of challenges"
-					:key="challenge.id"
-					:data="challenge"
-					:mine="mine"
-				/>
-			</template>
+      <template v-else-if="challenges && challenges.length > 0">
+        <ChallengesItem
+          v-for="challenge of challenges"
+          :key="challenge.id"
+          :data="challenge"
+          :mine="mine"
+        />
+      </template>
 
-			<p v-else class="py-2 px-4 text-warning style-box bg-warning-light w-fit">
-				{{ t('Error.NoChallengesAvailable') }}
-			</p>
-		</div>
-	</section>
+      <p v-else class="py-2 px-4 text-warning style-box bg-warning-light w-fit">
+        {{ t("Error.NoChallengesAvailable") }}
+      </p>
+    </div>
+  </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { PlusIcon, TrophyIcon } from '@heroicons/vue/24/outline';
-import { PropType } from 'vue';
+import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
+import { PlusIcon, TrophyIcon } from "@heroicons/vue/24/outline";
+import { PropType } from "vue";
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-		mine: { type: Boolean, default: false },
-	},
-	components: { TrophyIcon, PlusIcon },
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+    mine: { type: Boolean, default: false },
+  },
+  components: { TrophyIcon, PlusIcon },
 
-		const challenges: any[] = reactive([]);
+  setup(props) {
+    const { t } = useI18n();
+    const user: any = useUser();
+    const challenges: any[] = reactive([]);
 
-		const loading = ref(challenges.length <= 0);
+    const loading = ref(challenges.length <= 0);
 
-		onMounted(async () => {
-			const [success, error] = await getChallengesByCategory(
-				props.data?.id ?? ''
-			);
-			loading.value = false;
+    onMounted(async () => {
+      const [success, error] = await getChallengesByCategory(
+        props.data?.id ?? ""
+      );
+      loading.value = false;
 
-			Object.assign(challenges, success ? success : []);
-		});
+      Object.assign(challenges, success ? success : []);
+    });
 
-		const router = useRouter();
-		const route = useRoute();
+    const router = useRouter();
+    const route = useRoute();
 
-		const category = computed(() => {
-			return props.data?.id ?? '';
-		});
+    const category = computed(() => {
+      return props.data?.id ?? "";
+    });
 
-		const activeCategory = computed(() => {
-			return (route.query?.category ?? '').toString();
-		});
+    const activeCategory = computed(() => {
+      return (route.query?.category ?? "").toString();
+    });
 
-		const showChallenges = computed(() => {
-			return activeCategory.value == category.value;
-		});
+    const showChallenges = computed(() => {
+      return activeCategory.value == category.value;
+    });
 
-		const canCreate = computed(() => {
-			let currentPoints = props.data?.points?.current ?? 0;
-			return currentPoints >= 100;
-		});
+    const canCreate = computed(() => {
+      let currentPoints = props.data?.points?.current ?? 0;
+      return currentPoints >= 100;
+    });
 
-		function toggleShowChallenges() {
-			router.replace({
-				path: route.path,
-				query: showChallenges.value
-					? {}
-					: {
-							category: category.value,
-					  },
-			});
-		}
+    function toggleShowChallenges() {
+      router.replace({
+        path: route.path,
+        query: showChallenges.value
+          ? {}
+          : {
+              category: category.value,
+            },
+      });
+    }
 
-		return {
-			t,
-			loading,
-			challenges,
-			showChallenges,
-			toggleShowChallenges,
-			canCreate,
-			PlusIcon,
-		};
-	},
+    return {
+      t,
+      loading,
+      challenges,
+      showChallenges,
+      toggleShowChallenges,
+      canCreate,
+      PlusIcon,
+      user,
+    };
+  },
 });
 </script>
 

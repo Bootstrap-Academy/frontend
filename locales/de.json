@@ -11,7 +11,10 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"DeleteChallenge":"Herausforderung löschens",
 		"CreateChallenge": "Herausforderung erstellen",
+		"EditChallenge": "Herausforderung bearbeiten",
+        "UpdateChallenge": "Herausforderung erstellen",
 		"Submissions": "Einreichungen",
 		"Timestamp": "Zeitstempel",
 		"Language": "Sprache",
@@ -219,6 +222,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"DeleteChallenge":"Sind Sie sicher, dass Sie Challenge löschen möchten??",
 		"AddChallengeRequirement": "Sie können jeder Kategorie mit 100 Punkten oder mehr eine neue Herausforderung hinzufügen!",
 		"MyChallengesStats": "Sehen Sie sich die Statistiken und Fortschritte Ihrer Herausforderungen an.",
 		"SearchQuizzes": "Suchen Sie nach Quiz",
@@ -521,6 +525,7 @@
 		"SaveChallenge": "Herausforderung speichern",
 		"DeleteChallenge": "Herausforderung löschen",
 		"CreateChallenge": "Herausforderung erstellen",
+		"UpdateChallenge": "Herausforderung erstellen",
 		"AddChallenge": "Herausforderung hinzufügen",
 		"EditChallenge": "Herausforderung bearbeiten",
 		"Details": "Details",

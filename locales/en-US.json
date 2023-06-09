@@ -11,7 +11,10 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"DeleteChallenge":"Delete Challenge",
 		"CreateChallenge": "Create Challenge",
+		"EditChallenge":"Edit Challenge",
+		"UpdateChallenge": "Update Challenge",
 		"Submissions": "Submissions",
 		"Timestamp": "Timestamp",
 		"Language": "Language",
@@ -219,6 +222,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"DeleteChallenge":"Are you sure you want to delete Challenge?",
 		"AddChallengeRequirement": "You can add a new challenge to any category with 100 points or above!",
 		"MyChallengesStats": "View your challenges' statistics and progress.",
 		"SearchQuizzes": "Search for Quizzes",
@@ -528,6 +532,7 @@
 		"SaveChallenge": "Save Challenge",
 		"DeleteChallenge": "Delete Challenge",
 		"CreateChallenge": "Create Challenge",
+		"UpdateChallenge": "Update Challenge",
 		"AddChallenge": "Add Challenge",
 		"EditChallenge": "Edit Challenge",
 		"Details": "Details",
