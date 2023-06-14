@@ -11,6 +11,13 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"EvaluatorCode":"Bewerter Code",
+		"SolutionCode":"Lösung Code",
+		"XP":"XP",
+		"Coins":"Münzen",
+		"CodingChallenge":"Codierung sherausforderung",
+		"EditCodingChallenge":"Codierungsherausforderung bearbeiten",
+ 		"DeleteCodingChallenge":"Coding Challenge löschen",
 		"DeleteChallenge":"Herausforderung löschens",
 		"CreateChallenge": "Herausforderung erstellen",
 		"EditChallenge": "Herausforderung bearbeiten",
@@ -222,6 +229,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"DeleteCodingChallenge":"Sind Sie sicher, dass Sie die Codierungsherausforderung löschen möchten?",
 		"DeleteChallenge":"Sind Sie sicher, dass Sie Challenge löschen möchten??",
 		"AddChallengeRequirement": "Sie können jeder Kategorie mit 100 Punkten oder mehr eine neue Herausforderung hinzufügen!",
 		"MyChallengesStats": "Sehen Sie sich die Statistiken und Fortschritte Ihrer Herausforderungen an.",
@@ -450,6 +458,15 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Xp":"Xp",
+		"Coins":"Münzen",
+		"TimeLimit":"Zeitlimit (ms)",
+		"MemoryLimit":"Speicherlimit",
+		"StaticTests":"Statische Tests",
+		"RandomTests":"Zufallstests",
+		"SolutionEnvironment":"Lösungsumgebung",
+		"SolutionCode":"Lösungscode",
+		"Evaluator":"Bewerter",
 		"Skills": "Fähigkeiten",
 		"Title": "Titel",
 		"Category": "Kategorie",
@@ -518,12 +535,18 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"CreateCodingChallenge":"Erstellen Sie eine Coding-Challenge",
+		"UpdateCodingChallenge":"Codierungsherausforderung aktualisieren",
+		"Delete":"Beschreibung",
+		"AddNew":"Neue hinzufügen",
 		"AddTask": "Aufgabe hinzufügen",
 		"SaveDescription": "Beschreibung speichern",
 		"DeleteDescription": "Beschreibung löschen",
 		"ManageDescription": "Beschreibung verwalten",
 		"SaveChallenge": "Herausforderung speichern",
 		"DeleteChallenge": "Herausforderung löschen",
+		"Close":"Schließen",
+
 		"CreateChallenge": "Herausforderung erstellen",
 		"UpdateChallenge": "Herausforderung erstellen",
 		"AddChallenge": "Herausforderung hinzufügen",
@@ -669,7 +692,13 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"EditedCodingChallenge":"Coding Challenge erfolgreich bearbeitet",
+		"CreatedCodingChallenge":"Codierungsherausforderung erfolgreich erstellt",
+		"DeletedCodingChallenge":"Coding Challenge erfolgreich gelöscht",
+		"DeletedChallenge":"Herausforderung erfolgreich gelöscht",		
 		"CreatedQuiz": "Quizfrage erfolgreich erstellt",
+		"CreatedChallenge": "Herausforderung erfolgreich erstellt",
+		"EditedChallenge": "Herausforderungsdetails erfolgreich bearbeitet ",
 		"EventCancelled": "Veranstaltung wurde erfolgreich abgesagt.",
 		"SubmitWebinarRating": "Webinarbewertung erfolgreich übermittelt",
 		"CancelWebinarRating": "Abgebrochene Webinar-Bewertung.",
@@ -707,6 +736,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"SkillNotFound": "Du hast die falsche Fähigkeit eingegeben!",
 		"NoChallengesAvailable": "Keine Herausforderungen verfügbar",
 		"AddQuizQuestionOptions": "Optionen für Quizfragen hinzufügen",
 		"WebinarPrice": "Für die Bewertung {rating} beträgt der Höchstpreis {maxPrice}MC",
@@ -718,6 +748,8 @@
 		"InputCodeFormat": "Ungültiges Codeformat",
 		"InputEmpty": "{placeholder} ist erforderlich",
 		"InputMinLength": "Muss {placeholder} oder mehr Zeichen sein",
+		"InputMinNumber":"Muss {placeholder} oder mehr sein",
+		"InputMaxNumber":"Muss maximal {placeholder} sein",
 		"InputMaxLength": "Muss weniger als {placeholder} Zeichen sein",
 		"InputMinMins": "Muss größer als {placeholder} Minuten sein",
 		"InputMaxMins": "Muss weniger als {placeholder} Minuten sein",

@@ -130,7 +130,7 @@ export async function deleteChallenge(categoryID: string, challengeID: string) {
 		const response = await DELETE(
 			`/challenges/categories/${categoryID}/challenges/${challengeID}`,
 		);
-
+		// getChallengesByCategory(categoryID)
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];

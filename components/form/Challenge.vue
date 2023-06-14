@@ -52,36 +52,45 @@
 			:max="10"
 		/> -->
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-end"
-      @click="onclickSubmitForm()"
-      mt
-    >
-      <span v-if="!!data">
-        {{ t("Buttons.UpdateChallenge") }}
-      </span>
+    <article class="flex justify-end items-center gap-x-3 flex-wrap">
+      <InputBtn
+        :icon="TrashIcon"
+        @click="fnDeleteChallenge()"
+        v-if="user.id == data?.creator && !!data"
+      >
+        {{ t("Buttons.DeleteChallenge") }}
+      </InputBtn>
 
-      <span v-else>
-        {{ t("Buttons.CreateChallenge") }}
-      </span>
-    </InputBtn>
+      <InputBtn :loading="form.submitting" @click="onclickSubmitForm()">
+        <span v-if="!!data">
+          {{ t("Buttons.UpdateChallenge") }}
+        </span>
+
+        <span v-else>
+          {{ t("Buttons.CreateChallenge") }}
+        </span>
+      </InputBtn>
+    </article>
   </form>
 </template>
 
 <script lang="ts">
+import { TrashIcon } from "@heroicons/vue/24/outline";
 import { defineComponent, PropType, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IForm } from "~/types/form";
+import { useUser } from "~~/composables/user";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
+  components: { TrashIcon },
   setup(props) {
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
+    const user: any = useUser();
 
     // ============================================================= Handling Categories
     const challengesCategories = useChallengesCategories();
@@ -181,26 +190,26 @@ export default defineComponent({
     // ============================================================= functions
     async function onclickSubmitForm() {
       if (form.validate()) {
-        form.submitting = true;
-
         if (!!props?.data) fnEditChallenge();
         else fnCreateChallenge();
-
-        form.submitting = false;
       } else {
         openSnackbar("error", "Error.InvalidForm");
       }
     }
+
     async function fnCreateChallenge() {
+      form.submitting = true;
       const [success, error] = await createChallenge(form.category.value, {
         title: form.title.value,
         description: form.description.value,
         skills: form.skills.value,
       });
-      success ? successHandler(success) : errorHandler(error);
+      form.submitting = false;
+      success ? createSuccessHandler(success) : errorHandler(error);
     }
 
     async function fnEditChallenge() {
+      form.submitting = true;
       const [success, error] = await updateChallenge(
         props?.data.category,
         props.data.id,
@@ -210,10 +219,11 @@ export default defineComponent({
           skills: form.skills.value,
         }
       );
-      success ? successHandler(success) : errorHandler(error);
+      form.submitting = false;
+      success ? editSuccessHandler(success) : errorHandler(error);
     }
 
-    function successHandler(res: any) {
+    function createSuccessHandler(res: any) {
       router.push(
         `/challenges/edit-${res.id}?categoryId=${form.category.value}`
       );
@@ -222,10 +232,38 @@ export default defineComponent({
       }, 1000);
     }
 
+    function editSuccessHandler(res: any) {
+      openSnackbar("success", "Success.EditedChallenge");
+    }
+
     function errorHandler(res: any) {
       openSnackbar("error", res?.detail ?? "");
     }
 
+    function fnDeleteChallenge() {
+      openDialog(
+        "warning",
+        "Headings.DeleteChallenge",
+        "Body.DeleteChallenge",
+        false,
+        {
+          label: "Buttons.DeleteChallenge",
+          onclick: async () => {
+            const [success, error] = await deleteChallenge(
+              props.data?.category,
+              props.data?.id
+            );
+            if (!!success) openSnackbar("success", "Success.DeletedChallenge");
+            router.push(`/challenges/all?categoryId=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
+          },
+        },
+        {
+          label: "Buttons.Cancel",
+          onclick: () => {},
+        }
+      );
+      console.log("delete");
+    }
     function setFormData() {
       if (props.data != null) {
         form.title.value = props?.data?.title ?? "";
@@ -239,6 +277,7 @@ export default defineComponent({
         form.category.valid = true;
       }
     }
+
     // ============================================================= Handling Form State
     watch(
       () => form,
@@ -258,6 +297,7 @@ export default defineComponent({
       },
       { deep: true }
     );
+
     watch(
       () => props.data,
       () => {
@@ -265,6 +305,7 @@ export default defineComponent({
       },
       { deep: true }
     );
+
     onMounted(async () => {
       if (!!localStorage) {
         const localForm = JSON.parse(localStorage?.getItem("form") ?? "null");
@@ -316,6 +357,8 @@ export default defineComponent({
       t,
       categoryOptions,
       setCategory,
+      fnDeleteChallenge,
+      user,
     };
   },
 });

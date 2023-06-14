@@ -20,10 +20,10 @@
 -->
 <template>
   <main
-    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
+    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr] grid place-items-center"
   >
-    <p>{{ codingChallenges }}</p>
-    <section class="flex items-center justify-end mb-3">
+    <!-- <p>{{ codingChallenges }}</p> -->
+    <section class="flex gap-3 items-center justify-end mb-3">
       <article
         class="text-white font-medium sm:text-xl sm:px-5 pb-1 cursor-pointer border-b-2"
         :class="
@@ -34,7 +34,7 @@
         @click="selectedTab = 0"
       >
         <PencilIcon class="h-5 w-5 text-accent inline-block mr-2" />
-        Challenge
+        {{ $t("Headings.Challenge") }}
       </article>
       <article
         class="text-white font-medium sm:text-xl sm:px-5 pb-1 cursor-pointer border-b-2"
@@ -45,7 +45,7 @@
         "
         @click="selectedTab = 1"
       >
-        Coding Challenges
+        {{ $t("Headings.CodingChallenge") }}
       </article>
     </section>
 
@@ -56,25 +56,34 @@
         size="sm"
         class="mb-card mx-auto"
       />
-      <FormChallenge :data="challengeData" />
+      <article></article>
+      <LazyFormChallenge :data="challengeData" />
     </section>
 
-    <!-- <section v-else-if="selectedTab == 1" class="container-form max-w-4xl">
+    <section v-else-if="selectedTab == 1" class="container-form max-w-4xl">
       <SectionTitle
         center
-        heading="Headings.EditChallenge"
+        heading="Headings.EditCodingChallenge"
         size="sm"
         class="mb-card mx-auto"
       />
-      <CodingChallengeList :codingChallenges="codingChallenges" />
-    </section> -->
+      <LazyCodingChallengeList
+        :challengeId="challengeId"
+        :codingChallenges="codingChallenges"
+      />
+    </section>
   </main>
 </template>
 
 <script lang="ts">
 import { getChallenge } from "~~/composables/challenges";
 import { PencilIcon } from "@heroicons/vue/24/outline";
-import { getAllCodingChallengesInATask } from "~~/composables/codingChallenges";
+import {
+  getAllCodingChallengesInATask,
+  useAllCodingChallengesInATask,
+} from "~~/composables/codingChallenges";
+import { useI18n } from "vue-i18n";
+
 definePageMeta({
   layout: "inner",
   middleware: ["auth"],
@@ -87,10 +96,11 @@ export default {
 
   components: { PencilIcon },
   setup() {
+    const { t } = useI18n();
     const selectedTab = ref(0);
     const route = useRoute();
     const challengeData = ref();
-    const codingChallenges = ref();
+    const codingChallenges = useAllCodingChallengesInATask();
     const challengeId: any = computed(() => {
       return route.params.challenge;
     });
@@ -108,7 +118,6 @@ export default {
       );
 
       if (!!success) challengeData.value = success;
-      if (!!codingSuccess) codingChallenges.value = codingSuccess;
     });
     return {
       challengeId,
@@ -117,6 +126,7 @@ export default {
       selectedTab,
       PencilIcon,
       codingChallenges,
+      t,
     };
   },
 };

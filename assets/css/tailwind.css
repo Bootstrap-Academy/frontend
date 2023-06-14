@@ -421,7 +421,15 @@
 		scrollbar-width: none !important; /* Firefox */
 		overflow: auto !important;
 	}
-
+.modal-width-sm{
+  @apply w-full sm:w-2/3 md:w-2/4 lg:w-2/6 xl:w-[28%]
+}
+.modal-width-md{
+  @apply w-[99%] md:w-[60%]
+}
+.modal-width-lg{
+  @apply w-[99%]  md:w-[90%]
+}
 	[data-tooltip] {
 		--triangle-width: 15px;
 		--spacing: 10px;

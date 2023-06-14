@@ -67,7 +67,7 @@
       <ChallengesItemExamples :data="challenge" />
     </aside>
 
-    <ChallengesCodeEditor v-model="code" />
+    <ChallengesCodeEditor :showButtons="true" v-model="code" />
   </main>
 </template>
 

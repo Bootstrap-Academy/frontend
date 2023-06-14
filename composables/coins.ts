@@ -1,5 +1,5 @@
 import { useState } from '#app';
-
+import { useUser } from './user';
 export const useCoins = () => useState('coins', () => 0);
 export const usePaypalClientID = () => useState('paypalClientID', () => '');
 

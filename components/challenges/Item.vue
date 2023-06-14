@@ -32,21 +32,8 @@
         </NuxtLink>
       </div>
       <ChallengesItemDescription :data="data" />
-      <ChallengesItemLimits :data="data" />
-      <ChallengesItemExamples :data="data" />
-
-      <article class="flex justify-end">
-        <Btn
-          sm
-          v-if="user.id == data?.creator"
-          @click="fnDeleteChallenge()"
-          secondary
-          class="w-fit"
-          :icon="TrashIcon"
-        >
-          {{ t("Buttons.DeleteChallenge") }}
-        </Btn>
-      </article>
+      <!-- <ChallengesItemLimits :data="data" /> -->
+      <!-- <ChallengesItemExamples :data="data" /> -->
     </div>
   </section>
 </template>
@@ -101,30 +88,6 @@ export default defineComponent({
       return `/challenges/edit-${activeChallenge.value}?categoryId=${baseQuery.value.category}`;
     });
 
-    function fnDeleteChallenge() {
-      openDialog(
-        "warning",
-        "Headings.DeleteChallenge",
-        "Body.DeleteChallenge",
-        false,
-        {
-          label: "Buttons.DeleteChallenge",
-          onclick: async () => {
-            const [success, error] = await deleteChallenge(
-              baseQuery.value.category,
-              activeChallenge.value
-            );
-            if (!!success) openSnackbar("success", "Heading.ChallengedDeleted");
-            await getChallengesByCategory(baseQuery.value.category);
-          },
-        },
-        {
-          label: "Buttons.Cancel",
-          onclick: () => {},
-        }
-      );
-    }
-
     function toggleShowChallengeContent() {
       router.replace({
         path: route.path,
@@ -150,7 +113,6 @@ export default defineComponent({
       user,
       baseQuery,
       TrashIcon,
-      fnDeleteChallenge,
     };
   },
 });

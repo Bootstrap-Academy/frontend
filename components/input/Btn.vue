@@ -65,7 +65,7 @@ export default defineComponent({
           md: props.md && !props.lg && !props.sm,
           sm: props.sm,
           "flex-row-reverse": props.iconRight,
-          " w-full": props.full,
+          "w-full": props.full,
           "mt-2 md:mt-4 xl:mt-6": props.mt,
           "mb-2 md:mb-4 xl:mb-6": props.mb,
         },

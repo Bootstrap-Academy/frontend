@@ -81,9 +81,11 @@ const onResponseError = async ({ request, options, response }) => {
 		let msg = details[0]?.msg ?? details?.msg ?? '';
 		response._data.detail = `${loc} : ${msg}`;
 		details = msg;
-	} else if (details == '') {
+	}
+	else if (details == '') {
 		response._data.detail = 'No error msg';
-	} else {
+	}
+	else {
 		details = details.toLocaleLowerCase();
 	}
 
@@ -154,6 +156,8 @@ const onResponseError = async ({ request, options, response }) => {
 		response._data.detail = 'Error.ProviderNotFound';
 	} else if (details.includes('Insufficient rating')) {
 		response._data.detail = 'Error.WebinarPrice';
+	}	else if (details.includes('skills_not_found"}')) {
+		response._data.detail = 'Error.SkillNotFound';
 	}
 };
 

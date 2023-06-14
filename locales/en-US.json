@@ -11,6 +11,13 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"EvaluatorCode":"Evaluator Code",
+		"SolutionCode":"Solution Code",
+		"Coins":"Coins",
+		"XP":"XP",
+		"CodingChallenge":"Coding Challenge",
+		"EditCodingChallenge":"Edit Coding Challenge",
+		"DeleteCodingChallenge":"Delete Coding Challenge",
 		"DeleteChallenge":"Delete Challenge",
 		"CreateChallenge": "Create Challenge",
 		"EditChallenge":"Edit Challenge",
@@ -222,6 +229,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"DeleteCodingChallenge":"Are you sure you want to delete coding challenge?",
 		"DeleteChallenge":"Are you sure you want to delete Challenge?",
 		"AddChallengeRequirement": "You can add a new challenge to any category with 100 points or above!",
 		"MyChallengesStats": "View your challenges' statistics and progress.",
@@ -450,6 +458,15 @@
 	},
 	"Inputs": {
 		"Skills": "Skills",
+		"Xp":"Xp",
+		"Coins":"Coins",
+		"TimeLimit":"Time Limit (ms)",
+		"MemoryLimit":"Memory Limit",
+		"StaticTests":"Static Tests",
+		"RandomTests":"Random Tests",
+		"SolutionEnvironment":"Solution Environment",
+		"SolutionCode":"Solution Code",
+		"Evaluator":"Evaluator",
 		"Title": "Title",
 		"Category": "Category",
 		"EndTime": "EndTime",
@@ -517,6 +534,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"CreateCodingChallenge":"Create Coding Challenge",
+		"UpdateCodingChallenge":"Update Coding Challenge",
+		"AddNew":"Add New",
 		"SaveOutput": "Save Output",
 		"SaveInput": "Save Input",
 		"Save": "Save",
@@ -524,6 +544,7 @@
 		"AddExample": "Add Example",
 		"ManageInput": "Manage Input",
 		"ManageOutput": "Manage Output",
+		"Close":"Close",
 
 		"AddTask": "Add Task",
 		"SaveDescription": "Save Description",
@@ -672,7 +693,14 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+
+		"EditedCodingChallenge":"Successfully Edited Coding Challenge",
+		"CreatedCodingChallenge":"Successfully Created Coding Challenge",
+		"DeletedCodingChallenge":"Successfully Deleted Coding Challenge",
+		"DeletedChallenge":"Successfully Deleted Challenge",
 		"CreatedQuiz": "Successfully created quiz question",
+		"CreatedChallenge": "Successfully created challenge",
+		"EditedChallenge": "Challenge details edited successfully ",
 		"EventCancelled": "Event has been cancelled successfully.",
 		"SubmitWebinarRating": "Webinar Rating submitted successfully",
 		"CancelWebinarRating": "Cancelled webinar rating.",
@@ -710,7 +738,9 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+
 		"NoChallengesAvailable": "No Challenges Available",
+		"SkillNotFound": "You Entered Wrong Skill!",
 		"AddQuizQuestionOptions": "Add Quiz Question Options",
 		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",
 		"WebinarRating": "Rating must be greater than 0",
@@ -721,6 +751,8 @@
 		"InputCodeFormat": "Invalid code format",
 		"InputEmpty": "{placeholder} is required",
 		"InputMinLength": "Must {placeholder} or more characters",
+		"InputMinNumber":"Must be {placeholder} or more",
+		"InputMaxNumber":"Must be {placeholder} or less",
 		"InputMaxLength": "Must be less than {placeholder} characters",
 		"InputMinMins": "Must be greater than {placeholder} mins",
 		"InputMaxMins": "Must be less than {placeholder} mins",
