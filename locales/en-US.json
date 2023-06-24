@@ -11,11 +11,29 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"EmptySubtasks":"No Quiz Found ",
+		"EmptyCodingChallenge":"No Coding Challenge Found For This Lecture",
+		"DeleteQuiz":"Delete Quiz",
+		"Quiz":"Quiz",
+		"FEE":"Fee",
+		"Output":"Output",
+		"NoCodingChallengeCreated":"No Coding Challenge For This Challenge",
+		"Fee":"Fee",
+		"Memory":"Memory",
+		"NoSubmissionCreated":"No Submission is created for this coding challenges",
+		"DontShowCongratsAnimationAgain":"Don't show this animation again!!",
+		"CongratsAnimateText":"Congratulations You Got Bonus XP For This Completion 🥳🥳🥳",
+		"NoCodingChallengeFound":"No Coding Challenge For This Challenge",
+		"Quizzes":"Quizzes",
+		"QuizzesInCourse":"Quizzes In This Course",
+		"NoQuizQuestion":"No Quizz Questions available",
+		"NoQuizTitle":"No Title is provided for this Quiz",
 		"EvaluatorCode":"Evaluator Code",
 		"SolutionCode":"Solution Code",
 		"Coins":"Coins",
 		"XP":"XP",
 		"CodingChallenge":"Coding Challenge",
+		"CodingChallenges":"Coding Challenges",
 		"EditCodingChallenge":"Edit Coding Challenge",
 		"DeleteCodingChallenge":"Delete Coding Challenge",
 		"DeleteChallenge":"Delete Challenge",
@@ -117,6 +135,7 @@
 		"Lectures": "No lectures | {n} Lecture | {n} Lectures",
 		"FullTimeAccess": "Full Time Access",
 		"Free": "Free",
+		"Section":"Section",
 		"Sections": "No Sections | {n} Section | {n} Sections",
 		"CourseCurriculum": "Course Curriculum",
 		"FilterBy": "Filter By",
@@ -230,6 +249,7 @@
 	},
 	"Body": {
 		"DeleteCodingChallenge":"Are you sure you want to delete coding challenge?",
+		"DeleteQuiz":"Are you sure you want to delete Quiz?",
 		"DeleteChallenge":"Are you sure you want to delete Challenge?",
 		"AddChallengeRequirement": "You can add a new challenge to any category with 100 points or above!",
 		"MyChallengesStats": "View your challenges' statistics and progress.",
@@ -457,6 +477,7 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Fee":"Fee",
 		"Skills": "Skills",
 		"Xp":"Xp",
 		"Coins":"Coins",
@@ -476,6 +497,7 @@
 		"TaskDescription": "Description",
 		"TaskTotalPoints": "Total Points",
 		"Examples": "Examples",
+		"Example": "Example",
 		"ExampleName": "Name",
 		"ExampleInput": "Input",
 		"ExampleOutput": "Expected Output",
@@ -534,6 +556,10 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"ExamplesTestMe":"Test Against Me",
+		"Solved":"Solved",
+		"DeleteQuiz":"Delete Quiz",
+		"UpdateQuiz":"Update Quiz",
 		"CreateCodingChallenge":"Create Coding Challenge",
 		"UpdateCodingChallenge":"Update Coding Challenge",
 		"AddNew":"Add New",
@@ -685,6 +711,7 @@
 		"ExploreSkillTree": "Explore skill tree",
 		"GetStarted": "to get started.",
 		"GoToProfile": "Go To Profile",
+		"GoToCourse": "Go To Course",
 		"ResendNewsletterRegistrationCode": "Resend Newsletter Registration Code",
 		"Newsletter": "I want to register for Bootstrap newsletter.",
 		"RightToWithdrawal": "You have a 14-day right of withdrawal. You will find the cancellation policy + cancellation form",
@@ -693,7 +720,11 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
-
+		"SolvedCodingChallenge":"Tested Successfully And Coding Challenge Is Solved",
+		"SolvedCodingChallengeButNotCorrect":"Provided Code Doesn't Match Our Requirements",
+		"QuizAttempt":"Correct Option! Quiz Solved 😍",
+		"DeleteQuiz":"Quiz Deleted Successfully",
+		"CreatedSubmission":"Submission Created Successfully",
 		"EditedCodingChallenge":"Successfully Edited Coding Challenge",
 		"CreatedCodingChallenge":"Successfully Created Coding Challenge",
 		"DeletedCodingChallenge":"Successfully Deleted Coding Challenge",
@@ -738,7 +769,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
-
+		"QuizAttempt":"Incorrect Option Provided!!",
 		"NoChallengesAvailable": "No Challenges Available",
 		"SkillNotFound": "You Entered Wrong Skill!",
 		"AddQuizQuestionOptions": "Add Quiz Question Options",

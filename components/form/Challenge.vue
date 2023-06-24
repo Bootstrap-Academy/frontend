@@ -112,7 +112,8 @@ export default defineComponent({
     });
 
     function setCategory(categoryID: string) {
-      if (!!props?.data) router.replace(`/challenges/${categoryID}/create`);
+      console.log("setting", props?.data);
+      form.category.value = categoryID;
     }
 
     // ============================================================= refs
@@ -131,6 +132,7 @@ export default defineComponent({
       },
       category: {
         value: route?.params?.category ?? "",
+        valid: true,
         options: [],
       },
       //   limits: {
@@ -307,42 +309,42 @@ export default defineComponent({
     );
 
     onMounted(async () => {
-      if (!!localStorage) {
-        const localForm = JSON.parse(localStorage?.getItem("form") ?? "null");
+      // if (!!localStorage) {
+      //   const localForm = JSON.parse(localStorage?.getItem("form") ?? "null");
 
-        if (!!localForm) {
-          if (!!localForm.title) {
-            form.title.value = localForm.title;
-            form.title.valid = !!form.title.value;
-          }
+      //   if (!!localForm) {
+      //     if (!!localForm.title) {
+      //       form.title.value = localForm.title;
+      //       form.title.valid = !!form.title.value;
+      //     }
 
-          form.category.value = route.params?.category ?? "";
-          form.category.valid = !!form.category.value;
+      //     form.category.value = route.params?.category ?? "";
+      //     form.category.valid = !!form.category.value;
 
-          if (!!localForm.description) {
-            form.description.value = localForm.description;
-            form.description.valid = !!form.description.value;
-          }
+      //     if (!!localForm.description) {
+      //       form.description.value = localForm.description;
+      //       form.description.valid = !!form.description.value;
+      //     }
 
-          //   if (!!localForm.limits) {
-          //     form.limits.value = localForm.limits;
-          //     form.limits.valid =
-          //       form.limits.value && form.limits.value.length > 0;
-          //   }
+      //     //   if (!!localForm.limits) {
+      //     //     form.limits.value = localForm.limits;
+      //     //     form.limits.valid =
+      //     //       form.limits.value && form.limits.value.length > 0;
+      //     //   }
 
-          if (!!localForm.skills) {
-            form.skills.value = localForm.skills;
-            form.skills.valid =
-              form.skills.value && form.skills.value.length > 0;
-          }
+      //     if (!!localForm.skills) {
+      //       form.skills.value = localForm.skills;
+      //       form.skills.valid =
+      //         form.skills.value && form.skills.value.length > 0;
+      //     }
 
-          //   if (!!localForm.examples) {
-          //     form.examples.value = localForm.examples;
-          //     form.examples.valid =
-          //       form.examples.value && form.examples.value.length > 0;
-          //   }
-        }
-      }
+      //     //   if (!!localForm.examples) {
+      //     //     form.examples.value = localForm.examples;
+      //     //     form.examples.valid =
+      //     //       form.examples.value && form.examples.value.length > 0;
+      //     //   }
+      //   }
+      // }
 
       //   setFormData();
 

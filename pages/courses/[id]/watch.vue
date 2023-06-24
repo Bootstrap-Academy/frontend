@@ -25,32 +25,40 @@
       <Title>Watch Course - {{ course?.title ?? "" }}</Title>
     </Head>
 
-    <main
-      v-if="course"
-      class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container"
-    >
-      <CourseVideoControls
-        class="midXl:col-span-2"
-        :course="course"
-        :activeSection="activeSection"
-        :activeLecture="activeLecture"
-        v-model="showCurriculum"
-        v-if="!!activeSection && !!activeLecture"
-      />
+    <section>
+      <main
+        v-if="course"
+        class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container"
+      >
+        <CourseVideoControls
+          class="midXl:col-span-2"
+          :course="course"
+          :activeSection="activeSection"
+          :activeLecture="activeLecture"
+          v-model="showCurriculum"
+          v-if="!!activeSection && !!activeLecture"
+        />
 
-      <CourseVideo
-        :course="course"
-        :activeSection="activeSection"
-        :activeLecture="activeLecture"
-        v-if="!!activeSection && !!activeLecture"
-      />
+        <CourseVideo
+          :course="course"
+          :activeSection="activeSection"
+          :activeLecture="activeLecture"
+          v-if="!!activeSection && !!activeLecture"
+        />
 
-      <CourseCurriculum
-        class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-y-scroll"
-        :data="course"
-        @watch="watchThisLecture($event)"
+        <CourseCurriculum
+          class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-y-scroll"
+          :data="course"
+          @watch="watchThisLecture($event)"
+        />
+      </main>
+      <CourseSubTasks
+        :activeLecture="activeLecture"
+        :activeSection="activeSection"
+        :courseId="courseId"
       />
-    </main>
+      <!-- {{ activeLecture }}sss {{ activeSection }}ssss {{ courseId }}sssss -->
+    </section>
 
     <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
       <section
@@ -118,7 +126,9 @@ export default {
 
       return !!lecture ? lecture : null;
     });
-
+    const courseId: any = computed(() => {
+      return route.params.id;
+    });
     onMounted(async () => {
       const courseID = <string>(route.params?.id ?? "");
       if (!!!courseID) {
@@ -150,6 +160,7 @@ export default {
       activeLecture,
       showCurriculum,
       watchThisLecture,
+      courseId,
     };
   },
 };

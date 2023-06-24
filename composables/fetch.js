@@ -70,6 +70,7 @@ const onResponse = async ({ request, options, response }) => {
 
 const onResponseError = async ({ request, options, response }) => {
 	let details = response?._data?.detail ?? '';
+	console.log("esponse i error",response)
 
 	if (typeof details == 'object') {
 		console.log('details', details);
@@ -156,9 +157,14 @@ const onResponseError = async ({ request, options, response }) => {
 		response._data.detail = 'Error.ProviderNotFound';
 	} else if (details.includes('Insufficient rating')) {
 		response._data.detail = 'Error.WebinarPrice';
-	}	else if (details.includes('skills_not_found"}')) {
+	}	else if (details.includes('skills_not_found')) {
 		response._data.detail = 'Error.SkillNotFound';
+	}	else if (details.toLocaleLowerCase().includes('too_many_requests')) {
+		response._data.detail = 'Error.TooManyAttemptsForQuiz';
+	}else if (details.includes('invalid_single_choice')) {
+		response._data.detail = 'Error.SelectAtLeastOneOption';
 	}
+	
 };
 
 function isAccessTokenExpired() {

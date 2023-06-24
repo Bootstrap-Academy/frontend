@@ -27,24 +27,6 @@
     </Head>
 
     <header class="w-fit flex items-items gap-card">
-      <div>
-        <template v-for="(path, i) of breadcrumbs" :key="i">
-          <NuxtLink
-            v-if="path.to"
-            :to="path.to"
-            class="inline-block text-body-2"
-          >
-            {{ t(path.label) }}
-          </NuxtLink>
-          <h1 v-else class="text-heading-2 capitalize inline-block">
-            {{ t(path.label) }}
-          </h1>
-
-          <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-            /
-          </span>
-        </template>
-      </div>
       <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
         {{ t("Headings.Active") }}
       </p>
@@ -60,11 +42,6 @@
     <aside
       class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
     >
-      <!-- <ChallengesItemTasks
-        :codingChallenges="allCodingChallenges"
-        :data="challenge"
-      /> -->
-
       <ChallengesItemSubmission
         :data="challenge"
         @id="watchSubmissionEmition($event)"
@@ -115,7 +92,6 @@ export default {
     const loading = ref(true);
 
     const challenge = useChallenge();
-    const category = useChallengeCategory();
     const codingChallenge = useCodingChallenge();
     const examples: any = useCodingExamples();
 
@@ -123,14 +99,12 @@ export default {
     const allCodingChallenges = useAllCodingChallengesInATask();
 
     const route = useRoute();
-    const categoryID = computed((): string => {
-      return <string>route?.params?.category ?? "";
+
+    const challengeID = computed((): string => {
+      return <string>route?.params?.challenge ?? "";
     });
     const codingChallengeId: any = computed(() => {
       return route.query?.codingChallenge ?? "";
-    });
-    const challengeID = computed((): string => {
-      return <string>route?.params?.challenge ?? "";
     });
 
     async function watchSubmissionEmition(id: any) {
@@ -146,32 +120,11 @@ export default {
 
     onMounted(async () => {
       await Promise.all([
-        getChallengeCategory(categoryID.value),
-        getChallenge(categoryID.value, challengeID.value),
         getSubmissions(challengeID.value, codingChallengeId.value),
         getCodingChallenge(challengeID.value, codingChallengeId.value),
         getExamples(challengeID.value, codingChallengeId.value),
-        // getAllCodingChallengesInATask(challengeID.value),
       ]);
       loading.value = false;
-    });
-
-    const breadcrumbs = computed(() => {
-      return [
-        {
-          label: "Headings.Challenges",
-          to: "/challenges/all",
-        },
-        {
-          label: category.value?.title ?? "",
-          to: `/challenges/all?category=${category.value?.id ?? ""}&challenge=${
-            challenge.value?.id ?? ""
-          }`,
-        },
-        {
-          label: challenge.value?.title ?? "",
-        },
-      ];
     });
 
     const code = ref("// write your code here");
@@ -180,8 +133,6 @@ export default {
       t,
       loading,
       challenge,
-      category,
-      breadcrumbs,
       code,
       environment,
       allCodingChallenges,

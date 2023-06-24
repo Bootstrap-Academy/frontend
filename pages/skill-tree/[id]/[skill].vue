@@ -50,7 +50,7 @@
 <script lang="ts">
 import { defineComponent, Ref } from "vue";
 import { useI18n } from "vue-i18n";
-
+import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -149,7 +149,8 @@ export default defineComponent({
           getTheseCourses(courseIDs.value),
           getCoachingsForThisSubSkill(subSkillID.value),
           getWebinarsForThisSubSkill(subSkillID.value),
-          getQuizzes(),
+          getQuizzesInSkill(subSkillID.value),
+          // getQuizzes(), //This api is fake and will return only static quizzes from list
         ]);
       }
 

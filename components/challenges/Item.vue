@@ -19,18 +19,25 @@
       v-show="showChallengeContent"
       class="grid gap-card grid-cols-1 pt-card-sm"
     >
-      <div class="flex gap-card">
-        <NuxtLink :to="to">
-          <Btn class="w-fit" :icon="CodeBracketIcon">
-            {{ t("Buttons.Solve") }}
-          </Btn>
-        </NuxtLink>
+      <div class="flex flex-wrap gap-card">
+        <!-- <NuxtLink :to="to"> 
+        </NuxtLink> -->
+        <Btn @click="propId = challenge" class="w-fit" :icon="CodeBracketIcon">
+          {{ t("Buttons.Solve") }}
+        </Btn>
         <NuxtLink :to="editTo" v-if="data?.creator == user.id">
           <Btn secondary class="w-fit" :icon="PencilIcon">
             {{ t("Buttons.EditChallenge") }}
           </Btn>
         </NuxtLink>
       </div>
+      <LazyCodingChallengeList
+        :showInnerBorder="true"
+        :taskId="activeChallenge"
+        class="max-h-72"
+        v-if="!!propId"
+        :id="propId"
+      />
       <ChallengesItemDescription :data="data" />
       <!-- <ChallengesItemLimits :data="data" /> -->
       <!-- <ChallengesItemExamples :data="data" /> -->
@@ -60,6 +67,8 @@ export default defineComponent({
     const user: any = useUser();
     const { t } = useI18n();
 
+    const propId: any = ref("");
+
     const router = useRouter();
     const route = useRoute();
 
@@ -81,9 +90,6 @@ export default defineComponent({
       };
     });
 
-    const to = computed(() => {
-      return `/challenges/${baseQuery.value.category}/${activeChallenge.value}`;
-    });
     const editTo = computed(() => {
       return `/challenges/edit-${activeChallenge.value}?categoryId=${baseQuery.value.category}`;
     });
@@ -101,18 +107,27 @@ export default defineComponent({
             },
       });
     }
+    watch(
+      () => activeChallenge.value,
+      () => {
+        propId.value = "";
+      },
+      { deep: true }
+    );
 
     return {
       t,
       showChallengeContent,
       toggleShowChallengeContent,
       CodeBracketIcon,
-      to,
       PencilIcon,
       editTo,
       user,
       baseQuery,
       TrashIcon,
+      propId,
+      challenge,
+      activeChallenge,
     };
   },
 });

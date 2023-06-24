@@ -11,11 +11,30 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"EmptySubtasks":"Kein Quiz gefunden",
+		"EmptyCodingChallenge":"Für diese Vorlesung wurde keine Programmieraufgabe gefunden",
+		"DeleteQuiz":"Quiz löschen",
+		"Quiz":"Quiz",
+		"Output":"Ausgang",
+		"FEE":"Gebühr",
+		"Fee":"Gebühr",
+		"Memory":"Speicher",
+		"NoCodingChallengeCreated":"Für diese Herausforderung gibt es keine Programmierherausforderung",
+		"NoSubmissionCreated":"Für diese Codierungsherausforderungen wird keine Einreichung erstellt",
+		"Section":"Abschnitt",
+		"DontShowCongratsAnimationAgain":"Diese Animation nicht noch einmal anzeigen!!",
+		"CongratsAnimateText":"Herzlichen Glückwunsch, Sie haben für diesen Abschluss Bonus-XP erhalten 🥳🥳🥳",
+		"NoCodingChallengeFound":"Für diese Herausforderung wurde keine Codierungsherausforderung gefunden",
+		"Quizzes":"Quizze",
+		"QuizzesInCourse":"Quizfragen in diesem Kurs",
+		"NoQuizTitle":"Für dieses Quiz ist kein Titel angegeben",
+		"NoQuizQuestion":"Keine Quizzfragen verfügbar",
 		"EvaluatorCode":"Bewerter Code",
 		"SolutionCode":"Lösung Code",
 		"XP":"XP",
 		"Coins":"Münzen",
 		"CodingChallenge":"Codierung sherausforderung",
+		"CodingChallenges":"Codierung sherausforderunge",
 		"EditCodingChallenge":"Codierungsherausforderung bearbeiten",
  		"DeleteCodingChallenge":"Coding Challenge löschen",
 		"DeleteChallenge":"Herausforderung löschens",
@@ -37,6 +56,7 @@
 		"Attempts": "Versuche",
 		"Tasks": "Aufgaben",
 		"Examples": "Beispiele",
+		"Example": "Beispiel",
 		"Duration": "Dauer",
 		"Limits": "Grenzwerte",
 		"SolvedFirst": "Als Erster gelöst",
@@ -229,6 +249,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+				"DeleteQuiz":"Sind Sie sicher, dass Sie das Quiz löschen möchten?",
 		"DeleteCodingChallenge":"Sind Sie sicher, dass Sie die Codierungsherausforderung löschen möchten?",
 		"DeleteChallenge":"Sind Sie sicher, dass Sie Challenge löschen möchten??",
 		"AddChallengeRequirement": "Sie können jeder Kategorie mit 100 Punkten oder mehr eine neue Herausforderung hinzufügen!",
@@ -458,6 +479,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Fee":"Gebühr",
 		"Xp":"Xp",
 		"Coins":"Münzen",
 		"TimeLimit":"Zeitlimit (ms)",
@@ -535,6 +557,11 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"GoToCourse": "Gehe zum Kurs",
+		"ExamplesTestMe":"Testen Sie gegen mich",
+		"Solved":"Gelöst",
+		"DeleteQuiz":"Quiz löschen",
+		"UpdateQuiz":"Quiz aktualisieren",
 		"CreateCodingChallenge":"Erstellen Sie eine Coding-Challenge",
 		"UpdateCodingChallenge":"Codierungsherausforderung aktualisieren",
 		"Delete":"Beschreibung",
@@ -551,7 +578,7 @@
 		"UpdateChallenge": "Herausforderung erstellen",
 		"AddChallenge": "Herausforderung hinzufügen",
 		"EditChallenge": "Herausforderung bearbeiten",
-		"Details": "Details",
+		"Details": "Einzelheiten",
 		"Load": "Laden",
 		"Solve": "Lösen",
 		"MyChallenges": "Meine Herausforderungen",
@@ -692,6 +719,11 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"SolvedCodingChallenge":"Erfolgreich getestet und die Codierungsherausforderung ist gelöst",
+		"SolvedCodingChallengeButNotCorrect":"Der bereitgestellte Code entspricht nicht unseren Anforderungen",
+		"QuizAttempt":"Korrekte Möglichkeit! Quiz gelöst 😍",
+		"DeleteQuiz":"Quiz erfolgreich gelöscht",
+		"CreatedSubmission":"Einreichung erfolgreich erstellt",
 		"EditedCodingChallenge":"Coding Challenge erfolgreich bearbeitet",
 		"CreatedCodingChallenge":"Codierungsherausforderung erfolgreich erstellt",
 		"DeletedCodingChallenge":"Coding Challenge erfolgreich gelöscht",
@@ -736,6 +768,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"QuizAttempt":"Falsche Option angegeben!!",
 		"SkillNotFound": "Du hast die falsche Fähigkeit eingegeben!",
 		"NoChallengesAvailable": "Keine Herausforderungen verfügbar",
 		"AddQuizQuestionOptions": "Optionen für Quizfragen hinzufügen",

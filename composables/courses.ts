@@ -8,6 +8,7 @@ export const useCourse = () => useState('course', (): any => null);
 export const useVideoSRC = () => useState('videoSRC', (): string => '');
 
 export async function getTheseCourses(arrOfCourseIDs: string[]) {
+	// console.log("in get theses courses")
 	let promises: any[] = [];
 
 	try {

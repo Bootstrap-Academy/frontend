@@ -1,15 +1,12 @@
 <template>
   <div>
-    <p>
-      <!-- {{ propData }} -->
-    </p>
     <form
       class="flex flex-col gap-box"
       :class="{ 'form-submitting': form.submitting }"
       @submit.prevent="onclickSubmitForm()"
       ref="refForm"
     >
-      <article class="grid sm:grid-cols-2 sm:gap-10">
+      <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
         <Input
           :label="t('Inputs.Coins')"
           :type="'number'"
@@ -23,6 +20,13 @@
           :rules="form.xp.rules"
           v-model="form.xp.value"
           @valid="form.xp.valid = $event"
+        />
+        <Input
+          :label="t('Inputs.Fee')"
+          :type="'number'"
+          :rules="form.fee.rules"
+          v-model="form.fee.value"
+          @valid="form.fee.valid = $event"
         />
       </article>
 
@@ -41,15 +45,22 @@
           v-model="form.random_tests.value"
           @valid="form.random_tests.valid = $event"
         />
-        <Input
+        <!-- <Input
           class="col-span-1 sm:col-span-2 md:col-span-1"
           :label="t('Inputs.SolutionEnvironment')"
-          :rules="form.solution_environment.rules"
           v-model="form.solution_environment.value"
           @valid="form.solution_environment.valid = $event"
+          /> -->
+        <InputSelect
+          v-if="languages.length"
+          :rules="form.solution_environment.rules"
+          :label="t('Inputs.SolutionEnvironment')"
+          :options="languages"
+          btn-type
+          v-model="form.solution_environment.value"
         />
       </article>
-
+      <!-- 
       <article class="grid sm:grid-cols-2 sm:gap-10">
         <Input
           :label="t('Inputs.TimeLimit')"
@@ -65,7 +76,7 @@
           v-model="form.memory_limit.value"
           @valid="form.memory_limit.valid = $event"
         />
-      </article>
+      </article> -->
 
       <InputTextarea
         :label="t('Inputs.Description')"
@@ -118,6 +129,10 @@ import {
   createCodingChallenge,
   getEvaluator,
   getSolution,
+  getConfigs,
+  useConfigs,
+  getEnvironments,
+  useEnvironments,
 } from "~~/composables/codingChallenges";
 import { IForm } from "~/types/form";
 
@@ -131,6 +146,16 @@ export default {
     const { t } = useI18n();
     const refForm = ref<HTMLFormElement | null>(null);
     const loading = ref(false);
+    const configs: any = useConfigs();
+    const environments: any = useEnvironments();
+
+    const languages: any = computed(() => {
+      const items = [];
+      for (const key in environments?.value) {
+        items.push({ label: key, value: key });
+      }
+      return items;
+    });
 
     const form = reactive<IForm>({
       description: {
@@ -151,6 +176,15 @@ export default {
           (v: number) => v <= 100 || "Error.InputMaxNumber_100",
         ],
       },
+      fee: {
+        valid: false,
+        value: null,
+        rules: [
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
+          (v: number) => v > 0 || "Error.InputMinNumber_0",
+          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+        ],
+      },
       coins: {
         valid: false,
         value: null,
@@ -160,24 +194,24 @@ export default {
           (v: number) => v <= 100 || "Error.InputMaxNumber_100",
         ],
       },
-      time_limit: {
-        valid: false,
-        value: null,
-        rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.TimeLimit",
-          (v: number) => v >= 1000 || "Error.InputMinNumber_1000",
-          (v: number) => v <= 19999 || "Error.InputMaxNumber_19,999",
-        ],
-      },
-      memory_limit: {
-        valid: false,
-        value: null,
-        rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.MemoryLimit",
-          (v: number) => v <= 1024 || "Error.InputMinNumber_1024",
-          (v: number) => v >= 10 || "Error.InputMinNumber_10",
-        ],
-      },
+      // time_limit: {
+      //   valid: false,
+      //   value: null,
+      //   rules: [
+      //     (v: number) => !!v || "Error.InputEmpty_Inputs.TimeLimit",
+      //     (v: number) => v >= 1000 || "Error.InputMinNumber_1000",
+      //     (v: number) => v <= 19999 || "Error.InputMaxNumber_19,999",
+      //   ],
+      // },
+      // memory_limit: {
+      //   valid: false,
+      //   value: null,
+      //   rules: [
+      //     (v: number) => !!v || "Error.InputEmpty_Inputs.MemoryLimit",
+      //     (v: number) => v <= 1024 || "Error.InputMinNumber_1024",
+      //     (v: number) => v >= 10 || "Error.InputMinNumber_10",
+      //   ],
+      // },
       static_tests: {
         valid: false,
         value: null,
@@ -195,9 +229,8 @@ export default {
         ],
       },
       solution_environment: {
-        valid: false,
+        valid: true,
         value: "",
-        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.RandomTests"],
       },
       evaluator: {
         valid: true,
@@ -251,7 +284,6 @@ export default {
     async function onclickSubmitForm() {
       if (form.validate()) {
         form.submitting = true;
-
         if (!!props?.propData) fnEditCodingChallenge();
         else fnCreateCodingChallenge();
 
@@ -267,8 +299,9 @@ export default {
         description: form.description.value,
         coins: form.coins.value,
         xp: form.xp.value,
-        time_limit: form.time_limit.value,
-        memory_limit: form.memory_limit.value,
+        fee: form.fee.value,
+        time_limit: configs.value.time_limit,
+        memory_limit: configs.value.memory_limit,
         static_tests: form.static_tests.value,
         random_tests: form.random_tests.value,
         solution_environment: form.solution_environment.value,
@@ -289,13 +322,14 @@ export default {
           description: form.description.value,
           coins: form.coins.value,
           xp: form.xp.value,
-          time_limit: form.time_limit.value,
-          memory_limit: form.memory_limit.value,
+          fee: form.fee.value,
+          time_limit: configs.value.time_limit,
+          memory_limit: configs.value.memory_limit,
           static_tests: form.static_tests.value,
           random_tests: form.random_tests.value,
-          // solution_environment: form.solution_environment.value,
-          // solution_code: form.solution_code.value,
-          // evaluator: form.evaluator.value,
+          solution_environment: form.solution_environment.value,
+          solution_code: form.solution_code.value,
+          evaluator: form.evaluator.value,
         }
       );
       loading.value = false;
@@ -355,18 +389,20 @@ export default {
         form.description.value = props?.propData?.description ?? "";
         form.xp.value = props?.propData?.xp ?? "";
         form.coins.value = props?.propData?.coins ?? "";
-        form.time_limit.value = props?.propData?.time_limit ?? "";
-        form.memory_limit.value = props?.propData?.memory_limit ?? "";
+        form.fee.value = props?.propData?.fee ?? "";
+        // form.time_limit.value = props?.propData?.time_limit ?? "";
+        // form.memory_limit.value = props?.propData?.memory_limit ?? "";
         form.static_tests.value = props?.propData?.static_tests ?? "";
         form.random_tests.value = props?.propData?.random_tests ?? "";
 
         form.description.valid =
           props?.propData.description.trim() != "" ? true : false;
-        form.xp.valid = props?.propData.xp >= 1 ? true : false;
-        form.coins.valid = props?.propData.coins >= 1 ? true : false;
-        form.time_limit.valid = props?.propData.time_limit >= 1 ? true : false;
-        form.memory_limit.valid =
-          props?.propData.memory_limit >= 1 ? true : false;
+        form.xp.valid = props?.propData.xp >= 0 ? true : false;
+        form.coins.valid = props?.propData.coins >= 0 ? true : false;
+        form.fee.valid = props?.propData.fee >= 0 ? true : false;
+        // form.time_limit.valid = props?.propData.time_limit >= 1 ? true : false;
+        // form.memory_limit.valid =
+        //   props?.propData.memory_limit >= 1 ? true : false;
         form.random_tests.valid =
           props?.propData.random_tests >= 1 ? true : false;
         form.static_tests.valid =
@@ -381,13 +417,26 @@ export default {
       },
       { deep: true }
     );
-    onMounted(() => {
+
+    onMounted(async () => {
+      setLoading(true);
+      await getEnvironments();
+      await getConfigs();
       if (props.propData != null) {
         setFormData();
       }
+      setLoading(false);
     });
 
-    return { form, t, refForm, onclickSubmitForm, closeDialog, loading };
+    return {
+      form,
+      t,
+      refForm,
+      onclickSubmitForm,
+      closeDialog,
+      loading,
+      languages,
+    };
   },
 };
 </script>

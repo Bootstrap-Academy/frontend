@@ -33,7 +33,6 @@
     <CourseHeader :data="course" />
 
     <CourseDetails :data="course" />
-
     <CourseOverview
       :data="course"
       :isCourseAccessible="isCourseAccessible"
@@ -53,6 +52,26 @@
         />
       </div>
     </section>
+    <div
+      class="content-container"
+      :class="{
+        'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
+      }"
+    >
+      <h2 class="mb-box text-heading-3">
+        {{ t("Headings.QuizzesInCourse") }}
+      </h2>
+
+      <template v-if="quizzes && quizzes.length > 0">
+        <div class="content" v-for="(quiz, i) of quizzes" :key="i">
+          <QuizList full :quizId="quiz?.id" />
+          <!-- {{ quiz?.id }} -->
+        </div>
+      </template>
+      <h3 v-else class="text-center text-heading-3">
+        {{ t("Headings.NoQuizQuestion") }}
+      </h3>
+    </div>
   </main>
 
   <CourseEmptyState v-else />
@@ -60,7 +79,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-
+import { getQuizzesInCourse } from "~~/composables/quizzes";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -76,6 +95,8 @@ export default {
     const course = useCourse();
     const isCourseAccessible = ref(false);
 
+    const quizzes = useQuizzes();
+
     const route = useRoute();
     const router = useRouter();
 
@@ -90,11 +111,15 @@ export default {
       }
 
       const [success, error] = await getCourseByID(id.value);
+      const [quizzesSuccess, quizzesError] = await getQuizzesInCourse(id.value);
 
       if (error) {
         await getCourseSummaryByID(id.value);
       } else {
         isCourseAccessible.value = true;
+      }
+      if (quizzesError) {
+        openSnackbar("error", quizzesError);
       }
 
       loading.value = false;
@@ -107,7 +132,14 @@ export default {
       });
     }
 
-    return { loading, course, t, isCourseAccessible, watchThisLecture };
+    return {
+      loading,
+      course,
+      t,
+      isCourseAccessible,
+      watchThisLecture,
+      quizzes,
+    };
   },
 };
 </script>

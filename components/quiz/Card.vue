@@ -1,5 +1,6 @@
 <template>
-	<!-- <article class="box style-box bg-secondary flex gap-box w-full">
+  <!-- <article class="box style-box bg-secondary flex gap-box w-full">
+import { CheckIcon } from "@heroicons/vue/24/solid";
 		<img :src="`/svgs/{{img}}.svg`" alt="" class="w-12 h-12 object-contain" />
 
 		<div>
@@ -20,7 +21,7 @@
 		</div>
 	</article> -->
 
-	<!-- <article class="box style-box bg-secondary w-full">
+  <!-- <article class="box style-box bg-secondary w-full">
 		<h3 class="text-heading-4">Q). {{ data.question }}</h3>
 		<div class="flex justify-between gap-box items-center">
 			<p class="text-body-2">{{ data.type }}</p>
@@ -42,40 +43,74 @@
 		</div>
 	</article> -->
 
-	<article class="box style-box bg-secondary w-full cursor-pointer">
-		<h3 class="text-heading-4">Q). {{ data.question }}</h3>
-		<div class="flex justify-between gap-box items-center">
-			<p class="text-body-2">{{ data.type }}</p>
-			<Chip
-				v-if="data && data.price <= 0"
-				xs
-				color="chip-color-6"
-				class="w-fit"
-			>
-				{{ t('Headings.Free') }}
-			</Chip>
-		</div>
-	</article>
+  <article
+    @click="solveThis(data?.id ?? '')"
+    class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"
+  >
+    <span
+      class="rounded-full p-0.5 bg-success absolute -right-1 -top-1.5"
+      v-if="data?.solved"
+    >
+      <CheckIcon class="h-4 w-4 text-white" />
+    </span>
+    <h3 class="text-heading-4 clamp line-2">
+      Q). {{ data?.question ?? t("Headings.NoQuizTitle") }}
+    </h3>
+
+    <div class="flex justify-between gap-box items-center">
+      <p class="text-body-2" v-if="data?.single_choice">
+        {{ t("Headings.SingleChoice") }}
+      </p>
+      <p class="text-body-2" v-else>{{ t("Headings.MultiChoice") }}</p>
+
+      <Chip v-if="data && data.fee <= 0" xs color="chip-color-6" class="w-fit">
+        {{ t("Headings.Free") }}
+      </Chip>
+
+      <Chip v-else xs color="chip-color-3" class="w-fit">
+        <span class="capitalize"> {{ t("Headings.Fee") }}</span>
+        {{ data?.fee }}
+      </Chip>
+    </div>
+  </article>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from "vue";
+import { useI18n } from "vue-i18n";
+import { CheckIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup() {
-		const { t } = useI18n();
-
-		const route = useRoute();
-
-		const img = computed(() => {
-			return route?.query?.skill ?? '';
-		});
-		return { t, img };
-	},
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  setup(props) {
+    const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
+    // const img = computed(() => {
+    //   return route?.query?.skill ?? "";
+    // });
+    function solveThis(id: any) {
+      if (route.fullPath.includes("/skill-tree/")) {
+        const id = route.params.skill;
+        console.log("router.push", id);
+        router.push(`/quizzes/solve-${id}?quizzesFrom=${"skill"}`);
+      } else if (route.fullPath.includes("/watch?")) {
+        const id = route.params.id;
+        console.log("router.push", id);
+        router.push(
+          `/quizzes/solve-${props.data?.task_id}?quizzesFrom=${"quiz"}`
+        );
+      } else if (route.fullPath.includes("/courses/")) {
+        const id = route.params.id;
+        console.log("router.push", id);
+        router.push(`/quizzes/solve-${id}?quizzesFrom=${"course"}`);
+      }
+    }
+    return { t, solveThis };
+  },
+  components: { CheckIcon },
 });
 </script>
 

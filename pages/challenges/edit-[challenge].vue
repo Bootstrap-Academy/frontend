@@ -67,7 +67,7 @@
         size="sm"
         class="mb-card mx-auto"
       />
-      <LazyCodingChallengeList
+      <LazyCodingChallengeEditableList
         :challengeId="challengeId"
         :codingChallenges="codingChallenges"
       />

@@ -7,13 +7,17 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import { useDialogSlot } from "../composables/dialogSlot";
-import { PencilIcon, XMarkIcon } from "@heroicons/vue/24/solid";
+import { XMarkIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
+
 const props = defineProps({
   label: { type: String, defalt: "" },
   propClass: { type: String, default: "" },
 });
+
 const emits = defineEmits(["closeFunction"]);
 
+const { t }: any = useI18n();
 const open: any = useDialogSlot();
 
 function close() {
@@ -55,7 +59,7 @@ function close() {
               class="relative transform overflow-hidden rounded-lg px-4 pt-5 pb-4 bg-primary text-left shadow-xl transition-all sm:my-8 sm:p-6"
             >
               <div class="flex justify-between items-center mb-5">
-                <p class="font-semibold">{{ label }}</p>
+                <p class="font-semibold">{{ t(label) }}</p>
                 <XMarkIcon
                   @click="close()"
                   class="h-5 w-5 relative cursor-pointer text-white"

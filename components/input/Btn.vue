@@ -49,7 +49,7 @@ export default defineComponent({
     primary: { type: Boolean, default: true },
     secondary: { type: Boolean, default: false },
     tertiary: { type: Boolean, default: false },
-    icon: { default: null },
+    icon: { type: Object, default: null },
     iconRight: { type: Boolean, default: false },
   },
   emits: ["click"],

@@ -35,7 +35,6 @@ export default defineComponent({
         router.push(backRoute.value.pathname);
       }
     }
-
     const backRoute = computed(() => {
       let pathname = "/";
       let label = "Links.GoBack";
@@ -89,6 +88,24 @@ export default defineComponent({
       ) {
         pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
         label = "Links.GoToChallenges";
+      }
+      // solve coding challenge
+      else if (name == "challenges-category-challenge") {
+        pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
+        label = "Links.GoToChallenges";
+      }
+
+      // solve mcq
+      // else if (name == "quizzez-skill-id") {
+      //   pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
+      //   label = "Links.GoToSubSkillTree";
+      // }
+      else if (name == "quizzes-skill-subSkill-create") {
+        console.log("correct");
+        pathname = `/courses/${route.query?.course ?? ""}/watch?section=${
+          route.query?.section ?? ""
+        }/${route.query?.lecture ?? ""}`;
+        label = "Links.GoToCourse";
       }
 
       return {

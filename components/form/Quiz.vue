@@ -1,385 +1,433 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Question')"
-			v-model="form.question.value"
-			@valid="form.question.valid = $event"
-			:rules="form.question.rules"
-		/>
-		<div class="flex items-center gap-card">
-			<label class="text-body-2 text-body font-body block mb-2">
-				{{ t('Inputs.Payed') }}
-			</label>
-			<InputSwitch v-model="form.payed.value" />
-		</div>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.Question')"
+      v-model="form.question.value"
+      @valid="form.question.valid = $event"
+      :rules="form.question.rules"
+    />
+    <div class="grid md:grid-cols-2 md:gap-8">
+      <Input
+        :label="t('Inputs.Coins')"
+        v-model="form.coin.value"
+        :type="'number'"
+        @valid="form.coin.valid = $event"
+        :rules="form.coin.rules"
+      />
+      <Input
+        :label="t('Inputs.Xp')"
+        v-model="form.xp.value"
+        :type="'number'"
+        @valid="form.xp.valid = $event"
+        :rules="form.xp.rules"
+      />
+    </div>
+    <div class="flex items-center gap-card">
+      <label class="text-body-2 text-body font-body block mb-2">
+        {{ t("Inputs.Payed") }}
+      </label>
+      <InputSwitch v-model="form.payed.value" />
+    </div>
+    <Input
+      v-if="form.payed.value"
+      :label="t('Inputs.Fee')"
+      :type="'number'"
+      v-model="form.fee.value"
+      @valid="form.fee.valid = $event"
+      :rules="form.fee.rules"
+    />
 
-		<article class="flex flex-wrap gap-card">
-			<button
-				type="button"
-				v-for="questionType of questionTypes"
-				:key="questionType.value"
-				@click="onclickSetQuestionType(questionType.value)"
-				class="w-40 h-20 border-2 border-info style-card"
-				:class="
-					selectedQuestionType == questionType.value
-						? 'text-white bg-info'
-						: 'text-white'
-				"
-			>
-				{{ t(questionType.label) }}
-			</button>
-		</article>
+    <article class="flex flex-wrap gap-card">
+      <button
+        type="button"
+        v-for="questionType of questionTypes"
+        :key="questionType.value"
+        @click="onclickSetQuestionType(questionType.value)"
+        class="w-40 h-20 border-2 border-info style-card"
+        :class="
+          selectedQuestionType == questionType.value
+            ? 'text-white bg-info'
+            : 'text-white'
+        "
+      >
+        {{ t(questionType.label) }}
+      </button>
+    </article>
 
-		<Btn @click="onclickAddOption" class="w-fit self-end">Add Option</Btn>
-		<article
-			class="flex gap-card items-center"
-			v-for="(option, i) of options"
-			:key="option?.id ?? i"
-		>
-			<Input
-				:label="t('Inputs.Option')"
-				v-model="option.answer"
-				@valid="option.valid = $event"
-				:rules="option.rules"
-				class="w-full"
-			/>
-			<div>
-				<label class="text-body-2 text-body font-body block mb-2">
-					{{ t('Inputs.Correct') }}
-				</label>
-				<InputSwitch
-					:model-value="option.correct"
-					@update:model-value="setOptionCorrect($event, i)"
-				/>
-			</div>
+    <Btn @click="onclickAddOption" class="w-fit self-end">Add Option</Btn>
+    <article
+      class="flex gap-card items-center"
+      v-for="(option, i) of options"
+      :key="option?.id ?? i"
+    >
+      <Input
+        :label="t('Inputs.Option')"
+        v-model="option.answer"
+        @valid="option.valid = $event"
+        :rules="option.rules"
+        class="w-full"
+      />
+      <div>
+        <label class="text-body-2 text-body font-body block mb-2">
+          {{ t("Inputs.Correct") }}
+        </label>
+        <InputSwitch
+          :model-value="option.correct"
+          @update:model-value="setOptionCorrect($event, i)"
+        />
+      </div>
 
-			<Icon
-				:icon="XMarkIcon"
-				class="cursor-pointer"
-				@click="onclickRemoveOption(i)"
-			/>
-		</article>
+      <Icon
+        :icon="XMarkIcon"
+        class="cursor-pointer"
+        @click="onclickRemoveOption(i)"
+      />
+    </article>
 
-		<Input
-			:label="t('Inputs.Skill')"
-			v-model="form.skill.value"
-			@valid="form.skill.valid = $event"
-			:rules="form.skill.rules"
-		/>
-		<Input
-			:label="t('Inputs.SubSkill')"
-			v-model="form.subSkill.value"
-			@valid="form.subSkill.valid = $event"
-			:rules="form.subSkill.rules"
-		/>
-		<Input
-			:label="t('Inputs.Course')"
-			v-model="form.course.value"
-			@valid="form.course.valid = $event"
-			:rules="form.course.rules"
-		/>
-		<Input
-			:label="t('Inputs.Section')"
-			v-model="form.section.value"
-			@valid="form.section.valid = $event"
-			:rules="form.section.rules"
-		/>
-		<Input
-			:label="t('Inputs.Lecture')"
-			v-model="form.lecture.value"
-			@valid="form.lecture.valid = $event"
-			:rules="form.lecture.rules"
-		/>
-
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mt
-		>
-			{{ t('Buttons.CreateQuiz') }}
-		</InputBtn>
-	</form>
+    <InputBtn
+      :loading="form.submitting"
+      class="self-center"
+      @click="onclickSubmitForm()"
+      mt
+    >
+      <span v-if="!!!data">{{ t("Buttons.CreateQuiz") }} </span>
+      <span v-else>{{ t("Buttons.UpdateQuiz") }} </span>
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { IForm } from '~/types/form';
-import { XMarkIcon } from '@heroicons/vue/24/solid';
+import { defineComponent, ref, PropType } from "vue";
+import { useI18n } from "vue-i18n";
+import { IForm } from "~/types/form";
+import { XMarkIcon } from "@heroicons/vue/24/solid";
+import {
+  createSubTaskInQuiz,
+  getSubTaskAndSolutionInQuiz,
+} from "~~/composables/quizzes";
 
 export default defineComponent({
-	components: { XMarkIcon },
-	props: { data: Object as PropType<any>, default: null },
-	setup(props) {
-		const { t } = useI18n();
+  components: { XMarkIcon },
+  props: {
+    data: { type: Object, default: null },
+    taskId: { type: String, default: null },
+  },
+  setup(props) {
+    const { t } = useI18n();
+    const quizId = ref();
 
-		// ============================================================= refs
-		const refForm = ref<HTMLFormElement | null>(null);
+    // ============================================================= refs
+    const refForm = ref<HTMLFormElement | null>(null);
 
-		// ============================================================= reactive
-		const form = reactive<IForm>({
-			question: {
-				valid: false,
-				value: '',
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Question'],
-			},
-			payed: {
-				valid: true,
-				value: 0,
-				rules: [],
-			},
-			skill: {
-				valid: false,
-				value: '',
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Skill'],
-			},
-			subSkill: {
-				valid: false,
-				value: '',
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.SubSkill'],
-			},
-			course: {
-				valid: true,
-				value: '',
-				rules: [],
-			},
-			section: {
-				valid: true,
-				value: '',
-				rules: [],
-			},
-			lecture: {
-				valid: true,
-				value: '',
-				rules: [],
-			},
-			submitting: false,
-			validate: () => {
-				let isValid = true;
+    // ============================================================= reactive
+    const form = reactive<IForm>({
+      question: {
+        valid: false,
+        value: "",
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Question"],
+      },
+      payed: {
+        valid: true,
+        value: 0,
+        rules: [],
+      },
+      fee: {
+        valid: true,
+        value: 0,
+        rules: [
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
+          (v: number) => v >= 0 || "Error.InputMinNumber_0",
+        ],
+      },
+      single_choice: { value: false, valid: true },
+      coin: {
+        valid: true,
+        value: 0,
+        rules: [
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
+          (v: number) => v >= 0 || "Error.InputMinNumber_0",
+          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+        ],
+      },
+      xp: {
+        valid: true,
+        value: 0,
+        rules: [
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
+          (v: number) => v >= 0 || "Error.InputMinNumber_0",
+          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+        ],
+      },
 
-				for (const key in form) {
-					if (
-						key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-					) {
-						isValid = false;
-					}
-				}
+      submitting: false,
+      validate: () => {
+        let isValid = true;
 
-				options.forEach((option) => {
-					if (option.valid == false) isValid = false;
-				});
+        for (const key in form) {
+          if (
+            key != "validate" &&
+            key != "body" &&
+            key != "submitting" &&
+            !form[key].valid
+          ) {
+            isValid = false;
+          }
+        }
 
-				if (refForm.value) refForm.value.reportValidity();
-				return isValid;
-			},
-			body: () => {
-				let obj: any = {};
-				for (const key in form) {
-					if (key != 'validate' && key != 'body' && key != 'submitting')
-						obj[key] = form[key].value;
-				}
+        options.forEach((option) => {
+          if (option.valid == false) isValid = false;
+        });
 
-				let mappedOptions = options.map((option) => {
-					return {
-						answer: option.answer,
-						correct: option.correct,
-						id: `Option-${getRandomNumber(0, 32432424324)}-${Date.now()}`,
-					};
-				});
-				return { ...obj, options: mappedOptions };
-			},
-		});
+        if (refForm.value) refForm.value.reportValidity();
+        return isValid;
+      },
+      body: () => {
+        let obj: any = {};
+        for (const key in form) {
+          if (key != "validate" && key != "body" && key != "submitting")
+            obj[key] = form[key].value;
+        }
 
-		// ============================================================= options
-		const options: any[] = reactive([]);
+        let mappedOptions = options.map((option) => {
+          return {
+            answer: option.answer,
+            correct: option.correct,
+            id: `Option-${getRandomNumber(0, 32432424324)}-${Date.now()}`,
+          };
+        });
+        return { ...obj, answers: mappedOptions };
+      },
+    });
 
-		function onclickAddOption() {
-			let isAllowed = true;
-			if (options.length > 0) {
-				let lastAddedOption = options[options.length - 1].answer;
-				if (!!!lastAddedOption) isAllowed = false;
-			}
+    // ============================================================= options
+    const options: any[] = reactive([]);
 
-			if (!isAllowed) {
-				openSnackbar(
-					'error',
-					'Please fill current option first before adding new option.'
-				);
-				return;
-			}
+    function onclickAddOption() {
+      let isAllowed = true;
+      if (options.length > 0) {
+        let lastAddedOption = options[options.length - 1].answer;
+        if (!!!lastAddedOption) isAllowed = false;
+      }
 
-			options.push({
-				answer: '',
-				valid: false,
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Option'],
-				correct: false,
-			});
-		}
+      if (!isAllowed) {
+        openSnackbar(
+          "error",
+          "Please fill current option first before adding new option."
+        );
+        return;
+      }
 
-		function onclickRemoveOption(index: number) {
-			options.splice(index, 1);
-		}
+      options.push({
+        answer: "",
+        valid: false,
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Option"],
+        correct: false,
+      });
+    }
 
-		function setOptionCorrect(status: boolean, index: number) {
-			if (selectedQuestionType.value == 'Multi Choice' || status == false) {
-				options.splice(index, 1, { ...options[index], correct: status });
-				return;
-			}
+    function onclickRemoveOption(index: number) {
+      options.splice(index, 1);
+    }
 
-			let arr = options;
+    function setOptionCorrect(status: boolean, index: number) {
+      if (selectedQuestionType.value == "Multi Choice" || status == false) {
+        options.splice(index, 1, { ...options[index], correct: status });
+        return;
+      }
 
-			arr = arr.map((o, i) => {
-				return i == index ? { ...o, correct: true } : { ...o, correct: false };
-			});
+      let arr = options;
 
-			arr.forEach((o) => {
-				options.pop();
-			});
+      arr = arr.map((o, i) => {
+        return i == index ? { ...o, correct: true } : { ...o, correct: false };
+      });
 
-			arr.forEach((o) => {
-				options.push(o);
-			});
-		}
+      arr.forEach((o) => {
+        options.pop();
+      });
 
-		const questionTypes = [
-			{
-				label: 'Headings.MultiChoice',
-				value: 'Multi Choice',
-			},
-			{
-				label: 'Headings.SingleChoice',
-				value: 'Single Choice',
-			},
-		];
-		const selectedQuestionType = ref('Multi Choice');
+      arr.forEach((o) => {
+        options.push(o);
+      });
+    }
 
-		function onclickSetQuestionType(type: string) {
-			selectedQuestionType.value = type;
-			if (type == 'Multi Choice') return;
-			if (options.length <= 0) return;
+    const questionTypes = [
+      {
+        label: "Headings.MultiChoice",
+        value: "Multi Choice",
+      },
+      {
+        label: "Headings.SingleChoice",
+        value: "Single Choice",
+      },
+    ];
+    const selectedQuestionType = ref("Multi Choice");
 
-			let listOfCorrectOptionIndex = [];
+    function onclickSetQuestionType(type: string) {
+      selectedQuestionType.value = type;
+      if (type == "Multi Choice") {
+        form.single_choice.value = false;
+        return;
+      } else {
+        form.single_choice.value = true;
+      }
+      if (options.length <= 0) return;
 
-			options.forEach((option, index) => {
-				if (option.correct == true) {
-					listOfCorrectOptionIndex.push(index);
-				}
-			});
+      let listOfCorrectOptionIndex = [];
 
-			if (listOfCorrectOptionIndex.length <= 1) return;
+      options.forEach((option, index) => {
+        if (option.correct == true) {
+          listOfCorrectOptionIndex.push(index);
+        }
+      });
 
-			for (let i = 1; i < listOfCorrectOptionIndex.length; i++) {
-				options.splice(i, 1, { ...options[i], correct: false });
-			}
-		}
-		// ============================================================= ids
-		const route = useRoute();
+      if (listOfCorrectOptionIndex.length <= 1) return;
 
-		watch(
-			() => route,
-			(newValue, oldValue) => {
-				setFormData({
-					skill: (newValue.params?.skill ?? '').toString(),
-					subSkill: (newValue.params?.subSkill ?? '').toString(),
-					course: (newValue.query?.course ?? '').toString(),
-					section: (newValue.query?.section ?? '').toString(),
-					lecture: (newValue.query?.lecture ?? '').toString(),
-					question: '',
-					options: [],
-				});
-			},
-			{ immediate: true, deep: true }
-		);
+      for (let i = 1; i < listOfCorrectOptionIndex.length; i++) {
+        options.splice(i, 1, { ...options[i], correct: false });
+      }
+    }
+    // ============================================================= ids
 
-		watch(
-			() => props.data,
-			(newValue, oldValue) => {
-				setFormData(newValue);
-			},
-			{ immediate: true, deep: true }
-		);
+    watch(
+      () => props.data,
+      async (newValue, oldValue) => {
+        if (!!!props.data) return;
+        setLoading(true);
+        const [success, error] = await getSubTaskAndSolutionInQuiz(
+          props.taskId,
+          newValue?.id
+        );
+        setLoading(false);
+        if (success) setFormData(success);
+        else openSnackbar("error", error);
+      },
+      { immediate: true, deep: true }
+    );
 
-		function setFormData(data: any) {
-			if (!!!data) return;
+    function setFormData(data: any) {
+      if (!!!data) return;
+      form.question.value = data.question ?? "";
+      form.coin.value = data.coins ?? "";
+      form.xp.value = data.xp ?? "";
+      form.question.valid = !!form.question.value;
 
-			form.question.value = data.question ?? '';
-			form.question.valid = !!form.question.value;
+      if (data?.single_choice) {
+        selectedQuestionType.value = "Single Choice";
+        form.single_choice.value = true;
+      } else {
+        selectedQuestionType.value = "Multi Choice";
+        form.single_choice.value = false;
+      }
 
-			let arr = data.options ?? [];
+      if (data?.fee <= 0) {
+        form.payed.value = false;
+      } else {
+        form.payed.value = true;
+        form.fee.value = data?.fee ?? 0;
+      }
 
-			if (arr.length > 0) {
-				arr = arr.map((option: any) => {
-					return {
-						answer: option.answer,
-						valid: !!option.answer,
-						rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Option'],
-						correct: option.correct,
-					};
-				});
-			}
+      let arr = data?.answers ?? [];
+      if (arr.length > 0) {
+        arr = arr.map((option: any) => {
+          return {
+            answer: option.answer,
+            valid: !!option.answer,
+            rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Option"],
+            correct: option.correct,
+          };
+        });
+      }
 
-			Object.assign(options, [...arr]);
+      Object.assign(options, [...arr]);
+    }
 
-			form.skill.value = data.skill ?? '';
-			form.skill.valid = !!form.skill.value;
+    // ============================================================= functions
+    function containsDuplicates(array: any) {
+      console.log("array", array);
+      const result = array.some((element: any) => {
+        if (array.indexOf(element) !== array.lastIndexOf(element)) {
+          return true;
+        }
 
-			form.subSkill.value = data.subSkill ?? '';
-			form.subSkill.valid = !!form.subSkill.value;
+        return false;
+      });
 
-			form.course.value = data.course ?? '';
-			form.section.value = data.section ?? '';
-			form.lecture.value = data.lecture ?? '';
-		}
+      return result;
+    }
+    async function onclickSubmitForm() {
+      if (form.validate()) {
+        if (options.length <= 0) {
+          openSnackbar("error", "Error.AddQuizQuestionOptions");
+          return;
+        }
+        console.log("containsDuplicates(options)", containsDuplicates(options));
+        if (containsDuplicates(options))
+          return openSnackbar("error", "Error.OptionsCannotBeSame");
 
-		// ============================================================= functions
-		async function onclickSubmitForm() {
-			if (form.validate()) {
-				if (options.length <= 0) {
-					openSnackbar('error', 'Error.AddQuizQuestionOptions');
-					return;
-				}
-				form.submitting = true;
-				const [success, error] = await createQuiz(form.body());
-				form.submitting = false;
+        if (!!!props.data) {
+          fnCreateSubTask();
+        } else {
+          fnEditSubTask();
+        }
+      } else {
+        openSnackbar("error", "Error.InvalidForm");
+      }
+    }
 
-				success ? successHandler(success) : errorHandler(error);
-			} else {
-				openSnackbar('error', 'Error.InvalidForm');
-			}
-		}
+    async function fnCreateSubTask() {
+      form.submitting = true;
+      const [success, error] = await createSubTaskInQuiz(
+        props.taskId,
+        form.body()
+      );
+      form.submitting = false;
 
-		function successHandler(res: any) {
-			openSnackbar('success', 'Success.CreatedQuiz');
-		}
+      success ? successHandler(success) : errorHandler(error);
+    }
+    async function fnEditSubTask() {
+      console.log("edit");
+      form.submitting = true;
+      const [success, error] = await updateSubTaskInQuiz(
+        props.taskId,
+        props.data?.id,
+        form.body()
+      );
+      form.submitting = false;
+      !!success
+        ? openSnackbar("success", "Success.UpdatedQuiz")
+        : openSnackbar("error", "error.UpdatedQuiz");
+    }
 
-		function errorHandler(res: any) {
-			openSnackbar('error', res?.detail ?? '');
-		}
+    function successHandler(res: any) {
+      openSnackbar("success", "Success.CreatedQuiz");
+    }
 
-		return {
-			form,
-			onclickSubmitForm,
-			refForm,
-			t,
-			onclickAddOption,
-			options,
-			XMarkIcon,
-			onclickRemoveOption,
-			questionTypes,
-			selectedQuestionType,
-			onclickSetQuestionType,
-			setOptionCorrect,
-		};
-	},
+    function errorHandler(res: any) {
+      openSnackbar("error", res?.detail ?? "");
+    }
+
+    onMounted(async () => {});
+
+    return {
+      form,
+      onclickSubmitForm,
+      refForm,
+      t,
+      onclickAddOption,
+      options,
+      XMarkIcon,
+      onclickRemoveOption,
+      questionTypes,
+      selectedQuestionType,
+      onclickSetQuestionType,
+      setOptionCorrect,
+    };
+  },
 });
 </script>
 
