@@ -46,7 +46,7 @@
     >
       <div v-if="codingChallenges.length">
         <CodingChallengeCard
-          @click="solveCodingChallenge(codingChallenge?.id)"
+          @click="solveCodingChallenge(codingChallenge)"
           v-for="(codingChallenge, i) of codingChallenges"
           :codingChallenge="codingChallenge"
           :key="i"
@@ -95,17 +95,18 @@ export default defineComponent({
         openSnackbar("error", error);
       }
     }
-    function solveCodingChallenge(id: any) {
+    function solveCodingChallenge(codingChallenge: any) {
+      const coins = useCoins();
+      if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
+        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      }
       router.push(
-        `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${id}`
+        `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${codingChallenge?.id}`
       );
     }
     watch(
       () => [props.activeLecture, props.activeSection],
       async () => {
-        console.log("props.active lcture", props.activeLecture);
-        console.log("props.active section", props.activeSection);
-        console.log("course id", props.courseId);
         setLoading(true);
         if (
           !!!props.activeLecture ||
@@ -113,8 +114,10 @@ export default defineComponent({
           !!!props.activeSection ||
           !!!props.activeSection?.id ||
           !!!props.courseId
-        )
-          return setLoading(false);
+        ) {
+          setLoading(false);
+          return;
+        }
 
         const [success, error] = await createQuiz(props.courseId, {
           section_id: props.activeSection.id,

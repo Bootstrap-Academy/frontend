@@ -24,7 +24,6 @@
           :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}`"
         >
           <Btn sm>{{ t("Buttons.AddQuizQuestion") }}</Btn>
-          {{ user }}
         </NuxtLink>
       </template>
       <Btn

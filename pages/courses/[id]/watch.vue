@@ -57,7 +57,6 @@
         :activeSection="activeSection"
         :courseId="courseId"
       />
-      <!-- {{ activeLecture }}sss {{ activeSection }}ssss {{ courseId }}sssss -->
     </section>
 
     <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
