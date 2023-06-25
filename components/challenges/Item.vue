@@ -34,7 +34,7 @@
       <LazyCodingChallengeList
         :showInnerBorder="true"
         :taskId="activeChallenge"
-        class="max-h-72"
+        class="h-72"
         v-if="!!propId"
         :id="propId"
       />

@@ -119,7 +119,8 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-    const quizId = ref();
+    const dialogSlot = useDialogSlot();
+    const dialogCreateSubtask = useDialogCreateSubtask();
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -347,26 +348,42 @@ export default defineComponent({
     }
 
     // ============================================================= functions
-    function containsDuplicates(array: any) {
-      console.log("array", array);
-      const result = array.some((element: any) => {
-        if (array.indexOf(element) !== array.lastIndexOf(element)) {
+    function hasDuplicates(array: any) {
+      let arrayDuplicated: any = [];
+      array.forEach((element: any) => {
+        console.log(element.answer);
+        arrayDuplicated.push(element.answer);
+      });
+      array = arrayDuplicated;
+
+      var encounteredItems: any = {};
+
+      for (var i = 0; i < array.length; i++) {
+        var currentItem = array[i];
+
+        // Convert the item to a string before using it as an object key
+        var currentItemString = String(currentItem);
+
+        // If the item already exists in the object, it's a duplicate
+        if (encounteredItems[currentItemString]) {
           return true;
         }
 
-        return false;
-      });
+        // Mark the item as encountered
+        encounteredItems[currentItemString] = true;
+      }
 
-      return result;
+      // No duplicates found
+      return false;
     }
+
     async function onclickSubmitForm() {
       if (form.validate()) {
         if (options.length <= 0) {
           openSnackbar("error", "Error.AddQuizQuestionOptions");
           return;
         }
-        console.log("containsDuplicates(options)", containsDuplicates(options));
-        if (containsDuplicates(options))
+        if (hasDuplicates(options))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
 
         if (!!!props.data) {
@@ -405,6 +422,8 @@ export default defineComponent({
 
     function successHandler(res: any) {
       openSnackbar("success", "Success.CreatedQuiz");
+      dialogCreateSubtask.value = false;
+      dialogSlot.value = false;
     }
 
     function errorHandler(res: any) {

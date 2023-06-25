@@ -94,18 +94,26 @@ export default defineComponent({
     function solveThis(id: any) {
       if (route.fullPath.includes("/skill-tree/")) {
         const id = route.params.skill;
-        console.log("router.push", id);
-        router.push(`/quizzes/solve-${id}?quizzesFrom=${"skill"}`);
-      } else if (route.fullPath.includes("/watch?")) {
-        const id = route.params.id;
-        console.log("router.push", id);
         router.push(
-          `/quizzes/solve-${props.data?.task_id}?quizzesFrom=${"quiz"}`
+          `/quizzes/solve-${id}?quizzesFrom=${"skill"}&querySubTaskId=${
+            props.data?.id
+          }&taskId=${props.data?.task_id}`
+        );
+      } else if (route.fullPath.includes("/watch?")) {
+        router.push(
+          `/quizzes/solve-${
+            props.data?.task_id
+          }?quizzesFrom=${"quiz"}&querySubTaskId=${props.data?.id}&taskId=${
+            props.data?.task_id
+          }`
         );
       } else if (route.fullPath.includes("/courses/")) {
         const id = route.params.id;
-        console.log("router.push", id);
-        router.push(`/quizzes/solve-${id}?quizzesFrom=${"course"}`);
+        router.push(
+          `/quizzes/solve-${id}?quizzesFrom=${"course"}&querySubTaskId=${
+            props.data?.id
+          }&taskId=${props.data?.task_id}`
+        );
       }
     }
     return { t, solveThis };

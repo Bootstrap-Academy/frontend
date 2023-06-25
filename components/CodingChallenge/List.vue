@@ -1,11 +1,7 @@
 <template>
   <div
-    class="rounded-md h-full"
-    :class="
-      showInnerBorder
-        ? 'px-1 py3 lg:px-2 lg:py-6 border border-light  overflow-y-scroll '
-        : ''
-    "
+    class="rounded-md h-full px-1 py3 lg:px-2 lg:py-6 border border-light overflow-y-scroll"
+    :class="showInnerBorder ? ' ' : ''"
   >
     <SkeletonCodingChallengeList v-if="!!loading" />
     <p
@@ -21,7 +17,7 @@
       v-for="(codingChallenge, i) of codingChallenges"
       :codingChallenge="codingChallenge"
       :key="i"
-      class="bg-primary border border-light rounded-md mb-4 p-2 group cursor-pointer"
+      class="bg-primary border border-light rounded-md mb-4 p-2 group cursor-pointer mt-1"
     >
     </CodingChallengeCard>
   </div>

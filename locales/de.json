@@ -769,6 +769,7 @@
 	},
 	"Error": {
 		"QuizAttempt":"Falsche Option angegeben!!",
+		"OptionsCannotBeSame":"Die bereitgestellten Optionen sollten nicht dupliziert werden",
 		"SkillNotFound": "Du hast die falsche Fähigkeit eingegeben!",
 		"NoChallengesAvailable": "Keine Herausforderungen verfügbar",
 		"AddQuizQuestionOptions": "Optionen für Quizfragen hinzufügen",

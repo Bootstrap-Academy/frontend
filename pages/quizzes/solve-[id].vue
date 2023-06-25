@@ -66,7 +66,14 @@ export default defineComponent({
     const id: any = computed(() => {
       return route?.params?.id ?? "";
     });
+
     let arrayOfSubtasks: any = ref([]);
+    const querySubTaskId = computed(() => {
+      return route.query?.querySubTaskId ?? "";
+    });
+    const taskId = computed(() => {
+      return route.query?.taskId ?? "";
+    });
     const quizzesFrom = computed(() => {
       return route?.query?.quizzesFrom ?? "no found";
     });
@@ -83,6 +90,13 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      if (!!querySubTaskId.value) {
+        const [success, error] = await getSubTaskInQuiz(
+          taskId.value,
+          querySubTaskId.value
+        );
+        if (success) selectedQuiz.value = success;
+      }
       if (quizzesFrom.value == "course") {
         console.log("getting from course");
         await getQuizzesInCourse(id.value);

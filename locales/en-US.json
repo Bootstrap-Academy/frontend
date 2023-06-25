@@ -769,6 +769,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"OptionsCannotBeSame":"Provided Options Should Not Be Duplicated",
 		"QuizAttempt":"Incorrect Option Provided!!",
 		"NoChallengesAvailable": "No Challenges Available",
 		"SkillNotFound": "You Entered Wrong Skill!",

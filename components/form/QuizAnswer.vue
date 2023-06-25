@@ -5,11 +5,11 @@
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
-    <img
+    <!-- <img
       class="w-full h-60 object-cover style-card"
       src="https://placehold.co/450x400/webp"
       alt=""
-    />
+    /> -->
     <h4 class="text-heading-3">
       Q). {{ subtaskAndSolution?.question ?? "" }}
       <span
