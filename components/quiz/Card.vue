@@ -92,6 +92,11 @@ export default defineComponent({
     //   return route?.query?.skill ?? "";
     // });
     function solveThis(id: any) {
+      const coins = useCoins();
+      if (props.data?.fee > 0 && coins.value < props.data?.fee) {
+        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      }
+
       if (route.fullPath.includes("/skill-tree/")) {
         const id = route.params.skill;
         router.push(

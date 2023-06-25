@@ -18,10 +18,13 @@
         <Chip :icon="CheckIcon" color="bg-info">
           {{ t("Headings.Completed") }}
         </Chip>
+
         <NuxtLink
+          v-if="user?.admin"
           :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}`"
         >
           <Btn sm>{{ t("Buttons.AddQuizQuestion") }}</Btn>
+          {{ user }}
         </NuxtLink>
       </template>
       <Btn
@@ -93,6 +96,7 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
+    const user: any = useUser();
     const { t } = useI18n();
     const showConfetti = useShowConfetti();
 
@@ -258,6 +262,7 @@ export default defineComponent({
       courseID,
       activeSectionID,
       showConfetti,
+      user,
     };
   },
 });

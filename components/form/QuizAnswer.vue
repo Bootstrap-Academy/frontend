@@ -11,10 +11,8 @@
       alt=""
     /> -->
     <h4 class="text-heading-3">
-      Q). {{ subtaskAndSolution?.question ?? "" }}
-      <span
-        class="text-xs text-accent break-keep"
-        v-if="subtaskAndSolution?.single_choice"
+      Q). {{ subtask?.question ?? "" }}
+      <span class="text-xs text-accent break-keep" v-if="subtask?.single_choice"
         >({{ t("Headings.SingleChoice") }})</span
       >
       <span class="text-xs text-accent break-keep" v-else
@@ -26,19 +24,18 @@
       class="grid grid-cols-1 gap-card-sm overflow-scroll h-[45vh] place-content-start pb-20"
     >
       <button
-        v-for="(option, i) of subtaskAndSolution?.answers ?? []"
-        :key="option.answer"
-        @click="setArrayOfAnswers(i), setSelected(option?.answer ?? '')"
+        v-for="(option, i) of subtask?.answers ?? []"
+        :key="option"
+        @click="setArrayOfAnswers(i), setSelected(option)"
         type="button"
         class="box style-box border-4 border-tertiary text-heading h-fit"
         :class="{
-          'bg-success text-primary':
-            option.correct == true && answer == option.answer,
-          'bg-error': option.correct == false && answer == option.answer,
-          'bg-warning': selected.includes(option.answer),
+          'bg-success text-primary': option.correct == true && answer == option,
+          'bg-error': option.correct == false && answer == option,
+          'bg-warning': selected.includes(option),
         }"
       >
-        {{ option.answer }}
+        {{ option }}
       </button>
     </article>
 
@@ -52,7 +49,7 @@
         @click="onclickSubmitForm()"
         mt
       >
-        <span v-if="!subtaskAndSolution?.solved">
+        <span v-if="!data?.solved">
           {{ t("Buttons.SubmitAnswer") }}
         </span>
         <span v-else>
@@ -101,11 +98,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import {
-  useSubTaskAndSolutionInQuiz,
-  getSubTaskAndSolutionInQuiz,
-  attempQuiz,
-} from "~~/composables/quizzes";
+import { attempQuiz } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -120,16 +113,15 @@ export default defineComponent({
     const loading = ref(false);
     const selected: any = ref([]);
     const answer = ref("");
-    const subtaskAndSolution = useSubTaskAndSolutionInQuiz();
+    const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
 
     // ============================================================= Checks
-    const router = useRouter();
-    const route = useRoute();
+
     function setArrayOfAnswers(index: any) {
-      if (subtaskAndSolution.value?.single_choice) {
+      if (subtask.value?.single_choice) {
         arrayOfAnswers.value.forEach((element: any, i: any) => {
           if (i == index) {
             arrayOfAnswers.value[i] = true;
@@ -145,7 +137,7 @@ export default defineComponent({
     }
 
     function setSelected(answer: any) {
-      if (subtaskAndSolution.value?.single_choice) {
+      if (subtask.value?.single_choice) {
         selected.value = [];
         selected.value.push(answer);
       } else {
@@ -166,11 +158,11 @@ export default defineComponent({
     }
 
     async function onclickSubmitForm() {
-      if (subtaskAndSolution.value.solved == true) return;
+      if (subtask.value.solved == true) return;
       loading.value = true;
       const [success, error] = await attempQuiz(
-        subtaskAndSolution.value.task_id,
-        subtaskAndSolution.value.id,
+        subtask.value.task_id,
+        subtask.value.id,
         { answers: arrayOfAnswers.value }
       );
       loading.value = false;
@@ -183,14 +175,13 @@ export default defineComponent({
     function successHandler(res: any) {
       if (!!res) {
         openSnackbar("success", "Success.QuizAttempt");
-        emit("solved", subtaskAndSolution.value.id);
+        emit("solved", props.data.id);
       } else if (!res) {
         openSnackbar("error", "Error.QuizAttempt");
       }
     }
 
     function errorHandler(res: any) {
-      console.log("in error", res);
       openSnackbar("error", res ?? "");
     }
 
@@ -200,15 +191,19 @@ export default defineComponent({
         arrayOfAnswers.value = [];
         if (props?.data == null) return;
         setLoading(true);
-        await getSubTaskAndSolutionInQuiz(
+
+        const [success, error] = await getSubTaskInQuiz(
           props?.data?.task_id ?? "",
           props?.data?.id ?? ""
         );
-        if (
-          !!subtaskAndSolution.value &&
-          subtaskAndSolution.value?.answers.length
-        ) {
-          subtaskAndSolution.value?.answers.forEach((element: any) => {
+        // if (!!error) {
+        //   console.log("in if");
+        //   setLoading(false);
+        //   return openSnackbar("error", error);
+        // }
+
+        if (!!subtask.value && subtask.value?.answers.length) {
+          subtask.value?.answers.forEach((element: any) => {
             arrayOfAnswers.value.push(false);
           });
           selected.value = [];
@@ -225,7 +220,7 @@ export default defineComponent({
       loading,
       answer,
       selected,
-      subtaskAndSolution,
+      subtask,
       arrayOfAnswers,
       setArrayOfAnswers,
       setSelected,

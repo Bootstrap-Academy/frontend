@@ -775,6 +775,7 @@
 		"NoChallengesAvailable": "No Challenges Available",
 		"SkillNotFound": "You Entered Wrong Skill!",
 		"AddQuizQuestionOptions": "Add Quiz Question Options",
+		"NoEnoughCoinsToSolve":"You don't have enough coins to solve this! Please buy some from the Web Shop",
 		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",
 		"WebinarRating": "Rating must be greater than 0",
 		"MustAgreeBeforeInOrderToDeleteWebinar": "You must agree in order to delete webinar.",

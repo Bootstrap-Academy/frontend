@@ -32,7 +32,7 @@
               :key="i"
               full
               :data="quiz"
-              @click="selectedQuiz = quiz"
+              @click="solveThis(quiz)"
             />
           </div>
         </template>
@@ -79,16 +79,20 @@ export default defineComponent({
     });
 
     function setSolvedLocally(id: any) {
-      console.log("seting", id);
       arrayOfSubtasks.value.forEach((element: any) => {
         if (element.id == id) {
-          console.log("in if");
-
           element.solved = true;
         }
       });
     }
-
+    function solveThis(quiz: any) {
+      const coins = useCoins();
+      if (quiz?.fee > 0 && coins.value < quiz?.fee) {
+        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      } else {
+        selectedQuiz.value = quiz;
+      }
+    }
     onMounted(async () => {
       if (!!querySubTaskId.value && !!taskId.value) {
         const [success, error] = await getSubTaskInQuiz(
@@ -98,13 +102,10 @@ export default defineComponent({
         if (success) selectedQuiz.value = success;
       }
       if (quizzesFrom.value == "course") {
-        console.log("getting from course");
         await getQuizzesInCourse(id.value);
       } else if (quizzesFrom.value == "skill") {
-        console.log("getting from skill");
         await getQuizzesInSkill(id.value);
       } else if (quizzesFrom.value == "quiz") {
-        console.log("getting from quiz");
         await getSubTasksInQuiz(id.value);
       }
 
@@ -112,7 +113,6 @@ export default defineComponent({
         const subtasks = useSubTasksInQuiz();
         arrayOfSubtasks.value = subtasks.value;
         loading.value = false;
-        console.log("returning");
         return;
       }
 
@@ -132,7 +132,6 @@ export default defineComponent({
           }
         })
       );
-      console.log("arrayOfSubtasks", arrayOfSubtasks.value);
       loading.value = false;
     });
     return {
@@ -143,6 +142,7 @@ export default defineComponent({
       selectedQuiz,
       loading,
       setSolvedLocally,
+      solveThis,
     };
   },
 });

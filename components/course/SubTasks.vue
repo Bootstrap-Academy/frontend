@@ -29,10 +29,7 @@
       class="container-form max-w-4xl max-h-[600px] overflow-scroll"
       v-if="selectedTab == 0"
     >
-      <p
-        class="border border-accent rounded-md w-full p-5 text-xl text-center"
-        v-if="!subtasks.length"
-      >
+      <p class="w-full text-xl text-center" v-if="!subtasks.length">
         {{ t("Headings.EmptySubtasks") }}
       </p>
       <QuizCard
@@ -56,10 +53,7 @@
         >
         </CodingChallengeCard>
       </div>
-      <p
-        v-if="!codingChallenges.length"
-        class="border border-accent rounded-md w-full p-5 text-xl text-center"
-      >
+      <p v-if="!codingChallenges.length" class="w-full text-xl text-center">
         {{ t("Headings.EmptyCodingChallenge") }}
       </p>
     </article>

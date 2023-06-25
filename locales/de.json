@@ -770,6 +770,7 @@
 	},
 	"Error": {
 		"QuizAttempt":"Falsche Option angegeben!!",
+		"NoEnoughCoins":"Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen Sie welche im Webshop",
 		"OptionsCannotBeSame":"Die bereitgestellten Optionen sollten nicht dupliziert werden",
 		"SkillNotFound": "Du hast die falsche Fähigkeit eingegeben!",
 		"NoChallengesAvailable": "Keine Herausforderungen verfügbar",
