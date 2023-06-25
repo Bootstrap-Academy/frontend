@@ -90,7 +90,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      if (!!querySubTaskId.value) {
+      if (!!querySubTaskId.value && !!taskId.value) {
         const [success, error] = await getSubTaskInQuiz(
           taskId.value,
           querySubTaskId.value

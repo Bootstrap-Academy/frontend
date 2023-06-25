@@ -102,10 +102,7 @@ watch(
     if (hideAnimation.value) {
       setTimeout(() => {
         fnHideAnimation();
-        openSnackbar(
-          "success",
-          "This Animation Will Not Be Shown To You Again"
-        );
+        openSnackbar("success", "Headings.SuccessHideConfettiForever");
       }, 1000);
     }
   }

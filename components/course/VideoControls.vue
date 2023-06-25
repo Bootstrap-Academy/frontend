@@ -15,7 +15,7 @@
           listOfCompletedCourses.find((lec) => lec == activeLecture.id)
         "
       >
-        <Chip @click="dd()" :icon="CheckIcon" color="bg-info">
+        <Chip :icon="CheckIcon" color="bg-info">
           {{ t("Headings.Completed") }}
         </Chip>
         <NuxtLink
@@ -128,7 +128,7 @@ export default defineComponent({
       return arr;
     });
 
-    const path = computed(() => {
+    const path: any = computed(() => {
       if (!!!courseID.value) {
         return "/profile/courses";
       } else if (!!!activeSectionID.value || !!!activeLectureID.value) {
@@ -243,13 +243,6 @@ export default defineComponent({
       });
     }
 
-    function dd() {
-      const hideAnimation: any = useCookie("hideAnimationNextTime");
-      console.log("hide animation cookie", hideAnimation.value);
-      if (hideAnimation.value === undefined || hideAnimation.value == false)
-        showConfetti.value = true;
-    }
-
     return {
       t,
       emit,
@@ -265,7 +258,6 @@ export default defineComponent({
       courseID,
       activeSectionID,
       showConfetti,
-      dd,
     };
   },
 });
