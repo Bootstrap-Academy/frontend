@@ -99,6 +99,7 @@ export default {
     const { t } = useI18n();
     const selectedTab = ref(0);
     const route = useRoute();
+    const router = useRouter();
     const challengeData = ref();
     const codingChallenges = useAllCodingChallengesInATask();
     const challengeId: any = computed(() => {
@@ -118,6 +119,10 @@ export default {
       );
 
       if (!!success) challengeData.value = success;
+      else {
+        openSnackbar("error", error?.detail);
+        router.push(`/challenges/all?category=${route.query.categoryId ?? ""}`);
+      }
     });
     return {
       challengeId,

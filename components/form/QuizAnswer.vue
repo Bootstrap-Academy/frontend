@@ -181,8 +181,9 @@ export default defineComponent({
       }
     }
 
-    function errorHandler(res: any) {
-      openSnackbar("error", res ?? "");
+    function errorHandler(error: any) {
+      console.log("error handler", error);
+      openSnackbar("error", error?.detail ?? "");
     }
 
     watch(

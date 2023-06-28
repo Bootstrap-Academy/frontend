@@ -13,7 +13,7 @@
     />
     <div class="grid md:grid-cols-2 md:gap-8">
       <Input
-        :label="t('Inputs.Coins')"
+        :label="t('Inputs.Morphcoins')"
         v-model="form.coin.value"
         :type="'number'"
         @valid="form.coin.valid = $event"
@@ -141,7 +141,7 @@ export default defineComponent({
         valid: true,
         value: 0,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Fee",
           (v: number) => v >= 0 || "Error.InputMinNumber_0",
         ],
       },
@@ -351,7 +351,6 @@ export default defineComponent({
     function hasDuplicates(array: any) {
       let arrayDuplicated: any = [];
       array.forEach((element: any) => {
-        console.log(element.answer);
         arrayDuplicated.push(element.answer);
       });
       array = arrayDuplicated;
@@ -376,12 +375,23 @@ export default defineComponent({
       // No duplicates found
       return false;
     }
-
+    function hasTrueOption(arr: any) {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].correct === true) {
+          return true;
+        }
+      }
+      return false;
+    }
     async function onclickSubmitForm() {
       if (form.validate()) {
-        if (options.length <= 0) {
-          openSnackbar("error", "Error.AddQuizQuestionOptions");
+        if (options.length <= 1) {
+          console.log("options", options);
+          openSnackbar("error", "Error.MinimumTwoOptionsForQuiz");
           return;
+        }
+        if (!hasTrueOption(options)) {
+          return openSnackbar("error", "Error.OneCorrectOptionIsMust");
         }
         if (hasDuplicates(options))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
@@ -407,7 +417,6 @@ export default defineComponent({
       success ? successHandler(success) : errorHandler(error);
     }
     async function fnEditSubTask() {
-      console.log("edit");
       form.submitting = true;
       const [success, error] = await updateSubTaskInQuiz(
         props.taskId,

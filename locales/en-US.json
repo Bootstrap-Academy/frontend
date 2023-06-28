@@ -478,6 +478,7 @@
 		"ResetPassword": "Enter Your New Password"
 	},
 	"Inputs": {
+		"Morphcoins":"Morphcoins",
 		"Fee":"Fee",
 		"Skills": "Skills",
 		"Xp":"Xp",
@@ -770,10 +771,15 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"SelectAtLeastOneOption":"Select at least one option",
+		"TooManyAttemptsForQuiz":"Too Many Attempts For Solvinig",
+		"OneCorrectOptionIsMust":"There should must be one correct option",
+		"MinimumTwoOptionsForQuiz":"There should be minimum two options provided",
 		"OptionsCannotBeSame":"Provided Options Should Not Be Duplicated",
 		"QuizAttempt":"Incorrect Option Provided!!",
 		"NoChallengesAvailable": "No Challenges Available",
-		"SkillNotFound": "You Entered Wrong Skill!",
+		"SkillNotFound": "You Might Have Entered Wrong Skill!",
+		"CategoryNotFound": "Selected Category Not Found. Or You Might Have Not Entered Category",
 		"AddQuizQuestionOptions": "Add Quiz Question Options",
 		"NoEnoughCoinsToSolve":"You don't have enough coins to solve this! Please buy some from the Web Shop",
 		"WebinarPrice": "For rating {rating}, the max price is {maxPrice}MC",

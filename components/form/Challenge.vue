@@ -114,6 +114,8 @@ export default defineComponent({
     function setCategory(categoryID: string) {
       console.log("setting", props?.data);
       form.category.value = categoryID;
+      let includes = route.fullPath.includes("/challenges/edit-");
+      if (!includes) router.replace(`/challenges/${categoryID}/create`);
     }
 
     // ============================================================= refs
@@ -346,8 +348,7 @@ export default defineComponent({
       //   }
       // }
 
-      //   setFormData();
-
+      if (props?.data != null) setFormData();
       if (props?.data == null) await getChallengesCategories();
       loading.value = false;
     });

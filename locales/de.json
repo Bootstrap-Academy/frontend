@@ -480,6 +480,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"Morphcoins":"Morphcoins",
 		"Fee":"Gebühr",
 		"Xp":"Xp",
 		"Coins":"Münzen",
@@ -659,6 +660,7 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
+		"GoToCourse":"Gehe zum Kurs",
 		"GoToChallenges": "Zurück zu den Herausforderungen",
 		"Link": "Link",
 		"IHaveReadWebinarDeletePolicy": "Ich habe die Webinar-Stornierungs-/Löschrichtlinie gelesen und stimme ihr zu.",
@@ -769,10 +771,16 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"SelectAtLeastOneOption":"Wählen Sie mindestens eine Option aus",
+		"TooManyAttemptsForQuiz":"Zu viele Lösungsversuche",
+		"NoEnoughCoinsToSolve":"Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen Sie welche im Webshop",
+		"OneCorrectOptionIsMust":"Es muss eine richtige Option geben",
+		"MinimumTwoOptionsForQuiz":"Es sollten mindestens zwei Optionen bereitgestellt werden",
 		"QuizAttempt":"Falsche Option angegeben!!",
 		"NoEnoughCoins":"Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen Sie welche im Webshop",
 		"OptionsCannotBeSame":"Die bereitgestellten Optionen sollten nicht dupliziert werden",
-		"SkillNotFound": "Du hast die falsche Fähigkeit eingegeben!",
+		"SkillNotFound": "Möglicherweise haben Sie die falsche Fähigkeit eingegeben!",
+		"CategoryNotFound": "Ausgewählte Kategorie nicht gefunden. Oder Sie haben die Kategorie möglicherweise nicht eingegeben",
 		"NoChallengesAvailable": "Keine Herausforderungen verfügbar",
 		"AddQuizQuestionOptions": "Optionen für Quizfragen hinzufügen",
 		"WebinarPrice": "Für die Bewertung {rating} beträgt der Höchstpreis {maxPrice}MC",

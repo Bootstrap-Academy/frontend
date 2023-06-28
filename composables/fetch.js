@@ -70,7 +70,6 @@ const onResponse = async ({ request, options, response }) => {
 
 const onResponseError = async ({ request, options, response }) => {
 	let details = response?._data?.detail ?? '';
-	console.log("esponse i error",response)
 
 	if (typeof details == 'object') {
 		console.log('details', details);
@@ -159,11 +158,26 @@ const onResponseError = async ({ request, options, response }) => {
 		response._data.detail = 'Error.WebinarPrice';
 	}	else if (details.includes('skills_not_found')) {
 		response._data.detail = 'Error.SkillNotFound';
-	}	else if (details.toLocaleLowerCase().includes('too_many_requests')) {
+	}	
+	
+	details=response?._data.error
+	console.log("details",response)
+	if(details.toLocaleLowerCase().includes("too_many_requests")){
 		response._data.detail = 'Error.TooManyAttemptsForQuiz';
-	}else if (details.includes('invalid_single_choice')) {
+	} else if (details.toLocaleLowerCase().includes('invalid_single_choice')) {
 		response._data.detail = 'Error.SelectAtLeastOneOption';
+	} else if (details.toLocaleLowerCase().includes('skills_not_found')) {
+		response._data.detail = 'Error.SkillNotFound';
+	} else if (details.toLocaleLowerCase().includes('category_not_found')) {
+		response._data.detail = 'Error.CategoryNotFound';
+	} else if (details.toLocaleLowerCase().includes('evaluator_failed')) {
+		response._data.detail = 'Error.evaluatorFailed';
+	} else if (details.toLocaleLowerCase().includes('testcase_failed')) {
+		response._data.detail = 'Error.solutionCodeFailed';
+	} else if (details.toLocaleLowerCase().includes('challenge_not_found')) {
+		response._data.detail = 'Error.ChallengeNotFound';
 	}
+	
 	
 };
 

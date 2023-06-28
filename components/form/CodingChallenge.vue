@@ -8,7 +8,7 @@
     >
       <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
         <Input
-          :label="t('Inputs.Coins')"
+          :label="t('Inputs.Morphcoins')"
           :type="'number'"
           :rules="form.coins.rules"
           v-model="form.coins.value"
@@ -172,24 +172,24 @@ export default {
         value: null,
         rules: [
           (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
-          (v: number) => v > 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+          (v: number) => v >= 0 || "Error.InputMinNumber_0",
+          (v: number) => v <= 5 || "Error.InputMaxNumber_5",
         ],
       },
       fee: {
         valid: false,
         value: null,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Fee",
           (v: number) => v > 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+          (v: number) => v <= 5 || "Error.InputMaxNumber_5",
         ],
       },
       coins: {
         valid: false,
         value: null,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
+          (v: number) => !!v || "Error.InputEmpty_Inputs.Morphcoins",
           (v: number) => v > 0 || "Error.InputMinNumber_0",
           (v: number) => v <= 100 || "Error.InputMaxNumber_100",
         ],

@@ -308,13 +308,7 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		return [success, null]
 	}
 	catch (error: any) {
-		let errorMsg = null
-		if (!!error.error) {
-			console.log('inside if')
-			errorMsg = 'Too Much Requests'
-			return [null, errorMsg]
-		}
-		return [null, error]
+		return [null, error.data]
 	}
 
 
