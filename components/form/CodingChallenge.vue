@@ -8,6 +8,32 @@
     >
       <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
         <Input
+          :label="t('Inputs.StaticTests')"
+          :type="'number'"
+          :rules="form.static_tests.rules"
+          v-model="form.static_tests.value"
+          @valid="form.static_tests.valid = $event"
+        />
+        <Input
+          :label="t('Inputs.RandomTests')"
+          :type="'number'"
+          :rules="form.random_tests.rules"
+          v-model="form.random_tests.value"
+          @valid="form.random_tests.valid = $event"
+        />
+        <InputSelect
+          v-if="languages.length"
+          :rules="form.solution_environment.rules"
+          :label="t('Inputs.SolutionEnvironment')"
+          :options="languages"
+          btn-type
+          v-model="form.solution_environment.value"
+        />
+      </article>
+
+      <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
+        <Input
+          v-if="!!user.admin"
           :label="t('Inputs.Morphcoins')"
           :type="'number'"
           :rules="form.coins.rules"
@@ -15,6 +41,7 @@
           @valid="form.coins.valid = $event"
         />
         <Input
+          v-if="!!user.admin"
           :label="t('Inputs.Xp')"
           :type="'number'"
           :rules="form.xp.rules"
@@ -29,54 +56,6 @@
           @valid="form.fee.valid = $event"
         />
       </article>
-
-      <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
-        <Input
-          :label="t('Inputs.StaticTests')"
-          :type="'number'"
-          :rules="form.static_tests.rules"
-          v-model="form.static_tests.value"
-          @valid="form.static_tests.valid = $event"
-        />
-        <Input
-          :label="t('Inputs.RandomTests')"
-          :type="'number'"
-          :rules="form.random_tests.rules"
-          v-model="form.random_tests.value"
-          @valid="form.random_tests.valid = $event"
-        />
-        <!-- <Input
-          class="col-span-1 sm:col-span-2 md:col-span-1"
-          :label="t('Inputs.SolutionEnvironment')"
-          v-model="form.solution_environment.value"
-          @valid="form.solution_environment.valid = $event"
-          /> -->
-        <InputSelect
-          v-if="languages.length"
-          :rules="form.solution_environment.rules"
-          :label="t('Inputs.SolutionEnvironment')"
-          :options="languages"
-          btn-type
-          v-model="form.solution_environment.value"
-        />
-      </article>
-      <!-- 
-      <article class="grid sm:grid-cols-2 sm:gap-10">
-        <Input
-          :label="t('Inputs.TimeLimit')"
-          :type="'number'"
-          :rules="form.time_limit.rules"
-          v-model="form.time_limit.value"
-          @valid="form.time_limit.valid = $event"
-        />
-        <Input
-          :label="t('Inputs.MemoryLimit')"
-          :type="'number'"
-          :rules="form.memory_limit.rules"
-          v-model="form.memory_limit.value"
-          @valid="form.memory_limit.valid = $event"
-        />
-      </article> -->
 
       <InputTextarea
         :label="t('Inputs.Description')"
@@ -148,6 +127,7 @@ export default {
     const loading = ref(false);
     const configs: any = useConfigs();
     const environments: any = useEnvironments();
+    const user: any = useUser();
 
     const languages: any = computed(() => {
       const items = [];
@@ -168,13 +148,14 @@ export default {
         ],
       },
       xp: {
-        valid: false,
+        valid: true,
         value: null,
-        rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
-          (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 5 || "Error.InputMaxNumber_5",
-        ],
+        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
+      },
+      coins: {
+        valid: true,
+        value: null,
+        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
       },
       fee: {
         valid: false,
@@ -185,33 +166,6 @@ export default {
           (v: number) => v <= 5 || "Error.InputMaxNumber_5",
         ],
       },
-      coins: {
-        valid: false,
-        value: null,
-        rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Morphcoins",
-          (v: number) => v > 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
-        ],
-      },
-      // time_limit: {
-      //   valid: false,
-      //   value: null,
-      //   rules: [
-      //     (v: number) => !!v || "Error.InputEmpty_Inputs.TimeLimit",
-      //     (v: number) => v >= 1000 || "Error.InputMinNumber_1000",
-      //     (v: number) => v <= 19999 || "Error.InputMaxNumber_19,999",
-      //   ],
-      // },
-      // memory_limit: {
-      //   valid: false,
-      //   value: null,
-      //   rules: [
-      //     (v: number) => !!v || "Error.InputEmpty_Inputs.MemoryLimit",
-      //     (v: number) => v <= 1024 || "Error.InputMinNumber_1024",
-      //     (v: number) => v >= 10 || "Error.InputMinNumber_10",
-      //   ],
-      // },
       static_tests: {
         valid: false,
         value: null,
@@ -297,8 +251,8 @@ export default {
       loading.value = true;
       const [success, error] = await createCodingChallenge(props.challengeId, {
         description: form.description.value,
-        coins: form.coins.value,
-        xp: form.xp.value,
+        coins: !!form.coins.value ? form.coins.value : 0,
+        xp: !!form.xp.value ? form.xp.value : 0,
         fee: form.fee.value,
         time_limit: configs.value.time_limit,
         memory_limit: configs.value.memory_limit,
@@ -308,6 +262,7 @@ export default {
         solution_code: form.solution_code.value,
         evaluator: form.evaluator.value,
       });
+
       loading.value = false;
 
       success ? createSuccessHandler(success) : errorHandler(error);
@@ -320,8 +275,8 @@ export default {
         props.propData.id,
         {
           description: form.description.value,
-          coins: form.coins.value,
-          xp: form.xp.value,
+          coins: !!form.coins.value ? form.coins.value : 0,
+          xp: !!form.xp.value ? form.xp.value : 0,
           fee: form.fee.value,
           time_limit: configs.value.time_limit,
           memory_limit: configs.value.memory_limit,
@@ -377,21 +332,19 @@ export default {
       } else {
         openSnackbar("error", "Errors.CannotGetEvaluator");
       }
-      console.log("form.evaluator", evaluatorSuccess);
-      console.log("form.solution", solutionSuccess.code);
-      console.log("form.environemnt", solutionSuccess.environment);
+      // console.log("form.evaluator", evaluatorSuccess);
+      // console.log("form.solution", solutionSuccess.code);
+      // console.log("form.environemnt", solutionSuccess.environment);
     }
 
     async function setFormData() {
-      console.log("watching propdata", props.propData);
+      // console.log("watching propdata", props.propData);
       if (props.propData != null) {
         await getEvaulatorAndSolution();
         form.description.value = props?.propData?.description ?? "";
         form.xp.value = props?.propData?.xp ?? "";
         form.coins.value = props?.propData?.coins ?? "";
         form.fee.value = props?.propData?.fee ?? "";
-        // form.time_limit.value = props?.propData?.time_limit ?? "";
-        // form.memory_limit.value = props?.propData?.memory_limit ?? "";
         form.static_tests.value = props?.propData?.static_tests ?? "";
         form.random_tests.value = props?.propData?.random_tests ?? "";
 
@@ -400,9 +353,6 @@ export default {
         form.xp.valid = props?.propData.xp >= 0 ? true : false;
         form.coins.valid = props?.propData.coins >= 0 ? true : false;
         form.fee.valid = props?.propData.fee >= 0 ? true : false;
-        // form.time_limit.valid = props?.propData.time_limit >= 1 ? true : false;
-        // form.memory_limit.valid =
-        //   props?.propData.memory_limit >= 1 ? true : false;
         form.random_tests.valid =
           props?.propData.random_tests >= 1 ? true : false;
         form.static_tests.valid =
@@ -429,6 +379,7 @@ export default {
     });
 
     return {
+      user,
       form,
       t,
       refForm,

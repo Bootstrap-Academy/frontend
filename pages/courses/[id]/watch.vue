@@ -28,7 +28,7 @@
     <section>
       <main
         v-if="course"
-        class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container"
+        class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container mb-20"
       >
         <CourseVideoControls
           class="midXl:col-span-2"
@@ -38,13 +38,53 @@
           v-model="showCurriculum"
           v-if="!!activeSection && !!activeLecture"
         />
+        <div>
+          <InputButtonToggle
+            :buttonOptions="buttonOptions"
+            v-model="selectedButton"
+            class="mb-5"
+          />
+          <CourseVideo
+            :course="course"
+            :activeSection="activeSection"
+            :activeLecture="activeLecture"
+            v-if="!!activeSection && !!activeLecture && selectedButton == 0"
+          />
+          <section
+            v-else-if="selectedButton == 1"
+            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll p-6"
+          >
+            <p class="w-full text-xl text-center" v-if="!subtasks.length">
+              {{ t("Headings.EmptySubtasks") }}
+            </p>
+            <QuizCard
+              v-for="(task, i) of subtasks"
+              :key="i"
+              :data="task"
+              class="my-3"
+            />
+          </section>
 
-        <CourseVideo
-          :course="course"
-          :activeSection="activeSection"
-          :activeLecture="activeLecture"
-          v-if="!!activeSection && !!activeLecture"
-        />
+          <section
+            v-else-if="selectedButton == 2"
+            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll p-6"
+          >
+            <div v-if="codingChallenges.length">
+              <CodingChallengeCard
+                @click="solveCodingChallenge(codingChallenge)"
+                v-for="(codingChallenge, i) of codingChallenges"
+                :codingChallenge="codingChallenge"
+                :key="i"
+              />
+            </div>
+            <p
+              v-if="!codingChallenges.length"
+              class="w-full text-xl text-center"
+            >
+              {{ t("Headings.EmptyCodingChallenge") }}
+            </p>
+          </section>
+        </div>
 
         <CourseCurriculum
           class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-y-scroll"
@@ -52,11 +92,6 @@
           @watch="watchThisLecture($event)"
         />
       </main>
-      <CourseSubTasks
-        :activeLecture="activeLecture"
-        :activeSection="activeSection"
-        :courseId="courseId"
-      />
     </section>
 
     <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
@@ -106,6 +141,12 @@ export default {
 
     const course = useCourse();
 
+    const selectedButton = ref(0);
+    const buttonOptions = [
+      { name: "Buttons.Video" },
+      { name: "Buttons.Quiz" },
+      { name: "Buttons.CodingChallenge" },
+    ];
     const activeSection = computed(() => {
       const sectionID = <string>(route.query?.section ?? "");
       let sections: any[] = course.value?.sections ?? [];
@@ -128,6 +169,72 @@ export default {
     const courseId: any = computed(() => {
       return route.params.id;
     });
+
+    const taskId = ref();
+    const subtasks = useSubTasksInQuiz();
+    const codingChallenges = useAllCodingChallengesInATask();
+
+    function solveCodingChallenge(codingChallenge: any) {
+      const coins = useCoins();
+      if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
+        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      }
+      router.push(
+        `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${
+          codingChallenge?.id
+        }&solveFrom=${"course"}`
+      );
+    }
+
+    async function fnGetCodingChallengeInQuiz(quizId: any) {
+      console.log("getting coding challenges");
+      const [success, error] = await getAllCodingChallengesInATask(quizId);
+      if (error) {
+        setLoading(false);
+        openSnackbar("error", error);
+      }
+    }
+
+    async function fnGetSubtasksInQuiz(quizId: any) {
+      console.log("getting mcqs etc");
+      const [success, error] = await getSubTasksInQuiz(quizId);
+      if (error) {
+        setLoading(false);
+        openSnackbar("error", error);
+      }
+    }
+
+    watch(
+      () => [activeLecture.value, activeSection.value],
+      async () => {
+        setLoading(true);
+        if (
+          !!!activeLecture.value ||
+          !!!activeLecture?.value.id ||
+          !!!activeSection.value ||
+          !!!activeSection?.value.id ||
+          !!!courseId.value
+        ) {
+          setLoading(false);
+          return;
+        }
+        console.log("before create quiz");
+        const [success, error] = await createQuiz(courseId.value, {
+          section_id: activeSection.value.id,
+          lecture_id: activeLecture.value.id,
+        });
+        console.log("after create quiz", success);
+
+        if (success) {
+          console.log("getting them");
+          taskId.value = success?.id;
+          fnGetSubtasksInQuiz(success?.id);
+          fnGetCodingChallengeInQuiz(success?.id);
+        }
+        setLoading(false);
+      },
+      { immediate: true, deep: true }
+    );
     onMounted(async () => {
       const courseID = <string>(route.params?.id ?? "");
       if (!!!courseID) {
@@ -160,6 +267,11 @@ export default {
       showCurriculum,
       watchThisLecture,
       courseId,
+      selectedButton,
+      buttonOptions,
+      solveCodingChallenge,
+      subtasks,
+      codingChallenges,
     };
   },
 };

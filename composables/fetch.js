@@ -177,8 +177,6 @@ const onResponseError = async ({ request, options, response }) => {
 	} else if (details.toLocaleLowerCase().includes('challenge_not_found')) {
 		response._data.detail = 'Error.ChallengeNotFound';
 	}
-	
-	
 };
 
 function isAccessTokenExpired() {

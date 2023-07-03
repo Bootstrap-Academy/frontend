@@ -97,8 +97,11 @@ export default defineComponent({
     function successHandler(success: any) {
       if (success?.verdict == "OK") {
         const showConfetti = useShowConfetti();
-        showConfetti.value = true;
-        // openSnackbar("success", "Success.SolvedCodingChallenge");
+        const hideAnimation: any = useCookie("hideAnimationNextTime");
+        console.log("hide animation cookie", hideAnimation.value);
+        if (hideAnimation.value === undefined || hideAnimation.value == false)
+          showConfetti.value = true;
+        openSnackbar("success", "Success.SolvedCodingChallenge");
       } else {
         openSnackbar("Info", "Success.SolvedCodingChallengeButNotCorrect");
       }

@@ -559,6 +559,9 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"Video":"Video",
+		"Quiz":"Quiz",
+		"CodingChallenge":"Codierungsherausforderung",
 		"GoToCourse": "Gehe zum Kurs",
 		"ExamplesTestMe":"Testen Sie gegen mich",
 		"Solved":"Gelöst",
@@ -771,6 +774,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"SolutionCodeFailed":"Überprüfen Sie Ihren Lösungscode oder Ihre Umgebung",
 		"SelectAtLeastOneOption":"Wählen Sie mindestens eine Option aus",
 		"TooManyAttemptsForQuiz":"Zu viele Lösungsversuche",
 		"NoEnoughCoinsToSolve":"Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen Sie welche im Webshop",

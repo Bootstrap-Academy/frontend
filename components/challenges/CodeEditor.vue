@@ -11,7 +11,6 @@
         @update:model-value="update($event)"
       />
       <article class="flex flex-wrap gap-card-sm">
-        <InputBtn :loading="testExampleLoading">Text Examples</InputBtn>
         <InputBtn @click="fnCreateSubmission()" :loading="submitButtonLoading"
           >Submit</InputBtn
         >

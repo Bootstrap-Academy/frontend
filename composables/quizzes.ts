@@ -2,7 +2,7 @@ import { useState } from '#app';
 
 export const useQuizzes = () => useState<any[]>('quizzes', () => []);
 export const useQuiz = () => useState<any>('quiz', () => null);
-export const useSubTasksInQuiz = () => useState<any>("subTasksInQuiz", () => [{ d: "d" }])
+export const useSubTasksInQuiz = () => useState<any>("subTasksInQuiz", () => [])
 export const useSubTaskInQuiz = () => useState<any>("subTaskInQuiz", () => null)
 export const useSubTaskAndSolutionInQuiz = () => useState<any>("subTaskAndSolutionInQuiz", () => null)
 

@@ -558,6 +558,9 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"Video":"Video",
+		"Quiz":"Quiz",
+		"CodingChallenge":"Coding Challenge",
 		"ExamplesTestMe":"Test Against Me",
 		"Solved":"Solved",
 		"DeleteQuiz":"Delete Quiz",
@@ -771,6 +774,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"SolutionCodeFailed":"Check your Solution Code or Environment",
 		"SelectAtLeastOneOption":"Select at least one option",
 		"TooManyAttemptsForQuiz":"Too Many Attempts For Solvinig",
 		"OneCorrectOptionIsMust":"There should must be one correct option",

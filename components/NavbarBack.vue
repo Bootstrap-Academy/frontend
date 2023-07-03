@@ -30,11 +30,13 @@ export default defineComponent({
     }
     function onclickNavigate() {
       if (!!!backRoute.value.pathname) {
+        console.log("jas history", hasHistory());
         hasHistory() ? router.go(-1) : router.push("/");
       } else {
         router.push(backRoute.value.pathname);
       }
     }
+
     const backRoute = computed(() => {
       let pathname = "/";
       let label = "Links.GoBack";
@@ -55,7 +57,6 @@ export default defineComponent({
         pathname = "/";
         label = "Links.Home";
       }
-
       // ! MFA
       else if (name == "account-mfa-disabled") {
         pathname = "/profile";
@@ -93,13 +94,12 @@ export default defineComponent({
       else if (name == "challenges-category-challenge") {
         pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
         label = "Links.GoToChallenges";
+      } else if (name == "challenges-QuizCodingChallenge-challenge") {
+        pathname = ``;
+        label = "Links.GoToCourse";
       }
 
-      // solve mcq
-      // else if (name == "quizzez-skill-id") {
-      //   pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
-      //   label = "Links.GoToSubSkillTree";
-      // }
+      //create subtask for course
       else if (name == "quizzes-skill-subSkill-create") {
         console.log("correct");
         pathname = `/courses/${route.query?.course ?? ""}/watch?section=${

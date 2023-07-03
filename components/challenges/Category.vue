@@ -107,6 +107,7 @@ export default defineComponent({
 
     const canCreate = computed(() => {
       let currentPoints = props.data?.points?.current ?? 0;
+      console.log("props.data.current", props.data);
       return currentPoints >= 100;
     });
 

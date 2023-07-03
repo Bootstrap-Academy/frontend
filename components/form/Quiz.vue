@@ -13,6 +13,7 @@
     />
     <div class="grid md:grid-cols-2 md:gap-8">
       <Input
+        v-if="!!user?.admin"
         :label="t('Inputs.Morphcoins')"
         v-model="form.coin.value"
         :type="'number'"
@@ -20,6 +21,7 @@
         :rules="form.coin.rules"
       />
       <Input
+        v-if="!!user?.admin"
         :label="t('Inputs.Xp')"
         v-model="form.xp.value"
         :type="'number'"
@@ -31,7 +33,7 @@
       <label class="text-body-2 text-body font-body block mb-2">
         {{ t("Inputs.Payed") }}
       </label>
-      <InputSwitch v-model="form.payed.value" />
+      <InputSwitch v-if="!!user?.admin" v-model="form.payed.value" />
     </div>
     <Input
       v-if="form.payed.value"
@@ -121,7 +123,7 @@ export default defineComponent({
     const { t } = useI18n();
     const dialogSlot = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
-
+    const user: any = useUser();
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
 
@@ -150,18 +152,18 @@ export default defineComponent({
         valid: true,
         value: 0,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
+          // (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
           (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+          // (v: number) => v <= 100 || "Error.InputMaxNumber_100",
         ],
       },
       xp: {
         valid: true,
         value: 0,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
+          // (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
           (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 100 || "Error.InputMaxNumber_100",
+          // (v: number) => v <= 100 || "Error.InputMaxNumber_100",
         ],
       },
 
@@ -266,6 +268,7 @@ export default defineComponent({
         value: "Single Choice",
       },
     ];
+
     const selectedQuestionType = ref("Multi Choice");
 
     function onclickSetQuestionType(type: string) {
@@ -408,10 +411,14 @@ export default defineComponent({
 
     async function fnCreateSubTask() {
       form.submitting = true;
-      const [success, error] = await createSubTaskInQuiz(
-        props.taskId,
-        form.body()
-      );
+      const [success, error] = await createSubTaskInQuiz(props.taskId, {
+        answers: form.body().answers,
+        question: form.body().question,
+        coins: !!form.body().coin ? form.body().coin : 0,
+        xp: !!form.body().xp ? form.body().xp : 0,
+        fee: form.body().fee,
+        single_choice: form.body().single_choice,
+      });
       form.submitting = false;
 
       success ? successHandler(success) : errorHandler(error);
@@ -421,7 +428,14 @@ export default defineComponent({
       const [success, error] = await updateSubTaskInQuiz(
         props.taskId,
         props.data?.id,
-        form.body()
+        {
+          answers: form.body().answers,
+          question: form.body().question,
+          coins: !!form.body().coin ? form.body().coin : 0,
+          xp: !!form.body().xp ? form.body().xp : 0,
+          fee: form.body().fee,
+          single_choice: form.body().single_choice,
+        }
       );
       form.submitting = false;
       !!success
@@ -454,6 +468,7 @@ export default defineComponent({
       selectedQuestionType,
       onclickSetQuestionType,
       setOptionCorrect,
+      user,
     };
   },
 });
