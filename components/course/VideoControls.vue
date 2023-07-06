@@ -18,10 +18,9 @@
         <Chip :icon="CheckIcon" color="bg-info">
           {{ t("Headings.Completed") }}
         </Chip>
-
         <NuxtLink
-          v-if="user?.admin"
-          :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}`"
+          v-if="user?.admin || canCreate"
+          :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}&skillID=${skillID}&subSkillID=${subSkillID}`"
         >
           <Btn sm>{{ t("Buttons.AddQuizQuestion") }}</Btn>
         </NuxtLink>
@@ -92,15 +91,35 @@ export default defineComponent({
     activeSection: { type: Object as PropType<any>, default: null },
     activeLecture: { type: Object as PropType<any>, default: null },
     modelValue: { type: Boolean, default: true },
+    skillID: { type: String, default: null },
+    subSkillID: { type: String, default: null },
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
     const user: any = useUser();
     const { t } = useI18n();
     const showConfetti = useShowConfetti();
+    const router = useRouter();
+    const route = useRoute();
+    const xp: any = useXP();
+    const listOfCompletedCourses = useListOfCompletedCourses();
 
-    const courseID = computed(() => {
+    const courseID: any = computed(() => {
       return props.course?.id ?? "";
+    });
+
+    const canCreate: any = computed(() => {
+      let eligible = false;
+      xp?.value?.skills.forEach((skill: any) => {
+        if (props.skillID == skill.skill) {
+          skill.skills.forEach((subSkill: any) => {
+            if (props.subSkillID == subSkill.skill && subSkill.level >= 5) {
+              eligible = true;
+            }
+          });
+        }
+      });
+      return eligible;
     });
 
     const activeSectionID = computed(() => {
@@ -135,13 +154,11 @@ export default defineComponent({
       if (!!!courseID.value) {
         return "/profile/courses";
       } else if (!!!activeSectionID.value || !!!activeLectureID.value) {
-        return `/courses/${courseID.value}`;
+        return `/courses/${courseID.value}?skillID=${props.skillID}&subSkillID=${props.subSkillID}`;
       } else {
-        return `/courses/${courseID.value}?section=${activeSectionID.value}&lecture=${activeLectureID.value}`;
+        return `/courses/${courseID.value}?section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${props.skillID}&subSkillID=${props.subSkillID}`;
       }
     });
-
-    const listOfCompletedCourses = useListOfCompletedCourses();
 
     async function markLectureAsComplete() {
       setLoading(true);
@@ -159,9 +176,6 @@ export default defineComponent({
         listOfCompletedCourses.value.push(activeLectureID.value);
       }
     }
-
-    const router = useRouter();
-    const route = useRoute();
 
     async function goToPrevLecture() {
       if (lectures.value.length <= 0) return;
@@ -193,6 +207,8 @@ export default defineComponent({
         query: {
           section: preLecture.sectionID ?? "",
           lecture: preLecture.id ?? "",
+          skillID: props?.skillID ?? "",
+          subSkillID: props?.subSkillID ?? "",
         },
       });
     }
@@ -242,10 +258,14 @@ export default defineComponent({
         query: {
           section: nextLecture.sectionID ?? "",
           lecture: nextLecture.id ?? "",
+          skillID: props?.skillID ?? "",
+          subSkillID: props?.subSkillID ?? "",
         },
       });
     }
-
+    onMounted(async () => {
+      await getXP();
+    });
     return {
       t,
       emit,
@@ -262,6 +282,7 @@ export default defineComponent({
       activeSectionID,
       showConfetti,
       user,
+      canCreate,
     };
   },
 });

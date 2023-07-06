@@ -12,6 +12,7 @@
       <FormQuizAnswer
         :data="selectedQuiz ?? arrayOfSubtasks[0]"
         @solved="setSolvedLocally($event)"
+        @updateQuestion="updateQuestion($event)"
         class="row-span-2 mt-24"
       />
 
@@ -85,15 +86,56 @@ export default defineComponent({
         }
       });
     }
+
+    function updateQuestion(quiz: any) {
+      arrayOfSubtasks.value.forEach((element: any) => {
+        if (element?.id == quiz?.id) {
+          element.question = quiz?.question;
+        }
+      });
+    }
+
     function solveThis(quiz: any) {
       const coins = useCoins();
       if (quiz?.fee > 0 && coins.value < quiz?.fee) {
         openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      }
+
+      if (!quiz.unlocked) {
+        openDialog(
+          "info",
+          "Headings.UnlockCodingChallenge",
+          "Body.BuyCodingChallnge",
+          false,
+          {
+            label: "Buttons.Buy",
+            onclick: async () => {
+              const [success, error] = await buySubtask(quiz.task_id, quiz.id);
+              if (success) {
+                openSnackbar("success", "Success.BuyCodingChallenge");
+                console.log("selected quiz", quiz);
+                // await manageAllDataForQuizzes();
+                arrayOfSubtasks.value.forEach((element: any) => {
+                  if (element.id == quiz.id) {
+                    element.unlocked = true;
+                  }
+                });
+                selectedQuiz.value = quiz;
+              } else openSnackbar("error", error);
+            },
+          },
+          {
+            label: "Buttons.Cancel",
+            onclick: () => {},
+          }
+        );
       } else {
+        console.log("selected quiz", quiz);
         selectedQuiz.value = quiz;
       }
     }
-    onMounted(async () => {
+
+    async function manageAllDataForQuizzes() {
       if (!!querySubTaskId.value && !!taskId.value) {
         const [success, error] = await getSubTaskInQuiz(
           taskId.value,
@@ -101,6 +143,7 @@ export default defineComponent({
         );
         if (success) selectedQuiz.value = success;
       }
+
       if (quizzesFrom.value == "course") {
         await getQuizzesInCourse(id.value);
       } else if (quizzesFrom.value == "skill") {
@@ -133,7 +176,12 @@ export default defineComponent({
         })
       );
       loading.value = false;
+    }
+
+    onMounted(async () => {
+      manageAllDataForQuizzes();
     });
+
     return {
       id,
       quizzesFrom,
@@ -143,6 +191,7 @@ export default defineComponent({
       loading,
       setSolvedLocally,
       solveThis,
+      updateQuestion,
     };
   },
 });

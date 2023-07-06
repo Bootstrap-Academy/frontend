@@ -137,6 +137,12 @@ export default {
       return items;
     });
 
+    const maxFee: any = computed(() => {
+      if (!!!user?.value?.admin) {
+        return 1;
+      } else return 1000000000;
+    });
+
     const form = reactive<IForm>({
       description: {
         valid: false,
@@ -158,12 +164,12 @@ export default {
         rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
       },
       fee: {
-        valid: false,
+        valid: true,
         value: null,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Fee",
           (v: number) => v > 0 || "Error.InputMinNumber_0",
-          (v: number) => v <= 5 || "Error.InputMaxNumber_5",
+          (v: number) =>
+            v <= maxFee.value || `Error.InputMaxNumber_${maxFee.value}`,
         ],
       },
       static_tests: {
@@ -253,7 +259,7 @@ export default {
         description: form.description.value,
         coins: !!form.coins.value ? form.coins.value : 0,
         xp: !!form.xp.value ? form.xp.value : 0,
-        fee: form.fee.value,
+        fee: !!form.fee.value ? form.fee.value : 0,
         time_limit: configs.value.time_limit,
         memory_limit: configs.value.memory_limit,
         static_tests: form.static_tests.value,
@@ -277,7 +283,7 @@ export default {
           description: form.description.value,
           coins: !!form.coins.value ? form.coins.value : 0,
           xp: !!form.xp.value ? form.xp.value : 0,
-          fee: form.fee.value,
+          fee: !!form.fee.value ? form.fee.value : 0,
           time_limit: configs.value.time_limit,
           memory_limit: configs.value.memory_limit,
           static_tests: form.static_tests.value,
@@ -319,7 +325,6 @@ export default {
         props.challengeId,
         props.propData.id
       );
-
       if (!!solutionSuccess) {
         form.solution_code.value = solutionSuccess?.code ?? "";
         form.solution_environment.value = solutionSuccess?.environment ?? "";

@@ -12,7 +12,7 @@
     </p>
 
     <CodingChallengeCard
-      @click="solveCodingChallenge(codingChallenge.id)"
+      @click="solveCodingChallenge(codingChallenge)"
       v-else-if="codingChallenges.length"
       v-for="(codingChallenge, i) of codingChallenges"
       :codingChallenge="codingChallenge"
@@ -55,11 +55,48 @@ export default defineComponent({
       await getAllCodingChallengesInATask(props?.id);
       loading.value = false;
     }
-    function solveCodingChallenge(id: any) {
+
+    function solveCodingChallenge(codingChallenge: any) {
+      console.log("coding challenge", codingChallenge);
+      const coins = useCoins();
+      if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
+        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      }
+      if (!codingChallenge.unlocked) {
+        // openSnackbar("info", "Error.CodingChallengeLocked");
+        openDialog(
+          "info",
+          "Headings.UnlockCodingChallenge",
+          "Body.BuyCodingChallnge",
+          false,
+          {
+            label: "Buttons.Buy",
+            onclick: async () => {
+              const [success, error] = await buySubtask(
+                codingChallenge.task_id,
+                codingChallenge.id
+              );
+              if (success) {
+                navigateTo(
+                  `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
+                );
+                openSnackbar("success", "Success.BuyCodingChallenge");
+              } else openSnackbar("error", error);
+            },
+          },
+          {
+            label: "Buttons.Cancel",
+            onclick: () => {},
+          }
+        );
+        return;
+      }
+
       navigateTo(
-        `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${id}`
+        `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
       );
     }
+
     watch(
       () => props.id,
       async () => {

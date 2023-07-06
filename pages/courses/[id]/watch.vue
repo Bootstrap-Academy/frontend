@@ -31,6 +31,8 @@
         class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container mb-20"
       >
         <CourseVideoControls
+          :skillID="skillID"
+          :subSkillID="subSkillID"
           class="midXl:col-span-2"
           :course="course"
           :activeSection="activeSection"
@@ -140,6 +142,9 @@ export default {
     const router = useRouter();
 
     const course = useCourse();
+    const taskId = ref();
+    const subtasks = useSubTasksInQuiz();
+    const codingChallenges = useAllCodingChallengesInATask();
 
     const selectedButton = ref(0);
     const buttonOptions = [
@@ -147,13 +152,12 @@ export default {
       { name: "Buttons.Quiz" },
       { name: "Buttons.CodingChallenge" },
     ];
+
     const activeSection = computed(() => {
       const sectionID = <string>(route.query?.section ?? "");
       let sections: any[] = course.value?.sections ?? [];
       if (!!!sections || sections.length <= 0) return null;
-
       let section = sections.find((sec) => sec.id == sectionID);
-
       return !!section ? section : null;
     });
 
@@ -169,10 +173,13 @@ export default {
     const courseId: any = computed(() => {
       return route.params.id;
     });
+    const skillID = computed(() => {
+      return <string>(route.query?.skillID ?? "");
+    });
 
-    const taskId = ref();
-    const subtasks = useSubTasksInQuiz();
-    const codingChallenges = useAllCodingChallengesInATask();
+    const subSkillID = computed(() => {
+      return <string>(route.query?.subSkillID ?? "");
+    });
 
     function solveCodingChallenge(codingChallenge: any) {
       const coins = useCoins();
@@ -187,7 +194,6 @@ export default {
     }
 
     async function fnGetCodingChallengeInQuiz(quizId: any) {
-      console.log("getting coding challenges");
       const [success, error] = await getAllCodingChallengesInATask(quizId);
       if (error) {
         setLoading(false);
@@ -196,7 +202,6 @@ export default {
     }
 
     async function fnGetSubtasksInQuiz(quizId: any) {
-      console.log("getting mcqs etc");
       const [success, error] = await getSubTasksInQuiz(quizId);
       if (error) {
         setLoading(false);
@@ -218,18 +223,19 @@ export default {
           setLoading(false);
           return;
         }
-        console.log("before create quiz");
-        const [success, error] = await createQuiz(courseId.value, {
-          section_id: activeSection.value.id,
-          lecture_id: activeLecture.value.id,
-        });
-        console.log("after create quiz", success);
+        const [success, error] = await getQuizzesInCourse(
+          courseId.value,
+          activeSection.value.id,
+          activeLecture.value.id
+        );
 
-        if (success) {
-          console.log("getting them");
-          taskId.value = success?.id;
-          fnGetSubtasksInQuiz(success?.id);
-          fnGetCodingChallengeInQuiz(success?.id);
+        if (!!success[0]) {
+          taskId.value = success[0]?.id;
+          fnGetSubtasksInQuiz(success[0]?.id);
+          fnGetCodingChallengeInQuiz(success[0]?.id);
+        } else {
+          subtasks.value = [];
+          codingChallenges.value = [];
         }
         setLoading(false);
       },
@@ -252,7 +258,12 @@ export default {
     function watchThisLecture({ sectionID, lectureID }: any) {
       router.replace({
         path: route.path,
-        query: { section: sectionID, lecture: lectureID },
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value,
+        },
       });
 
       showCurriculum.value = false;
@@ -272,6 +283,8 @@ export default {
       solveCodingChallenge,
       subtasks,
       codingChallenges,
+      skillID,
+      subSkillID,
     };
   },
 };

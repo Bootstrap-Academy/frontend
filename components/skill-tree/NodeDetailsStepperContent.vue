@@ -10,7 +10,7 @@
           class="content"
           v-for="(course, i) of courses"
           :key="i"
-          :to="`/courses/${course.id}`"
+          :to="`/courses/${course.id}?skillID=${skillID}&subSkillID=${subSkillID}`"
         >
           <CourseCard :data="course" />
         </NuxtLink>

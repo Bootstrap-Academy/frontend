@@ -95,7 +95,9 @@ export default {
         lecture_id: lectureId.value,
       });
       if (success) quizId.value = success?.id ?? "";
-      else openSnackbar("error", "Error.CannotCreateQuiz");
+      else {
+        openSnackbar("error", error.data.detail);
+      }
 
       await getSubTasksInQuiz(quizId.value);
       await getAllCodingChallengesInATask(quizId.value);

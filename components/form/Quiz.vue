@@ -143,8 +143,9 @@ export default defineComponent({
         valid: true,
         value: 0,
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.Fee",
           (v: number) => v >= 0 || "Error.InputMinNumber_0",
+          (v: number) =>
+            v <= maxFee.value || `Error.InputMaxNumber_${maxFee.value}`,
         ],
       },
       single_choice: { value: false, valid: true },
@@ -268,6 +269,12 @@ export default defineComponent({
         value: "Single Choice",
       },
     ];
+
+    const maxFee: any = computed(() => {
+      if (!!!user?.value?.admin) {
+        return 1;
+      } else return 1000000000;
+    });
 
     const selectedQuestionType = ref("Multi Choice");
 
@@ -416,7 +423,7 @@ export default defineComponent({
         question: form.body().question,
         coins: !!form.body().coin ? form.body().coin : 0,
         xp: !!form.body().xp ? form.body().xp : 0,
-        fee: form.body().fee,
+        fee: !!form.body().fee ? form.body().fee : 0,
         single_choice: form.body().single_choice,
       });
       form.submitting = false;
@@ -433,7 +440,7 @@ export default defineComponent({
           question: form.body().question,
           coins: !!form.body().coin ? form.body().coin : 0,
           xp: !!form.body().xp ? form.body().xp : 0,
-          fee: form.body().fee,
+          fee: !!form.body().fee ? form.body().fee : 0,
           single_choice: form.body().single_choice,
         }
       );

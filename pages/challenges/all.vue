@@ -29,7 +29,7 @@
       <span class="md:mt-1">{{ t("Body.AddChallengeRequirement") }}</span>
     </p>
     <template v-for="(category, i) of challengesCategories" :key="category.id">
-      <ChallengesCategory :data="category" />
+      <ChallengesCategory :xp="xp" :data="category" />
       <hr class="mt-box" v-if="i < challengesCategories.length - 1" />
     </template>
   </main>
@@ -52,11 +52,13 @@ export default {
     const { t } = useI18n();
     const challengesCategories = useChallengesCategories();
     const loading = ref(challengesCategories.value.length <= 0);
+    const xp = useXP();
     onMounted(async () => {
       await getChallengesCategories();
+      await getXP();
       loading.value = false;
     });
-    return { t, loading, challengesCategories };
+    return { t, loading, challengesCategories, xp };
   },
 };
 </script>

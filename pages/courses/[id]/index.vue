@@ -34,6 +34,8 @@
 
     <CourseDetails :data="course" />
     <CourseOverview
+      :skillID="skillID"
+      :subSkillID="subSkillID"
       :data="course"
       :isCourseAccessible="isCourseAccessible"
       class="md:sticky md:top-container md:self-start"
@@ -47,6 +49,8 @@
       <div class="card style-card bg-secondary">
         <CourseCurriculum
           :data="course"
+          :skillID="skillID"
+          :subSkillID="subSkillID"
           :isCourseAccessible="isCourseAccessible"
           @watch="watchThisLecture($event)"
         />
@@ -104,6 +108,14 @@ export default {
       return <string>(route.params?.id ?? "");
     });
 
+    const skillID = computed(() => {
+      return <string>(route.query?.skillID ?? "");
+    });
+
+    const subSkillID = computed(() => {
+      return <string>(route.query?.subSkillID ?? "");
+    });
+
     onMounted(async () => {
       if (!!!id.value) {
         loading.value = false;
@@ -111,24 +123,33 @@ export default {
       }
 
       const [success, error] = await getCourseByID(id.value);
-      const [quizzesSuccess, quizzesError] = await getQuizzesInCourse(id.value);
 
       if (error) {
         await getCourseSummaryByID(id.value);
       } else {
         isCourseAccessible.value = true;
-      }
-      if (quizzesError) {
-        openSnackbar("error", quizzesError);
+        const [quizzesSuccess, quizzesError] = await getQuizzesInCourse(
+          id.value
+        );
+        if (quizzesError) {
+          openSnackbar("error", quizzesError);
+        }
       }
 
       loading.value = false;
     });
 
     function watchThisLecture({ sectionID, lectureID }: any) {
+      console.log("skill", skillID.value);
+      console.log("skill", subSkillID.value);
       router.push({
         path: `${route.path}/watch`,
-        query: { section: sectionID, lecture: lectureID },
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value,
+        },
       });
     }
 
@@ -139,6 +160,8 @@ export default {
       isCourseAccessible,
       watchThisLecture,
       quizzes,
+      skillID,
+      subSkillID,
     };
   },
 };

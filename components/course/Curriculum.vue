@@ -70,6 +70,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
+    const skillID = computed(() => {
+      return <string>(route.query?.skillID ?? "");
+    });
+
+    const subSkillID = computed(() => {
+      return <string>(route.query?.subSkillID ?? "");
+    });
+
     const sections: Ref<any[]> = computed(() => {
       return (props.data?.sections ?? []).map((section: any, i: number) => {
         // if section has no id, then a custom id is made using title and index
@@ -116,7 +124,12 @@ export default defineComponent({
         } else if (getLecturesOfThisSection(id).length > 0) {
           router.replace({
             path: route.path,
-            query: { section: id, lecture: getActiveLectureForThisSection(id) },
+            query: {
+              section: id,
+              lecture: getActiveLectureForThisSection(id),
+              skillID: skillID?.value ?? "a",
+              subSkillID: subSkillID?.value ?? "a",
+            },
           });
         }
       },
@@ -134,7 +147,12 @@ export default defineComponent({
         } else {
           router.replace({
             path: route.path,
-            query: { section: activeSection.value, lecture: id },
+            query: {
+              section: activeSection.value,
+              lecture: id,
+              skillID: skillID?.value ?? "a",
+              subSkillID: subSkillID?.value ?? "a",
+            },
           });
         }
       },

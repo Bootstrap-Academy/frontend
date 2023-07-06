@@ -104,7 +104,9 @@ export default defineComponent({
         console.log("correct");
         pathname = `/courses/${route.query?.course ?? ""}/watch?section=${
           route.query?.section ?? ""
-        }/${route.query?.lecture ?? ""}`;
+        }/${route.query?.lecture ?? ""}&skillID=${
+          route.query?.skillID ?? ""
+        }&subSkillID=${route.query?.subSkillID ?? ""}`;
         label = "Links.GoToCourse";
       }
 

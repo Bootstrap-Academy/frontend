@@ -20,12 +20,11 @@
       class="grid gap-card grid-cols-1 pt-card-sm"
     >
       <div class="flex flex-wrap gap-card">
-        <!-- <NuxtLink :to="to"> 
-        </NuxtLink> -->
         <Btn @click="propId = challenge" class="w-fit" :icon="CodeBracketIcon">
           {{ t("Buttons.Solve") }}
         </Btn>
-        <NuxtLink :to="editTo" v-if="data?.creator == user.id">
+
+        <NuxtLink :to="editTo" v-if="data?.creator == user.id || !!user.admin">
           <Btn secondary class="w-fit" :icon="PencilIcon">
             {{ t("Buttons.EditChallenge") }}
           </Btn>
@@ -60,7 +59,6 @@ import { deleteChallenge } from "~~/composables/challenges";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
-    mine: { type: Boolean, default: false },
   },
   components: { TrophyIcon, CodeBracketIcon, PencilIcon, TrashIcon },
   setup(props) {

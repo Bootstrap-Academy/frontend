@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"UnlockCodingChallenge":"Buy coding challenge to unlock",
 		"EmptySubtasks":"No Quiz Found ",
 		"EmptyCodingChallenge":"No Coding Challenge Found For This Lecture",
 		"DeleteQuiz":"Delete Quiz",
@@ -249,6 +250,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"BuyCodingChallnge":"Coding challenge is locked. Fee will be deducted from your account for buying this coding challenge.",
 		"DeleteCodingChallenge":"Are you sure you want to delete coding challenge?",
 		"DeleteQuiz":"Are you sure you want to delete Quiz?",
 		"DeleteChallenge":"Are you sure you want to delete Challenge?",
@@ -576,7 +578,7 @@
 		"ManageInput": "Manage Input",
 		"ManageOutput": "Manage Output",
 		"Close":"Close",
-
+		"Buy":"Buy",
 		"AddTask": "Add Task",
 		"SaveDescription": "Save Description",
 		"DeleteDescription": "Delete Description",
@@ -725,6 +727,9 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"SubmittedRating":"Ratings Submitted SuccessFully",
+		"BuyCodingChallenge":"SuccessFully bought coding challenge.",
+		"UpdatedQuiz":"Quiz Updated SuccessFully",
 		"SolvedCodingChallenge":"Tested Successfully And Coding Challenge Is Solved",
 		"SolvedCodingChallengeButNotCorrect":"Provided Code Doesn't Match Our Requirements",
 		"QuizAttempt":"Correct Option! Quiz Solved 😍",
@@ -774,6 +779,12 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"NotAllowedForRatings":"You are Not Allowed For Ratings",
+		"SelectRatingFirst":"Select rating please to continue",
+		"QuizOrCodingChallengeNotFound":"This Quiz / CodingChallenge Not Found",
+		"CodingChallengeLocked":"Coding challenge is locked",
+		"UpdatedQuiz":"Cannot update Quiz. Try Making Update Again",
+		"NotAllowed":"You Are Not Allowed For This Action",
 		"SolutionCodeFailed":"Check your Solution Code or Environment",
 		"SelectAtLeastOneOption":"Select at least one option",
 		"TooManyAttemptsForQuiz":"Too Many Attempts For Solvinig",

@@ -100,13 +100,16 @@ export default defineComponent({
   props: {
     isCourseAccessible: { type: Boolean, default: false },
     data: { type: Object as PropType<any>, default: null },
+    skillID: { type: String, default: null },
+    subSkillID: { type: String, default: null },
   },
   setup(props) {
     const { t } = useI18n();
+    const route = useRoute();
 
     const link = computed(() => {
       let courseID = props.data?.id ?? "HTML";
-      return `/courses/${courseID}/watch`;
+      return `/courses/${courseID}/watch?skillID=${props?.skillID}&subSkillID=${props?.subSkillID}`;
     });
 
     const loading = ref(false);

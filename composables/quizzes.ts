@@ -195,12 +195,19 @@ export async function getQuizzesInSkill(skillId: any) {
 	}
 }
 
-export async function getQuizzesInCourse(courseId: any) {
+export async function getQuizzesInCourse(courseId: any, section_id: any = "", lecture_id: any = "") {
 	try {
-		const res = await GET(`/challenges/courses/${courseId}/tasks`)
-		const quizzes = useQuizzes()
-		quizzes.value = res ?? []
-		return [res, null]
+		if (!!!section_id && !!!lecture_id) {
+			const res = await GET(`/challenges/courses/${courseId}/tasks`)
+			const quizzes = useQuizzes()
+			quizzes.value = res ?? []
+			return [res, null]
+		} else {
+			const res = await GET(`/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`)
+			const quizzes = useQuizzes()
+			quizzes.value = res ?? []
+			return [res, null]
+		}
 	}
 	catch (error: any) {
 		return [null, error]
@@ -212,7 +219,6 @@ export async function getSubTasksInQuiz(taskId: any) {
 		const res = await GET(`/challenges/tasks/${taskId}/multiple_choice`)
 		const subTasksInQuiz = useSubTasksInQuiz()
 		subTasksInQuiz.value = res ?? []
-		console.log("subtasks in quiz", subTasksInQuiz.value)
 		return [res, null]
 	}
 	catch (error) {
@@ -238,7 +244,6 @@ export async function getSubTaskInQuiz(taskId: any, subTaskId: any) {
 		const res = await GET(`/challenges/tasks/${taskId}/multiple_choice/${subTaskId}`)
 		const subTaskInQuiz = useSubTaskInQuiz()
 		subTaskInQuiz.value = res ?? null
-		console.log("subtask", subTaskInQuiz)
 		return [res, null]
 	}
 	catch (error) {
@@ -313,3 +318,27 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 
 
 }
+
+
+export async function rateQuiz(taskId: any, subTaskid: any, body: any) {
+	try {
+		const res = await POST(`challenges/tasks/${taskId}/subtasks/${subTaskid}/feedback`, body)
+		console.log('returnnig', res)
+		return [res, null]
+	}
+	catch (error: any) {
+		let msg = error?.data?.error ?? ""
+		if (msg == 'subtask_not_found') {
+			return [null, "Error.QuizOrCodingChallengeNotFound"]
+		}
+		else if (msg == 'permission_denied') {
+			return [null, "Error.NotAllowedForRatings"]
+		}
+		else {
+			return [null, error]
+		}
+	}
+
+
+}
+

@@ -26,7 +26,9 @@
           </article>
         </article>
 
-        <article class="flex justify-between gap-10 mt-6 items-center">
+        <article
+          class="flex justify-between gap-10 mt-6 items-center flex-wrap"
+        >
           <section class="flex gap-10">
             <div class="flex gap-2">
               <p class="text-sm">{{ $t("Headings.Coins") }} :</p>
@@ -36,6 +38,10 @@
             <div class="flex gap-2">
               <p class="text-sm">{{ $t("Headings.XP") }} :</p>
               <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
+            </div>
+            <div class="flex gap-2">
+              <p class="text-sm">{{ $t("Headings.Fee") }} :</p>
+              <p class="text-accent text-sm">{{ codingChallenge?.fee }}</p>
             </div>
           </section>
           <LockOpenIcon

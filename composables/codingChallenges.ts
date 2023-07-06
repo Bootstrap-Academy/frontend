@@ -160,7 +160,23 @@ export async function textAgainstCodingExample(challengeId: any, codingChallenge
         return [null, error]
     }
 }
+export async function buySubtask(taskId: any, subTaskId: any) {
+    try {
+        const response = await POST(`/challenges/tasks/${taskId}/subtasks/${subTaskId}/access`)
+        console.log("access response ", response)
+        return [response, null]
+    }
 
+    catch (error: any) {
+        let msg = error?.data?.error ?? ""
+        if (msg == 'subtask_not_found') {
+            return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else {
+            return [null, error]
+        }
+    }
+}
 export async function getEnvironments() {
     try {
         const res = await GET(`/challenges/executor/environments`)

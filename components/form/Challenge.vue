@@ -56,7 +56,7 @@
       <InputBtn
         :icon="TrashIcon"
         @click="fnDeleteChallenge()"
-        v-if="user.id == data?.creator && !!data"
+        v-if="user.id == data?.creator && !!data || !!user.admin"
       >
         {{ t("Buttons.DeleteChallenge") }}
       </InputBtn>

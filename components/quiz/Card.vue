@@ -2,7 +2,7 @@
   <!-- <article class="box style-box bg-secondary flex gap-box w-full">
 import { CheckIcon } from "@heroicons/vue/24/solid";
 		<img :src="`/svgs/{{img}}.svg`" alt="" class="w-12 h-12 object-contain" />
-
+, LockClosedIcon
 		<div>
 			<h3 class="text-heading-4">{{ data.question }}</h3>
 			<p class="my-1 mb-2">{{ data.type }}</p>
@@ -53,9 +53,11 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
     >
       <CheckIcon class="h-4 w-4 text-white" />
     </span>
-    <h3 class="text-heading-4 clamp line-2">
-      Q). {{ data?.question ?? t("Headings.NoQuizTitle") }}
+    <h3 v-if="data?.unlocked" class="text-heading-4 clamp line-2">
+      <!-- Q). {{ data?.question ?? t("Headings.NoQuizTitle") }} -->
+      Q). {{ data?.question ?? "" }}
     </h3>
+    <LockClosedIcon v-else class="h-5 w-5 text-white mb-2" />
 
     <div class="flex justify-between gap-box items-center">
       <p class="text-body-2" v-if="data?.single_choice">
@@ -79,7 +81,7 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 import { defineComponent, PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import { CheckIcon } from "@heroicons/vue/24/outline";
-
+import { LockClosedIcon } from "@heroicons/vue/24/outline";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
@@ -88,15 +90,42 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    // const img = computed(() => {
-    //   return route?.query?.skill ?? "";
-    // });
     function solveThis(id: any) {
       const coins = useCoins();
       if (props.data?.fee > 0 && coins.value < props.data?.fee) {
         return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
       }
 
+      if (!props.data.unlocked) {
+        openDialog(
+          "info",
+          "Headings.UnlockCodingChallenge",
+          "Body.BuyCodingChallnge",
+          false,
+          {
+            label: "Buttons.Buy",
+            onclick: async () => {
+              const [success, error] = await buySubtask(
+                props.data.task_id,
+                props.data.id
+              );
+              if (success) {
+                openSnackbar("success", "Success.BuyCodingChallenge");
+                gotoPage();
+              } else openSnackbar("error", error);
+            },
+          },
+          {
+            label: "Buttons.Cancel",
+            onclick: () => {},
+          }
+        );
+      } else {
+        gotoPage();
+      }
+    }
+
+    function gotoPage() {
       if (route.fullPath.includes("/skill-tree/")) {
         const id = route.params.skill;
         router.push(
@@ -123,7 +152,7 @@ export default defineComponent({
     }
     return { t, solveThis };
   },
-  components: { CheckIcon },
+  components: { CheckIcon, LockClosedIcon },
 });
 </script>
 

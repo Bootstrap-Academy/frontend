@@ -33,6 +33,7 @@
           'bg-success text-primary': option.correct == true && answer == option,
           'bg-error': option.correct == false && answer == option,
           'bg-warning': selected.includes(option),
+          'pointer-events-none': !!subtask.solved,
         }"
       >
         {{ option }}
@@ -44,7 +45,7 @@
     >
       <InputBtn
         full
-        v-if="!!!answer"
+        v-if="!!!askFeedBack"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
@@ -57,37 +58,47 @@
         </span>
       </InputBtn>
 
-      <div v-if="answer" class="flex gap-4 items-center mt-8">
+      <div v-if="askFeedBack" class="flex gap-4 items-center mt-8">
         <button
+          @click="feedback = 'POSITIVE'"
           type="button"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
+          :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
+          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
         >
           👍
         </button>
+
         <button
+          @click="feedback = 'NEUTRAL'"
           type="button"
-          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-        >
-          👎
-        </button>
-        <button
-          type="button"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
+          :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
+          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
         >
           😐
         </button>
+
         <button
+          @click="feedback = 'NEGATIVE'"
+          type="button"
+          :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
+          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+        >
+          👎
+        </button>
+
+        <!-- <button
+        @click="feedback=''"
           type="button"
           class="w-10 h-10 pl-2 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
         >
           🚩
-        </button>
+        </button> -->
       </div>
       <InputBtn
-        v-if="answer"
         :loading="loading"
+        v-if="askFeedBack"
         class="self-center"
-        @click="onclickSubmitForm()"
+        @click="submitFeedBack()"
         mt
       >
         {{ t("Buttons.Continue") }}
@@ -98,24 +109,26 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import { attempQuiz } from "~~/composables/quizzes";
+import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  emits: ["solved"],
+  emits: ["solved", "updateQuestion"],
 
   setup(props, { emit }) {
     const { t } = useI18n();
 
     const loading = ref(false);
     const selected: any = ref([]);
-    const answer = ref("");
+    const askFeedBack = ref(false);
     const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
+    const feedback = ref("");
     // ============================================================= refs
+
     const refForm = ref<HTMLFormElement | null>(null);
 
     // ============================================================= Checks
@@ -159,6 +172,9 @@ export default defineComponent({
 
     async function onclickSubmitForm() {
       if (subtask.value.solved == true) return;
+      if (!selected.value.length) {
+        return openSnackbar("error", "Error.SelectAtLeastOneOption");
+      }
       loading.value = true;
       const [success, error] = await attempQuiz(
         subtask.value.task_id,
@@ -168,7 +184,6 @@ export default defineComponent({
       loading.value = false;
       if (success == true || success == false) successHandler(success);
       else errorHandler(error);
-      // answer.value = selected.value;
       selected.value = [];
     }
 
@@ -176,6 +191,7 @@ export default defineComponent({
       if (!!res) {
         openSnackbar("success", "Success.QuizAttempt");
         emit("solved", props.data.id);
+        askFeedBack.value = true;
       } else if (!res) {
         openSnackbar("error", "Error.QuizAttempt");
       }
@@ -186,17 +202,44 @@ export default defineComponent({
       openSnackbar("error", error?.detail ?? "");
     }
 
+    async function submitFeedBack() {
+      if (feedback.value.trim() == "") {
+        return openSnackbar("error", "Error.SelectRatingFirst");
+      }
+      console.log("task id", subtask.value.task_id);
+      console.log("subtask id", subtask.value.id);
+      loading.value = true;
+      const [success, error] = await rateQuiz(
+        subtask.value.task_id,
+        subtask.value.id,
+        { rating: feedback.value }
+      );
+      loading.value = false;
+
+      feedback.value = "";
+      if (success !== null) {
+        openSnackbar("success", "Success.SubmittedRating");
+        askFeedBack.value = false;
+      } else {
+        openSnackbar("error", error);
+      }
+    }
+
     watch(
       () => props.data,
       async () => {
         arrayOfAnswers.value = [];
         if (props?.data == null) return;
         setLoading(true);
-
+        console.log("dd");
         const [success, error] = await getSubTaskInQuiz(
           props?.data?.task_id ?? "",
           props?.data?.id ?? ""
         );
+        console.log("succcess", success);
+        if (success) {
+          emit("updateQuestion", success);
+        }
         // if (!!error) {
         //   console.log("in if");
         //   setLoading(false);
@@ -216,15 +259,17 @@ export default defineComponent({
 
     return {
       onclickSubmitForm,
+      submitFeedBack,
       refForm,
       t,
       loading,
-      answer,
+      askFeedBack,
       selected,
       subtask,
       arrayOfAnswers,
       setArrayOfAnswers,
       setSelected,
+      feedback,
     };
   },
 });
