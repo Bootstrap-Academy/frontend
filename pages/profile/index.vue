@@ -32,7 +32,7 @@
 
     <UserChallenges />
 
-    <UserQuizzes />
+    <!-- <UserQuizzes /> -->
   </main>
 </template>
 
