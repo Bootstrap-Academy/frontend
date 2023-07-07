@@ -93,7 +93,8 @@ export default defineComponent({
     function solveThis(id: any) {
       const coins = useCoins();
       if (props.data?.fee > 0 && coins.value < props.data?.fee) {
-        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+        return;
       }
 
       if (!props.data.unlocked) {

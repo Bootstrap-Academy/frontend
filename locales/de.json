@@ -11,6 +11,14 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"ReportComment":"Grund für die Meldung",
+		"Report":"Bericht",
+		"ReportCumment":"Kommentar zum Bericht",
+		"Abuse":"Missbrauch",
+		"Wrong":"Falsch",
+		"UnrelatedSkill":"Nicht verwandte Fähigkeit",
+		"Other":"Andere",
+		"Dislike":"Nicht gefallen",
 		"UnlockCodingChallenge":"Kaufen Sie eine Codierungsherausforderung, um sie freizuschalten",
 		"EmptySubtasks":"Kein Quiz gefunden",
 		"EmptyCodingChallenge":"Für diese Vorlesung wurde keine Programmieraufgabe gefunden",
@@ -561,6 +569,7 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"Report":"Bericht",
 		"Video":"Video",
 		"Quiz":"Quiz",
 		"CodingChallenge":"Codierungsherausforderung",
@@ -727,6 +736,7 @@
 		"GravatarImage": "Ändere dein Gravatar-Bild unter"
 	},
 	"Success": {
+		"ReportedSubtask":"Erfolgreich gemeldet",
 		"SubmittedRating":"Bewertungen wurden erfolgreich abgegeben",
 		"BuyCodingChallenge":"Codierungsherausforderung erfolgreich gekauft.",
 		"UpdatedQuiz":"Quiz erfolgreich aktualisiert",

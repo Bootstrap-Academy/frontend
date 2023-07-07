@@ -177,6 +177,23 @@ export async function buySubtask(taskId: any, subTaskId: any) {
         }
     }
 }
+export async function reportSubtask(body: any) {
+    try {
+        const response = await POST(`/challenges/subtask_reports`, body)
+        console.log("access response ", response)
+        return [response, null]
+    }
+
+    catch (error: any) {
+        let msg = error?.data?.error ?? ""
+        if (msg == 'subtask_not_found') {
+            return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else {
+            return [null, error]
+        }
+    }
+}
 export async function getEnvironments() {
     try {
         const res = await GET(`/challenges/executor/environments`)

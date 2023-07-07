@@ -62,6 +62,21 @@ export default defineComponent({
         pathname = "/profile";
         label = "Links.GoToProfile";
       }
+      // profile-quizzes
+      else if (name == "profile-quizzes") {
+        pathname = "/profile";
+        label = "Links.GoToProfile";
+      }
+      // profile-challenges
+      else if (name == "profile-challenges") {
+        pathname = "/profile";
+        label = "Links.GoToProfile";
+      }
+      // challenges-leader-board
+      else if (name == "challenges-leader-board") {
+        pathname = "/profile";
+        label = "Links.GoToProfile";
+      }
       // ! Profile
       else if (name == "profile-edit") {
         pathname = "/profile";

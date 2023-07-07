@@ -11,6 +11,13 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"ReportComment":"Reason For Reporting",
+		"Report":"Report",
+		"Abuse":"Abuse",
+		"Wrong":"Wrong",
+		"UnrelatedSkill":"Unrelated Skill",
+		"Other":"Other",
+		"Dislike":"Dislike",
 		"UnlockCodingChallenge":"Buy coding challenge to unlock",
 		"EmptySubtasks":"No Quiz Found ",
 		"EmptyCodingChallenge":"No Coding Challenge Found For This Lecture",
@@ -560,6 +567,7 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"Report":"Report",
 		"Video":"Video",
 		"Quiz":"Quiz",
 		"CodingChallenge":"Coding Challenge",
@@ -727,6 +735,8 @@
 		"GravatarImage": "Change your gravatar image at"
 	},
 	"Success": {
+		"ReportComment":"Reason For Reporting",
+		"ReportedSubtask":"SuccessFully Reported",
 		"SubmittedRating":"Ratings Submitted SuccessFully",
 		"BuyCodingChallenge":"SuccessFully bought coding challenge.",
 		"UpdatedQuiz":"Quiz Updated SuccessFully",

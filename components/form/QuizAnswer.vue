@@ -5,11 +5,6 @@
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
-    <!-- <img
-      class="w-full h-60 object-cover style-card"
-      src="https://placehold.co/450x400/webp"
-      alt=""
-    /> -->
     <h4 class="text-heading-3">
       Q). {{ subtask?.question ?? "" }}
       <span class="text-xs text-accent break-keep" v-if="subtask?.single_choice"
@@ -45,7 +40,7 @@
     >
       <InputBtn
         full
-        v-if="!!!askFeedBack"
+        v-if="!!!askFeedBack && user.id != subtask.creator"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
@@ -85,14 +80,6 @@
         >
           👎
         </button>
-
-        <!-- <button
-        @click="feedback=''"
-          type="button"
-          class="w-10 h-10 pl-2 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-        >
-          🚩
-        </button> -->
       </div>
       <InputBtn
         :loading="loading"
@@ -104,12 +91,37 @@
         {{ t("Buttons.Continue") }}
       </InputBtn>
     </article>
+
+    <article class="flex justify-end">
+      <p
+        v-if="askFeedBack && user.id != subtask.creator"
+        @click="openReportDialog()"
+        class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
+      >
+        {{ t("Headings.Report") }}
+      </p>
+    </article>
+
+    <DialogSlot
+      v-if="dialogReportTask"
+      :label="'Headings.Report'"
+      :propClass="'modal-width-lg lg:modal-width-sm'"
+      :show="dialogSlot"
+      @closeFunction="dialogReportTask = false"
+    >
+      <FormReportSubtask
+        @reportSubmitted="askFeedBack = false"
+        :task_id="subtask.task_id"
+        :subtask_id="subtask.id"
+      />
+    </DialogSlot>
   </form>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
+import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -121,6 +133,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
+    const user: any = useUser();
+    const dialogReportTask = useDialogReportTask();
+    const dialogSlot = useDialogSlot();
     const loading = ref(false);
     const selected: any = ref([]);
     const askFeedBack = ref(false);
@@ -224,7 +239,10 @@ export default defineComponent({
         openSnackbar("error", error);
       }
     }
-
+    function openReportDialog() {
+      dialogSlot.value = true;
+      dialogReportTask.value = true;
+    }
     watch(
       () => props.data,
       async () => {
@@ -258,10 +276,10 @@ export default defineComponent({
     );
 
     return {
+      t,
       onclickSubmitForm,
       submitFeedBack,
       refForm,
-      t,
       loading,
       askFeedBack,
       selected,
@@ -270,6 +288,10 @@ export default defineComponent({
       setArrayOfAnswers,
       setSelected,
       feedback,
+      dialogReportTask,
+      dialogSlot,
+      openReportDialog,
+      user,
     };
   },
 });

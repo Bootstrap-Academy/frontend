@@ -184,8 +184,9 @@ export default {
     function solveCodingChallenge(codingChallenge: any) {
       const coins = useCoins();
       if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
-        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
       }
+
       router.push(
         `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${
           codingChallenge?.id
