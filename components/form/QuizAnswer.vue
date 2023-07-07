@@ -40,7 +40,7 @@
     >
       <InputBtn
         full
-        v-if="!!!askFeedBack && user.id != subtask.creator"
+        v-if="!!!askFeedBack && user?.id != subtask?.creator"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
@@ -94,7 +94,7 @@
 
     <article class="flex justify-end">
       <p
-        v-if="askFeedBack && user.id != subtask.creator"
+        v-if="askFeedBack && user?.id != subtask?.creator"
         @click="openReportDialog()"
         class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
       >
@@ -110,7 +110,7 @@
       @closeFunction="dialogReportTask = false"
     >
       <FormReportSubtask
-        @reportSubmitted="askFeedBack = false"
+        @reportSubmitted="reportSubmitted()"
         :task_id="subtask.task_id"
         :subtask_id="subtask.id"
       />
@@ -239,6 +239,10 @@ export default defineComponent({
         openSnackbar("error", error);
       }
     }
+    function reportSubmitted() {
+      askFeedBack.value = false;
+      emit("solved", props.data.id);
+    }
     function openReportDialog() {
       dialogSlot.value = true;
       dialogReportTask.value = true;
@@ -291,6 +295,7 @@ export default defineComponent({
       dialogReportTask,
       dialogSlot,
       openReportDialog,
+      reportSubmitted,
       user,
     };
   },
