@@ -56,6 +56,12 @@ export function setStates(response: any) {
 	const hideAnimation: any = useCookie("hideAnimationNextTime");
 	if (hideAnimation.value == undefined) hideAnimation.value = false
 
+	const showFreeQuizzesOnly: any = useCookie("showFreeQuizzesOnly");
+	if (showFreeQuizzesOnly.value == undefined) showFreeQuizzesOnly.value = false
+
+	const lastViewCourse: any = useCookie("lastViewCourse");
+	if (lastViewCourse.value == undefined) lastViewCourse.value = null
+
 	if (response == null) {
 		const router = useRouter();
 		router.push('/auth/login');

@@ -7,7 +7,7 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 			<h3 class="text-heading-4">{{ data.question }}</h3>
 			<p class="my-1 mb-2">{{ data.type }}</p>
 			<p v-if="data && data.price > 0">
-				{{
+        {{
 					t(
 						'Headings.Morphcoins',
 						{ n: abbreviateNumber(data.price) },
@@ -44,6 +44,7 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 	</article> -->
 
   <article
+    v-if="showQuiz"
     @click="solveThis(data?.id ?? '')"
     class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"
   >
@@ -90,18 +91,39 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
+    const showfreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
+    const showQuiz = computed(() => {
+      // if (props.data.fee > 0) {
+      //   if (showfreeQuizzesOnly.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // } else {
+      //   return true;
+      // }
+
+      if (showfreeQuizzesOnly.value) {
+        if (props.data.unlocked) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    });
     function solveThis(id: any) {
       const coins = useCoins();
       if (props.data?.fee > 0 && coins.value < props.data?.fee) {
         openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-        return;
       }
 
       if (!props.data.unlocked) {
         openDialog(
           "info",
-          "Headings.UnlockCodingChallenge",
-          "Body.BuyCodingChallnge",
+          "Headings.UnlockQuiz",
+          "Body.BuyQuiz",
           false,
           {
             label: "Buttons.Buy",
@@ -113,7 +135,7 @@ export default defineComponent({
               if (success) {
                 openSnackbar("success", "Success.BuyCodingChallenge");
                 gotoPage();
-              } else openSnackbar("error", error);
+              } else openSnackbar("error", error?.data?.detail);
             },
           },
           {
@@ -151,7 +173,7 @@ export default defineComponent({
         );
       }
     }
-    return { t, solveThis };
+    return { t, solveThis, showfreeQuizzesOnly, showQuiz };
   },
   components: { CheckIcon, LockClosedIcon },
 });

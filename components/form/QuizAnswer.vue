@@ -14,6 +14,9 @@
         >({{ t("Headings.MultiChoice") }})</span
       >
     </h4>
+    <p class="text-xs text-accent" v-if="showMaxAttemptsError">
+      {{ t(`Error.TooManyAttemptsForQuiz`, { second: secondsForTryAgain }) }}
+    </p>
 
     <article
       class="grid grid-cols-1 gap-card-sm overflow-scroll h-[45vh] place-content-start pb-20"
@@ -28,7 +31,8 @@
           'bg-success text-primary': option.correct == true && answer == option,
           'bg-error': option.correct == false && answer == option,
           'bg-warning': selected.includes(option),
-          'pointer-events-none': !!subtask.solved,
+          'pointer-events-none':
+            !!subtask.solved || subtask?.creator == user?.id,
         }"
       >
         {{ option }}
@@ -40,15 +44,15 @@
     >
       <InputBtn
         full
-        v-if="!!!askFeedBack && user?.id != subtask?.creator"
+        v-if="!!!askFeedBack"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
       >
-        <span v-if="!data?.solved">
+        <span v-if="!data?.solved && user?.id != subtask?.creator">
           {{ t("Buttons.SubmitAnswer") }}
         </span>
-        <span v-else>
+        <span v-else-if="!!data?.solved || user?.id == subtask?.creator">
           {{ t("Buttons.Solved") }}
         </span>
       </InputBtn>
@@ -142,6 +146,9 @@ export default defineComponent({
     const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
     const feedback = ref("");
+    const showMaxAttemptsError = ref(false);
+    const secondsForTryAgain = ref(0);
+    const interval: any = ref();
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
@@ -186,7 +193,11 @@ export default defineComponent({
     }
 
     async function onclickSubmitForm() {
-      if (subtask.value.solved == true) return;
+      if (
+        subtask.value.solved == true ||
+        subtask.value?.creator == user.value?.id
+      )
+        return;
       if (!selected.value.length) {
         return openSnackbar("error", "Error.SelectAtLeastOneOption");
       }
@@ -203,6 +214,8 @@ export default defineComponent({
     }
 
     function successHandler(res: any) {
+      showMaxAttemptsError.value = false;
+      clearInterval(interval.value);
       if (!!res) {
         openSnackbar("success", "Success.QuizAttempt");
         emit("solved", props.data.id);
@@ -214,7 +227,12 @@ export default defineComponent({
 
     function errorHandler(error: any) {
       console.log("error handler", error);
-      openSnackbar("error", error?.detail ?? "");
+      if (error.detail == "Error.TooManyAttemptsForQuiz") {
+        showMaxAttemptsError.value = true;
+        secondsForTryAgain.value = error.details ?? "";
+      } else {
+        openSnackbar("error", error?.detail ?? "");
+      }
     }
 
     async function submitFeedBack() {
@@ -252,8 +270,10 @@ export default defineComponent({
       async () => {
         arrayOfAnswers.value = [];
         if (props?.data == null) return;
+        showMaxAttemptsError.value = false;
+        clearInterval(interval.value);
         setLoading(true);
-        console.log("dd");
+
         const [success, error] = await getSubTaskInQuiz(
           props?.data?.task_id ?? "",
           props?.data?.id ?? ""
@@ -279,6 +299,20 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
+    watch(
+      () => showMaxAttemptsError.value,
+      (newValue: any) => {
+        if (!!newValue) {
+          interval.value = setInterval(() => {
+            if (secondsForTryAgain.value <= 0) {
+              clearInterval(interval.value);
+              showMaxAttemptsError.value = false;
+            }
+            --secondsForTryAgain.value;
+          }, 1000);
+        }
+      }
+    );
     return {
       t,
       onclickSubmitForm,
@@ -297,6 +331,8 @@ export default defineComponent({
       openReportDialog,
       reportSubmitted,
       user,
+      showMaxAttemptsError,
+      secondsForTryAgain,
     };
   },
 });

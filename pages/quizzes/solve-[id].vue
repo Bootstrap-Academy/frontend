@@ -10,6 +10,7 @@
       />
 
       <FormQuizAnswer
+        v-if="arrayOfSubtasks.length || loading"
         :data="selectedQuiz ?? arrayOfSubtasks[0]"
         @solved="setSolvedLocally($event)"
         @updateQuestion="updateQuestion($event)"
@@ -25,7 +26,7 @@
           <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
         </template>
 
-        <template v-else-if="arrayOfSubtasks && arrayOfSubtasks.length > 0">
+        <template v-else-if="arrayOfSubtasks && arrayOfSubtasks.length">
           <div class="max-h-fit grid gap-card">
             <QuizCard
               class="max-h-fit"
@@ -37,12 +38,18 @@
             />
           </div>
         </template>
-
-        <template v-else-if="!loading">
-          <p>{{ t("Headings.EmptyQuiz") }}</p>
-        </template>
       </aside>
     </main>
+    <p
+      v-if="!loading && !arrayOfSubtasks.length"
+      class="text-center w-full mb-20 text-xl"
+    >
+      {{
+        t("Headings.EmptyQuizForThis", {
+          placeholder: t(notFoundFor),
+        })
+      }}
+    </p>
   </div>
 </template>
 
@@ -59,6 +66,7 @@ import { useI18n } from "vue-i18n";
 export default defineComponent({
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const quizzes: any = useQuizzes();
     const selectedQuiz = ref();
     const loading = ref(true);
@@ -75,8 +83,19 @@ export default defineComponent({
     const taskId = computed(() => {
       return route.query?.taskId ?? "";
     });
+
     const quizzesFrom = computed(() => {
       return route?.query?.quizzesFrom ?? "no found";
+    });
+
+    const notFoundFor = computed(() => {
+      if (quizzesFrom.value == "course") {
+        return "Headings.Course";
+      } else if (quizzesFrom.value == "skill") {
+        return "Headings.Skill";
+      } else {
+        return "Headings.Lecture";
+      }
     });
 
     function setSolvedLocally(id: any) {
@@ -98,7 +117,7 @@ export default defineComponent({
     function solveThis(quiz: any) {
       const coins = useCoins();
       if (quiz?.fee > 0 && coins.value < quiz?.fee) {
-        openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
       }
 
       if (!quiz.unlocked) {
@@ -131,6 +150,14 @@ export default defineComponent({
         );
       } else {
         console.log("selected quiz", quiz);
+        router.replace({
+          path: route.path,
+          query: {
+            quizzesFrom: quizzesFrom.value,
+            querySubTaskId: quiz.id,
+            taskId: quiz.task_id,
+          },
+        });
         selectedQuiz.value = quiz;
       }
     }
@@ -161,6 +188,7 @@ export default defineComponent({
 
       if (!quizzes.value.length) {
         loading.value = false;
+        console.log("quizzes are empty");
         return;
       }
 
@@ -183,6 +211,7 @@ export default defineComponent({
     });
 
     return {
+      t,
       id,
       quizzesFrom,
       quizzes,
@@ -192,6 +221,7 @@ export default defineComponent({
       setSolvedLocally,
       solveThis,
       updateQuestion,
+      notFoundFor,
     };
   },
 });

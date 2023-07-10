@@ -125,6 +125,7 @@ export default {
       const [success, error] = await getCourseByID(id.value);
 
       if (error) {
+        openSnackbar("error", error.detail);
         await getCourseSummaryByID(id.value);
       } else {
         isCourseAccessible.value = true;

@@ -52,10 +52,6 @@
         </article>
       </main>
     </body>
-    <audio ref="audio" autoplay>
-      <source src="../public/audio/applause3.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
   </div>
 </template>
 

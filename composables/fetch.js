@@ -69,15 +69,15 @@ const onResponse = async ({ request, options, response }) => {
 };
 
 const onResponseError = async ({ request, options, response }) => {
-  if (response.status == 403) {
-    console.log("resoinse._Data", response._data.detail);
-    openSnackbar("error", "Error.NotAllowed");
-    return;
-  }
+  // if (response.status == 403) {
+  //   console.log("resoinse._Data", response._data.detail);
+  //   openSnackbar("error", "Error.NotAllowed");
+  //   return;
+  // }
 
   let details = response?._data?.detail ?? "";
   if (typeof details == "object") {
-    console.log("details", details);
+    console.log("details error as object", details);
     let loc = details[0]?.loc ?? [];
     loc = loc.toString();
     loc = loc.replace(/_/g, " ");
@@ -161,8 +161,9 @@ const onResponseError = async ({ request, options, response }) => {
     return (response._data.detail = "Error.WebinarPrice");
   } else if (details.includes("skills_not_found")) {
     return (response._data.detail = "Error.SkillNotFound");
+  } else if (details.includes("no course access")) {
+    return (response._data.detail = "Error.NoCourseAccess");
   }
-
   details = response?._data.error;
   console.log("details", response);
   if (details.toLocaleLowerCase().includes("forbidden")) {
@@ -181,6 +182,8 @@ const onResponseError = async ({ request, options, response }) => {
     response._data.detail = "Error.solutionCodeFailed";
   } else if (details.toLocaleLowerCase().includes("challenge_not_found")) {
     response._data.detail = "Error.ChallengeNotFound";
+  } else if (details.toLocaleLowerCase().includes("not_enough_coins")) {
+    response._data.detail = "Error.NotEnoughCoins";
   }
 };
 

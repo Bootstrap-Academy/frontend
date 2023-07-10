@@ -8,6 +8,7 @@
     <Input
       :label="t('Inputs.Question')"
       v-model="form.question.value"
+      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
       @valid="form.question.valid = $event"
       :rules="form.question.rules"
     />
@@ -33,8 +34,9 @@
       <label class="text-body-2 text-body font-body block mb-2">
         {{ t("Inputs.Payed") }}
       </label>
-      <InputSwitch v-if="!!user?.admin" v-model="form.payed.value" />
+      <InputSwitch v-model="form.payed.value" />
     </div>
+
     <Input
       v-if="form.payed.value"
       :label="t('Inputs.Fee')"
@@ -44,7 +46,7 @@
       :rules="form.fee.rules"
     />
 
-    <article class="flex flex-wrap gap-card">
+    <!-- <article class="flex flex-wrap gap-card">
       <button
         type="button"
         v-for="questionType of questionTypes"
@@ -59,10 +61,16 @@
       >
         {{ t(questionType.label) }}
       </button>
-    </article>
+    </article> -->
+    <Btn
+      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+      @click="onclickAddOption"
+      class="w-fit self-end"
+      >Add Option</Btn
+    >
 
-    <Btn @click="onclickAddOption" class="w-fit self-end">Add Option</Btn>
     <article
+      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
       class="flex gap-card items-center"
       v-for="(option, i) of options"
       :key="option?.id ?? i"
@@ -127,6 +135,17 @@ export default defineComponent({
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
 
+    const canEdit = computed(() => {
+      if (props.data != null) {
+        if (user.value?.admin) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    });
     // ============================================================= reactive
     const form = reactive<IForm>({
       question: {
@@ -304,22 +323,6 @@ export default defineComponent({
     }
     // ============================================================= ids
 
-    watch(
-      () => props.data,
-      async (newValue, oldValue) => {
-        if (!!!props.data) return;
-        setLoading(true);
-        const [success, error] = await getSubTaskAndSolutionInQuiz(
-          props.taskId,
-          newValue?.id
-        );
-        setLoading(false);
-        if (success) setFormData(success);
-        else openSnackbar("error", error);
-      },
-      { immediate: true, deep: true }
-    );
-
     function setFormData(data: any) {
       if (!!!data) return;
       form.question.value = data.question ?? "";
@@ -393,6 +396,22 @@ export default defineComponent({
       }
       return false;
     }
+
+    function checkIsSingleChoice(arr: any) {
+      let trueAre = 0;
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].correct === true) {
+          ++trueAre;
+          console.log("true");
+        }
+      }
+
+      if (trueAre == 1) {
+        return true;
+      } else if (trueAre > 1) {
+        return false;
+      }
+    }
     async function onclickSubmitForm() {
       if (form.validate()) {
         if (options.length <= 1) {
@@ -405,6 +424,11 @@ export default defineComponent({
         }
         if (hasDuplicates(options))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
+        if (checkIsSingleChoice(options)) {
+          form.single_choice.value = true;
+        } else {
+          form.single_choice.value = false;
+        }
 
         if (!!!props.data) {
           fnCreateSubTask();
@@ -460,6 +484,32 @@ export default defineComponent({
       openSnackbar("error", res?.detail ?? "");
     }
 
+    watch(
+      () => props.data,
+      async (newValue, oldValue) => {
+        if (!!!props.data) return;
+        setLoading(true);
+        const [success, error] = await getSubTaskAndSolutionInQuiz(
+          props.taskId,
+          newValue?.id
+        );
+        setLoading(false);
+        if (success) setFormData(success);
+        else openSnackbar("error", error);
+      },
+      { immediate: true, deep: true }
+    );
+
+    watch(
+      () => form.payed.value,
+      async (newValue, oldValue) => {
+        if (newValue) {
+          form.fee.value = 0;
+        }
+      },
+      { immediate: true, deep: true }
+    );
+
     onMounted(async () => {});
 
     return {
@@ -476,6 +526,7 @@ export default defineComponent({
       onclickSetQuestionType,
       setOptionCorrect,
       user,
+      canEdit,
     };
   },
 });

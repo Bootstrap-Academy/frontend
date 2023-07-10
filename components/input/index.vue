@@ -22,6 +22,7 @@
       :class="[
         {
           'invalid:ring-error valid:ring-accent': (touched && input) || error,
+          'cursor-not-allowed': disabled,
         },
         light
           ? 'text-subheading bg-white ring-subheading focus:ring-offset-subheading focus:ring-subheading'

@@ -11,6 +11,10 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Course":"Course",
+		"Lecture":"Lecture",
+		"EmptyQuizForThis":"No Quizzes Found For This {placeholder}",
+		"UnlockQuiz":"Buy Quiz to Unlock",
 		"ReportComment":"Reason For Reporting",
 		"Report":"Report",
 		"Abuse":"Abuse",
@@ -258,6 +262,7 @@
 	},
 	"Body": {
 		"BuyCodingChallnge":"Coding challenge is locked. Fee will be deducted from your account for buying this coding challenge.",
+		"BuyQuiz":"Quiz is locked. Fee will be deducted from your account for buying this Quiz.",
 		"DeleteCodingChallenge":"Are you sure you want to delete coding challenge?",
 		"DeleteQuiz":"Are you sure you want to delete Quiz?",
 		"DeleteChallenge":"Are you sure you want to delete Challenge?",
@@ -789,15 +794,17 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"NotEnoughCoins":"You Don't have enough coins",
+		"NoCourseAccess":"You don't have access to this course",
 		"NotAllowedForRatings":"You are Not Allowed For Ratings",
 		"SelectRatingFirst":"Select rating please to continue",
 		"QuizOrCodingChallengeNotFound":"This Quiz / CodingChallenge Not Found",
 		"CodingChallengeLocked":"Coding challenge is locked",
-		"UpdatedQuiz":"Cannot update Quiz. Try Making Update Again",
+		"UpdatedQuiz":"Cannot update Quiz. Try Updating Again",
 		"NotAllowed":"You Are Not Allowed For This Action",
 		"SolutionCodeFailed":"Check your Solution Code or Environment",
 		"SelectAtLeastOneOption":"Select at least one option",
-		"TooManyAttemptsForQuiz":"Too Many Attempts For Solvinig",
+		"TooManyAttemptsForQuiz":"Too Many Attempts For Solving. Try Again In {second} seconds",
 		"OneCorrectOptionIsMust":"There should must be one correct option",
 		"MinimumTwoOptionsForQuiz":"There should be minimum two options provided",
 		"OptionsCannotBeSame":"Provided Options Should Not Be Duplicated",

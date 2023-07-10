@@ -10,6 +10,7 @@
           class="content"
           v-for="(course, i) of courses"
           :key="i"
+          @click="saveLastVisitedCourse(course?.id)"
           :to="`/courses/${course.id}?skillID=${skillID}&subSkillID=${subSkillID}`"
         >
           <CourseCard :data="course" />
@@ -97,8 +98,12 @@ export default defineComponent({
   emits: [],
   setup(props, { emit }) {
     const { t } = useI18n();
+    function saveLastVisitedCourse(courseId: any) {
+      const lastViewCourse = useCookie("lastViewCourse");
+      lastViewCourse.value = courseId;
+    }
 
-    return { t };
+    return { t, saveLastVisitedCourse };
   },
 });
 </script>

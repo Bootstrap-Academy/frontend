@@ -28,20 +28,20 @@
 
         <article class="flex gap-10 mt-6 items-center justify-between">
           <div class="flex gap-6 flex-wrap">
-            <section class="flex gap-2">
+            <!-- <section class="flex gap-2">
               <p class="text-sm">{{ t("Headings.Coins") }} :</p>
               <p class="text-accent text-sm">{{ subtask?.coins ?? "" }}</p>
-            </section>
+            </section> -->
 
             <section class="flex gap-2">
               <p class="text-sm">{{ t("Headings.FEE") }} :</p>
               <p class="text-accent text-sm">{{ subtask?.fee ?? "" }}</p>
             </section>
 
-            <section class="flex gap-2">
+            <!-- <section class="flex gap-2">
               <p class="text-sm">{{ t("Headings.XP") }} :</p>
               <p class="text-accent text-sm">{{ subtask?.xp ?? "" }}</p>
-            </section>
+            </section> -->
           </div>
           <LockOpenIcon v-if="subtask?.unlocked" class="h-4 w-4 text-white" />
           <LockClosedIcon v-else class="h-4 w-4 cursor text-white" />

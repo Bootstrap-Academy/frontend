@@ -313,6 +313,7 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		return [success, null]
 	}
 	catch (error: any) {
+		console.log("error for attempting", error.data)
 		return [null, error.data]
 	}
 

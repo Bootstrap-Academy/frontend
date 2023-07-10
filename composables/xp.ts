@@ -1,5 +1,5 @@
 export const useXP = () => useState('xp', (): any => null);
-
+import { useUser } from "./user";
 export async function getXP() {
 	const user = <any>useUser();
 
