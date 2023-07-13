@@ -12,7 +12,6 @@ export async function getXP() {
 
 		const xp = useXP();
 		xp.value = response;
-
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];

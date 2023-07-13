@@ -12,11 +12,11 @@
       </p>
       <InputBtn v-else sm> Buy</InputBtn>
       <ArrowRightIcon
-        v-if="codingChallenge.unlocked"
+        v-if="codingChallenge.unlocked && !codingChallenge.solved"
         class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
       />
       <LockClosedIcon
-        v-else
+        v-else-if="!codingChallenge.solved"
         class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
       />
     </article>

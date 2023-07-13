@@ -3,6 +3,7 @@
   <div class="grid gap-card grid-rows-[auto_minmax(0,1fr)] h-full w-full">
     <header class="flex flex-wrap gap-card justify-between" v-if="showButtons">
       <InputSelect
+        class="z-0"
         id="code-language"
         :options="languages"
         sm

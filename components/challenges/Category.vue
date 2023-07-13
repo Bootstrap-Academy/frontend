@@ -12,10 +12,7 @@
       <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p>
     </header>
 
-    <NuxtLink
-      :to="`/challenges/${data?.id ?? ''}/create`"
-      v-if="canCreate || user?.admin"
-    >
+    <NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="user?.admin">
       <Btn :icon="PlusIcon" class="mt-box" sm>
         {{ t("Buttons.AddChallenge") }}
       </Btn>

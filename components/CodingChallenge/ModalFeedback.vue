@@ -1,0 +1,135 @@
+<template>
+  <section
+    v-if="isSolved"
+    class="mb-6 border border-accent p-3 sm:px-6 lg:px-8 rounded-lg"
+  >
+    <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p>
+    <div class="flex gap-4 items-center mt-8">
+      <button
+        @click="feedback = 'POSITIVE'"
+        type="button"
+        :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
+        class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+      >
+        👍
+      </button>
+
+      <button
+        @click="feedback = 'NEUTRAL'"
+        type="button"
+        :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
+        class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+      >
+        😐
+      </button>
+
+      <button
+        @click="feedback = 'NEGATIVE'"
+        type="button"
+        :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
+        class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+      >
+        👎
+      </button>
+    </div>
+    <InputBtn :loading="loading" @click="submitFeedBack()" full class="mt-6">{{
+      t("Buttons.Continue")
+    }}</InputBtn>
+    <article class="flex justify-end">
+      <p
+        v-if="isSolved"
+        @click="openReportDialog()"
+        class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
+      >
+        {{ t("Headings.Report") }}
+      </p>
+    </article>
+
+    <DialogSlot
+      v-if="dialogReportTask"
+      :label="'Headings.Report'"
+      :propClass="'modal-width-lg lg:modal-width-sm '"
+      :show="dialogSlot"
+      @closeFunction="dialogReportTask = false"
+      :showCross="false"
+    >
+      <FormReportSubtask
+        :stopDialogSlotFromBeingFalse="true"
+        @reportSubmitted="goBack()"
+        :task_id="challengeId"
+        :subtask_id="codingChallengeId"
+      />
+    </DialogSlot>
+  </section>
+</template>
+
+<script lang="ts">
+import { useI18n } from "vue-i18n";
+import {
+  useDialogCodingChallengeFeedback,
+  useDialogSlot,
+} from "~~/composables/dialogSlot";
+export default {
+  props: {
+    isSolved: { type: Boolean, default: false },
+    codingChallengeId: { type: String, default: "" },
+    challengeId: { type: String, default: "" },
+  },
+  setup(props) {
+    const { t } = useI18n();
+    const feedback = ref("");
+    const dialogReportTask = useDialogReportTask();
+    const dialogSlot = useDialogSlot();
+    const router = useRouter();
+    const dialogCodingChallengeFeedback = useDialogCodingChallengeFeedback();
+
+    function openReportDialog() {
+      dialogSlot.value = true;
+      dialogReportTask.value = true;
+    }
+    const loading = ref(false);
+
+    async function submitFeedBack() {
+      if (feedback.value.trim() == "") {
+        return openSnackbar("error", "Error.SelectRatingFirst");
+      }
+      loading.value = true;
+      const [success, error] = await rateQuiz(
+        props.challengeId,
+        props.codingChallengeId,
+        { rating: feedback.value }
+      );
+      loading.value = false;
+
+      feedback.value = "";
+      if (success !== null) {
+        openSnackbar("success", "Success.SubmittedRating");
+        goBack();
+      } else {
+        openSnackbar("error", error);
+      }
+    }
+
+    function goBack() {
+      dialogSlot.value = false;
+      dialogReportTask.value = false;
+      dialogCodingChallengeFeedback.value = false;
+
+      router.go(-1);
+    }
+
+    return {
+      submitFeedBack,
+      feedback,
+      dialogReportTask,
+      dialogSlot,
+      openReportDialog,
+      t,
+      goBack,
+      loading,
+    };
+  },
+};
+</script>
+
+<style scoped></style>

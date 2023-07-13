@@ -190,7 +190,7 @@ export async function reportSubtask(body: any) {
             return [null, "Error.QuizOrCodingChallengeNotFound"]
         }
         else {
-            return [null, error]
+            return [null, error?.data?.detail ?? ""]
         }
     }
 }

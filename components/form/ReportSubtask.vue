@@ -31,6 +31,7 @@ export default defineComponent({
   props: {
     task_id: { type: String, default: "" },
     subtask_id: { type: String, default: "" },
+    stopDialogSlotFromBeingFalse: { type: Boolean, default: false },
   },
   emits: ["reportSubmitted"],
   setup(props, { emit }) {
@@ -41,8 +42,10 @@ export default defineComponent({
     const comment = ref("");
     function closeReportDialog() {
       console.log("closed");
+      if (!props.stopDialogSlotFromBeingFalse) {
+        dialogSlot.value = false;
+      }
       dialogReportTask.value = false;
-      dialogSlot.value = false;
     }
     const reportValueArray = [
       { key: "Abuse", value: "ABUSE" },

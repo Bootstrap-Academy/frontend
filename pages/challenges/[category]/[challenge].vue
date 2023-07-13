@@ -60,11 +60,6 @@
     <aside
       class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
     >
-      <!-- <ChallengesItemTasks
-        :codingChallenges="allCodingChallenges"
-        :data="challenge"
-      /> -->
-
       <ChallengesItemSubmission
         :data="challenge"
         @id="watchSubmissionEmition($event)"
@@ -73,6 +68,7 @@
       <ChallengesItemLimits :data="codingChallenge" />
       <ChallengesItemExamples
         :code="code"
+        @isSolved="isSolved = true"
         :environment="environment"
         :examples="examples"
         :challengeId="challengeID"
@@ -87,6 +83,20 @@
       @environment="environment = $event"
       v-model="code"
     />
+
+    <DialogSlot
+      v-if="dialogCodingChallengeFeedback"
+      :label="'Headings.Feedback'"
+      :propClass="'modal-width-lg lg:modal-width-sm'"
+      :show="dialogSlot"
+      @closeFunction="dialogCodingChallengeFeedback = false"
+      >a
+      <CodingChallengeModalFeedback
+        :challengeId="challengeID"
+        :codingChallengeId="codingChallengeId"
+        :isSolved="isSolved"
+      />
+    </DialogSlot>
   </main>
 </template>
 
@@ -100,6 +110,10 @@ import {
   getExamples,
   useCodingExamples,
 } from "~~/composables/codingChallenges";
+import {
+  useDialogCodingChallengeFeedback,
+  useDialogSlot,
+} from "~~/composables/dialogSlot";
 
 definePageMeta({
   layout: "inner",
@@ -112,7 +126,12 @@ export default {
   },
   setup() {
     const { t } = useI18n();
+    const isSolved = ref(false);
     const loading = ref(true);
+    const dialogCodingChallengeFeedback: any =
+      useDialogCodingChallengeFeedback();
+    const dialogSlot = useDialogSlot();
+    const router = useRouter();
 
     const challenge = useChallenge();
     const category = useChallengeCategory();
@@ -143,6 +162,26 @@ export default {
       if (!!success) {
       } else openSnackbar("error", error);
     }
+
+    function dialogClosed() {
+      dialogCodingChallengeFeedback.value = false;
+      dialogSlot.value = false;
+
+      router.go(-1);
+    }
+
+    watch(
+      () => isSolved.value,
+      (newValue, oldValue) => {
+        console.log("watching ");
+
+        if (newValue) {
+          dialogCodingChallengeFeedback.value = true;
+          dialogSlot.value = true;
+          console.log("watching inside if");
+        }
+      }
+    );
 
     onMounted(async () => {
       await Promise.all([
@@ -190,6 +229,10 @@ export default {
       challengeID,
       codingChallenge,
       examples,
+      isSolved,
+      dialogCodingChallengeFeedback,
+      dialogSlot,
+      dialogClosed,
     };
   },
 };

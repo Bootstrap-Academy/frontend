@@ -184,6 +184,8 @@ const onResponseError = async ({ request, options, response }) => {
     response._data.detail = "Error.ChallengeNotFound";
   } else if (details.toLocaleLowerCase().includes("not_enough_coins")) {
     response._data.detail = "Error.NotEnoughCoins";
+  } else if (details.toLocaleLowerCase().includes("banned")) {
+    response._data.detail = "Error.UserIsBanned";
   }
 };
 

@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Feedback":"Feedback",
 		"Course":"Course",
 		"Lecture":"Lecture",
 		"EmptyQuizForThis":"No Quizzes Found For This {placeholder}",
@@ -794,6 +795,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"UserIsBanned":"You are banned cannot perform this action",
 		"NotEnoughCoins":"You Don't have enough coins",
 		"NoCourseAccess":"You don't have access to this course",
 		"NotAllowedForRatings":"You are Not Allowed For Ratings",

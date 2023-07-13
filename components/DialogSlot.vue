@@ -12,6 +12,7 @@ import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   label: { type: String, defalt: "" },
+  showCross: { type: Boolean, default: true },
   propClass: { type: String, default: "" },
 });
 
@@ -61,6 +62,7 @@ function close() {
               <div class="flex justify-between items-center mb-5">
                 <p class="font-semibold">{{ t(label) }}</p>
                 <XMarkIcon
+                  v-if="showCross"
                   @click="close()"
                   class="h-5 w-5 relative cursor-pointer text-white"
                 />

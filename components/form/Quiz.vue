@@ -43,7 +43,6 @@
       :type="'number'"
       v-model="form.fee.value"
       @valid="form.fee.valid = $event"
-      :rules="form.fee.rules"
     />
 
     <!-- <article class="flex flex-wrap gap-card">
@@ -117,7 +116,8 @@ import { useI18n } from "vue-i18n";
 import { IForm } from "~/types/form";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import {
-  createSubTaskInQuiz,
+  updateSubTaskInQuizForUser,
+  updateSubTaskInQuizForAdmin,
   getSubTaskAndSolutionInQuiz,
 } from "~~/composables/quizzes";
 
@@ -324,6 +324,7 @@ export default defineComponent({
     // ============================================================= ids
 
     function setFormData(data: any) {
+      console.log("set form data");
       if (!!!data) return;
       form.question.value = data.question ?? "";
       form.coin.value = data.coins ?? "";
@@ -433,7 +434,8 @@ export default defineComponent({
         if (!!!props.data) {
           fnCreateSubTask();
         } else {
-          fnEditSubTask();
+          if (!user?.value.admin) fnEditSubTaskForUser();
+          else fnEditSubTaskForAdmin();
         }
       } else {
         openSnackbar("error", "Error.InvalidForm");
@@ -454,9 +456,34 @@ export default defineComponent({
 
       success ? successHandler(success) : errorHandler(error);
     }
-    async function fnEditSubTask() {
+
+    async function fnEditSubTaskForUser() {
       form.submitting = true;
-      const [success, error] = await updateSubTaskInQuiz(
+      if (!user.value.admin) {
+      }
+      const [success, error] = await updateSubTaskInQuizForUser(
+        props.taskId,
+        props.data?.id,
+        {
+          // answers: form.body().answers,
+          // question: form.body().question,
+          // coins: !!form.body().coin ? form.body().coin : 0,
+          // xp: !!form.body().xp ? form.body().xp : 0,
+          fee: !!form.body().fee ? form.body().fee : 0,
+          // single_choice: form.body().single_choice,
+        }
+      );
+      form.submitting = false;
+      !!success
+        ? openSnackbar("success", "Success.UpdatedQuiz")
+        : openSnackbar("error", "error.UpdatedQuiz");
+    }
+
+    async function fnEditSubTaskForAdmin() {
+      form.submitting = true;
+      if (!user.value.admin) {
+      }
+      const [success, error] = await updateSubTaskInQuizForAdmin(
         props.taskId,
         props.data?.id,
         {
@@ -503,11 +530,12 @@ export default defineComponent({
     watch(
       () => form.payed.value,
       async (newValue, oldValue) => {
-        if (newValue) {
+        if (newValue == false) {
+          console.log("watch input payed");
           form.fee.value = 0;
         }
       },
-      { immediate: true, deep: true }
+      { deep: true }
     );
 
     onMounted(async () => {});

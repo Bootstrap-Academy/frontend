@@ -226,7 +226,6 @@ export async function getSubTasksInQuiz(taskId: any) {
 	}
 }
 
-
 export async function createQuiz(courseId: any, body: any) {
 	try {
 		console.log("body is", body)
@@ -237,7 +236,6 @@ export async function createQuiz(courseId: any, body: any) {
 		return [null, error]
 	}
 }
-
 
 export async function getSubTaskInQuiz(taskId: any, subTaskId: any) {
 	try {
@@ -277,7 +275,7 @@ export async function createSubTaskInQuiz(taskId: any, body: any) {
 
 export async function deleteSubTaskInQuiz(taskId: any, subTaskId: any) {
 	try {
-		const res = await DELETE(`/challenges/tasks/${taskId}/multiple_choice/${subTaskId}`)
+		const res = await DELETE(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`)
 		await getSubTasksInQuiz(taskId)
 		return [res, null]
 	}
@@ -286,7 +284,18 @@ export async function deleteSubTaskInQuiz(taskId: any, subTaskId: any) {
 	}
 }
 
-export async function updateSubTaskInQuiz(taskId: any, subTaskId: any, body: any) {
+export async function updateSubTaskInQuizForUser(taskId: any, subTaskId: any, body: any) {
+	try {
+		const res = await PATCH(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`, body)
+		await getSubTasksInQuiz(taskId)
+		return [res, null]
+	}
+	catch (error) {
+		return [null, error]
+	}
+}
+
+export async function updateSubTaskInQuizForAdmin(taskId: any, subTaskId: any, body: any) {
 	try {
 		const res = await PATCH(`/challenges/tasks/${taskId}/multiple_choice/${subTaskId}`, body)
 		await getSubTasksInQuiz(taskId)

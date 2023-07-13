@@ -24,7 +24,8 @@
           {{ t("Buttons.Solve") }}
         </Btn>
 
-        <NuxtLink :to="editTo" v-if="data?.creator == user.id || !!user.admin">
+        <!-- <NuxtLink :to="editTo" v-if="data?.creator == user.id || !!user.admin"> -->
+        <NuxtLink :to="editTo" v-if="!!user.admin">
           <Btn secondary class="w-fit" :icon="PencilIcon">
             {{ t("Buttons.EditChallenge") }}
           </Btn>

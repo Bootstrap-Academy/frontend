@@ -11,6 +11,7 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"Feedback":"Rückmeldung",
 		"Course":"Kurs",
 		"Lecture":"Vorlesung",
 		"EmptyQuizForThis":"Für diesen {placeholder} wurden keine Tests gefunden",
@@ -795,6 +796,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"UserIsBanned":"Sie sind gesperrt und können diese Aktion nicht ausführen",
 		"NotEnoughCoins":"Sie haben nicht genug Münzen",
 		"NoCourseAccess":"Sie haben keinen Zugriff auf diesen Kurs",
 		"NotAllowedForRatings":"Sie sind für Bewertungen nicht zugelassen",
