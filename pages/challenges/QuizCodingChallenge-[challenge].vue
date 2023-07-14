@@ -50,7 +50,6 @@
       <ChallengesItemLimits :data="codingChallenge" />
       <ChallengesItemExamples
         :code="code"
-        @isSolved="isSolved = true"
         :environment="environment"
         :examples="examples"
         :challengeId="challengeID"
@@ -65,7 +64,7 @@
       @environment="environment = $event"
       v-model="code"
     />
-    <DialogSlot
+    <!-- <DialogSlot
       v-if="dialogCodingChallengeFeedback"
       :label="'Headings.Feedback'"
       :propClass="'modal-width-lg lg:modal-width-sm'"
@@ -77,7 +76,7 @@
         :codingChallengeId="codingChallengeId"
         :isSolved="isSolved"
       />
-    </DialogSlot>
+    </DialogSlot> -->
   </main>
 </template>
 
@@ -108,12 +107,7 @@ export default {
   setup() {
     const { t } = useI18n();
     const loading = ref(true);
-    const isSolved = ref(false);
-    const router = useRouter();
-
-    const dialogCodingChallengeFeedback: any =
-      useDialogCodingChallengeFeedback();
-    const dialogSlot = useDialogSlot();
+    // const isSolved = ref(false);
 
     const challenge = useChallenge();
     const codingChallenge = useCodingChallenge();
@@ -141,24 +135,19 @@ export default {
       if (!!success) {
       } else openSnackbar("error", error);
     }
-    function dialogClosed() {
-      dialogCodingChallengeFeedback.value = false;
-      dialogSlot.value = false;
-      router.go(-1);
-    }
 
-    watch(
-      () => isSolved.value,
-      (newValue, oldValue) => {
-        console.log("watching ");
+    // watch(
+    //   () => isSolved.value,
+    //   (newValue, oldValue) => {
+    //     console.log("watching ");
 
-        if (newValue) {
-          dialogCodingChallengeFeedback.value = true;
-          dialogSlot.value = true;
-          console.log("watching inside if");
-        }
-      }
-    );
+    //     if (newValue) {
+    //       dialogCodingChallengeFeedback.value = true;
+    //       dialogSlot.value = true;
+    //       console.log("watching inside if");
+    //     }
+    //   }
+    // );
 
     onMounted(async () => {
       await Promise.all([
@@ -183,10 +172,7 @@ export default {
       challengeID,
       codingChallenge,
       examples,
-      isSolved,
-      dialogCodingChallengeFeedback,
-      dialogSlot,
-      dialogClosed,
+      // isSolved,
     };
   },
 };

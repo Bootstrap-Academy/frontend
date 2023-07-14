@@ -344,6 +344,9 @@ export async function rateQuiz(taskId: any, subTaskid: any, body: any) {
 		else if (msg == 'permission_denied') {
 			return [null, "Error.NotAllowedForRatings"]
 		}
+		else if (msg == 'banned') {
+			return [null, "Error.UserIsBanned"]
+		}
 		else {
 			return [null, error]
 		}

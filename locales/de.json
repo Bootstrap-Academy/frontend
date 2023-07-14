@@ -800,6 +800,7 @@
 		"NotEnoughCoins":"Sie haben nicht genug Münzen",
 		"NoCourseAccess":"Sie haben keinen Zugriff auf diesen Kurs",
 		"NotAllowedForRatings":"Sie sind für Bewertungen nicht zugelassen",
+		"NotAllowedForReport":"Es ist Ihnen nicht gestattet, sich zu melden",
 		"SelectRatingFirst":"Bitte Bewertung auswählen, um fortzufahren",
 		"QuizOrCodingChallengeNotFound":"Dieses Quiz/CodingChallenge wurde nicht gefunden",
 		"CodingChallengeLocked":"Die Coding challenge ist gesperrt",

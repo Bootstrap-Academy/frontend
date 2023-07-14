@@ -189,6 +189,12 @@ export async function reportSubtask(body: any) {
         if (msg == 'subtask_not_found') {
             return [null, "Error.QuizOrCodingChallengeNotFound"]
         }
+        else if (msg == 'banned') {
+            return [null, "Error.UserIsBanned"]
+        }
+        else if (msg == 'permission_denied') {
+            return [null, "Error.NotAllowedForReport"]
+        }
         else {
             return [null, error?.data?.detail ?? ""]
         }

@@ -179,7 +179,7 @@ const onResponseError = async ({ request, options, response }) => {
   } else if (details.toLocaleLowerCase().includes("evaluator_failed")) {
     response._data.detail = "Error.evaluatorFailed";
   } else if (details.toLocaleLowerCase().includes("testcase_failed")) {
-    response._data.detail = "Error.solutionCodeFailed";
+    response._data.detail = "Error.SolutionCodeFailed";
   } else if (details.toLocaleLowerCase().includes("challenge_not_found")) {
     response._data.detail = "Error.ChallengeNotFound";
   } else if (details.toLocaleLowerCase().includes("not_enough_coins")) {

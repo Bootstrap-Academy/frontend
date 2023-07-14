@@ -17,7 +17,9 @@
       <InputBtn @click="closeReportDialog()" secondary>
         {{ t("Buttons.Cancel") }}</InputBtn
       >
-      <InputBtn @click="submitForm()">{{ t("Buttons.Report") }}</InputBtn>
+      <InputBtn :loading="loading" @click="submitForm()">{{
+        t("Buttons.Report")
+      }}</InputBtn>
     </article>
   </div>
 </template>
@@ -40,6 +42,7 @@ export default defineComponent({
     const dialogSlot = useDialogSlot();
     const reason = ref("");
     const comment = ref("");
+    const loading = ref(false);
     function closeReportDialog() {
       console.log("closed");
       if (!props.stopDialogSlotFromBeingFalse) {
@@ -59,13 +62,15 @@ export default defineComponent({
       if (!!!reason.value || !!!comment.value) {
         return openSnackbar("error", "Error.InvalidForm");
       }
-
+      loading.value = true;
       const [success, error] = await reportSubtask({
         task_id: props.task_id ?? "",
         subtask_id: props.subtask_id ?? "",
         comment: comment.value,
         reason: reason.value,
       });
+      loading.value = false;
+
       if (success) {
         emit("reportSubmitted", true);
         openSnackbar("success", "Success.ReportedSubtask");
@@ -81,6 +86,7 @@ export default defineComponent({
       submitForm,
       reason,
       comment,
+      loading,
     };
   },
 });

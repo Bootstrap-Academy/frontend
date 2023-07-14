@@ -182,9 +182,6 @@ export default {
     });
 
     function solveCodingChallenge(codingChallenge: any) {
-      if (codingChallenge.solved) {
-        return;
-      }
       const coins = useCoins();
       if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
         return openSnackbar("info", "Error.NoEnoughCoinsToSolve");

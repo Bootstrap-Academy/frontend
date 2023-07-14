@@ -1,51 +1,81 @@
 <template>
   <div class="p-4 xl:p-5 bg-secondary mb-4 rounded-md cursor-pointer">
-    <article
-      :class="codingChallenge.unlocked ? '' : 'flex-row-reverse'"
-      class="flex gap-3 justify-between"
-    >
-      <p
-        v-if="!!codingChallenge?.description"
-        class="sm:w-3/4 clamp tight line-1 text-accent"
+    <section>
+      <article
+        :class="codingChallenge.unlocked ? '' : 'flex-row-reverse'"
+        class="flex gap-3 justify-between"
       >
-        {{ codingChallenge?.description ?? "" }}
-      </p>
-      <InputBtn v-else sm> Buy</InputBtn>
-      <ArrowRightIcon
-        v-if="codingChallenge.unlocked && !codingChallenge.solved"
-        class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
-      />
-      <LockClosedIcon
-        v-else-if="!codingChallenge.solved"
-        class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
-      />
-    </article>
-
-    <article class="flex flex-wrap gap-x-5 gap-y-2 justify-between mt-4">
-      <div class="flex items-center gap-3">
-        <p v-if="!codingChallenge?.solved" class="text-sm">
-          {{ t("Headings.Fee") }}:{{ codingChallenge?.fee ?? "_" }}
+        <p
+          v-if="!!codingChallenge?.description"
+          class="sm:w-3/4 clamp tight line-1 text-accent"
+        >
+          {{ codingChallenge?.description ?? "" }}
         </p>
+        <InputBtn v-else sm> Buy</InputBtn>
 
-        <section v-if="codingChallenge?.solved" class="flex items-center gap-3">
-          <p class="text-sm">
-            {{ t("Headings.Solved") }}
+        <ArrowRightIcon
+          v-if="codingChallenge.unlocked && !codingChallenge.solved"
+          class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
+        />
+        <LockClosedIcon
+          v-else-if="!codingChallenge.solved"
+          class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
+        />
+        <p
+          @click="feedback($event)"
+          class="text-success hover:scale-110 transition-all"
+          v-if="
+            codingChallenge?.solved &&
+            !codingChallenge?.rated &&
+            user?.id !== codingChallenge?.creator
+          "
+        >
+          Feedback
+        </p>
+      </article>
+
+      <article class="flex flex-wrap gap-x-5 gap-y-2 justify-between mt-4">
+        <div class="flex items-center gap-3">
+          <p v-if="!codingChallenge?.solved" class="text-sm">
+            {{ t("Headings.Fee") }}:{{ codingChallenge?.fee ?? "_" }}
           </p>
-          <span class="bg-[#30cf2d] rounded-full p-0.5"
-            ><CheckIcon class="h-3 w-3 text-white"
-          /></span>
-        </section>
-      </div>
 
-      <div class="flex gap-3">
-        <p class="text-sm">
-          {{ t("Headings.XP") }}:{{ codingChallenge?.xp ?? "" }}
-        </p>
-        <p class="text-sm">
-          {{ t("Headings.Coins") }}:{{ codingChallenge?.coins ?? "" }}
-        </p>
-      </div>
-    </article>
+          <section
+            v-if="codingChallenge?.solved"
+            class="flex items-center gap-3"
+          >
+            <p class="text-sm">
+              {{ t("Headings.Solved") }}
+            </p>
+            <span class="bg-[#30cf2d] rounded-full p-0.5"
+              ><CheckIcon class="h-3 w-3 text-white"
+            /></span>
+          </section>
+        </div>
+
+        <div class="flex gap-3">
+          <p class="text-sm">
+            {{ t("Headings.XP") }}:{{ codingChallenge?.xp ?? "" }}
+          </p>
+          <p class="text-sm">
+            {{ t("Headings.Coins") }}:{{ codingChallenge?.coins ?? "" }}
+          </p>
+        </div>
+      </article>
+    </section>
+    <DialogSlot
+      v-if="dialogCodingChallengeFeedback"
+      :label="'Headings.Feedback'"
+      :propClass="'modal-width-lg lg:modal-width-sm'"
+      :show="dialogSlot"
+      @closeFunction="dialogClosed()"
+    >
+      <CodingChallengeModalFeedback
+        @submitted="codingChallenge.rated = true"
+        :challengeId="codingChallenge.task_id"
+        :codingChallengeId="codingChallenge.id"
+      />
+    </DialogSlot>
   </div>
 </template>
 
@@ -66,11 +96,30 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
-    // async function buyCodingChallenge(codingChallenge: any) {
-    //   console.log("subtask coding chalegne buy", codingChallenge);
-    // }
+    const dialogCodingChallengeFeedback: any =
+      useDialogCodingChallengeFeedback();
+    const dialogSlot = useDialogSlot();
+    const user: any = useUser();
 
-    return { t };
+    function feedback(event: any) {
+      event.stopPropagation();
+      dialogSlot.value = true;
+      dialogCodingChallengeFeedback.value = true;
+    }
+
+    function dialogClosed() {
+      dialogCodingChallengeFeedback.value = false;
+      dialogSlot.value = false;
+    }
+
+    return {
+      t,
+      feedback,
+      dialogCodingChallengeFeedback,
+      dialogSlot,
+      dialogClosed,
+      user,
+    };
   },
 });
 </script>

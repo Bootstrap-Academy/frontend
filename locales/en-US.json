@@ -795,10 +795,11 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
-		"UserIsBanned":"You are banned cannot perform this action",
+			"UserIsBanned":"You are banned and cannot perform this action",
 		"NotEnoughCoins":"You Don't have enough coins",
 		"NoCourseAccess":"You don't have access to this course",
 		"NotAllowedForRatings":"You are Not Allowed For Ratings",
+		"NotAllowedForReport":"You are Not Allowed To Report",
 		"SelectRatingFirst":"Select rating please to continue",
 		"QuizOrCodingChallengeNotFound":"This Quiz / CodingChallenge Not Found",
 		"CodingChallengeLocked":"Coding challenge is locked",

@@ -1,8 +1,5 @@
 <template>
-  <section
-    v-if="isSolved"
-    class="mb-6 border border-accent p-3 sm:px-6 lg:px-8 rounded-lg"
-  >
+  <section class="mb-6 border border-accent p-3 sm:px-6 lg:px-8 rounded-lg">
     <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p>
     <div class="flex gap-4 items-center mt-8">
       <button
@@ -37,7 +34,6 @@
     }}</InputBtn>
     <article class="flex justify-end">
       <p
-        v-if="isSolved"
         @click="openReportDialog()"
         class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
       >
@@ -71,11 +67,12 @@ import {
 } from "~~/composables/dialogSlot";
 export default {
   props: {
-    isSolved: { type: Boolean, default: false },
     codingChallengeId: { type: String, default: "" },
     challengeId: { type: String, default: "" },
   },
-  setup(props) {
+  emits: ["submitted"],
+
+  setup(props, { emit }) {
     const { t } = useI18n();
     const feedback = ref("");
     const dialogReportTask = useDialogReportTask();
@@ -114,8 +111,7 @@ export default {
       dialogSlot.value = false;
       dialogReportTask.value = false;
       dialogCodingChallengeFeedback.value = false;
-
-      router.go(-1);
+      emit("submitted", true);
     }
 
     return {

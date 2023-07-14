@@ -51,10 +51,10 @@
     </header>
 
     <div class="bg-secondary style-box w-fit h-fit">
-      <ChallengesItemProgress
+      <!-- <ChallengesItemProgress
         :data="challenge"
         class="!w-fit justify-self-end"
-      />
+      /> -->
     </div>
 
     <aside
@@ -68,7 +68,6 @@
       <ChallengesItemLimits :data="codingChallenge" />
       <ChallengesItemExamples
         :code="code"
-        @isSolved="isSolved = true"
         :environment="environment"
         :examples="examples"
         :challengeId="challengeID"
@@ -84,7 +83,7 @@
       v-model="code"
     />
 
-    <DialogSlot
+    <!-- <DialogSlot
       v-if="dialogCodingChallengeFeedback"
       :label="'Headings.Feedback'"
       :propClass="'modal-width-lg lg:modal-width-sm'"
@@ -96,7 +95,7 @@
         :codingChallengeId="codingChallengeId"
         :isSolved="isSolved"
       />
-    </DialogSlot>
+    </DialogSlot> -->
   </main>
 </template>
 
@@ -128,10 +127,10 @@ export default {
     const { t } = useI18n();
     const isSolved = ref(false);
     const loading = ref(true);
-    const dialogCodingChallengeFeedback: any =
-      useDialogCodingChallengeFeedback();
-    const dialogSlot = useDialogSlot();
-    const router = useRouter();
+    // const dialogCodingChallengeFeedback: any =
+    //   useDialogCodingChallengeFeedback();
+    // const dialogSlot = useDialogSlot();
+    // const router = useRouter();
 
     const challenge = useChallenge();
     const category = useChallengeCategory();
@@ -163,25 +162,25 @@ export default {
       } else openSnackbar("error", error);
     }
 
-    function dialogClosed() {
-      dialogCodingChallengeFeedback.value = false;
-      dialogSlot.value = false;
+    // function dialogClosed() {
+    //   dialogCodingChallengeFeedback.value = false;
+    //   dialogSlot.value = false;
 
-      router.go(-1);
-    }
+    //   router.go(-1);
+    // }
 
-    watch(
-      () => isSolved.value,
-      (newValue, oldValue) => {
-        console.log("watching ");
+    // watch(
+    //   () => isSolved.value,
+    //   (newValue, oldValue) => {
+    //     console.log("watching ");
 
-        if (newValue) {
-          dialogCodingChallengeFeedback.value = true;
-          dialogSlot.value = true;
-          console.log("watching inside if");
-        }
-      }
-    );
+    //     if (newValue) {
+    //       dialogCodingChallengeFeedback.value = true;
+    //       dialogSlot.value = true;
+    //       console.log("watching inside if");
+    //     }
+    //   }
+    // );
 
     onMounted(async () => {
       await Promise.all([
@@ -230,9 +229,6 @@ export default {
       codingChallenge,
       examples,
       isSolved,
-      dialogCodingChallengeFeedback,
-      dialogSlot,
-      dialogClosed,
     };
   },
 };

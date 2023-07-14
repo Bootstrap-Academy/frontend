@@ -102,12 +102,14 @@ export default defineComponent({
         name == "challenges-category-create" ||
         name == "challenges-edit-challenge"
       ) {
-        pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
+        pathname = `/challenges/all?category=${route?.params?.category ?? ""}`;
         label = "Links.GoToChallenges";
       }
       // solve coding challenge
       else if (name == "challenges-category-challenge") {
-        pathname = `/challenges/all?category${route?.params?.category ?? ""}`;
+        pathname = `/challenges/all?category=${
+          route?.params?.category ?? ""
+        }&challenge=${route?.params?.challenge ?? ""}`;
         label = "Links.GoToChallenges";
       } else if (name == "challenges-QuizCodingChallenge-challenge") {
         pathname = ``;

@@ -167,7 +167,6 @@ export default {
         valid: true,
         value: null,
         rules: [
-          (v: number) => v > 0 || "Error.InputMinNumber_0",
           (v: number) =>
             v <= maxFee.value || `Error.InputMaxNumber_${maxFee.value}`,
         ],
@@ -316,6 +315,7 @@ export default {
       dialogSlot.value = false;
       dialogCreateCodingChallenge.value = false;
     }
+
     async function getEvaulatorAndSolution() {
       const [evaluatorSuccess, evaluatorError] = await getEvaluator(
         props.challengeId,

@@ -57,9 +57,6 @@ export default defineComponent({
     }
 
     function solveCodingChallenge(codingChallenge: any) {
-      if (codingChallenge.solved) {
-        return;
-      }
       console.log("coding challenge", codingChallenge);
       const coins = useCoins();
       if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {

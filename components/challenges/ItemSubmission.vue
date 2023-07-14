@@ -50,12 +50,22 @@
           <td
             class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
           >
-            <p class="px-2 bg-error text-heading rounded-sm w-fit mx-auto mb-2">
-              {{ submission?.result?.compile?.status ?? "" }}
+            <div
+              class="flex items-center gap-1"
+              v-if="submission?.result?.verdict?.toLowerCase().includes('ok')"
+            >
+              <p>Solved</p>
+              <CheckBadgeIcon class="h-5 w-5 text-success" />
+            </div>
+            <p
+              v-else
+              class="px-2 bg-error text-heading rounded-sm w-fit mx-auto mb-2"
+            >
+              {{ submission?.result?.verdict ?? "" }}
             </p>
-            <Btn sm tertiary>
+            <!-- <Btn sm tertiary>
               {{ t("Buttons.Details") }}
-            </Btn>
+            </Btn> -->
           </td>
           <td
             class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
@@ -82,9 +92,10 @@
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 import { PropType } from "vue";
-import { CodeBracketIcon } from "@heroicons/vue/24/solid";
+import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
 import { useDateFormat } from "@vueuse/core";
+import { CheckIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   emits: ["id"],
@@ -92,7 +103,7 @@ export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  components: { CodeBracketIcon },
+  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
@@ -103,7 +114,15 @@ export default defineComponent({
     function emitId(id: any) {
       emit("id", id);
     }
-    return { t, submissions, CodeBracketIcon, formattedTimeStamp, emitId };
+    return {
+      t,
+      submissions,
+      CodeBracketIcon,
+      CheckBadgeIcon,
+      formattedTimeStamp,
+      emitId,
+      CheckIcon,
+    };
   },
 });
 </script>
