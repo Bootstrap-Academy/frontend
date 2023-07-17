@@ -20,7 +20,7 @@
         </Chip>
         <NuxtLink
           v-if="user?.admin || canCreate"
-          :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}&skillID=${skillID}&subSkillID=${subSkillID}`"
+          :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel}`"
         >
           <Btn sm>{{ t("Buttons.AddQuizQuestion") }}</Btn>
         </NuxtLink>
@@ -53,13 +53,11 @@
         />
       </div>
     </article>
-
     <!-- pr-[70px] -->
     <article class="hidden midXl:flex gap-box items-center h-fit w-fit">
       <Btn sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
         {{ t("Buttons.Prev") }}
       </Btn>
-
       <Btn sm @click="goToNextLecture" :icon="ArrowRightIcon" icon-right>
         {{ t("Buttons.Next") }}
       </Btn>
@@ -103,7 +101,7 @@ export default defineComponent({
     const route = useRoute();
     const xp: any = useXP();
     const listOfCompletedCourses = useListOfCompletedCourses();
-
+    const totalLevel = ref(0);
     const courseID: any = computed(() => {
       return props.course?.id ?? "";
     });
@@ -115,6 +113,9 @@ export default defineComponent({
           skill.skills.forEach((subSkill: any) => {
             if (props.subSkillID == subSkill.skill && subSkill.level >= 5) {
               eligible = true;
+            }
+            if (props.subSkillID == subSkill.skill && subSkill.level >= 20) {
+              totalLevel.value = subSkill.level;
             }
           });
         }
@@ -283,6 +284,7 @@ export default defineComponent({
       showConfetti,
       user,
       canCreate,
+      totalLevel,
     };
   },
 });

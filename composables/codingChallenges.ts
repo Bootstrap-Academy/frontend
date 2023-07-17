@@ -55,6 +55,16 @@ export async function createCodingChallenge(taskId: string, body: any) {
         return [response, null];
 
     } catch (error: any) {
+        let msg = error?.data?.error ?? ""
+        if (msg == 'subtask_not_found') {
+            return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else if (msg == 'permission_denied') {
+            return [null, "Error.NotAllowedForRatings"]
+        }
+        else if (msg == 'banned') {
+            return [null, "Error.UserIsBanned"]
+        }
         return [null, error.data];
     }
 }

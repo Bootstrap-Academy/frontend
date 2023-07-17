@@ -22,7 +22,7 @@
             ? 'border-b-accent'
             : ' border-black hover:border-tertiary'
         "
-        @click="selectedTab = 1"
+        @click="setTab1()"
       >
         {{ $t("Headings.CodingChallenge") }}
       </article>
@@ -72,18 +72,30 @@ export default {
     const sectionId = ref();
     const courseId = ref();
     const lectureId = ref();
+    const level: any = ref(0);
     const quizId = ref();
     const loading = ref(true);
     const selectedTab = ref(0);
-
+    const user: any = useUser();
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
+    function setTab1() {
+      if (!!!user.value.admin && level.value < 20) {
+        return openSnackbar(
+          "error",
+          "Error.Level20RequiredForCreatingCodingChallenge"
+        );
+      } else {
+        selectedTab.value = 1;
+      }
+    }
     watch(
       () => route,
       (newValue, oldValue) => {
         courseId.value = (newValue.query?.course ?? "").toString();
         lectureId.value = (newValue.query?.lecture ?? "").toString();
         sectionId.value = (newValue.query?.section ?? "").toString();
+        level.value = (newValue.query?.level ?? "").toString();
       },
       { immediate: true, deep: true }
     );
@@ -103,7 +115,15 @@ export default {
       await getAllCodingChallengesInATask(quizId.value);
       loading.value = false;
     });
-    return { subtasks, codingChallenges, t, selectedTab, quizId };
+    return {
+      subtasks,
+      codingChallenges,
+      t,
+      selectedTab,
+      quizId,
+      level,
+      setTab1,
+    };
   },
   components: { PencilIcon },
 };

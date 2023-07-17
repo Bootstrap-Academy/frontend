@@ -268,7 +268,17 @@ export async function createSubTaskInQuiz(taskId: any, body: any) {
 		await getSubTasksInQuiz(taskId)
 		return [res, null]
 	}
-	catch (error) {
+	catch (error: any) {
+		let msg = error?.data?.error ?? ""
+		if (msg == 'subtask_not_found') {
+			return [null, "Error.QuizOrCodingChallengeNotFound"]
+		}
+		else if (msg == 'permission_denied') {
+			return [null, "Error.NotAllowedForRatings"]
+		}
+		else if (msg == 'banned') {
+			return [null, "Error.UserIsBanned"]
+		}
 		return [null, error]
 	}
 }

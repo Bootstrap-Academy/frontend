@@ -508,7 +508,7 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar("error", res ?? "");
     }
 
     watch(

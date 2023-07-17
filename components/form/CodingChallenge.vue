@@ -306,7 +306,7 @@ export default {
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar("error", res ?? "");
     }
 
     function closeDialog() {
