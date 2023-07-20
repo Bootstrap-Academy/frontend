@@ -4,6 +4,9 @@ import { description } from '~~/description';
 export const useChallengesLoginUrl = () =>
 	useState('challengesLoginUrl', () => '');
 
+export const useEduMatchLoginUrl = () =>
+	useState('EduMatchLoginUrl', () => '');
+
 export const useMyChallengesStats: () => Ref<any> = () =>
 	useState('myChallengesStats', () => null);
 
@@ -117,6 +120,19 @@ export async function getChallengesLoginUrl() {
 
 		const challengesLoginUrl = useChallengesLoginUrl();
 		challengesLoginUrl.value = response ?? '';
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function getEduMatchLoginUrl() {
+	try {
+		const response = await GET('/auth/sessions/edumatch/login_url');
+
+		const eduMatchLoginUrl = useEduMatchLoginUrl();
+		eduMatchLoginUrl.value = response ?? '';
 
 		return [response, null];
 	} catch (error: any) {
