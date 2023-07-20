@@ -29,16 +29,14 @@
         👎
       </button>
     </div>
-    <InputBtn :loading="loading" @click="submitFeedBack()" full class="mt-6">{{
+    <!-- <InputBtn :loading="loading" @click="submitFeedBack()" full class="mt-6">{{
       t("Buttons.Continue")
-    }}</InputBtn>
+    }}</InputBtn> -->
     <article class="flex justify-end">
-      <p
+      <FlagIcon
+        class="h-5 w-5 text-error cursor-pointer mt-4"
         @click="openReportDialog()"
-        class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
-      >
-        {{ t("Headings.Report") }}
-      </p>
+      />
     </article>
 
     <DialogSlot
@@ -65,12 +63,14 @@ import {
   useDialogCodingChallengeFeedback,
   useDialogSlot,
 } from "~~/composables/dialogSlot";
+import { FlagIcon } from "@heroicons/vue/24/outline";
 export default {
   props: {
     codingChallengeId: { type: String, default: "" },
     challengeId: { type: String, default: "" },
   },
   emits: ["submitted"],
+  components: { FlagIcon },
 
   setup(props, { emit }) {
     const { t } = useI18n();
@@ -86,17 +86,26 @@ export default {
     }
     const loading = ref(false);
 
+    watch(
+      () => feedback.value,
+      (newValue, oldValue) => {
+        if (!!newValue) {
+          submitFeedBack();
+        }
+      }
+    );
+
     async function submitFeedBack() {
       if (feedback.value.trim() == "") {
         return openSnackbar("error", "Error.SelectRatingFirst");
       }
-      loading.value = true;
+      setLoading(true);
       const [success, error] = await rateQuiz(
         props.challengeId,
         props.codingChallengeId,
         { rating: feedback.value }
       );
-      loading.value = false;
+      setLoading(false);
 
       feedback.value = "";
       if (success !== null) {
@@ -121,6 +130,7 @@ export default {
       dialogSlot,
       openReportDialog,
       t,
+      FlagIcon,
       goBack,
       loading,
     };

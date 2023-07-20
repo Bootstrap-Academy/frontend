@@ -10,7 +10,7 @@
       <ChallengesMyRank :rank="myChallengesStats?.rank ?? 0" />
     </div>
 
-    <ChallengesProgressSummary :data="myChallengesStats?.challenges ?? null" />
+    <ChallengesProgressSummary :data="codingChallengesStats ?? null" />
 
     <ChallengesProgress
       v-for="(item, i) of progress"
@@ -25,11 +25,11 @@
 					{{ t('Buttons.MyChallenges') }}
 				</Btn>
 			</NuxtLink> -->
-      <!-- <NuxtLink to="/challenges/leader-board">
+      <NuxtLink to="/challenges/leader-board">
         <Btn tertiary>
           {{ t("Buttons.LeaderBoard") }}
         </Btn>
-      </NuxtLink> -->
+      </NuxtLink>
     </article>
   </section>
 </template>
@@ -44,36 +44,36 @@ export default defineComponent({
 
     const myChallengesStats = useMyChallengesStats();
 
-    const loading = ref(!!!myChallengesStats.value);
-
+    const codingChallengesStats: any = useCodingChallengesStats();
+    const loading = ref(!!!codingChallengesStats.value);
     onMounted(async () => {
-      await getMyChallengesStats();
+      await getCodingChallengesStats();
       loading.value = false;
     });
-
+    // const propgress = computed(() => {});
     const progress = computed(() => {
       return [
         {
-          heading: t("Headings.Score", {
-            score: myChallengesStats.value?.score?.current ?? 0,
-          }),
-          current: myChallengesStats.value?.score?.current ?? 0,
-          total: myChallengesStats.value?.score?.total ?? 10,
+          heading: t("Headings.Attempted"),
+          current: codingChallengesStats.value?.attempted ?? 0,
+          total: codingChallengesStats.value?.total ?? 10,
         },
         {
           heading: t("Headings.ChallengesSolved"),
-          current: myChallengesStats.value?.challenges?.solved ?? 0,
-          total: myChallengesStats.value?.challenges?.total ?? 10,
+          current: codingChallengesStats.value?.solved ?? 0,
+          total: codingChallengesStats.value?.total ?? 10,
         },
         {
-          heading: t("Headings.CategoriesCompleted"),
-          current: myChallengesStats.value?.categories?.completed ?? 0,
-          total: myChallengesStats.value?.categories?.total ?? 10,
+          heading: t("Headings.Unlocked"),
+          current: codingChallengesStats.value?.unlocked ?? 0,
+          total:
+            codingChallengesStats.value?.locked +
+              codingChallengesStats.value?.unlocked ?? 10,
         },
       ];
     });
 
-    return { t, loading, myChallengesStats, progress };
+    return { t, loading, myChallengesStats, codingChallengesStats, progress };
   },
 });
 </script>

@@ -11,7 +11,7 @@
         >
           {{ codingChallenge?.description ?? "" }}
         </p>
-        <InputBtn v-else sm> Buy</InputBtn>
+        <InputBtn v-else sm> {{ t("Buttons.Buy") }}</InputBtn>
 
         <ArrowRightIcon
           v-if="codingChallenge.unlocked && !codingChallenge.solved"
@@ -30,7 +30,7 @@
             user?.id !== codingChallenge?.creator
           "
         >
-          Feedback
+          {{ t("Headings.Feedback") }}
         </p>
       </article>
 

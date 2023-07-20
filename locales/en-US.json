@@ -11,6 +11,9 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"Unattempted":"Unattempted",
+		"Unlocked":"Unlocked",
+		"Attempted":"Attempted",
 		"Feedback":"Feedback",
 		"Course":"Course",
 		"Lecture":"Lecture",
@@ -795,6 +798,7 @@
 		"OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
 	},
 	"Error": {
+		"CannotGetEvaluator":"Evaluator Not Found",
 		"Level20RequiredForCreatingCodingChallenge":"Level twenty (20) is required for creating a Coding Challenge",
 		"UserIsBanned":"You are banned and cannot perform this action",
 		"NotEnoughCoins":"You Don't have enough coins",

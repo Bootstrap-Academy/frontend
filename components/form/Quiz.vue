@@ -30,7 +30,7 @@
         :rules="form.xp.rules"
       />
     </div>
-    <div class="flex items-center gap-card">
+    <div v-if="!!user?.admin" class="flex items-center gap-card">
       <label class="text-body-2 text-body font-body block mb-2">
         {{ t("Inputs.Payed") }}
       </label>
@@ -45,22 +45,6 @@
       @valid="form.fee.valid = $event"
     />
 
-    <!-- <article class="flex flex-wrap gap-card">
-      <button
-        type="button"
-        v-for="questionType of questionTypes"
-        :key="questionType.value"
-        @click="onclickSetQuestionType(questionType.value)"
-        class="w-40 h-20 border-2 border-info style-card"
-        :class="
-          selectedQuestionType == questionType.value
-            ? 'text-white bg-info'
-            : 'text-white'
-        "
-      >
-        {{ t(questionType.label) }}
-      </button>
-    </article> -->
     <Btn
       :class="canEdit ? '' : 'pointer-events-none opacity-25'"
       @click="onclickAddOption"

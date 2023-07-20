@@ -32,7 +32,7 @@
           'bg-error': option.correct == false && answer == option,
           'bg-warning': selected.includes(option),
           'pointer-events-none':
-            !!subtask.solved || subtask?.creator == user?.id,
+            !!subtask?.solved || subtask?.creator == user?.id,
         }"
       >
         {{ option }}
@@ -44,20 +44,24 @@
     >
       <InputBtn
         full
-        v-if="!!!askFeedBack"
+        v-if="!data?.solved && user?.id != subtask?.creator"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
       >
-        <span v-if="!data?.solved && user?.id != subtask?.creator">
-          {{ t("Buttons.SubmitAnswer") }}
-        </span>
-        <span v-else-if="!!data?.solved || user?.id == subtask?.creator">
-          {{ t("Buttons.Solved") }}
-        </span>
+        {{ t("Buttons.SubmitAnswer") }}
       </InputBtn>
 
-      <div v-if="askFeedBack" class="flex gap-4 items-center mt-8">
+      <InputBtn
+        v-if="(data?.solved && data?.rated) || user?.id == subtask?.creator"
+      >
+        {{ t("Buttons.Solved") }}
+      </InputBtn>
+
+      <div
+        v-if="data?.solved && !data.rated"
+        class="flex gap-4 items-center mt-8"
+      >
         <button
           @click="feedback = 'POSITIVE'"
           type="button"
@@ -85,25 +89,13 @@
           👎
         </button>
       </div>
-      <InputBtn
-        :loading="loading"
-        v-if="askFeedBack"
-        class="self-center"
-        @click="submitFeedBack()"
-        mt
-      >
-        {{ t("Buttons.Continue") }}
-      </InputBtn>
     </article>
-
     <article class="flex justify-end">
-      <p
-        v-if="askFeedBack && user?.id != subtask?.creator"
+      <FlagIcon
+        class="h-5 w-5 text-error cursor-pointer mt-4"
+        v-if="!data?.rated && data?.solved && user?.id != subtask?.creator"
         @click="openReportDialog()"
-        class="text-error text-end mt-4 text-sm cursor-pointer w-fit"
-      >
-        {{ t("Headings.Report") }}
-      </p>
+      />
     </article>
 
     <DialogSlot
@@ -127,13 +119,14 @@ import { defineComponent, ref, PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
 import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
+import { FlagIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  emits: ["solved", "updateQuestion"],
-
+  emits: ["solved", "updateQuestion", "rated"],
+  components: { FlagIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -142,7 +135,6 @@ export default defineComponent({
     const dialogSlot = useDialogSlot();
     const loading = ref(false);
     const selected: any = ref([]);
-    const askFeedBack = ref(false);
     const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
     const feedback = ref("");
@@ -219,14 +211,12 @@ export default defineComponent({
       if (!!res) {
         openSnackbar("success", "Success.QuizAttempt");
         emit("solved", props.data.id);
-        askFeedBack.value = true;
       } else if (!res) {
         openSnackbar("error", "Error.QuizAttempt");
       }
     }
 
     function errorHandler(error: any) {
-      console.log("error handler", error);
       if (error.detail == "Error.TooManyAttemptsForQuiz") {
         showMaxAttemptsError.value = true;
         secondsForTryAgain.value = error.details ?? "";
@@ -239,27 +229,24 @@ export default defineComponent({
       if (feedback.value.trim() == "") {
         return openSnackbar("error", "Error.SelectRatingFirst");
       }
-      console.log("task id", subtask.value.task_id);
-      console.log("subtask id", subtask.value.id);
-      loading.value = true;
+      setLoading(true);
       const [success, error] = await rateQuiz(
         subtask.value.task_id,
         subtask.value.id,
         { rating: feedback.value }
       );
-      loading.value = false;
-
+      setLoading(false);
       feedback.value = "";
       if (success !== null) {
+        emit("rated", props.data.id);
         openSnackbar("success", "Success.SubmittedRating");
-        askFeedBack.value = false;
       } else {
         openSnackbar("error", error);
       }
     }
     function reportSubmitted() {
-      askFeedBack.value = false;
       emit("solved", props.data.id);
+      emit("rated", props.data.id);
     }
     function openReportDialog() {
       dialogSlot.value = true;
@@ -278,16 +265,9 @@ export default defineComponent({
           props?.data?.task_id ?? "",
           props?.data?.id ?? ""
         );
-        console.log("succcess", success);
         if (success) {
           emit("updateQuestion", success);
         }
-        // if (!!error) {
-        //   console.log("in if");
-        //   setLoading(false);
-        //   return openSnackbar("error", error);
-        // }
-
         if (!!subtask.value && subtask.value?.answers.length) {
           subtask.value?.answers.forEach((element: any) => {
             arrayOfAnswers.value.push(false);
@@ -313,13 +293,22 @@ export default defineComponent({
         }
       }
     );
+
+    watch(
+      () => feedback.value,
+      (newValue, oldValue) => {
+        if (!!newValue) {
+          submitFeedBack();
+        }
+      }
+    );
+
     return {
       t,
       onclickSubmitForm,
       submitFeedBack,
       refForm,
       loading,
-      askFeedBack,
       selected,
       subtask,
       arrayOfAnswers,
@@ -329,6 +318,7 @@ export default defineComponent({
       dialogReportTask,
       dialogSlot,
       openReportDialog,
+      FlagIcon,
       reportSubmitted,
       user,
       showMaxAttemptsError,

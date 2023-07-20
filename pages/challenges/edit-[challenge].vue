@@ -106,7 +106,7 @@ export default {
       return route.params.challenge;
     });
     const categoryId: any = computed(() => {
-      return route.query.categoryId;
+      return route.query.category;
     });
 
     onMounted(async () => {
@@ -121,7 +121,7 @@ export default {
       if (!!success) challengeData.value = success;
       else {
         openSnackbar("error", error?.detail);
-        router.push(`/challenges/all?category=${route.query.categoryId ?? ""}`);
+        router.push(`/challenges/all?category=${route.query.category ?? ""}`);
       }
     });
     return {

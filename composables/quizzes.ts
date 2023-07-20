@@ -214,9 +214,16 @@ export async function getQuizzesInCourse(courseId: any, section_id: any = "", le
 	}
 }
 
-export async function getSubTasksInQuiz(taskId: any) {
+export async function getSubTasksInQuiz(taskId: any, creator: any = '') {
 	try {
-		const res = await GET(`/challenges/tasks/${taskId}/multiple_choice`)
+		let query = ''
+		if (!!creator) {
+			query = `/challenges/tasks/${taskId}/multiple_choice?creator=${creator}`
+		}
+		else {
+			query = `/challenges/tasks/${taskId}/multiple_choice`
+		}
+		const res = await GET(query)
 		const subTasksInQuiz = useSubTasksInQuiz()
 		subTasksInQuiz.value = res ?? []
 		return [res, null]
@@ -286,7 +293,16 @@ export async function createSubTaskInQuiz(taskId: any, body: any) {
 export async function deleteSubTaskInQuiz(taskId: any, subTaskId: any) {
 	try {
 		const res = await DELETE(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`)
-		await getSubTasksInQuiz(taskId)
+		const route = useRoute()
+		const containQuizWord = route.fullPath.includes("/quizzes/")
+		const containCreateWord = route.fullPath.includes("/create")
+
+		if (containCreateWord && containQuizWord) {
+			const user: any = useUser()
+			await getSubTasksInQuiz(taskId, user?.value.id ?? "")
+		} else {
+			await getSubTasksInQuiz(taskId)
+		}
 		return [res, null]
 	}
 	catch (error) {

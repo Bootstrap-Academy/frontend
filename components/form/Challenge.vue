@@ -1,4 +1,5 @@
 <template>
+  <!-- <p>{{ skills }}</p> -->
   <form
     class="flex flex-col gap-box"
     :class="{ 'form-submitting': form.submitting }"
@@ -27,34 +28,31 @@
       @valid="form.description.valid = $event"
       :rules="form.description.rules"
     />
-    <!-- 
-    <InputList
-      :label="t('Inputs.Limits')"
-      v-model="form.limits.value"
-      @valid="form.limits.valid = $event"
-      :rules="form.limits.rules"
-      :max="10"
-    /> -->
 
-    <InputList
+    <!-- <InputList
       :label="t('Inputs.Skills')"
       v-model="form.skills.value"
       @valid="form.skills.valid = $event"
       :rules="form.skills.rules"
       :max="8"
-    />
+    /> -->
 
-    <!-- <ChallengesInputExamples
-			:label="t('Inputs.Examples')"
-			v-model="form.examples.value"
-			@valid="form.examples.valid = $event"
-			:rules="form.examples.rules"
-			:max="10"
-		/> -->
-
-    <article class="flex justify-end items-center gap-x-3 flex-wrap">
+    <InputSelect v-model="selectedSkill" :options="skills" />
+    <div
+      class="flex justify-between gap-3 items-center my-1"
+      v-for="(skill, i) of form.skills.value"
+      :key="i"
+    >
+      <li class="font-semibold text-subheading">{{ skill }}</li>
+      <!-- <p class="hover:text-error cursor-pointer text-xl font-medium">X</p> -->
+      <XMarkIcon
+        @click="form.skills.value.splice(i, 1)"
+        class="h-6 w-6 text-subheading hover:text-error cursor-pointer"
+      />
+    </div>
+    <article class="flex justify-end items-center gap-x-3 mt-5 flex-wrap">
       <InputBtn
-        :icon="TrashIcon"
+        secondary
         @click="fnDeleteChallenge()"
         v-if="(!!data && user.id == data?.creator) || (!!user.admin && !!data)"
       >
@@ -75,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { TrashIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { defineComponent, PropType, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IForm } from "~/types/form";
@@ -85,16 +83,33 @@ export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  components: { TrashIcon },
+  components: { TrashIcon, XMarkIcon },
   setup(props) {
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
     const user: any = useUser();
-
+    const rootSkillTree: any = useRootSkillTree();
+    const selectedSkill = ref("");
     // ============================================================= Handling Categories
     const challengesCategories = useChallengesCategories();
     const loading = ref(challengesCategories.value.length <= 0);
+
+    const skills: any = computed(() => {
+      let arr: any = [];
+      if (!rootSkillTree.value) return;
+      console.log("after if");
+      rootSkillTree.value?.skills.forEach((skill: any) => {
+        if (!skill.skills.length) return;
+        skill.skills?.forEach((subSkill: any) => {
+          arr.push({
+            label: subSkill,
+            value: subSkill,
+          });
+        });
+      });
+      return arr;
+    });
 
     const categoryOptions = computed(() => {
       // return (challengesCategories.value ?? [])
@@ -114,8 +129,8 @@ export default defineComponent({
     function setCategory(categoryID: string) {
       console.log("setting", props?.data);
       form.category.value = categoryID;
-      let includes = route.fullPath.includes("/challenges/edit-");
-      if (!includes) router.replace(`/challenges/${categoryID}/create`);
+      // let includes = route.fullPath.includes("/challenges/edit-");
+      // if (!includes) router.replace(`/challenges/${category}/create`);
     }
 
     // ============================================================= refs
@@ -137,21 +152,13 @@ export default defineComponent({
         valid: true,
         options: [],
       },
-      //   limits: {
-      //     value: [],
-      //     valid: false,
-      //     rules: [],
-      //   },
+
       skills: {
         value: [],
         valid: false,
         rules: [],
       },
-      //   examples: {
-      //     value: [],
-      //     valid: false,
-      //     rules: [],
-      //   },
+
       description: {
         valid: false,
         value: "",
@@ -228,9 +235,7 @@ export default defineComponent({
     }
 
     function createSuccessHandler(res: any) {
-      router.push(
-        `/challenges/edit-${res.id}?categoryId=${form.category.value}`
-      );
+      router.push(`/challenges/edit-${res.id}?category=${form.category.value}`);
       setTimeout(() => {
         openSnackbar("success", "Success.CreatedChallenge");
       }, 1000);
@@ -258,7 +263,7 @@ export default defineComponent({
               props.data?.id
             );
             if (!!success) openSnackbar("success", "Success.DeletedChallenge");
-            router.push(`/challenges/all?categoryId=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
+            router.push(`/challenges/all?category=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
           },
         },
         {
@@ -309,6 +314,23 @@ export default defineComponent({
       },
       { deep: true }
     );
+    // =============================================================  Handling Skill List
+    watch(
+      () => selectedSkill.value,
+      (newValue, oldValue) => {
+        form.skills.value.push(newValue);
+      }
+    );
+
+    watch(
+      () => form.skills.value.length,
+      (newValue, oldValue) => {
+        console.log("watching length");
+        if (!newValue) form.skills.valid = false;
+        else form.skills.valid = true;
+      },
+      { deep: true }
+    );
 
     onMounted(async () => {
       // if (!!localStorage) {
@@ -328,28 +350,20 @@ export default defineComponent({
       //       form.description.valid = !!form.description.value;
       //     }
 
-      //     //   if (!!localForm.limits) {
-      //     //     form.limits.value = localForm.limits;
-      //     //     form.limits.valid =
-      //     //       form.limits.value && form.limits.value.length > 0;
-      //     //   }
-
       //     if (!!localForm.skills) {
       //       form.skills.value = localForm.skills;
       //       form.skills.valid =
       //         form.skills.value && form.skills.value.length > 0;
       //     }
 
-      //     //   if (!!localForm.examples) {
-      //     //     form.examples.value = localForm.examples;
-      //     //     form.examples.valid =
-      //     //       form.examples.value && form.examples.value.length > 0;
-      //     //   }
       //   }
       // }
 
       if (props?.data != null) setFormData();
-      if (props?.data == null) await getChallengesCategories();
+      if (props?.data == null) {
+        await getChallengesCategories();
+        await getRootSkillTree();
+      }
       loading.value = false;
     });
 
@@ -362,6 +376,10 @@ export default defineComponent({
       setCategory,
       fnDeleteChallenge,
       user,
+      skills,
+      selectedSkill,
+      TrashIcon,
+      XMarkIcon,
     };
   },
 });

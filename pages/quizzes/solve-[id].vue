@@ -13,6 +13,7 @@
         v-if="arrayOfSubtasks.length || loading"
         :data="selectedQuiz ?? arrayOfSubtasks[0]"
         @solved="setSolvedLocally($event)"
+        @rated="setRatedLocally($event)"
         @updateQuestion="updateQuestion($event)"
         class="row-span-2 mt-24"
       />
@@ -70,6 +71,7 @@ export default defineComponent({
     const quizzes: any = useQuizzes();
     const selectedQuiz = ref();
     const loading = ref(true);
+    const user: any = useUser();
     const { t } = useI18n();
 
     const id: any = computed(() => {
@@ -105,6 +107,24 @@ export default defineComponent({
         }
       });
     }
+    function setRatedLocally(id: any) {
+      let index = 0;
+      arrayOfSubtasks.value.forEach((element: any, i: any) => {
+        if (element.id == id) {
+          index = i;
+          element.rated = true;
+        }
+      });
+      for (let i = index; i < arrayOfSubtasks?.value?.length; i++) {
+        if (
+          !arrayOfSubtasks?.value[i]?.solved &&
+          arrayOfSubtasks?.value[i]?.creator != user?.id
+        ) {
+          solveThis(arrayOfSubtasks.value[i]);
+          break;
+        }
+      }
+    }
 
     function updateQuestion(quiz: any) {
       arrayOfSubtasks.value.forEach((element: any) => {
@@ -119,7 +139,6 @@ export default defineComponent({
       if (quiz?.fee > 0 && coins.value < quiz?.fee) {
         return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
       }
-
       if (!quiz.unlocked) {
         openDialog(
           "info",
@@ -132,8 +151,6 @@ export default defineComponent({
               const [success, error] = await buySubtask(quiz.task_id, quiz.id);
               if (success) {
                 openSnackbar("success", "Success.BuyCodingChallenge");
-                console.log("selected quiz", quiz);
-                // await manageAllDataForQuizzes();
                 arrayOfSubtasks.value.forEach((element: any) => {
                   if (element.id == quiz.id) {
                     element.unlocked = true;
@@ -149,7 +166,6 @@ export default defineComponent({
           }
         );
       } else {
-        console.log("selected quiz", quiz);
         router.replace({
           path: route.path,
           query: {
@@ -188,7 +204,6 @@ export default defineComponent({
 
       if (!quizzes.value.length) {
         loading.value = false;
-        console.log("quizzes are empty");
         return;
       }
 
@@ -220,6 +235,7 @@ export default defineComponent({
       loading,
       setSolvedLocally,
       solveThis,
+      setRatedLocally,
       updateQuestion,
       notFoundFor,
     };

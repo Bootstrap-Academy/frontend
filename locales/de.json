@@ -11,6 +11,9 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"Unattempted":"Unversucht",
+		"Unlocked":"Entsperrt",
+		"Attempted":"Versucht",
 		"Feedback":"Rückmeldung",
 		"Course":"Kurs",
 		"Lecture":"Vorlesung",
@@ -496,6 +499,7 @@
 		"ResetPassword": "Gib dein neues Passwort ein"
 	},
 	"Inputs": {
+		"ShowFreeQuizzesOnly":"Nur kostenlose Tests anzeigen",
 		"Morphcoins":"Morphcoins",
 		"Fee":"Gebühr",
 		"Xp":"Xp",
@@ -796,6 +800,7 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"CannotGetEvaluator":"Evaluator nicht gefunden",
 		"Level20RequiredForCreatingCodingChallenge":"Zum Erstellen einer Coding Challenge ist Level zwanzig (20) erforderlich",
 		"UserIsBanned":"Sie sind gesperrt und können diese Aktion nicht ausführen",
 		"NotEnoughCoins":"Sie haben nicht genug Münzen",

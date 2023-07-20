@@ -90,7 +90,7 @@ export default defineComponent({
     });
 
     const editTo = computed(() => {
-      return `/challenges/edit-${activeChallenge.value}?categoryId=${baseQuery.value.category}`;
+      return `/challenges/edit-${activeChallenge.value}?category=${baseQuery.value.category}`;
     });
 
     function toggleShowChallengeContent() {

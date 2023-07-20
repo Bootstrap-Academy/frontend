@@ -49,6 +49,7 @@
           @valid="form.xp.valid = $event"
         />
         <Input
+          v-if="!!user.admin"
           :label="t('Inputs.Fee')"
           :type="'number'"
           :rules="form.fee.rules"
@@ -65,12 +66,28 @@
       />
 
       <article>
-        <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
+        <div class="flex gap-x-2 items-center">
+          <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
+          <Tooltip
+            :heading="'Evaluator code on which basis the examples of the coding challenges will be created'"
+            :content="'Here will be the code that is used to create the coding examples. This also be used to check and test the code of the user if the entered code is correct, incorrect, contain error or some other bug. This should be written in same language what you have chose above'"
+          >
+            <InformationCircleIcon class="h-7 w-7 -mt-1.5 text-accent" />
+          </Tooltip>
+        </div>
         <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
       </article>
 
       <article>
-        <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
+        <div class="flex gap-2 items-center">
+          <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
+          <Tooltip
+            :heading="'Solution code of the coding challenge you are creating'"
+            :content="'Here will be the code that is the solution of the coding challenge. This should be written in same language what you have chose above'"
+          >
+            <InformationCircleIcon class="h-7 w-7 -mt-1.5 text-accent" />
+          </Tooltip>
+        </div>
         <ChallengesCodeEditor
           class="h-full"
           v-model="form.solution_code.value"
@@ -101,6 +118,7 @@
 </template>
 
 <script lang="ts">
+import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { PropType, ref } from "vue";
 import {
@@ -120,7 +138,7 @@ export default {
     propData: { type: Object as PropType<any>, default: null },
     challengeId: { type: String, default: "" },
   },
-
+  components: { InformationCircleIcon },
   setup(props) {
     const { t } = useI18n();
     const refForm = ref<HTMLFormElement | null>(null);
@@ -373,6 +391,89 @@ export default {
       { deep: true }
     );
 
+    watch(
+      () => form.solution_environment.value,
+      (newValue, oldValue) => {
+        // if (!!!form.solution_code.value.trim()) {
+        if (newValue == "c") {
+          form.solution_code.value = "Solution Code for C";
+        } else if (newValue == "bash") {
+          form.solution_code.value = "Solution Code for bash";
+        } else if (newValue == "cpp") {
+          form.solution_code.value = "Solution Code for cpp";
+        } else if (newValue == "csharp") {
+          form.solution_code.value = "Solution Code for csharp";
+        } else if (newValue == "haskell") {
+          form.solution_code.value = "Solution Code for haskell";
+        } else if (newValue == "java") {
+          form.solution_code.value = "Solution Code for java";
+        } else if (newValue == "javascript") {
+          form.solution_code.value = "Solution Code for javascript";
+        } else if (newValue == "kotlin") {
+          form.solution_code.value = "Solution Code for kotlin";
+        } else if (newValue == "lua") {
+          form.solution_code.value = "Solution Code for lua";
+        } else if (newValue == "perl") {
+          form.solution_code.value = "Solution Code for perl";
+        } else if (newValue == "php") {
+          form.solution_code.value = "Solution Code for php";
+        } else if (newValue == "python") {
+          form.solution_code.value = "Solution Code for python";
+        } else if (newValue == "ruby") {
+          form.solution_code.value = "Solution Code for ruby";
+        } else if (newValue == "rust") {
+          form.solution_code.value = "Solution Code for rust";
+        } else if (newValue == "sql") {
+          form.solution_code.value = "Solution Code for sql";
+        } else if (newValue == "swift") {
+          form.solution_code.value = "Solution Code for swift";
+        } else if (newValue == "typescript") {
+          form.solution_code.value = "Solution Code for typescript";
+        }
+        // }
+
+        // if (!!!form.evaluator.value.trim()) {
+
+        if (newValue == "c") {
+          form.evaluator.value = "Evaluator Code for C";
+        } else if (newValue == "bash") {
+          form.evaluator.value = "Evaluator Code for bash";
+        } else if (newValue == "cpp") {
+          form.evaluator.value = "Evaluator Code for cpp";
+        } else if (newValue == "csharp") {
+          form.evaluator.value = "Evaluator Code for csharp";
+        } else if (newValue == "haskell") {
+          form.evaluator.value = "Evaluator Code for haskell";
+        } else if (newValue == "java") {
+          form.evaluator.value = "Evaluator Code for java";
+        } else if (newValue == "javascript") {
+          form.evaluator.value = "Evaluator Code for javascript";
+        } else if (newValue == "kotlin") {
+          form.evaluator.value = "Evaluator Code for kotlin";
+        } else if (newValue == "lua") {
+          form.evaluator.value = "Evaluator Code for lua";
+        } else if (newValue == "perl") {
+          form.evaluator.value = "Evaluator Code for perl";
+        } else if (newValue == "php") {
+          form.evaluator.value = "Evaluator Code for php";
+        } else if (newValue == "python") {
+          form.evaluator.value = "Evaluator Code for python";
+        } else if (newValue == "ruby") {
+          form.evaluator.value = "Evaluator Code for ruby";
+        } else if (newValue == "rust") {
+          form.evaluator.value = "Evaluator Code for rust";
+        } else if (newValue == "sql") {
+          form.evaluator.value = "Evaluator Code for sql";
+        } else if (newValue == "swift") {
+          form.evaluator.value = "Evaluator Code for swift";
+        } else if (newValue == "typescript") {
+          form.evaluator.value = "Evaluator Code for typescript";
+        }
+        // }
+      },
+      { deep: true }
+    );
+
     onMounted(async () => {
       setLoading(true);
       await getEnvironments();
@@ -392,6 +493,7 @@ export default {
       closeDialog,
       loading,
       languages,
+      InformationCircleIcon,
     };
   },
 };

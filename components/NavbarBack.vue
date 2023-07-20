@@ -98,11 +98,13 @@ export default defineComponent({
         label = "Links.GoToProfile";
       }
       // ! Challenges
-      else if (
-        name == "challenges-category-create" ||
-        name == "challenges-edit-challenge"
-      ) {
+      else if (name == "challenges-category-create") {
         pathname = `/challenges/all?category=${route?.params?.category ?? ""}`;
+        label = "Links.GoToChallenges";
+      }
+      // edit challenge
+      else if (name == "challenges-edit-challenge") {
+        pathname = `/challenges/all?category=${route?.query.category ?? ""}`;
         label = "Links.GoToChallenges";
       }
       // solve coding challenge

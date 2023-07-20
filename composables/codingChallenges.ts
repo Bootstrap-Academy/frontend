@@ -10,10 +10,18 @@ export const useCodingExamples = () => useState("codingChallengeExamples", () =>
 export const useCodingSubmission = () => useState("codingChallengeSubmission", () => null)
 export const useEnvironments = () => useState('codingChallengeEnvironments', () => null)
 export const useConfigs = () => useState('codingChallengeConfigs', () => null)
+export const useCodingChallengesStats = () => useState('codingChallengesStats', () => null)
 
-export async function getAllCodingChallengesInATask(taskId: any) {
+export async function getAllCodingChallengesInATask(taskId: any, creator: any = '') {
     try {
-        const response = await GET(`/challenges/tasks/${taskId}/coding_challenges`);
+        let query = ''
+        if (!!creator) {
+            query = `/challenges/tasks/${taskId}/coding_challenges?creator=${creator}`
+        }
+        else {
+            query = `/challenges/tasks/${taskId}/coding_challenges`
+        }
+        const response = await GET(query);
 
         const allCodingChallengesInATask = useAllCodingChallengesInATask();
         allCodingChallengesInATask.value = response ?? [];
@@ -86,8 +94,17 @@ export async function getCodingChallenge(taskId: string, subTaskId: any) {
 
 export async function deleteCodingChallenge(taskId: string, subTaskId: any) {
     try {
-        const response = await DELETE(`/challenges/tasks/${taskId}/coding_challenges/${subTaskId}`);
-        await getAllCodingChallengesInATask(taskId)
+        const response = await DELETE(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`);
+        const route = useRoute()
+        const containQuizWord = route.fullPath.includes("/quizzes/")
+        const containCreateWord = route.fullPath.includes("/create")
+
+        if (containCreateWord && containQuizWord) {
+            const user: any = useUser()
+            await getAllCodingChallengesInATask(taskId, user?.value.id ?? "")
+        } else {
+            await getAllCodingChallengesInATask(taskId)
+        }
         return [response, null];
 
     } catch (error: any) {
@@ -242,3 +259,19 @@ export async function getConfigs() {
     }
 }
 
+export async function getCodingChallengesStats() {
+    try {
+        console.log("getCodingChallengesStats",)
+
+        const res = await GET(`/challenges/subtasks/stats`)
+        console.log("response of stats", res)
+
+        const codingChallengesStats = useCodingChallengesStats()
+        codingChallengesStats.value = res ?? null
+        return [res, null]
+    }
+    catch (error: any) {
+        console.log("error", error)
+        return [null, error]
+    }
+}

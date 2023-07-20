@@ -62,7 +62,6 @@ import { useShowConfetti } from "~~/composables/user";
 let showConfetti = useShowConfetti();
 const hideAnimation: any = useCookie("hideAnimationNextTime");
 const boxInfo = ref(false);
-const audio = ref();
 const { t } = useI18n();
 
 function fnHideAnimation() {
@@ -80,8 +79,6 @@ watch(
   (newValue, oldValue) => {
     if (newValue) {
       setTimeout(() => {
-        audio.value.currentTime = 0;
-        audio.value.play();
         boxInfo.value = true;
       }, 500);
       setTimeout(() => {

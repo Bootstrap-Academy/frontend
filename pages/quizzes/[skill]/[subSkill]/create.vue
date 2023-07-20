@@ -111,8 +111,8 @@ export default {
         openSnackbar("error", error.data.detail);
       }
 
-      await getSubTasksInQuiz(quizId.value);
-      await getAllCodingChallengesInATask(quizId.value);
+      await getSubTasksInQuiz(quizId.value, user?.value.id ?? "");
+      await getAllCodingChallengesInATask(quizId.value, user?.value.id ?? "");
       loading.value = false;
     });
     return {

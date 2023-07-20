@@ -186,12 +186,39 @@ export default {
       if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
         return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
       }
-
-      router.push(
-        `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${
-          codingChallenge?.id
-        }&solveFrom=${"course"}`
-      );
+      if (!codingChallenge.unlocked) {
+        // openSnackbar("info", "Error.CodingChallengeLocked");
+        openDialog(
+          "info",
+          "Headings.UnlockCodingChallenge",
+          "Body.BuyCodingChallnge",
+          false,
+          {
+            label: "Buttons.Buy",
+            onclick: async () => {
+              const [success, error] = await buySubtask(
+                codingChallenge.task_id,
+                codingChallenge.id
+              );
+              if (success) {
+                router.push(
+                  `/challenges/QuizCodingChallenge-${
+                    taskId.value
+                  }?codingChallenge=${
+                    codingChallenge?.id
+                  }&solveFrom=${"course"}`
+                );
+                openSnackbar("success", "Success.BuyCodingChallenge");
+              } else openSnackbar("error", error);
+            },
+          },
+          {
+            label: "Buttons.Cancel",
+            onclick: () => {},
+          }
+        );
+        return;
+      }
     }
 
     async function fnGetCodingChallengeInQuiz(quizId: any) {
