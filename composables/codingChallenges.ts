@@ -4,13 +4,13 @@ export const useAllCodingChallengesInATask: () => Ref<any[]> = () =>
     useState('allCodingChallengesInATask', () => []);
 export const useCodingChallenge = () => useState("codingChallenge", () => null)
 
-
 export const useCodingSubmissions = () => useState("codingChallengeSubmissions", () => [])
 export const useCodingExamples = () => useState("codingChallengeExamples", () => [])
 export const useCodingSubmission = () => useState("codingChallengeSubmission", () => null)
 export const useEnvironments = () => useState('codingChallengeEnvironments', () => null)
 export const useConfigs = () => useState('codingChallengeConfigs', () => null)
 export const useCodingChallengesStats = () => useState('codingChallengesStats', () => null)
+export const useEvaluatorTemplate = () => useState('evaluatorTemplate', () => null)
 
 export async function getAllCodingChallengesInATask(taskId: any, creator: any = '') {
     try {
@@ -33,7 +33,6 @@ export async function getAllCodingChallengesInATask(taskId: any, creator: any = 
     }
 }
 
-
 export async function getEvaluator(taskId: string, subTaskId: any) {
     try {
         const response = await GET(`/challenges/tasks/${taskId}/coding_challenges/${subTaskId}/evaluator`);
@@ -43,7 +42,6 @@ export async function getEvaluator(taskId: string, subTaskId: any) {
     }
 }
 
-
 export async function getSolution(taskId: string, subTaskId: any) {
     try {
         const response = await GET(`/challenges/tasks/${taskId}/coding_challenges/${subTaskId}/solution`);
@@ -52,9 +50,6 @@ export async function getSolution(taskId: string, subTaskId: any) {
         return [null, error.data];
     }
 }
-
-
-
 
 export async function createCodingChallenge(taskId: string, body: any) {
     try {
@@ -77,8 +72,6 @@ export async function createCodingChallenge(taskId: string, body: any) {
     }
 }
 
-
-
 export async function getCodingChallenge(taskId: string, subTaskId: any) {
     try {
         const response = await GET(`/challenges/tasks/${taskId}/coding_challenges/${subTaskId}`);
@@ -90,7 +83,6 @@ export async function getCodingChallenge(taskId: string, subTaskId: any) {
         return [null, error.data];
     }
 }
-
 
 export async function deleteCodingChallenge(taskId: string, subTaskId: any) {
     try {
@@ -124,8 +116,6 @@ export async function updateCodingChallenge(taskId: string, subTaskId: any, body
         return [null, error.data];
     }
 }
-
-
 //                        //    Coding Submissions For Coding Challenges    //                               //
 
 export async function createSubmission(challengeId: any, codingChallengeId: any, body: any) {
@@ -177,7 +167,6 @@ export async function getExamples(challengeId: any, codingChallengeId: any) {
     }
 }
 
-
 export async function textAgainstCodingExample(challengeId: any, codingChallengeId: any, exampleId: any, body: any) {
     try {
         const res = await POST(`/challenges/tasks/${challengeId}/coding_challenges/${codingChallengeId}/examples/${exampleId}/test`, body)
@@ -187,6 +176,7 @@ export async function textAgainstCodingExample(challengeId: any, codingChallenge
         return [null, error]
     }
 }
+
 export async function buySubtask(taskId: any, subTaskId: any) {
     try {
         const response = await POST(`/challenges/tasks/${taskId}/subtasks/${subTaskId}/access`)
@@ -204,6 +194,7 @@ export async function buySubtask(taskId: any, subTaskId: any) {
         }
     }
 }
+
 export async function reportSubtask(body: any) {
     try {
         const response = await POST(`/challenges/subtask_reports`, body)
@@ -227,6 +218,7 @@ export async function reportSubtask(body: any) {
         }
     }
 }
+
 export async function getEnvironments() {
     try {
         const res = await GET(`/challenges/executor/environments`)
@@ -251,6 +243,22 @@ export async function getConfigs() {
 
         const configs = useConfigs()
         configs.value = res ?? null
+        return [res, null]
+    }
+    catch (error: any) {
+        console.log("error", error)
+        return [null, error]
+    }
+}
+export async function getEvaluatorTemplate() {
+    try {
+        console.log("getting congi",)
+
+        const res = await GET(`/challenges/coding_challenges/evaluator/template.py`)
+        console.log("response of evaluator template", res)
+
+        const evaluatorTemplate = useEvaluatorTemplate()
+        evaluatorTemplate.value = res ?? null
         return [res, null]
     }
     catch (error: any) {

@@ -11,6 +11,8 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"ChangeEnvironment":"Umgebung ändern",
+		"LeaderBoard": "Bestenliste",
 		"Unattempted":"Unversucht",
 		"Unlocked":"Entsperrt",
 		"Attempted":"Versucht",
@@ -50,6 +52,7 @@
 		"EvaluatorCode":"Bewerter Code",
 		"SolutionCode":"Lösung Code",
 		"XP":"XP",
+		"Level":"eben",
 		"Coins":"Münzen",
 		"CodingChallenge":"Coding challenge",
 		"CodingChallenges":"Coding challengee",
@@ -267,6 +270,7 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"ChangeEnvironment":"Möchten Sie Ihren Lösungscode auf das Standardbeispiel aktualisieren?",
 		"BuyCodingChallnge":"Die Coding challenge ist gesperrt. Für den Kauf dieser Coding challenge wird eine Gebühr von Ihrem Konto abgebucht.",
 		"BuyQuiz":"Quiz ist gesperrt. Für den Kauf dieses Quiz wird die Gebühr von Ihrem Konto abgebucht.",		
 		"DeleteQuiz":"Sind Sie sicher, dass Sie das Quiz löschen möchten?",
@@ -579,6 +583,11 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"Change":"ändern",
+		"Overall":"Gesamt",
+		"ChallengeBased":"Challenge Based",
+		"LanguageBased":"Codierungssprache Based",
+		"SeasonalBased":"Saisonal Based",
 		"Buy":"Besorgen",
 		"Report":"Bericht",
 		"Video":"Video",

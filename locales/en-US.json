@@ -11,6 +11,8 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"ChangeEnvironment":"Change Environment",
+		"LeaderBoard":"LeaderBoard",
 		"Unattempted":"Unattempted",
 		"Unlocked":"Unlocked",
 		"Attempted":"Attempted",
@@ -49,6 +51,7 @@
 		"SolutionCode":"Solution Code",
 		"Coins":"Coins",
 		"XP":"XP",
+		"Level":"Level",
 		"CodingChallenge":"Coding Challenge",
 		"CodingChallenges":"Coding Challenges",
 		"EditCodingChallenge":"Edit Coding Challenge",
@@ -265,6 +268,7 @@
 		"OtherSkills": "Other Skills"
 	},
 	"Body": {
+		"ChangeEnvironment":"Do you want to update your solution code to the default example?",
 		"BuyCodingChallnge":"Coding challenge is locked. Fee will be deducted from your account for buying this coding challenge.",
 		"BuyQuiz":"Quiz is locked. Fee will be deducted from your account for buying this Quiz.",
 		"DeleteCodingChallenge":"Are you sure you want to delete coding challenge?",
@@ -576,6 +580,11 @@
 		"RegistrationCode": "Registration Code"
 	},
 	"Buttons": {
+		"Change":"Change",
+		"Overall":"Over all",
+		"ChallengeBased":"Challenge Based",
+		"LanguageBased":"Coding Language Based",
+		"SeasonalBased":"Seasonal Based",
 		"Report":"Report",
 		"Video":"Video",
 		"Quiz":"Quiz",
