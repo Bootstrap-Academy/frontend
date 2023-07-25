@@ -1,9 +1,5 @@
 <template>
-  <div class="h-[80vh] overflow-y-scroll px-10">
-    <section v-for="(user, i) of leaderBoardList" :key="i">
-      <LeaderboardUserCard :item="user" />
-    </section>
-  </div>
+  <LeaderboardListing :leaderBoardList="leaderBoardList" />
 </template>
 
 <script lang="ts">

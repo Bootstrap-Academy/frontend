@@ -11,6 +11,7 @@
 		"WebShop": "Web Shop"
 	},
 	"Headings": {
+		"EmptyLeaderBoardList":"LeaderBoard is empty. Visit back again.",
 		"ChangeEnvironment":"Change Environment",
 		"LeaderBoard":"LeaderBoard",
 		"Unattempted":"Unattempted",

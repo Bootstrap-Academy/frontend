@@ -26,23 +26,26 @@
       :buttonOptions="buttonOptions"
       v-model="selectedbutton"
     />
-    <p class="text-heading-1 mt-6">{{ t("Headings.LeaderBoard") }}:</p>
+    <p class="text-heading-1 mt-6 mb-12">{{ t("Headings.LeaderBoard") }}:</p>
+
+    <SkeletonLeaderboard v-if="loading && selectedbutton != 2" />
+    <SkeletonLeaderBoardChallenges v-else-if="loading && selectedbutton == 2" />
 
     <LeaderboardSeasonal
       :leaderBoardList="leaderBoardList"
-      v-if="selectedbutton == 0"
+      v-if="selectedbutton == 0 && !loading"
     />
     <LeaderboardLanguageBased
       :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 1"
+      v-else-if="selectedbutton == 1 && !loading"
     />
     <LeaderboardChallengeBased
       :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 2"
+      v-else-if="selectedbutton == 2 && !loading"
     />
     <LeaderboardOverall
       :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 3"
+      v-else-if="selectedbutton == 3 && !loading"
     />
   </main>
 </template>
@@ -61,6 +64,7 @@ export default {
   },
   setup() {
     const { t } = useI18n();
+    const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
     const selectedbutton = ref(0);
     let buttonOptions: any = [
@@ -69,7 +73,17 @@ export default {
       { name: "Buttons.ChallengeBased" },
       { name: "Buttons.Overall" },
     ];
-    return { buttonOptions, selectedbutton, t, leaderBoardList };
+
+    watch(
+      () => selectedbutton.value,
+      (newValue, oldValue) => {
+        loading.value = true;
+        setTimeout(() => {
+          loading.value = false;
+        }, 3000);
+      }
+    );
+    return { buttonOptions, selectedbutton, t, leaderBoardList, loading };
   },
 };
 </script>

@@ -3,11 +3,7 @@
     <article class="flex justify-end">
       <InputSelect />
     </article>
-    <article class="h-[80vh] overflow-y-scroll px-10">
-      <section v-for="(user, i) of leaderBoardList" :key="i">
-        <LeaderboardUserCard :item="user" />
-      </section>
-    </article>
+    <LeaderboardListing :leaderBoardList="leaderBoardList" />
   </section>
 </template>
 

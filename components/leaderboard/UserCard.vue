@@ -13,6 +13,7 @@
       <SvgLevel7Icon v-else-if="item.rank == 6" />
       <SvgLevel8Icon v-else-if="item.rank == 7" />
       <SvgLevel9Icon v-else />
+      <img :src="item?.img ?? ''" class="h-20 w-20 object-cover rounded-full" />
       <p
         :class="[
           {

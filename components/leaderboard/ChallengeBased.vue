@@ -6,18 +6,20 @@
       v-for="(challenge, i) of allGlobalChallenges"
       :key="i"
     >
-      <p class="text-white">
+      <p class="text-white clamp tight">
         {{ challenge?.description ?? "" }}
       </p>
       <article class="flex gap-2 items-center">
         <SvgLevel1Icon />
-        <p>Alex Coasta <span class="text-sm"> xp:4900 </span></p>
+        <p class="flex flex-nowrap">
+          Alex Coasta <span class="text-sm break-w"> xp:4900 </span>
+        </p>
       </article>
     </section>
     <DialogSlot
       v-if="dialogLeaderBoardChallengeBased"
       :label="'Headings.LeaderBoard'"
-      :propClass="'modal-width-lg lg:modal-width-md shadow-sm shadow-accent'"
+      :propClass="'modal-width-lg lg:modal-width-md shadow shadow-accent'"
       :show="dialogSlot"
       @closeFunction="dialogLeaderBoardChallengeBased = false"
     >
