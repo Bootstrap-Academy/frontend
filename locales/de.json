@@ -11,6 +11,24 @@
 		"WebShop": "Webshop"
 	},
 	"Headings": {
+		"RefillHearts":"Herzen auffüllen",
+		"BuyMonthlySubscription":"Kaufen Sie ein monatlich",
+		"BuyYearlySubscription":"Kaufen Sie ein Jahresabonnement",
+		"Thousand":"1,000",
+		"TenThousand":"10,000",
+		"Save2000Coins":"Sparen Sie 2,000 MorphCoins",
+		"ExtraTwoMonths":"Zusätzliche zwei Monate",
+		"YearlyPremiumCardHeading":"Jährliche Mitgliedschaft",
+		"NoTrickPricing":"Einfache Preisgestaltung ohne Tricks",
+		"WhatsIncluded":"Was ist inbegriffen",
+		"MonthlyPremiumCardHeading":"monatliche Mitgliedschaft",
+		"PayOnceOwnItMonthly":"Zahlen Sie einmal monatlich und besitzen Sie es",	
+		"PayOnceOwnItYearly":"Zahlen Sie einmal jährlich, dass Sie es besitzen",
+		"UnlimitedChallenges":"Unbegrenzt Challenges",
+		"UnlimitedQuizzes":"Unbegrenzt Quizzes",
+		"AccessAllCourses":"Greifen Sie auf alle Kurse zu",
+		"OneMonthNoLimitations":"Keine Einschränkungen für einen Monat",
+		"OneYearNoLimitations":"Keine Einschränkungen für ein Jahr",
 		"EmptyLeaderBoardList":"LeaderBoard ist leer. Besuchen Sie uns noch einmal.",
 		"ChangeEnvironment":"Umgebung ändern",
 		"LeaderBoard": "Bestenliste",
@@ -271,6 +289,19 @@
 		"OtherSkills": "Andere Skills"
 	},
 	"Body": {
+		"Refill0p5Hearts":"Füllen Sie 0.5 Herz für 15 Morphcoins auf",
+		"Refill1Hearts":"Füllen Sie 1 Herz für 20 Morphcoins auf",
+		
+		"Refill1p5Hearts":"Füllen Sie 1 Herz für 30 Morphcoins auf",
+		"Refill2Hearts":"Füllen Sie 1 Herz für 35 Morphcoins auf",
+		
+		"Refill2p5Hearts":"Füllen Sie 2 Herz für 45 Morphcoins auf",
+		"Refill3Hearts":"Füllen Sie 3 Herz für 50 Morphcoins auf",
+		"BuyMonthlySubscription":"Für das Monatsabonnement werden 1,000 Morphcoins von Ihrem Konto abgebucht",
+		"BuyYearlySubscription":"Für das Jahresabonnement werden 10,000 Morphcoins von Ihrem Konto abgebucht",
+		"PremiumCardMain":"Erhalten Sie monatlichen Zugang zu über 100 Kursen und jeder heute verfügbaren Vorlesung sowie allen neuen Inhalten, die wir in Zukunft hinzufügen, zu einem einfachen einmaligen Preis.",
+		"MonthlyPremiumCardBody":"Lernen Sie den Code-Übungstest und vieles mehr.",
+		"YearlyPremiumCardBody":"Lernen Sie den Code-Übungstest und vieles mehr.",
 		"ChangeEnvironment":"Möchten Sie Ihren Lösungscode auf das Standardbeispiel aktualisieren?",
 		"BuyCodingChallnge":"Die Coding challenge ist gesperrt. Für den Kauf dieser Coding challenge wird eine Gebühr von Ihrem Konto abgebucht.",
 		"BuyQuiz":"Quiz ist gesperrt. Für den Kauf dieses Quiz wird die Gebühr von Ihrem Konto abgebucht.",		
@@ -584,6 +615,11 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"Refill":"Nachfüllung",
+		"BuySubscription":"Abonnement kaufen",
+		"GoMonthly":"Gehen monatlich",
+		"GoYearly":"Gehen jährlich",
+		"GoPremium":"Gehen Prämie",
 		"Change":"ändern",
 		"Overall":"Gesamt",
 		"ChallengeBased":"Challenge Based",
@@ -695,6 +731,8 @@
 		"AddEmail": "E-Mail hinzufügen"
 	},
 	"Links": {
+		"Subscription":"Abonnement",
+		"SubscriptionAndHearts":"Abonnement & Herzen",
 		"GoToCourse":"Gehe zum Kurs",
 		"GoToChallenges": "Zurück zu den Herausforderungen",
 		"Link": "Link",
@@ -810,6 +848,8 @@
 		"OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
 	},
 	"Error": {
+		"AlreadyHaveHearts":"Sie haben bereits die maximale Anzahl an Herzen 💚",
+		"Need50CoinsForRefill":"Sie benötigen 50 Morphcoins, um Ihr Herz wieder aufzufüllen",
 		"CannotGetEvaluator":"Evaluator nicht gefunden",
 		"Level20RequiredForCreatingCodingChallenge":"Zum Erstellen einer Coding Challenge ist Level zwanzig (20) erforderlich",
 		"UserIsBanned":"Sie sind gesperrt und können diese Aktion nicht ausführen",

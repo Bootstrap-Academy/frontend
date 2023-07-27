@@ -13,7 +13,9 @@
           <SkeletonText class="w-full h-full rounded-full" />
         </div>
 
-        <SkeletonText class="max-w-[120px] my-2" />
+        <div class="w-28">
+          <SkeletonText class="max-w-[120px] my-2" />
+        </div>
 
         <div class="flex gap-1 items-center">
           <p class="text-sm">{{ t("Headings.XP") }}:</p>

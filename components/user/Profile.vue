@@ -35,6 +35,9 @@
         v-model="showFreeQuizzesOnly"
       />
     </article>
+    <InputBtn class="mt-4" @click="navigateTo('/subscription')">{{
+      t("Buttons.BuySubscription")
+    }}</InputBtn>
   </section>
 </template>
 
