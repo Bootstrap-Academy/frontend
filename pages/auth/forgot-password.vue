@@ -19,35 +19,35 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form">
-			<SectionTitle
-				center
-				subheading="Links.ForgotPassword"
-				heading="Forms.ForgotPassword"
-				body="Body.ForgotPassword"
-				size="sm"
-				class="mb-card"
-			/>
-			<FormForgotPassword />
-		</section>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <section class="container-form">
+      <SectionTitle
+        center
+        subheading="Links.ForgotPassword"
+        heading="Forms.ForgotPassword"
+        body="Body.ForgotPassword"
+        size="sm"
+        class="mb-card"
+      />
+      <FormForgotPassword />
+    </section>
+  </section>
 </template>
 
 <script>
 definePageMeta({
-	layout: 'inner',
+  layout: "inner",
 });
 
 export default {
-	head: {
-		title: 'Forgot Password',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: "Forgot Password",
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 

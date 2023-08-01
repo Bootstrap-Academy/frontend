@@ -15,12 +15,10 @@ const props = defineProps({
   showCross: { type: Boolean, default: true },
   propClass: { type: String, default: "" },
 });
-
 const emits = defineEmits(["closeFunction"]);
 
 const { t }: any = useI18n();
 const open: any = useDialogSlot();
-
 function close() {
   open.value = false;
   emits("closeFunction");

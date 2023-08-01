@@ -615,6 +615,9 @@
 		"RegistrationCode": "Registrierungscode"
 	},
 	"Buttons": {
+		"Yearly":"Jährlich",
+		"Monthly":"Monatlich",
+
 		"Refill":"Nachfüllung",
 		"BuySubscription":"Abonnement kaufen",
 		"GoMonthly":"Gehen monatlich",
@@ -850,6 +853,11 @@
 	"Error": {
 		"AlreadyHaveHearts":"Sie haben bereits die maximale Anzahl an Herzen 💚",
 		"Need50CoinsForRefill":"Sie benötigen 50 Morphcoins, um Ihr Herz wieder aufzufüllen",
+		"Need45CoinsForRefill":"Sie benötigen 45 Morphcoins, um Ihr Herz wieder aufzufüllen",
+		"Need35CoinsForRefill":"Sie benötigen 35 Morphcoins, um Ihr Herz wieder aufzufüllen",
+		"Need30CoinsForRefill":"Sie benötigen 30 Morphcoins, um Ihr Herz wieder aufzufüllen",
+		"Need20CoinsForRefill":"Sie benötigen 20 Morphcoins, um Ihr Herz wieder aufzufüllen",
+		"Need15CoinsForRefill":"Sie benötigen 15 Morphcoins, um Ihr Herz wieder aufzufüllen",
 		"CannotGetEvaluator":"Evaluator nicht gefunden",
 		"Level20RequiredForCreatingCodingChallenge":"Zum Erstellen einer Coding Challenge ist Level zwanzig (20) erforderlich",
 		"UserIsBanned":"Sie sind gesperrt und können diese Aktion nicht ausführen",

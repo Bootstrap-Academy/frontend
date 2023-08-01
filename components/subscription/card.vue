@@ -1,20 +1,8 @@
 <template>
-  <div class="py-16">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl sm:text-center">
-        <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
-          {{ t("Headings.NoTrickPricing") }}
-        </h2>
-        <p class="mt-6 text-lg leading-8 text-gray">
-          {{ t("Body.PremiumCardMain") }}
-        </p>
-      </div>
-      <!-- <InputBtn :icon="CheckIcon">Usman khalid </InputBtn> -->
-
+  <div class="pb-16">
+    <div class="mx-auto max-w-7xl">
       <section
-        v-for="(card, i) of cards"
-        :key="i"
-        class="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray sm:mt-20 lg:mx-0 lg:flex lg:max-w-none"
+        class="mx-auto max-w-2xl rounded-3xl ring-1 ring-gray lg:mx-0 lg:flex lg:max-w-none"
       >
         <article class="p-8 sm:p-10 lg:flex-auto">
           <h3 class="text-2xl font-bold tracking-tight text-accent">
@@ -82,55 +70,14 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  card: { type: Object, default: null },
+});
+
 import { CheckIcon } from "@heroicons/vue/20/solid";
 import { useI18n } from "vue-i18n";
 import { useCoins } from "../../composables/coins";
 const { t } = useI18n();
-const includedFeatures = [
-  "Headings.UnlimitedChallenges",
-  "Headings.UnlimitedQuizzes",
-  "Headings.AccessAllCourses",
-  "Headings.OneMonthNoLimitations",
-];
-
-const cards = [
-  {
-    heading: "Headings.YearlyPremiumCardHeading",
-    body: "Body.YearlyPremiumCardBody",
-    featuresHeading: "Headings.WhatsIncluded",
-    features: [
-      "Headings.ExtraTwoMonths",
-      "Headings.Save2000Coins",
-      "Headings.UnlimitedChallenges",
-      "Headings.UnlimitedQuizzes",
-      "Headings.AccessAllCourses",
-      "Headings.OneYearNoLimitations",
-    ],
-    buttonLabel: "Buttons.GoYearly",
-    Quote: "Headings.PayOnceOwnItYearly",
-    price: "Headings.TenThousand",
-    subscribe: () => {
-      subscribeYearly();
-    },
-  },
-  {
-    heading: "Headings.MonthlyPremiumCardHeading",
-    body: "Body.MonthlyPremiumCardBody",
-    featuresHeading: "Headings.WhatsIncluded",
-    features: [
-      "Headings.UnlimitedChallenges",
-      "Headings.UnlimitedQuizzes",
-      "Headings.AccessAllCourses",
-      "Headings.OneMonthNoLimitations",
-    ],
-    buttonLabel: "Buttons.GoMonthly",
-    Quote: "Headings.PayOnceOwnItMonthly",
-    price: "Headings.Thousand",
-    subscribe: () => {
-      subscribeMonthly();
-    },
-  },
-];
 
 const coins = useCoins();
 function subscribeMonthly() {

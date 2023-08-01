@@ -24,7 +24,11 @@
         />
       </svg>
 
-      <div v-else>
+      <div
+        v-else
+        class="flex gap-2 items-center"
+        :class="iconRight ? 'flex-row-reverse' : ''"
+      >
         <component v-if="icon" :is="icon" class="icon"></component>
         <slot></slot>
       </div>

@@ -70,3 +70,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.d {
+  background-color: red;
+}
+</style>
