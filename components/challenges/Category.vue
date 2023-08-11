@@ -9,7 +9,18 @@
         <p>{{ data?.description ?? "" }}</p>
       </div>
 
-      <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p>
+      <!-- <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p> -->
+      <p
+        v-if="categoryStats?.total > 0"
+        class="rounded-full text-sm py-1 px-3.5 font-bold text-primary flex-shrink-0 min-w-[200px] h-7"
+        :style="{ background: progressBar }"
+      >
+        {{ t(progress >= 100 ? "Headings.Completed" : "Headings.Untried") }}
+        : {{ categoryStats?.unattempted }} / {{ categoryStats?.total }}
+      </p>
+      <p v-else>
+        {{ t("Headings.Empty") }}
+      </p>
     </header>
 
     <NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="user?.admin">
@@ -74,16 +85,29 @@ export default defineComponent({
     const { t } = useI18n();
     const user: any = useUser();
     const challenges: any[] = reactive([]);
-
+    const categoryStats: any = ref();
     const loading = ref(challenges.length <= 0);
 
     onMounted(async () => {
       const [success, error] = await getChallengesByCategory(
         props.data?.id ?? ""
       );
+      const [statsSuccess, statsError] =
+        await getStatsCategoryWiseForCodingChallenges(props.data?.id ?? "");
+      console.log("heheheheheh", statsSuccess);
       loading.value = false;
-
       Object.assign(challenges, success ? success : []);
+      categoryStats.value = statsSuccess ? statsSuccess : null;
+    });
+
+    const progress = computed(() => {
+      return (
+        (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100
+      );
+    });
+
+    const progressBar = computed(() => {
+      return `linear-gradient(to right, #177edc 0%, #177edc ${progress.value}%, #177ddc58 ${progress.value}%,  #177ddc58 100%)`;
     });
 
     const router = useRouter();
@@ -125,6 +149,9 @@ export default defineComponent({
       canCreate,
       PlusIcon,
       user,
+      categoryStats,
+      progress,
+      progressBar,
     };
   },
 });

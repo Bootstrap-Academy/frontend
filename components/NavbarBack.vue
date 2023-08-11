@@ -58,7 +58,11 @@ export default defineComponent({
         label = "Links.Home";
       }
       // ! MFA
-      else if (name == "account-mfa-disabled") {
+      else if (
+        name == "account-mfa-disabled" ||
+        name == "account-mfa-enable" ||
+        name == "account-mfa-initialize"
+      ) {
         pathname = "/profile";
         label = "Links.GoToProfile";
       }

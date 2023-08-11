@@ -7,6 +7,7 @@
   >
     <Input
       :label="t('Inputs.EmailOrUsername')"
+      focusThis
       v-model="form.name_or_email.value"
       @valid="form.name_or_email.valid = $event"
       :rules="form.name_or_email.rules"

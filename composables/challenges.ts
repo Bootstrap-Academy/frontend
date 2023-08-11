@@ -19,6 +19,9 @@ export const useChallenges: () => Ref<any[]> = () =>
 export const useChallenge: () => Ref<any> = () =>
 	useState('challenge', () => null);
 
+// export const useCategoryStats: () => Ref<any> = () =>
+// 	useState("useCategoryStats", () => null)
+
 export async function getMyChallengesStats() {
 	try {
 		const response = await GET('/auth/sessions/challenges/login_url');
@@ -90,7 +93,6 @@ export async function getChallengesByCategory(categoryID: string) {
 		challenges.value = response ?? [];
 
 		console.log('getChallengesByCategory', response);
-
 		return [challenges.value, null];
 	} catch (error: any) {
 		return [null, error.data];
@@ -137,7 +139,6 @@ export async function deleteChallenge(categoryID: string, challengeID: string) {
 	}
 }
 
-
 export async function getChallengesLoginUrl() {
 	try {
 		const response = await GET('/auth/sessions/challenges/login_url');
@@ -162,4 +163,21 @@ export async function createChallenge(categoryID: string, body: any) {
 	} catch (error: any) {
 		return [null, error.data];
 	}
+}
+
+export async function getStatsCategoryWiseForCodingChallenges(categoryId: any) {
+	try {
+		console.log("statsCategoryWiseForCodingChallenges")
+		const res = await GET(`/challenges/categories/${categoryId}/stats?category_id=${categoryId}`)
+		console.log("response of stats", res)
+		// const categoryStats = useCategoryStats()
+		// categoryStats.value = res
+		return [res, null]
+	}
+	catch (error: any) {
+		console.log("inside error block for  stats", error)
+		return [null, error.data];
+
+	}
+
 }

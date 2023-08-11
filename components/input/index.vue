@@ -70,6 +70,7 @@ export default defineComponent({
     rules: { type: Array, default: [] },
     modelValue: { default: "" },
     disabled: { type: Boolean, default: false },
+    focusThis: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
@@ -126,10 +127,20 @@ export default defineComponent({
 
       DOM_INPUT.value.setCustomValidity(msg);
       emit("valid", !!!msg);
-
       return msg;
     });
-
+    onMounted(() => {
+      if (props.focusThis == true) {
+        console.log(
+          "in miounted",
+          DOM_INPUT.value?.focus(),
+          "props.",
+          props.label,
+          props.focusThis
+        );
+        DOM_INPUT.value?.focus();
+      }
+    });
     return { t, input, error, DOM_INPUT, touched };
   },
 });

@@ -10,9 +10,9 @@
 
       <ChallengesItemProgress :data="data" />
 
-      <p class="!m-0 text-right">
+      <!-- <p class="!m-0 text-right">
         {{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}
-      </p>
+      </p> -->
     </header>
 
     <div
@@ -55,7 +55,6 @@ import {
 } from "@heroicons/vue/24/outline";
 import { PropType } from "vue";
 import { PencilIcon } from "@heroicons/vue/24/solid";
-import { deleteChallenge } from "~~/composables/challenges";
 
 export default defineComponent({
   props: {

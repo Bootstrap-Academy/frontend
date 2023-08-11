@@ -68,6 +68,9 @@ export async function createCodingChallenge(taskId: string, body: any) {
         else if (msg == 'banned') {
             return [null, "Error.UserIsBanned"]
         }
+        else if (msg == 'testcase_failed') {
+            return [null, "Error.SolutionCodeFailed"]
+        }
         return [null, error.data];
     }
 }
@@ -250,6 +253,7 @@ export async function getConfigs() {
         return [null, error]
     }
 }
+
 export async function getEvaluatorTemplate() {
     try {
         console.log("getting congi",)
@@ -283,3 +287,4 @@ export async function getCodingChallengesStats() {
         return [null, error]
     }
 }
+

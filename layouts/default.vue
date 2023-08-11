@@ -4,7 +4,7 @@
     <Navbar :links="links" :authorized="authorized" />
     <slot />
     <LazyClientOnly>
-      <Download />
+      <!-- <Download /> -->
       <Footer />
     </LazyClientOnly>
   </div>
