@@ -62,7 +62,7 @@
         'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
       }"
     >
-      <h2 class="mb-box text-heading-3">
+      <h2 class="mb-box text-heading-3" v-if="quizzes.length > 0">
         {{ t("Headings.QuizzesInCourse") }}
       </h2>
 
@@ -125,6 +125,7 @@ export default {
       const [success, error] = await getCourseByID(id.value);
 
       if (error) {
+        console.log("error in");
         openSnackbar("error", error.detail);
         await getCourseSummaryByID(id.value);
       } else {
@@ -133,7 +134,8 @@ export default {
           id.value
         );
         if (quizzesError) {
-          openSnackbar("error", quizzesError);
+          console.log("error quiz in", quizzesError);
+          openSnackbar("error", "quizzesError");
         }
       }
 

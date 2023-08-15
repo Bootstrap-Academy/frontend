@@ -35,7 +35,7 @@
 import { defineComponent, PropType, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { PlayCircleIcon, CheckCircleIcon } from "@heroicons/vue/24/solid";
-
+import { useListOfCompletedCourses } from "../../composables/courses";
 export default defineComponent({
   components: { PlayCircleIcon, CheckCircleIcon },
   props: {

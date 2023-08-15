@@ -163,9 +163,17 @@ const onResponseError = async ({ request, options, response }) => {
     return (response._data.detail = "Error.SkillNotFound");
   } else if (details.includes("no course access")) {
     return (response._data.detail = "Error.NoCourseAccess");
+  } else if (details.includes("not enough coins")) {
+    return (response._data.detail = "Error.NotEnoughCoins");
+  } else if (details.includes("cannot start in the past")) {
+    return (response._data.detail = "Error.CannotStartInPast");
   }
+
+  console.log("before details error", details);
+
   details = response?._data.error;
-  console.log("details", response);
+  console.log("details error", details);
+  console.log("response from error", response);
   if (details.toLocaleLowerCase().includes("forbidden")) {
     response._data.detail = "Error.NotAllowed";
   } else if (details.toLocaleLowerCase().includes("too_many_requests")) {

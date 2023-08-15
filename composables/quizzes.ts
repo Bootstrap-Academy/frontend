@@ -1,5 +1,5 @@
 import { useState } from '#app';
-
+import { GET } from './fetch';
 export const useQuizzes = () => useState<any[]>('quizzes', () => []);
 export const useQuiz = () => useState<any>('quiz', () => null);
 export const useSubTasksInQuiz = () => useState<any>("subTasksInQuiz", () => [])
