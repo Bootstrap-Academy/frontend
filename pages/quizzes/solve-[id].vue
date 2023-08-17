@@ -135,47 +135,48 @@ export default defineComponent({
     }
 
     function solveThis(quiz: any) {
-      const coins = useCoins();
-      if (quiz?.fee > 0 && coins.value < quiz?.fee) {
-        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-      }
-      if (!quiz.unlocked) {
-        openDialog(
-          "info",
-          "Headings.UnlockCodingChallenge",
-          "Body.BuyCodingChallnge",
-          false,
-          {
-            label: "Buttons.Buy",
-            onclick: async () => {
-              const [success, error] = await buySubtask(quiz.task_id, quiz.id);
-              if (success) {
-                openSnackbar("success", "Success.BuyCodingChallenge");
-                arrayOfSubtasks.value.forEach((element: any) => {
-                  if (element.id == quiz.id) {
-                    element.unlocked = true;
-                  }
-                });
-                selectedQuiz.value = quiz;
-              } else openSnackbar("error", error);
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
-        );
-      } else {
-        router.replace({
-          path: route.path,
-          query: {
-            quizzesFrom: quizzesFrom.value,
-            querySubTaskId: quiz.id,
-            taskId: quiz.task_id,
-          },
-        });
-        selectedQuiz.value = quiz;
-      }
+      // const coins = useCoins();
+      // if (quiz?.fee > 0 && coins.value < quiz?.fee) {
+      //   return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      // }
+      // if (!quiz.unlocked) {
+      //   openDialog(
+      //     "info",
+      //     "Headings.UnlockCodingChallenge",
+      //     "Body.BuyCodingChallnge",
+      //     false,
+      //     {
+      //       label: "Buttons.Buy",
+      //       onclick: async () => {
+      //         const [success, error] = await buySubtask(quiz.task_id, quiz.id);
+      //         if (success) {
+      //           openSnackbar("success", "Success.BuyCodingChallenge");
+      //           arrayOfSubtasks.value.forEach((element: any) => {
+      //             if (element.id == quiz.id) {
+      //               element.unlocked = true;
+      //             }
+      //           });
+      //           selectedQuiz.value = quiz;
+      //         } else openSnackbar("error", error);
+      //       },
+      //     },
+      //     {
+      //       label: "Buttons.Cancel",
+      //       onclick: () => {},
+      //     }
+      //   );
+      // }
+      // else {
+      router.replace({
+        path: route.path,
+        query: {
+          quizzesFrom: quizzesFrom.value,
+          querySubTaskId: quiz.id,
+          taskId: quiz.task_id,
+        },
+      });
+      selectedQuiz.value = quiz;
+      // }
     }
 
     async function manageAllDataForQuizzes() {

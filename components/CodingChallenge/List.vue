@@ -11,15 +11,19 @@
       {{ t("Headings.NoCodingChallengeCreated") }}
     </p>
 
-    <CodingChallengeCard
-      @click="solveCodingChallenge(codingChallenge)"
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-4"
       v-else-if="codingChallenges.length"
-      v-for="(codingChallenge, i) of codingChallenges"
-      :codingChallenge="codingChallenge"
-      :key="i"
-      class="bg-primary border border-light rounded-md mb-4 p-2 group cursor-pointer mt-1"
     >
-    </CodingChallengeCard>
+      <CodingChallengeCard
+        @click="solveCodingChallenge(codingChallenge)"
+        v-for="(codingChallenge, i) of codingChallenges"
+        :codingChallenge="codingChallenge"
+        :key="i"
+        class="border border-light rounded-md"
+      >
+      </CodingChallengeCard>
+    </div>
   </div>
 </template>
 
@@ -42,7 +46,7 @@ export default defineComponent({
     const route = useRoute();
     const codingChallenges = useAllCodingChallengesInATask();
     const loading = ref(true);
-    const activeCodingChallenge = ref("");
+    const hearts: any = useHearts();
 
     const baseQuery: any = computed(() => {
       return {
@@ -58,12 +62,10 @@ export default defineComponent({
 
     function solveCodingChallenge(codingChallenge: any) {
       console.log("coding challenge", codingChallenge);
-      const coins = useCoins();
-      if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
-        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-      }
-      if (!codingChallenge.unlocked) {
-        // openSnackbar("info", "Error.CodingChallengeLocked");
+      const isPremium: any = useIsPremium();
+      if (!isPremium.value && hearts.value?.hearts < 1) {
+        return openSnackbar("info", "Error.NotEnoughHearts");
+      } else if (!!!isPremium.value.premium && hearts.value?.hearts >= 1) {
         openDialog(
           "info",
           "Headings.UnlockCodingChallenge",
@@ -89,6 +91,8 @@ export default defineComponent({
             onclick: () => {},
           }
         );
+        return;
+      } else if (isPremium.value) {
         return;
       }
 

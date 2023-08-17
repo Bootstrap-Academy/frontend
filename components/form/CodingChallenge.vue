@@ -48,14 +48,6 @@
           v-model="form.xp.value"
           @valid="form.xp.valid = $event"
         />
-        <Input
-          v-if="!!user.admin"
-          :label="t('Inputs.Fee')"
-          :type="'number'"
-          :rules="form.fee.rules"
-          v-model="form.fee.value"
-          @valid="form.fee.valid = $event"
-        />
       </article>
 
       <InputTextarea
@@ -68,12 +60,6 @@
       <article>
         <div class="flex gap-x-2 items-center">
           <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
-          <!-- <Tooltip
-            :heading="'Evaluator code on which basis the examples of the coding challenges will be created (Always python)'"
-            :content="'Here will be the code that is used to create the coding examples. This also be used to check and test the code of the user if the entered code is correct, incorrect, contain error or some other bug. This should be written in same language what you have chose above'"
-          >
-            <InformationCircleIcon class="h-7 w-7 -mt-1.5 text-accent" />
-          </Tooltip> -->
         </div>
         <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
       </article>
@@ -81,19 +67,20 @@
       <article>
         <div class="flex gap-2 items-center">
           <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
-          <!-- <Tooltip
-            :heading="'Solution code of the coding challenge you are creating'"
-            :content="'Here will be the code that is the solution of the coding challenge. This should be written in same language what you have chose above'"
-          >
-            <InformationCircleIcon class="h-7 w-7 -mt-1.5 text-accent" />
-          </Tooltip> -->
         </div>
         <ChallengesCodeEditor
           class="h-full"
           v-model="form.solution_code.value"
         />
-      </article>
 
+        <div
+          @click="enterExampleCode()"
+          class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
+        >
+          Example Code
+          <CodeBracketIcon class="h-5 w-5" />
+        </div>
+      </article>
       <section class="flex gap-3 flex-wrap justify-end">
         <InputBtn @click="closeDialog()" class="self-end" secondary mt>
           {{ t("Buttons.Close") }}
@@ -118,7 +105,10 @@
 </template>
 
 <script lang="ts">
-import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import {
+  InformationCircleIcon,
+  CodeBracketIcon,
+} from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { PropType, ref } from "vue";
 import {
@@ -140,7 +130,7 @@ export default {
     propData: { type: Object as PropType<any>, default: null },
     challengeId: { type: String, default: "" },
   },
-  components: { InformationCircleIcon },
+  components: { InformationCircleIcon, CodeBracketIcon },
   setup(props) {
     const { t } = useI18n();
     const refForm = ref<HTMLFormElement | null>(null);
@@ -149,18 +139,13 @@ export default {
     const environments: any = useEnvironments();
     const user: any = useUser();
     const evaluatorTemplate = useEvaluatorTemplate();
+    const isFirstTime = ref(true);
     const languages: any = computed(() => {
       const items = [];
       for (const key in environments?.value) {
         items.push({ label: key, value: key });
       }
       return items;
-    });
-
-    const maxFee: any = computed(() => {
-      if (!!!user?.value?.admin) {
-        return 1;
-      } else return 1000000000;
     });
 
     const form = reactive<IForm>({
@@ -183,14 +168,7 @@ export default {
         value: null,
         rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
       },
-      fee: {
-        valid: true,
-        value: null,
-        rules: [
-          (v: number) =>
-            v <= maxFee.value || `Error.InputMaxNumber_${maxFee.value}`,
-        ],
-      },
+
       static_tests: {
         valid: false,
         value: null,
@@ -278,7 +256,6 @@ export default {
         description: form.description.value,
         coins: !!form.coins.value ? form.coins.value : 0,
         xp: !!form.xp.value ? form.xp.value : 0,
-        fee: !!form.fee.value ? form.fee.value : 0,
         time_limit: configs.value.time_limit,
         memory_limit: configs.value.memory_limit,
         static_tests: form.static_tests.value,
@@ -302,7 +279,6 @@ export default {
           description: form.description.value,
           coins: !!form.coins.value ? form.coins.value : 0,
           xp: !!form.xp.value ? form.xp.value : 0,
-          fee: !!form.fee.value ? form.fee.value : 0,
           time_limit: configs.value.time_limit,
           memory_limit: configs.value.memory_limit,
           static_tests: form.static_tests.value,
@@ -357,19 +333,14 @@ export default {
       } else {
         openSnackbar("error", "Errors.CannotGetEvaluator");
       }
-      // console.log("form.evaluator", evaluatorSuccess);
-      // console.log("form.solution", solutionSuccess.code);
-      // console.log("form.environemnt", solutionSuccess.environment);
     }
 
     async function setFormData() {
-      // console.log("watching propdata", props.propData);
       if (props.propData != null) {
         await getEvaulatorAndSolution();
         form.description.value = props?.propData?.description ?? "";
         form.xp.value = props?.propData?.xp ?? "";
         form.coins.value = props?.propData?.coins ?? "";
-        form.fee.value = props?.propData?.fee ?? "";
         form.static_tests.value = props?.propData?.static_tests ?? "";
         form.random_tests.value = props?.propData?.random_tests ?? "";
 
@@ -377,7 +348,6 @@ export default {
           props?.propData.description.trim() != "" ? true : false;
         form.xp.valid = props?.propData.xp >= 0 ? true : false;
         form.coins.valid = props?.propData.coins >= 0 ? true : false;
-        form.fee.valid = props?.propData.fee >= 0 ? true : false;
         form.random_tests.valid =
           props?.propData.random_tests >= 1 ? true : false;
         form.static_tests.valid =
@@ -393,30 +363,10 @@ export default {
       { deep: true }
     );
 
-    watch(
-      () => form.solution_environment.value,
-      (newValue, oldValue) => {
-        form.solution_code.value =
-          environments.value[form.solution_environment.value].example;
-        // openDialog(
-        //   "warning",
-        //   "Headings.ChangeEnvironment",
-        //   "Body.ChangeEnvironment",
-        //   false,
-        //   {
-        //     label: "Buttons.Change",
-        //     onclick: () => {
-        //       form.solution_code.value =
-        //         environments.value[form.solution_environment.value].example;
-        //     },
-        //   },
-        //   {
-        //     label: "Buttons.Cancel",
-        //     onclick: () => {},
-        //   }
-        // );
-      }
-    );
+    function enterExampleCode() {
+      form.solution_code.value =
+        environments.value[form.solution_environment.value].example;
+    }
 
     watch(
       () => evaluatorTemplate.value,
@@ -446,7 +396,10 @@ export default {
       closeDialog,
       loading,
       languages,
+      isFirstTime,
       InformationCircleIcon,
+      CodeBracketIcon,
+      enterExampleCode,
     };
   },
 };

@@ -6,7 +6,7 @@
       >
         <HeartIcon
           class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
-        />{{ hearts }}
+        />{{ hearts?.hearts ?? "" }}
         <PlusIcon class="flex-shrink-0 text-headiacang block w-3.5 h-3.5" />
       </article>
     </div>
@@ -24,7 +24,7 @@ export default defineComponent({
   components: { PlusIcon, HeartIcon },
   setup() {
     const loading = ref(true);
-    const hearts = useHearts();
+    const hearts: any = useHearts();
 
     function gotoSubscription() {
       const router = useRouter();
@@ -32,6 +32,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      await getHearts();
       loading.value = false;
     });
 

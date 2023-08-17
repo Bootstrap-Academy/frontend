@@ -48,17 +48,11 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
     @click="solveThis(data?.id ?? '')"
     class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"
   >
-    <span
-      class="rounded-full p-0.5 bg-success absolute -right-1 -top-1.5"
+    <CheckIcon
       v-if="data?.solved"
-    >
-      <CheckIcon class="h-4 w-4 text-white" />
-    </span>
-    <h3 v-if="data?.unlocked" class="text-heading-4 clamp line-2">
-      <!-- Q). {{ data?.question ?? t("Headings.NoQuizTitle") }} -->
-      Q). {{ data?.question ?? "" }}
-    </h3>
-    <LockClosedIcon v-else class="h-5 w-5 text-white mb-2" />
+      class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
+    />
+    <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
 
     <div class="flex justify-between gap-box items-center">
       <p class="text-body-2" v-if="data?.single_choice">
@@ -68,11 +62,6 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 
       <Chip v-if="data && data.fee <= 0" xs color="chip-color-6" class="w-fit">
         {{ t("Headings.Free") }}
-      </Chip>
-
-      <Chip v-else xs color="chip-color-3" class="w-fit">
-        <span class="capitalize"> {{ t("Headings.Fee") }}</span>
-        {{ data?.fee }}
       </Chip>
     </div>
   </article>
@@ -114,38 +103,37 @@ export default defineComponent({
       }
     });
     function solveThis(id: any) {
-      const coins = useCoins();
-      if (props.data?.fee > 0 && coins.value < props.data?.fee) {
-        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-      }
-
-      if (!props.data.unlocked) {
-        openDialog(
-          "info",
-          "Headings.UnlockQuiz",
-          "Body.BuyQuiz",
-          false,
-          {
-            label: "Buttons.Buy",
-            onclick: async () => {
-              const [success, error] = await buySubtask(
-                props.data.task_id,
-                props.data.id
-              );
-              if (success) {
-                openSnackbar("success", "Success.BuyCodingChallenge");
-                gotoPage();
-              } else openSnackbar("error", error?.data?.detail);
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
-        );
-      } else {
-        gotoPage();
-      }
+      // if (props.data?.fee > 0 && coins.value < props.data?.fee) {
+      //   return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
+      // }
+      // if (!props.data.unlocked) {
+      //   openDialog(
+      //     "info",
+      //     "Headings.UnlockQuiz",
+      //     "Body.BuyQuiz",
+      //     false,
+      //     {
+      //       label: "Buttons.Buy",
+      //       onclick: async () => {
+      //         const [success, error] = await buySubtask(
+      //           props.data.task_id,
+      //           props.data.id
+      //         );
+      //         if (success) {
+      //           openSnackbar("success", "Success.BuyCodingChallenge");
+      //           gotoPage();
+      //         } else openSnackbar("error", error?.data?.detail);
+      //       },
+      //     },
+      //     {
+      //       label: "Buttons.Cancel",
+      //       onclick: () => {},
+      //     }
+      //   );
+      // }
+      // else {
+      gotoPage();
+      // }
     }
 
     function gotoPage() {
