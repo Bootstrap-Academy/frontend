@@ -87,10 +87,10 @@ export async function getMyWebinars() {
 			throw { data: { detail: 'Invalid User Id' } };
 		}
 
-		const response = await GET(`/events/webinars?creator=${user_id}`);
+		const response = await GET(`/events/calendar?type=webinar&instructor_id=${user_id}`);
 
 		const myWebinars = useMyWebinars();
-		myWebinars.value = response ?? [];
+		myWebinars.value = response?.events ?? [];
 
 		return [response, null];
 	} catch (error: any) {

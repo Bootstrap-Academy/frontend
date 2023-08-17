@@ -1,238 +1,236 @@
 <template>
-	<article
-		class="p-4 style-card lg:style-box bg-secondary border-l-4"
-		:class="[theme.border, { 'cursor-pointer': !!link }]"
-		@click.self="onclickCard"
-	>
-		<header
-			class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
-		>
-			<div v-if="type == 'coaching'" class="flex gap-box">
-				<img
-					:src="instructor?.avatar_url ?? '/images/about-2.webp'"
-					class="w-6 h-6 object-cover rounded-[50px]"
-					alt=""
-				/>
+  <article
+    class="p-4 style-card lg:style-box bg-secondary border-l-4"
+    :class="[theme.border, { 'cursor-pointer': !!link }]"
+    @click.self="onclickCard"
+  >
+    <header
+      class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
+    >
+      <div v-if="type == 'coaching'" class="flex gap-box">
+        <img
+          :src="instructor?.avatar_url ?? '/images/about-2.webp'"
+          class="w-6 h-6 object-cover rounded-[50px]"
+          alt=""
+        />
 
-				<h3 class="capitalize text-heading-4">
-					{{ instructor?.display_name ?? type }}
-				</h3>
-			</div>
+        <h3 class="capitalize text-heading-4">
+          {{ instructor?.display_name ?? type }}
+        </h3>
+      </div>
 
-			<h3 v-else class="capitalize text-heading-4">
-				{{ title }}
-			</h3>
-			<h3
-				@click.self="onclickCard"
-				v-if="link"
-				:class="[theme.text, theme.bgLight]"
-				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
-			>
-				{{ t('Links.Link') }}
-			</h3>
-		</header>
+      <h3 v-else class="capitalize text-heading-4">{{ title }}</h3>
+      <h3
+        @click.self="onclickCard"
+        v-if="link"
+        :class="[theme.text, theme.bgLight]"
+        class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
+      >
+        {{ t("Links.Link") }}
+      </h3>
+    </header>
 
-		<IconText
-			v-for="(stat, i) of stats"
-			:key="i"
-			:icon="stat.icon"
-			class="w-full my-2.5"
-			:highlightIcon="false"
-			sm
-			:iconColor="theme.text"
-			:fill="theme.fill"
-		>
-			{{ stat.value }}
-		</IconText>
+    <IconText
+      v-for="(stat, i) of stats"
+      :key="i"
+      :icon="stat.icon"
+      class="w-full my-2.5"
+      :highlightIcon="false"
+      sm
+      :iconColor="theme.text"
+      :fill="theme.fill"
+    >
+      {{ stat.value }}
+    </IconText>
 
-		<CalendarEventBooking
-			:key="id"
-			:isMine="isMine"
-			:booked="data.booked"
-			:bookable="data.bookable"
-			:id="id"
-			:type="type"
-			:theme="theme"
-			:subSkillID="skillID"
-			:start="data.start"
-			:stats="stats"
-			:description="description"
-		/>
-	</article>
+    <CalendarEventBooking
+      :key="id"
+      :isMine="isMine"
+      :booked="data.booked"
+      :bookable="data.bookable"
+      :id="id"
+      :type="type"
+      :theme="theme"
+      :subSkillID="skillID"
+      :start="data.start"
+      :stats="stats"
+      :description="description"
+    />
+  </article>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { ClockIcon, CalendarIcon } from '@heroicons/vue/24/outline';
-import IconMorphcoin from '~/components/icon/Morphcoin.vue';
-import IconSkill from '~/components/icon/Skill.vue';
+import { defineComponent, PropType } from "vue";
+import { useI18n } from "vue-i18n";
+import { ClockIcon, CalendarIcon } from "@heroicons/vue/24/outline";
+import IconMorphcoin from "~/components/icon/Morphcoin.vue";
+import IconSkill from "~/components/icon/Skill.vue";
 
 export default defineComponent({
-	components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-		noBooking: { type: Boolean, default: false },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+    noBooking: { type: Boolean, default: false },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const id = computed(() => {
-			return props.data?.id ?? '';
-		});
+    const id = computed(() => {
+      return props.data?.id ?? "";
+    });
 
-		const type = computed(() => {
-			return props.data?.type ?? '';
-		});
+    const type = computed(() => {
+      return props.data?.type ?? "";
+    });
 
-		const theme = computed(() => {
-			switch (type.value) {
-				case 'coaching':
-					return {
-						bg: 'bg-info',
-						bgLight: 'bg-info-light',
-						fill: 'fill-info',
-						stroke: 'stroke-info',
-						border: 'border-info',
-						text: 'text-info',
-					};
-				default:
-					return {
-						bg: 'bg-warning',
-						bgLight: 'bg-warning-light',
-						fill: 'fill-warning',
-						stroke: 'stroke-warning',
-						border: 'border-warning',
-						text: 'text-warning',
-					};
-			}
-		});
+    const theme = computed(() => {
+      switch (type.value) {
+        case "coaching":
+          return {
+            bg: "bg-info",
+            bgLight: "bg-info-light",
+            fill: "fill-info",
+            stroke: "stroke-info",
+            border: "border-info",
+            text: "text-info",
+          };
+        default:
+          return {
+            bg: "bg-warning",
+            bgLight: "bg-warning-light",
+            fill: "fill-warning",
+            stroke: "stroke-warning",
+            border: "border-warning",
+            text: "text-warning",
+          };
+      }
+    });
 
-		const title = computed(() => {
-			return props.data?.title ?? '';
-		});
+    const title = computed(() => {
+      return props.data?.title ?? "";
+    });
 
-		const instructor = computed(() => {
-			return props.data?.instructor ?? null;
-		});
+    const instructor = computed(() => {
+      return props.data?.instructor ?? null;
+    });
 
-		const admin_link = computed(() => {
-			return props.data?.admin_link ?? '';
-		});
+    const admin_link = computed(() => {
+      return props.data?.admin_link ?? "";
+    });
 
-		const isMine = computed(() => {
-			return !!admin_link.value;
-		});
+    const isMine = computed(() => {
+      return !!admin_link.value;
+    });
 
-		const skillID = computed(() => {
-			return props.data?.skill_id ?? '';
-		});
+    const skillID = computed(() => {
+      return props.data?.skill_id ?? "";
+    });
 
-		const skillName = computed(() => {
-			return skillID.value.replace(/_/g, ' ');
-		});
+    const skillName = computed(() => {
+      return skillID.value.replace(/_/g, " ");
+    });
 
-		const start = computed(() => {
-			return getTimeAndDate(props.data?.start ?? -1);
-		});
+    const start = computed(() => {
+      return getTimeAndDate(props.data?.start ?? -1);
+    });
 
-		const end = computed(() => {
-			return getTimeAndDate(props.data?.end ?? -1);
-		});
+    const end = computed(() => {
+      return getTimeAndDate(props.data?.end ?? -1);
+    });
 
-		function getTimeAndDate(timestamp: number) {
-			if (timestamp == -1) {
-				return { time: ``, date: `` };
-			}
+    function getTimeAndDate(timestamp: number) {
+      if (timestamp == -1) {
+        return { time: ``, date: `` };
+      }
 
-			let { date, month, year } = convertTimestampToDate(timestamp);
-			let time = new Date(timestamp * 1000).toTimeString();
-			let [hr, min, sec] = time.split(':');
+      let { date, month, year } = convertTimestampToDate(timestamp);
+      let time = new Date(timestamp * 1000).toTimeString();
+      let [hr, min, sec] = time.split(":");
 
-			return {
-				time: `${hr}:${min}`,
-				date: `${date} ${month.string.slice(0, 3)}, ${year}`,
-			};
-		}
+      return {
+        time: `${hr}:${min}`,
+        date: `${date} ${month.string.slice(0, 3)}, ${year}`,
+      };
+    }
 
-		const price = computed(() => {
-			return props.data?.price ?? props.data?.coaching?.price ?? 0;
-		});
+    const price = computed(() => {
+      return props.data?.price ?? props.data?.coaching?.price ?? 0;
+    });
 
-		const description = computed(() => {
-			return props.data?.description ?? '';
-		});
+    const description = computed(() => {
+      return props.data?.description ?? "";
+    });
 
-		const stats = computed(() => {
-			return [
-				{
-					icon: IconSkill,
-					value: skillName.value,
-					heading: 'Headings.Skill',
-				},
-				// {
-				// 	icon: CalendarIcon,
-				// 	value:
-				// 		start.value.date != end.value.date
-				// 			? `${start.value.date} - ${end.value.date}`
-				// 			: start.value.date,
-				// 	heading: 'Headings.Date',
-				// },
-				// {
-				// 	icon: ClockIcon,
-				// 	value: `${start.value.time} - ${end.value.time}`,
-				// 	heading: 'Headings.Time',
-				// },
-				{
-					icon: CalendarIcon,
-					value: start.value.date,
-					heading: 'Headings.Date',
-				},
-				{
-					icon: ClockIcon,
-					value: start.value.time,
-					heading: 'Headings.Time',
-				},
-				{
-					icon: IconMorphcoin,
-					value: t(
-						'Headings.Morphcoins',
-						{ n: abbreviateNumber(price.value) },
-						price.value
-					),
-					heading: 'Headings.Price',
-				},
-			];
-		});
+    const stats = computed(() => {
+      return [
+        {
+          icon: IconSkill,
+          value: skillName.value,
+          heading: "Headings.Skill",
+        },
+        // {
+        // 	icon: CalendarIcon,
+        // 	value:
+        // 		start.value.date != end.value.date
+        // 			? `${start.value.date} - ${end.value.date}`
+        // 			: start.value.date,
+        // 	heading: 'Headings.Date',
+        // },
+        // {
+        // 	icon: ClockIcon,
+        // 	value: `${start.value.time} - ${end.value.time}`,
+        // 	heading: 'Headings.Time',
+        // },
+        {
+          icon: CalendarIcon,
+          value: start.value.date,
+          heading: "Headings.Date",
+        },
+        {
+          icon: ClockIcon,
+          value: start.value.time,
+          heading: "Headings.Time",
+        },
+        {
+          icon: IconMorphcoin,
+          value: t(
+            "Headings.Morphcoins",
+            { n: abbreviateNumber(price.value) },
+            price.value
+          ),
+          heading: "Headings.Price",
+        },
+      ];
+    });
 
-		const link = computed(() => {
-			return props.data?.link ?? props.data?.location ?? '';
-		});
+    const link = computed(() => {
+      return props.data?.link ?? props.data?.location ?? "";
+    });
 
-		function onclickCard() {
-			if (!!window && !!admin_link.value) {
-				window.open(admin_link.value, '_blank');
-			} else if (!!window && !!link.value) {
-				window.open(link.value, '_blank');
-			}
-		}
+    function onclickCard() {
+      if (!!window && !!admin_link.value) {
+        window.open(admin_link.value, "_blank");
+      } else if (!!window && !!link.value) {
+        window.open(link.value, "_blank");
+      }
+    }
 
-		return {
-			t,
-			id,
-			type,
-			theme,
-			title,
-			instructor,
-			stats,
-			link,
-			onclickCard,
-			admin_link,
-			isMine,
-			skillID,
-			description,
-		};
-	},
+    return {
+      t,
+      id,
+      type,
+      theme,
+      title,
+      instructor,
+      stats,
+      link,
+      onclickCard,
+      admin_link,
+      isMine,
+      skillID,
+      description,
+    };
+  },
 });
 </script>
 

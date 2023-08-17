@@ -276,7 +276,6 @@ export async function getCodingChallengesStats() {
         console.log("getCodingChallengesStats",)
 
         const res = await GET(`/challenges/subtasks/stats`)
-        console.log("response of stats", res)
 
         const codingChallengesStats = useCodingChallengesStats()
         codingChallengesStats.value = res ?? null
