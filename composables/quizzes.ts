@@ -348,6 +348,9 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		return [success, null]
 	}
 	catch (error: any) {
+		if (error.data.error == 'not_enough_hearts') {
+			return [null, 'Error.NotEnoughHeartsForQuiz']
+		}
 		console.log("error for attempting", error.data)
 		return [null, error.data]
 	}

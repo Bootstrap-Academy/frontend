@@ -119,7 +119,7 @@ export async function login(body: any) {
 	try {
 		const response = await POST('/auth/sessions', body);
 		setStates(response);
-
+		// await getPremiumStatus()
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];

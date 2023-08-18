@@ -11,8 +11,14 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "Since": "seit",
+    "Until": "bis",
+    "EnableAutopay": "Aktivieren Sie Autopay",
+    "DisableAutopay": "Deaktivieren Sie AutoPay",
     "QuizzesInCourse": "Quizzes in diesem Kurs",
     "Empty": "Leet",
+    "Premium": "Prämie",
+    "AutoPay": "Automatische Bezahlung",
     "RefillHearts": "Herzen auffüllen",
     "BuyMonthlySubscription": "Kaufen Sie ein monatlich",
     "BuyYearlySubscription": "Kaufen Sie ein Jahresabonnement",
@@ -291,6 +297,11 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "EnableAutopay": "Wir kümmern uns selbst um Ihre Zahlungen und buchen den Betrag auf Basis des von Ihnen gewählten Abonnements von Ihrem Konto ab",
+    "DisableAutopay": "Möchten Sie die automatische Zahlung deaktivieren?",
+    "SubscribeFirst": "Um Autopay auszuwählen, müssen Sie zunächst ein Abonnement abschließen",
+    "AutoPay": "Option für stressfreien Komfort mit unserer monatlichen Auto-Pay-Option",
+
     "Refill0p5Hearts": "Füllen Sie 0.5 Herz für 15 Morphcoins auf",
     "Refill1Hearts": "Füllen Sie 1 Herz für 20 Morphcoins auf",
 
@@ -305,8 +316,8 @@
     "MonthlyPremiumCardBody": "Lernen Sie den Code-Übungstest und vieles mehr.",
     "YearlyPremiumCardBody": "Lernen Sie den Code-Übungstest und vieles mehr.",
     "ChangeEnvironment": "Möchten Sie Ihren Lösungscode auf das Standardbeispiel aktualisieren?",
-    "BuyCodingChallnge": "Die Coding-Challenge ist gesperrt. Für den Kauf dieser Codierungsherausforderung wird Ihrem Konto 1 Herz belastet.",
-    "BuyQuiz": "Quiz ist gesperrt. Für den Kauf dieses Quiz wird Half Heart von Ihrem Konto abgebucht.",
+    "BuyCodingChallnge": "Für die Teilnahme an dieser Codierungsherausforderung wird 1 Herz von Ihrem Konto abgezogen.",
+    "BuyQuiz": "Für die Teilnahme an diesem Quiz wird die Hälfte des Herzens von Ihrem Konto abgezogen.",
     "DeleteQuiz": "Sind Sie sicher, dass Sie das Quiz löschen möchten?",
     "DeleteCodingChallenge": "Sind Sie sicher, dass Sie die Coding challenge löschen möchten?",
     "DeleteChallenge": "Sind Sie sicher, dass Sie Challenge löschen möchten??",
@@ -617,6 +628,7 @@
     "RegistrationCode": "Registrierungscode"
   },
   "Buttons": {
+    "Yes": "Ja",
     "Yearly": "Jährlich",
     "Monthly": "Monatlich",
 
@@ -865,6 +877,7 @@
     "UserIsBanned": "Sie sind gesperrt und können diese Aktion nicht ausführen",
     "NotEnoughCoins": "Sie haben nicht genug Münzen",
     "NotEnoughHearts": "Zum Lösen ist mindestens 1 Herz erforderlich. Wählen Sie mehr Herzen oder entscheiden Sie sich für Premium",
+    "NotEnoughHeartsForQuiz": "Zur Lösung der MCQ sind mindestens 0,5 Herzen erforderlich. Kaufen Sie mehr Herzen oder entscheiden Sie sich für Premium",
     "NoCourseAccess": "Sie haben keinen Zugriff auf diesen Kurs",
     "NotAllowedForRatings": "Sie sind für Bewertungen nicht zugelassen",
     "NotAllowedForReport": "Es ist Ihnen nicht gestattet, sich zu melden",
@@ -876,6 +889,7 @@
     "SolutionCodeFailed": "Überprüfen Sie Ihren Lösungscode oder Ihre Umgebung Sprache",
     "SelectAtLeastOneOption": "Wählen Sie mindestens eine Option aus",
     "TooManyAttemptsForQuiz": "Zu viele Lösungsversuche. Versuchen Sie es in {second} Sekunden erneut",
+    "TooManyAttemptsForCodingChallenge": "Warten! Zu viele Versuche",
     "NoEnoughCoinsToSolve": "Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen Sie welche im Webshop",
     "OneCorrectOptionIsMust": "Es muss eine richtige Option geben",
     "MinimumTwoOptionsForQuiz": "Es sollten mindestens zwei Optionen bereitgestellt werden",

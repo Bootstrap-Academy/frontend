@@ -11,8 +11,14 @@
     "WebShop": "Web Shop"
   },
   "Headings": {
+    "Since": "Since",
+    "Until": "Until",
+    "EnableAutopay": "Enable Autopay",
+    "DisableAutopay": "Disable AutoPay",
+    "Premium": "Premium",
     "RefillHearts": "Refill Hearts",
     "Empty": "Empty",
+    "AutoPay": "Auto Pay",
     "BuyMonthlySubscription": "Buy Monthly Subscription",
     "BuyYearlySubscription": "Buy Yearly Subscription",
     "Thousand": "1,000",
@@ -288,6 +294,10 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "EnableAutopay": "We will take care of your payments on ourself and deduct the amount from your account on the basis of your chosen subscription",
+    "DisableAutopay": "Do you want to disable autopay?",
+    "SubscribeFirst": "To Select Autopay you have to subscribe to any subscription first",
+    "AutoPay": "Opt for stress-free ease with our monthly auto-pay option",
     "Refill0p5Hearts": "Refill 0.5 Hearts for 15 morphcoins",
     "Refill1Hearts": "Refill 1 Hearts for 20 morphcoins",
 
@@ -303,8 +313,8 @@
     "MonthlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "YearlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "ChangeEnvironment": "Do you want to update your solution code to the default example?",
-    "BuyCodingChallnge": "Coding challenge is locked. 1 Heart will be deducted from your account for buying this coding challenge.",
-    "BuyQuiz": "Quiz is locked. Half Heart will be deducted from your account for buying this Quiz.",
+    "BuyCodingChallnge": "1 Heart will be deducted from your account for attempting this coding challenge.",
+    "BuyQuiz": "Half Heart will be deducted from your account for Attempting this Quiz.",
     "DeleteCodingChallenge": "Are you sure you want to delete coding challenge?",
     "DeleteQuiz": "Are you sure you want to delete Quiz?",
     "DeleteChallenge": "Are you sure you want to delete Challenge?",
@@ -614,6 +624,7 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "Yes": "Yes",
     "Yearly": "Yearly",
     "Monthly": "Monthly",
     "Refill": "Refill",
@@ -862,6 +873,7 @@
     "UserIsBanned": "You are banned and cannot perform this action",
     "NotEnoughCoins": "You Don't have enough coins",
     "NotEnoughHearts": "A minimum of 1 Heart is required to solve. Buy more hearts or go premium",
+    "NotEnoughHeartsForQuiz": "A minimum of 0.5 Heart is required to solve MCQ. Buy more hearts or go premium",
     "NoCourseAccess": "You don't have access to this course",
     "NotAllowedForRatings": "You are Not Allowed For Ratings",
     "NotAllowedForReport": "You are Not Allowed To Report",
@@ -873,6 +885,7 @@
     "SolutionCodeFailed": "Check your Solution Code or Environment Language",
     "SelectAtLeastOneOption": "Select at least one option",
     "TooManyAttemptsForQuiz": "Too Many Attempts For Solving. Try Again In {second} seconds",
+    "TooManyAttemptsForCodingChallenge": "Wait! Too Many Attempts",
     "OneCorrectOptionIsMust": "There should must be one correct option",
     "MinimumTwoOptionsForQuiz": "There should be minimum two options provided",
     "OptionsCannotBeSame": "Provided Options Should Not Be Duplicated",

@@ -34,8 +34,11 @@
           class="mb-5"
         />
       </div>
-
-      <SubscriptionCard :card="cards[currentCard]" />
+      <div class="flex justify-end mr-10 mb-2 mt-10 gap-3">
+        <p>{{ t("Body.AutoPay") }}</p>
+        <InputSwitch v-model="autopay" />
+      </div>
+      <SubscriptionCard :card="cards[currentCard]" class="px-2" />
     </section>
   </div>
 </template>
@@ -50,8 +53,36 @@ export default {
     const coins = useCoins();
     const selectedButton = ref(0);
     const currentCard = ref(1);
-    const hearts = useHearts();
+    const heartInfo: any = useHeartInfo();
+    const premiumInfo: any = usePremiumInfo();
 
+    const autopay = computed({
+      get() {
+        return premiumInfo.value?.autopay == true ?? false;
+      },
+      set(value: any) {
+        autopayForApi.value = value;
+      },
+    });
+
+    const hearts = computed(() => {
+      return heartInfo.value?.hearts ?? 0;
+    });
+
+    const autopayForApi = ref(false);
+    watch(
+      () => autopayForApi.value,
+      async (newValue, oldValue) => {
+        console.log("watching");
+        if (!premiumInfo.value?.premium) {
+          return openSnackbar("error", "Body.SubscribeFirst");
+        }
+        if (newValue) {
+          await updatePremiumAutoPay({});
+        } else if (!newValue) {
+        }
+      }
+    );
     const cards = [
       {
         heading: "Headings.YearlyPremiumCardHeading",
@@ -106,7 +137,9 @@ export default {
           false,
           {
             label: "Buttons.Buy",
-            onclick: () => {},
+            onclick: async () => {
+              await buyPremium({ plan: "MONTHLY", autopay: autopay.value });
+            },
           },
           {
             label: "Buttons.Cancel",
@@ -128,7 +161,9 @@ export default {
           false,
           {
             label: "Buttons.Buy",
-            onclick: () => {},
+            onclick: async () => {
+              await buyPremium({ plan: "YEARLY", autopay: autopay.value });
+            },
           },
           {
             label: "Buttons.Cancel",
@@ -140,7 +175,7 @@ export default {
       }
     }
 
-    function filHearts() {
+    async function filHearts() {
       if (hearts.value >= 3) openSnackbar("error", "Error.AlreadyHaveHearts");
       else if (hearts.value == 2.5 && coins.value < 15)
         openSnackbar("error", "Error.Need15CoinsForRefill");
@@ -174,7 +209,9 @@ export default {
           false,
           {
             label: "Buttons.Refill",
-            onclick: () => {},
+            onclick: async () => {
+              await refillHearts();
+            },
           },
           {
             label: "Buttons.Cancel",
@@ -205,6 +242,7 @@ export default {
       HeartIcon,
       hearts,
       filHearts,
+      autopay,
     };
   },
 };

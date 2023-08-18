@@ -1,10 +1,12 @@
-export const useHearts = () => useState('hearts', () => null);
+export const useHeartInfo = () => useState('heartInfo', () => null);
 
 export async function refillHearts() {
     try {
         const res = await PUT(`/shop/hearts`)
-        const hearts = useHearts()
-        hearts.value = res?.hearts ?? 0
+        const heartInfo = useHeartInfo()
+        heartInfo.value = res?.hearts ?? 0
+        await getHearts()
+        await getBalance()
         return [res, null]
     }
     catch (error: any) {
@@ -14,8 +16,8 @@ export async function refillHearts() {
 export async function heartsConfig() {
     try {
         const res = await GET(`/shop/hearts/config`)
-        const hearts = useHearts()
-        hearts.value = res?.hearts ?? 0
+        const heartInfo = useHeartInfo()
+        heartInfo.value = res?.hearts ?? 0
         return [res, null]
 
     }
@@ -28,8 +30,8 @@ export async function getHearts() {
     try {
         const user: any = useUser()
         const res = await GET(`/shop/hearts/${user.value.id}`)
-        const hearts = useHearts()
-        hearts.value = res ?? null
+        const heartInfo = useHeartInfo()
+        heartInfo.value = res ?? null
         return [res, null]
 
     }

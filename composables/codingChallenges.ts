@@ -128,6 +128,12 @@ export async function createSubmission(challengeId: any, codingChallengeId: any,
         return [res, null]
     }
     catch (error: any) {
+        if (error.data.error == 'not_enough_hearts') {
+            return [null, 'Error.NotEnoughHearts']
+        } else if (error.data.error == "too_many_requests") {
+            return [null, 'Error.TooManyAttemptsForCodingChallenge']
+
+        }
         return [null, error]
     }
 }

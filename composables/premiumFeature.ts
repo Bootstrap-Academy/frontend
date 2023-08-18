@@ -1,4 +1,4 @@
-export const useIsPremium = () => useState('isPremium', () => null);
+export const usePremiumInfo = () => useState('premiumInfo', () => null);
 
 export const usePremiumPlans = () => useState("premiumPlans", () => [])
 
@@ -18,8 +18,8 @@ export async function getPremiumStatus() {
     try {
         const user: any = useUser()
         const res = await GET(`/shop/premium/${user.value.id}`)
-        const IsPremium = useIsPremium()
-        IsPremium.value = res ?? null
+        const premiumInfo = usePremiumInfo()
+        premiumInfo.value = res ?? null
         return [res, null]
     }
     catch (error: any) {
@@ -29,10 +29,11 @@ export async function getPremiumStatus() {
 
 export async function buyPremium(body: any) {
     try {
+        console.log("body", body)
+        return
         const res = await POST(`/shop/premium`, body)
         await getPremiumStatus()
         return [res, null]
-
     }
     catch (error: any) {
         return [null, error]

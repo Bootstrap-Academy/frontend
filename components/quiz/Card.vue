@@ -82,16 +82,6 @@ export default defineComponent({
     const router = useRouter();
     const showfreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
     const showQuiz = computed(() => {
-      // if (props.data.fee > 0) {
-      //   if (showfreeQuizzesOnly.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // } else {
-      //   return true;
-      // }
-
       if (showfreeQuizzesOnly.value) {
         if (props.data.unlocked) {
           return true;
@@ -102,38 +92,13 @@ export default defineComponent({
         return true;
       }
     });
+
     function solveThis(id: any) {
-      // if (props.data?.fee > 0 && coins.value < props.data?.fee) {
-      //   return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-      // }
-      // if (!props.data.unlocked) {
-      //   openDialog(
-      //     "info",
-      //     "Headings.UnlockQuiz",
-      //     "Body.BuyQuiz",
-      //     false,
-      //     {
-      //       label: "Buttons.Buy",
-      //       onclick: async () => {
-      //         const [success, error] = await buySubtask(
-      //           props.data.task_id,
-      //           props.data.id
-      //         );
-      //         if (success) {
-      //           openSnackbar("success", "Success.BuyCodingChallenge");
-      //           gotoPage();
-      //         } else openSnackbar("error", error?.data?.detail);
-      //       },
-      //     },
-      //     {
-      //       label: "Buttons.Cancel",
-      //       onclick: () => {},
-      //     }
-      //   );
-      // }
-      // else {
+      const premiumInfo: any = usePremiumInfo();
+      if (premiumInfo.value.premium) {
+        openSnackbar("info", "Body.BuyQuiz");
+      }
       gotoPage();
-      // }
     }
 
     function gotoPage() {

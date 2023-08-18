@@ -145,6 +145,16 @@ export default {
     const taskId = ref();
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
+    const premiumInfo: any = usePremiumInfo();
+
+    const isPremium: any = computed(() => {
+      return premiumInfo.value?.premium;
+    });
+    const heartsInfo: any = useHeartInfo();
+
+    const hearts: any = computed(() => {
+      return heartsInfo.value?.hearts ?? 0;
+    });
 
     const selectedButton = ref(0);
     const buttonOptions = [
@@ -182,42 +192,15 @@ export default {
     });
 
     function solveCodingChallenge(codingChallenge: any) {
-      const coins = useCoins();
-      if (codingChallenge?.fee > 0 && coins.value < codingChallenge?.fee) {
-        return openSnackbar("info", "Error.NoEnoughCoinsToSolve");
-      }
-      if (!codingChallenge.unlocked) {
-        // openSnackbar("info", "Error.CodingChallengeLocked");
-        openDialog(
-          "info",
-          "Headings.UnlockCodingChallenge",
-          "Body.BuyCodingChallnge",
-          false,
-          {
-            label: "Buttons.Buy",
-            onclick: async () => {
-              const [success, error] = await buySubtask(
-                codingChallenge.task_id,
-                codingChallenge.id
-              );
-              if (success) {
-                router.push(
-                  `/challenges/QuizCodingChallenge-${
-                    taskId.value
-                  }?codingChallenge=${
-                    codingChallenge?.id
-                  }&solveFrom=${"course"}`
-                );
-                openSnackbar("success", "Success.BuyCodingChallenge");
-              } else openSnackbar("error", error);
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
+      if (!isPremium.value && hearts.value < 2) {
+        return openSnackbar("info", "Error.NotEnoughHearts");
+      } else if (isPremium.value || hearts.value >= 2) {
+        router.push(
+          `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${
+            codingChallenge?.id
+          }&solveFrom=${"course"}`
         );
-        return;
+        if (!isPremium) return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
 

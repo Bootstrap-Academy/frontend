@@ -1,7 +1,8 @@
 <script setup>
 import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
+import { useI18n } from "vue-i18n";
 import { ref } from "vue";
-
+const { t } = useI18n();
 const props = defineProps({
   heading: String,
   content: String,
@@ -85,8 +86,8 @@ function show() {
         isHidden && 'hidden',
       ]"
     >
-      <span class="block mb-3 text-white" v-if="!!heading">{{ heading }}</span>
-      {{ props.content }}
+      <p class="block mb-3 text-white" v-if="!!heading">{{ t(heading) }}</p>
+      {{ t(props.content) }}
       <div
         ref="arrowRef"
         class="absolute bg-light h-[10px] w-[10px] rotate-45"

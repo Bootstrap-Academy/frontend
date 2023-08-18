@@ -8,6 +8,7 @@
           <h3 class="text-2xl font-bold tracking-tight text-accent">
             {{ t(card.heading) }}
           </h3>
+
           <p class="mt-6 text-base leading-7 text-gray">
             {{ t(card.body) }}
           </p>

@@ -4,12 +4,23 @@
       <UserHearts />
       <UserCoins />
 
-      <img
-        @click="toggleMenu"
-        :src="image"
-        alt="user image"
-        class="min-w-[2.5rem] min-h-[2.5rem] w-10 h-10 object-cover rounded-full"
-      />
+      <div class="relative">
+        <Tooltip
+          v-if="isPremium"
+          class="absolute -right-2 -top-2"
+          :heading="'Headings.Premium'"
+          :content="validTill"
+          :placement="'right'"
+        >
+          <CheckBadgeIcon class="h-6 w-6 text-[#d4af37]" />
+        </Tooltip>
+        <img
+          @click="toggleMenu"
+          :src="image"
+          alt="user image"
+          class="min-w-[2.5rem] min-h-[2.5rem] w-10 h-10 object-cover rounded-full"
+        />
+      </div>
     </div>
 
     <Transition>
@@ -34,14 +45,23 @@
 </template>
 
 <script>
-import { ChevronDownIcon } from "@heroicons/vue/24/solid";
+import {
+  ChevronDownIcon,
+  SparklesIcon,
+  CheckBadgeIcon,
+} from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
+import { useNow, useDateFormat } from "@vueuse/core";
 
 export default {
-  components: { ChevronDownIcon },
+  components: { ChevronDownIcon, SparklesIcon, CheckBadgeIcon },
   setup() {
     const { t } = useI18n();
-
+    const premiumInfo = usePremiumInfo();
+    const show = ref(false);
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium;
+    });
     let links = [
       {
         label: "Links.MyProfile",
@@ -61,7 +81,16 @@ export default {
       },
     ];
 
-    const show = ref(false);
+    const validTill = computed(() => {
+      const from = useDateFormat(
+        premiumInfo.value?.since * 1000,
+        "MMMM DD YYYY"
+      );
+      const to = useDateFormat(premiumInfo.value?.until * 1000, "MMMM DD YYYY");
+      return ` ${t("Headings.Since")}  ${from.value} ${t("Headings.Until")} ${
+        to.value
+      }`;
+    });
 
     function closeMenu() {
       setTimeout(() => {
@@ -79,7 +108,18 @@ export default {
     const image = computed(() => {
       return user?.value?.avatar_url ?? "/images/about-2.webp";
     });
-    return { links, show, closeMenu, toggleMenu, onclickLogout, t, image };
+    return {
+      links,
+      show,
+      closeMenu,
+      toggleMenu,
+      onclickLogout,
+
+      isPremium,
+      t,
+      image,
+      validTill,
+    };
   },
 };
 </script>

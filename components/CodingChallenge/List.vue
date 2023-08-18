@@ -41,13 +41,17 @@ export default defineComponent({
 
   setup(props) {
     const { t } = useI18n();
-
-    const router = useRouter();
     const route = useRoute();
     const codingChallenges = useAllCodingChallengesInATask();
     const loading = ref(true);
-    const hearts: any = useHearts();
-
+    const heartInfo: any = useHeartInfo();
+    const premiumInfo: any = usePremiumInfo();
+    const hearts = computed(() => {
+      return heartInfo.value?.hearts ?? 0;
+    });
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium ?? false;
+    });
     const baseQuery: any = computed(() => {
       return {
         category: route.query?.category ?? "",
@@ -61,44 +65,14 @@ export default defineComponent({
     }
 
     function solveCodingChallenge(codingChallenge: any) {
-      console.log("coding challenge", codingChallenge);
-      const isPremium: any = useIsPremium();
-      if (!isPremium.value && hearts.value?.hearts < 1) {
+      if (!isPremium.value && hearts.value < 2) {
         return openSnackbar("info", "Error.NotEnoughHearts");
-      } else if (!!!isPremium.value.premium && hearts.value?.hearts >= 1) {
-        openDialog(
-          "info",
-          "Headings.UnlockCodingChallenge",
-          "Body.BuyCodingChallnge",
-          false,
-          {
-            label: "Buttons.Buy",
-            onclick: async () => {
-              const [success, error] = await buySubtask(
-                codingChallenge.task_id,
-                codingChallenge.id
-              );
-              if (success) {
-                navigateTo(
-                  `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
-                );
-                openSnackbar("success", "Success.BuyCodingChallenge");
-              } else openSnackbar("error", error);
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
+      } else if (isPremium.value || hearts.value >= 2) {
+        navigateTo(
+          `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
         );
-        return;
-      } else if (isPremium.value) {
-        return;
+        if (!isPremium) return openSnackbar("info", "Body.BuyCodingChallnge");
       }
-
-      navigateTo(
-        `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
-      );
     }
 
     watch(

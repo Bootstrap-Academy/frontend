@@ -200,6 +200,7 @@ export default defineComponent({
         { answers: arrayOfAnswers.value }
       );
       loading.value = false;
+      await getHearts();
       if (success == true || success == false) successHandler(success);
       else errorHandler(error);
       selected.value = [];
@@ -221,7 +222,7 @@ export default defineComponent({
         showMaxAttemptsError.value = true;
         secondsForTryAgain.value = error.details ?? "";
       } else {
-        openSnackbar("error", error?.detail ?? "");
+        openSnackbar("error", error);
       }
     }
 
