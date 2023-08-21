@@ -294,6 +294,8 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "RefillHearts": "50 Morphcoins will be deducted from your account to gain your spent hearts",
+    "ChangeAutoPaySubscription": "Change your autopay system by selecting one of the options below. If you want to add more time to your subscription you can subscribe again from the above card options",
     "EnableAutopay": "We will take care of your payments on ourself and deduct the amount from your account on the basis of your chosen subscription",
     "DisableAutopay": "Do you want to disable autopay?",
     "SubscribeFirst": "To Select Autopay you have to subscribe to any subscription first",
@@ -624,6 +626,7 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "TurnOff": "Turn off",
     "Yes": "Yes",
     "Yearly": "Yearly",
     "Monthly": "Monthly",
@@ -807,6 +810,10 @@
     "GravatarImage": "Change your gravatar image at"
   },
   "Success": {
+    "RefilledHearts": "Your hearts are refilled SuccessFully",
+    "AutopayUpdated": "Auto pay is updated SuccessFully",
+    "SubscribedMonthly": "You have successfully subscribed to monthly subscription",
+    "SubscribedYearly": "You have successfully subscribed to Yearly subscription",
     "ReportComment": "Reason For Reporting",
     "ReportedSubtask": "SuccessFully Reported",
     "SubmittedRating": "Ratings Submitted SuccessFully",

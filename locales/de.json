@@ -297,6 +297,8 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "RefillHearts": "50 Morphcoins werden von Ihrem Konto abgebucht, um Ihre ausgegebenen Herzen zu erhalten",
+    "ChangeAutoPaySubscription": "Ändern Sie Ihr Autopay-System, indem Sie eine der folgenden Optionen auswählen. Wenn Sie Ihrem Abonnement mehr Zeit hinzufügen möchten, können Sie es über die oben genannten Kartenoptionen erneut abonnieren",
     "EnableAutopay": "Wir kümmern uns selbst um Ihre Zahlungen und buchen den Betrag auf Basis des von Ihnen gewählten Abonnements von Ihrem Konto ab",
     "DisableAutopay": "Möchten Sie die automatische Zahlung deaktivieren?",
     "SubscribeFirst": "Um Autopay auszuwählen, müssen Sie zunächst ein Abonnement abschließen",
@@ -628,10 +630,10 @@
     "RegistrationCode": "Registrierungscode"
   },
   "Buttons": {
+    "TurnOff": "Abschalten",
     "Yes": "Ja",
     "Yearly": "Jährlich",
     "Monthly": "Monatlich",
-
     "Refill": "Nachfüllung",
     "BuySubscription": "Abonnement kaufen",
     "GoMonthly": "Gehen monatlich",
@@ -812,6 +814,10 @@
     "GravatarImage": "Ändere dein Gravatar-Bild unter"
   },
   "Success": {
+    "RefilledHearts": "Eure Herzen werden erfolgreich wieder aufgefüllt",
+    "AutopayUpdated": "Die automatische Bezahlung wurde erfolgreich aktualisiert",
+    "SubscribedMonthly": "Sie haben das Monatsabonnement erfolgreich abonniert",
+    "SubscribedYearly": "Sie haben das Jahresabonnement erfolgreich abonniert",
     "ReportedSubtask": "Erfolgreich gemeldet",
     "SubmittedRating": "Bewertungen wurden erfolgreich abgegeben",
     "BuyCodingChallenge": "Coding challenge erfolgreich gekauft.",

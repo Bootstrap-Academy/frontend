@@ -1,11 +1,13 @@
 <template>
   <div
-    :class="
+    :class="[
       buttonOptions?.length > 2
         ? 'flex-col rounded-lg sm:flex-row sm:rounded-full'
-        : 'rounded-full'
-    "
-    class="flex gap-3 p-2 w-fit bg-primary border border-accent"
+        : 'rounded-full',
+      !!primary && !secondary ? 'bg-primary border border-accent' : '',
+      secondary ? 'border border-light' : '',
+    ]"
+    class="flex gap-3 p-2 w-fit"
   >
     <section
       @click="emitSelected(i)"
@@ -15,7 +17,12 @@
       <p
         class="text-black text-xs sm:text-sm px-4 sm:px-6 md:px-8 cursor-pointer capitalize transition-all duration-300 font-semibold py-2 rounded-full"
         :class="[
-          selectedOption == i ? 'bg-accent' : 'text-white',
+          selectedOption == i && primary && !!!secondary
+            ? 'bg-accent'
+            : 'text-white',
+
+          selectedOption == i && secondary ? 'bg-light ' : '',
+
           buttonOptions?.length > 2
             ? 'rounded-lg sm:flex-row sm:rounded-full'
             : 'rounded-full',
@@ -35,11 +42,21 @@ export default defineComponent({
   props: {
     modelValue: { type: Number, default: 0 },
     buttonOptions: { type: Array as PropType<any>, default: [] },
+    primary: { type: Boolean, default: true },
+    secondary: { type: Boolean, default: false },
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const selectedOption = ref(0);
+
+    watch(
+      () => props.modelValue,
+      (newValue, oldValue) => {
+        selectedOption.value = newValue;
+      },
+      { immediate: true }
+    );
 
     function emitSelected(selected: any) {
       selectedOption.value = selected;

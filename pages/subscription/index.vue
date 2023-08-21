@@ -3,6 +3,7 @@
     <section class="flex flex-col items-center mt-10 gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
+        {{ premiumStatusAutoPay }}
       </h2>
       <div class="max-w-xs">
         <InputBtn
@@ -17,7 +18,7 @@
     </section>
     <hr class="my-10" />
 
-    <section class="rounded-md">
+    <section class="rounded-md mb-20">
       <div class="mx-auto max-w-2xl sm:text-center">
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
           {{ t("Headings.NoTrickPricing") }}
@@ -34,17 +35,29 @@
           class="mb-5"
         />
       </div>
-      <div class="flex justify-end mr-10 mb-2 mt-10 gap-3">
+
+      <div class="flex justify-end mr-10 mb-2 mt-10 gap-3" v-if="!isPremium">
         <p>{{ t("Body.AutoPay") }}</p>
         <InputSwitch v-model="autopay" />
       </div>
-      <SubscriptionCard :card="cards[currentCard]" class="px-2" />
+
+      <SubscriptionCard :card="cards[currentCard]" class="px-2 mt-5 mb-5" />
+      <div class="mt-10" v-if="!!isPremium">
+        <p>{{ t("Body.ChangeAutoPaySubscription") }}</p>
+        <InputButtonToggle
+          secondary
+          :buttonOptions="changeSubscriptionAutopayButtons"
+          v-model="setValueForAutopayButton"
+          class="my-5 mb-20"
+        />
+      </div>
     </section>
   </div>
 </template>
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
+import { useCoins } from "~~/composables/coins";
 import { HeartIcon } from "@heroicons/vue/24/solid";
 import SvgHeart from "../../components/svg/Heart.vue";
 export default {
@@ -55,34 +68,8 @@ export default {
     const currentCard = ref(1);
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
+    const autopay = ref(false);
 
-    const autopay = computed({
-      get() {
-        return premiumInfo.value?.autopay == true ?? false;
-      },
-      set(value: any) {
-        autopayForApi.value = value;
-      },
-    });
-
-    const hearts = computed(() => {
-      return heartInfo.value?.hearts ?? 0;
-    });
-
-    const autopayForApi = ref(false);
-    watch(
-      () => autopayForApi.value,
-      async (newValue, oldValue) => {
-        console.log("watching");
-        if (!premiumInfo.value?.premium) {
-          return openSnackbar("error", "Body.SubscribeFirst");
-        }
-        if (newValue) {
-          await updatePremiumAutoPay({});
-        } else if (!newValue) {
-        }
-      }
-    );
     const cards = [
       {
         heading: "Headings.YearlyPremiumCardHeading",
@@ -122,9 +109,52 @@ export default {
       },
     ];
 
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium;
+    });
+
+    const premiumStatusAutoPay = computed(() => {
+      return premiumInfo.value?.autopay ?? "";
+    });
+
+    const setValueForAutopayButton = computed({
+      get() {
+        if (premiumStatusAutoPay.value == "MONTHLY") {
+          return 0;
+        } else if (premiumStatusAutoPay.value == "YEARLY") {
+          return 1;
+        } else if (
+          premiumStatusAutoPay.value == null ||
+          !!!premiumStatusAutoPay.value
+        ) {
+          return 2;
+        }
+      },
+
+      async set(value: any) {
+        console.log("setting", value);
+        if (value == 0) {
+          fnUpdatePremiumAutoPay("MONTHLY");
+        } else if (value == 1) {
+          fnUpdatePremiumAutoPay("YEARLY");
+        } else if (value == 2) {
+          fnUpdatePremiumAutoPay(null);
+        }
+      },
+    });
+
+    const hearts = computed(() => {
+      return heartInfo.value?.hearts ?? 0;
+    });
+
     const buttonOptions = [
       { name: "Buttons.Monthly" },
       { name: "Buttons.Yearly" },
+    ];
+    const changeSubscriptionAutopayButtons = [
+      { name: "Buttons.Monthly" },
+      { name: "Buttons.Yearly" },
+      { name: "Buttons.TurnOff" },
     ];
 
     function subscribeMonthly() {
@@ -138,7 +168,13 @@ export default {
           {
             label: "Buttons.Buy",
             onclick: async () => {
-              await buyPremium({ plan: "MONTHLY", autopay: autopay.value });
+              const [success, error] = await buyPremium({
+                plan: "MONTHLY",
+                autopay: !!premiumStatusAutoPay.value,
+              });
+              if (success) {
+                openSnackbar("success", "Success.SubscribedMonthly");
+              }
             },
           },
           {
@@ -162,7 +198,13 @@ export default {
           {
             label: "Buttons.Buy",
             onclick: async () => {
-              await buyPremium({ plan: "YEARLY", autopay: autopay.value });
+              const [success, error] = await buyPremium({
+                plan: "YEARLY",
+                autopay: !!premiumStatusAutoPay.value,
+              });
+              if (success) {
+                openSnackbar("success", "Success.SubscribedYearly");
+              }
             },
           },
           {
@@ -176,54 +218,84 @@ export default {
     }
 
     async function filHearts() {
-      if (hearts.value >= 3) openSnackbar("error", "Error.AlreadyHaveHearts");
-      else if (hearts.value == 2.5 && coins.value < 15)
-        openSnackbar("error", "Error.Need15CoinsForRefill");
-      else if (hearts.value == 2 && coins.value < 20)
-        openSnackbar("error", "Error.Need20CoinsForRefill");
-      else if (hearts.value == 1.5 && coins.value < 30)
-        openSnackbar("error", "Error.Need30CoinsForRefill");
-      else if (hearts.value == 1 && coins.value < 35)
-        openSnackbar("error", "Error.Need35CoinsForRefill");
-      else if (hearts.value == 0.5 && coins.value < 45)
-        openSnackbar("error", "Error.Need45CoinsForRefill");
-      else if (hearts.value == 0 && coins.value < 50)
-        openSnackbar("error", "Error.Need50CoinsForRefill");
-      else if (hearts.value < 3 && coins.value > 0) {
-        openDialog(
-          "info",
-          `Headings.RefillHearts`,
-          hearts.value == 0
-            ? "Body.Refill3Hearts"
-            : "" || hearts.value == 0.5
-            ? "Body.Refill2p5Hearts"
-            : "" || hearts.value == 1
-            ? "Body.Refill2Hearts"
-            : "" || hearts.value == 1.5
-            ? "Body.Refill1p5Hearts"
-            : "" || hearts.value == 2
-            ? "Body.Refill1Hearts"
-            : "" || hearts.value == 2.5
-            ? "Body.Refill0p5Hearts"
-            : "",
-          false,
-          {
-            label: "Buttons.Refill",
-            onclick: async () => {
-              await refillHearts();
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
-        );
+      // if (hearts.value >= 6) return openSnackbar("info", "Error.AlreadyHaveHearts");
+      // else if (hearts.value == 5 && coins.value < 15)
+      //   return openSnackbar("error", "Error.Need15CoinsForRefill");
+      // else if (hearts.value == 4 && coins.value < 20)
+      //   return openSnackbar("error", "Error.Need20CoinsForRefill");
+      // else if (hearts.value == 3 && coins.value < 30)
+      //   return openSnackbar("error", "Error.Need30CoinsForRefill");
+      // else if (hearts.value == 2 && coins.value < 35)
+      //   return openSnackbar("error", "Error.Need35CoinsForRefill");
+      // else if (hearts.value == 1 && coins.value < 45)
+      //   return openSnackbar("error", "Error.Need45CoinsForRefill");
+      // else if (hearts.value == 0 && coins.value < 50)
+      //   return openSnackbar("error", "Error.Need50CoinsForRefill");
+      // else if (hearts.value < 6 && coins.value > 0) {
+      //   return openDialog(
+      //     "info",
+      //     `Headings.RefillHearts`,
+      //     hearts.value == 0
+      //       ? "Body.Refill3Hearts"
+      //       : "" || hearts.value == 1
+      //       ? "Body.Refill2p5Hearts"
+      //       : "" || hearts.value == 2
+      //       ? "Body.Refill2Hearts"
+      //       : "" || hearts.value == 3
+      //       ? "Body.Refill1p5Hearts"
+      //       : "" || hearts.value == 4
+      //       ? "Body.Refill1Hearts"
+      //       : "" || hearts.value == 5
+      //       ? "Body.Refill0p5Hearts"
+      //       : "",
+      //     false,
+      //     {
+      //       label: "Buttons.Refill",
+      //       onclick: async () => {
+      //         await refillHearts();
+      //       },
+      //     },
+      //     {
+      //       label: "Buttons.Cancel",
+      //       onclick: () => {},
+      //     }
+      //   );
+      // }
+
+      if (hearts.value >= 6) {
+        return openSnackbar("info", "Error.AlreadyHaveHearts");
       }
+      return openDialog(
+        "info",
+        `Headings.RefillHearts`,
+        "Body.RefillHearts",
+        false,
+        {
+          label: "Buttons.Refill",
+          onclick: async () => {
+            const [success, error] = await refillHearts();
+            if (success) openSnackbar("success", "Success.RefilledHearts");
+          },
+        },
+        {
+          label: "Buttons.Cancel",
+          onclick: () => {},
+        }
+      );
+    }
+
+    async function fnUpdatePremiumAutoPay(value: any) {
+      setLoading(true);
+      const [success, error] = await updatePremiumAutoPay({ plan: value });
+      setLoading(false);
+      if (success) openSnackbar("success", "Success.AutopayUpdated");
     }
 
     watch(
       () => selectedButton.value,
+
       (newValue, oldValue) => {
+        console.log("new", newValue);
         if (newValue == 1) {
           currentCard.value = 0;
         } else {
@@ -238,11 +310,15 @@ export default {
       currentCard,
       selectedButton,
       buttonOptions,
+      isPremium,
       SvgHeart,
       HeartIcon,
+      changeSubscriptionAutopayButtons,
       hearts,
       filHearts,
+      setValueForAutopayButton,
       autopay,
+      premiumStatusAutoPay,
     };
   },
 };

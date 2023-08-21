@@ -200,7 +200,8 @@ export default {
             codingChallenge?.id
           }&solveFrom=${"course"}`
         );
-        if (!isPremium) return openSnackbar("info", "Body.BuyCodingChallnge");
+        if (!isPremium.value)
+          return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
 

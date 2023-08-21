@@ -16,6 +16,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon, HeartIcon } from "@heroicons/vue/24/solid";
+import { useHeartInfo } from "~~/composables/hearts";
 
 export default defineComponent({
   props: {

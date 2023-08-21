@@ -52,6 +52,7 @@ import {
 } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
 import { useNow, useDateFormat } from "@vueuse/core";
+import { usePremiumInfo } from "~~/composables/premiumFeature";
 
 export default {
   components: { ChevronDownIcon, SparklesIcon, CheckBadgeIcon },
@@ -84,9 +85,12 @@ export default {
     const validTill = computed(() => {
       const from = useDateFormat(
         premiumInfo.value?.since * 1000,
-        "MMMM DD YYYY"
+        "MMMM DD, YYYY"
       );
-      const to = useDateFormat(premiumInfo.value?.until * 1000, "MMMM DD YYYY");
+      const to = useDateFormat(
+        premiumInfo.value?.until * 1000,
+        "MMMM DD, YYYY"
+      );
       return ` ${t("Headings.Since")}  ${from.value} ${t("Headings.Until")} ${
         to.value
       }`;

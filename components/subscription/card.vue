@@ -1,5 +1,5 @@
 <template>
-  <div class="pb-16">
+  <div>
     <div class="mx-auto max-w-7xl">
       <section
         class="mx-auto max-w-2xl rounded-3xl ring-1 ring-gray lg:mx-0 lg:flex lg:max-w-none"

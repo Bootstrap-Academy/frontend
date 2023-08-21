@@ -30,9 +30,9 @@ export async function getPremiumStatus() {
 export async function buyPremium(body: any) {
     try {
         console.log("body", body)
-        return
         const res = await POST(`/shop/premium`, body)
         await getPremiumStatus()
+        await getBalance()
         return [res, null]
     }
     catch (error: any) {
@@ -42,7 +42,7 @@ export async function buyPremium(body: any) {
 
 export async function updatePremiumAutoPay(body: any) {
     try {
-        const res = await POST(`/shop/premium/autopay`, body)
+        const res = await PUT(`/shop/premium/autopay`, body)
         return [res, null]
 
     }
