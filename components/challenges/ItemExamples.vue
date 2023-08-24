@@ -47,7 +47,7 @@ export default defineComponent({
       if (id == undefined || !!!id)
         return openSnackbar("info", "Headings.CannotTestForThisExample");
       setLoading(true);
-      const [success, error] = await textAgainstCodingExample(
+      const [success, error] = await testAgainstCodingExample(
         props.challengeId,
         props.codingChallengeId,
         id,
@@ -62,12 +62,7 @@ export default defineComponent({
 
     function successHandler(success: any) {
       if (success?.verdict == "OK") {
-        // const showConfetti = useShowConfetti();
-        // const hideAnimation: any = useCookie("hideAnimationNextTime");
-        // console.log("hide animation cookie", hideAnimation.value);
-        // if (hideAnimation.value === undefined || hideAnimation.value == false)
-        //   showConfetti.value = true;
-        openSnackbar("success", "Success.SolvedCodingChallenge");
+        openSnackbar("success", "Success.TestAgainstExample");
         emit("isSolved", true);
       } else {
         openSnackbar("Info", "Success.SolvedCodingChallengeButNotCorrect");

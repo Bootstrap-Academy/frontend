@@ -11,8 +11,14 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "CompilationError": "Kompilierungsfehler ❌",
+    "NoOutput": "Es gibt keine Ausgabe für Ihren bereitgestellten Code🫣",
+    "SubmissionSolved": "Gelöst✅",
+    "PendingResult": "Warten! Wir verarbeiten Ihren angegebenen Code",
+    "UpdateYourCode": "Aktualisieren Sie Ihren Code",
     "Since": "seit",
     "Until": "bis",
+    "ChooseCorrectOption": "Wähle die richtigen Antworten",
     "EnableAutopay": "Aktivieren Sie Autopay",
     "DisableAutopay": "Deaktivieren Sie AutoPay",
     "QuizzesInCourse": "Quizzes in diesem Kurs",
@@ -297,6 +303,7 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "UpdateYourCode": "Möchten Sie Ihren Code mit dem Beispielcode Ihrer ausgewählten Sprache aktualisieren?",
     "RefillHearts": "50 Morphcoins werden von Ihrem Konto abgebucht, um Ihre ausgegebenen Herzen zu erhalten",
     "ChangeAutoPaySubscription": "Ändern Sie Ihr Autopay-System, indem Sie eine der folgenden Optionen auswählen. Wenn Sie Ihrem Abonnement mehr Zeit hinzufügen möchten, können Sie es über die oben genannten Kartenoptionen erneut abonnieren",
     "EnableAutopay": "Wir kümmern uns selbst um Ihre Zahlungen und buchen den Betrag auf Basis des von Ihnen gewählten Abonnements von Ihrem Konto ab",
@@ -630,6 +637,13 @@
     "RegistrationCode": "Registrierungscode"
   },
   "Buttons": {
+    "Edit": "bearbeiten",
+    "UnSolved": "Ungelöst",
+    "All": "Alle",
+    "NextQuiz": "Nächstes Quiz",
+    "Submit": "Einreichen",
+    "Update": "Aktualisieren",
+    "CreateSubmission": "Einreichung erstellen",
     "TurnOff": "Abschalten",
     "Yes": "Ja",
     "Yearly": "Jährlich",
@@ -822,7 +836,7 @@
     "SubmittedRating": "Bewertungen wurden erfolgreich abgegeben",
     "BuyCodingChallenge": "Coding challenge erfolgreich gekauft.",
     "UpdatedQuiz": "Quiz erfolgreich aktualisiert",
-    "SolvedCodingChallenge": "Erfolgreich getestet und die Coding challenge ist gelöst",
+    "TestAgainstExample": "Erfolgreich getestet und zum Beispiel getestet, ist dies gelöst",
     "SolvedCodingChallengeButNotCorrect": "Der bereitgestellte Code entspricht nicht unseren Anforderungen",
     "QuizAttempt": "Korrekte Möglichkeit! Quiz gelöst 😍",
     "DeleteQuiz": "Quiz erfolgreich gelöscht",

@@ -21,8 +21,8 @@
           class="text-success hover:scale-110 transition-all"
           v-if="
             codingChallenge?.solved &&
-            !codingChallenge?.rated &&
-            user?.id !== codingChallenge?.creator
+            !!!codingChallenge?.rated &&
+            user?.id != codingChallenge?.creator
           "
         >
           {{ t("Headings.Feedback") }}

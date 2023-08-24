@@ -272,7 +272,8 @@ export async function getSubTaskAndSolutionInQuiz(taskId: any, subTaskId: any) {
 export async function createSubTaskInQuiz(taskId: any, body: any) {
 	try {
 		const res = await POST(`/challenges/tasks/${taskId}/multiple_choice`, body)
-		await getSubTasksInQuiz(taskId)
+		const user: any = useUser()
+		await getSubTasksInQuiz(taskId, user?.value.id ?? "")
 		return [res, null]
 	}
 	catch (error: any) {
@@ -313,7 +314,8 @@ export async function deleteSubTaskInQuiz(taskId: any, subTaskId: any) {
 export async function updateSubTaskInQuizForUser(taskId: any, subTaskId: any, body: any) {
 	try {
 		const res = await PATCH(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`, body)
-		await getSubTasksInQuiz(taskId)
+		const user: any = useUser()
+		await getSubTasksInQuiz(taskId, user?.value.id ?? "")
 		return [res, null]
 	}
 	catch (error) {
@@ -324,7 +326,8 @@ export async function updateSubTaskInQuizForUser(taskId: any, subTaskId: any, bo
 export async function updateSubTaskInQuizForAdmin(taskId: any, subTaskId: any, body: any) {
 	try {
 		const res = await PATCH(`/challenges/tasks/${taskId}/multiple_choice/${subTaskId}`, body)
-		await getSubTasksInQuiz(taskId)
+		const user: any = useUser()
+		await getSubTasksInQuiz(taskId, user?.value.id ?? "")
 		return [res, null]
 	}
 	catch (error) {
@@ -350,6 +353,8 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 	catch (error: any) {
 		if (error.data.error == 'not_enough_hearts') {
 			return [null, 'Error.NotEnoughHeartsForQuiz']
+		} else if (error.detail == "Error.TooManyAttemptsForQuiz") {
+			return [null, 'Error.TooManyAttemptsForQuiz']
 		}
 		console.log("error for attempting", error.data)
 		return [null, error.data]

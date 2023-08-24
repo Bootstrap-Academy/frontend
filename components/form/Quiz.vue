@@ -1,18 +1,20 @@
 <template>
-  <form
-    class="flex flex-col gap-box"
-    :class="{ 'form-submitting': form.submitting }"
-    @submit.prevent="onclickSubmitForm()"
-    ref="refForm"
-  >
-    <Input
-      :label="t('Inputs.Question')"
-      v-model="form.question.value"
-      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
-      @valid="form.question.valid = $event"
-      :rules="form.question.rules"
-    />
-    <div class="grid md:grid-cols-2 md:gap-8">
+  <div class="flex flex-col">
+    <form
+      @click="emptyTheForm()"
+      class="flex flex-col gap-box"
+      :class="{ 'form-submitting': form.submitting }"
+      @submit.prevent="onclickSubmitForm()"
+      ref="refForm"
+    >
+      <Input
+        :label="t('Inputs.Question')"
+        v-model="form.question.value"
+        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        @valid="form.question.valid = $event"
+        :rules="form.question.rules"
+      />
+      <!-- <div class="grid md:grid-cols-2 md:gap-8">
       <Input
         v-if="!!user?.admin"
         :label="t('Inputs.Morphcoins')"
@@ -29,69 +31,56 @@
         @valid="form.xp.valid = $event"
         :rules="form.xp.rules"
       />
-    </div>
-    <div v-if="!!user?.admin" class="flex items-center gap-card">
-      <label class="text-body-2 text-body font-body block mb-2">
-        {{ t("Inputs.Payed") }}
-      </label>
-      <InputSwitch v-model="form.payed.value" />
-    </div>
+    </div> -->
 
-    <Input
-      v-if="form.payed.value"
-      :label="t('Inputs.Fee')"
-      :type="'number'"
-      v-model="form.fee.value"
-      @valid="form.fee.valid = $event"
-    />
+      <Btn
+        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        @click="onclickAddOption"
+        class="w-fit self-end"
+        >Add Option</Btn
+      >
 
-    <Btn
-      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
-      @click="onclickAddOption"
-      class="w-fit self-end"
-      >Add Option</Btn
-    >
-
-    <article
-      :class="canEdit ? '' : 'pointer-events-none opacity-25'"
-      class="flex gap-card items-center"
-      v-for="(option, i) of options"
-      :key="option?.id ?? i"
-    >
-      <Input
-        :label="t('Inputs.Option')"
-        v-model="option.answer"
-        @valid="option.valid = $event"
-        :rules="option.rules"
-        class="w-full"
-      />
-      <div>
-        <label class="text-body-2 text-body font-body block mb-2">
-          {{ t("Inputs.Correct") }}
-        </label>
-        <InputSwitch
-          :model-value="option.correct"
-          @update:model-value="setOptionCorrect($event, i)"
+      <article
+        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        class="flex gap-card items-center"
+        v-for="(option, i) of options"
+        :key="option?.id ?? i"
+      >
+        <Input
+          :label="t('Inputs.Option')"
+          v-model="option.answer"
+          @valid="option.valid = $event"
+          :rules="option.rules"
+          class="w-full"
         />
-      </div>
+        <div>
+          <label class="text-body-2 text-body font-body block mb-2">
+            {{ t("Inputs.Correct") }}
+          </label>
+          <InputSwitch
+            :model-value="option.correct"
+            @update:model-value="setOptionCorrect($event, i)"
+          />
+        </div>
 
-      <Icon
-        :icon="XMarkIcon"
-        class="cursor-pointer"
-        @click="onclickRemoveOption(i)"
-      />
-    </article>
-
+        <Icon
+          :icon="XMarkIcon"
+          class="cursor-pointer"
+          @click="onclickRemoveOption(i)"
+        />
+      </article>
+    </form>
     <InputBtn
       :loading="form.submitting"
       class="self-center"
       @click="onclickSubmitForm()"
       mt
+      v-if="!!user?.admin || !!!data"
     >
       <span v-if="!!!data">{{ t("Buttons.CreateQuiz") }} </span>
-      <span v-else>{{ t("Buttons.UpdateQuiz") }} </span>
+      <span v-else-if="user.admin">{{ t("Buttons.UpdateQuiz") }} </span>
     </InputBtn>
-  </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -116,6 +105,7 @@ export default defineComponent({
     const dialogSlot = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
     const user: any = useUser();
+    const isFirstTimeClickOnform = ref(true);
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
 
@@ -134,41 +124,19 @@ export default defineComponent({
     const form = reactive<IForm>({
       question: {
         valid: false,
-        value: "",
+        value: "Which of the following is a programming language?",
         rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Question"],
-      },
-      payed: {
-        valid: true,
-        value: 0,
-        rules: [],
-      },
-      fee: {
-        valid: true,
-        value: 0,
-        rules: [
-          (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          (v: number) =>
-            v <= maxFee.value || `Error.InputMaxNumber_${maxFee.value}`,
-        ],
       },
       single_choice: { value: false, valid: true },
       coin: {
         valid: true,
         value: 0,
-        rules: [
-          // (v: number) => !!v || "Error.InputEmpty_Inputs.Coins",
-          (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          // (v: number) => v <= 100 || "Error.InputMaxNumber_100",
-        ],
+        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
       },
       xp: {
         valid: true,
         value: 0,
-        rules: [
-          // (v: number) => !!v || "Error.InputEmpty_Inputs.Xp",
-          (v: number) => v >= 0 || "Error.InputMinNumber_0",
-          // (v: number) => v <= 100 || "Error.InputMaxNumber_100",
-        ],
+        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
       },
 
       submitting: false,
@@ -186,7 +154,7 @@ export default defineComponent({
           }
         }
 
-        options.forEach((option) => {
+        options.value.forEach((option: any) => {
           if (option.valid == false) isValid = false;
         });
 
@@ -200,7 +168,7 @@ export default defineComponent({
             obj[key] = form[key].value;
         }
 
-        let mappedOptions = options.map((option) => {
+        let mappedOptions = options.value.map((option: any) => {
           return {
             answer: option.answer,
             correct: option.correct,
@@ -212,12 +180,17 @@ export default defineComponent({
     });
 
     // ============================================================= options
-    const options: any[] = reactive([]);
+    const options: any = ref([
+      { answer: "HTML", valid: true, rules: [null], correct: false },
+      { answer: "Python", valid: true, rules: [null], correct: true },
+      { answer: "PowerPoint", valid: true, rules: [null], correct: false },
+      { answer: "Excel", valid: true, rules: [null], correct: false },
+    ]);
 
     function onclickAddOption() {
       let isAllowed = true;
-      if (options.length > 0) {
-        let lastAddedOption = options[options.length - 1].answer;
+      if (options.value.length > 0) {
+        let lastAddedOption = options.value[options.value.length - 1].answer;
         if (!!!lastAddedOption) isAllowed = false;
       }
 
@@ -229,7 +202,7 @@ export default defineComponent({
         return;
       }
 
-      options.push({
+      options.value.push({
         answer: "",
         valid: false,
         rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Option"],
@@ -238,74 +211,34 @@ export default defineComponent({
     }
 
     function onclickRemoveOption(index: number) {
-      options.splice(index, 1);
+      options.value.splice(index, 1);
     }
 
     function setOptionCorrect(status: boolean, index: number) {
       if (selectedQuestionType.value == "Multi Choice" || status == false) {
-        options.splice(index, 1, { ...options[index], correct: status });
+        options.value.splice(index, 1, {
+          ...options.value[index],
+          correct: status,
+        });
         return;
       }
 
-      let arr = options;
+      let arr = options.value;
 
-      arr = arr.map((o, i) => {
+      arr = arr.map((o: any, i: any) => {
         return i == index ? { ...o, correct: true } : { ...o, correct: false };
       });
 
-      arr.forEach((o) => {
-        options.pop();
+      arr.forEach((o: any) => {
+        options.value.pop();
       });
 
-      arr.forEach((o) => {
-        options.push(o);
+      arr.forEach((o: any) => {
+        options.value.push(o);
       });
     }
-
-    const questionTypes = [
-      {
-        label: "Headings.MultiChoice",
-        value: "Multi Choice",
-      },
-      {
-        label: "Headings.SingleChoice",
-        value: "Single Choice",
-      },
-    ];
-
-    const maxFee: any = computed(() => {
-      if (!!!user?.value?.admin) {
-        return 1;
-      } else return 1000000000;
-    });
 
     const selectedQuestionType = ref("Multi Choice");
-
-    function onclickSetQuestionType(type: string) {
-      selectedQuestionType.value = type;
-      if (type == "Multi Choice") {
-        form.single_choice.value = false;
-        return;
-      } else {
-        form.single_choice.value = true;
-      }
-      if (options.length <= 0) return;
-
-      let listOfCorrectOptionIndex = [];
-
-      options.forEach((option, index) => {
-        if (option.correct == true) {
-          listOfCorrectOptionIndex.push(index);
-        }
-      });
-
-      if (listOfCorrectOptionIndex.length <= 1) return;
-
-      for (let i = 1; i < listOfCorrectOptionIndex.length; i++) {
-        options.splice(i, 1, { ...options[i], correct: false });
-      }
-    }
-    // ============================================================= ids
 
     function setFormData(data: any) {
       console.log("set form data");
@@ -323,14 +256,8 @@ export default defineComponent({
         form.single_choice.value = false;
       }
 
-      if (data?.fee <= 0) {
-        form.payed.value = false;
-      } else {
-        form.payed.value = true;
-        form.fee.value = data?.fee ?? 0;
-      }
-
       let arr = data?.answers ?? [];
+
       if (arr.length > 0) {
         arr = arr.map((option: any) => {
           return {
@@ -342,7 +269,8 @@ export default defineComponent({
         });
       }
 
-      Object.assign(options, [...arr]);
+      options.value = [];
+      Object.assign(options.value, [...arr]);
     }
 
     // ============================================================= functions
@@ -397,19 +325,20 @@ export default defineComponent({
         return false;
       }
     }
+
     async function onclickSubmitForm() {
       if (form.validate()) {
-        if (options.length <= 1) {
-          console.log("options", options);
+        if (options.value.length <= 1) {
+          console.log("options", options.value);
           openSnackbar("error", "Error.MinimumTwoOptionsForQuiz");
           return;
         }
-        if (!hasTrueOption(options)) {
+        if (!hasTrueOption(options.value)) {
           return openSnackbar("error", "Error.OneCorrectOptionIsMust");
         }
-        if (hasDuplicates(options))
+        if (hasDuplicates(options.value))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
-        if (checkIsSingleChoice(options)) {
+        if (checkIsSingleChoice(options.value)) {
           form.single_choice.value = true;
         } else {
           form.single_choice.value = false;
@@ -433,7 +362,6 @@ export default defineComponent({
         question: form.body().question,
         coins: !!form.body().coin ? form.body().coin : 0,
         xp: !!form.body().xp ? form.body().xp : 0,
-        fee: !!form.body().fee ? form.body().fee : 0,
         single_choice: form.body().single_choice,
       });
       form.submitting = false;
@@ -453,7 +381,6 @@ export default defineComponent({
           // question: form.body().question,
           // coins: !!form.body().coin ? form.body().coin : 0,
           // xp: !!form.body().xp ? form.body().xp : 0,
-          fee: !!form.body().fee ? form.body().fee : 0,
           // single_choice: form.body().single_choice,
         }
       );
@@ -475,7 +402,6 @@ export default defineComponent({
           question: form.body().question,
           coins: !!form.body().coin ? form.body().coin : 0,
           xp: !!form.body().xp ? form.body().xp : 0,
-          fee: !!form.body().fee ? form.body().fee : 0,
           single_choice: form.body().single_choice,
         }
       );
@@ -495,6 +421,15 @@ export default defineComponent({
       openSnackbar("error", res ?? "");
     }
 
+    function emptyTheForm() {
+      if (isFirstTimeClickOnform.value && !!!props.data) {
+        form.question.value = "";
+        form.question.valid = false;
+        options.value = [];
+        isFirstTimeClickOnform.value = false;
+      }
+    }
+
     watch(
       () => props.data,
       async (newValue, oldValue) => {
@@ -511,17 +446,6 @@ export default defineComponent({
       { immediate: true, deep: true }
     );
 
-    watch(
-      () => form.payed.value,
-      async (newValue, oldValue) => {
-        if (newValue == false) {
-          console.log("watch input payed");
-          form.fee.value = 0;
-        }
-      },
-      { deep: true }
-    );
-
     onMounted(async () => {});
 
     return {
@@ -533,12 +457,11 @@ export default defineComponent({
       options,
       XMarkIcon,
       onclickRemoveOption,
-      questionTypes,
       selectedQuestionType,
-      onclickSetQuestionType,
       setOptionCorrect,
       user,
       canEdit,
+      emptyTheForm,
     };
   },
 });

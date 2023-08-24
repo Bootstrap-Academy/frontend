@@ -39,16 +39,16 @@
               <p class="text-sm">{{ $t("Headings.XP") }} :</p>
               <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
             </div>
-            <div class="flex gap-2">
+            <!-- <div class="flex gap-2">
               <p class="text-sm">{{ $t("Headings.Fee") }} :</p>
               <p class="text-accent text-sm">{{ codingChallenge?.fee }}</p>
-            </div>
+            </div> -->
           </section>
-          <LockOpenIcon
+          <!-- <LockOpenIcon
             v-if="codingChallenge?.unlocked"
             class="h-4 w-4 text-white"
           />
-          <LockClosedIcon v-else class="h-4 w-4 cursor text-white" />
+          <LockClosedIcon v-else class="h-4 w-4 cursor text-white" /> -->
         </article>
       </section>
     </div>

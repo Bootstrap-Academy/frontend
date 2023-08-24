@@ -71,8 +71,8 @@ export default defineComponent({
         navigateTo(
           `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
         );
-        if (!isPremium.value)
-          return openSnackbar("info", "Body.BuyCodingChallnge");
+        // if (!isPremium.value)
+        //   return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
 

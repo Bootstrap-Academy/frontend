@@ -32,21 +32,6 @@
           :data="quiz"
           @click="selectedQuiz = quiz"
         />
-        <!--
-        <QuizCard
-          v-for="(quiz, i) of quizzes"
-          :key="i"
-          full
-          :data="quiz"
-          @click="selectedQuiz = quiz"
-        />
-        <QuizCard
-          v-for="(quiz, i) of quizzes"
-          :key="i"
-          full
-          :data="quiz"
-          @click="selectedQuiz = quiz"
-        /> -->
       </template>
 
       <template v-else>

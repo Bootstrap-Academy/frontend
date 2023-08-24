@@ -1,7 +1,9 @@
 <template>
-  <section class="mb-6 border border-accent p-3 sm:px-6 lg:px-8 rounded-lg">
-    <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p>
-    <div class="flex gap-4 items-center mt-8">
+  <section
+    class="bg-light p-3 sm:px-6 lg:px-8 rounded-lg flex justify-between items-center"
+  >
+    <!-- <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p> -->
+    <div class="flex items-center gap-3">
       <button
         @click="feedback = 'POSITIVE'"
         type="button"
@@ -29,15 +31,10 @@
         👎
       </button>
     </div>
-    <!-- <InputBtn :loading="loading" @click="submitFeedBack()" full class="mt-6">{{
-      t("Buttons.Continue")
-    }}</InputBtn> -->
-    <article class="flex justify-end">
-      <FlagIcon
-        class="h-5 w-5 text-error cursor-pointer mt-4"
-        @click="openReportDialog()"
-      />
-    </article>
+    <FlagIcon
+      class="h-5 w-5 text-error cursor-pointer"
+      @click="openReportDialog()"
+    />
 
     <DialogSlot
       v-if="dialogReportTask"

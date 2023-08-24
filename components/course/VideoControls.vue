@@ -22,7 +22,7 @@
           v-if="user?.admin || canCreate"
           :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel}`"
         >
-          <Btn sm>{{ t("Buttons.AddQuizQuestion") }}</Btn>
+          <Btn sm>{{ t("Buttons.AddTask") }}</Btn>
         </NuxtLink>
       </template>
       <Btn

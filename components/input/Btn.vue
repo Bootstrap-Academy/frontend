@@ -29,7 +29,12 @@
         class="flex gap-2 items-center"
         :class="iconRight ? 'flex-row-reverse' : ''"
       >
-        <component v-if="icon" :is="icon" class="icon"></component>
+        <component
+          v-if="icon"
+          :is="icon"
+          :class="[!!iconColor ? `red` : '']"
+          class="icon"
+        ></component>
         <slot></slot>
       </div>
     </Transition>
@@ -55,6 +60,7 @@ export default defineComponent({
     tertiary: { type: Boolean, default: false },
     icon: { type: Object, default: null },
     iconRight: { type: Boolean, default: false },
+    iconColor: { type: String, default: "" },
   },
   emits: ["click"],
   setup(props, { emit }) {
@@ -143,6 +149,9 @@ button {
 }
 .tertiary .icon {
   @apply fill-accent;
+}
+.red.icon {
+  @apply text-[#FF0000];
 }
 @-webkit-keyframes rotating /* Safari and Chrome */ {
   from {

@@ -11,6 +11,12 @@
     "WebShop": "Web Shop"
   },
   "Headings": {
+    "CompilationError": "Compilation Error ❌",
+    "NoOutput": "There is no output for your provided code 🫣",
+    "SubmissionSolved": "Solved ✅",
+    "PendingResult": "Wait! We are processing your given code",
+    "ChooseCorrectOption": "Choose the correct answers",
+    "UpdateYourCode": "Update Your Code",
     "Since": "Since",
     "Until": "Until",
     "EnableAutopay": "Enable Autopay",
@@ -294,6 +300,7 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "UpdateYourCode": "Do you want to update your code with your selected language example code?",
     "RefillHearts": "50 Morphcoins will be deducted from your account to gain your spent hearts",
     "ChangeAutoPaySubscription": "Change your autopay system by selecting one of the options below. If you want to add more time to your subscription you can subscribe again from the above card options",
     "EnableAutopay": "We will take care of your payments on ourself and deduct the amount from your account on the basis of your chosen subscription",
@@ -626,6 +633,13 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "Edit": "Edit",
+    "UnSolved": "UnSolved",
+    "All": "All",
+    "NextQuiz": "Next Quiz",
+    "Submit": "Submit",
+    "Update": "Update",
+    "CreateSubmission": "Create Submission",
     "TurnOff": "Turn off",
     "Yes": "Yes",
     "Yearly": "Yearly",
@@ -819,7 +833,7 @@
     "SubmittedRating": "Ratings Submitted SuccessFully",
     "BuyCodingChallenge": "SuccessFully bought coding challenge.",
     "UpdatedQuiz": "Quiz Updated SuccessFully",
-    "SolvedCodingChallenge": "Tested Successfully And Coding Challenge Is Solved",
+    "TestAgainstExample": "Tested Successfully And Test For Example this Is Solved",
     "SolvedCodingChallengeButNotCorrect": "Provided Code Doesn't Match Our Requirements",
     "QuizAttempt": "Correct Option! Quiz Solved 😍",
     "DeleteQuiz": "Quiz Deleted Successfully",

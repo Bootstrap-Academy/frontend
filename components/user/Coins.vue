@@ -15,13 +15,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { PlusIcon, HeartIcon } from "@heroicons/vue/24/solid";
+import { PlusIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
   props: {
     sm: { type: Boolean, default: false },
   },
-  components: { PlusIcon, HeartIcon },
+  components: { PlusIcon },
   setup() {
     const coins = useCoins();
     const loading = ref(true);

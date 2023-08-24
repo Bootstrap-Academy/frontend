@@ -2,12 +2,26 @@
   <div class="flex items-center gap-2 group" @click="gotoSubscription()">
     <div class="text-heading hover:text-white">
       <article
-        class="flex items-center gap-0.5 bg-tertiary px-3 py-0.5 rounded-full"
+        class="flex items-center gap-1 bg-tertiary px-5 py-2 rounded-full"
       >
-        <HeartIcon
+        <!-- <HeartIcon
           class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
-        />{{ hearts / 2 ?? "" }}
-        <PlusIcon class="flex-shrink-0 text-headiacang block w-3.5 h-3.5" />
+        />{{ hearts / 2 ?? "" }} -->
+
+        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 2" />
+        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 4" />
+        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 6" />
+        <SvgHalfHeart
+          :color="'accent'"
+          class="h-5 w-5"
+          v-if="hearts == 3 || hearts == 5 || hearts == 1"
+        />
+
+        <HeartIcon v-if="hearts == 0" class="h-6 w-6 text-accent" />
+
+        <PlusIcon
+          class="flex-shrink-0 text-headiacang block w-3.5 h-3.5 ml-1"
+        />
       </article>
     </div>
   </div>
@@ -15,7 +29,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { PlusIcon, HeartIcon } from "@heroicons/vue/24/solid";
+import { PlusIcon, HeartIcon } from "@heroicons/vue/24/outline";
 import { useHeartInfo } from "~~/composables/hearts";
 
 export default defineComponent({

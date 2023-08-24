@@ -264,6 +264,8 @@ export default {
 
       if (hearts.value >= 6) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
+      } else if (coins.value < 50) {
+        openSnackbar("error", "Error.Need50CoinsForRefill");
       }
       return openDialog(
         "info",

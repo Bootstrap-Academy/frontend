@@ -28,13 +28,13 @@
       <Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
     </article>
 
-    <article class="mt-card">
+    <!-- <article class="mt-card">
       <p class="mb-2">{{ t("Inputs.ShowFreeQuizzesOnly") }}</p>
       <InputSwitch
         label="Inputs.ShowFreeQuizzesOnly"
         v-model="showFreeQuizzesOnly"
       />
-    </article>
+    </article> -->
     <InputBtn class="mt-4" @click="navigateTo('/subscription')">{{
       t("Buttons.BuySubscription")
     }}</InputBtn>

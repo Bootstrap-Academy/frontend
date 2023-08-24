@@ -5,21 +5,17 @@
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
-    <h4 class="text-heading-3">
-      Q). {{ subtask?.question ?? "" }}
-      <span class="text-xs text-accent break-keep" v-if="subtask?.single_choice"
-        >({{ t("Headings.SingleChoice") }})</span
-      >
-      <span class="text-xs text-accent break-keep" v-else
-        >({{ t("Headings.MultiChoice") }})</span
-      >
-    </h4>
+    <h4 class="text-heading-3">Q). {{ subtask?.question ?? "" }}</h4>
+    <p class="text-accent">
+      {{ t("Headings.ChooseCorrectOption") }}
+    </p>
+
     <p class="text-xs text-accent" v-if="showMaxAttemptsError">
       {{ t(`Error.TooManyAttemptsForQuiz`, { second: secondsForTryAgain }) }}
     </p>
 
     <article
-      class="grid grid-cols-1 gap-card-sm overflow-scroll h-[45vh] place-content-start pb-20"
+      class="grid grid-cols-1 gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
     >
       <button
         v-for="(option, i) of subtask?.answers ?? []"
@@ -40,11 +36,29 @@
     </article>
 
     <article
-      class="flex justify-between gap-card items-center sticky -bottom-2 right-card"
+      class="flex justify-end items-center gap-1 cursor-pointer"
+      @click="nextQuestion()"
+      v-if="data?.solved || user?.id == subtask?.creator"
     >
+      <p>Next</p>
+      <ChevronDoubleRightIcon class="h-5 w-5 text-accent" />
+    </article>
+    <div>
       <InputBtn
         full
-        v-if="!data?.solved && user?.id != subtask?.creator"
+        v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
+        :loading="loading"
+        @click="onclickSubmitForm()"
+        iconRight
+        mt
+        :icon="HalfHeart"
+      >
+        {{ t("Buttons.SubmitAnswer") }}
+      </InputBtn>
+
+      <InputBtn
+        full
+        v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
         :loading="loading"
         @click="onclickSubmitForm()"
         mt
@@ -52,21 +66,30 @@
         {{ t("Buttons.SubmitAnswer") }}
       </InputBtn>
 
-      <InputBtn
-        v-if="(data?.solved && data?.rated) || user?.id == subtask?.creator"
-      >
+      <InputBtn full v-if="data?.solved && data?.rated">
         {{ t("Buttons.Solved") }}
       </InputBtn>
 
-      <div
-        v-if="data?.solved && !data.rated"
-        class="flex gap-4 items-center mt-8"
+      <InputBtn
+        :icon="PencilSquareIcon"
+        iconRight
+        full
+        v-else-if="user?.id == subtask?.creator && !!user?.admin"
+        @click="openDialogEditTask(subtask)"
       >
+        {{ t("Buttons.Edit") }}
+      </InputBtn>
+    </div>
+    <article
+      v-if="data?.solved && !data.rated && data.creator != user.id"
+      class="flex justify-between gap-card items-center sticky right-card bg-light rounded-md px-3 py-2"
+    >
+      <div class="flex gap-4 items-center">
         <button
           @click="feedback = 'POSITIVE'"
           type="button"
           :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
         >
           👍
         </button>
@@ -75,7 +98,7 @@
           @click="feedback = 'NEUTRAL'"
           type="button"
           :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
         >
           😐
         </button>
@@ -84,25 +107,32 @@
           @click="feedback = 'NEGATIVE'"
           type="button"
           :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
         >
           👎
         </button>
       </div>
-    </article>
-    <article class="flex justify-end">
       <FlagIcon
-        class="h-5 w-5 text-error cursor-pointer mt-4"
-        v-if="!data?.rated && data?.solved && user?.id != subtask?.creator"
+        class="h-5 w-5 text-error cursor-pointer hover:scale-110"
         @click="openReportDialog()"
       />
     </article>
 
     <DialogSlot
+      v-if="dialogCreateSubtask"
+      :label="'Headings.Quiz'"
+      :propClass="'modal-width-lg lg:modal-width-md'"
+      :show="dialogEditTask"
+      @closeFunction="closeEditTaskDialog()"
+    >
+      <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
+    </DialogSlot>
+
+    <DialogSlot
       v-if="dialogReportTask"
       :label="'Headings.Report'"
       :propClass="'modal-width-lg lg:modal-width-sm'"
-      :show="dialogSlot"
+      :show="dialogSlotReportTask"
       @closeFunction="dialogReportTask = false"
     >
       <FormReportSubtask
@@ -119,20 +149,22 @@ import { defineComponent, ref, PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
 import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
-import { FlagIcon } from "@heroicons/vue/24/outline";
+import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
+import HalfHeart from "../svg/HalfHeart.vue";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  emits: ["solved", "updateQuestion", "rated"],
-  components: { FlagIcon },
+  emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
+  components: { FlagIcon, ChevronDoubleRightIcon, HalfHeart, PencilSquareIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
 
     const user: any = useUser();
     const dialogReportTask = useDialogReportTask();
-    const dialogSlot = useDialogSlot();
+    const dialogSlotReportTask = useDialogSlot();
     const loading = ref(false);
     const selected: any = ref([]);
     const subtask = useSubTaskInQuiz();
@@ -141,10 +173,17 @@ export default defineComponent({
     const showMaxAttemptsError = ref(false);
     const secondsForTryAgain = ref(0);
     const interval: any = ref();
+    const premiumInfo: any = usePremiumInfo();
+    // edit quiz dialog variable
+    const dialogEditTask = useDialogSlot();
+    const dialogCreateSubtask = useDialogCreateSubtask();
+    const propData = ref();
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
-
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium;
+    });
     // ============================================================= Checks
 
     function setArrayOfAnswers(index: any) {
@@ -218,7 +257,7 @@ export default defineComponent({
     }
 
     function errorHandler(error: any) {
-      if (error.detail == "Error.TooManyAttemptsForQuiz") {
+      if (error == "Error.TooManyAttemptsForQuiz") {
         showMaxAttemptsError.value = true;
         secondsForTryAgain.value = error.details ?? "";
       } else {
@@ -245,37 +284,59 @@ export default defineComponent({
         openSnackbar("error", error);
       }
     }
+
+    function nextQuestion() {
+      emit("nextQuestion", props.data.id);
+    }
     function reportSubmitted() {
       emit("solved", props.data.id);
       emit("rated", props.data.id);
     }
+
     function openReportDialog() {
-      dialogSlot.value = true;
+      dialogSlotReportTask.value = true;
       dialogReportTask.value = true;
     }
+
+    function openDialogEditTask(data: any) {
+      propData.value = data;
+      dialogEditTask.value = true;
+      dialogCreateSubtask.value = true;
+    }
+
+    async function closeEditTaskDialog() {
+      dialogCreateSubtask.value = false;
+      await setData();
+    }
+
+    async function setData() {
+      arrayOfAnswers.value = [];
+      if (props?.data == null) return;
+      showMaxAttemptsError.value = false;
+      clearInterval(interval.value);
+      setLoading(true);
+
+      const [success, error] = await getSubTaskInQuiz(
+        props?.data?.task_id ?? "",
+        props?.data?.id ?? ""
+      );
+
+      if (success) {
+        emit("updateQuestion", success);
+      }
+      if (!!subtask.value && subtask.value?.answers.length) {
+        subtask.value?.answers.forEach((element: any) => {
+          arrayOfAnswers.value.push(false);
+        });
+        selected.value = [];
+      }
+      setLoading(false);
+    }
+
     watch(
       () => props.data,
       async () => {
-        arrayOfAnswers.value = [];
-        if (props?.data == null) return;
-        showMaxAttemptsError.value = false;
-        clearInterval(interval.value);
-        setLoading(true);
-
-        const [success, error] = await getSubTaskInQuiz(
-          props?.data?.task_id ?? "",
-          props?.data?.id ?? ""
-        );
-        if (success) {
-          emit("updateQuestion", success);
-        }
-        if (!!subtask.value && subtask.value?.answers.length) {
-          subtask.value?.answers.forEach((element: any) => {
-            arrayOfAnswers.value.push(false);
-          });
-          selected.value = [];
-        }
-        setLoading(false);
+        await setData();
       },
       { deep: true, immediate: true }
     );
@@ -315,15 +376,24 @@ export default defineComponent({
       arrayOfAnswers,
       setArrayOfAnswers,
       setSelected,
+      openDialogEditTask,
+      propData,
       feedback,
       dialogReportTask,
-      dialogSlot,
+      dialogSlotReportTask,
       openReportDialog,
       FlagIcon,
+      PencilSquareIcon,
       reportSubmitted,
+      dialogCreateSubtask,
+      dialogEditTask,
+      closeEditTaskDialog,
       user,
+      HalfHeart,
       showMaxAttemptsError,
       secondsForTryAgain,
+      nextQuestion,
+      isPremium,
     };
   },
 });

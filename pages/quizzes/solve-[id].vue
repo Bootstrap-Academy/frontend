@@ -3,35 +3,47 @@
     <main
       class="h-full overflow-hidden container pt-card pb-card mt-card-sm grid md:grid-cols-[400px_minmax(0,1fr)] gap-y-card gap-x-container items-start"
     >
-      <SectionTitle
-        subheading="Web Development / Angular Skill"
-        heading="Quizzes"
-        class="mb-2"
-      />
+      <div class="">
+        <SectionTitle
+          subheading="Web Development / Angular Skill"
+          heading="Quizzes"
+          class="mb-2"
+        />
+        <InputButtonToggle
+          v-model="selectedOption"
+          :buttonOptions="buttonOptions"
+        />
+      </div>
 
       <FormQuizAnswer
-        v-if="arrayOfSubtasks.length || loading"
-        :data="selectedQuiz ?? arrayOfSubtasks[0]"
+        v-if="quizzesToShow.length || loading"
+        :data="selectedQuiz ?? quizzesToShow[0]"
         @solved="setSolvedLocally($event)"
         @rated="setRatedLocally($event)"
+        @nextQuestion="nextQuestion($event)"
         @updateQuestion="updateQuestion($event)"
-        class="row-span-2 mt-24"
+        class="row-span-2 md:mt-48"
       />
 
-      <aside
-        class="p-2 grid gap-card max-h-[700px] h-fit pb-44 overflow-scroll mt-20 md:mt-0"
-      >
+      <aside class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4">
         <template v-if="loading">
           <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
           <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
           <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
         </template>
 
-        <template v-else-if="arrayOfSubtasks && arrayOfSubtasks.length">
+        <template v-else-if="quizzesToShow && quizzesToShow.length">
+          <p class="mb-3 text-xs">
+            <span class="text-accent"> {{ t("Headings.Total") }} </span>:
+            {{ quizzesToShow?.length }}
+          </p>
           <div class="max-h-fit grid gap-card">
             <QuizCard
               class="max-h-fit"
-              v-for="(quiz, i) of arrayOfSubtasks"
+              :class="
+                quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
+              "
+              v-for="(quiz, i) of quizzesToShow"
               :key="i"
               full
               :data="quiz"
@@ -42,7 +54,7 @@
       </aside>
     </main>
     <p
-      v-if="!loading && !arrayOfSubtasks.length"
+      v-if="!loading && !quizzesToShow.length"
       class="text-center w-full mb-20 text-xl"
     >
       {{
@@ -71,15 +83,19 @@ export default defineComponent({
     const quizzes: any = useQuizzes();
     const selectedQuiz = ref();
     const loading = ref(true);
-    const premiumInfo: any = usePremiumInfo();
     const user: any = useUser();
+    const selectedOption = ref(0);
     const { t } = useI18n();
-
+    const quizzesToShow: any = ref([]);
+    let arrayOfSubtasks: any = ref([]);
+    const buttonOptions = [
+      { name: "Buttons.All" },
+      { name: "Buttons.UnSolved" },
+    ];
     const id: any = computed(() => {
       return route?.params?.id ?? "";
     });
 
-    let arrayOfSubtasks: any = ref([]);
     const querySubTaskId = computed(() => {
       return route.query?.querySubTaskId ?? "";
     });
@@ -109,21 +125,36 @@ export default defineComponent({
       });
     }
     function setRatedLocally(id: any) {
-      let index = 0;
       arrayOfSubtasks.value.forEach((element: any, i: any) => {
         if (element.id == id) {
-          index = i;
           element.rated = true;
         }
       });
+    }
+
+    function nextQuestion(id: any) {
+      console.log("next");
+      let index = 0;
+      arrayOfSubtasks.value.forEach((element: any, i: any) => {
+        if (element.id == id) {
+          console.log("inside index", id);
+          index = i;
+        }
+      });
+
       for (let i = index; i < arrayOfSubtasks?.value?.length; i++) {
         if (
           !arrayOfSubtasks?.value[i]?.solved &&
-          arrayOfSubtasks?.value[i]?.creator != user?.id
+          arrayOfSubtasks?.value[i]?.creator != user?.value.id &&
+          i != index
         ) {
+          console.log("next quiz id", arrayOfSubtasks.value[i].creator);
+          console.log("user id", user.value?.id);
           solveThis(arrayOfSubtasks.value[i]);
+
           break;
         }
+        console.log("after");
       }
     }
 
@@ -157,6 +188,7 @@ export default defineComponent({
       }
 
       if (quizzesFrom.value == "course") {
+        console.log("incurse from");
         await getQuizzesInCourse(id.value);
       } else if (quizzesFrom.value == "skill") {
         await getQuizzesInSkill(id.value);
@@ -167,6 +199,7 @@ export default defineComponent({
       if (quizzesFrom.value == "quiz") {
         const subtasks = useSubTasksInQuiz();
         arrayOfSubtasks.value = subtasks.value;
+        quizzesToShow.value = subtasks.value;
         loading.value = false;
         return;
       }
@@ -183,6 +216,7 @@ export default defineComponent({
           if (!!res) {
             res.forEach((element: any) => {
               arrayOfSubtasks.value.push(element);
+              quizzesToShow.value.push(element);
             });
           }
         })
@@ -190,11 +224,25 @@ export default defineComponent({
       loading.value = false;
     }
 
+    watch(
+      () => selectedOption.value,
+      (newValue, oldValue) => {
+        if (newValue == 0) {
+          quizzesToShow.value = arrayOfSubtasks.value;
+        } else if (newValue == 1) {
+          quizzesToShow.value = [];
+          arrayOfSubtasks.value.forEach((element: any) => {
+            if (!element.solved && element.creator != user.value?.id) {
+              quizzesToShow.value.push(element);
+              console.log("pushing");
+            }
+          });
+        }
+      }
+    );
+
     onMounted(async () => {
       manageAllDataForQuizzes();
-      if (!!!premiumInfo.value.premium) {
-        openSnackbar("info", "Body.BuyQuiz");
-      }
     });
 
     return {
@@ -203,6 +251,7 @@ export default defineComponent({
       quizzesFrom,
       quizzes,
       arrayOfSubtasks,
+      buttonOptions,
       selectedQuiz,
       loading,
       setSolvedLocally,
@@ -210,6 +259,9 @@ export default defineComponent({
       setRatedLocally,
       updateQuestion,
       notFoundFor,
+      nextQuestion,
+      selectedOption,
+      quizzesToShow,
     };
   },
 });

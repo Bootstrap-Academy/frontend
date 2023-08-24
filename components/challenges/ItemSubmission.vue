@@ -38,34 +38,21 @@
             #{{ i + 1 }}
           </td>
           <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
+            class="px-2 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
           >
-            {{ formattedTimeStamp(submission?.creation_timestamp) }}
+            {{ dateFormat(submission?.creation_timestamp) }}
           </td>
           <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
+            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
           >
             {{ submission?.environment ?? "" }}
           </td>
           <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
+            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
           >
-            <div
-              class="flex items-center gap-1"
-              v-if="submission?.result?.verdict?.toLowerCase().includes('ok')"
-            >
-              <p>Solved</p>
-              <CheckBadgeIcon class="h-5 w-5 text-success" />
-            </div>
-            <p
-              v-else
-              class="px-2 bg-error text-heading rounded-sm w-fit mx-auto mb-2"
-            >
-              {{ submission?.result?.verdict ?? "" }}
+            <p class="text-sm bg-light p-2 rounded-md">
+              {{ t(verdictIs(submission)) }}
             </p>
-            <!-- <Btn sm tertiary>
-              {{ t("Buttons.Details") }}
-            </Btn> -->
           </td>
           <td
             class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
@@ -114,6 +101,25 @@ export default defineComponent({
     function emitId(id: any) {
       emit("id", id);
     }
+    const verdictIs: any = (submission: any) => {
+      if (!!!submission.result) {
+        return "Headings.PendingResult";
+      } else if (submission.result?.verdict.toLowerCase().includes("ok")) {
+        return "Headings.SubmissionSolved";
+      } else if (
+        submission.result?.verdict.toLowerCase().includes("no_output")
+      ) {
+        return "Headings.NoOutput";
+      } else if (
+        submission.result?.verdict.toLowerCase().includes("compilation_error")
+      ) {
+        return "Headings.CompilationError";
+      } else return submission.result?.verdict ?? "";
+    };
+    const dateFormat = (date: any) => {
+      const submissionAt = useDateFormat(date, "MMMM DD, YYYY  HH-MM AA");
+      return submissionAt;
+    };
     return {
       t,
       submissions,
@@ -122,6 +128,8 @@ export default defineComponent({
       formattedTimeStamp,
       emitId,
       CheckIcon,
+      dateFormat,
+      verdictIs,
     };
   },
 });

@@ -44,13 +44,16 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 	</article> -->
 
   <article
-    v-if="showQuiz"
     @click="solveThis(data?.id ?? '')"
     class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"
   >
     <CheckIcon
       v-if="data?.solved"
       class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
+    />
+    <PencilSquareIcon
+      v-else-if="user?.id == data?.creator"
+      class="bg-light rounded-full p-0.5 h-6 w-6 text-accent absolute -right-1 -top-1.5"
     />
     <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
 
@@ -59,10 +62,6 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
         {{ t("Headings.SingleChoice") }}
       </p>
       <p class="text-body-2" v-else>{{ t("Headings.MultiChoice") }}</p>
-
-      <Chip v-if="data && data.fee <= 0" xs color="chip-color-6" class="w-fit">
-        {{ t("Headings.Free") }}
-      </Chip>
     </div>
   </article>
 </template>
@@ -70,7 +69,7 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { CheckIcon } from "@heroicons/vue/24/outline";
+import { CheckIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { LockClosedIcon } from "@heroicons/vue/24/outline";
 export default defineComponent({
   props: {
@@ -80,24 +79,9 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    const showfreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
-    const showQuiz = computed(() => {
-      if (showfreeQuizzesOnly.value) {
-        if (props.data.unlocked) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    });
+    const user: any = useUser();
 
     function solveThis(id: any) {
-      const premiumInfo: any = usePremiumInfo();
-      if (premiumInfo.value.premium) {
-        openSnackbar("info", "Body.BuyQuiz");
-      }
       gotoPage();
     }
 
@@ -126,9 +110,9 @@ export default defineComponent({
         );
       }
     }
-    return { t, solveThis, showfreeQuizzesOnly, showQuiz };
+    return { t, solveThis, user };
   },
-  components: { CheckIcon, LockClosedIcon },
+  components: { CheckIcon, LockClosedIcon, PencilSquareIcon },
 });
 </script>
 

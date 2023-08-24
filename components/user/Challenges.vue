@@ -63,13 +63,6 @@ export default defineComponent({
           current: codingChallengesStats.value?.solved ?? 0,
           total: codingChallengesStats.value?.total ?? 10,
         },
-        {
-          heading: t("Headings.Unlocked"),
-          current: codingChallengesStats.value?.unlocked ?? 0,
-          total:
-            codingChallengesStats.value?.locked +
-              codingChallengesStats.value?.unlocked ?? 10,
-        },
       ];
     });
 

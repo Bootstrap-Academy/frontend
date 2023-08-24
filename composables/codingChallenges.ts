@@ -176,13 +176,17 @@ export async function getExamples(challengeId: any, codingChallengeId: any) {
     }
 }
 
-export async function textAgainstCodingExample(challengeId: any, codingChallengeId: any, exampleId: any, body: any) {
+export async function testAgainstCodingExample(challengeId: any, codingChallengeId: any, exampleId: any, body: any) {
     try {
         const res = await POST(`/challenges/tasks/${challengeId}/coding_challenges/${codingChallengeId}/examples/${exampleId}/test`, body)
         return [res, null]
     }
     catch (error: any) {
-        return [null, error]
+        if (error.data.error == 'not_enough_hearts') {
+            return [null, 'Error.NotEnoughHearts']
+        }
+        else
+            return [null, error]
     }
 }
 
@@ -279,11 +283,11 @@ export async function getEvaluatorTemplate() {
 
 export async function getCodingChallengesStats() {
     try {
-        console.log("getCodingChallengesStats",)
 
         const res = await GET(`/challenges/subtasks/stats`)
 
         const codingChallengesStats = useCodingChallengesStats()
+        console.log("getCodingChallengesStats from coding challenge composable", res)
         codingChallengesStats.value = res ?? null
         return [res, null]
     }
