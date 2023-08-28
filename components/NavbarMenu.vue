@@ -1,6 +1,6 @@
 <template>
   <button class="relative py-3 text-left" @blur="closeMenu">
-    <div class="flex gap-4 items-center">
+    <div class="flex gap-1 sm:gap-2 md:gap-4 items-center">
       <UserHearts />
       <UserCoins />
 

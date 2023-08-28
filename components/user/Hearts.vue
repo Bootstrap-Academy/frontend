@@ -8,19 +8,31 @@
           class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
         />{{ hearts / 2 ?? "" }} -->
 
-        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 2" />
-        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 4" />
-        <SvgFullHeart :color="'accent'" class="h-5 w-5" v-if="hearts >= 6" />
+        <SvgFullHeart
+          :color="'accent'"
+          class="h-3 w-3 sm:h-5 sm:w-5"
+          v-if="hearts >= 2"
+        />
+        <SvgFullHeart
+          :color="'accent'"
+          class="h-3 w-3 sm:h-5 sm:w-5"
+          v-if="hearts >= 4"
+        />
+        <SvgFullHeart
+          :color="'accent'"
+          class="h-3 w-3 sm:h-5 sm:w-5"
+          v-if="hearts >= 6"
+        />
         <SvgHalfHeart
           :color="'accent'"
-          class="h-5 w-5"
+          class="h-3 w-3 sm:h-5 sm:w-5"
           v-if="hearts == 3 || hearts == 5 || hearts == 1"
         />
 
         <HeartIcon v-if="hearts == 0" class="h-6 w-6 text-accent" />
 
         <PlusIcon
-          class="flex-shrink-0 text-headiacang block w-3.5 h-3.5 ml-1"
+          class="flex-shrink-0 text-headiacang block h-3 w-3 sm:w-3.5 sm:h-3.5 ml-1"
         />
       </article>
     </div>

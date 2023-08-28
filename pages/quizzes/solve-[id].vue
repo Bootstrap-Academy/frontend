@@ -10,6 +10,7 @@
           class="mb-2"
         />
         <InputButtonToggle
+          :mobileResponsive="false"
           v-model="selectedOption"
           :buttonOptions="buttonOptions"
         />

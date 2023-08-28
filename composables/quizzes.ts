@@ -339,6 +339,7 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 	try {
 		const res = await POST(`challenges/tasks/${taskId}/multiple_choice/${subTaskid}/attempts`, body)
 		let success = null
+		console.log("ress", res)
 		if (!!res.error) {
 			success = 'Too Much Requests'
 		}

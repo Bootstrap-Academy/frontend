@@ -11,6 +11,12 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "HTML": "HTML",
+    "Excel": "Ubertreffen",
+    "Python": "Python",
+    "PowerPoint": "Steckdose",
+    "Quizzes": "Quizzes",
+    "ClickForExampleCode": "Klicken Sie auf „Für Beispielcode“.",
     "CompilationError": "Kompilierungsfehler ❌",
     "NoOutput": "Es gibt keine Ausgabe für Ihren bereitgestellten Code🫣",
     "SubmissionSolved": "Gelöst✅",
@@ -303,6 +309,7 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "QuizDummyQuestion": "Welche der folgenden ist eine Programmiersprache?",
     "UpdateYourCode": "Möchten Sie Ihren Code mit dem Beispielcode Ihrer ausgewählten Sprache aktualisieren?",
     "RefillHearts": "50 Morphcoins werden von Ihrem Konto abgebucht, um Ihre ausgegebenen Herzen zu erhalten",
     "ChangeAutoPaySubscription": "Ändern Sie Ihr Autopay-System, indem Sie eine der folgenden Optionen auswählen. Wenn Sie Ihrem Abonnement mehr Zeit hinzufügen möchten, können Sie es über die oben genannten Kartenoptionen erneut abonnieren",
@@ -321,7 +328,7 @@
     "Refill3Hearts": "Füllen Sie 3 Herz für 50 Morphcoins auf",
     "BuyMonthlySubscription": "Für das Monatsabonnement werden 1,000 Morphcoins von Ihrem Konto abgebucht",
     "BuyYearlySubscription": "Für das Jahresabonnement werden 10,000 Morphcoins von Ihrem Konto abgebucht",
-    "PremiumCardMain": "Erhalten Sie monatlichen Zugang zu über 100 Kursen und jeder heute verfügbaren Vorlesung sowie allen neuen Inhalten, die wir in Zukunft hinzufügen, zu einem einfachen einmaligen Preis.",
+    "PremiumCardMain": "Erhalten Sie monatlichen Zugang zu über 100 Kursen und jeder heute verfügbaren Vorlesung sowie allen neuen Inhalten, die wir in Zukunft hinzufügen, für ein einfaches Monats- und Jahresabonnement.",
     "MonthlyPremiumCardBody": "Lernen Sie den Code-Übungstest und vieles mehr.",
     "YearlyPremiumCardBody": "Lernen Sie den Code-Übungstest und vieles mehr.",
     "ChangeEnvironment": "Möchten Sie Ihren Lösungscode auf das Standardbeispiel aktualisieren?",
@@ -637,6 +644,7 @@
     "RegistrationCode": "Registrierungscode"
   },
   "Buttons": {
+    "Challenge": "Challenge",
     "Edit": "bearbeiten",
     "UnSolved": "Ungelöst",
     "All": "Alle",

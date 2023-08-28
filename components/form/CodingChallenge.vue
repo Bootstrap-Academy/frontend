@@ -11,6 +11,7 @@
           :label="t('Inputs.StaticTests')"
           :type="'number'"
           :rules="form.static_tests.rules"
+          :placeholder="form.static_tests.placeholder"
           v-model="form.static_tests.value"
           @valid="form.static_tests.valid = $event"
         />
@@ -18,6 +19,7 @@
           :label="t('Inputs.RandomTests')"
           :type="'number'"
           :rules="form.random_tests.rules"
+          :placeholder="form.random_tests.placeholder"
           v-model="form.random_tests.value"
           @valid="form.random_tests.valid = $event"
         />
@@ -31,7 +33,7 @@
         />
       </article>
 
-      <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
+      <!-- <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
         <Input
           v-if="!!user.admin"
           :label="t('Inputs.Morphcoins')"
@@ -48,12 +50,13 @@
           v-model="form.xp.value"
           @valid="form.xp.valid = $event"
         />
-      </article>
+      </article> -->
 
       <InputTextarea
         :label="t('Inputs.Description')"
         v-model="form.description.value"
         @valid="form.description.valid = $event"
+        :placeholder="form.description.placeholder"
         :rules="form.description.rules"
       />
 
@@ -77,7 +80,7 @@
           @click="enterExampleCode()"
           class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
         >
-          Example Code
+          {{ t("Headings.ClickForExampleCode") }}
           <CodeBracketIcon class="h-5 w-5" />
         </div>
       </article>
@@ -152,26 +155,28 @@ export default {
       description: {
         valid: false,
         value: "",
+        placeholder: "Describe the coding challenge which user have to solve",
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Description",
           (v: string) => v.length >= 10 || "Error.InputMinLength_10",
           (v: string) => v.length <= 4096 || "Error.InputMaxLength_4096",
         ],
       },
-      xp: {
-        valid: true,
-        value: null,
-        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
-      },
-      coins: {
-        valid: true,
-        value: null,
-        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
-      },
+      // xp: {
+      //   valid: true,
+      //   value: null,
+      //   rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
+      // },
+      // coins: {
+      //   valid: true,
+      //   value: null,
+      //   rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
+      // },
 
       static_tests: {
         valid: false,
         value: null,
+        placeholder: "Tests against  submissions",
         rules: [
           (v: number) => !!v || "Error.InputEmpty_Inputs.StaticTests",
           (v: number) => v <= 20 || "Error.InputMaxNumber_20",
@@ -180,6 +185,7 @@ export default {
       random_tests: {
         valid: false,
         value: null,
+        placeholder: "Tests  against  submissions",
         rules: [
           (v: number) => !!v || "Error.InputEmpty_Inputs.RandomTests",
           (v: number) => v <= 20 || "Error.InputMaxNumber_20",
@@ -254,8 +260,8 @@ export default {
       loading.value = true;
       const [success, error] = await createCodingChallenge(props.challengeId, {
         description: form.description.value,
-        coins: !!form.coins.value ? form.coins.value : 0,
-        xp: !!form.xp.value ? form.xp.value : 0,
+        // coins: !!form.coins.value ? form.coins.value : 0,
+        // xp: !!form.xp.value ? form.xp.value : 0,
         time_limit: configs.value.time_limit,
         memory_limit: configs.value.memory_limit,
         static_tests: form.static_tests.value,
@@ -277,8 +283,8 @@ export default {
         props.propData.id,
         {
           description: form.description.value,
-          coins: !!form.coins.value ? form.coins.value : 0,
-          xp: !!form.xp.value ? form.xp.value : 0,
+          // coins: !!form.coins.value ? form.coins.value : 0,
+          // xp: !!form.xp.value ? form.xp.value : 0,
           time_limit: configs.value.time_limit,
           memory_limit: configs.value.memory_limit,
           static_tests: form.static_tests.value,
@@ -339,15 +345,15 @@ export default {
       if (props.propData != null) {
         await getEvaulatorAndSolution();
         form.description.value = props?.propData?.description ?? "";
-        form.xp.value = props?.propData?.xp ?? "";
-        form.coins.value = props?.propData?.coins ?? "";
+        // form.xp.value = props?.propData?.xp ?? "";
+        // form.coins.value = props?.propData?.coins ?? "";
         form.static_tests.value = props?.propData?.static_tests ?? "";
         form.random_tests.value = props?.propData?.random_tests ?? "";
 
         form.description.valid =
           props?.propData.description.trim() != "" ? true : false;
-        form.xp.valid = props?.propData.xp >= 0 ? true : false;
-        form.coins.valid = props?.propData.coins >= 0 ? true : false;
+        // form.xp.valid = props?.propData.xp >= 0 ? true : false;
+        // form.coins.valid = props?.propData.coins >= 0 ? true : false;
         form.random_tests.valid =
           props?.propData.random_tests >= 1 ? true : false;
         form.static_tests.valid =

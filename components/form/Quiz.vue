@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col">
     <form
-      @click="emptyTheForm()"
       class="flex flex-col gap-box"
       :class="{ 'form-submitting': form.submitting }"
       @submit.prevent="onclickSubmitForm()"
@@ -9,6 +8,7 @@
     >
       <Input
         :label="t('Inputs.Question')"
+        :placeholder="'Body.QuizDummyQuestion'"
         v-model="form.question.value"
         :class="canEdit ? '' : 'pointer-events-none opacity-25'"
         @valid="form.question.valid = $event"
@@ -48,6 +48,7 @@
       >
         <Input
           :label="t('Inputs.Option')"
+          :placeholder="option?.placeholder"
           v-model="option.answer"
           @valid="option.valid = $event"
           :rules="option.rules"
@@ -124,7 +125,7 @@ export default defineComponent({
     const form = reactive<IForm>({
       question: {
         valid: false,
-        value: "Which of the following is a programming language?",
+        value: "",
         rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Question"],
       },
       single_choice: { value: false, valid: true },
@@ -181,10 +182,30 @@ export default defineComponent({
 
     // ============================================================= options
     const options: any = ref([
-      { answer: "HTML", valid: true, rules: [null], correct: false },
-      { answer: "Python", valid: true, rules: [null], correct: true },
-      { answer: "PowerPoint", valid: true, rules: [null], correct: false },
-      { answer: "Excel", valid: true, rules: [null], correct: false },
+      {
+        answer: "",
+        placeholder: "Headings.HTML",
+        valid: false,
+        correct: false,
+      },
+      {
+        answer: "",
+        placeholder: "Headings.Python",
+        valid: false,
+        correct: true,
+      },
+      {
+        answer: "",
+        placeholder: "Headings.PowerPoint",
+        valid: false,
+        correct: false,
+      },
+      {
+        answer: "",
+        placeholder: "Headings.Excel",
+        valid: false,
+        correct: false,
+      },
     ]);
 
     function onclickAddOption() {
@@ -421,15 +442,6 @@ export default defineComponent({
       openSnackbar("error", res ?? "");
     }
 
-    function emptyTheForm() {
-      if (isFirstTimeClickOnform.value && !!!props.data) {
-        form.question.value = "";
-        form.question.valid = false;
-        options.value = [];
-        isFirstTimeClickOnform.value = false;
-      }
-    }
-
     watch(
       () => props.data,
       async (newValue, oldValue) => {
@@ -461,7 +473,6 @@ export default defineComponent({
       setOptionCorrect,
       user,
       canEdit,
-      emptyTheForm,
     };
   },
 });

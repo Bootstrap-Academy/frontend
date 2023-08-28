@@ -42,6 +42,7 @@
         />
         <div>
           <InputButtonToggle
+            :mobileResponsive="false"
             :buttonOptions="buttonOptions"
             v-model="selectedButton"
             class="mb-5"
@@ -160,7 +161,7 @@ export default {
     const buttonOptions = [
       { name: "Buttons.Video" },
       { name: "Buttons.Quiz" },
-      { name: "Buttons.CodingChallenge" },
+      { name: "Buttons.Challenge" },
     ];
 
     const activeSection = computed(() => {

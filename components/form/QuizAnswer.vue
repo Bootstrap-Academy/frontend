@@ -6,7 +6,7 @@
     ref="refForm"
   >
     <h4 class="text-heading-3">Q). {{ subtask?.question ?? "" }}</h4>
-    <p class="text-accent">
+    <p class="text-accent" v-if="!subtask?.solved">
       {{ t("Headings.ChooseCorrectOption") }}
     </p>
 
@@ -24,9 +24,13 @@
         type="button"
         class="box style-box border-4 border-tertiary text-heading h-fit"
         :class="{
-          'bg-success text-primary': option.correct == true && answer == option,
-          'bg-error': option.correct == false && answer == option,
-          'bg-warning': selected.includes(option),
+          'bg-success text-primary':
+            selected.includes(option) && wasOptionsCorrect == 'yes',
+
+          'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
+
+          'bg-warning':
+            selected.includes(option) && wasOptionsCorrect == 'waiting',
           'pointer-events-none':
             !!subtask?.solved || subtask?.creator == user?.id,
         }"
@@ -35,16 +39,18 @@
       </button>
     </article>
 
-    <article
-      class="flex justify-end items-center gap-1 cursor-pointer"
-      @click="nextQuestion()"
-      v-if="data?.solved || user?.id == subtask?.creator"
-    >
-      <p>Next</p>
-      <ChevronDoubleRightIcon class="h-5 w-5 text-accent" />
-    </article>
     <div>
       <InputBtn
+        v-if="data?.solved || user?.id == subtask?.creator"
+        full
+        @click="nextQuestion()"
+        iconRight
+        :icon="ChevronDoubleRightIcon"
+      >
+        {{ t("Buttons.Next") }}
+      </InputBtn>
+
+      <InputBtnWithHeart
         full
         v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
         :loading="loading"
@@ -54,7 +60,18 @@
         :icon="HalfHeart"
       >
         {{ t("Buttons.SubmitAnswer") }}
-      </InputBtn>
+      </InputBtnWithHeart>
+      <!-- <InputBtn
+        full
+        v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
+        :loading="loading"
+        @click="onclickSubmitForm()"
+        iconRight
+        mt
+        :icon="HalfHeart"
+      >
+        {{ t("Buttons.SubmitAnswer") }} -
+      </InputBtn> -->
 
       <InputBtn
         full
@@ -66,57 +83,18 @@
         {{ t("Buttons.SubmitAnswer") }}
       </InputBtn>
 
-      <InputBtn full v-if="data?.solved && data?.rated">
-        {{ t("Buttons.Solved") }}
-      </InputBtn>
-
       <InputBtn
         :icon="PencilSquareIcon"
         iconRight
         full
+        mt
         v-else-if="user?.id == subtask?.creator && !!user?.admin"
         @click="openDialogEditTask(subtask)"
       >
         {{ t("Buttons.Edit") }}
       </InputBtn>
     </div>
-    <article
-      v-if="data?.solved && !data.rated && data.creator != user.id"
-      class="flex justify-between gap-card items-center sticky right-card bg-light rounded-md px-3 py-2"
-    >
-      <div class="flex gap-4 items-center">
-        <button
-          @click="feedback = 'POSITIVE'"
-          type="button"
-          :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
-        >
-          👍
-        </button>
-
-        <button
-          @click="feedback = 'NEUTRAL'"
-          type="button"
-          :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
-        >
-          😐
-        </button>
-
-        <button
-          @click="feedback = 'NEGATIVE'"
-          type="button"
-          :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
-        >
-          👎
-        </button>
-      </div>
-      <FlagIcon
-        class="h-5 w-5 text-error cursor-pointer hover:scale-110"
-        @click="openReportDialog()"
-      />
-    </article>
+    <InputQuizRating :data="data" :subtask="subtask" @rated="fnRated($event)" />
 
     <DialogSlot
       v-if="dialogCreateSubtask"
@@ -126,20 +104,6 @@
       @closeFunction="closeEditTaskDialog()"
     >
       <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
-    </DialogSlot>
-
-    <DialogSlot
-      v-if="dialogReportTask"
-      :label="'Headings.Report'"
-      :propClass="'modal-width-lg lg:modal-width-sm'"
-      :show="dialogSlotReportTask"
-      @closeFunction="dialogReportTask = false"
-    >
-      <FormReportSubtask
-        @reportSubmitted="reportSubmitted()"
-        :task_id="subtask.task_id"
-        :subtask_id="subtask.id"
-      />
     </DialogSlot>
   </form>
 </template>
@@ -163,8 +127,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const user: any = useUser();
-    const dialogReportTask = useDialogReportTask();
-    const dialogSlotReportTask = useDialogSlot();
+
     const loading = ref(false);
     const selected: any = ref([]);
     const subtask = useSubTaskInQuiz();
@@ -178,6 +141,7 @@ export default defineComponent({
     const dialogEditTask = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
     const propData = ref();
+    const wasOptionsCorrect = ref("waiting");
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
@@ -203,6 +167,10 @@ export default defineComponent({
     }
 
     function setSelected(answer: any) {
+      if (wasOptionsCorrect.value != "waiting") {
+        wasOptionsCorrect.value = "waiting";
+        selected.value = [];
+      }
       if (subtask.value?.single_choice) {
         selected.value = [];
         selected.value.push(answer);
@@ -229,9 +197,11 @@ export default defineComponent({
         subtask.value?.creator == user.value?.id
       )
         return;
+
       if (!selected.value.length) {
         return openSnackbar("error", "Error.SelectAtLeastOneOption");
       }
+
       loading.value = true;
       const [success, error] = await attempQuiz(
         subtask.value.task_id,
@@ -242,17 +212,21 @@ export default defineComponent({
       await getHearts();
       if (success == true || success == false) successHandler(success);
       else errorHandler(error);
-      selected.value = [];
     }
 
     function successHandler(res: any) {
       showMaxAttemptsError.value = false;
+      console.log("res", res);
       clearInterval(interval.value);
       if (!!res) {
-        openSnackbar("success", "Success.QuizAttempt");
+        // openSnackbar("success", "Success.QuizAttempt");
+        selected.value = [];
+        wasOptionsCorrect.value = "yes";
         emit("solved", props.data.id);
       } else if (!res) {
-        openSnackbar("error", "Error.QuizAttempt");
+        wasOptionsCorrect.value = "no";
+        // openSnackbar("error", "Error.QuizAttempt");
+        setInitialArrayOfAnswers();
       }
     }
 
@@ -265,37 +239,8 @@ export default defineComponent({
       }
     }
 
-    async function submitFeedBack() {
-      if (feedback.value.trim() == "") {
-        return openSnackbar("error", "Error.SelectRatingFirst");
-      }
-      setLoading(true);
-      const [success, error] = await rateQuiz(
-        subtask.value.task_id,
-        subtask.value.id,
-        { rating: feedback.value }
-      );
-      setLoading(false);
-      feedback.value = "";
-      if (success !== null) {
-        emit("rated", props.data.id);
-        openSnackbar("success", "Success.SubmittedRating");
-      } else {
-        openSnackbar("error", error);
-      }
-    }
-
     function nextQuestion() {
       emit("nextQuestion", props.data.id);
-    }
-    function reportSubmitted() {
-      emit("solved", props.data.id);
-      emit("rated", props.data.id);
-    }
-
-    function openReportDialog() {
-      dialogSlotReportTask.value = true;
-      dialogReportTask.value = true;
     }
 
     function openDialogEditTask(data: any) {
@@ -310,6 +255,7 @@ export default defineComponent({
     }
 
     async function setData() {
+      console.log("set data");
       arrayOfAnswers.value = [];
       if (props?.data == null) return;
       showMaxAttemptsError.value = false;
@@ -325,12 +271,23 @@ export default defineComponent({
         emit("updateQuestion", success);
       }
       if (!!subtask.value && subtask.value?.answers.length) {
-        subtask.value?.answers.forEach((element: any) => {
-          arrayOfAnswers.value.push(false);
-        });
-        selected.value = [];
+        setInitialArrayOfAnswers();
+        if (!subtask.value.solved) {
+          selected.value = [];
+        }
       }
       setLoading(false);
+    }
+
+    function setInitialArrayOfAnswers() {
+      arrayOfAnswers.value = [];
+      subtask.value?.answers.forEach((element: any) => {
+        arrayOfAnswers.value.push(false);
+      });
+    }
+
+    function fnRated(id: any) {
+      emit("rated", id);
     }
 
     watch(
@@ -356,19 +313,9 @@ export default defineComponent({
       }
     );
 
-    watch(
-      () => feedback.value,
-      (newValue, oldValue) => {
-        if (!!newValue) {
-          submitFeedBack();
-        }
-      }
-    );
-
     return {
       t,
       onclickSubmitForm,
-      submitFeedBack,
       refForm,
       loading,
       selected,
@@ -379,12 +326,8 @@ export default defineComponent({
       openDialogEditTask,
       propData,
       feedback,
-      dialogReportTask,
-      dialogSlotReportTask,
-      openReportDialog,
       FlagIcon,
       PencilSquareIcon,
-      reportSubmitted,
       dialogCreateSubtask,
       dialogEditTask,
       closeEditTaskDialog,
@@ -394,6 +337,9 @@ export default defineComponent({
       secondsForTryAgain,
       nextQuestion,
       isPremium,
+      fnRated,
+      wasOptionsCorrect,
+      ChevronDoubleRightIcon,
     };
   },
 });

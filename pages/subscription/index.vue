@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:container-fluid">
+  <div class="sm:container-fluid px-4">
     <section class="flex flex-col items-center mt-10 gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
@@ -30,6 +30,7 @@
 
       <div class="flex flex-end gap-2 justify-center items-center mb-3 mt-10">
         <InputButtonToggle
+          :mobileResponsive="false"
           :buttonOptions="buttonOptions"
           v-model="selectedButton"
           class="mb-5"
@@ -45,6 +46,7 @@
       <div class="mt-10" v-if="!!isPremium">
         <p>{{ t("Body.ChangeAutoPaySubscription") }}</p>
         <InputButtonToggle
+          :mobileResponsive="false"
           secondary
           :buttonOptions="changeSubscriptionAutopayButtons"
           v-model="setValueForAutopayButton"
@@ -297,7 +299,6 @@ export default {
       () => selectedButton.value,
 
       (newValue, oldValue) => {
-        console.log("new", newValue);
         if (newValue == 1) {
           currentCard.value = 0;
         } else {

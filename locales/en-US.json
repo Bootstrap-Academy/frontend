@@ -10,7 +10,13 @@
     "GetMorphcoins": "Get MorphCoins",
     "WebShop": "Web Shop"
   },
+
   "Headings": {
+    "HTML": "Html",
+    "Excel": "Excel",
+    "Python": "Python",
+    "PowerPoint": "PowerPoint",
+    "ClickForExampleCode": "Click For Example Code",
     "CompilationError": "Compilation Error ❌",
     "NoOutput": "There is no output for your provided code 🫣",
     "SubmissionSolved": "Solved ✅",
@@ -300,6 +306,7 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "QuizDummyQuestion": "Which of the following is a programming language?",
     "UpdateYourCode": "Do you want to update your code with your selected language example code?",
     "RefillHearts": "50 Morphcoins will be deducted from your account to gain your spent hearts",
     "ChangeAutoPaySubscription": "Change your autopay system by selecting one of the options below. If you want to add more time to your subscription you can subscribe again from the above card options",
@@ -318,7 +325,7 @@
 
     "BuyMonthlySubscription": "1,000 morphcoins will be deducted from your account for Monthly subscription",
     "BuyYearlySubscription": "10,000 morphcoins will be deducted from your account for Yearly subscription",
-    "PremiumCardMain": "Get monthly access to 100+ Courses and every lecture available today plus any new content we add in the future for a simple one-time price.",
+    "PremiumCardMain": "Get monthly access to 100+ Courses and every lecture available today plus any new content we add in the future for a simple Monthly and Yearly Subscription.",
     "MonthlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "YearlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "ChangeEnvironment": "Do you want to update your solution code to the default example?",
@@ -633,6 +640,7 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "Challenge": "Challenge",
     "Edit": "Edit",
     "UnSolved": "UnSolved",
     "All": "All",

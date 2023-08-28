@@ -4,11 +4,17 @@
       class="flex items-center w-fit min-w-fit cursor-pointer"
       :class="sm ? 'p-1' : 'p-2 bg-tertiary rounded-3xl'"
     >
-      <img src="/images/coin.png" alt="coin" class="object-contain w-5 h-5" />
+      <img
+        src="/images/coin.png"
+        alt="coin"
+        class="object-contain h-4 w-4 sm:w-5 sm:h-5"
+      />
       <p class="font-heading text-heading ml-2.5 mr-2 text-body-1">
         {{ loading ? "" : abbreviateNumber(coins) }}
       </p>
-      <PlusIcon class="flex-shrink-0 text-heading block w-4 h-4" />
+      <PlusIcon
+        class="flex-shrink-0 text-heading block h-3 w-3 sm:w-4 sm:h-4"
+      />
     </article>
   </NuxtLink>
 </template>

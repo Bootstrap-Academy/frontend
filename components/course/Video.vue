@@ -56,8 +56,6 @@ export default defineComponent({
     watch(
       () => props.activeLecture,
       async (newValue, oldValue) => {
-        console.log("newValue", newValue);
-
         if (!!!newValue) return;
 
         const courseID = props.course?.id ?? "";

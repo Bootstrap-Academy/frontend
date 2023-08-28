@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      buttonOptions?.length > 2
+      !!mobileResponsive
         ? 'flex-col rounded-lg sm:flex-row sm:rounded-full'
         : 'rounded-full',
       !!primary && !secondary ? 'bg-primary border border-accent' : '',
@@ -23,7 +23,7 @@
 
           selectedOption == i && secondary ? 'bg-light ' : '',
 
-          buttonOptions?.length > 2
+          !!mobileResponsive
             ? 'rounded-lg sm:flex-row sm:rounded-full'
             : 'rounded-full',
         ]"
@@ -44,6 +44,7 @@ export default defineComponent({
     buttonOptions: { type: Array as PropType<any>, default: [] },
     primary: { type: Boolean, default: true },
     secondary: { type: Boolean, default: false },
+    mobileResponsive: { type: Boolean, default: true },
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
