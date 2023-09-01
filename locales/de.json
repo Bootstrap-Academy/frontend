@@ -11,9 +11,12 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "Rank": "Rang",
     "HTML": "HTML",
     "Excel": "Ubertreffen",
     "Python": "Python",
+    "More": "mehr",
+    "NoMoreUser": "Keine Benutzer mehr",
     "PowerPoint": "Steckdose",
     "Quizzes": "Quizzes",
     "ClickForExampleCode": "Klicken Sie auf „Für Beispielcode“.",

@@ -13,7 +13,10 @@
       <SvgLevel7Icon v-else-if="item.rank == 6" />
       <SvgLevel8Icon v-else-if="item.rank == 7" />
       <SvgLevel9Icon v-else />
-      <img :src="item?.img ?? ''" class="h-20 w-20 object-cover rounded-full" />
+      <img
+        :src="item?.user?.avatar_url ?? '/images/user1.jpg'"
+        class="h-20 w-20 object-cover rounded-full"
+      />
       <p
         :class="[
           {
@@ -21,19 +24,26 @@
           },
         ]"
       >
-        {{ item.username }}
+        {{ item?.user?.display_name ?? "" }}
       </p>
     </article>
 
     <article class="flex gap-4 sm:gap-7 items-center">
       <p class="text-sm">
-        <span class="font-medium text-base">{{ t("Headings.XP") }}:</span
-        >{{ item.xp }}
+        <span class="font-medium text-base">{{ t("Headings.Score") }}</span
+        >{{ item.score }}
       </p>
-      <p class="text-sm">
+      <p>
+        <span>{{ t("Headings.Rank") }}:</span>
+        {{ item?.rank }}<span v-if="item?.rank == 1">st </span>
+        <span v-if="item?.rank == 2">nd </span>
+        <span v-if="item?.rank == 3">rd </span>
+        <span v-else>th </span>
+      </p>
+      <!-- <p class="text-sm">
         <span class="font-medium text-base"> {{ t("Headings.Level") }}: </span
         >{{ item.level }}
-      </p>
+      </p> -->
     </article>
   </section>
 </template>

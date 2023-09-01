@@ -19,7 +19,13 @@
               @click="fnDeleteSubtask(subtask?.id)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
-            <PencilIcon
+            <PencilSquareIcon
+              v-if="!!user?.admin"
+              @click="openDialogCreate(subtask)"
+              class="h-5 w-5 cursor-pointer text-accent"
+            />
+            <EyeIcon
+              v-else-if="!user?.admin"
               @click="openDialogCreate(subtask)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
@@ -56,6 +62,8 @@ import {
   TrashIcon,
   LockClosedIcon,
   LockOpenIcon,
+  EyeIcon,
+  PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 import { useDialogCreateSubtask } from "~~/composables/dialogSlot";
 import { deleteSubTaskInQuiz } from "~~/composables/quizzes";
@@ -69,6 +77,7 @@ export default defineComponent({
     const dialog = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
     const propData = ref();
+    const user: any = useUser();
 
     function openDialogCreate(subtask: any) {
       propData.value = subtask;
@@ -118,6 +127,7 @@ export default defineComponent({
       fnDeleteSubtask,
       propData,
       openDialogAndAddNew,
+      user,
     };
   },
 
@@ -126,6 +136,8 @@ export default defineComponent({
     TrashIcon,
     LockClosedIcon,
     LockOpenIcon,
+    EyeIcon,
+    PencilSquareIcon,
   },
 });
 </script>

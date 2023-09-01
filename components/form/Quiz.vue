@@ -10,7 +10,7 @@
         :label="t('Inputs.Question')"
         :placeholder="'Body.QuizDummyQuestion'"
         v-model="form.question.value"
-        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        :class="canEdit ? '' : 'pointer-events-none opacity-60'"
         @valid="form.question.valid = $event"
         :rules="form.question.rules"
       />
@@ -34,14 +34,14 @@
     </div> -->
 
       <Btn
-        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        :class="canEdit ? '' : 'pointer-events-none opacity-60'"
         @click="onclickAddOption"
         class="w-fit self-end"
         >Add Option</Btn
       >
 
       <article
-        :class="canEdit ? '' : 'pointer-events-none opacity-25'"
+        :class="canEdit ? '' : 'pointer-events-none opacity-60'"
         class="flex gap-card items-center"
         v-for="(option, i) of options"
         :key="option?.id ?? i"

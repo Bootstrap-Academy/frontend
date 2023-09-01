@@ -62,7 +62,6 @@ export async function getChallengesCategories() {
 		const challengesCategories = useChallengesCategories();
 		challengesCategories.value = response ?? [];
 
-		console.log('response', response);
 
 		return [response, null];
 	} catch (error: any) {
@@ -92,8 +91,7 @@ export async function getChallengesByCategory(categoryID: string) {
 		const challenges = useChallenges();
 		challenges.value = response ?? [];
 
-		console.log('getChallengesByCategory', response);
-		return [challenges.value, null];
+		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

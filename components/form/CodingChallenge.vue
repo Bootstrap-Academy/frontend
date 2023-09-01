@@ -92,6 +92,9 @@
           :loading="loading"
           class="self-end"
           @click="onclickSubmitForm()"
+          :class="
+            !!propData && !user?.admin ? 'opacity-0 pointer-events-none' : ''
+          "
           mt
         >
           <span v-if="!!propData">
@@ -139,10 +142,10 @@ export default {
     const refForm = ref<HTMLFormElement | null>(null);
     const loading = ref(false);
     const configs: any = useConfigs();
-    const environments: any = useEnvironments();
     const user: any = useUser();
     const evaluatorTemplate = useEvaluatorTemplate();
     const isFirstTime = ref(true);
+    const environments: any = useEnvironments();
     const languages: any = computed(() => {
       const items = [];
       for (const key in environments?.value) {

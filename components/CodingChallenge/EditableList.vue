@@ -19,37 +19,30 @@
               @click="deleteItem(codingChallenge?.id)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
-            <PencilIcon
+            <PencilSquareIcon
+              v-if="!!user?.admin"
+              @click="openDialogCreate(codingChallenge)"
+              class="h-5 w-5 cursor-pointer text-accent"
+            />
+            <EyeIcon
+              v-else-if="!user?.admin"
               @click="openDialogCreate(codingChallenge)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
           </article>
         </article>
 
-        <article
-          class="flex justify-between gap-10 mt-6 items-center flex-wrap"
-        >
-          <section class="flex gap-10">
-            <div class="flex gap-2">
-              <p class="text-sm">{{ $t("Headings.Coins") }} :</p>
-              <p class="text-accent text-sm">{{ codingChallenge?.coins }}</p>
-            </div>
+        <section class="flex gap-10 mt-4">
+          <div class="flex gap-2">
+            <p class="text-sm">{{ $t("Headings.Coins") }} :</p>
+            <p class="text-accent text-sm">{{ codingChallenge?.coins }}</p>
+          </div>
 
-            <div class="flex gap-2">
-              <p class="text-sm">{{ $t("Headings.XP") }} :</p>
-              <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
-            </div>
-            <!-- <div class="flex gap-2">
-              <p class="text-sm">{{ $t("Headings.Fee") }} :</p>
-              <p class="text-accent text-sm">{{ codingChallenge?.fee }}</p>
-            </div> -->
-          </section>
-          <!-- <LockOpenIcon
-            v-if="codingChallenge?.unlocked"
-            class="h-4 w-4 text-white"
-          />
-          <LockClosedIcon v-else class="h-4 w-4 cursor text-white" /> -->
-        </article>
+          <div class="flex gap-2">
+            <p class="text-sm">{{ $t("Headings.XP") }} :</p>
+            <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
+          </div>
+        </section>
       </section>
     </div>
 
@@ -82,6 +75,8 @@ import {
   TrashIcon,
   LockClosedIcon,
   LockOpenIcon,
+  EyeIcon,
+  PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 import { PropType } from "vue";
 import { useDialogSlot } from "../../composables/dialogSlot";
@@ -96,6 +91,7 @@ export default {
 
   setup(props) {
     const { t } = useI18n();
+    const user: any = useUser();
     const dialogSlot = useDialogSlot();
     const dialogCreateCodingChallenge = useDialogCreateCodingChallenge();
     const propData: any = ref();
@@ -149,9 +145,17 @@ export default {
       t,
       propData,
       openDialogAndAddNew,
+      user,
     };
   },
-  components: { PencilIcon, TrashIcon, LockClosedIcon, LockOpenIcon },
+  components: {
+    PencilIcon,
+    TrashIcon,
+    LockClosedIcon,
+    LockOpenIcon,
+    EyeIcon,
+    PencilSquareIcon,
+  },
 };
 </script>
 

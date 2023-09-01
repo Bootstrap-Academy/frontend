@@ -2,26 +2,54 @@
   <div>
     <section v-if="leaderBoardList.length">
       <article
-        class="flex gap-6 flex-col sm:flex-row items-center justify-center my-10 flex-wrap"
+        class="flex gap-6 flex-col sm:flex-row items-center justify-center my-10 pt-10 flex-wrap"
       >
-        <LeaderboardTopUserCard :user="leaderBoardList[1]" />
-        <LeaderboardTopUserCard :user="leaderBoardList[0]" class="sm:-mt-20" />
-        <LeaderboardTopUserCard :user="leaderBoardList[2]" />
+        <LeaderboardTopUserCard
+          :user="leaderBoardList[1]"
+          v-if="!!leaderBoardList[1]"
+        />
+        <LeaderboardTopUserCard
+          :user="leaderBoardList[0]"
+          class="sm:-mt-20"
+          v-if="!!leaderBoardList[0]"
+        />
+        <LeaderboardTopUserCard
+          :user="leaderBoardList[2]"
+          v-if="!!leaderBoardList[2]"
+        />
       </article>
-      <article class="h-[80vh] overflow-y-scroll px-3 sm:px-10">
+      <article class="max-h-[80vh] overflow-y-scroll px-3 sm:px-10">
         <div v-for="(user, i) of leaderBoardList" :key="i">
           <LeaderboardUserCard v-if="user.rank > 3" :item="user" />
         </div>
       </article>
     </section>
-    <section v-else-if="!leaderBoardList.length">
-      <p>{{ t("Headings.EmptyLeaderBoardList") }}</p>
-    </section>
+
+    <div class="flex justify-center mt-6">
+      <InputBtn
+        :loading="btnLoading"
+        @click="loadMore()"
+        :icon="TrophyIcon"
+        iconRight
+        :class="{
+          'pointer-events-none opacity-70':
+            btnLoading || leaderBoardList.length >= totalLeaderboardUsers,
+        }"
+      >
+        <div v-if="leaderBoardList.length < totalLeaderboardUsers">
+          {{ t("Headings.More") }}
+        </div>
+        <div v-else>
+          {{ t("Headings.NoMoreUser") }}
+        </div>
+      </InputBtn>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { PropType } from "nuxt/dist/app/compat/capi";
+import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 export default {
   props: {
@@ -29,7 +57,48 @@ export default {
   },
   setup() {
     const { t } = useI18n();
-    return { t };
+    const limit = useLeaderboardLimit();
+    const offset = useLeaderboardOffset();
+    const btnLoading = ref(false);
+    const route: any = useRoute();
+    const totalLeaderboardUsers = useTotalLeaderboardUsers();
+
+    const selectedButton = computed(() => {
+      return route?.query?.selectedButton ?? "";
+    });
+
+    const selectedLanguage = computed(() => {
+      return route?.query?.selectedLanguage ?? "";
+    });
+
+    const selectedChallengeId = computed(() => {
+      return route?.query?.challengeId ?? "";
+    });
+
+    async function loadMore() {
+      offset.value += limit.value;
+      btnLoading.value = true;
+      if (selectedButton.value == 0) {
+        await getLanguageLeaderboard(selectedLanguage.value, offset.value);
+      } else if (selectedButton.value == 1) {
+        await getCodingChallengeLeaderboard(
+          selectedChallengeId.value,
+          offset.value
+        );
+      } else if (selectedButton.value == 2) {
+        await getOverAllLeaderBoard(offset.value);
+        // await getLanguageLeaderboard();
+      }
+      btnLoading.value = false;
+    }
+    return {
+      t,
+      loadMore,
+      TrophyIcon,
+      btnLoading,
+      offset,
+      totalLeaderboardUsers,
+    };
   },
 };
 </script>

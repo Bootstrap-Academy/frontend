@@ -12,6 +12,9 @@
   },
 
   "Headings": {
+    "More": "More",
+    "NoMoreUser": "No More Users",
+    "Rank": "Rank",
     "HTML": "Html",
     "Excel": "Excel",
     "Python": "Python",

@@ -52,8 +52,12 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
       class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
     />
     <PencilSquareIcon
-      v-else-if="user?.id == data?.creator"
+      v-else-if="user?.id == data?.creator && user.admin"
       class="bg-light rounded-full p-0.5 h-6 w-6 text-accent absolute -right-1 -top-1.5"
+    />
+    <EyeIcon
+      v-else-if="user?.id == data?.creator && !user.admin"
+      class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
     />
     <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
 
@@ -69,7 +73,11 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { CheckIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import {
+  CheckIcon,
+  EyeIcon,
+  PencilSquareIcon,
+} from "@heroicons/vue/24/outline";
 import { LockClosedIcon } from "@heroicons/vue/24/outline";
 export default defineComponent({
   props: {
@@ -112,7 +120,7 @@ export default defineComponent({
     }
     return { t, solveThis, user };
   },
-  components: { CheckIcon, LockClosedIcon, PencilSquareIcon },
+  components: { CheckIcon, LockClosedIcon, PencilSquareIcon, EyeIcon },
 });
 </script>
 

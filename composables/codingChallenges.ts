@@ -54,7 +54,17 @@ export async function getSolution(taskId: string, subTaskId: any) {
 export async function createCodingChallenge(taskId: string, body: any) {
     try {
         const response = await POST(`/challenges/tasks/${taskId}/coding_challenges`, body);
-        await getAllCodingChallengesInATask(taskId)
+
+        const route = useRoute()
+        const containQuizWord = route.fullPath.includes("/quizzes/")
+        const containCreateWord = route.fullPath.includes("/create")
+
+        if (containCreateWord && containQuizWord) {
+            const user: any = useUser()
+            await getAllCodingChallengesInATask(taskId, user?.value.id ?? "")
+        } else {
+            await getAllCodingChallengesInATask(taskId)
+        }
         return [response, null];
 
     } catch (error: any) {
@@ -112,8 +122,16 @@ export async function updateCodingChallenge(taskId: string, subTaskId: any, body
         const response = await PATCH(`/challenges/tasks/${taskId}/coding_challenges/${subTaskId}`,
             body
         );
-        await getAllCodingChallengesInATask(taskId)
-        return [response, null];
+        const route = useRoute()
+        const containQuizWord = route.fullPath.includes("/quizzes/")
+        const containCreateWord = route.fullPath.includes("/create")
+
+        if (containCreateWord && containQuizWord) {
+            const user: any = useUser()
+            await getAllCodingChallengesInATask(taskId, user?.value.id ?? "")
+        } else {
+            await getAllCodingChallengesInATask(taskId)
+        } return [response, null];
 
     } catch (error: any) {
         return [null, error.data];

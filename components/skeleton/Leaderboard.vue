@@ -53,13 +53,13 @@
 
         <section class="flex gap-3 items-center px-7 sm:px-10">
           <div class="flex gap-1 items-center">
-            <p class="text-sm">{{ t("Headings.XP") }}:</p>
+            <p class="text-sm">{{ t("Headings.Score") }}:</p>
             <div class="w-12">
               <SkeletonText class="max-w-[50px] my-2" />
             </div>
           </div>
           <div class="flex gap-1 items-center">
-            <p class="text-sm">{{ t("Headings.Level") }}:</p>
+            <p class="text-sm">{{ t("Headings.Rank") }}:</p>
             <div class="w-12">
               <SkeletonText class="max-w-[50px] my-2" />
             </div>

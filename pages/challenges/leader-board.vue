@@ -20,7 +20,7 @@
 -->
 <template>
   <main
-    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
+    class="grid-auto gap-card container min pb-container pt-container grid-rows-[auto_auto_1fr]"
   >
     <InputButtonToggle
       :buttonOptions="buttonOptions"
@@ -28,25 +28,22 @@
     />
     <p class="text-heading-1 mt-6 mb-12">{{ t("Headings.LeaderBoard") }}:</p>
 
-    <SkeletonLeaderboard v-if="loading && selectedbutton != 2" />
-    <SkeletonLeaderBoardChallenges v-else-if="loading && selectedbutton == 2" />
+    <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />
 
-    <LeaderboardSeasonal
+    <!-- <LeaderboardSeasonal
+      :leaderBoardList="leaderBoardList"
+      v-if="selectedbutton == 0 && !loading"
+    /> -->
+
+    <LeaderboardLanguageBased
       :leaderBoardList="leaderBoardList"
       v-if="selectedbutton == 0 && !loading"
     />
-    <LeaderboardLanguageBased
+    <LeaderboardChallengeBased
       :leaderBoardList="leaderBoardList"
       v-else-if="selectedbutton == 1 && !loading"
     />
-    <LeaderboardChallengeBased
-      :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 2 && !loading"
-    />
-    <LeaderboardOverall
-      :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 3 && !loading"
-    />
+    <LeaderboardOverall v-else-if="selectedbutton == 2 && !loading" />
   </main>
 </template>
 
@@ -67,8 +64,10 @@ export default {
     const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
     const selectedbutton = ref(0);
+    const router = useRouter();
+    const route = useRoute();
     let buttonOptions: any = [
-      { name: "Buttons.SeasonalBased" },
+      // { name: "Buttons.SeasonalBased" },
       { name: "Buttons.LanguageBased" },
       { name: "Buttons.ChallengeBased" },
       { name: "Buttons.Overall" },
@@ -77,12 +76,16 @@ export default {
     watch(
       () => selectedbutton.value,
       (newValue, oldValue) => {
-        loading.value = true;
-        setTimeout(() => {
-          loading.value = false;
-        }, 3000);
-      }
+        router.replace({
+          path: route.path,
+          query: {
+            selectedButton: selectedbutton.value,
+          },
+        });
+      },
+      { immediate: true }
     );
+
     return { buttonOptions, selectedbutton, t, leaderBoardList, loading };
   },
 };

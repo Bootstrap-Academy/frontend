@@ -60,18 +60,6 @@ export default defineComponent({
           border: "border-[#eb585720]",
           text: "text-error",
         },
-        {
-          label: "Headings.Locked",
-          value: props.data?.locked ?? 0,
-          border: "border-[#177ddc20]",
-          text: "text-info",
-        },
-        {
-          label: "Headings.Unlocked",
-          value: props.data?.unlocked ?? 0,
-          border: "border-[#177ddc20]",
-          text: "text-info",
-        },
       ];
     });
 
