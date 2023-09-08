@@ -1,7 +1,7 @@
 <template>
   <section>
     <div
-      class="flex gap-6 flex-col sm:flex-row items-center justify-center my-10 flex-wrap"
+      class="flex gap-6 flex-col sm:flex-row items-center justify-center m-10 mt-20 flex-wrap"
     >
       <section
         :class="[{ 'sm:-mt-10': i == 2 }]"
@@ -18,7 +18,7 @@
         </div>
 
         <div class="flex gap-1 items-center">
-          <p class="text-sm">{{ t("Headings.XP") }}:</p>
+          <p class="text-sm">{{ t("Headings.Score") }}:</p>
           <div class="w-12">
             <SkeletonText class="max-w-[50px] my-2" />
           </div>

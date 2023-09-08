@@ -167,9 +167,12 @@ const onResponseError = async ({ request, options, response }) => {
     return (response._data.detail = "Error.NotEnoughCoins");
   } else if (details.includes("cannot start in the past")) {
     return (response._data.detail = "Error.CannotStartInPast");
+  } else if (details.includes("email not verified")) {
+    // return openSnackbar("error", "Error.AccountNotVerified");
+    return (response._data.detail = "Error.AccountNotVerified");
   }
 
-  console.log("before details error", details);
+  // console.log("before details error", details);
 
   details = response?._data.error;
   console.log("details error", details);
@@ -194,6 +197,10 @@ const onResponseError = async ({ request, options, response }) => {
     response._data.detail = "Error.NotEnoughCoins";
   } else if (details.toLocaleLowerCase().includes("banned")) {
     response._data.detail = "Error.UserIsBanned";
+  } else if (details.toLocaleLowerCase().includes("unverified")) {
+    // response._data.detail = "Error.UserIsBanned";
+    // openSnackbar("error", "Error.AccountNotVerified");
+    return (response._data.detail = "Error.AccountNotVerified");
   }
 };
 

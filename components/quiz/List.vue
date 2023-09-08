@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full">
+  <div class="w-full px-1">
     <QuizCard v-for="(task, i) of tasks" :key="i" :data="task" class="my-3" />
   </div>
 </template>

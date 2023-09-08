@@ -4,11 +4,25 @@
       class="h-full overflow-hidden container pt-card pb-card mt-card-sm grid md:grid-cols-[400px_minmax(0,1fr)] gap-y-card gap-x-container items-start"
     >
       <div class="">
-        <SectionTitle
-          subheading="Web Development / Angular Skill"
-          heading="Quizzes"
-          class="mb-2"
-        />
+        <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary mb-8 style-box">
+          <template v-for="(path, i) of breadcrumbs" :key="i">
+            <NuxtLink
+              v-if="path.to"
+              :to="path.to"
+              class="inline-block text-body-2"
+            >
+              {{ t(path.label) }}
+            </NuxtLink>
+            <h1 v-else class="text-heading-2 capitalize inline-block">
+              {{ t(path.label) }}
+            </h1>
+
+            <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
+              /
+            </span>
+          </template>
+        </div>
+
         <InputButtonToggle
           :mobileResponsive="false"
           v-model="selectedOption"
@@ -28,9 +42,7 @@
 
       <aside class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4">
         <template v-if="loading">
-          <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
-          <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
-          <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
+          <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />
         </template>
 
         <template v-else-if="quizzesToShow && quizzesToShow.length">
@@ -125,6 +137,7 @@ export default defineComponent({
         }
       });
     }
+
     function setRatedLocally(id: any) {
       arrayOfSubtasks.value.forEach((element: any, i: any) => {
         if (element.id == id) {
@@ -132,6 +145,38 @@ export default defineComponent({
         }
       });
     }
+
+    const rootSkillID = computed(() => {
+      return route?.query?.rootSkillID ?? "";
+    });
+
+    const subSkillID = computed(() => {
+      return route?.query?.subSkillID ?? "";
+    });
+
+    const breadcrumbs = computed(() => {
+      if (quizzesFrom.value == "course") {
+        let skillId = route.query?.skillID ?? "";
+        let subSkill = route.query?.subSkillID ?? "";
+        return [
+          {
+            label: id.value,
+            to: `/courses/${id.value}?skillID=${skillId}&subSkillID=${subSkill}`,
+          },
+          { label: "Headings.Quizzes" },
+        ];
+      } else if (quizzesFrom.value == "skill") {
+        console.log("bradl crum quizzs from skill");
+        return [
+          {
+            label: subSkillID.value,
+            to: `/skill-tree/${rootSkillID.value}/${subSkillID.value}`,
+          },
+          { label: "Headings.Quizzes" },
+        ];
+      } else if (quizzesFrom.value == "quiz") {
+      } else return [{ label: "Quizzes" }];
+    });
 
     function nextQuestion(id: any) {
       console.log("next");
@@ -189,7 +234,6 @@ export default defineComponent({
       }
 
       if (quizzesFrom.value == "course") {
-        console.log("incurse from");
         await getQuizzesInCourse(id.value);
       } else if (quizzesFrom.value == "skill") {
         await getQuizzesInSkill(id.value);
@@ -235,7 +279,6 @@ export default defineComponent({
           arrayOfSubtasks.value.forEach((element: any) => {
             if (!element.solved && element.creator != user.value?.id) {
               quizzesToShow.value.push(element);
-              console.log("pushing");
             }
           });
         }
@@ -263,6 +306,7 @@ export default defineComponent({
       nextQuestion,
       selectedOption,
       quizzesToShow,
+      breadcrumbs,
     };
   },
 });

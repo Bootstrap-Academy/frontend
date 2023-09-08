@@ -65,6 +65,10 @@ export async function getChallengesCategories() {
 
 		return [response, null];
 	} catch (error: any) {
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			return openSnackbar("error", "Error.VerifyToGetChallenges")
+		}
 		return [null, error.data];
 	}
 }
@@ -93,7 +97,11 @@ export async function getChallengesByCategory(categoryID: string) {
 
 		return [response, null];
 	} catch (error: any) {
-		return [null, error.data];
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			openSnackbar("error", "Error.VerifyToGetChallenges")
+			return [null, error.data]
+		} return [null, error.data];
 	}
 }
 
@@ -165,9 +173,7 @@ export async function createChallenge(categoryID: string, body: any) {
 
 export async function getStatsCategoryWiseForCodingChallenges(categoryId: any) {
 	try {
-		console.log("statsCategoryWiseForCodingChallenges")
 		const res = await GET(`/challenges/categories/${categoryId}/stats?category_id=${categoryId}`)
-		console.log("response of stats", res)
 		// const categoryStats = useCategoryStats()
 		// categoryStats.value = res
 		return [res, null]

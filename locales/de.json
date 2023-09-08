@@ -11,10 +11,13 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "NoQuizFoundForYouToSolve": "Es wurde kein Quiz zum Lösen gefunden",
     "Rank": "Rang",
     "HTML": "HTML",
     "Excel": "Ubertreffen",
     "Python": "Python",
+    "PremiumEndsIn": "Ihr Premium-Abonnement endet",
+    "ButAdditionalSubscription": "Wenn Sie ein zusätzliches Abonnement kaufen, wird die Laufzeit Ihres vorherigen Abonnements hinzugefügt",
     "More": "mehr",
     "NoMoreUser": "Keine Benutzer mehr",
     "PowerPoint": "Steckdose",
@@ -647,6 +650,7 @@
     "RegistrationCode": "Registrierungscode"
   },
   "Buttons": {
+    "ManagePremium": "Prämie verwalten",
     "Challenge": "Challenge",
     "Edit": "bearbeiten",
     "UnSolved": "Ungelöst",
@@ -896,6 +900,9 @@
     "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
   },
   "Error": {
+    "VerifyToGetQuizzes": "Bestätigen Sie Ihre E-Mail-Adresse, um Quizfragen zu erhalten",
+    "VerifyToGetChallenges": "Bestätigen Sie Ihre E-Mail-Adresse, um Herausforderungen zu erhalten",
+    "VerifyToGetLeaderboard": "Bestätigen Sie Ihre E-Mail-Adresse, um auf die Bestenliste zuzugreifen",
     "AlreadyHaveHearts": "Sie haben bereits die maximale Anzahl an Herzen 💚",
     "Need50CoinsForRefill": "Sie benötigen 50 Morphcoins, um Ihr Herz wieder aufzufüllen",
     "Need45CoinsForRefill": "Sie benötigen 45 Morphcoins, um Ihr Herz wieder aufzufüllen",

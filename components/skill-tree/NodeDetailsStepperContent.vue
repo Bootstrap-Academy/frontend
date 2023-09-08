@@ -99,8 +99,12 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     function saveLastVisitedCourse(courseId: any) {
-      const lastViewCourse = useCookie("lastViewCourse");
-      lastViewCourse.value = courseId;
+      const lastViewCourse: any = useCookie("lastViewCourse");
+      lastViewCourse.value = {
+        courseId: courseId,
+        skillID: props.skillID,
+        subSkillID: props.subSkillID,
+      };
     }
 
     return { t, saveLastVisitedCourse };

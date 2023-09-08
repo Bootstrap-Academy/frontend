@@ -262,6 +262,10 @@ export async function getLanguageLeaderboard(language: string, offset: any) {
         languageLeaderboardList.value = arr
         return [response, null];
     } catch (error: any) {
+        let msg = error?.data?.error
+        if (msg == "unverified") {
+            return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+        }
         console.log("error in languageLeaderboard", error);
         return [null, error];
     }
@@ -285,6 +289,10 @@ export async function getCodingChallengeLeaderboard(codingChallengeId: string, o
         codingChallengeLeaderboardList.value = arr
         return [response, null];
     } catch (error: any) {
+        let msg = error?.data?.error
+        if (msg == "unverified") {
+            return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+        }
         console.log("error in languageLeaderboard", error);
         return [null, error];
     }
@@ -304,6 +312,10 @@ export async function getOverAllLeaderBoard(offset: any) {
         overAllLeaderboardList.value = arr;
         return [response, null];
     } catch (error: any) {
+        let msg = error?.data?.error
+        if (msg == "unverified") {
+            return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+        }
         console.log("error in languageLeaderboard", error);
         return [null, error];
     }

@@ -12,6 +12,9 @@
   },
 
   "Headings": {
+    "NoQuizFoundForYouToSolve": "No Quiz Found For You To Solve",
+    "ButAdditionalSubscription": "Buying an additional subscription will be added with your previous subscription duration",
+    "PremiumEndsIn": "Your premium subscription ends",
     "More": "More",
     "NoMoreUser": "No More Users",
     "Rank": "Rank",
@@ -643,6 +646,7 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "ManagePremium": "Manage Premium",
     "Challenge": "Challenge",
     "Edit": "Edit",
     "UnSolved": "UnSolved",
@@ -893,6 +897,9 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "VerifyToGetQuizzes": "Verify your email to get quizzes",
+    "VerifyToGetChallenges": "Verify your email to get Challenges",
+    "VerifyToGetLeaderboard": "Verify your email to access leaderboard",
     "AlreadyHaveHearts": "You have already Max number of hearts 💚",
     "Need50CoinsForRefill": "You need 50 morphcoins to refill your heart",
     "Need45CoinsForRefill": "You need 45 morphcoins to refill your heart",

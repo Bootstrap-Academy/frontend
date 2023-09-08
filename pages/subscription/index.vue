@@ -1,9 +1,9 @@
 <template>
   <div class="sm:container-fluid px-4">
-    <section class="flex flex-col items-center mt-10 gap-10">
+    <section v-if="!isPremium" class="flex flex-col items-center mt-10 gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
-        {{ premiumStatusAutoPay }}
+        <!-- {{ premiumStatusAutoPay }} -->
       </h2>
       <div class="max-w-xs">
         <InputBtn
@@ -16,24 +16,26 @@
         >
       </div>
     </section>
-    <hr class="my-10" />
+    <hr v-if="!isPremium" class="mt-10" />
 
-    <section class="rounded-md mb-20">
+    <SubscriptionPremiumUntillCountDown v-if="!!isPremium" class="mt-20" />
+
+    <section class="rounded-md mb-20 mt-10">
       <div class="mx-auto max-w-2xl sm:text-center">
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
           {{ t("Headings.NoTrickPricing") }}
         </h2>
-        <p class="mt-6 text-lg leading-8 text-gray">
+        <p class="mt-2 text-lg leading-8 text-gray">
           {{ t("Body.PremiumCardMain") }}
         </p>
       </div>
 
-      <div class="flex flex-end gap-2 justify-center items-center mb-3 mt-10">
+      <div class="flex flex-end gap-2 justify-center items-center mb-3 mt-16">
         <InputButtonToggle
           :mobileResponsive="false"
           :buttonOptions="buttonOptions"
           v-model="selectedButton"
-          class="mb-5"
+          class="mb-3"
         />
       </div>
 
@@ -42,9 +44,14 @@
         <InputSwitch v-model="autopay" />
       </div>
 
+      <p class="text-accent mt-3 text-center" v-if="isPremium">
+        {{ t("Headings.ButAdditionalSubscription") }}
+      </p>
       <SubscriptionCard :card="cards[currentCard]" class="px-2 mt-5 mb-5" />
+
       <div class="mt-10" v-if="!!isPremium">
         <p>{{ t("Body.ChangeAutoPaySubscription") }}</p>
+
         <InputButtonToggle
           :mobileResponsive="false"
           secondary
@@ -267,7 +274,7 @@ export default {
       if (hearts.value >= 6) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       } else if (coins.value < 50) {
-        openSnackbar("error", "Error.Need50CoinsForRefill");
+        return openSnackbar("error", "Error.Need50CoinsForRefill");
       }
       return openDialog(
         "info",

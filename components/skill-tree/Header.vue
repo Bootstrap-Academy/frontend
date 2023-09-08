@@ -20,7 +20,7 @@
 
     <NuxtLink
       v-if="quizzesQuickStart && lastViewCourse"
-      :to="`/quizzes/solve-${lastViewCourse}?quizzesFrom=course`"
+      :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&skillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
     >
       <Btn>View Quizzes for Last View Course</Btn>
     </NuxtLink>
@@ -46,7 +46,7 @@ export default defineComponent({
   emits: ["zoomLevel"],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const lastViewCourse = useCookie("lastViewCourse");
+    const lastViewCourse: any = useCookie("lastViewCourse");
 
     return { emit, t, lastViewCourse };
   },

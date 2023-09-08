@@ -89,6 +89,14 @@ export default defineComponent({
     const router = useRouter();
     const user: any = useUser();
 
+    const rootSkillID = computed(() => {
+      return <string>(route?.params?.id ?? "");
+    });
+
+    const subSkillID = computed(() => {
+      return <string>(route?.params?.skill ?? "");
+    });
+
     function solveThis(id: any) {
       gotoPage();
     }
@@ -99,7 +107,9 @@ export default defineComponent({
         router.push(
           `/quizzes/solve-${id}?quizzesFrom=${"skill"}&querySubTaskId=${
             props.data?.id
-          }&taskId=${props.data?.task_id}`
+          }&taskId=${props.data?.task_id}&rootSkillID=${
+            rootSkillID.value
+          }&subSkillID=${subSkillID.value}`
         );
       } else if (route.fullPath.includes("/watch?")) {
         router.push(
@@ -111,10 +121,14 @@ export default defineComponent({
         );
       } else if (route.fullPath.includes("/courses/")) {
         const id = route.params.id;
+        let skillId = route.query?.skillID ?? "";
+        let subSkillID = route.query?.subSkillID ?? "";
         router.push(
           `/quizzes/solve-${id}?quizzesFrom=${"course"}&querySubTaskId=${
             props.data?.id
-          }&taskId=${props.data?.task_id}`
+          }&taskId=${
+            props.data?.task_id
+          }&skillID=${skillId}&subSkillID=${subSkillID}`
         );
       }
     }

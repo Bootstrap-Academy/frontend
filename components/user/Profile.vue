@@ -28,16 +28,11 @@
       <Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
     </article>
 
-    <!-- <article class="mt-card">
-      <p class="mb-2">{{ t("Inputs.ShowFreeQuizzesOnly") }}</p>
-      <InputSwitch
-        label="Inputs.ShowFreeQuizzesOnly"
-        v-model="showFreeQuizzesOnly"
-      />
-    </article> -->
-    <InputBtn class="mt-4" @click="navigateTo('/subscription')">{{
-      t("Buttons.BuySubscription")
-    }}</InputBtn>
+    <InputBtn class="mt-4" @click="navigateTo('/subscription')">
+      {{
+        !isPremium ? t("Buttons.BuySubscription") : t("Buttons.ManagePremium")
+      }}
+    </InputBtn>
   </section>
 </template>
 
@@ -92,6 +87,15 @@ export default {
       return props.data?.tags ?? ["	Web Developer", "	UI UX", "Computer"];
     });
 
+    const premiumInfo: any = usePremiumInfo();
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium;
+    });
+
+    onMounted(async () => {
+      await getPremiumStatus();
+    });
+
     const showFreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
     return {
       image,
@@ -103,6 +107,7 @@ export default {
       tags,
       t,
       showFreeQuizzesOnly,
+      isPremium,
     };
   },
 };

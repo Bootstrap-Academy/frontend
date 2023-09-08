@@ -19,52 +19,57 @@
 ✅ Api implemented
 -->
 <template>
-  <main
-    class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
-  >
-    <Head>
-      <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
-    </Head>
-
-    <header class="w-fit flex items-items gap-card">
-      <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
-        {{ t("Headings.Active") }}
-      </p>
-    </header>
-
-    <div class="bg-secondary style-box w-fit h-fit">
-      <ChallengesItemProgress
-        :data="challenge"
-        class="!w-fit justify-self-end"
-      />
-    </div>
-
-    <aside
-      class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
+  <div>
+    <section v-if="hearts == 0" class="flex justify-end px-8 pt-3">
+      <UserRefillHeartBtn />
+      <UserCoins />
+    </section>
+    <main
+      class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
     >
-      <ChallengesItemSubmission
-        :data="challenge"
-        @id="watchSubmissionEmition($event)"
-      />
-      <ChallengesItemDescription :data="codingChallenge" />
-      <ChallengesItemLimits :data="codingChallenge" />
-      <ChallengesItemExamples
-        :code="code"
-        :environment="environment"
-        :examples="examples"
+      <Head>
+        <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
+      </Head>
+
+      <header class="w-fit flex items-items gap-card">
+        <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
+          {{ t("Headings.Active") }}
+        </p>
+      </header>
+
+      <div class="bg-secondary style-box w-fit h-fit">
+        <ChallengesItemProgress
+          :data="challenge"
+          class="!w-fit justify-self-end"
+        />
+      </div>
+
+      <aside
+        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
+      >
+        <ChallengesItemSubmission
+          :data="challenge"
+          @id="watchSubmissionEmition($event)"
+        />
+        <ChallengesItemDescription :data="codingChallenge" />
+        <ChallengesItemLimits :data="codingChallenge" />
+        <ChallengesItemExamples
+          :code="code"
+          :environment="environment"
+          :examples="examples"
+          :challengeId="challengeID"
+          :codingChallengeId="codingChallengeId"
+        />
+      </aside>
+
+      <ChallengesCodeEditor
         :challengeId="challengeID"
         :codingChallengeId="codingChallengeId"
+        :showButtons="true"
+        @environment="environment = $event"
+        v-model="code"
       />
-    </aside>
-
-    <ChallengesCodeEditor
-      :challengeId="challengeID"
-      :codingChallengeId="codingChallengeId"
-      :showButtons="true"
-      @environment="environment = $event"
-      v-model="code"
-    />
-    <!-- <DialogSlot
+      <!-- <DialogSlot
       v-if="dialogCodingChallengeFeedback"
       :label="'Headings.Feedback'"
       :propClass="'modal-width-lg lg:modal-width-sm'"
@@ -77,7 +82,8 @@
         :isSolved="isSolved"
       />
     </DialogSlot> -->
-  </main>
+    </main>
+  </div>
 </template>
 
 <script lang="ts">
@@ -125,6 +131,11 @@ export default {
       return route.query?.codingChallenge ?? "";
     });
 
+    const heartInfo: any = useHeartInfo();
+    const hearts = computed(() => {
+      return heartInfo.value?.hearts ?? 0;
+    });
+
     async function watchSubmissionEmition(id: any) {
       const [success, error] = await getSubmission(
         challengeID.value,
@@ -151,6 +162,7 @@ export default {
 
     onMounted(async () => {
       await Promise.all([
+        getHearts(),
         getSubmissions(challengeID.value, codingChallengeId.value),
         getCodingChallenge(challengeID.value, codingChallengeId.value),
         getExamples(challengeID.value, codingChallengeId.value),
@@ -170,6 +182,7 @@ export default {
       codingChallengeId,
       watchSubmissionEmition,
       challengeID,
+      hearts,
       codingChallenge,
       examples,
       // isSolved,

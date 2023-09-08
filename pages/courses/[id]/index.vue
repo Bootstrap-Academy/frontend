@@ -33,6 +33,7 @@
     <CourseHeader :data="course" />
 
     <CourseDetails :data="course" />
+
     <CourseOverview
       :skillID="skillID"
       :subSkillID="subSkillID"
@@ -134,7 +135,6 @@ export default {
           id.value
         );
         if (quizzesError) {
-          console.log("error quiz in", quizzesError);
           openSnackbar("error", "quizzesError");
         }
       }

@@ -191,6 +191,11 @@ export async function getQuizzesInSkill(skillId: any) {
 		return [res, null]
 	}
 	catch (error: any) {
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			openSnackbar("error", "Error.VerifyToGetQuizzes")
+			return [null, error]
+		}
 		return [null, error]
 	}
 }
@@ -210,6 +215,12 @@ export async function getQuizzesInCourse(courseId: any, section_id: any = "", le
 		}
 	}
 	catch (error: any) {
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			openSnackbar("error", "Error.VerifyToGetQuizzes")
+			return [null, error]
+		}
+
 		return [null, error]
 	}
 }
@@ -240,6 +251,7 @@ export async function createQuiz(courseId: any, body: any) {
 		return [res, null]
 	}
 	catch (error: any) {
+		console.log("errorrrrrrrrrrrrr", error)
 		return [null, error]
 	}
 }

@@ -55,16 +55,14 @@
           />
           <section
             v-else-if="selectedButton == 1"
-            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll p-6"
+            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll sm:p-6"
           >
             <p class="w-full text-xl text-center" v-if="!subtasks.length">
               {{ t("Headings.EmptySubtasks") }}
             </p>
-            <QuizCard
-              v-for="(task, i) of subtasks"
-              :key="i"
-              :data="task"
-              class="my-3"
+            <CourseSolveMcqInsideLectureView
+              v-else-if="subtasks.length"
+              :quizzesToShow="subtasks"
             />
           </section>
 
@@ -244,6 +242,7 @@ export default {
 
         if (!!success[0]) {
           taskId.value = success[0]?.id;
+          subtasks.value = [];
           fnGetSubtasksInQuiz(success[0]?.id);
           fnGetCodingChallengeInQuiz(success[0]?.id);
         } else {

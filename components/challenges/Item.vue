@@ -1,5 +1,9 @@
 <template>
-  <section class="box px-4 xl:px-5 style-box bg-secondary">
+  <section
+    :id="activeChallenge == data.id ? activeChallenge : 'none'"
+    ref="item"
+    class="box px-4 xl:px-5 style-box bg-secondary"
+  >
     <header
       class="grid gap-card grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
       @click="toggleShowChallengeContent"
@@ -66,6 +70,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const propId: any = ref("");
+    const item = ref();
 
     const router = useRouter();
     const route = useRoute();
@@ -105,12 +110,20 @@ export default defineComponent({
             },
       });
     }
+
     watch(
       () => activeChallenge.value,
       () => {
         propId.value = "";
+
+        const eleme = document.getElementById(activeChallenge.value);
+        console.log("elelele", eleme);
+        console.log("tiem.value", item.value?.id);
+        eleme?.scrollIntoView({
+          behavior: "smooth",
+        });
       },
-      { deep: true }
+      { deep: true, immediate: true }
     );
 
     return {
@@ -126,6 +139,7 @@ export default defineComponent({
       propId,
       challenge,
       activeChallenge,
+      item,
     };
   },
 });

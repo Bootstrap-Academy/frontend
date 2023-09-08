@@ -92,9 +92,9 @@ export default defineComponent({
       const [success, error] = await getChallengesByCategory(
         props.data?.id ?? ""
       );
+      console.log("error", error);
       const [statsSuccess, statsError] =
         await getStatsCategoryWiseForCodingChallenges(props.data?.id ?? "");
-      console.log("heheheheheh", statsSuccess);
       loading.value = false;
       Object.assign(challenges, success ? success : []);
       categoryStats.value = statsSuccess ? statsSuccess : null;
