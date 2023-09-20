@@ -1,47 +1,6 @@
 <template>
-  <header class="flex gap-card justify-between flex-wrap md:flex-nowrap">
-    <div class="flex flex-wrap">
-      <NuxtLink :to="path">{{ course?.title ?? "" }} /</NuxtLink>
-
-      <h1 class="text-heading-2 capitalize mr-6">
-        {{ activeLecture?.title ?? "" }}
-      </h1>
-    </div>
-
-    <div class="flex gap-box flex-wrap h-fit flex-shrink-0 mt-0.5">
-      <template
-        v-if="
-          activeLecture.completed ||
-          listOfCompletedCourses.find((lec) => lec == activeLecture.id)
-        "
-      >
-        <Chip :icon="CheckIcon" color="bg-info">
-          {{ t("Headings.Completed") }}
-        </Chip>
-        <NuxtLink
-          v-if="user?.admin || canCreate"
-          :to="`/quizzes/${'web_developer'}/${'angular'}/create?course=${courseID}&section=${activeSectionID}&lecture=${activeLectureID}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel}`"
-        >
-          <Btn sm>{{ t("Buttons.AddTask") }}</Btn>
-        </NuxtLink>
-      </template>
-      <Btn
-        sm
-        v-else-if="!activeLecture.completed"
-        secondary
-        @click="markLectureAsComplete()"
-      >
-        {{ t("Buttons.MarkCompleted") }}
-      </Btn>
-    </div>
-
-    <article class="flex midXl:hidden gap-card items-center h-fit">
-      <div
-        class="block midXl:hidden bg-tertiary py-1 px-2 rounded-lg h-fit w-fit cursor-pointer"
-        @click="emit('update:modelValue', !modelValue)"
-      >
-        <p class="text-accent text-body-2 justify-self-end">Content</p>
-      </div>
+  <section>
+    <article class="flex midXl:hidden gap-card items-center">
       <div class="flex gap-2">
         <ArrowLeftCircleIcon
           @click="goToPrevLecture"
@@ -54,7 +13,7 @@
       </div>
     </article>
     <!-- pr-[70px] -->
-    <article class="hidden midXl:flex gap-box items-center h-fit w-fit">
+    <article class="hidden midXl:flex gap-box items-center">
       <Btn sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
         {{ t("Buttons.Prev") }}
       </Btn>
@@ -62,231 +21,141 @@
         {{ t("Buttons.Next") }}
       </Btn>
     </article>
-  </header>
+  </section>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { defineComponent, PropType, Ref } from "vue";
+import { PropType, Ref } from "vue";
 import {
-  CheckIcon,
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
 } from "@heroicons/vue/24/solid";
 
-export default defineComponent({
-  components: {
-    CheckIcon,
-    ArrowLeftCircleIcon,
-    ArrowRightCircleIcon,
-    ArrowLeftIcon,
-    ArrowRightIcon,
-  },
-  props: {
-    course: { type: Object as PropType<any>, default: null },
-    activeSection: { type: Object as PropType<any>, default: null },
-    activeLecture: { type: Object as PropType<any>, default: null },
-    modelValue: { type: Boolean, default: true },
-    skillID: { type: String, default: null },
-    subSkillID: { type: String, default: null },
-  },
-  emits: ["update:modelValue"],
-  setup(props, { emit }) {
-    const user: any = useUser();
-    const { t } = useI18n();
-    const showConfetti = useShowConfetti();
-    const router = useRouter();
-    const route = useRoute();
-    const xp: any = useXP();
-    const listOfCompletedCourses = useListOfCompletedCourses();
-    const totalLevel = ref(0);
-    const courseID: any = computed(() => {
-      return props.course?.id ?? "";
+const props = defineProps({
+  course: { type: Object as PropType<any>, default: null },
+  activeLecture: { type: Object as PropType<any>, default: null },
+  skillID: { type: String, default: null },
+  subSkillID: { type: String, default: null },
+});
+const { t } = useI18n();
+const router = useRouter();
+const route = useRoute();
+
+const activeLectureID = computed(() => {
+  return props.activeLecture?.id ?? "";
+});
+
+const lectures: Ref<any[]> = computed(() => {
+  const sections: any[] = props.course?.sections ?? [];
+  if (!!!sections || sections.length <= 0) return [];
+
+  let arr: any = [];
+
+  sections.forEach((section) => {
+    let lectures: any[] = section?.lectures ?? [];
+
+    // mapping section id in each lecture
+    lectures = lectures.map((lec) => {
+      return { ...lec, sectionID: section.id };
     });
 
-    const canCreate: any = computed(() => {
-      let eligible = false;
-      xp?.value?.skills.forEach((skill: any) => {
-        if (props.skillID == skill.skill) {
-          skill.skills.forEach((subSkill: any) => {
-            if (props.subSkillID == subSkill.skill && subSkill.level >= 5) {
-              eligible = true;
-            }
-            if (props.subSkillID == subSkill.skill && subSkill.level >= 20) {
-              totalLevel.value = subSkill.level;
-            }
-          });
-        }
-      });
-      return eligible;
-    });
+    arr = [...arr, ...lectures];
+  });
 
-    const activeSectionID = computed(() => {
-      return props.activeSection?.id ?? "";
-    });
+  return arr;
+});
 
-    const activeLectureID = computed(() => {
-      return props.activeLecture?.id ?? "";
-    });
+async function goToPrevLecture() {
+  if (lectures.value.length <= 0) return;
 
-    const lectures: Ref<any[]> = computed(() => {
-      const sections: any[] = props.course?.sections ?? [];
-      if (!!!sections || sections.length <= 0) return [];
+  let indexOfCurrentLecture = lectures.value.findIndex(
+    (lec) => lec.id == activeLectureID.value
+  );
 
-      let arr: any = [];
+  // current lecture is first lecture
+  if (indexOfCurrentLecture <= 0) {
+    openSnackbar("warning", "Body.ThisIsFirstLecture");
+    return;
+  }
+  // current lecture was not found
+  else if (indexOfCurrentLecture < 0) {
+    // handle error
+    return;
+  }
 
-      sections.forEach((section) => {
-        let lectures: any[] = section?.lectures ?? [];
+  // current lecture is somewhere in middle
+  let preLecture = lectures.value[indexOfCurrentLecture - 1];
+  if (!!!preLecture || !!!preLecture.id || !!!preLecture.sectionID) {
+    // handle error
+    return;
+  }
 
-        // mapping section id in each lecture
-        lectures = lectures.map((lec) => {
-          return { ...lec, sectionID: section.id };
-        });
+  router.replace({
+    path: route.path,
+    query: {
+      section: preLecture.sectionID ?? "",
+      lecture: preLecture.id ?? "",
+      skillID: props?.skillID ?? "",
+      subSkillID: props?.subSkillID ?? "",
+    },
+  });
+}
 
-        arr = [...arr, ...lectures];
-      });
+async function goToNextLecture() {
+  if (lectures.value.length <= 0) return;
 
-      return arr;
-    });
+  let indexOfCurrentLecture = lectures.value.findIndex(
+    (lec) => lec.id == activeLectureID.value
+  );
 
-    const path: any = computed(() => {
-      if (!!!courseID.value) {
-        return "/profile/courses";
-      } else if (!!!activeSectionID.value || !!!activeLectureID.value) {
-        return `/courses/${courseID.value}?skillID=${props.skillID}&subSkillID=${props.subSkillID}`;
-      } else {
-        return `/courses/${courseID.value}?section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${props.skillID}&subSkillID=${props.subSkillID}`;
-      }
-    });
-
-    async function markLectureAsComplete() {
-      setLoading(true);
-      const [success, error] = await completeLecture(
-        courseID.value,
-        activeLectureID.value
-      );
-      setLoading(false);
-
-      if (success) {
-        const hideAnimation: any = useCookie("hideAnimationNextTime");
-        console.log("hide animation cookie", hideAnimation.value);
-        if (hideAnimation.value === undefined || hideAnimation.value == false)
-          showConfetti.value = true;
-        listOfCompletedCourses.value.push(activeLectureID.value);
-      }
-    }
-
-    async function goToPrevLecture() {
-      if (lectures.value.length <= 0) return;
-
-      let indexOfCurrentLecture = lectures.value.findIndex(
-        (lec) => lec.id == activeLectureID.value
-      );
-
-      // current lecture is first lecture
-      if (indexOfCurrentLecture <= 0) {
-        openSnackbar("warning", "Body.ThisIsFirstLecture");
-        return;
-      }
-      // current lecture was not found
-      else if (indexOfCurrentLecture < 0) {
-        // handle error
-        return;
-      }
-
-      // current lecture is somewhere in middle
-      let preLecture = lectures.value[indexOfCurrentLecture - 1];
-      if (!!!preLecture || !!!preLecture.id || !!!preLecture.sectionID) {
-        // handle error
-        return;
-      }
-
-      router.replace({
-        path: route.path,
-        query: {
-          section: preLecture.sectionID ?? "",
-          lecture: preLecture.id ?? "",
-          skillID: props?.skillID ?? "",
-          subSkillID: props?.subSkillID ?? "",
+  // current lecture is last lecture
+  if (indexOfCurrentLecture >= lectures.value.length - 1) {
+    openDialog(
+      "success",
+      "Headings.CourseCompleted",
+      "Body.CourseCompleted",
+      false,
+      {
+        label: "Buttons.ViewMoreCourses",
+        onclick: () => {
+          router.push(`/profile/courses`);
         },
-      });
-    }
-
-    async function goToNextLecture() {
-      if (lectures.value.length <= 0) return;
-
-      let indexOfCurrentLecture = lectures.value.findIndex(
-        (lec) => lec.id == activeLectureID.value
-      );
-
-      // current lecture is last lecture
-      if (indexOfCurrentLecture >= lectures.value.length - 1) {
-        openDialog(
-          "success",
-          "Headings.CourseCompleted",
-          "Body.CourseCompleted",
-          false,
-          {
-            label: "Buttons.ViewMoreCourses",
-            onclick: () => {
-              router.push(`/profile/courses`);
-            },
-          },
-          {
-            label: "Buttons.Okay",
-            onclick: () => {},
-          }
-        );
-        return;
+      },
+      {
+        label: "Buttons.Okay",
+        onclick: () => {},
       }
-      // current lecture was not found
-      else if (indexOfCurrentLecture < 0) {
-        // handle error
-        return;
-      }
+    );
+    return;
+  }
+  // current lecture was not found
+  else if (indexOfCurrentLecture < 0) {
+    // handle error
+    return;
+  }
 
-      // current lecture is somewhere in middle
-      let nextLecture = lectures.value[indexOfCurrentLecture + 1];
-      if (!!!nextLecture || !!!nextLecture.id || !!!nextLecture.sectionID) {
-        // handle error
-        return;
-      }
+  // current lecture is somewhere in middle
+  let nextLecture = lectures.value[indexOfCurrentLecture + 1];
+  if (!!!nextLecture || !!!nextLecture.id || !!!nextLecture.sectionID) {
+    // handle error
+    return;
+  }
 
-      router.replace({
-        path: route.path,
-        query: {
-          section: nextLecture.sectionID ?? "",
-          lecture: nextLecture.id ?? "",
-          skillID: props?.skillID ?? "",
-          subSkillID: props?.subSkillID ?? "",
-        },
-      });
-    }
-    onMounted(async () => {
-      await getXP();
-    });
-    return {
-      t,
-      emit,
-      path,
-      listOfCompletedCourses,
-      CheckIcon,
-      markLectureAsComplete,
-      goToPrevLecture,
-      goToNextLecture,
-      ArrowLeftIcon,
-      ArrowRightIcon,
-      activeLectureID,
-      courseID,
-      activeSectionID,
-      showConfetti,
-      user,
-      canCreate,
-      totalLevel,
-    };
-  },
+  router.replace({
+    path: route.path,
+    query: {
+      section: nextLecture.sectionID ?? "",
+      lecture: nextLecture.id ?? "",
+      skillID: props?.skillID ?? "",
+      subSkillID: props?.subSkillID ?? "",
+    },
+  });
+}
+onMounted(async () => {
+  await getXP();
 });
 </script>
 

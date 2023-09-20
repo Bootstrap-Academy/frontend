@@ -55,7 +55,7 @@ function close() {
           >
             <DialogPanel
               :class="propClass ? propClass : ''"
-              class="relative transform overflow-hidden rounded-lg px-4 pt-5 pb-4 bg-primary text-left shadow-xl transition-all sm:my-8 sm:p-6"
+              class="border border-accent relative transform overflow-hidden rounded-lg px-4 pt-5 pb-4 bg-primary text-left shadow-xl transition-all sm:my-8 sm:p-6"
             >
               <div class="flex justify-between items-center mb-5">
                 <p class="font-semibold">{{ t(label) }}</p>

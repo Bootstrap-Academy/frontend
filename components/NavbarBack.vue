@@ -124,7 +124,7 @@ export default defineComponent({
 
       //create subtask for course
       else if (name == "quizzes-skill-subSkill-create") {
-        console.log("correct");
+        console.log("going back");
         pathname = `/courses/${route.query?.course ?? ""}/watch?section=${
           route.query?.section ?? ""
         }/${route.query?.lecture ?? ""}&skillID=${

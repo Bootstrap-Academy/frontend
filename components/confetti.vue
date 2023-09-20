@@ -14,7 +14,7 @@
           <transition name="dontShowAnimationBox">
             <section
               v-if="boxInfo"
-              class="absolute bg-white top-[20%] rounded-lg left-[5%] p-5 flex gap-4 items-center"
+              class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3"
             >
               <h6 class="my-4 text-accent font-bold">
                 {{ t("Headings.DontShowCongratsAnimationAgain") }}
@@ -27,7 +27,7 @@
           <transition name="infoBox">
             <section
               v-if="boxInfo"
-              class="absolute bg-white top-[70%] rounded-lg left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-5"
+              class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3"
             >
               <h6 class="my-2 text-accent text-lg font-bold">
                 {{ t("Headings.CongratsAnimateText") }}

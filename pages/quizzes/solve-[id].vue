@@ -39,32 +39,34 @@
         @updateQuestion="updateQuestion($event)"
         class="row-span-2 md:mt-48"
       />
+      <div>
+        <p class="mb-3 text-xs pl-2" v-if="!!arrayOfSubtasks.length">
+          <span class="text-accent"> {{ t("Headings.Total") }} </span>:
+          {{ quizzesToShow?.length }}
+        </p>
+        <aside class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4">
+          <template v-if="loading">
+            <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />
+          </template>
 
-      <aside class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4">
-        <template v-if="loading">
-          <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />
-        </template>
-
-        <template v-else-if="quizzesToShow && quizzesToShow.length">
-          <p class="mb-3 text-xs">
-            <span class="text-accent"> {{ t("Headings.Total") }} </span>:
-            {{ quizzesToShow?.length }}
-          </p>
-          <div class="max-h-fit grid gap-card">
-            <QuizCard
-              class="max-h-fit"
-              :class="
-                quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
-              "
-              v-for="(quiz, i) of quizzesToShow"
-              :key="i"
-              full
-              :data="quiz"
-              @click="solveThis(quiz)"
-            />
-          </div>
-        </template>
-      </aside>
+          <template v-else-if="quizzesToShow && quizzesToShow.length">
+            <div class="max-h-fit grid gap-card">
+              <QuizCard
+                :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'"
+                class="max-h-fit"
+                :class="
+                  quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
+                "
+                v-for="(quiz, i) of quizzesToShow"
+                :key="i"
+                full
+                :data="quiz"
+                @click="solveThis(quiz)"
+              />
+            </div>
+          </template>
+        </aside>
+      </div>
     </main>
     <p
       v-if="!loading && !quizzesToShow.length"
@@ -109,7 +111,7 @@ export default defineComponent({
       return route?.params?.id ?? "";
     });
 
-    const querySubTaskId = computed(() => {
+    const querySubTaskId: any = computed(() => {
       return route.query?.querySubTaskId ?? "";
     });
     const taskId = computed(() => {
@@ -154,14 +156,12 @@ export default defineComponent({
       return route?.query?.subSkillID ?? "";
     });
 
-    const breadcrumbs = computed(() => {
+    const breadcrumbs: any = computed(() => {
       if (quizzesFrom.value == "course") {
-        let skillId = route.query?.skillID ?? "";
-        let subSkill = route.query?.subSkillID ?? "";
         return [
           {
             label: id.value,
-            to: `/courses/${id.value}?skillID=${skillId}&subSkillID=${subSkill}`,
+            to: `/courses/${id.value}?skillID=${rootSkillID.value}&subSkillID=${subSkillID.value}`,
           },
           { label: "Headings.Quizzes" },
         ];
@@ -213,14 +213,27 @@ export default defineComponent({
     }
 
     function solveThis(quiz: any) {
-      router.replace({
-        path: route.path,
-        query: {
-          quizzesFrom: quizzesFrom.value,
-          querySubTaskId: quiz.id,
-          taskId: quiz.task_id,
-        },
-      });
+      if (quizzesFrom.value == "course" || quizzesFrom.value == "skill") {
+        router.replace({
+          path: route.path,
+          query: {
+            quizzesFrom: quizzesFrom.value,
+            querySubTaskId: quiz.id,
+            taskId: quiz.task_id,
+            rootSkillID: rootSkillID.value,
+            subSkillID: subSkillID.value,
+          },
+        });
+      } else {
+        router.replace({
+          path: route.path,
+          query: {
+            quizzesFrom: quizzesFrom.value,
+            querySubTaskId: quiz.id,
+            taskId: quiz.task_id,
+          },
+        });
+      }
       selectedQuiz.value = quiz;
     }
 
@@ -267,6 +280,7 @@ export default defineComponent({
         })
       );
       loading.value = false;
+      scroolToView();
     }
 
     watch(
@@ -284,6 +298,16 @@ export default defineComponent({
         }
       }
     );
+
+    function scroolToView() {
+      setTimeout(() => {
+        let eleme = document.getElementById(querySubTaskId.value);
+        eleme?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 0);
+    }
 
     onMounted(async () => {
       manageAllDataForQuizzes();
@@ -307,6 +331,7 @@ export default defineComponent({
       selectedOption,
       quizzesToShow,
       breadcrumbs,
+      querySubTaskId,
     };
   },
 });

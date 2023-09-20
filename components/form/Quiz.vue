@@ -1,5 +1,12 @@
 <template>
   <div class="flex flex-col">
+    <NoteBoard
+      class="mb-10"
+      :heading="'Headings.NoteCannotEditQuiz'"
+      :content="'Body.NoteCannotEditQuiz'"
+      :-note-type="'error'"
+      v-if="!!!user?.admin && !!data"
+    />
     <form
       class="flex flex-col gap-box"
       :class="{ 'form-submitting': form.submitting }"
@@ -106,7 +113,6 @@ export default defineComponent({
     const dialogSlot = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
     const user: any = useUser();
-    const isFirstTimeClickOnform = ref(true);
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
 
@@ -305,7 +311,7 @@ export default defineComponent({
       var encounteredItems: any = {};
 
       for (var i = 0; i < array.length; i++) {
-        var currentItem = array[i];
+        var currentItem = array[i].toLowerCase();
 
         // Convert the item to a string before using it as an object key
         var currentItemString = String(currentItem);
@@ -457,8 +463,6 @@ export default defineComponent({
       },
       { immediate: true, deep: true }
     );
-
-    onMounted(async () => {});
 
     return {
       form,

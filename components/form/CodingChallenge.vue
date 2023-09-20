@@ -1,5 +1,12 @@
 <template>
   <div>
+    <NoteBoard
+      class="mb-10"
+      :heading="'Headings.NoteCannotEditCodingChallenge'"
+      :content="'Body.NoteCannotEditCodingChallenge'"
+      :-note-type="'error'"
+      v-if="!!!user?.admin && !!propData"
+    />
     <form
       class="flex flex-col gap-box"
       :class="{ 'form-submitting': form.submitting }"
@@ -84,7 +91,10 @@
           <CodeBracketIcon class="h-5 w-5" />
         </div>
       </article>
-      <section class="flex gap-3 flex-wrap justify-end">
+      <section
+        v-if="!!!propData || user?.admin"
+        class="flex gap-3 flex-wrap justify-end"
+      >
         <InputBtn @click="closeDialog()" class="self-end" secondary mt>
           {{ t("Buttons.Close") }}
         </InputBtn>
@@ -92,9 +102,6 @@
           :loading="loading"
           class="self-end"
           @click="onclickSubmitForm()"
-          :class="
-            !!propData && !user?.admin ? 'opacity-0 pointer-events-none' : ''
-          "
           mt
         >
           <span v-if="!!propData">

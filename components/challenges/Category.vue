@@ -1,7 +1,7 @@
 <template>
   <section>
     <header
-      class="flex gap-card justify-between cursor-pointer"
+      class="flex flex-col md:flex-row gap-card justify-between cursor-pointer"
       @click="toggleShowChallenges()"
     >
       <div>
@@ -12,7 +12,7 @@
       <!-- <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p> -->
       <p
         v-if="categoryStats?.total > 0"
-        class="rounded-full text-sm py-1 px-3.5 font-bold text-primary flex-shrink-0 min-w-[200px] h-7"
+        class="rounded-full text-sm py-1 px-3.5 text-[#dfdede] flex-shrink-0 min-w-[200px] h-7"
         :style="{ background: progressBar }"
       >
         {{ t(progress >= 100 ? "Headings.Completed" : "Headings.Untried") }}

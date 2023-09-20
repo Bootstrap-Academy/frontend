@@ -23,7 +23,7 @@
     <DialogSlot
       v-if="dialogLeaderBoardChallengeBased"
       :label="'Headings.LeaderBoard'"
-      :propClass="'modal-width-lg lg:modal-width-md shadow shadow-accent'"
+      :propClass="'modal-width-lg lg:modal-width-md shadow '"
       :show="dialogSlot"
       @closeFunction="dialogLeaderBoardChallengeBased = false"
     >

@@ -22,12 +22,12 @@
   <main
     class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container"
   >
-    <p
+    <!-- <p
       class="mb-card box bg-info-light text-info h-fit w-fit style-box flex gap-3 text-body-1"
     >
       <InformationCircleIcon class="h-6 w-6 md:h-8 md:w-8 flex-shrink-0" />
       <span class="md:mt-1">{{ t("Body.AddChallengeRequirement") }}</span>
-    </p>
+    </p> -->
     <template v-for="(category, i) of challengesCategories" :key="category.id">
       <ChallengesCategory :xp="xp" :data="category" />
       <hr class="mt-box" v-if="i < challengesCategories.length - 1" />

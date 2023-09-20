@@ -49,15 +49,15 @@ import { CheckIcon } from "@heroicons/vue/24/solid";
   >
     <CheckIcon
       v-if="data?.solved"
-      class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
+      class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
     />
     <PencilSquareIcon
       v-else-if="user?.id == data?.creator && user.admin"
-      class="bg-light rounded-full p-0.5 h-6 w-6 text-accent absolute -right-1 -top-1.5"
+      class="bg-light rounded-full h-8 w-8 p-1 text-accent absolute -right-1 -top-1.5"
     />
     <EyeIcon
       v-else-if="user?.id == data?.creator && !user.admin"
-      class="bg-accent rounded-full p-0.5 h-5 w-5 text-white absolute -right-1 -top-1.5"
+      class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
     />
     <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
 

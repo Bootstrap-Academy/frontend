@@ -1,7 +1,21 @@
 <template>
   <div>
+    <!-- <article class="flex gap-4 flex-wrap mb-7">
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.TotalQuizzes") }}:
+        <span>{{ quizzesToShow.length }}</span>
+      </chip>
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
+      </chip>
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
+      </chip>
+    </article> -->
+
     <FormQuizAnswer
-      v-if="quizzesToShow.length && selectedQuiz"
+      v-if="quizzesToShow.length && !!selectedQuiz"
+      doubleColumnOptions
       :data="selectedQuiz"
       @nextQuestion="nextQuestion($event)"
       @rated="setRatedLocally($event)"
@@ -27,43 +41,49 @@ export default {
     const selectedQuiz = ref();
     const user: any = useUser();
 
-    function solveThis(quiz: any) {
-      //   router.replace({
-      //     path: route.path,
-      //     query: {
-      //       quizzesFrom: quizzesFrom.value,
-      //       querySubTaskId: quiz.id,
-      //       taskId: quiz.task_id,
-      //     },
-      //   });
-      selectedQuiz.value = quiz;
-    }
+    const solvedQuizzes = computed(() => {
+      let total = 0;
+      props.quizzesToShow?.forEach((quiz: any) => {
+        if (!!quiz.solved) {
+          ++total;
+        }
+      });
+      return total;
+    });
+
+    const userCreatedQuizzes = computed(() => {
+      let total = 0;
+      props.quizzesToShow?.forEach((quiz: any) => {
+        if (quiz?.creator == user?.value.id) {
+          ++total;
+        }
+      });
+      return total;
+    });
 
     function nextQuestion(id: any) {
-      console.log("next");
       let index = 0;
       props.quizzesToShow.forEach((element: any, i: any) => {
         if (element.id == id) {
-          console.log("inside index", id);
+          console.log("inside index", index);
           index = i;
         }
       });
 
+      if (index == props.quizzesToShow?.length - 1) {
+        selectedQuiz.value = null;
+        return;
+      }
       for (let i = index; i < props.quizzesToShow?.length; i++) {
         if (
           !props.quizzesToShow[i]?.solved &&
           props.quizzesToShow[i]?.creator != user?.value.id &&
           i != index
         ) {
-          console.log("next quiz id", props.quizzesToShow[i].creator);
-          console.log("user id", user.value?.id);
-          solveThis(props.quizzesToShow[i]);
-
+          selectedQuiz.value = props.quizzesToShow[i];
           break;
         }
-        console.log("after");
       }
-      selectedQuiz.value = null;
     }
 
     function setRatedLocally(id: any) {
@@ -89,7 +109,15 @@ export default {
       },
       { immediate: true }
     );
-    return { selectedQuiz, nextQuestion, setSolvedLocally, setRatedLocally, t };
+    return {
+      selectedQuiz,
+      nextQuestion,
+      setSolvedLocally,
+      setRatedLocally,
+      t,
+      solvedQuizzes,
+      userCreatedQuizzes,
+    };
   },
 };
 </script>

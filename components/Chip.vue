@@ -124,6 +124,10 @@ div {
   @apply text-white;
   background-color: #fc8618;
 }
+.chip-color-13 {
+  @apply text-white;
+  background-color: #0cc9ab;
+}
 .bg-info {
   color: var(--color-white);
 }

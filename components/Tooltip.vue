@@ -86,8 +86,10 @@ function show() {
         isHidden && 'hidden',
       ]"
     >
-      <p class="block mb-3 text-white" v-if="!!heading">{{ t(heading) }}</p>
-      {{ t(props.content) }}
+      <p class="block text-white" v-if="!!heading">{{ t(heading) }}</p>
+      <p class="mt-3" v-if="!!props.content">
+        {{ t(props.content) }}
+      </p>
       <div
         ref="arrowRef"
         class="absolute bg-light h-[10px] w-[10px] rotate-45"

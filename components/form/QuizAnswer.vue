@@ -1,111 +1,117 @@
 <template>
-  <form
-    class="flex flex-col gap-box relative card h-full"
-    :class="{ 'form-submitting': loading }"
-    @submit.prevent="onclickSubmitForm()"
-    ref="refForm"
-  >
-    <h4 class="text-heading-3">Q). {{ subtask?.question ?? "" }}</h4>
-    <p class="text-accent" v-if="!subtask?.solved">
-      {{ t("Headings.ChooseCorrectOption") }}
-    </p>
-
-    <p class="text-xs text-accent" v-if="showMaxAttemptsError">
-      {{ t(`Error.TooManyAttemptsForQuiz`, { second: secondsForTryAgain }) }}
-    </p>
-
-    <article
-      class="grid grid-cols-1 gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+  <div>
+    <SkeletonQuizAnswer v-if="loading" class="card" />
+    <form
+      v-else
+      class="flex flex-col gap-box relative card h-full"
+      :class="{ 'form-submitting': formSubmitting }"
+      @submit.prevent="onclickSubmitForm()"
+      ref="refForm"
     >
-      <button
-        v-for="(option, i) of subtask?.answers ?? []"
-        :key="option"
-        @click="setArrayOfAnswers(i), setSelected(option)"
-        type="button"
-        class="box style-box border-4 border-tertiary text-heading h-fit"
-        :class="{
-          'bg-success text-primary':
-            selected.includes(option) && wasOptionsCorrect == 'yes',
-
-          'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
-
-          'bg-warning':
-            selected.includes(option) && wasOptionsCorrect == 'waiting',
-          'pointer-events-none':
-            !!subtask?.solved || subtask?.creator == user?.id,
-        }"
+      <h4 class="text-heading-3 text-accent">
+        Q). {{ subtask?.question ?? "" }}
+      </h4>
+      <p
+        class="text-heading2 text-sm"
+        v-if="!subtask?.solved && user?.id != subtask?.creator"
       >
-        {{ option }}
-      </button>
-    </article>
+        {{ t("Headings.ChooseCorrectOption") }}
+      </p>
 
-    <div>
-      <InputBtn
-        v-if="data?.solved || user?.id == subtask?.creator"
-        full
-        @click="nextQuestion()"
-        iconRight
-        :icon="ChevronDoubleRightIcon"
-      >
-        {{ t("Buttons.Next") }}
-      </InputBtn>
+      <p class="text-xs text-accent" v-if="showMaxAttemptsError">
+        {{ t(`Error.TooManyAttemptsForQuiz`, { second: secondsForTryAgain }) }}
+      </p>
 
-      <InputBtnWithHeart
-        full
-        v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
-        :loading="loading"
-        @click="onclickSubmitForm()"
-        iconRight
-        mt
-        :icon="HalfHeart"
+      <article
+        class="grid gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+        :class="
+          doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
+        "
       >
-        {{ t("Buttons.SubmitAnswer") }}
-      </InputBtnWithHeart>
-      <!-- <InputBtn
-        full
-        v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
-        :loading="loading"
-        @click="onclickSubmitForm()"
-        iconRight
-        mt
-        :icon="HalfHeart"
-      >
-        {{ t("Buttons.SubmitAnswer") }} -
-      </InputBtn> -->
+        <button
+          v-for="(option, i) of subtask?.answers ?? []"
+          :key="option"
+          @click="setArrayOfAnswers(i), setSelected(option)"
+          type="button"
+          class="box style-box border-4 border-tertiary text-heading h-fit"
+          :class="{
+            'bg-success text-primary':
+              selected.includes(option) && wasOptionsCorrect == 'yes',
 
-      <InputBtn
-        full
-        v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
-        :loading="loading"
-        @click="onclickSubmitForm()"
-        mt
-      >
-        {{ t("Buttons.SubmitAnswer") }}
-      </InputBtn>
+            'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
 
-      <InputBtn
-        :icon="PencilSquareIcon"
-        iconRight
-        full
-        mt
-        v-else-if="user?.id == subtask?.creator && !!user?.admin"
-        @click="openDialogEditTask(subtask)"
-      >
-        {{ t("Buttons.Edit") }}
-      </InputBtn>
-    </div>
-    <InputQuizRating :data="data" :subtask="subtask" @rated="fnRated($event)" />
+            'bg-warning':
+              selected.includes(option) && wasOptionsCorrect == 'waiting',
+            'pointer-events-none':
+              !!subtask?.solved || subtask?.creator == user?.id,
+          }"
+        >
+          {{ option }}
+        </button>
+      </article>
 
-    <DialogSlot
-      v-if="dialogCreateSubtask"
-      :label="'Headings.Quiz'"
-      :propClass="'modal-width-lg lg:modal-width-md'"
-      :show="dialogEditTask"
-      @closeFunction="closeEditTaskDialog()"
-    >
-      <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
-    </DialogSlot>
-  </form>
+      <div>
+        <InputBtn
+          v-if="data?.solved || user?.id == subtask?.creator"
+          full
+          @click="nextQuestion()"
+          iconRight
+          :icon="ChevronDoubleRightIcon"
+        >
+          {{ t("Buttons.Next") }}
+        </InputBtn>
+
+        <InputBtnWithHeart
+          full
+          v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
+          :loading="formSubmitting"
+          @click="onclickSubmitForm()"
+          iconRight
+          mt
+          :icon="HalfHeart"
+        >
+          {{ t("Buttons.SubmitAnswer") }}
+        </InputBtnWithHeart>
+
+        <InputBtn
+          full
+          v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
+          :loading="formSubmitting"
+          @click="onclickSubmitForm()"
+          mt
+        >
+          {{ t("Buttons.SubmitAnswer") }}
+        </InputBtn>
+
+        <InputBtn
+          :icon="PencilSquareIcon"
+          iconRight
+          full
+          mt
+          secondary
+          v-else-if="user?.id == subtask?.creator && !!user?.admin"
+          @click="openDialogEditTask(subtask)"
+        >
+          {{ t("Buttons.Edit") }}
+        </InputBtn>
+      </div>
+      <InputQuizRating
+        :data="data"
+        :subtask="subtask"
+        @rated="fnRated($event)"
+      />
+
+      <DialogSlot
+        v-if="dialogCreateSubtask"
+        :label="'Headings.Quiz'"
+        :propClass="'modal-width-lg lg:modal-width-md'"
+        :show="dialogEditTask"
+        @closeFunction="closeEditTaskDialog()"
+      >
+        <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
+      </DialogSlot>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -120,6 +126,7 @@ import HalfHeart from "../svg/HalfHeart.vue";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
+    doubleColumnOptions: { type: Boolean, default: false },
   },
   emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
   components: { FlagIcon, ChevronDoubleRightIcon, HalfHeart, PencilSquareIcon },
@@ -128,7 +135,8 @@ export default defineComponent({
 
     const user: any = useUser();
 
-    const loading = ref(false);
+    const formSubmitting = ref(false);
+    const loading = ref(true);
     const selected: any = ref([]);
     const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
@@ -202,13 +210,13 @@ export default defineComponent({
         return openSnackbar("error", "Error.SelectAtLeastOneOption");
       }
 
-      loading.value = true;
+      formSubmitting.value = true;
       const [success, error] = await attempQuiz(
         subtask.value.task_id,
         subtask.value.id,
         { answers: arrayOfAnswers.value }
       );
-      loading.value = false;
+      formSubmitting.value = false;
       await getHearts();
       if (success == true || success == false) successHandler(success);
       else errorHandler(error);
@@ -255,12 +263,12 @@ export default defineComponent({
     }
 
     async function setData() {
-      console.log("set data");
       arrayOfAnswers.value = [];
       if (props?.data == null) return;
       showMaxAttemptsError.value = false;
       clearInterval(interval.value);
-      setLoading(true);
+
+      loading.value = true;
 
       const [success, error] = await getSubTaskInQuiz(
         props?.data?.task_id ?? "",
@@ -276,7 +284,7 @@ export default defineComponent({
           selected.value = [];
         }
       }
-      setLoading(false);
+      loading.value = false;
     }
 
     function setInitialArrayOfAnswers() {
@@ -292,7 +300,10 @@ export default defineComponent({
 
     watch(
       () => props.data,
-      async () => {
+      async (newValue, oldValue) => {
+        if (newValue === oldValue) {
+          return;
+        }
         await setData();
       },
       { deep: true, immediate: true }
@@ -318,6 +329,7 @@ export default defineComponent({
       onclickSubmitForm,
       refForm,
       loading,
+      formSubmitting,
       selected,
       subtask,
       arrayOfAnswers,

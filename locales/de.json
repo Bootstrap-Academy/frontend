@@ -11,6 +11,12 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "NoteCannotEditQuiz": "Einschränkungen bearbeiten",
+    "ZoomLevel": "Zoomstufe",
+    "TotalQuizzes": "Gesamt Quizzes",
+    "MyQuizzes": "Mein Quizzes",
+    "SolvedQuizzes": "Gelöst Quizzes",
+    "ViewQuizzesForLastViewCourse": "Quizzes für den letzten View-Kurs anzeigen",
     "NoQuizFoundForYouToSolve": "Es wurde kein Quiz zum Lösen gefunden",
     "Rank": "Rang",
     "HTML": "HTML",
@@ -75,7 +81,7 @@
     "Other": "Andere",
     "Dislike": "Nicht gefallen",
     "UnlockCodingChallenge": "Kaufen Sie eine Coding challenge, um sie freizuschalten",
-    "EmptySubtasks": "Kein Quiz gefunden",
+    "EmptySubtasks": "Für diese Vorlesung wurde kein Quiz gefunden",
     "EmptyCodingChallenge": "Für diese Vorlesung wurde keine Programmieraufgabe gefunden",
     "DeleteQuiz": "Quiz löschen",
     "Quiz": "Quiz",
@@ -315,6 +321,8 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "NoteCannotEditQuiz": "Sobald ein Quiz erstellt wurde, können Sie es nicht mehr bearbeiten. Sie können es jedoch löschen und neu erstellen.",
+    "NoteCannotEditCodingChallenge": "Sobald ein Coding Challenge erstellt wurde, können Sie es nicht mehr bearbeiten. Sie können es jedoch löschen und neu erstellen.",
     "QuizDummyQuestion": "Welche der folgenden ist eine Programmiersprache?",
     "UpdateYourCode": "Möchten Sie Ihren Code mit dem Beispielcode Ihrer ausgewählten Sprache aktualisieren?",
     "RefillHearts": "50 Morphcoins werden von Ihrem Konto abgebucht, um Ihre ausgegebenen Herzen zu erhalten",
@@ -322,7 +330,7 @@
     "EnableAutopay": "Wir kümmern uns selbst um Ihre Zahlungen und buchen den Betrag auf Basis des von Ihnen gewählten Abonnements von Ihrem Konto ab",
     "DisableAutopay": "Möchten Sie die automatische Zahlung deaktivieren?",
     "SubscribeFirst": "Um Autopay auszuwählen, müssen Sie zunächst ein Abonnement abschließen",
-    "AutoPay": "Option für stressfreien Komfort mit unserer monatlichen Auto-Pay-Option",
+    "AutoPay": "Option für stressfreien Komfort mit unserer Auto-Pay-Option",
 
     "Refill0p5Hearts": "Füllen Sie 0.5 Herz für 15 Morphcoins auf",
     "Refill1Hearts": "Füllen Sie 1 Herz für 20 Morphcoins auf",

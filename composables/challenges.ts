@@ -67,7 +67,8 @@ export async function getChallengesCategories() {
 	} catch (error: any) {
 		let msg = error?.data?.error
 		if (msg == "unverified") {
-			return openSnackbar("error", "Error.VerifyToGetChallenges")
+			openSnackbar("error", "Error.VerifyToGetChallenges")
+			return [null, error.data];
 		}
 		return [null, error.data];
 	}

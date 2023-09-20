@@ -29,22 +29,14 @@
       :rules="form.description.rules"
     />
 
-    <!-- <InputList
-      :label="t('Inputs.Skills')"
-      v-model="form.skills.value"
-      @valid="form.skills.valid = $event"
-      :rules="form.skills.rules"
-      :max="8"
-    /> -->
-
     <InputSelect v-model="selectedSkill" :options="skills" />
+
     <div
       class="flex justify-between gap-3 items-center my-1"
       v-for="(skill, i) of form.skills.value"
       :key="i"
     >
       <li class="font-semibold text-subheading">{{ skill }}</li>
-      <!-- <p class="hover:text-error cursor-pointer text-xl font-medium">X</p> -->
       <XMarkIcon
         @click="form.skills.value.splice(i, 1)"
         class="h-6 w-6 text-subheading hover:text-error cursor-pointer"
@@ -112,15 +104,6 @@ export default defineComponent({
     });
 
     const categoryOptions = computed(() => {
-      // return (challengesCategories.value ?? [])
-      // 	.filter((c) => {
-      // 		let points = c?.points?.current ?? 0;
-      // 		return points >= 100;
-      // 	})
-      // 	.map((c) => {
-      // 		return { label: c.title, value: c.id };
-      // 	});
-
       return (challengesCategories.value ?? []).map((c) => {
         return { label: c.title, value: c.id };
       });
@@ -129,8 +112,6 @@ export default defineComponent({
     function setCategory(categoryID: string) {
       console.log("setting", props?.data);
       form.category.value = categoryID;
-      // let includes = route.fullPath.includes("/challenges/edit-");
-      // if (!includes) router.replace(`/challenges/${category}/create`);
     }
 
     // ============================================================= refs
@@ -156,7 +137,6 @@ export default defineComponent({
       skills: {
         value: [],
         valid: false,
-        rules: [],
       },
 
       description: {
@@ -274,6 +254,7 @@ export default defineComponent({
       console.log("delete");
     }
     function setFormData() {
+      console.log("set form data");
       if (props.data != null) {
         form.title.value = props?.data?.title ?? "";
         form.description.value = props?.data?.description ?? "";
@@ -288,44 +269,45 @@ export default defineComponent({
     }
 
     // ============================================================= Handling Form State
-    watch(
-      () => form,
-      (newValue, oldValue) => {
-        if (!!!localStorage) return;
+    // watch(
+    //   () => form,
+    //   (newValue, oldValue) => {
+    //     if (!!!localStorage) return;
 
-        localStorage.setItem(
-          "form",
-          JSON.stringify({
-            title: newValue?.title?.value ?? "",
-            description: newValue?.description?.value ?? "",
-            skills: newValue?.skills?.value ?? [],
-            limits: newValue?.limits?.value ?? [],
-            examples: newValue?.examples?.value ?? [],
-          })
-        );
-      },
-      { deep: true }
-    );
+    //     localStorage.setItem(
+    //       "form",
+    //       JSON.stringify({
+    //         title: newValue?.title?.value ?? "",
+    //         description: newValue?.description?.value ?? "",
+    //         skills: newValue?.skills?.value ?? [],
+    //         limits: newValue?.limits?.value ?? [],
+    //         examples: newValue?.examples?.value ?? [],
+    //       })
+    //     );
+    //   },
+    //   { deep: true }
+    // );
 
     watch(
       () => props.data,
       () => {
         setFormData();
       },
-      { deep: true }
+      { immediate: true }
     );
     // =============================================================  Handling Skill List
     watch(
       () => selectedSkill.value,
       (newValue, oldValue) => {
-        form.skills.value.push(newValue);
+        if (!form.skills.value.includes(newValue)) {
+          form.skills.value.push(newValue);
+        }
       }
     );
 
     watch(
       () => form.skills.value.length,
       (newValue, oldValue) => {
-        console.log("watching length");
         if (!newValue) form.skills.valid = false;
         else form.skills.valid = true;
       },

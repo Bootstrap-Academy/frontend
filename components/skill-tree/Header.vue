@@ -20,9 +20,9 @@
 
     <NuxtLink
       v-if="quizzesQuickStart && lastViewCourse"
-      :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&skillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
+      :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&rootSkillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
     >
-      <Btn>View Quizzes for Last View Course</Btn>
+      <Btn>{{ t("Headings.ViewQuizzesForLastViewCourse") }}</Btn>
     </NuxtLink>
 
     <SkillTreeZoomLevel

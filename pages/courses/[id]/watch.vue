@@ -28,9 +28,9 @@
     <section>
       <main
         v-if="course"
-        class="container-fluid relative h-fit midXl:h-screen-main grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container mb-20"
+        class="container-fluid relative h-fit grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container mb-20"
       >
-        <CourseVideoControls
+        <CourseVideoMeta
           :skillID="skillID"
           :subSkillID="subSkillID"
           class="midXl:col-span-2"
@@ -40,7 +40,8 @@
           v-model="showCurriculum"
           v-if="!!activeSection && !!activeLecture"
         />
-        <div>
+
+        <div class="mt-10">
           <InputButtonToggle
             :mobileResponsive="false"
             :buttonOptions="buttonOptions"
@@ -55,7 +56,7 @@
           />
           <section
             v-else-if="selectedButton == 1"
-            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll sm:p-6"
+            class="w-full h-[71vh] overflow-scroll"
           >
             <p class="w-full text-xl text-center" v-if="!subtasks.length">
               {{ t("Headings.EmptySubtasks") }}
@@ -67,8 +68,8 @@
           </section>
 
           <section
+            class="px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 2"
-            class="h-fit lg:h-auto md:max-h-[60vh] w-full overflow-scroll p-6"
           >
             <div v-if="codingChallenges.length">
               <CodingChallengeCard
@@ -87,11 +88,26 @@
           </section>
         </div>
 
-        <CourseCurriculum
-          class="hidden midXl:block aside card sticky self-start top-container style-card bg-secondary w-full h-full max-h-full overflow-y-scroll"
-          :data="course"
-          @watch="watchThisLecture($event)"
-        />
+        <div
+          class="hidden midXl:block aside sticky self-start top-container mt-16"
+        >
+          <article class="flex justify-end">
+            <CourseVideoControls
+              class="hidden midXl:block mb-7 -mt-3"
+              :skillID="skillID"
+              :subSkillID="subSkillID"
+              :course="course"
+              :activeLecture="activeLecture"
+              v-if="!!activeSection && !!activeLecture"
+            />
+          </article>
+
+          <CourseCurriculum
+            :data="course"
+            @watch="watchThisLecture($event)"
+            class="h-[60vh] overflow-y-scroll bg-secondary card style-card"
+          />
+        </div>
       </main>
     </section>
 
@@ -134,7 +150,6 @@ export default {
   },
   setup() {
     const { t } = useI18n();
-
     const loading = ref(true);
 
     const route = useRoute();
@@ -144,13 +159,13 @@ export default {
     const taskId = ref();
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
-    const premiumInfo: any = usePremiumInfo();
 
+    const premiumInfo: any = usePremiumInfo();
     const isPremium: any = computed(() => {
       return premiumInfo.value?.premium;
     });
-    const heartsInfo: any = useHeartInfo();
 
+    const heartsInfo: any = useHeartInfo();
     const hearts: any = computed(() => {
       return heartsInfo.value?.hearts ?? 0;
     });
@@ -169,7 +184,6 @@ export default {
       let section = sections.find((sec) => sec.id == sectionID);
       return !!section ? section : null;
     });
-
     const activeLecture = computed(() => {
       const lectureID = <string>(route.query?.lecture ?? "");
       let lectures: any[] = activeSection.value?.lectures ?? [];
@@ -185,7 +199,6 @@ export default {
     const skillID = computed(() => {
       return <string>(route.query?.skillID ?? "");
     });
-
     const subSkillID = computed(() => {
       return <string>(route.query?.subSkillID ?? "");
     });
@@ -253,8 +266,20 @@ export default {
       },
       { immediate: true, deep: true }
     );
+
+    watch(
+      () => selectedButton.value,
+      (newValue) => {
+        localStorage.setItem("selectedButton", newValue.toString());
+      }
+    );
+
     onMounted(async () => {
       const courseID = <string>(route.params?.id ?? "");
+
+      let a = localStorage.getItem("selectedButton");
+      selectedButton.value = Number(a);
+
       if (!!!courseID) {
         loading.value = false;
         return;
@@ -263,6 +288,10 @@ export default {
       await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
       loading.value = false;
+    });
+
+    onBeforeUnmount(() => {
+      localStorage.removeItem("selectedButton");
     });
 
     const showCurriculum = ref(false);

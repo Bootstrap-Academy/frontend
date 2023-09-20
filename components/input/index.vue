@@ -131,13 +131,6 @@ export default defineComponent({
     });
     onMounted(() => {
       if (props.focusThis == true) {
-        console.log(
-          "in miounted",
-          DOM_INPUT.value?.focus(),
-          "props.",
-          props.label,
-          props.focusThis
-        );
         DOM_INPUT.value?.focus();
       }
     });
