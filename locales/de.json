@@ -11,6 +11,8 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "WhyWeUseThem": "Warum verwenden wir sie?",
+    "Why": "Warum",
     "NoteCannotEditQuiz": "Einschränkungen bearbeiten",
     "ZoomLevel": "Zoomstufe",
     "TotalQuizzes": "Gesamt Quizzes",
@@ -321,6 +323,7 @@
     "OtherSkills": "Andere Skills"
   },
   "Body": {
+    "WhyWeUseTests": "Die Zahlen, die Sie beim Erstellen oder Ändern einer Codierungsherausforderung eingeben, sind einfach die Anzahl der statischen/zufälligen Testfälle, anhand derer die Lösung des Benutzers getestet werden soll. Wenn ich beispielsweise static_tests=5 und random_tests=3 setze, werden für jede Übermittlung 5 statische Testfälle und 3 zufällige Testfälle generiert, anhand derer die Übermittlung des Benutzers getestet wird",
     "NoteCannotEditQuiz": "Sobald ein Quiz erstellt wurde, können Sie es nicht mehr bearbeiten. Sie können es jedoch löschen und neu erstellen.",
     "NoteCannotEditCodingChallenge": "Sobald ein Coding Challenge erstellt wurde, können Sie es nicht mehr bearbeiten. Sie können es jedoch löschen und neu erstellen.",
     "QuizDummyQuestion": "Welche der folgenden ist eine Programmiersprache?",
