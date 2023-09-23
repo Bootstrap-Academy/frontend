@@ -163,18 +163,8 @@ export async function requestEmailVerification() {
 }
 
 export async function verifyAccount(body: any) {
-	const user = <any>useUser();
-	let user_id = user?.value?.id ?? null;
-	let isAccountVerified = user?.value?.email_verified ?? false;
-
-	if (isAccountVerified) return [true, null];
-
 	try {
-		if (!!!user_id) {
-			throw { data: 'Invalid User Id' };
-		}
-
-		const response = await PUT(`/auth/users/${user_id}/email`, body);
+		const response = await PUT(`/auth/users/me/email`, body);
 
 		return [response, null];
 	} catch (error: any) {
