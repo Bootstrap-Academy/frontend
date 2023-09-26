@@ -31,7 +31,7 @@
         }"
       >
         <p class="text-white text-md">
-          {{ t("Headings.Example") }}# {{ i + 1 }}
+          {{ t("Headings.Example") }} {{ i + 1 }}
         </p>
 
         <div
