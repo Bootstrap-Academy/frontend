@@ -7,6 +7,7 @@
       class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-xl flex-shrink-0 block"
       :class="theme.bg"
     ></span>
+
     <h3 class="text-xs capitalize hidden lg:clamp line-1" :class="theme.text">
       {{ heading }}
     </h3>

@@ -26,7 +26,7 @@
 				</Btn>
 			</NuxtLink> -->
       <NuxtLink to="/challenges/leader-board">
-        <Btn tertiary>
+        <Btn>
           {{ t("Buttons.LeaderBoard") }}
         </Btn>
       </NuxtLink>

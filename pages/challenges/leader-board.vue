@@ -63,7 +63,9 @@ export default {
     const { t } = useI18n();
     const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
-    const selectedbutton = ref(0);
+    const selectedbutton = ref(
+      localStorage.getItem("selectedButtonLeaderBoard") ?? 0
+    );
     const router = useRouter();
     const route = useRoute();
     let buttonOptions: any = [
@@ -75,7 +77,8 @@ export default {
 
     watch(
       () => selectedbutton.value,
-      (newValue, oldValue) => {
+      (newValue: any, oldValue) => {
+        localStorage.setItem("selectedButtonLeaderBoard", newValue);
         router.replace({
           path: route.path,
           query: {
@@ -85,6 +88,9 @@ export default {
       },
       { immediate: true }
     );
+    onUnmounted(() => {
+      localStorage.removeItem("selectedButtonLeaderBoard");
+    });
 
     return { buttonOptions, selectedbutton, t, leaderBoardList, loading };
   },

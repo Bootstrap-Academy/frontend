@@ -18,7 +18,7 @@
           v-if="!!leaderBoardList[2]"
         />
       </article>
-      <article class="max-h-[80vh] overflow-y-scroll px-3 sm:px-10">
+      <article class="max-h-[80vh] overflow-y-scroll px-3 pb-24 sm:px-10">
         <div v-for="(user, i) of leaderBoardList" :key="i">
           <LeaderboardUserCard v-if="user.rank > 3" :item="user" />
         </div>

@@ -12,6 +12,10 @@
   },
 
   "Headings": {
+    "Example": "Example",
+    "ResetExamples": "Reset Examples",
+    "WhyWeUseThem": "Why we use them?",
+    "Why": "Why",
     "NoteCannotEditQuiz": "Edit Restrictions",
     "NoteCannotEditCodingChallenge": "Edit Restrictions",
     "ZoomLevel": "Zoom Level",
@@ -121,6 +125,8 @@
     "Challenge": "Challenge",
     "Explanation": "Explanation",
     "Input": "Input",
+    "ProgramInputShouldBe": "If input to your code is",
+    "ProgramOutputShouldBe": "Output should be",
     "ExpectedOutput": "Expected Output",
     "Name": "Name",
     "Attempts": "Attempts",
@@ -319,6 +325,7 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
     "NoteCannotEditQuiz": "Once a quiz has been created you cannot edit it. But you can delete it and can recreate new one.",
     "NoteCannotEditCodingChallenge": "Once a Coding Challenge has been created you cannot edit it. But you can delete it and can recreate new one.",
     "QuizDummyQuestion": "Which of the following is a programming language?",
@@ -655,6 +662,7 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "TestAgainstAll": "Test Against All",
     "ManagePremium": "Manage Premium",
     "Challenge": "Challenge",
     "Edit": "Edit",
@@ -788,6 +796,7 @@
     "AddEmail": "Add Email"
   },
   "Links": {
+    "LeaderBoard": "LeaderBoard",
     "SubscriptionAndHearts": "Subscription & Hearts",
     "Subscription": "Subscription",
     "GoToChallenges": "Back To Challenges",

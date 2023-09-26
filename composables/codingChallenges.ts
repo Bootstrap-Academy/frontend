@@ -181,6 +181,7 @@ export async function getSubmission(challengeId: any, codingChallengeId: any, su
 }
 
 export async function getExamples(challengeId: any, codingChallengeId: any) {
+
     try {
         const res = await GET(`/challenges/tasks/${challengeId}/coding_challenges/${codingChallengeId}/examples`)
         console.log("coding examples response", res)

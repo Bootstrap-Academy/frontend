@@ -80,9 +80,12 @@ export default defineComponent({
     const testExampleLoading = ref(false);
     const submission = useCodingSubmission();
     const premiumInfo: any = usePremiumInfo();
+    const language = ref("typescript");
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
     });
+    const interval: any = ref(null);
+
     const languages: any = computed(() => {
       const items = [];
       for (const key in environments.value) {
@@ -90,61 +93,6 @@ export default defineComponent({
       }
       return items;
     });
-    const language = ref("typescript");
-    watch(
-      () => language.value,
-      () => {
-        emit("environment", language.value);
-      },
-      { immediate: true }
-    );
-
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        if (editor && editor.getValue() !== newValue) {
-          editor.setValue(newValue);
-        }
-      }
-    );
-
-    watch(
-      () => language.value,
-      (newValue, oldValue) => {
-        openDialog(
-          "info",
-          "Headings.UpdateYourCode",
-          "Body.UpdateYourCode",
-          false,
-          {
-            label: "Buttons.Update",
-            onclick: () => {
-              emit(
-                "update:modelValue",
-                environments.value[language.value].example
-              );
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {
-              console.log("cancel");
-            },
-          }
-        );
-      }
-    );
-
-    watch(
-      () => submission.value,
-      (newValue: any, oldValue) => {
-        if (editor && editor.getValue() !== newValue) {
-          editor.setValue(newValue.code);
-          language.value = newValue.environment;
-        }
-      },
-      { deep: true }
-    );
 
     const handleEditorDidMount = (
       editorInstance: monaco.editor.IStandaloneCodeEditor
@@ -178,6 +126,7 @@ export default defineComponent({
         }
       );
     }
+
     async function fnCreateSubmission() {
       submitButtonLoading.value = true;
       const [success, error] = await createSubmission(
@@ -192,8 +141,78 @@ export default defineComponent({
       await getBalance();
       submitButtonLoading.value = false;
 
+      clearInterval(interval.value);
+
+      interval.value = setInterval(async () => {
+        console.log("interval");
+        await getSubmissions(props.challengeId, props.codingChallengeId);
+      }, 5000);
+
       if (success) openSnackbar("success", "Success.CreatedSubmission");
       else openSnackbar("error", error);
+    }
+
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        if (editor && editor.getValue() !== newValue) {
+          editor.setValue(newValue);
+        }
+      }
+    );
+
+    watch(
+      () => language.value,
+      (newValue, oldValue) => {
+        openDialog(
+          "info",
+          "Headings.UpdateYourCode",
+          "Body.UpdateYourCode",
+          false,
+          {
+            label: "Buttons.Update",
+            onclick: () => {
+              emit(
+                "update:modelValue",
+                environments.value[language.value].example
+              );
+            },
+          },
+          {
+            label: "Buttons.Cancel",
+            onclick: () => {},
+          }
+        );
+      }
+    );
+
+    watch(
+      () => submission.value,
+      (newValue: any, oldValue) => {
+        if (editor && editor.getValue() !== newValue) {
+          editor.setValue(newValue.code);
+          language.value = newValue.environment;
+        }
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => language.value,
+      () => {
+        emit("environment", language.value);
+      },
+      { immediate: true }
+    );
+
+    function update(value: string) {
+      if (editor) {
+        const model = editor.getModel();
+
+        if (model) {
+          monaco.editor.setModelLanguage(model, language.value);
+        }
+      }
     }
 
     onMounted(async () => {
@@ -212,17 +231,8 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       editor?.dispose();
+      clearInterval(interval.value);
     });
-
-    function update(value: string) {
-      if (editor) {
-        const model = editor.getModel();
-
-        if (model) {
-          monaco.editor.setModelLanguage(model, language.value);
-        }
-      }
-    }
 
     return {
       handleEditorDidMount,

@@ -1,46 +1,22 @@
 <template>
   <div>
-    <NoteBoard
-      class="mb-10"
-      :heading="'Headings.NoteCannotEditCodingChallenge'"
-      :content="'Body.NoteCannotEditCodingChallenge'"
-      :-note-type="'error'"
-      v-if="!!!user?.admin && !!propData"
-    />
-    <form
-      class="flex flex-col gap-box"
-      :class="{ 'form-submitting': form.submitting }"
-      @submit.prevent="onclickSubmitForm()"
-      ref="refForm"
-    >
-      <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
-        <Input
-          :label="t('Inputs.StaticTests')"
-          :type="'number'"
-          :rules="form.static_tests.rules"
-          :placeholder="form.static_tests.placeholder"
-          v-model="form.static_tests.value"
-          @valid="form.static_tests.valid = $event"
-        />
-        <Input
-          :label="t('Inputs.RandomTests')"
-          :type="'number'"
-          :rules="form.random_tests.rules"
-          :placeholder="form.random_tests.placeholder"
-          v-model="form.random_tests.value"
-          @valid="form.random_tests.valid = $event"
-        />
-        <InputSelect
-          v-if="languages.length"
-          :rules="form.solution_environment.rules"
-          :label="t('Inputs.SolutionEnvironment')"
-          :options="languages"
-          btn-type
-          v-model="form.solution_environment.value"
-        />
-      </article>
+    <SkeletonFormCodingChallenge v-if="loadingData" />
 
-      <!-- <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
+    <section v-else>
+      <NoteBoard
+        class="mb-10"
+        :heading="'Headings.NoteCannotEditCodingChallenge'"
+        :content="'Body.NoteCannotEditCodingChallenge'"
+        :-note-type="'error'"
+        v-if="!!!user?.admin && !!propData"
+      />
+      <form
+        class="flex flex-col gap-box"
+        :class="{ 'form-submitting': form.submitting }"
+        @submit.prevent="onclickSubmitForm()"
+        ref="refForm"
+      >
+        <!-- <article class="grid sm:grid-cols-2 md:grid-cols-3 sm:gap-x-10">
         <Input
           v-if="!!user.admin"
           :label="t('Inputs.Morphcoins')"
@@ -59,61 +35,123 @@
         />
       </article> -->
 
-      <InputTextarea
-        :label="t('Inputs.Description')"
-        v-model="form.description.value"
-        @valid="form.description.valid = $event"
-        :placeholder="form.description.placeholder"
-        :rules="form.description.rules"
-      />
-
-      <article>
-        <div class="flex gap-x-2 items-center">
-          <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
-        </div>
-        <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
-      </article>
-
-      <article>
-        <div class="flex gap-2 items-center">
-          <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
-        </div>
-        <ChallengesCodeEditor
-          class="h-full"
-          v-model="form.solution_code.value"
+        <InputTextarea
+          :rows="10"
+          :label="t('Inputs.Description')"
+          v-model="form.description.value"
+          @valid="form.description.valid = $event"
+          :placeholder="form.description.placeholder"
+          :rules="form.description.rules"
         />
 
-        <div
-          @click="enterExampleCode()"
-          class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
-        >
-          {{ t("Headings.ClickForExampleCode") }}
-          <CodeBracketIcon class="h-5 w-5" />
-        </div>
-      </article>
-      <section
-        v-if="!!!propData || user?.admin"
-        class="flex gap-3 flex-wrap justify-end"
-      >
-        <InputBtn @click="closeDialog()" class="self-end" secondary mt>
-          {{ t("Buttons.Close") }}
-        </InputBtn>
-        <InputBtn
-          :loading="loading"
-          class="self-end"
-          @click="onclickSubmitForm()"
-          mt
-        >
-          <span v-if="!!propData">
-            {{ t("Buttons.UpdateCodingChallenge") }}
-          </span>
+        <article>
+          <div class="flex gap-x-2 items-center">
+            <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
+          </div>
+          <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
+        </article>
 
-          <span v-else>
-            {{ t("Buttons.CreateCodingChallenge") }}
-          </span>
-        </InputBtn>
-      </section>
-    </form>
+        <article>
+          <div class="flex justify-end -mb-5">
+            <InputSelect
+              v-if="languages.length"
+              :rules="form.solution_environment.rules"
+              :label="t('Inputs.SolutionEnvironment')"
+              :options="languages"
+              btn-type
+              v-model="form.solution_environment.value"
+            />
+          </div>
+          <div class="flex gap-2 items-center">
+            <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
+          </div>
+          <ChallengesCodeEditor
+            class="h-full"
+            v-model="form.solution_code.value"
+          />
+
+          <div
+            @click="enterExampleCode()"
+            class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
+          >
+            {{ t("Headings.ClickForExampleCode") }}
+            <CodeBracketIcon class="h-5 w-5" />
+          </div>
+        </article>
+
+        <section class="mt-10">
+          <Transition name="popIn">
+            <div v-if="advanceSettings">
+              <article class="flex items-center gap-2">
+                <p class="mb-3 text-lg">{{ t("Headings.Why") }}</p>
+                <Tooltip
+                  :placement="'right'"
+                  :heading="'Headings.WhyWeUseThem'"
+                  :content="'Body.WhyWeUseTests'"
+                >
+                  <InformationCircleIcon class="text-white h-6 w-6 -mt-2" />
+                </Tooltip>
+              </article>
+              <article class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+                <Input
+                  :label="t('Inputs.StaticTests')"
+                  :type="'number'"
+                  :rules="form.static_tests.rules"
+                  :placeholder="form.static_tests.placeholder"
+                  v-model="form.static_tests.value"
+                  @valid="form.static_tests.valid = $event"
+                />
+                <Input
+                  :label="t('Inputs.RandomTests')"
+                  :type="'number'"
+                  :rules="form.random_tests.rules"
+                  :placeholder="form.random_tests.placeholder"
+                  v-model="form.random_tests.value"
+                  @valid="form.random_tests.valid = $event"
+                />
+              </article>
+            </div>
+          </Transition>
+
+          <article class="flex justify-end">
+            <div
+              @click="advanceSettings = !advanceSettings"
+              class="flex items-center gap-2 group cursor-pointer px-3 py-1 rounded-full w-fit bg-[#6448e433] hover:bg-[#5e41de4d]"
+            >
+              <Cog6ToothIcon
+                class="text-white h-7 w-7 group-hover:animate-spin"
+              />
+              <p class="text-[#afa7dd]">
+                {{ advanceSettings ? "Hide Settings" : "Advance Settings" }}
+              </p>
+            </div>
+          </article>
+        </section>
+
+        <section
+          v-if="!!!propData || user?.admin"
+          class="flex gap-3 flex-wrap justify-end"
+        >
+          <InputBtn @click="closeDialog()" class="self-end" secondary mt>
+            {{ t("Buttons.Close") }}
+          </InputBtn>
+          <InputBtn
+            :loading="loading"
+            class="self-end"
+            @click="onclickSubmitForm()"
+            mt
+          >
+            <span v-if="!!propData">
+              {{ t("Buttons.UpdateCodingChallenge") }}
+            </span>
+
+            <span v-else>
+              {{ t("Buttons.CreateCodingChallenge") }}
+            </span>
+          </InputBtn>
+        </section>
+      </form>
+    </section>
   </div>
 </template>
 
@@ -121,6 +159,8 @@
 import {
   InformationCircleIcon,
   CodeBracketIcon,
+  Cog6ToothIcon,
+  Cog8ToothIcon,
 } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { PropType, ref } from "vue";
@@ -143,7 +183,12 @@ export default {
     propData: { type: Object as PropType<any>, default: null },
     challengeId: { type: String, default: "" },
   },
-  components: { InformationCircleIcon, CodeBracketIcon },
+  components: {
+    InformationCircleIcon,
+    CodeBracketIcon,
+    Cog6ToothIcon,
+    Cog8ToothIcon,
+  },
   setup(props) {
     const { t } = useI18n();
     const refForm = ref<HTMLFormElement | null>(null);
@@ -153,6 +198,7 @@ export default {
     const evaluatorTemplate = useEvaluatorTemplate();
     const isFirstTime = ref(true);
     const environments: any = useEnvironments();
+    const loadingData = ref(true);
     const languages: any = computed(() => {
       const items = [];
       for (const key in environments?.value) {
@@ -160,12 +206,13 @@ export default {
       }
       return items;
     });
+    const advanceSettings = ref(false);
 
     const form = reactive<IForm>({
       description: {
         valid: false,
         value: "",
-        placeholder: "Describe the coding challenge which user have to solve",
+        placeholder: "Describe here what user have to solve?",
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Description",
           (v: string) => v.length >= 10 || "Error.InputMinLength_10",
@@ -184,18 +231,18 @@ export default {
       // },
 
       static_tests: {
-        valid: false,
-        value: null,
-        placeholder: "Tests against  submissions",
+        valid: true,
+        value: 5,
+        placeholder: "",
         rules: [
           (v: number) => !!v || "Error.InputEmpty_Inputs.StaticTests",
           (v: number) => v <= 20 || "Error.InputMaxNumber_20",
         ],
       },
       random_tests: {
-        valid: false,
-        value: null,
-        placeholder: "Tests  against  submissions",
+        valid: true,
+        value: 5,
+        placeholder: "",
         rules: [
           (v: number) => !!v || "Error.InputEmpty_Inputs.RandomTests",
           (v: number) => v <= 20 || "Error.InputMaxNumber_20",
@@ -393,14 +440,13 @@ export default {
     );
 
     onMounted(async () => {
-      setLoading(true);
       await getEnvironments();
       await getEvaluatorTemplate();
       await getConfigs();
       if (props.propData != null) {
         setFormData();
       }
-      setLoading(false);
+      loadingData.value = false;
     });
 
     return {
@@ -414,11 +460,28 @@ export default {
       languages,
       isFirstTime,
       InformationCircleIcon,
+      loadingData,
       CodeBracketIcon,
+      advanceSettings,
       enterExampleCode,
     };
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.popIn-enter-from {
+  opacity: 0;
+  height: 0px;
+}
+.popIn-enter-active {
+  transition: all 500ms;
+}
+
+.popIn-leave-to {
+  opacity: 0;
+}
+.popIn-leave-active {
+  transition: all 200ms;
+}
+</style>
