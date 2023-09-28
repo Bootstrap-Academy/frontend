@@ -1,33 +1,10 @@
-<!--
-❌ Responsive UI
-✅ Page Title
-⬜ Translation
-🔲 Animation
-❌ middleware
-🗒️
+# Bootstrap Academy Frontend
+The official frontend of [Bootstrap Academy](https://bootstrap.academy/).
 
-❌ Tested on chrome
-❌ Tested on firefox
-❌ Tested on safari
-❌ Tested on android mobile
-❌ Tested on apple mobile
+If you would like to submit a bug report or feature request, or are looking for general information about the project or the publicly available instances, please refer to the [Bootstrap-Academy repository](https://github.com/Bootstrap-Academy/Bootstrap-Academy).
 
-❌ Handle loading if data already exists
-❌ Handle loading if data is empty
-❌ Display data
-❌ Handle empty state
-
-❌ Recaptcha
-❌ Preset Form
-❌ Api implemented
-❌ Form Client Side Error Handling
-❌ Form Submission Process
-❌ Form Post Api Error Handling + ❌ Translation
-❌ Form Post Api Success Handling + ❌ Translation
--->
-
-ℹ️
-
-✅
-
-❌
+## Development Setup
+1. Install [Node.js and npm](https://nodejs.org/)
+2. Clone this repository and `cd` into it.
+3. Run `npm install` to install the dependencies.
+4. Run `npm run dev` to start a development server listening on http://localhost:3000/.
