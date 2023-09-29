@@ -8,4 +8,4 @@
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Translation updates (fix/improve or add new translations)
 
-Fixes #(issue-number)
+Fixes Bootstrap-Academy/Bootstrap-Academy#ISSUE-NUMBER
