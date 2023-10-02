@@ -69,12 +69,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  CheckIcon,
-  XMarkIcon,
-  CodeBracketIcon,
-  TrophyIcon,
-} from "@heroicons/vue/24/outline";
+import { CheckIcon, XMarkIcon, TrophyIcon } from "@heroicons/vue/24/outline";
 import { PropType } from "vue";
 import { ComputedRef } from "vue";
 
@@ -82,7 +77,7 @@ export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  components: { TrophyIcon, CodeBracketIcon, CheckIcon, XMarkIcon },
+  components: { TrophyIcon, CheckIcon, XMarkIcon },
   setup(props) {
     const { t } = useI18n();
 

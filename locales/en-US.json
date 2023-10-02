@@ -12,6 +12,8 @@
   },
 
   "Headings": {
+    "ExampleError": "Example Error",
+    "ExampleOutput": "Example Output",
     "Example": "Example",
     "ResetExamples": "Reset Examples",
     "WhyWeUseThem": "Why we use them?",
@@ -915,6 +917,18 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "Verdict": {
+      "COMPILATION_ERROR": "The program failed to compile ❌",
+      "INVALID_OUTPUT_FORMAT": "The program produced invalid output that could not be parsed by the evaluator",
+      "MEMORY_LIMIT_EXCEEDED": "The program used more ram than allowed.",
+      "NO_OUTPUT": "There is no output for your provided Program 🫣",
+      "OK": "Solved ✅",
+      "PRE_CHECK_FAILED": "The program failed to meet some pre conditions",
+      "RUNTIME_ERROR": "The program failed to run correctly and exited with an error code",
+      "TIME_LIMIT_EXCEEDED": "The program did not finish executing within the time limit",
+      "WRONG_ANSWER": "The program produced an incorrect answer"
+    },
+
     "VerifyToGetQuizzes": "Verify your email to get quizzes",
     "VerifyToGetChallenges": "Verify your email to get Challenges",
     "VerifyToGetLeaderboard": "Verify your email to access leaderboard",

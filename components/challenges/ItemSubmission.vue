@@ -57,14 +57,15 @@
           <td
             class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
           >
-            <Btn
-              @click="emitId(submission?.id ?? '')"
+            <InputBtn
+              class="w-fit"
+              @click="loadSubmission(submission?.id ?? '')"
               sm
               secondary
               :icon="CodeBracketIcon"
             >
               {{ t("Buttons.Load") }}
-            </Btn>
+            </InputBtn>
           </td>
         </tr>
       </table>
@@ -89,36 +90,78 @@ export default defineComponent({
 
   props: {
     data: { type: Object as PropType<any>, default: null },
+    challengeId: { type: String, default: "" },
+    codingChallengeId: { type: String, default: "" },
   },
   components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
     function formattedTimeStamp(timeStamp: any) {
-      const formatted = useDateFormat(timeStamp, "YYYY-MM-DD/HH:mm");
+      const formatted = useDateFormat(timeStamp, "YYYY-MM-DD/H:mm");
       return formatted;
     }
-    function emitId(id: any) {
-      emit("id", id);
+    async function loadSubmission(id: any) {
+      const [success, error] = await getSubmission(
+        props.challengeId,
+        props.codingChallengeId,
+        id
+      );
+
+      if (!!error) openSnackbar("error", error);
     }
     const verdictIs: any = (submission: any) => {
+      let verdict = submission.result?.verdict ?? "";
+      console.log("verdict is ", verdict);
       if (!!!submission.result) {
         return "Headings.PendingResult";
-      } else if (submission.result?.verdict.toLowerCase().includes("ok")) {
-        return "Headings.SubmissionSolved";
-      } else if (
-        submission.result?.verdict.toLowerCase().includes("no_output")
-      ) {
-        return "Headings.NoOutput";
-      } else if (
-        submission.result?.verdict.toLowerCase().includes("compilation_error")
-      ) {
-        return "Headings.CompilationError";
-      } else return submission.result?.verdict ?? "";
+      }
+
+      let toReturnVerdict: string | any = "";
+
+      switch (verdict) {
+        case "COMPILATION_ERROR":
+          toReturnVerdict = "Error.Verdict.COMPILATION_ERROR";
+          break;
+        case "INVALID_OUTPUT_FORMAT":
+          toReturnVerdict = "Error.Verdict.INVALID_OUTPUT_FORMAT";
+          break;
+        case "MEMORY_LIMIT_EXCEEDED":
+          toReturnVerdict = "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
+          break;
+        case "NO_OUTPUT":
+          toReturnVerdict = "Error.Verdict.NO_OUTPUT";
+          break;
+        case "OK":
+          toReturnVerdict = "Error.Verdict.OK";
+          break;
+        case "PRE_CHECK_FAILED":
+          toReturnVerdict = "Error.Verdict.PRE_CHECK_FAILED";
+          break;
+        case "RUNTIME_ERROR":
+          toReturnVerdict = "Error.Verdict.RUNTIME_ERROR";
+          break;
+        case "TIME_LIMIT_EXCEEDED":
+          toReturnVerdict = "Error.Verdict.TIME_LIMIT_EXCEEDED";
+          break;
+        case "WRONG_ANSWER":
+          toReturnVerdict = "Error.Verdict.WRONG_ANSWER";
+          break;
+
+        default:
+          toReturnVerdict = "No_Output";
+          break;
+      }
+      return toReturnVerdict;
     };
+
     const dateFormat = (date: any) => {
-      const submissionAt = useDateFormat(date, "MMMM DD, YYYY  HH-MM AA");
-      return submissionAt;
+      let utcDate = new Date(date);
+      const localTime = utcDate.toLocaleString();
+      // let ms=localDate.gett
+      // console.log("ms is", localTime);
+      // const submissionAt = useDateFormat(localTime, "MMMM DD, YYYY  HH:mm");
+      return localTime;
     };
     return {
       t,
@@ -126,7 +169,7 @@ export default defineComponent({
       CodeBracketIcon,
       CheckBadgeIcon,
       formattedTimeStamp,
-      emitId,
+      loadSubmission,
       CheckIcon,
       dateFormat,
       verdictIs,

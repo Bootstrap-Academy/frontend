@@ -51,7 +51,7 @@
           {{
             example.solved == null
               ? "There is no output for your provided code"
-              : example.solved
+              : t(example.solved)
           }}
         </p>
 
@@ -59,15 +59,25 @@
           <p class="text-white">
             {{ t("Headings.ProgramInputShouldBe") }}
           </p>
-          <p>
-            {{ example?.input ?? "" }}
-          </p>
+          <p v-html="example?.input ?? ''"></p>
 
           <p class="text-white mt-4">
             {{ t("Headings.ProgramOutputShouldBe") }}
           </p>
-          <p>{{ example?.output ?? "" }}</p>
+          <p v-html="example?.output ?? ''"></p>
         </article>
+
+        <p v-if="!!example?.stderr">
+          {{ t("Headings.ExampleError") }}:
+
+          <span v-html="example?.stderr ?? ''"></span>
+        </p>
+        <p v-if="!!example?.stdout">
+          {{ t("Headings.ExampleOutput") }}:
+
+          <span v-html="example?.stdout ?? ''"></span>
+        </p>
+
         <p v-if="example?.explanation" class="my-5 text-sm">
           Explanation:
           {{ example?.explanation ?? "" }}
@@ -105,7 +115,6 @@ const props = defineProps({
   codingChallengeId: { type: String, default: "" },
 });
 const { t } = useI18n();
-const btnLoading = ref(true);
 const duplicateExamples: any = ref([]);
 
 async function TestAgainstMe(id: any) {
@@ -144,30 +153,81 @@ async function testAgainstAll() {
 function resetExamples() {
   duplicateExamples.value.map((example: any) => {
     example.solved = "pending";
+    example.stderr = "";
+    example.stdout = "";
   });
 }
 
 function successHandler(success: any, id: any) {
-  console.log("in");
+  let atIndex: any;
+  duplicateExamples.value.forEach((element: any, index: any) => {
+    if (element.id == id) atIndex = index;
+  });
+
+  if (!!success.compile) {
+    duplicateExamples.value[atIndex].stderr = success.compile?.stderr ?? "";
+    duplicateExamples.value[atIndex].stdout = success.compile?.stdout ?? "";
+  } else if (!!success.run) {
+    duplicateExamples.value[atIndex].stderr = success.run?.stderr ?? "";
+    duplicateExamples.value[atIndex].stdout = success.run?.stdout ?? "";
+  }
+
   if (success?.verdict == "OK") {
-    duplicateExamples.value.forEach((element: any) => {
-      if (element.id == id) {
-        element.solved = "solved";
-      }
-    });
+    duplicateExamples.value[atIndex].solved = "solved";
   } else {
-    // openSnackbar("Info", "Success.SolvedCodingChallengeButNotCorrect");
-    duplicateExamples.value.forEach((element: any) => {
-      if (element.id == id) {
-        element.solved = success?.reason ?? null;
-      }
-    });
+    setResonBasedOnVerdict(success, id);
+  }
+}
+
+function setResonBasedOnVerdict(success: any, id: any) {
+  let atIndex: any;
+  duplicateExamples.value.forEach((element: any, i: any) => {
+    if (element.id == id) atIndex = i;
+  });
+  switch (success?.verdict) {
+    case "COMPILATION_ERROR":
+      duplicateExamples.value[atIndex].solved =
+        "Error.Verdict.COMPILATION_ERROR";
+      break;
+    case "INVALID_OUTPUT_FORMAT":
+      duplicateExamples.value[atIndex].solved =
+        "Error.Verdict.INVALID_OUTPUT_FORMAT";
+      break;
+    case "MEMORY_LIMIT_EXCEEDED":
+      duplicateExamples.value[atIndex].solved =
+        "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
+      break;
+    case "NO_OUTPUT":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
+      break;
+    case "OK":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
+      break;
+    case "PRE_CHECK_FAILED":
+      duplicateExamples.value[atIndex].solved =
+        "Error.Verdict.PRE_CHECK_FAILED";
+      break;
+    case "RUNTIME_ERROR":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
+      break;
+    case "TIME_LIMIT_EXCEEDED":
+      duplicateExamples.value[atIndex].solved =
+        "Error.Verdict.TIME_LIMIT_EXCEEDED";
+      break;
+    case "WRONG_ANSWER":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
+      break;
+
+    default:
+      duplicateExamples.value[atIndex].solved = null;
+      break;
   }
 }
 
 function errorHandler(error: any) {
   openSnackbar("error", error);
 }
+
 watch(
   () => props.examples,
   (newValue: any, oldValue: any) => {
@@ -175,6 +235,8 @@ watch(
     console.log("watching");
     duplicateExamples.value = newValue.map((element: any) => {
       element.solved = "pending";
+      element.stdout = "";
+      element.stderr = "";
       element.loading = false;
     });
     duplicateExamples.value = newValue;

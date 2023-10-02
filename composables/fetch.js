@@ -198,10 +198,10 @@ const onResponseError = async ({ request, options, response }) => {
   } else if (details.toLocaleLowerCase().includes("banned")) {
     response._data.detail = "Error.UserIsBanned";
   } else if (details.toLocaleLowerCase().includes("unverified")) {
-    // response._data.detail = "Error.UserIsBanned";
-    // openSnackbar("error", "Error.AccountNotVerified");
     return (response._data.detail = "Error.AccountNotVerified");
   }
+  console.log("end");
+  return response;
 };
 
 function isAccessTokenExpired() {

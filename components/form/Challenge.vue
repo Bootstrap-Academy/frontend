@@ -36,12 +36,15 @@
       v-for="(skill, i) of form.skills.value"
       :key="i"
     >
-      <li class="font-semibold text-subheading">{{ skill }}</li>
+      <li class="font-semibold text-subheading">
+        {{ skill.replace(/_/g, " ") }}
+      </li>
       <XMarkIcon
         @click="form.skills.value.splice(i, 1)"
         class="h-6 w-6 text-subheading hover:text-error cursor-pointer"
       />
     </div>
+
     <article class="flex justify-end items-center gap-x-3 mt-5 flex-wrap">
       <InputBtn
         secondary
@@ -90,17 +93,19 @@ export default defineComponent({
     const skills: any = computed(() => {
       let arr: any = [];
       if (!rootSkillTree.value) return;
-      console.log("after if");
       rootSkillTree.value?.skills.forEach((skill: any) => {
         if (!skill.skills.length) return;
         skill.skills?.forEach((subSkill: any) => {
           arr.push({
-            label: subSkill,
+            label: subSkill.replace(/_/g, " "),
             value: subSkill,
           });
         });
       });
-      return arr;
+      let sortedArray = arr.slice().sort((a: any, b: any) => {
+        return a.label.localeCompare(b.label);
+      });
+      return sortedArray;
     });
 
     const categoryOptions = computed(() => {

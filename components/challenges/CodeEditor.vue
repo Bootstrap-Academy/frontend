@@ -81,6 +81,7 @@ export default defineComponent({
     const submission = useCodingSubmission();
     const premiumInfo: any = usePremiumInfo();
     const language = ref("typescript");
+    const updateCode = ref(true);
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
     });
@@ -152,6 +153,28 @@ export default defineComponent({
       else openSnackbar("error", error);
     }
 
+    function updateCodeAsExampleChange() {
+      openDialog(
+        "info",
+        "Headings.UpdateYourCode",
+        "Body.UpdateYourCode",
+        false,
+        {
+          label: "Buttons.Update",
+          onclick: () => {
+            emit(
+              "update:modelValue",
+              environments.value[language.value].example
+            );
+          },
+        },
+        {
+          label: "Buttons.Cancel",
+          onclick: () => {},
+        }
+      );
+    }
+
     watch(
       () => props.modelValue,
       (newValue) => {
@@ -164,25 +187,9 @@ export default defineComponent({
     watch(
       () => language.value,
       (newValue, oldValue) => {
-        openDialog(
-          "info",
-          "Headings.UpdateYourCode",
-          "Body.UpdateYourCode",
-          false,
-          {
-            label: "Buttons.Update",
-            onclick: () => {
-              emit(
-                "update:modelValue",
-                environments.value[language.value].example
-              );
-            },
-          },
-          {
-            label: "Buttons.Cancel",
-            onclick: () => {},
-          }
-        );
+        if (!!updateCode.value) {
+          updateCodeAsExampleChange();
+        }
       }
     );
 
@@ -191,7 +198,14 @@ export default defineComponent({
       (newValue: any, oldValue) => {
         if (editor && editor.getValue() !== newValue) {
           editor.setValue(newValue.code);
+          // using updateCode as boolean so i can neglect watch from showing up dialog
+          updateCode.value = false;
           language.value = newValue.environment;
+          emit("update:modelValue", newValue.code);
+          //setting time zero out so that variable change at the end and dialog don't show up from watch of language
+          setTimeout(() => {
+            updateCode.value = true;
+          }, 0);
         }
       },
       { deep: true }
@@ -231,6 +245,7 @@ export default defineComponent({
 
     onBeforeUnmount(() => {
       editor?.dispose();
+
       clearInterval(interval.value);
     });
 

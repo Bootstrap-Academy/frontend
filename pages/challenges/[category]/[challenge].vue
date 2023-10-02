@@ -62,7 +62,8 @@
       >
         <ChallengesItemSubmission
           :data="challenge"
-          @id="watchSubmissionEmition($event)"
+          :challengeId="challengeID"
+          :codingChallengeId="codingChallengeId"
         />
         <ChallengesItemDescription :data="codingChallenge" />
         <ChallengesItemExamples
@@ -135,17 +136,6 @@ export default {
       return heartInfo.value?.hearts ?? 0;
     });
 
-    async function watchSubmissionEmition(id: any) {
-      const [success, error] = await getSubmission(
-        challengeID.value,
-        codingChallengeId.value,
-        id
-      );
-
-      if (!!success) {
-      } else openSnackbar("error", error);
-    }
-
     onMounted(async () => {
       await Promise.all([
         getChallengeCategory(categoryID.value),
@@ -189,7 +179,6 @@ export default {
       environment,
       allCodingChallenges,
       codingChallengeId,
-      watchSubmissionEmition,
       challengeID,
       codingChallenge,
       examples,

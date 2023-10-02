@@ -11,6 +11,8 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "ExampleError": "Beispiel Fehler",
+    "ExampleOutput": "Beispiel Ausgabe",
     "ResetExamples": "Beispiele zurücksetzen",
     "WhyWeUseThem": "Warum verwenden wir sie?",
     "Why": "Warum",
@@ -916,6 +918,18 @@
     "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
   },
   "Error": {
+    "Verdict": {
+      "COMPILATION_ERROR": "Das Programm konnte nicht kompiliert werden❌",
+      "INVALID_OUTPUT_FORMAT": "Das Programm hat eine ungültige Ausgabe erzeugt, die vom Evaluator nicht analysiert werden konnte",
+      "MEMORY_LIMIT_EXCEEDED": "Das Programm hat mehr RAM verwendet als erlaubt",
+      "NO_OUTPUT": "Es gibt keine Ausgabe für Ihren bereitgestellten Programm 🫣",
+      "OK": "Gelöst✅",
+      "PRE_CHECK_FAILED": "Das Programm konnte einige Vorbedingungen nicht erfüllen",
+      "RUNTIME_ERROR": "Das Programm konnte nicht ordnungsgemäß ausgeführt werden und wurde mit einem Fehlercode beendet",
+      "TIME_LIMIT_EXCEEDED": "Die Ausführung des Programms wurde nicht innerhalb des Zeitlimits abgeschlossen",
+      "WRONG_ANSWER": "Das Programm hat eine falsche Antwort ausgegeben"
+    },
+
     "VerifyToGetQuizzes": "Bestätigen Sie Ihre E-Mail-Adresse, um Quizfragen zu erhalten",
     "VerifyToGetChallenges": "Bestätigen Sie Ihre E-Mail-Adresse, um Herausforderungen zu erhalten",
     "VerifyToGetLeaderboard": "Bestätigen Sie Ihre E-Mail-Adresse, um auf die Bestenliste zuzugreifen",

@@ -68,6 +68,38 @@ export async function createCodingChallenge(taskId: string, body: any) {
         return [response, null];
 
     } catch (error: any) {
+        let verdict = error.data?.details?.result?.verdict ?? ""
+        console.log("Verdict", verdict)
+        switch (verdict) {
+            case "COMPILATION_ERROR":
+                return [null, "Error.Verdict.COMPILATION_ERROR"]
+                break;
+            case "INVALID_OUTPUT_FORMAT":
+                return [null, "Error.Verdict.INVALID_OUTPUT_FORMAT"]
+                break;
+            case "MEMORY_LIMIT_EXCEEDED":
+                return [null, "Error.Verdict.MEMORY_LIMIT_EXCEEDED"]
+                break;
+            case "NO_OUTPUT":
+                return [null, "Error.Verdict.NO_OUTPUT"]
+                break;
+            case "OK":
+                return [null, "Error.Verdict.OK"]
+                break;
+            case "PRE_CHECK_FAILED":
+                return [null, "Error.Verdict.PRE_CHECK_FAILED"]
+                break;
+            case "RUNTIME_ERROR":
+                return [null, "Error.Verdict.RUNTIME_ERROR"]
+                break;
+            case "TIME_LIMIT_EXCEEDED":
+                return [null, "Error.Verdict.TIME_LIMIT_EXCEEDED"]
+                break;
+            case "WRONG_ANSWER":
+                return [null, "Error.Verdict.WRONG_ANSWER"]
+                break;
+        }
+
         let msg = error?.data?.error ?? ""
         if (msg == 'subtask_not_found') {
             return [null, "Error.QuizOrCodingChallengeNotFound"]
@@ -81,6 +113,7 @@ export async function createCodingChallenge(taskId: string, body: any) {
         else if (msg == 'testcase_failed') {
             return [null, "Error.SolutionCodeFailed"]
         }
+
         return [null, error.data];
     }
 }
@@ -134,6 +167,52 @@ export async function updateCodingChallenge(taskId: string, subTaskId: any, body
         } return [response, null];
 
     } catch (error: any) {
+        let verdict = error.data?.details?.result?.verdict ?? ""
+        console.log("Verdict", verdict)
+        switch (verdict) {
+            case "COMPILATION_ERROR":
+                return [null, "Error.Verdict.COMPILATION_ERROR"]
+                break;
+            case "INVALID_OUTPUT_FORMAT":
+                return [null, "Error.Verdict.INVALID_OUTPUT_FORMAT"]
+                break;
+            case "MEMORY_LIMIT_EXCEEDED":
+                return [null, "Error.Verdict.MEMORY_LIMIT_EXCEEDED"]
+                break;
+            case "NO_OUTPUT":
+                return [null, "Error.Verdict.NO_OUTPUT"]
+                break;
+            case "OK":
+                return [null, "Error.Verdict.OK"]
+                break;
+            case "PRE_CHECK_FAILED":
+                return [null, "Error.Verdict.PRE_CHECK_FAILED"]
+                break;
+            case "RUNTIME_ERROR":
+                return [null, "Error.Verdict.RUNTIME_ERROR"]
+                break;
+            case "TIME_LIMIT_EXCEEDED":
+                return [null, "Error.Verdict.TIME_LIMIT_EXCEEDED"]
+                break;
+            case "WRONG_ANSWER":
+                return [null, "Error.Verdict.WRONG_ANSWER"]
+                break;
+        }
+
+
+        let msg = error?.data?.error ?? ""
+        if (msg == 'subtask_not_found') {
+            return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else if (msg == 'permission_denied') {
+            return [null, "Error.NotAllowedForRatings"]
+        }
+        else if (msg == 'banned') {
+            return [null, "Error.UserIsBanned"]
+        }
+        else if (msg == 'testcase_failed') {
+            return [null, "Error.SolutionCodeFailed"]
+        }
         return [null, error.data];
     }
 }
@@ -254,7 +333,7 @@ export async function reportSubtask(body: any) {
 export async function getEnvironments() {
     try {
         const res = await GET(`/challenges/executor/environments`)
-        console.log("response of environments", res)
+        // console.log("response of environments", res)
 
         const environments = useEnvironments()
         environments.value = res ?? null
@@ -268,10 +347,9 @@ export async function getEnvironments() {
 
 export async function getConfigs() {
     try {
-        console.log("getting congi",)
 
         const res = await GET(`/challenges/executor/config`)
-        console.log("response of config", res)
+        // console.log("response of config", res)
 
         const configs = useConfigs()
         configs.value = res ?? null
@@ -285,10 +363,10 @@ export async function getConfigs() {
 
 export async function getEvaluatorTemplate() {
     try {
-        console.log("getting congi",)
+        // console.log("getting congi",)
 
         const res = await GET(`/challenges/coding_challenges/evaluator/template.py`)
-        console.log("response of evaluator template", res)
+        // console.log("response of evaluator template", res)
 
         const evaluatorTemplate = useEvaluatorTemplate()
         evaluatorTemplate.value = res ?? null
