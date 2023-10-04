@@ -11,6 +11,8 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "NoErrorFound": "Kein Fehler gefunden",
+    "Error": "Fehler",
     "ExampleError": "Beispiel Fehler",
     "ExampleOutput": "Beispiel Ausgabe",
     "ResetExamples": "Beispiele zurücksetzen",
@@ -930,6 +932,8 @@
       "WRONG_ANSWER": "Das Programm hat eine falsche Antwort ausgegeben"
     },
 
+    "EvaluatorInvalidOutput": "Die Ausgabe für Ihren Evaluator ist ungültig",
+    "EvaluatorFailed": "Es liegt ein Fehler im Evaluatorcode vor ❌",
     "VerifyToGetQuizzes": "Bestätigen Sie Ihre E-Mail-Adresse, um Quizfragen zu erhalten",
     "VerifyToGetChallenges": "Bestätigen Sie Ihre E-Mail-Adresse, um Herausforderungen zu erhalten",
     "VerifyToGetLeaderboard": "Bestätigen Sie Ihre E-Mail-Adresse, um auf die Bestenliste zuzugreifen",

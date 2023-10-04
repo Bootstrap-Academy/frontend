@@ -69,40 +69,43 @@ export async function createCodingChallenge(taskId: string, body: any) {
 
     } catch (error: any) {
         let verdict = error.data?.details?.result?.verdict ?? ""
-        console.log("Verdict", verdict)
+        console.log("in Verdict", verdict)
         switch (verdict) {
             case "COMPILATION_ERROR":
-                return [null, "Error.Verdict.COMPILATION_ERROR"]
+                return [null, { error: "Error.Verdict.COMPILATION_ERROR", details: error.data.details }]
                 break;
             case "INVALID_OUTPUT_FORMAT":
-                return [null, "Error.Verdict.INVALID_OUTPUT_FORMAT"]
+                return [null, { error: "Error.Verdict.INVALID_OUTPUT_FORMAT", details: error?.data?.details }]
                 break;
             case "MEMORY_LIMIT_EXCEEDED":
-                return [null, "Error.Verdict.MEMORY_LIMIT_EXCEEDED"]
+                return [null, { error: "Error.Verdict.MEMORY_LIMIT_EXCEEDED", details: error?.data?.details }]
                 break;
             case "NO_OUTPUT":
-                return [null, "Error.Verdict.NO_OUTPUT"]
+                return [null, { error: "Error.Verdict.NO_OUTPUT", details: error?.data?.details }]
                 break;
             case "OK":
-                return [null, "Error.Verdict.OK"]
+                return [null, { error: "Error.Verdict.OK", details: error?.data?.details }]
                 break;
             case "PRE_CHECK_FAILED":
-                return [null, "Error.Verdict.PRE_CHECK_FAILED"]
+                return [null, { error: "Error.Verdict.PRE_CHECK_FAILED", details: error?.data?.details }]
                 break;
             case "RUNTIME_ERROR":
-                return [null, "Error.Verdict.RUNTIME_ERROR"]
+                return [null, { error: "Error.Verdict.RUNTIME_ERROR", details: error?.data?.details }]
                 break;
             case "TIME_LIMIT_EXCEEDED":
-                return [null, "Error.Verdict.TIME_LIMIT_EXCEEDED"]
+                return [null, { error: "Error.Verdict.TIME_LIMIT_EXCEEDED", details: error?.data?.details }]
                 break;
             case "WRONG_ANSWER":
-                return [null, "Error.Verdict.WRONG_ANSWER"]
+                return [null, { error: "Error.Verdict.WRONG_ANSWER", details: error?.data?.details }]
                 break;
         }
 
         let msg = error?.data?.error ?? ""
         if (msg == 'subtask_not_found') {
             return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else if (msg == 'evaluator_failed') {
+            return [null, { error: "Error.EvaluatorFailed", details: error?.data?.details }]
         }
         else if (msg == 'permission_denied') {
             return [null, "Error.NotAllowedForRatings"]
@@ -111,7 +114,10 @@ export async function createCodingChallenge(taskId: string, body: any) {
             return [null, "Error.UserIsBanned"]
         }
         else if (msg == 'testcase_failed') {
-            return [null, "Error.SolutionCodeFailed"]
+            return [null, { error: "Error.SolutionCodeFailed", details: error?.data?.details }]
+        }
+        else if (msg == 'invalid_output') {
+            return [null, { error: "Error.EvaluatorInvalidOutput", details: error?.data?.details }]
         }
 
         return [null, error.data];
@@ -168,41 +174,43 @@ export async function updateCodingChallenge(taskId: string, subTaskId: any, body
 
     } catch (error: any) {
         let verdict = error.data?.details?.result?.verdict ?? ""
-        console.log("Verdict", verdict)
+        console.log("in Verdict", verdict)
         switch (verdict) {
             case "COMPILATION_ERROR":
-                return [null, "Error.Verdict.COMPILATION_ERROR"]
+                return [null, { error: "Error.Verdict.COMPILATION_ERROR", details: error.data.details }]
                 break;
             case "INVALID_OUTPUT_FORMAT":
-                return [null, "Error.Verdict.INVALID_OUTPUT_FORMAT"]
+                return [null, { error: "Error.Verdict.INVALID_OUTPUT_FORMAT", details: error?.data?.details }]
                 break;
             case "MEMORY_LIMIT_EXCEEDED":
-                return [null, "Error.Verdict.MEMORY_LIMIT_EXCEEDED"]
+                return [null, { error: "Error.Verdict.MEMORY_LIMIT_EXCEEDED", details: error?.data?.details }]
                 break;
             case "NO_OUTPUT":
-                return [null, "Error.Verdict.NO_OUTPUT"]
+                return [null, { error: "Error.Verdict.NO_OUTPUT", details: error?.data?.details }]
                 break;
             case "OK":
-                return [null, "Error.Verdict.OK"]
+                return [null, { error: "Error.Verdict.OK", details: error?.data?.details }]
                 break;
             case "PRE_CHECK_FAILED":
-                return [null, "Error.Verdict.PRE_CHECK_FAILED"]
+                return [null, { error: "Error.Verdict.PRE_CHECK_FAILED", details: error?.data?.details }]
                 break;
             case "RUNTIME_ERROR":
-                return [null, "Error.Verdict.RUNTIME_ERROR"]
+                return [null, { error: "Error.Verdict.RUNTIME_ERROR", details: error?.data?.details }]
                 break;
             case "TIME_LIMIT_EXCEEDED":
-                return [null, "Error.Verdict.TIME_LIMIT_EXCEEDED"]
+                return [null, { error: "Error.Verdict.TIME_LIMIT_EXCEEDED", details: error?.data?.details }]
                 break;
             case "WRONG_ANSWER":
-                return [null, "Error.Verdict.WRONG_ANSWER"]
+                return [null, { error: "Error.Verdict.WRONG_ANSWER", details: error?.data?.details }]
                 break;
         }
-
 
         let msg = error?.data?.error ?? ""
         if (msg == 'subtask_not_found') {
             return [null, "Error.QuizOrCodingChallengeNotFound"]
+        }
+        else if (msg == 'evaluator_failed') {
+            return [null, { error: "Error.EvaluatorFailed", details: error?.data?.details }]
         }
         else if (msg == 'permission_denied') {
             return [null, "Error.NotAllowedForRatings"]
@@ -211,8 +219,12 @@ export async function updateCodingChallenge(taskId: string, subTaskId: any, body
             return [null, "Error.UserIsBanned"]
         }
         else if (msg == 'testcase_failed') {
-            return [null, "Error.SolutionCodeFailed"]
+            return [null, { error: "Error.SolutionCodeFailed", details: error?.data?.details }]
         }
+        else if (msg == 'invalid_output') {
+            return [null, { error: "Error.EvaluatorInvalidOutput", details: error?.data?.details }]
+        }
+
         return [null, error.data];
     }
 }

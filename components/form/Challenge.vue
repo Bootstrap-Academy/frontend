@@ -29,7 +29,11 @@
       :rules="form.description.rules"
     />
 
-    <InputSelect v-model="selectedSkill" :options="skills" />
+    <InputSelect
+      v-if="sortedSubskill?.length"
+      v-model="selectedSkill"
+      :options="sortedSubskill"
+    />
 
     <div
       class="flex justify-between gap-3 items-center my-1"
@@ -69,12 +73,12 @@
 
 <script lang="ts">
 import { TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { defineComponent, PropType, ref } from "vue";
+import { PropType, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IForm } from "~/types/form";
 import { useUser } from "~~/composables/user";
 
-export default defineComponent({
+export default {
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
@@ -86,23 +90,38 @@ export default defineComponent({
     const user: any = useUser();
     const rootSkillTree: any = useRootSkillTree();
     const selectedSkill = ref("");
+    const subskillsArray: any = ref([]);
     // ============================================================= Handling Categories
     const challengesCategories = useChallengesCategories();
     const loading = ref(challengesCategories.value.length <= 0);
 
-    const skills: any = computed(() => {
-      let arr: any = [];
-      if (!rootSkillTree.value) return;
-      rootSkillTree.value?.skills.forEach((skill: any) => {
-        if (!skill.skills.length) return;
-        skill.skills?.forEach((subSkill: any) => {
-          arr.push({
-            label: subSkill.replace(/_/g, " "),
-            value: subSkill,
-          });
+    watch(
+      () => rootSkillTree.value,
+      (newValue, oldValue) => {
+        let arr: any = [];
+        if (!rootSkillTree.value) return;
+        rootSkillTree.value?.skills.forEach(async (skill: any) => {
+          await fnGetSubSkillTree(skill.id);
+        });
+      }
+    );
+
+    async function fnGetSubSkillTree(id: any) {
+      const [success, error] = await getSubSkillTree(id);
+      console.log("successsss", success.skills);
+      if (!success.skills.length) return;
+      success.skills.forEach((subSkill: any) => {
+        subskillsArray.value.push({
+          value: subSkill.id,
+          label: subSkill.name,
         });
       });
-      let sortedArray = arr.slice().sort((a: any, b: any) => {
+    }
+
+    const sortedSubskill = computed(() => {
+      if (!subskillsArray.value.length) return;
+
+      let sortedArray = subskillsArray.value.slice().sort((a: any, b: any) => {
         return a.label.localeCompare(b.label);
       });
       return sortedArray;
@@ -363,13 +382,13 @@ export default defineComponent({
       setCategory,
       fnDeleteChallenge,
       user,
-      skills,
       selectedSkill,
       TrashIcon,
       XMarkIcon,
+      sortedSubskill,
     };
   },
-});
+};
 </script>
 
 <style scoped></style>

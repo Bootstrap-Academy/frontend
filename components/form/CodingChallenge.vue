@@ -49,6 +49,17 @@
             <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
           </div>
           <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
+          <!-- error if there is any during evaluator code creation-->
+
+          <div v-if="!!evaluatorCodeErrorDetails.stderr">
+            <p class="text-error">{{ t("Headings.Error") }}</p>
+
+            <p v-html="evaluatorCodeErrorDetails.stderr" class="text-error"></p>
+          </div>
+          <div v-if="!!evaluatorCodeErrorDetails.stdout">
+            <p class="text-accent">{{ t("Headings.Output") }}</p>
+            <p v-html="evaluatorCodeErrorDetails.stdout"></p>
+          </div>
         </article>
 
         <article>
@@ -77,6 +88,21 @@
             {{ t("Headings.ClickForExampleCode") }}
             <CodeBracketIcon class="h-5 w-5" />
           </div>
+          <!-- error if there is any during create solution code -->
+          <p v-if="!!SolutionCodeErrorDetails.verdict" class="mt-4">
+            {{ t(SolutionCodeErrorDetails.verdict) }}
+          </p>
+          <p v-if="!!SolutionCodeErrorDetails.stderr" class="mt-4">
+            <span class="block">{{ t("Headings.Error") }} </span>
+            <span
+              v-html="SolutionCodeErrorDetails.stderr"
+              class="text-error"
+            ></span>
+          </p>
+          <p v-if="!!SolutionCodeErrorDetails.stdout" class="mt-4">
+            <span class="block text-accent">{{ t("Headings.Output") }}</span>
+            <span v-html="SolutionCodeErrorDetails.stdout"></span>
+          </p>
         </article>
 
         <section class="mt-10">
@@ -199,6 +225,16 @@ export default {
     const isFirstTime = ref(true);
     const environments: any = useEnvironments();
     const loadingData = ref(true);
+    const advanceSettings = ref(false);
+    const SolutionCodeErrorDetails = ref({
+      stdout: "",
+      stderr: "",
+      verdict: "",
+    });
+    const evaluatorCodeErrorDetails = ref({
+      stdout: "",
+      stderr: "",
+    });
     const languages: any = computed(() => {
       const items = [];
       for (const key in environments?.value) {
@@ -206,7 +242,6 @@ export default {
       }
       return items;
     });
-    const advanceSettings = ref(false);
 
     const form = reactive<IForm>({
       description: {
@@ -304,6 +339,7 @@ export default {
     async function onclickSubmitForm() {
       if (form.validate()) {
         form.submitting = true;
+        clearErrorsForCode();
         if (!!props?.propData) fnEditCodingChallenge();
         else fnCreateCodingChallenge();
 
@@ -365,7 +401,35 @@ export default {
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res ?? "");
+      console.log("in handler", res.error);
+      if (
+        res?.error == "Error.EvaluatorFailed" ||
+        res?.error == "Error.EvaluatorInvalidOutput"
+      ) {
+        console.log("evaluator code failed", res.details);
+        evaluatorCodeErrorDetails.value = {
+          stderr: res.details.run.stderr.replace(/\n/g, "<br>"),
+          stdout: res.details.run.stdout.replace(/\n/g, "<br>"),
+        };
+      } else {
+        if (!!res.details?.result?.compile) {
+          SolutionCodeErrorDetails.value = {
+            stderr: res.details.result.compile.stderr.replace(/\n/g, "<br>"),
+            stdout: res.details.result.compile.stdout.replace(/\n/g, "<br>"),
+            verdict: res.error,
+          };
+          console.log("solution code compile error ", res);
+        } else if (!!res.details?.result?.run) {
+          SolutionCodeErrorDetails.value = {
+            stderr: res.details.result.run.stderr.replace(/\n/g, "<br>"),
+            stdout: res.details.result.run.stdout.replace(/\n/g, "<br>"),
+            verdict: res.error,
+          };
+          console.log("solution code run error ", res);
+        }
+      }
+
+      openSnackbar("error", res?.error ?? "");
     }
 
     function closeDialog() {
@@ -418,17 +482,21 @@ export default {
       }
     }
 
-    watch(
-      () => props.propData,
-      () => {
-        setFormData();
-      },
-      { deep: true }
-    );
-
     function enterExampleCode() {
       form.solution_code.value =
         environments.value[form.solution_environment.value].example;
+    }
+
+    function clearErrorsForCode() {
+      evaluatorCodeErrorDetails.value = {
+        stdout: "",
+        stderr: "",
+      };
+      SolutionCodeErrorDetails.value = {
+        stdout: "",
+        stderr: "",
+        verdict: "",
+      };
     }
 
     watch(
@@ -437,6 +505,14 @@ export default {
         form.evaluator.value = newValue;
       },
       { immediate: true }
+    );
+
+    watch(
+      () => props.propData,
+      () => {
+        setFormData();
+      },
+      { deep: true }
     );
 
     onMounted(async () => {
@@ -464,6 +540,8 @@ export default {
       CodeBracketIcon,
       advanceSettings,
       enterExampleCode,
+      evaluatorCodeErrorDetails,
+      SolutionCodeErrorDetails,
     };
   },
 };

@@ -12,6 +12,8 @@
   },
 
   "Headings": {
+    "Error": "Error",
+    "NoErrorFound": "No Error Found",
     "ExampleError": "Example Error",
     "ExampleOutput": "Example Output",
     "Example": "Example",
@@ -928,7 +930,8 @@
       "TIME_LIMIT_EXCEEDED": "The program did not finish executing within the time limit",
       "WRONG_ANSWER": "The program produced an incorrect answer"
     },
-
+    "EvaluatorInvalidOutput": "Output for your evaluator is invalid",
+    "EvaluatorFailed": "There's an error in evaluator code ❌",
     "VerifyToGetQuizzes": "Verify your email to get quizzes",
     "VerifyToGetChallenges": "Verify your email to get Challenges",
     "VerifyToGetLeaderboard": "Verify your email to access leaderboard",

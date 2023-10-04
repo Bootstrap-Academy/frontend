@@ -24,6 +24,12 @@
           >
             {{ t("Headings.Status") }}
           </th>
+
+          <th
+            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+          >
+            {{ t("Headings.Error") }}
+          </th>
           <th
             class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
           >
@@ -48,10 +54,43 @@
             {{ submission?.environment ?? "" }}
           </td>
           <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
+            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[200px]"
           >
             <p class="text-sm bg-light p-2 rounded-md">
               {{ t(verdictIs(submission)) }}
+            </p>
+          </td>
+
+          <!-- error for submission-->
+          <td
+            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
+          >
+            <div
+              v-if="
+                !!submission.result.compile &&
+                !!submission.result.compile.stderr
+              "
+            >
+              <p
+                v-html="formatError(submission.result.compile.stderr)"
+                class="text-sm bg-light p-2 rounded-md"
+              ></p>
+            </div>
+            <div
+              v-if="!!submission.result.run && !!submission.result.run.stderr"
+            >
+              <p
+                v-html="formatError(submission.result.run.stderr)"
+                class="text-sm bg-light p-2 rounded-md"
+              ></p>
+            </div>
+            <p
+              v-if="
+                !!!submission?.result?.run?.stderr &&
+                !!!submission?.result?.compile?.stderr
+              "
+            >
+              {{ t("Headings.NoErrorFound") }}
             </p>
           </td>
           <td
@@ -97,19 +136,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
-    function formattedTimeStamp(timeStamp: any) {
-      const formatted = useDateFormat(timeStamp, "YYYY-MM-DD/H:mm");
-      return formatted;
-    }
-    async function loadSubmission(id: any) {
-      const [success, error] = await getSubmission(
-        props.challengeId,
-        props.codingChallengeId,
-        id
-      );
 
-      if (!!error) openSnackbar("error", error);
-    }
     const verdictIs: any = (submission: any) => {
       let verdict = submission.result?.verdict ?? "";
       console.log("verdict is ", verdict);
@@ -163,6 +190,23 @@ export default defineComponent({
       // const submissionAt = useDateFormat(localTime, "MMMM DD, YYYY  HH:mm");
       return localTime;
     };
+    function formattedTimeStamp(timeStamp: any) {
+      const formatted = useDateFormat(timeStamp, "YYYY-MM-DD/H:mm");
+      return formatted;
+    }
+    async function loadSubmission(id: any) {
+      const [success, error] = await getSubmission(
+        props.challengeId,
+        props.codingChallengeId,
+        id
+      );
+
+      if (!!error) openSnackbar("error", error);
+    }
+
+    function formatError(value: any) {
+      return value.replace(/\n/g, "<br>");
+    }
     return {
       t,
       submissions,
@@ -173,6 +217,7 @@ export default defineComponent({
       CheckIcon,
       dateFormat,
       verdictIs,
+      formatError,
     };
   },
 });

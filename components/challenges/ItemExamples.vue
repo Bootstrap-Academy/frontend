@@ -59,21 +59,25 @@
           <p class="text-white">
             {{ t("Headings.ProgramInputShouldBe") }}
           </p>
-          <p v-html="example?.input ?? ''"></p>
+          <p v-html="replaceOutputAndInputForExample(example?.input ?? '')"></p>
 
           <p class="text-white mt-4">
             {{ t("Headings.ProgramOutputShouldBe") }}
           </p>
-          <p v-html="example?.output ?? ''"></p>
+          <p
+            v-html="replaceOutputAndInputForExample(example?.output ?? '')"
+          ></p>
         </article>
 
-        <p v-if="!!example?.stderr">
-          {{ t("Headings.ExampleError") }}:
+        <p v-if="!!example?.stderr" class="mt-3">
+          <span class="text-error"> {{ t("Headings.ExampleError") }}: </span>
 
           <span v-html="example?.stderr ?? ''"></span>
         </p>
         <p v-if="!!example?.stdout">
-          {{ t("Headings.ExampleOutput") }}:
+          <span class="block text-success">
+            {{ t("Headings.ExampleOutput") }}:
+          </span>
 
           <span v-html="example?.stdout ?? ''"></span>
         </p>
@@ -165,11 +169,15 @@ function successHandler(success: any, id: any) {
   });
 
   if (!!success.compile) {
-    duplicateExamples.value[atIndex].stderr = success.compile?.stderr ?? "";
-    duplicateExamples.value[atIndex].stdout = success.compile?.stdout ?? "";
+    duplicateExamples.value[atIndex].stderr =
+      success.compile?.stderr.replace(/\n/g, "<br>") ?? "";
+    duplicateExamples.value[atIndex].stdout =
+      success.compile?.stdout.replace(/\n/g, "<br>") ?? "";
   } else if (!!success.run) {
-    duplicateExamples.value[atIndex].stderr = success.run?.stderr ?? "";
-    duplicateExamples.value[atIndex].stdout = success.run?.stdout ?? "";
+    duplicateExamples.value[atIndex].stderr =
+      success.run?.stderr.replace(/\n/g, "<br>") ?? "";
+    duplicateExamples.value[atIndex].stdout =
+      success.run?.stdout.replace(/\n/g, "<br>") ?? "";
   }
 
   if (success?.verdict == "OK") {
@@ -177,6 +185,9 @@ function successHandler(success: any, id: any) {
   } else {
     setResonBasedOnVerdict(success, id);
   }
+}
+function replaceOutputAndInputForExample(value: String) {
+  return value.replace(/\n/g, "<br>");
 }
 
 function setResonBasedOnVerdict(success: any, id: any) {

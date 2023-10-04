@@ -16,7 +16,10 @@
         :style="{ background: progressBar }"
       >
         {{ t(progress >= 100 ? "Headings.Completed" : "Headings.Untried") }}
-        : {{ categoryStats?.unattempted }} / {{ categoryStats?.total }}
+
+        <span v-if="progress < 100">
+          : {{ categoryStats?.unattempted }} / {{ categoryStats?.total }}</span
+        >
       </p>
       <p v-else>
         {{ t("Headings.Empty") }}

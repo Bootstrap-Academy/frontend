@@ -16,6 +16,9 @@ export async function getRootSkillTree() {
 	}
 }
 
+
+
+
 export async function getSubSkillTree(id: string) {
 	try {
 		if (!!!id) {
@@ -32,6 +35,8 @@ export async function getSubSkillTree(id: string) {
 		return [null, error.data];
 	}
 }
+
+
 
 export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
 	if (!!!map[0] || !!!map[0][0]) return [];
