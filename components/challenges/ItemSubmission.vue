@@ -71,18 +71,12 @@
                 !!submission.result.compile.stderr
               "
             >
-              <p
-                v-html="formatError(submission.result.compile.stderr)"
-                class="text-sm bg-light p-2 rounded-md"
-              ></p>
+              <p class="text-sm bg-light p-2 rounded-md">{{ submission.result.compile.stderr }}</p>
             </div>
             <div
               v-if="!!submission.result.run && !!submission.result.run.stderr"
             >
-              <p
-                v-html="formatError(submission.result.run.stderr)"
-                class="text-sm bg-light p-2 rounded-md"
-              ></p>
+              <p class="text-sm bg-light p-2 rounded-md">{{ submission.result.run.stderr }}</p>
             </div>
             <p
               v-if="
@@ -204,9 +198,6 @@ export default defineComponent({
       if (!!error) openSnackbar("error", error);
     }
 
-    function formatError(value: any) {
-      return value.replace(/\n/g, "<br>");
-    }
     return {
       t,
       submissions,
@@ -217,7 +208,6 @@ export default defineComponent({
       CheckIcon,
       dateFormat,
       verdictIs,
-      formatError,
     };
   },
 });

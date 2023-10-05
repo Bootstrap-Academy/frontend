@@ -54,11 +54,11 @@
           <div v-if="!!evaluatorCodeErrorDetails.stderr">
             <p class="text-error">{{ t("Headings.Error") }}</p>
 
-            <p v-html="evaluatorCodeErrorDetails.stderr" class="text-error"></p>
+            <p class="whitespace-pre text-error">{{ evaluatorCodeErrorDetails.stderr }}</p>
           </div>
           <div v-if="!!evaluatorCodeErrorDetails.stdout">
             <p class="text-accent">{{ t("Headings.Output") }}</p>
-            <p v-html="evaluatorCodeErrorDetails.stdout"></p>
+            <p class="whitespace-pre">{{ evaluatorCodeErrorDetails.stdout }}</p>
           </div>
         </article>
 
@@ -94,14 +94,11 @@
           </p>
           <p v-if="!!SolutionCodeErrorDetails.stderr" class="mt-4">
             <span class="block">{{ t("Headings.Error") }} </span>
-            <span
-              v-html="SolutionCodeErrorDetails.stderr"
-              class="text-error"
-            ></span>
+            <p class="whitespace-pre text-error">{{ SolutionCodeErrorDetails.stderr }}</p>
           </p>
           <p v-if="!!SolutionCodeErrorDetails.stdout" class="mt-4">
             <span class="block text-accent">{{ t("Headings.Output") }}</span>
-            <span v-html="SolutionCodeErrorDetails.stdout"></span>
+            <p class="whitespace-pre">{{ SolutionCodeErrorDetails.stdout }}</p>
           </p>
         </article>
 
@@ -408,21 +405,21 @@ export default {
       ) {
         console.log("evaluator code failed", res.details);
         evaluatorCodeErrorDetails.value = {
-          stderr: res.details.run.stderr.replace(/\n/g, "<br>"),
-          stdout: res.details.run.stdout.replace(/\n/g, "<br>"),
+          stderr: res.details.run.stderr,
+          stdout: res.details.run.stdout,
         };
       } else {
         if (!!res.details?.result?.compile) {
           SolutionCodeErrorDetails.value = {
-            stderr: res.details.result.compile.stderr.replace(/\n/g, "<br>"),
-            stdout: res.details.result.compile.stdout.replace(/\n/g, "<br>"),
+            stderr: res.details.result.compile.stderr,
+            stdout: res.details.result.compile.stdout,
             verdict: res.error,
           };
           console.log("solution code compile error ", res);
         } else if (!!res.details?.result?.run) {
           SolutionCodeErrorDetails.value = {
-            stderr: res.details.result.run.stderr.replace(/\n/g, "<br>"),
-            stdout: res.details.result.run.stdout.replace(/\n/g, "<br>"),
+            stderr: res.details.result.run.stderr,
+            stdout: res.details.result.run.stdout,
             verdict: res.error,
           };
           console.log("solution code run error ", res);

@@ -5,9 +5,9 @@ import DOMPurify from 'dompurify';
 
 export default defineNuxtPlugin((app) => {
 	const md = new MarkdownIt({
-		html: true,
+		html: false,
 		linkify: true,
-		typographer: true,
+		typographer: false,
 		highlight: (str, lang) => {
 			if (lang && hljs.getLanguage(lang)) {
 				try {
