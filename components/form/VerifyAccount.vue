@@ -23,6 +23,7 @@
 		</InputBtn>
 
 		<a
+			v-if="user"
 			@click.prevent="resendAccountVerificationCode"
 			class="self-center cursor-pointer"
 		>
@@ -125,7 +126,7 @@ export default defineComponent({
 				const [success, error] = await verifyAccount(form.body());
 				form.submitting = false;
 
-				success && success.email_verified
+				success
 					? await successHandler(success)
 					: errorHandler({
 							detail: 'Error.VerifyEmail',
@@ -153,6 +154,7 @@ export default defineComponent({
 			refForm,
 			t,
 			resendAccountVerificationCode,
+			user,
 		};
 	},
 });
