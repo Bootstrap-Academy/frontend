@@ -268,7 +268,7 @@
     "Webinars": "Webinare",
     "DisableMFA": "MFA deaktivieren",
     "EnableMFA": "MFA aktivieren",
-    "TOTPSecret": "TOTP-Einmalpasswort",
+    "TOTPSecret": "TOTP-Secret",
     "InitializeMFA": "MFA einrichten",
     "LastSeen": "Zuletzt gesehen",
     "For": "Zu",
