@@ -75,11 +75,11 @@ export default {
     const registration = computed(() => {
       let timestamp = props.data?.registration ?? null;
 
-      let { month, year } = convertTimestampToDate(timestamp);
+      let { month, year } = convertTimestampToDate(timestamp, props.);
 
       return {
         icon: CalendarIcon,
-        text: !!timestamp ? `${month.string}, ${year}` : "",
+        text: !!timestamp ? `${t(month.string)}, ${year}` : "",
       };
     });
 
