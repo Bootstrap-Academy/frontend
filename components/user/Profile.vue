@@ -75,7 +75,7 @@ export default {
     const registration = computed(() => {
       let timestamp = props.data?.registration ?? null;
 
-      let { month, year } = convertTimestampToDate(timestamp, props.);
+      let { month, year } = convertTimestampToDate(timestamp);
 
       return {
         icon: CalendarIcon,
