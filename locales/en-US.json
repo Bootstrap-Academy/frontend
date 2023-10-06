@@ -129,7 +129,7 @@
     "Challenge": "Challenge",
     "Explanation": "Explanation",
     "Input": "Input",
-    "ProgramInputShouldBe": "If input to your code is",
+    "ProgramInput": "If input to your code is",
     "ProgramOutputShouldBe": "Output should be",
     "ExpectedOutput": "Expected Output",
     "Name": "Name",
