@@ -7,7 +7,7 @@
 			<h2 class="mb-box text-heading-3 truncate">
 				{{ t('Headings.Description') }}
 			</h2>
-			<div class="break-all markdown" v-html="$md.render(description)"></div>
+			<div class="markdown" v-html="$md.render(description)"></div>
 		</article>
 
 		<article v-if="responsibilities.length">
