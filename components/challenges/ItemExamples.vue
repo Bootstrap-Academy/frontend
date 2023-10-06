@@ -57,7 +57,7 @@
 
         <article class="mt-3">
           <p class="text-white">
-            {{ t("Headings.ProgramInputShouldBe") }}
+            {{ t("Headings.ProgramInput") }}
           </p>
           <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
 
