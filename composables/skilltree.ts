@@ -16,6 +16,9 @@ export async function getRootSkillTree() {
 	}
 }
 
+
+
+
 export async function getSubSkillTree(id: string) {
 	try {
 		if (!!!id) {
@@ -32,6 +35,8 @@ export async function getSubSkillTree(id: string) {
 		return [null, error.data];
 	}
 }
+
+
 
 export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
 	if (!!!map[0] || !!!map[0][0]) return [];
@@ -60,9 +65,8 @@ export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
 				arr.push({
 					node: node.id,
 					parent: parentNode.id,
-					path: `M${parseInt(x1) + space} ${parseInt(y1) + space} L${
-						parseInt(x2) + space
-					} ${parseInt(y2) + space}`,
+					path: `M${parseInt(x1) + space} ${parseInt(y1) + space} L${parseInt(x2) + space
+						} ${parseInt(y2) + space}`,
 				});
 			}
 		});

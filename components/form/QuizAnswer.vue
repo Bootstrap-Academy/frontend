@@ -1,131 +1,359 @@
 <template>
-	<form
-		class="flex flex-col justify-between gap-box relative card h-[96%]"
-		:class="{ 'form-submitting': loading }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<img
-			class="w-full h-60 object-cover style-card"
-			src="https://placehold.co/450x400/webp"
-			alt=""
-		/>
-		<h4 class="text-heading-3">Q). {{ data?.question ?? '' }}</h4>
+  <div>
+    <SkeletonQuizAnswer v-if="loading" class="card" />
+    <form
+      v-else
+      class="flex flex-col gap-box relative card h-full"
+      :class="{ 'form-submitting': formSubmitting }"
+      @submit.prevent="onclickSubmitForm()"
+      ref="refForm"
+    >
+      <h4 class="text-heading-3 text-accent">
+        Q). {{ subtask?.question ?? "" }}
+      </h4>
+      <p
+        class="text-heading2 text-sm"
+        v-if="!subtask?.solved && user?.id != subtask?.creator"
+      >
+        {{ t("Headings.ChooseCorrectOption") }}
+      </p>
 
-		<article
-			class="grid grid-cols-1 gap-card-sm overflow-scroll h-[45vh] place-content-start"
-		>
-			<button
-				v-for="option of data?.options ?? []"
-				:key="option.answer"
-				@click="selected = option.answer"
-				type="button"
-				class="box style-box border-4 border-tertiary text-heading h-fit"
-				:class="{
-					'bg-success text-primary':
-						option.correct == true && answer == option.answer,
-					'bg-error': option.correct == false && answer == option.answer,
-					'bg-warning': selected == option.answer,
-				}"
-			>
-				{{ option.answer }}
-			</button>
-		</article>
+      <p class="text-xs text-accent" v-if="showMaxAttemptsError">
+        {{ t(`Error.TooManyAttemptsForQuiz`, { second: secondsForTryAgain }) }}
+      </p>
 
-		<article
-			class="flex justify-between gap-card items-center sticky bottom-card right-card"
-		>
-			<InputBtn
-				v-if="!!!answer"
-				:loading="loading"
-				@click="onclickSubmitForm()"
-				mt
-			>
-				{{ t('Buttons.SubmitAnswer') }}
-			</InputBtn>
+      <article
+        class="grid gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+        :class="
+          doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
+        "
+      >
+        <button
+          v-for="(option, i) of subtask?.answers ?? []"
+          :key="option"
+          @click="setArrayOfAnswers(i), setSelected(option)"
+          type="button"
+          class="box style-box border-4 border-tertiary text-heading h-fit"
+          :class="{
+            'bg-success text-primary':
+              selected.includes(option) && wasOptionsCorrect == 'yes',
 
-			<div v-if="answer" class="flex gap-4 items-center mt-8">
-				<button
-					type="button"
-					class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-				>
-					👍
-				</button>
-				<button
-					type="button"
-					class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-				>
-					👎
-				</button>
-				<button
-					type="button"
-					class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-				>
-					😐
-				</button>
-				<button
-					type="button"
-					class="w-10 h-10 pl-2 text-heading-3 flex justify-center items-center bg-secondary rounded-full"
-				>
-					🚩
-				</button>
-			</div>
-			<InputBtn
-				v-if="answer"
-				:loading="loading"
-				class="self-center"
-				@click="onclickSubmitForm()"
-				mt
-			>
-				{{ t('Buttons.Continue') }}
-			</InputBtn>
-		</article>
-	</form>
+            'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
+
+            'bg-warning':
+              selected.includes(option) && wasOptionsCorrect == 'waiting',
+            'pointer-events-none':
+              !!subtask?.solved || subtask?.creator == user?.id,
+          }"
+        >
+          {{ option }}
+        </button>
+      </article>
+
+      <div>
+        <InputBtn
+          v-if="data?.solved || user?.id == subtask?.creator"
+          full
+          @click="nextQuestion()"
+          iconRight
+          :icon="ChevronDoubleRightIcon"
+        >
+          {{ t("Buttons.Next") }}
+        </InputBtn>
+
+        <InputBtnWithHeart
+          full
+          v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
+          :loading="formSubmitting"
+          @click="onclickSubmitForm()"
+          iconRight
+          mt
+          :icon="HalfHeart"
+        >
+          {{ t("Buttons.SubmitAnswer") }}
+        </InputBtnWithHeart>
+
+        <InputBtn
+          full
+          v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
+          :loading="formSubmitting"
+          @click="onclickSubmitForm()"
+          mt
+        >
+          {{ t("Buttons.SubmitAnswer") }}
+        </InputBtn>
+
+        <InputBtn
+          :icon="PencilSquareIcon"
+          iconRight
+          full
+          mt
+          secondary
+          v-else-if="user?.id == subtask?.creator && !!user?.admin"
+          @click="openDialogEditTask(subtask)"
+        >
+          {{ t("Buttons.Edit") }}
+        </InputBtn>
+      </div>
+      <InputQuizRating
+        :data="data"
+        :subtask="subtask"
+        @rated="fnRated($event)"
+      />
+
+      <DialogSlot
+        v-if="dialogCreateSubtask"
+        :label="'Headings.Quiz'"
+        :propClass="'modal-width-lg lg:modal-width-md'"
+        :show="dialogEditTask"
+        @closeFunction="closeEditTaskDialog()"
+      >
+        <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
+      </DialogSlot>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, ref, PropType } from "vue";
+import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
+import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
+import { useI18n } from "vue-i18n";
+import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
+import HalfHeart from "../svg/HalfHeart.vue";
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup() {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+    doubleColumnOptions: { type: Boolean, default: false },
+  },
+  emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
+  components: { FlagIcon, ChevronDoubleRightIcon, HalfHeart, PencilSquareIcon },
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const loading = ref(false);
-		const selected = ref('');
-		const answer = ref('');
+    const user: any = useUser();
 
-		// ============================================================= refs
-		const refForm = ref<HTMLFormElement | null>(null);
+    const formSubmitting = ref(false);
+    const loading = ref(true);
+    const selected: any = ref([]);
+    const subtask = useSubTaskInQuiz();
+    let arrayOfAnswers: any = ref([]);
+    const feedback = ref("");
+    const showMaxAttemptsError = ref(false);
+    const secondsForTryAgain = ref(0);
+    const interval: any = ref();
+    const premiumInfo: any = usePremiumInfo();
+    // edit quiz dialog variable
+    const dialogEditTask = useDialogSlot();
+    const dialogCreateSubtask = useDialogCreateSubtask();
+    const propData = ref();
+    const wasOptionsCorrect = ref("waiting");
+    // ============================================================= refs
 
-		// ============================================================= Checks
-		const router = useRouter();
-		const route = useRoute();
+    const refForm = ref<HTMLFormElement | null>(null);
+    const isPremium = computed(() => {
+      return premiumInfo.value?.premium;
+    });
+    // ============================================================= Checks
 
-		async function onclickSubmitForm() {
-			loading.value = true;
-			await sleep(3000);
-			loading.value = false;
-			answer.value = selected.value;
-			selected.value = '';
-		}
+    function setArrayOfAnswers(index: any) {
+      if (subtask.value?.single_choice) {
+        arrayOfAnswers.value.forEach((element: any, i: any) => {
+          if (i == index) {
+            arrayOfAnswers.value[i] = true;
+          } else arrayOfAnswers.value[i] = false;
+        });
+      } else {
+        if (arrayOfAnswers.value[index] == true) {
+          arrayOfAnswers.value[index] = false;
+        } else {
+          arrayOfAnswers.value[index] = true;
+        }
+      }
+    }
 
-		function successHandler(res: any) {}
+    function setSelected(answer: any) {
+      if (wasOptionsCorrect.value != "waiting") {
+        wasOptionsCorrect.value = "waiting";
+        selected.value = [];
+      }
+      if (subtask.value?.single_choice) {
+        selected.value = [];
+        selected.value.push(answer);
+      } else {
+        let alreadyIn = selected.value.find((element: any) => {
+          return element == answer;
+        });
 
-		function errorHandler(res: any) {}
+        if (alreadyIn == undefined) {
+          selected.value.push(answer);
+        } else {
+          selected.value.forEach((element: any, index: any) => {
+            if (element == answer) {
+              selected.value.splice(index, 1);
+            }
+          });
+        }
+      }
+    }
 
-		return {
-			onclickSubmitForm,
-			refForm,
-			t,
-			loading,
-			answer,
-			selected,
-		};
-	},
+    async function onclickSubmitForm() {
+      if (
+        subtask.value.solved == true ||
+        subtask.value?.creator == user.value?.id
+      )
+        return;
+
+      if (!selected.value.length) {
+        return openSnackbar("error", "Error.SelectAtLeastOneOption");
+      }
+
+      formSubmitting.value = true;
+      const [success, error] = await attempQuiz(
+        subtask.value.task_id,
+        subtask.value.id,
+        { answers: arrayOfAnswers.value }
+      );
+      formSubmitting.value = false;
+      await getHearts();
+      if (success == true || success == false) successHandler(success);
+      else errorHandler(error);
+    }
+
+    function successHandler(res: any) {
+      showMaxAttemptsError.value = false;
+      console.log("res", res);
+      clearInterval(interval.value);
+      if (!!res) {
+        // openSnackbar("success", "Success.QuizAttempt");
+        selected.value = [];
+        wasOptionsCorrect.value = "yes";
+        emit("solved", props.data.id);
+      } else if (!res) {
+        wasOptionsCorrect.value = "no";
+        // openSnackbar("error", "Error.QuizAttempt");
+        setInitialArrayOfAnswers();
+      }
+    }
+
+    function errorHandler(error: any) {
+      if (error == "Error.TooManyAttemptsForQuiz") {
+        showMaxAttemptsError.value = true;
+        secondsForTryAgain.value = error.details ?? "";
+      } else {
+        openSnackbar("error", error);
+      }
+    }
+
+    function nextQuestion() {
+      emit("nextQuestion", props.data.id);
+    }
+
+    function openDialogEditTask(data: any) {
+      propData.value = data;
+      dialogEditTask.value = true;
+      dialogCreateSubtask.value = true;
+    }
+
+    async function closeEditTaskDialog() {
+      dialogCreateSubtask.value = false;
+      await setData();
+    }
+
+    async function setData() {
+      arrayOfAnswers.value = [];
+      if (props?.data == null) return;
+      showMaxAttemptsError.value = false;
+      clearInterval(interval.value);
+
+      loading.value = true;
+
+      const [success, error] = await getSubTaskInQuiz(
+        props?.data?.task_id ?? "",
+        props?.data?.id ?? ""
+      );
+
+      if (success) {
+        emit("updateQuestion", success);
+      }
+      if (!!subtask.value && subtask.value?.answers.length) {
+        setInitialArrayOfAnswers();
+        if (!subtask.value.solved) {
+          selected.value = [];
+        }
+      }
+      loading.value = false;
+    }
+
+    function setInitialArrayOfAnswers() {
+      arrayOfAnswers.value = [];
+      subtask.value?.answers.forEach((element: any) => {
+        arrayOfAnswers.value.push(false);
+      });
+    }
+
+    function fnRated(id: any) {
+      emit("rated", id);
+    }
+
+    watch(
+      () => props.data,
+      async (newValue, oldValue) => {
+        if (newValue === oldValue) {
+          return;
+        }
+        await setData();
+      },
+      { deep: true, immediate: true }
+    );
+
+    watch(
+      () => showMaxAttemptsError.value,
+      (newValue: any) => {
+        if (!!newValue) {
+          interval.value = setInterval(() => {
+            if (secondsForTryAgain.value <= 0) {
+              clearInterval(interval.value);
+              showMaxAttemptsError.value = false;
+            }
+            --secondsForTryAgain.value;
+          }, 1000);
+        }
+      }
+    );
+
+    return {
+      t,
+      onclickSubmitForm,
+      refForm,
+      loading,
+      formSubmitting,
+      selected,
+      subtask,
+      arrayOfAnswers,
+      setArrayOfAnswers,
+      setSelected,
+      openDialogEditTask,
+      propData,
+      feedback,
+      FlagIcon,
+      PencilSquareIcon,
+      dialogCreateSubtask,
+      dialogEditTask,
+      closeEditTaskDialog,
+      user,
+      HalfHeart,
+      showMaxAttemptsError,
+      secondsForTryAgain,
+      nextQuestion,
+      isPremium,
+      fnRated,
+      wasOptionsCorrect,
+      ChevronDoubleRightIcon,
+    };
+  },
 });
 </script>
 

@@ -4,9 +4,10 @@ export const useUser = () => useState('user', () => null);
 export const useSession = () => useState('session', () => null);
 export const useAccessToken = () => useState('accessToken', () => '');
 export const useRefreshToken = () => useState('refreshToken', () => '');
+export const useShowConfetti = () => useState('showConfetti', () => false);
 
 export function getAccessToken() {
-	const accessToken = useAccessToken();
+	const accessToken: any = useAccessToken();
 
 	if (!!!accessToken.value) return null;
 
@@ -19,7 +20,7 @@ export function getAccessToken() {
 }
 
 export function getRefreshToken() {
-	const refreshToken = useRefreshToken();
+	const refreshToken: any = useRefreshToken();
 
 	if (!!!refreshToken.value) return null;
 
@@ -51,6 +52,15 @@ export function setStates(response: any) {
 	const cookie_refreshToken = useCookie('refreshToken');
 	refreshToken.value = response?.refresh_token ?? null;
 	cookie_refreshToken.value = refreshToken.value;
+
+	const hideAnimation: any = useCookie("hideAnimationNextTime");
+	if (hideAnimation.value == undefined) hideAnimation.value = false
+
+	// const showFreeQuizzesOnly: any = useCookie("showFreeQuizzesOnly");
+	// if (showFreeQuizzesOnly.value == undefined) showFreeQuizzesOnly.value = false
+
+	const lastViewCourse: any = useCookie("lastViewCourse");
+	if (lastViewCourse.value == undefined) lastViewCourse.value = null
 
 	if (response == null) {
 		const router = useRouter();

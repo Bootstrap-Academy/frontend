@@ -1,34 +1,39 @@
 {
-	"private": true,
-	"scripts": {
-		"build": "nuxt build",
-		"dev": "nuxt dev",
-		"start": "nuxt start",
-		"generate": "nuxt generate",
-		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare"
-	},
-	"devDependencies": {
-		"@types/dompurify": "^3.0.1",
-		"@types/katex": "^0.16.0",
-		"@types/markdown-it": "^12.2.3",
-		"autoprefixer": "^10.4.13",
-		"nuxt": "3.0.0",
-		"postcss": "^8.4.21",
-		"tailwindcss": "^3.2.6",
-		"vue-i18n": "^9.2.2"
-	},
-	"dependencies": {
-		"@heroicons/vue": "^2.0.15",
-		"async-mutex": "^0.4.0",
-		"dompurify": "^2.4.1",
-		"gleap": "^8.2.6",
-		"highlight.js": "^11.7.0",
-		"jwt-decode": "^3.1.2",
-		"katex": "^0.16.4",
-		"markdown-it": "^13.0.1",
-		"monaco-editor": "^0.37.1",
-		"qrcode.vue": "^3.3.3",
-		"vue-recaptcha-v3": "^2.0.1"
-	}
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.0.1",
+    "@types/katex": "^0.16.0",
+    "@types/markdown-it": "^12.2.3",
+    "autoprefixer": "^10.4.13",
+    "nuxt": "3.0.0",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.6",
+    "vue-i18n": "^9.2.2"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.2.7",
+    "@headlessui/vue": "^1.7.14",
+    "@heroicons/vue": "^2.0.15",
+    "@vueuse/core": "^10.2.0",
+    "async-mutex": "^0.4.0",
+    "dompurify": "^2.4.1",
+    "gleap": "^8.2.6",
+    "highlight.js": "^11.7.0",
+    "i": "^0.3.7",
+    "jwt-decode": "^3.1.2",
+    "katex": "^0.16.4",
+    "markdown-it": "^13.0.1",
+    "monaco-editor": "^0.37.1",
+    "npm": "^9.7.1",
+    "qrcode.vue": "^3.3.3",
+    "vue-recaptcha-v3": "^2.0.1"
+  }
 }

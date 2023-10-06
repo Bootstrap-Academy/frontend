@@ -1,5 +1,5 @@
 export const useXP = () => useState('xp', (): any => null);
-
+import { useUser } from "./user";
 export async function getXP() {
 	const user = <any>useUser();
 
@@ -12,7 +12,6 @@ export async function getXP() {
 
 		const xp = useXP();
 		xp.value = response;
-
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];

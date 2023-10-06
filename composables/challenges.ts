@@ -19,6 +19,9 @@ export const useChallenges: () => Ref<any[]> = () =>
 export const useChallenge: () => Ref<any> = () =>
 	useState('challenge', () => null);
 
+// export const useCategoryStats: () => Ref<any> = () =>
+// 	useState("useCategoryStats", () => null)
+
 export async function getMyChallengesStats() {
 	try {
 		const response = await GET('/auth/sessions/challenges/login_url');
@@ -59,10 +62,14 @@ export async function getChallengesCategories() {
 		const challengesCategories = useChallengesCategories();
 		challengesCategories.value = response ?? [];
 
-		console.log('response', response);
 
 		return [response, null];
 	} catch (error: any) {
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			openSnackbar("error", "Error.VerifyToGetChallenges")
+			return [null, error.data];
+		}
 		return [null, error.data];
 	}
 }
@@ -89,13 +96,16 @@ export async function getChallengesByCategory(categoryID: string) {
 		const challenges = useChallenges();
 		challenges.value = response ?? [];
 
-		console.log('getChallengesByCategory', response);
-
-		return [challenges.value, null];
+		return [response, null];
 	} catch (error: any) {
-		return [null, error.data];
+		let msg = error?.data?.error
+		if (msg == "unverified") {
+			openSnackbar("error", "Error.VerifyToGetChallenges")
+			return [null, error.data]
+		} return [null, error.data];
 	}
 }
+
 export async function getChallenge(categoryID: string, challengeID: string) {
 	try {
 		const response = await GET(
@@ -105,6 +115,31 @@ export async function getChallenge(categoryID: string, challengeID: string) {
 		const challenge = useChallenge();
 		challenge.value = response ?? null;
 
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function updateChallenge(categoryID: string, challengeID: string, body: any) {
+	try {
+		const response = await PATCH(
+			`/challenges/categories/${categoryID}/challenges/${challengeID}`,
+			body
+		);
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}
+}
+
+export async function deleteChallenge(categoryID: string, challengeID: string) {
+	try {
+		const response = await DELETE(
+			`/challenges/categories/${categoryID}/challenges/${challengeID}`,
+		);
+		// getChallengesByCategory(categoryID)
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
@@ -135,4 +170,19 @@ export async function createChallenge(categoryID: string, body: any) {
 	} catch (error: any) {
 		return [null, error.data];
 	}
+}
+
+export async function getStatsCategoryWiseForCodingChallenges(categoryId: any) {
+	try {
+		const res = await GET(`/challenges/categories/${categoryId}/stats?category_id=${categoryId}`)
+		// const categoryStats = useCategoryStats()
+		// categoryStats.value = res
+		return [res, null]
+	}
+	catch (error: any) {
+		console.log("inside error block for  stats", error)
+		return [null, error.data];
+
+	}
+
 }

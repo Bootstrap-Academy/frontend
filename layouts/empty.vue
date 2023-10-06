@@ -1,12 +1,12 @@
 <template>
-	<div>
-		<Language />
-		<slot />
-	</div>
+  <div>
+    <Language />
+    <slot />
+  </div>
 </template>
 
 <script>
 export default {
-	setup() {},
+  setup() {},
 };
 </script>

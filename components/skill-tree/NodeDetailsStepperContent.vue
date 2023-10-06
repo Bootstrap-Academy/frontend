@@ -1,127 +1,125 @@
 <template>
-	<section
-		class="max-max-h-[70vh] h-fit w-full flex justify-between items-center"
-	>
-		<div
-			class="content-container"
-			v-if="activeStepper == 0"
-			:class="{ 'hide-scrollbar': !!!courses || courses.length <= 0 }"
-		>
-			<template v-if="courses && courses.length > 0">
-				<NuxtLink
-					class="content"
-					v-for="(course, i) of courses"
-					:key="i"
-					:to="`/courses/${course.id}`"
-				>
-					<CourseCard :data="course" />
-				</NuxtLink>
-			</template>
+  <section class="max-h-[70vh] h-fit w-full flex justify-between items-center">
+    <div
+      class="content-container"
+      v-if="activeStepper == 0"
+      :class="{ 'hide-scrollbar': !!!courses || courses.length <= 0 }"
+    >
+      <template v-if="courses && courses.length > 0">
+        <NuxtLink
+          class="content"
+          v-for="(course, i) of courses"
+          :key="i"
+          @click="saveLastVisitedCourse(course?.id)"
+          :to="`/courses/${course.id}?skillID=${skillID}&subSkillID=${subSkillID}`"
+        >
+          <CourseCard :data="course" />
+        </NuxtLink>
+      </template>
 
-			<h3 v-else class="text-center text-heading-3">
-				{{ t('Headings.CoursesComingSoon') }}
-			</h3>
-		</div>
+      <h3 v-else class="text-center text-heading-3">
+        {{ t("Headings.CoursesComingSoon") }}
+      </h3>
+    </div>
 
-		<div
-			class="content-container"
-			v-else-if="activeStepper == 1"
-			:class="{ 'hide-scrollbar': !!!coachings || coachings.length <= 1 }"
-		>
-			<template v-if="coachings && coachings.length > 0">
-				<CalendarEvent
-					class="content full"
-					v-for="(coaching, i) of coachings"
-					:key="i"
-					full
-					:data="coaching"
-					:subSkillID="subSkillID"
-				/>
-			</template>
-			<h3 v-else class="text-center text-heading-3">
-				{{ t('Headings.CoachingComingSoon') }}
-			</h3>
-		</div>
+    <div
+      class="content-container"
+      v-else-if="activeStepper == 1"
+      :class="{ 'hide-scrollbar': !!!coachings || coachings.length <= 1 }"
+    >
+      <template v-if="coachings && coachings.length > 0">
+        <CalendarEvent
+          class="content full"
+          v-for="(coaching, i) of coachings"
+          :key="i"
+          full
+          :data="coaching"
+          :subSkillID="subSkillID"
+        />
+      </template>
+      <h3 v-else class="text-center text-heading-3">
+        {{ t("Headings.CoachingComingSoon") }}
+      </h3>
+    </div>
 
-		<div
-			class="content-container"
-			v-else-if="activeStepper == 2"
-			:class="{ 'hide-scrollbar': !!!webinars || webinars.length <= 1 }"
-		>
-			<template v-if="webinars && webinars.length > 0">
-				<CalendarEvent
-					class="content"
-					v-for="(webinar, i) of webinars"
-					:key="i"
-					full
-					:data="webinar"
-					:subSkillID="subSkillID"
-				/>
-			</template>
-			<h3 v-else class="text-center text-heading-3">
-				{{ t('Headings.WebinarsComingSoon') }}
-			</h3>
-		</div>
+    <div
+      class="content-container"
+      v-else-if="activeStepper == 2"
+      :class="{ 'hide-scrollbar': !!!webinars || webinars.length <= 1 }"
+    >
+      <template v-if="webinars && webinars.length > 0">
+        <CalendarEvent
+          class="content"
+          v-for="(webinar, i) of webinars"
+          :key="i"
+          full
+          :data="webinar"
+          :subSkillID="subSkillID"
+        />
+      </template>
+      <h3 v-else class="text-center text-heading-3">
+        {{ t("Headings.WebinarsComingSoon") }}
+      </h3>
+    </div>
 
-		<article v-else-if="activeStepper == 3">
-			<NuxtLink :to="`/quizzes/${skillID}/${subSkillID}/create`">
-				<Btn sm>{{ t('Buttons.AddQuizQuestion') }}</Btn>
-			</NuxtLink>
-			<div
-				class="content-container mt-card"
-				:class="{
-					'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
-				}"
-			>
-				<template v-if="quizzes && quizzes.length > 0">
-					<NuxtLink
-						to="/quizzes/skill-23424"
-						class="content"
-						v-for="(quiz, i) of quizzes"
-						:key="i"
-					>
-						<QuizCard full :data="quiz" :subSkillID="subSkillID" />
-					</NuxtLink>
-				</template>
-				<h3 v-else class="text-center text-heading-3">
-					{{ t('Headings.QuizQuestionsComingSoon') }}
-				</h3>
-			</div>
-		</article>
-	</section>
+    <article class="w-full" v-else-if="activeStepper == 3">
+      <div class="flex p-2 content-container flex-col items-center mt-card">
+        <template v-if="quizzes && quizzes.length > 0">
+          <div class="content">
+            <QuizList
+              v-for="(quiz, i) of quizzes"
+              :key="i"
+              :quizId="quiz?.id"
+            />
+          </div>
+        </template>
+        <h3 v-else class="text-center text-heading-3">
+          {{ t("Headings.NoQuizQuestion") }}
+        </h3>
+      </div>
+    </article>
+  </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, PropType } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
-	props: {
-		skillID: { default: '' },
-		subSkillID: { default: '' },
-		activeStepper: { default: 0 },
-		courses: { type: Array as PropType<any[]>, default: [] },
-		coachings: { type: Array as PropType<any[]>, default: [] },
-		webinars: { type: Array as PropType<any[]>, default: [] },
-		quizzes: { type: Array as PropType<any[]>, default: [] },
-	},
-	emits: [],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    skillID: { default: "" },
+    subSkillID: { default: "" },
+    activeStepper: { default: 0 },
+    courses: { type: Array as PropType<any[]>, default: [] },
+    coachings: { type: Array as PropType<any[]>, default: [] },
+    webinars: { type: Array as PropType<any[]>, default: [] },
+    quizzes: { type: Array as PropType<any[]>, default: [] },
+  },
+  emits: [],
+  setup(props, { emit }) {
+    const { t } = useI18n();
+    function saveLastVisitedCourse(courseId: any) {
+      const lastViewCourse: any = useCookie("lastViewCourse");
+      lastViewCourse.value = {
+        courseId: courseId,
+        skillID: props.skillID,
+        subSkillID: props.subSkillID,
+      };
+    }
 
-		return { t };
-	},
+    return { t, saveLastVisitedCourse };
+  },
 });
 </script>
 
 <style scoped>
 .content-container {
-	@apply flex lg:flex-col gap-card w-full max-w-full max-h-[70vh] overflow-x-scroll lg:overflow-x-auto snap-x lg:overflow-y-scroll lg:snap-y snap-mandatory;
+  @apply flex lg:flex-col gap-card w-full max-w-full max-h-[70vh] overflow-x-scroll lg:overflow-x-auto snap-x lg:overflow-y-scroll lg:snap-y snap-mandatory;
 }
 .content {
-	@apply flex-shrink-0 snap-center block w-fit lg:w-full max-w-[300px];
+  @apply flex-shrink-0 snap-center block w-fit lg:w-full max-w-[300px];
 }
 .content.full {
-	@apply w-full;
+  @apply w-full;
 }
 </style>

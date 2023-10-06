@@ -20,128 +20,186 @@
 -->
 
 <template>
-	<CourseSkeleton v-if="loading" />
+  <CourseSkeleton v-if="loading" />
 
-	<main
-		v-else-if="course"
-		class="relative container-fluid h-screen-main min mt-main mb-main"
-	>
-		<Head>
-			<Title>Course Details - {{ course?.title ?? '' }}</Title>
-		</Head>
+  <main
+    v-else-if="course"
+    class="relative container-fluid h-screen-main min mt-main mb-main"
+  >
+    <Head>
+      <Title>Course Details - {{ course?.title ?? "" }}</Title>
+    </Head>
 
-		<CourseHeader :data="course" />
+    <CourseHeader :data="course" />
 
-		<CourseDetails :data="course" />
+    <CourseDetails :data="course" />
 
-		<CourseOverview
-			:data="course"
-			:isCourseAccessible="isCourseAccessible"
-			class="md:sticky md:top-container md:self-start"
-		/>
+    <CourseOverview
+      :skillID="skillID"
+      :subSkillID="subSkillID"
+      :data="course"
+      :isCourseAccessible="isCourseAccessible"
+      class="md:sticky md:top-container md:self-start"
+    />
 
-		<section>
-			<h2 class="mb-box text-heading-3">
-				{{ t('Headings.CourseCurriculum') }}
-			</h2>
+    <section>
+      <h2 class="mb-box text-heading-3">
+        {{ t("Headings.CourseCurriculum") }}
+      </h2>
 
-			<div class="card style-card bg-secondary">
-				<CourseCurriculum
-					:data="course"
-					:isCourseAccessible="isCourseAccessible"
-					@watch="watchThisLecture($event)"
-				/>
-			</div>
-		</section>
-	</main>
+      <div class="card style-card bg-secondary">
+        <CourseCurriculum
+          :data="course"
+          :skillID="skillID"
+          :subSkillID="subSkillID"
+          :isCourseAccessible="isCourseAccessible"
+          @watch="watchThisLecture($event)"
+        />
+      </div>
+    </section>
+    <div
+      class="content-container"
+      :class="{
+        'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
+      }"
+    >
+      <h2 class="mb-box text-heading-3" v-if="quizzes.length > 0">
+        {{ t("Headings.QuizzesInCourse") }}
+      </h2>
 
-	<CourseEmptyState v-else />
+      <template v-if="quizzes && quizzes.length > 0">
+        <div class="content" v-for="(quiz, i) of quizzes" :key="i">
+          <QuizList full :quizId="quiz?.id" />
+          <!-- {{ quiz?.id }} -->
+        </div>
+      </template>
+      <h3 v-else class="text-center text-heading-3">
+        {{ t("Headings.NoQuizQuestion") }}
+      </h3>
+    </div>
+  </main>
+
+  <CourseEmptyState v-else />
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-
+import { useI18n } from "vue-i18n";
+import { getQuizzesInCourse } from "~~/composables/quizzes";
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ["auth"],
 });
 
 export default {
-	head: {
-		title: 'Course Details',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: "Course Details",
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const loading = ref(true);
-		const course = useCourse();
-		const isCourseAccessible = ref(false);
+    const loading = ref(true);
+    const course = useCourse();
+    const isCourseAccessible = ref(false);
 
-		const route = useRoute();
-		const router = useRouter();
+    const quizzes = useQuizzes();
 
-		const id = computed(() => {
-			return <string>(route.params?.id ?? '');
-		});
+    const route = useRoute();
+    const router = useRouter();
 
-		onMounted(async () => {
-			if (!!!id.value) {
-				loading.value = false;
-				return;
-			}
+    const id = computed(() => {
+      return <string>(route.params?.id ?? "");
+    });
 
-			const [success, error] = await getCourseByID(id.value);
+    const skillID = computed(() => {
+      return <string>(route.query?.skillID ?? "");
+    });
 
-			if (error) {
-				await getCourseSummaryByID(id.value);
-			} else {
-				isCourseAccessible.value = true;
-			}
+    const subSkillID = computed(() => {
+      return <string>(route.query?.subSkillID ?? "");
+    });
 
-			loading.value = false;
-		});
+    onMounted(async () => {
+      if (!!!id.value) {
+        loading.value = false;
+        return;
+      }
 
-		function watchThisLecture({ sectionID, lectureID }: any) {
-			router.push({
-				path: `${route.path}/watch`,
-				query: { section: sectionID, lecture: lectureID },
-			});
-		}
+      const [success, error] = await getCourseByID(id.value);
 
-		return { loading, course, t, isCourseAccessible, watchThisLecture };
-	},
+      if (error) {
+        console.log("error in");
+        openSnackbar("error", error.detail);
+        await getCourseSummaryByID(id.value);
+      } else {
+        isCourseAccessible.value = true;
+        const [quizzesSuccess, quizzesError] = await getQuizzesInCourse(
+          id.value
+        );
+        if (quizzesError) {
+          openSnackbar("error", "quizzesError");
+        }
+      }
+
+      loading.value = false;
+    });
+
+    function watchThisLecture({ sectionID, lectureID }: any) {
+      console.log("skill", skillID.value);
+      console.log("skill", subSkillID.value);
+      router.push({
+        path: `${route.path}/watch`,
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value,
+        },
+      });
+    }
+
+    return {
+      loading,
+      course,
+      t,
+      isCourseAccessible,
+      watchThisLecture,
+      quizzes,
+      skillID,
+      subSkillID,
+    };
+  },
 };
 </script>
 
 <style scoped>
 main {
-	@apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
+  @apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
 
-	grid-template-areas:
-		'header'
-		'overview'
-		'details'
-		'curriculum';
+  grid-template-areas:
+    "header"
+    "overview"
+    "details"
+    "curriculum";
 }
 
 main > *:nth-child(1) {
-	grid-area: header;
+  grid-area: header;
 }
 main > *:nth-child(2) {
-	grid-area: details;
+  grid-area: details;
 }
 main > *:nth-child(3) {
-	grid-area: overview;
+  grid-area: overview;
 }
 main > *:nth-child(4) {
-	grid-area: curriculum;
+  grid-area: curriculum;
 }
 
 @media screen and (min-width: 768px) {
-	main {
-		grid-template-areas:
-			'header header'
-			'details overview'
-			'curriculum overview';
-	}
+  main {
+    grid-template-areas:
+      "header header"
+      "details overview"
+      "curriculum overview";
+  }
 }
 </style>
