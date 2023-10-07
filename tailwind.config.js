@@ -42,6 +42,11 @@ module.exports = {
 			info: 'var(--color-info)',
 			warning: 'var(--color-warning)',
 		},
+		extend: {
+			zIndex: {
+				'100': '100',
+			}
+		}
 	},
 	plugins: [
 		plugin(function ({ addBase, addComponents, addUtilities, theme }) {
