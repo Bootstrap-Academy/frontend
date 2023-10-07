@@ -7,17 +7,19 @@
     ></div>
 
     <!-- skill -->
-    <article class="box py-3 px-4 grid bg-primary rounded gap-x-3 md:gap-x-5">
+    <article class="flex items-center flex-wrap py-3 px-4 bg-primary rounded gap-3 md:gap-5">
       <img
         :src="image"
-        class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded"
+        class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded order-1"
         alt=""
       />
 
-      <h6 class="text-body-1 sm:clamp sm:line-1 break-words capitalize">
-        {{ name }}
+      <div class="grow order-3 md:order-2 w-full md:w-min">
+        <h6 class="text-body-1 break-words capitalize">
+          {{ name }}
+        </h6>
         <div
-          class="mt-1 flex flex-wrap gap-box w-full items-center text-body-2 text-subheading font-body"
+          class="mt-1 flex flex-nowrap text-nowrap gap-box w-full items-center text-body-2 text-subheading font-body"
         >
           <div>
             <span class="text-body">{{ completed }}/{{ total }}</span>
@@ -34,28 +36,30 @@
             <span class="text-body">{{ level.number }}</span>
           </div>
         </div>
-      </h6>
+      </div>
 
-      <Chip xs class="place-self-start" :color="level.color">
-        {{ t(level.text) }}
-      </Chip>
+      <div class="flex items-center justify-between md:justify-between-0 gap-x-3 md:gap-x-5 order-2 md:order-3 grow md:grow-0">
+        <Chip xs :color="level.color">
+          {{ t(level.text) }}
+        </Chip>
 
-      <div class="flex items-center gap-2 place-self-start">
-        <Icon
-          @click="onclickViewSkillPath"
-          class="cursor-pointer"
-          rounded
-          sm
-          :icon="EyeIcon"
-        />
-        <Icon
-          @click="onclickViewSkillProgressDetails"
-          class="cursor-pointer"
-          :class="show ? 'rotate-180' : 'rotate-0'"
-          rounded
-          sm
-          :icon="ChevronDownIcon"
-        />
+        <div class="flex gap-2">
+          <Icon
+            @click="onclickViewSkillPath"
+            class="cursor-pointer"
+            rounded
+            sm
+            :icon="EyeIcon"
+          />
+          <Icon
+            @click="onclickViewSkillProgressDetails"
+            class="cursor-pointer"
+            :class="show ? 'rotate-180' : 'rotate-0'"
+            rounded
+            sm
+            :icon="ChevronDownIcon"
+          />
+        </div>
       </div>
 
       <!-- <SubMenu class="-mt-2 md:-mt-3 -mr-4" :list="list" /> -->
@@ -248,35 +252,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.box {
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas:
-    "img chip submenu"
-    "name name name";
-}
-
-.box > *:nth-child(1) {
-  grid-area: img;
-}
-.box > *:nth-child(2) {
-  grid-area: name;
-  @apply mt-2 sm:mt-0;
-}
-.box > *:nth-child(3) {
-  grid-area: chip;
-  @apply mt-2 sm:mt-1;
-}
-.box > *:nth-child(4) {
-  grid-area: submenu;
-  @apply mt-2 sm:mt-0;
-}
-
-@media screen and (min-width: 525px) {
-  .box {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
-    grid-template-areas: "img name chip submenu";
-  }
-}
-</style>
