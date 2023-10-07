@@ -22,9 +22,9 @@
       >
         <span class="hidden lg:block">{{ t(day) }}</span>
         <span class="hidden md:block lg:hidden">
-          {{ day[0] }}{{ day[1] }}{{ day[2] }}
+          {{ t(day)[0] }}{{ t(day)[1] }}{{ t(day)[2] }}
         </span>
-        <span class="block md:hidden">{{ day[0] }}{{ day[1] }}</span>
+        <span class="block md:hidden">{{ t(day)[0] }}{{ t(day)[1] }}</span>
       </h2>
 
       <article
