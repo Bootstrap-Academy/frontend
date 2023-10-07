@@ -23,4 +23,7 @@ export default defineNuxtConfig({
 			NODE_ENV: 'production',
 		},
 	},
+	webpack:{
+		aggressiveCodeRemoval: true,
+	}
 });
