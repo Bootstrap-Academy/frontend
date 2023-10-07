@@ -149,7 +149,7 @@ export default defineComponent({
 
       return {
         time: `${hr}:${min}`,
-        date: `${date} ${month.string.slice(0, 3)}, ${year}`,
+        date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
       };
     }
 
