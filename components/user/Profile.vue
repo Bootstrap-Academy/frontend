@@ -79,7 +79,7 @@ export default {
 
       return {
         icon: CalendarIcon,
-        text: !!timestamp ? `${month.string}, ${year}` : "",
+        text: !!timestamp ? `${t(month.string)}, ${year}` : "",
       };
     });
 
