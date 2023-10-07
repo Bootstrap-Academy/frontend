@@ -25,5 +25,8 @@ export default defineNuxtConfig({
 	},
 	webpack:{
 		aggressiveCodeRemoval: true,
+		optimization: {
+    			chunkIds: 'total-size',
+  		},
 	}
 });
