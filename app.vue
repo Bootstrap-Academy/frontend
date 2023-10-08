@@ -34,8 +34,7 @@ export default {
     const dialog = useDialog();
     const showConfetti = useShowConfetti();
     function handleDialogOnBackdrop() {
-      dialog.value &&
-        dialog.value.triggerPrimaryActionOnBackdropClick &&
+      dialog.value?.triggerPrimaryActionOnBackdropClick &&
         dialog.value.primaryBtn.onclick &&
         dialog.value.primaryBtn.onclick();
     }

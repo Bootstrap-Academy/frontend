@@ -345,7 +345,7 @@ export default defineComponent({
 		async function successHandler(res: any, hasEmailChanged: boolean) {
 			if (!hasEmailChanged) {
 				openSnackbar('success', 'Success.EditProfile');
-				if (route.query && route.query.coins) {
+				if (route.query?.coins) {
 					router.push(`/morphcoins/paypal?coins=${route.query.coins}`);
 				}
 				return;
