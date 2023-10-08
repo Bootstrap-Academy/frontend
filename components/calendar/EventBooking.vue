@@ -320,8 +320,8 @@ export default defineComponent({
 			let today = convertTimestampToDate(new Date().getTime() / 1000);
 
 			numberOfDaysUntil.value = start.date - today.date;
-			todayDate.value = `${today.date} ${today.month.string}, ${today.year}`;
-			startDate.value = `${start.date} ${start.month.string}, ${start.year}`;
+			todayDate.value = `${today.date} ${t(today.month.string)}, ${today.year}`;
+			startDate.value = `${start.date} ${t(start.month.string)}, ${start.year}`;
 
 			if (numberOfDaysUntil.value > 7) {
 				return 100;

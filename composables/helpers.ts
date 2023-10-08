@@ -35,28 +35,28 @@ let intervals: any[] = [
 ];
 
 let days = [
-	'sunday',
-	'monday',
-	'tuesday',
-	'wednesday',
-	'thursday',
-	'friday',
-	'saturday',
+	'Days.Sunday',
+	'Days.Monday',
+	'Days.Tuesday',
+	'Days.Wednesday',
+	'Days.Thursday',
+	'Days.Friday',
+	'Days.Saturday',
 ];
 
 let months = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
+	'Months.January',
+	'Months.February',
+	'Months.March',
+	'Months.April',
+	'Months.May',
+	'Months.June',
+	'Months.July',
+	'Months.August',
+	'Months.September',
+	'Months.October',
+	'Months.November',
+	'Months.December',
 ];
 
 export function convertDateToTimestamp(date: any) {
