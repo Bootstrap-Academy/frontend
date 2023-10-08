@@ -171,7 +171,7 @@ export default {
               },
             }
           );
-        } else if (selectedNode && selectedNode.id) {
+        } else if (selectedNode?.id) {
           router.push(`${route.path}/${selectedNode.id}`);
         }
       }
