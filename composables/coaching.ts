@@ -4,7 +4,7 @@ export const useCoachings = () => useState('coachings', () => []);
 
 export async function getCoachingsForThisSubSkill(subSkillID: string) {
 	try {
-		if (!!!subSkillID) {
+		if (!subSkillID) {
 			throw { data: { detail: 'Invalid sub skill ID' } };
 		}
 
@@ -32,11 +32,11 @@ export async function bookCoachingForThisSubSkillWithThisInstructor(
 	slot_id: string
 ) {
 	try {
-		if (!!!subSkillID) {
+		if (!subSkillID) {
 			throw { data: { detail: 'Invalid sub skill ID' } };
 		}
 
-		if (!!!slot_id) {
+		if (!slot_id) {
 			throw { data: { detail: 'Invalid instructor ID' } };
 		}
 

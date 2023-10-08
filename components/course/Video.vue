@@ -56,11 +56,11 @@ export default defineComponent({
     watch(
       () => props.activeLecture,
       async (newValue, oldValue) => {
-        if (!!!newValue) return;
+        if (!newValue) return;
 
         const courseID = props.course?.id ?? "";
 
-        if (!!!courseID) return;
+        if (!courseID) return;
 
         await getLectureVideoSRC(courseID, newValue);
 

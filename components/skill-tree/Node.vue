@@ -100,7 +100,7 @@ export default defineComponent({
 		const router = useRouter();
 
 		function ondblclick() {
-			if (!!!current_node.value.id) return;
+			if (!current_node.value.id) return;
 
 			if (props.active) {
 				emit('move', {

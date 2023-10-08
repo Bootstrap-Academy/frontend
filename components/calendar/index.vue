@@ -223,7 +223,7 @@ export default defineComponent({
     });
 
     function isEvent(event: any, date: any) {
-      if (!!!event) return false;
+      if (!event) return false;
       return (
         event.date == date.date &&
         event.month == date.month &&

@@ -87,7 +87,7 @@ export default defineComponent({
         form.submitting = true;
         const [success, error] = await enableMFA(form.body());
 
-        if (!!success) {
+        if (success) {
           await refresh();
           successHandler(success);
         } else {

@@ -81,7 +81,7 @@ export default defineComponent({
       },
     });
 
-    input.value = !!input.value ? input.value : props.options[1].value;
+    input.value = (input.value) ? input.value : props.options[1].value;
 
     const selectedOptionLabel = computed(() => {
       return (

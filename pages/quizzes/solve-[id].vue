@@ -271,7 +271,7 @@ export default defineComponent({
       await Promise.all(
         quizzes.value.map(async (quiz: any) => {
           const [res, error] = await getSubTasksInQuiz(quiz?.id ?? "");
-          if (!!res) {
+          if (res) {
             res.forEach((element: any) => {
               arrayOfSubtasks.value.push(element);
               quizzesToShow.value.push(element);

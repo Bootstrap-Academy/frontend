@@ -89,7 +89,7 @@ export default defineComponent({
 			});
 
 			// input is empty
-			if (!!!input.value) {
+			if (!input.value) {
 				input.value = '';
 				return;
 			}
@@ -101,7 +101,7 @@ export default defineComponent({
 			}
 
 			// if this is for edit item
-			if (!!editItem) {
+			if (editItem) {
 				let arr = list.value.filter((item) => {
 					return item.toLocaleLowerCase() != editItem.value.toLocaleLowerCase();
 				});

@@ -221,11 +221,11 @@ export default defineComponent({
 		const nameErrorMsg = computed(() => {
 			let msg = '';
  
-			if (!!!lastItemInList.value) return msg;
+			if (!lastItemInList.value) return msg;
 
 			let arrOfThisItem = filterListBasedOnKey('name');
 
-			if (!!!lastItemInList.value.name) {
+			if (!lastItemInList.value.name) {
 				msg = 'Errors.ExampleNameCannotBeEmpty';
 			} else if (arrOfThisItem.length > 1) {
 				msg = 'Errors.ExampleNameCannotBeSame';

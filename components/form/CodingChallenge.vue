@@ -337,7 +337,7 @@ export default {
       if (form.validate()) {
         form.submitting = true;
         clearErrorsForCode();
-        if (!!props?.propData) fnEditCodingChallenge();
+        if (props?.propData) fnEditCodingChallenge();
         else fnCreateCodingChallenge();
 
         form.submitting = false;
@@ -409,14 +409,14 @@ export default {
           stdout: res.details.run.stdout,
         };
       } else {
-        if (!!res.details?.result?.compile) {
+        if (res.details?.result?.compile) {
           SolutionCodeErrorDetails.value = {
             stderr: res.details.result.compile.stderr,
             stdout: res.details.result.compile.stdout,
             verdict: res.error,
           };
           console.log("solution code compile error ", res);
-        } else if (!!res.details?.result?.run) {
+        } else if (res.details?.result?.run) {
           SolutionCodeErrorDetails.value = {
             stderr: res.details.result.run.stderr,
             stdout: res.details.result.run.stdout,
@@ -445,14 +445,14 @@ export default {
         props.challengeId,
         props.propData.id
       );
-      if (!!solutionSuccess) {
+      if (solutionSuccess) {
         form.solution_code.value = solutionSuccess?.code ?? "";
         form.solution_environment.value = solutionSuccess?.environment ?? "";
       } else {
         openSnackbar("error", "Errors.CannotGetSolution");
       }
 
-      if (!!evaluatorSuccess) {
+      if (evaluatorSuccess) {
         form.evaluator.value = evaluatorSuccess;
       } else {
         openSnackbar("error", "Errors.CannotGetEvaluator");

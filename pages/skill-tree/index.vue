@@ -151,10 +151,10 @@ export default {
 
     function scrollViaPathway(_node: any, parent: any) {
       let node = nodes.find((n) => n.id == _node);
-      if (!!!node) return;
+      if (!node) return;
 
       let parentNode = nodes.find((n) => n.id == parent);
-      if (!!!parentNode) return;
+      if (!parentNode) return;
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
@@ -163,7 +163,7 @@ export default {
         nextNode.value.column == node.column
       ) {
         nextNode.value = { ...previous };
-      } else if (!!previous) {
+      } else if (previous) {
         nextNode.value = { row: node.row, column: node.column };
       }
 

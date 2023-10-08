@@ -25,7 +25,7 @@ export async function getTheseCourses(arrOfCourseIDs: string[]) {
 		const courses = useCourses();
 
 		responses.forEach((response: any[]) => {
-			if (!!response[0]) {
+			if (response[0]) {
 				courses.value.push(response[0]);
 			}
 		});
@@ -74,7 +74,7 @@ export async function watchCourse(id: string) {
 
 export async function getCourseByID(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid course ID' } };
 		}
 
@@ -91,7 +91,7 @@ export async function getCourseByID(id: string) {
 
 export async function getCourseSummaryByID(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid course ID' } };
 		}
 
@@ -108,7 +108,7 @@ export async function getCourseSummaryByID(id: string) {
 
 export async function enrollIntoCourse(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid course ID' } };
 		}
 
@@ -125,20 +125,20 @@ export async function getLectureVideoSRC(
 	{ id, video_id, type }: any
 ) {
 	try {
-		if (!!!courseID) {
+		if (!courseID) {
 			throw { data: { detail: 'Invalid course ID' } };
 		}
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid lecture ID' } };
 		}
-		if (!!!type) {
+		if (!type) {
 			throw { data: { detail: 'Invalid lecture type' } };
 		}
 
 		const videoSRC = useVideoSRC();
 
 		if (type == 'youtube') {
-			if (!!!video_id) {
+			if (!video_id) {
 				throw { data: { detail: 'Invalid lecture video id' } };
 			}
 
@@ -158,10 +158,10 @@ export async function getLectureVideoSRC(
 
 export async function completeLecture(courseID: string, lectureID: string) {
 	try {
-		if (!!!courseID) {
+		if (!courseID) {
 			throw { data: { detail: 'Invalid course ID' } };
 		}
-		if (!!!lectureID) {
+		if (!lectureID) {
 			throw { data: { detail: 'Invalid lecture ID' } };
 		}
 

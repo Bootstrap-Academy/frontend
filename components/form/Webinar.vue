@@ -244,7 +244,7 @@ export default defineComponent({
 					}
 				}
 
-				if (!!!date.value) isValid = false;
+				if (!date.value) isValid = false;
 				if (!!!time.value || time.value == '00:00:00') isValid = false;
 
 				if (refForm.value) refForm.value.reportValidity();

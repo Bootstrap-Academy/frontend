@@ -134,7 +134,7 @@ export default defineComponent({
     const verdictIs: any = (submission: any) => {
       let verdict = submission.result?.verdict ?? "";
       console.log("verdict is ", verdict);
-      if (!!!submission.result) {
+      if (!submission.result) {
         return "Headings.PendingResult";
       }
 
@@ -195,7 +195,7 @@ export default defineComponent({
         id
       );
 
-      if (!!error) openSnackbar("error", error);
+      if (error) openSnackbar("error", error);
     }
 
     return {

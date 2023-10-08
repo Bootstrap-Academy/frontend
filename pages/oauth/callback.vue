@@ -62,7 +62,7 @@ export default {
 		function successHandler(res: any) {
 			const register_token = res?.register_token ?? '';
 
-			if (!!register_token) {
+			if (register_token) {
 				router.push(`/auth/signup?register_token=${register_token}`);
 			} else {
 				setStates(res?.login ?? null);

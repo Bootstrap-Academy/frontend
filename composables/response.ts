@@ -31,7 +31,7 @@ export function openSnackbar(
 		body,
 	};
 
-	if (!!!noTimeout) {
+	if (!noTimeout) {
 		setTimeout(() => {
 			closeSnackbar();
 		}, 5000);

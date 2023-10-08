@@ -78,21 +78,21 @@ export default {
 			const [success, error] = await initializeMFA();
 			setLoading(false);
 
-			if (!!success) {
+			if (success) {
 				TOTP_secret.value = success;
 				getQR_code(TOTP_secret.value, user.value.name);
 			}
 
 			Object.assign(dialog, {
-				type: !!success ? 'success' : 'error',
+				type: (success) ? 'success' : 'error',
 				heading: 'InitializeMFA',
-				body: !!success
+				body: (success)
 					? 'Success.InitializeMFA'
 					: `${t('Error.InitializeMFA')}: ${error?.detail ?? ''}`,
 				primaryBtn: {
-					label: !!success ? 'Buttons.EnableMFA' : 'Links.GoBack',
+					label: (success) ? 'Buttons.EnableMFA' : 'Links.GoBack',
 					onclick: () => {
-						router.push(!!success ? '/account/mfa/enable' : '/account');
+						router.push((success) ? '/account/mfa/enable' : '/account');
 					},
 				},
 				secondaryBtn: null,

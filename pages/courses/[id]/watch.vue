@@ -182,7 +182,7 @@ export default {
       let sections: any[] = course.value?.sections ?? [];
       if (!!!sections || sections.length <= 0) return null;
       let section = sections.find((sec) => sec.id == sectionID);
-      return !!section ? section : null;
+      return (section) ? section : null;
     });
     const activeLecture = computed(() => {
       const lectureID = <string>(route.query?.lecture ?? "");
@@ -191,7 +191,7 @@ export default {
 
       let lecture = lectures.find((lec) => lec.id == lectureID);
 
-      return !!lecture ? lecture : null;
+      return (lecture) ? lecture : null;
     });
     const courseId: any = computed(() => {
       return route.params.id;
@@ -253,7 +253,7 @@ export default {
           activeLecture.value.id
         );
 
-        if (!!success[0]) {
+        if (success[0]) {
           taskId.value = success[0]?.id;
           subtasks.value = [];
           fnGetSubtasksInQuiz(success[0]?.id);
@@ -280,7 +280,7 @@ export default {
       let a = localStorage.getItem("selectedButton");
       selectedButton.value = Number(a);
 
-      if (!!!courseID) {
+      if (!courseID) {
         loading.value = false;
         return;
       }

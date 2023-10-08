@@ -21,7 +21,7 @@ export async function getRootSkillTree() {
 
 export async function getSubSkillTree(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Missing sub skill id' } };
 		}
 
@@ -46,11 +46,11 @@ export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
 	nodes.forEach((node) => {
 		let startNodeRef = map[node.row][node.column];
 
-		if (!!!startNodeRef) return;
+		if (!startNodeRef) return;
 
 		node.dependencies.forEach((dependency: any) => {
 			let parentNode = nodes.find((n) => n.id == dependency);
-			if (!!!parentNode) return;
+			if (!parentNode) return;
 
 			let parentNodeRef = map[parentNode.row][parentNode.column];
 
@@ -88,7 +88,7 @@ export function scrollMapToNode(
 
 	let ref = map[row][column];
 
-	if (!!!ref) return;
+	if (!ref) return;
 
 	let shiftBy;
 	if (zoomLevel == 5) {

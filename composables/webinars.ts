@@ -9,10 +9,10 @@ export async function getRating(skill_id: string) {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: { detail: 'Invalid User Id' } };
 		}
-		if (!!!skill_id) {
+		if (!skill_id) {
 			throw { data: { detail: 'Invalid Skill Id' } };
 		}
 		const response = await GET(`/events/ratings/${user_id}/${skill_id}`);
@@ -25,7 +25,7 @@ export async function getRating(skill_id: string) {
 
 export async function deleteWebinar(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid webinar Id' } };
 		}
 
@@ -39,7 +39,7 @@ export async function deleteWebinar(id: string) {
 
 export async function getWebinar(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid webinar Id' } };
 		}
 
@@ -66,7 +66,7 @@ export async function createWebinar(body: any) {
 
 export async function editWebinar(id: string, body: any) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: { detail: 'Invalid webinar Id' } };
 		}
 
@@ -83,7 +83,7 @@ export async function getMyWebinars() {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: { detail: 'Invalid User Id' } };
 		}
 
@@ -100,7 +100,7 @@ export async function getMyWebinars() {
 
 export async function getWebinarsForThisSubSkill(subSkillID: string) {
 	try {
-		if (!!!subSkillID) {
+		if (!subSkillID) {
 			throw { data: { detail: 'Invalid sub skill ID' } };
 		}
 
@@ -131,7 +131,7 @@ export async function getAllWebinars() {
 
 export async function registerForWebinarByID(webinarID: string) {
 	try {
-		if (!!!webinarID) {
+		if (!webinarID) {
 			throw { data: 'Invalid webinar ID' };
 		}
 

@@ -45,7 +45,7 @@ export default defineComponent({
         "chip-color-12",
       ];
 
-      return !!props.color
+      return (props.color)
         ? props.color
         : colors[getRandomNumber(0, colors.length - 1)];
     });

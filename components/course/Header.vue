@@ -52,7 +52,7 @@ export default defineComponent({
 
 		const lastUpdated = computed(() => {
 			let timestamp = props.data?.last_update ?? '';
-			if (!!!timestamp) return ``;
+			if (!timestamp) return ``;
 
 			let { month, year } = convertTimestampToDate(timestamp);
 			return `${t(month.string).substring(0, 3)}, ${year}`;
