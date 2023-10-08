@@ -226,7 +226,7 @@ export default defineComponent({
       showMaxAttemptsError.value = false;
       console.log("res", res);
       clearInterval(interval.value);
-      if (!!res) {
+      if (res) {
         // openSnackbar("success", "Success.QuizAttempt");
         selected.value = [];
         wasOptionsCorrect.value = "yes";
@@ -312,7 +312,7 @@ export default defineComponent({
     watch(
       () => showMaxAttemptsError.value,
       (newValue: any) => {
-        if (!!newValue) {
+        if (newValue) {
           interval.value = setInterval(() => {
             if (secondsForTryAgain.value <= 0) {
               clearInterval(interval.value);

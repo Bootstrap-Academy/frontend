@@ -33,7 +33,7 @@ export default {
 		]);
 
 		function setExpand(index, value) {
-			if (!!value) {
+			if (value) {
 				for (let i = 0; i < faqs.value.length; i++) {
 					faqs.value[i].expand = i == index;
 				}

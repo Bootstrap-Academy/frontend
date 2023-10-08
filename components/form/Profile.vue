@@ -277,7 +277,7 @@ export default defineComponent({
 
 		const hintNickname = computed(() => {
 			let timestamp = props.data?.last_name_change ?? '';
-			if (!!!timestamp) return '';
+			if (!timestamp) return '';
 
 			let after_30Days = timestamp + 60 * 60 * 24 * 30;
 			const { date, month, year } = convertTimestampToDate(after_30Days);

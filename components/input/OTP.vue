@@ -105,11 +105,11 @@ export default defineComponent({
 					if (rule(finalOTP) != true) {
 						const [string, placeholder] = rule(finalOTP).split('_');
 
-						if (!!placeholder) {
+						if (placeholder) {
 							msg = t(string, {
 								placeholder: t(placeholder),
 							});
-						} else if (!!string) {
+						} else if (string) {
 							msg = t(string);
 						} else {
 							msg = t(rule(finalOTP));
@@ -138,7 +138,7 @@ export default defineComponent({
 
 		onMounted(() => {
 			nextTick(() => {
-				if (!!DOM_INPUTS.value[0]) DOM_INPUTS.value[0].focus();
+				if (DOM_INPUTS.value[0]) DOM_INPUTS.value[0].focus();
 			});
 		});
 

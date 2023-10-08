@@ -58,13 +58,13 @@ export default defineComponent({
     // ============================================================= computed
 
     const minHrs = computed(() => {
-      if (!!!props.min) return -1;
+      if (!props.min) return -1;
       let [hrs, mins, secs] = props.min.split(":");
       return parseInt(hrs);
     });
 
     const minMins = computed(() => {
-      if (!!!props.min) return -1;
+      if (!props.min) return -1;
       let [hrs, mins, secs] = props.min.split(":");
       return parseInt(mins);
     });
@@ -82,28 +82,28 @@ export default defineComponent({
       // checking hrs
       if (hrs < 0) {
         msg = "Hours must be greater than 0";
-        if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+        if (DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
       } else if (hrs > 23) {
         msg = "Hours must be less than 23";
-        if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+        if (DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
       }
       // checking minutes
       else if (mins < 0) {
         msg = "Minutes must be greater than 0";
-        if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
+        if (DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
       } else if (mins > 59) {
         msg = "Minutes must be less than 59";
-        if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
+        if (DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
       }
 
       // Min time checking
       else if (!isFutureDate && minHrs.value != -1 && minMins.value != 1) {
         if (hrs < minHrs.value) {
           msg = "Hours cannot be set in the past";
-          if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+          if (DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
         } else if (hrs == minHrs.value && mins < minMins.value) {
           msg = "Minutes cannot be set in the past";
-          if (!!DOM_INPUT_MINS.value)
+          if (DOM_INPUT_MINS.value)
             DOM_INPUT_MINS.value.setCustomValidity(msg);
         }
       }
@@ -113,8 +113,8 @@ export default defineComponent({
         msg = "";
       }
 
-      if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
-      if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
+      if (DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
+      if (DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
 
       emit("valid", !!!msg);
 

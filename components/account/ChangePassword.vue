@@ -26,7 +26,7 @@ export default defineComponent({
 
 		async function onclick() {
 			let email = user?.value?.email ?? '';
-			if (!!!email) {
+			if (!email) {
 				openDialog(
 					'warning',
 					'Headings.MissingEmail',

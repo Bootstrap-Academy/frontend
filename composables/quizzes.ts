@@ -228,7 +228,7 @@ export async function getQuizzesInCourse(courseId: any, section_id: any = "", le
 export async function getSubTasksInQuiz(taskId: any, creator: any = '') {
 	try {
 		let query = ''
-		if (!!creator) {
+		if (creator) {
 			query = `/challenges/tasks/${taskId}/multiple_choice?creator=${creator}`
 		}
 		else {
@@ -352,12 +352,12 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		const res = await POST(`challenges/tasks/${taskId}/multiple_choice/${subTaskid}/attempts`, body)
 		let success = null
 		console.log("ress", res)
-		if (!!res.error) {
+		if (res.error) {
 			success = 'Too Much Requests'
 		}
-		else if (!!res.solved) {
+		else if (res.solved) {
 			success = true
-		} else if (!!!res.solved) {
+		} else if (!res.solved) {
 			success = false
 		}
 		console.log('returnnig', success)

@@ -58,7 +58,7 @@ export default {
     const nuxtApp = useNuxtApp();
 
     nuxtApp.hook("page:finish", async () => {
-      if (!!accessToken.value) {
+      if (accessToken.value) {
         await getUnratedWebinars();
       }
     });

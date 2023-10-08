@@ -79,12 +79,12 @@ export default defineComponent({
     watch(
       () => props.id,
       async () => {
-        if (!!props?.id) await getcodingChallenges();
+        if (props?.id) await getcodingChallenges();
       },
       { immediate: true }
     );
     onMounted(() => {
-      if (!!props?.id) {
+      if (props?.id) {
         getcodingChallenges();
       }
     });

@@ -232,7 +232,7 @@ export default defineComponent({
 		}
 
 		function onchangeValidateEuros() {
-			if (!!euroErrorMsg) openSnackbar('error', euroErrorMsg);
+			if (euroErrorMsg) openSnackbar('error', euroErrorMsg);
 		}
 
 		// ============================================================= Handling Morphcoins
@@ -261,7 +261,7 @@ export default defineComponent({
 		}
 
 		function onchangeValidateMorphcoins() {
-			if (!!morphcoinsErrorMsg) openSnackbar('error', morphcoinsErrorMsg);
+			if (morphcoinsErrorMsg) openSnackbar('error', morphcoinsErrorMsg);
 		}
 
 		return {

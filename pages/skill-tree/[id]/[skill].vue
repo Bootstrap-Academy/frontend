@@ -144,7 +144,7 @@ export default defineComponent({
 
       const [success, error] = await getSubSkillTree(rootSkillID.value);
 
-      if (!!success) {
+      if (success) {
         await Promise.all([
           getTheseCourses(courseIDs.value),
           getCoachingsForThisSubSkill(subSkillID.value),

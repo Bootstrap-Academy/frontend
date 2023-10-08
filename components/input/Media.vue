@@ -91,9 +91,9 @@ export default defineComponent({
 			let file = event?.target?.files[0] ?? null;
 
 			validate(file);
-			emit('file', !!!error.value ? file : null);
+			emit('file', (!error.value) ? file : null);
 
-			if (!!!file) return;
+			if (!file) return;
 			url.value = URL.createObjectURL(file);
 		}
 

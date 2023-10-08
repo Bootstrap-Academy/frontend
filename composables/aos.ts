@@ -23,7 +23,7 @@ export function setAOSViaParent(
 	const myObserver = new IntersectionObserver(callback, options);
 
 	for (let i = 0; i < parentRef.children.length; i++) {
-		if (!!skips.find((index) => index == i)) {
+		if (skips.find((index) => index == i)) {
 		} else {
 			parentRef.children.item(i).classList.add(baseClass);
 			myObserver.observe(parentRef.children.item(i));

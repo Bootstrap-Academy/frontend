@@ -29,7 +29,7 @@ export default defineComponent({
       return window.history.length > 2;
     }
     function onclickNavigate() {
-      if (!!!backRoute.value.pathname) {
+      if (!backRoute.value.pathname) {
         console.log("jas history", hasHistory());
         hasHistory() ? router.go(-1) : router.push("/");
       } else {

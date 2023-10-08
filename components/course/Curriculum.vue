@@ -96,7 +96,7 @@ export default defineComponent({
       const thisSection = sections.value.find(
         (section) => section.id == sectionID
       );
-      if (!!!thisSection) return [];
+      if (!thisSection) return [];
 
       let lectures: any[] = thisSection.lectures ?? [];
       if (!!!lectures || lectures.length <= 0) return [];
@@ -159,7 +159,7 @@ export default defineComponent({
     });
 
     function getTotalDurationOfThisSection(section: any) {
-      if (!!!section) return "";
+      if (!section) return "";
 
       const lectures = section.lectures ?? [];
       if (!!!lectures || lectures.length <= 0) return "";

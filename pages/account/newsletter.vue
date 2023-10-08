@@ -59,17 +59,17 @@ export default {
       setLoading(false);
 
       Object.assign(dialog, {
-        type: !!success ? "success" : "error",
-        heading: !!success
+        type: (success) ? "success" : "error",
+        heading: (success)
           ? "Headings.SubscribedToNewsLetter"
           : "Headings.UnableSubscribedToNewsLetter",
-        body: !!success
+        body: (success)
           ? "Body.SubscribedToNewsLetter"
           : `${t("Body.UnableSubscribedToNewsLetter")}: ${t(
               error?.detail ?? ""
             )}`,
         primaryBtn: {
-          label: !!success ? "Buttons.Okay" : "Links.BackToAccount",
+          label: (success) ? "Buttons.Okay" : "Links.BackToAccount",
           onclick: () => {
             router.push("/account");
           },
