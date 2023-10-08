@@ -849,7 +849,7 @@
     "DontHaveSecretCode": "Don't have TOTP secret code?",
     "InitializeSecretCode": "Click to initialize it",
     "UseRecoveryCode": "Use Recovery Code",
-    "ExploreSkillTree": "Explore skill tree",
+    "ExploreSkillTree": "Explore the skill tree",
     "GetStarted": "to get started.",
     "GoToProfile": "Go To Profile",
     "GoToCourse": "Go To Course",
@@ -1061,15 +1061,15 @@
     },
     "SkillProgress": {
       "Heading": "@:Headings.SkillPoints",
-      "Body": "Explore skill tree to get started."
+      "Body": "Explore the skill tree to get started."
     },
     "Course": {
       "Heading": "Course Not Found",
-      "Body": "This course may not exist or is removed."
+      "Body": "This course may not exist or was removed."
     },
     "CourseCardSM": {
       "Heading": "No Watched Courses",
-      "Body": "You have not watched courses. Explore skill tree to get started."
+      "Body": "You have not watched courses yet. Explore the skill tree to get started."
     },
     "Courses": {
       "Heading": "No Matching Courses",
@@ -1077,7 +1077,7 @@
     },
     "Lecture": {
       "Heading": "Lecture Not Found",
-      "Body": "This lecture may not exist or is removed."
+      "Body": "This lecture may not exist or was removed."
     },
     "Jobs": {
       "Heading": "No Matching Jobs",
@@ -1085,11 +1085,11 @@
     },
     "Job": {
       "Heading": "Job Not Found",
-      "Body": "This job may not exist or is removed."
+      "Body": "This job may not exist or was removed."
     },
     "Certificates": {
       "Line1": "You have no certificates",
-      "Line2": "Explore skill tree",
+      "Line2": "Explore the skill tree",
       "Line3": "to get started."
     },
     "MyQuizQuestions": {
