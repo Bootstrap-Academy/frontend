@@ -66,7 +66,7 @@
       </g>
     </g>
 
-    <svg x="180" y="200" width="100" height="100" version="1.1" viewBox="0 0 125 125" xmlns="http://www.w3.org/2000/svg">
+    <svg v-if="isAuth" x="180" y="200" width="100" height="100" version="1.1" viewBox="0 0 125 125" xmlns="http://www.w3.org/2000/svg">
       <g
         class="group/bookmark cursor-pointer"
         @click.stop="onClickToggleBookmark">
