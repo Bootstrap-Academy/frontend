@@ -6,6 +6,7 @@
 			:node="node"
 			:active="active"
 			:completed="completed"
+			@bookmarked="toggleBookmark"
 		/>
 
 		<foreignObject
@@ -124,6 +125,17 @@ export default defineComponent({
 			return !!current_node.value.id;
 		});
 
+		function toggleBookmark(isBookmarked: boolean) {
+			var affectedNodes = [props.node?.id];
+
+			if (props.node?.parent_id) {
+				affectedNodes.push(props.node.parent_id);
+			}
+
+			console.log(`node \u001b[1;32m${props.node?.id}\u001b[1;0m is bookmarked => ${isBookmarked}`);
+			console.log(`affected nodes: \u001b[1;32m${affectedNodes.join(', ')}\u001b[1;0m`);
+		}
+
 		return {
 			current_node,
 			nodeRef,
@@ -134,6 +146,7 @@ export default defineComponent({
 			ondblclick,
 			isFilled,
 			occupiedSpace,
+			toggleBookmark,
 		};
 	},
 });
