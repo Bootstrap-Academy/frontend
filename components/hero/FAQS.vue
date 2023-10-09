@@ -16,7 +16,7 @@
 			:body="`List.HeroFAQS.${i + 1}.Body`"
 			:link="i + 1 == 1 ? { to: '/morphcoins', text: 'Links.Here' } : null"
 			:expand="expand"
-			@expand="setExpand(i, $event)"
+			@expand="setExpand(i)"
 		/>
 	</section>
 </template>
@@ -26,7 +26,7 @@ export default {
 	setup() {
 		const faqs = ref([
 			{ expand: false },
-			{ expand: true },
+			{ expand: false },
 			{ expand: false },
 			{ expand: false },
 			{ expand: false },
