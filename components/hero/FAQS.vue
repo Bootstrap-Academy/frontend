@@ -26,18 +26,16 @@ export default {
 	setup() {
 		const faqs = ref([
 			{ expand: false },
-			{ expand: true },
+			{ expand: false },
 			{ expand: false },
 			{ expand: false },
 			{ expand: false },
 		]);
 
 		function setExpand(index, value) {
-			if (!!value) {
 				for (let i = 0; i < faqs.value.length; i++) {
-					faqs.value[i].expand = i == index;
+					faqs.value[i].expand = i == index ? !faqs.value[i].expand : false;
 				}
-			}
 		}
 
 		return { faqs, setExpand };
