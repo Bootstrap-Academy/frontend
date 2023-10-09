@@ -76,7 +76,7 @@
           fill="#0e425e"
           transform="scale(0.7)"
           class="group-hover/bookmark:scale-90 origin-center transition-all ease-in-out"
-          :class="isBookmarked || isBookmarkToggled ? 'fill-[#0cc9ab]' : ''"/>
+          :class="isBookmarked || isBookmarkToggled ? 'fill-[#fffF00]' : ''"/>
       </g>
     </svg>
   </svg>
