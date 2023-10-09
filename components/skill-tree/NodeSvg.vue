@@ -6,7 +6,8 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     tabindex="0"
-    class="cursor-pointer relative outline-none"
+    class="relative outline-none"
+    :class="navigate ? 'cursor-pointer' : ''"
   >
     <g
       class="group"
@@ -93,12 +94,17 @@ export default {
     completed: { type: Boolean, default: false },
     failed: { type: Boolean, default: false },
     isBookmarked: { type: Boolean, default: false },
+    navigate: { type: Boolean, default: true },
   },
   emits: ["active", "completed", "bookmarked"],
   setup(props, { emit }) {
     const isBookmarkToggled = ref(false)
 
     function onclickToggleActive() {
+      if (!props.navigate) {
+        return;
+      }
+
       if (!props.active && !props.completed) {
         emit("active", true);
         emit("completed", false);

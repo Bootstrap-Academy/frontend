@@ -19,12 +19,14 @@
       @activeStepper="activeStepper = $event"
     />
 
-    <div class="h-fit pointer-events-none">
+    <div class="h-fit">
       <SkillTreeNodeSvg
         :size="nodeSize"
         :node="subSkill"
         :active="true"
         :completed="subSkill?.completed ?? false"
+        :navigate="false"
+        @bookmarked="toggleBookmark"
         class="mx-auto"
       />
       <h6
@@ -134,6 +136,13 @@ export default defineComponent({
 
     const nodeSize = ref(150);
 
+    function toggleBookmark(isBookmarked: boolean) {
+			var affectedNodes = [subSkill.value.parent_id, subSkill.value.id];
+
+			console.log(`node \u001b[1;32m${subSkill.value.id}\u001b[1;0m is bookmarked => ${isBookmarked}`);
+			console.log(`affected nodes: \u001b[1;32m${affectedNodes.join(', ')}\u001b[1;0m`);
+		}
+
     onMounted(async () => {
       if (window) {
         updateWindowWidth();
@@ -178,6 +187,7 @@ export default defineComponent({
       skillName,
       breadcrumbs,
       quizzes,
+      toggleBookmark,
     };
   },
 });
