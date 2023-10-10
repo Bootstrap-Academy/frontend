@@ -139,11 +139,6 @@ export default defineComponent({
     const nodeSize = ref(150);
 
     async function toggleBookmark(isBookmarked: boolean) {
-			// var affectedNodes = [subSkill.value.parent_id, subSkill.value.id];
-
-			// console.log(`node \u001b[1;32m${subSkill.value.id}\u001b[1;0m is bookmarked => ${isBookmarked}`);
-			// console.log(`affected nodes: \u001b[1;32m${affectedNodes.join(', ')}\u001b[1;0m`);
-		
       isNodeBookmarked.value = isBookmarked; // instant / optimistic update
 
 			try {
