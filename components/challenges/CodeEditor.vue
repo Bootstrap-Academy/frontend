@@ -1,5 +1,4 @@
 <template>
-  {{ languagee }}
   <div class="grid gap-card grid-rows-[auto_minmax(0,1fr)] h-full w-full">
     <header class="flex flex-wrap gap-card justify-between" v-if="showButtons">
       <div class="flex gap-3">
@@ -62,6 +61,7 @@ import {
 export default defineComponent({
   props: {
     modelValue: { default: "" },
+    selectedLanguage: { type: String, default: null },
     showButtons: { default: false },
     codingChallengeId: { type: String, default: "" },
     challengeId: { type: String, default: "" },
@@ -82,6 +82,8 @@ export default defineComponent({
     const premiumInfo: any = usePremiumInfo();
     const language = ref("typescript");
     const updateCode = ref(true);
+    const container: any = ref();
+
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
     });
@@ -219,12 +221,30 @@ export default defineComponent({
       { immediate: true }
     );
 
+    watch(
+      () => props.selectedLanguage,
+      () => {
+        console.log("checked");
+        update(props.selectedLanguage);
+        // editor = monaco.editor.create(container.value, {
+        //   language: !!props.selectedLanguage
+        //     ? props.selectedLanguage
+        //     : language.value,
+        // });
+
+        // handleEditorDidMount(editor);
+      }
+    );
+
     function update(value: string) {
       if (editor) {
         const model = editor.getModel();
 
         if (model) {
-          monaco.editor.setModelLanguage(model, language.value);
+          monaco.editor.setModelLanguage(
+            model,
+            props.selectedLanguage ? props.selectedLanguage : language.value
+          );
         }
       }
     }
@@ -232,11 +252,13 @@ export default defineComponent({
     onMounted(async () => {
       await getEnvironments();
       await getPremiumStatus();
-      const container = <HTMLElement>editorContainer.value;
+      container.value = <HTMLElement>editorContainer.value;
 
-      editor = monaco.editor.create(container, {
+      editor = monaco.editor.create(container.value, {
         value: props.modelValue,
-        language: language.value,
+        language: !!props.selectedLanguage
+          ? props.selectedLanguage
+          : language.value,
         theme: "vs-dark",
       });
 
@@ -262,6 +284,7 @@ export default defineComponent({
       HeartIcon,
       isPremium,
       openDialogSubmission,
+      container,
     };
   },
 });
