@@ -76,14 +76,14 @@
           fill="#0e425e"
           transform="scale(0.7)"
           class="group-hover/bookmark:scale-90 origin-center transition-all ease-in-out"
-          :class="isBookmarked || isBookmarkToggled ? 'fill-[#fffF00]' : ''"/>
+          :class="isBookmarked ? 'fill-[#fffF00]' : ''"/>
       </g>
     </svg>
   </svg>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType } from "vue";
 
 export default {
   props: {
@@ -98,7 +98,6 @@ export default {
   },
   emits: ["active", "completed", "bookmarked"],
   setup(props, { emit }) {
-    const isBookmarkToggled = ref(false)
 
     function onclickToggleActive() {
       if (!props.navigate) {
@@ -117,8 +116,7 @@ export default {
       }
     }
     function onClickToggleBookmark() {
-      isBookmarkToggled.value = !isBookmarkToggled.value // let the parent handle the api request. instantly toggle state => optimistic update
-      emit("bookmarked", isBookmarkToggled.value);
+      emit("bookmarked", !props.isBookmarked);
     }
     function ondblclickToggleCompleted() {
       emit("completed", !props.completed);
@@ -181,7 +179,6 @@ export default {
     });
 
     return {
-      isBookmarkToggled,
       dashed,
       outline,
       half,
