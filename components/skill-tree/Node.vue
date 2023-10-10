@@ -6,6 +6,7 @@
 			:node="node"
 			:active="active"
 			:completed="completed"
+			:isBookmarked="isNodeBookmarked"
 			@bookmarked="toggleBookmark"
 		/>
 
@@ -36,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -53,6 +54,8 @@ export default defineComponent({
 	emits: ['node', 'size', 'selected', 'move', 'ref'],
 	setup(props, { emit }) {
 		let occupiedSpace = 3;
+
+		const isNodeBookmarked = ref(false); // Testing purpose
 
 		const size = computed(() => {
 			switch (props.zoomLevel) {
@@ -125,15 +128,22 @@ export default defineComponent({
 			return !!current_node.value.id;
 		});
 
-		function toggleBookmark(isBookmarked: boolean) {
-			var affectedNodes = [props.node?.id];
+		async function toggleBookmark(isBookmarked: boolean) {
+			isNodeBookmarked.value = isBookmarked; // instant / optimistic update
 
-			if (props.node?.parent_id) {
-				affectedNodes.push(props.node.parent_id);
+			try {
+				if (isBookmarked) {
+					await createBookmark(props.node.parent_id, props.node.id);
+				} else {
+					await deleteBookmark(props.node.parent_id, props.node.id);
+				}
+				
+				isNodeBookmarked.value = isBookmarked;
+				console.info(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark successful!`);
+			} catch (error) {
+				isNodeBookmarked.value = !isBookmarked; // reset state
+				console.error(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark failed!`);
 			}
-
-			console.log(`node \u001b[1;32m${props.node?.id}\u001b[1;0m is bookmarked => ${isBookmarked}`);
-			console.log(`affected nodes: \u001b[1;32m${affectedNodes.join(', ')}\u001b[1;0m`);
 		}
 
 		return {
@@ -147,6 +157,7 @@ export default defineComponent({
 			isFilled,
 			occupiedSpace,
 			toggleBookmark,
+			isNodeBookmarked,
 		};
 	},
 });
