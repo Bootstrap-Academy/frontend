@@ -58,11 +58,7 @@
             v-else-if="selectedButton == 1"
             class="w-full h-[71vh] overflow-scroll"
           >
-            <p class="w-full text-xl text-center" v-if="!subtasks.length">
-              {{ t("Headings.EmptySubtasks") }}
-            </p>
             <CourseSolveMcqInsideLectureView
-              v-else-if="subtasks.length"
               :quizzesToShow="subtasks"
             />
           </section>
@@ -71,20 +67,12 @@
             class="px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 2"
           >
-            <div v-if="codingChallenges.length">
-              <CodingChallengeCard
-                @click="solveCodingChallenge(codingChallenge)"
-                v-for="(codingChallenge, i) of codingChallenges"
-                :codingChallenge="codingChallenge"
-                :key="i"
-              />
-            </div>
-            <p
-              v-if="!codingChallenges.length"
-              class="w-full text-xl text-center"
-            >
-              {{ t("Headings.EmptyCodingChallenge") }}
-            </p>
+            <CodingChallengeCard
+              @click="solveCodingChallenge(codingChallenge)"
+              v-for="(codingChallenge, i) of codingChallenges"
+              :codingChallenge="codingChallenge"
+              :key="i"
+            />
           </section>
         </div>
 
@@ -171,11 +159,30 @@ export default {
     });
 
     const selectedButton = ref(0);
+
     const buttonOptions = [
-      { name: "Buttons.Video" },
-      { name: "Buttons.Quiz" },
-      { name: "Buttons.Challenge" },
+      { name: "Buttons.Video", id: 0 },
     ];
+
+    if (subtasks.value) {
+      let number = subtasks.value.length;
+
+      if (number === 1) {
+        buttonOptions.push({ name: `${number} ` + t("Buttons.Quiz"), id: 1 });
+      } else if (number > 1) {
+        buttonOptions.push({ name: `${number} ` + t("Buttons.Quizzess"), id: 1 });
+      }
+    }
+
+    if (codingChallenges.value) {
+      let number = codingChallenges.value.length;
+
+      if (number === 1) {
+        buttonOptions.push({ name: `${number} ` + t("Buttons.Challenge"), id: 2 });
+      } else if (number > 1) {
+        buttonOptions.push({ name: `${number} ` + t("Buttons.Challenges"), id: 2 });
+      }
+    }
 
     const activeSection = computed(() => {
       const sectionID = <string>(route.query?.section ?? "");
