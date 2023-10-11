@@ -12,7 +12,7 @@
 					<NuxtLink to="/" class="flex gap-card-sm items-center">
 						<img
 							src="/images/logo-text.png"
-							alt="bootstrap academy logo"
+							alt="Bootstrap Academy logo"
 							class="object-contain w-28 cursor-pointer"
 						/>
 					</NuxtLink>

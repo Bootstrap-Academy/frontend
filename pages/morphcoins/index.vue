@@ -45,7 +45,9 @@
 			</article>
 		</section>
 
-		<Btn secondary class="mx-auto">{{ t('Body.MoreComingSoon') }}</Btn>
+		<div class="text-center">
+			<a secondary>{{ t('Body.MoreComingSoon') }}</a>
+		</div>
 	</main>
 </template>
 
@@ -128,4 +130,5 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

@@ -48,7 +48,7 @@
           <div class="flex gap-x-2 items-center">
             <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
           </div>
-          <ChallengesCodeEditor class="h-full" v-model="form.evaluator.value" />
+          <ChallengesCodeEditor :selectedLanguage="'python'" class="h-full" v-model="form.evaluator.value" />
           <!-- error if there is any during evaluator code creation-->
 
           <div v-if="!!evaluatorCodeErrorDetails.stderr">
@@ -79,6 +79,7 @@
           <ChallengesCodeEditor
             class="h-full"
             v-model="form.solution_code.value"
+            :selectedLanguage="form.solution_environment.value"
           />
 
           <div
