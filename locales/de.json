@@ -521,7 +521,7 @@
       },
       "5": {
         "Heading": "Ich habe schon studiert. Kann ich die Skills anrechnen lassen?",
-        "Body": "Klar, Schreib uns. Wir müssen das manuell machen, damit man es nicht fälschen kann. Deswegen müssen wir auch ein paar MorphCoin dafür nehmen."
+        "Body": "Klar, Schreib uns. Wir müssen das manuell machen, damit man es nicht fälschen kann. Deswegen müssen wir auch ein paar MorphCoins dafür nehmen."
       }
     },
     "GetMorphcoins": {
@@ -851,12 +851,12 @@
     "InitializeSecretCode": "Okay",
     "UseRecoveryCode": "Wiederherstellungscode verwenden",
     "NoWatchedCourses": "Du hast noch keine Kurse gestartet.",
-    "ExploreSkillTree": "Ab zum Skilltree,",
+    "ExploreSkillTree": "Erkunde den Skilltree",
     "GetStarted": "Dort kannst du sie finden.",
     "GoToProfile": "Zum Profil",
     "ResendNewsletterRegistrationCode": "Registrierungscode für den Newsletter erneut senden",
     "Newsletter": "Ich möchte mich für den Bootstrap-Newsletter anmelden.",
-    "RightToWithdrawal": "Dir steht ein 14tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
+    "RightToWithdrawal": "Dir steht ein 14-tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
     "RightToWithdrawalLink": "hier",
     "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen.",
     "GravatarImage": "Ändere dein Gravatar-Bild unter"

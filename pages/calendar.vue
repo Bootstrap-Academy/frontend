@@ -21,7 +21,7 @@
 
 <template>
   <main
-    class="relative container-fluid mt-main mb-main grid grid-cols-1fr xl:grid-cols-[1fr_300px] gap-container"
+    class="relative container-fluid mt-main mb-main grid grid-cols-1fr xl:grid-cols-[1fr_300px] gap-container z-[1]"
   >
     <Calendar
       class="xl:sticky xl:top-container xl:self-start"

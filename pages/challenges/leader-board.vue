@@ -51,7 +51,6 @@
 import { useI18n } from "vue-i18n";
 import { useLeaderBoardList } from "~~/composables/leaderboard";
 definePageMeta({
-  layout: "inner",
   middleware: ["auth"],
 });
 
