@@ -31,7 +31,7 @@
 			<a href="https://www.youtube.com/user/themorpheus407" target="_blank">
 				<IconYoutube class="fill-accent transition-basic hover:scale-125" />
 			</a>
-			<a href="https://github.com/TheMorpheus407" target="_blank">
+			<a href="https://github.com/Bootstrap-Academy" target="_blank">
 				<IconGithub class="fill-accent transition-basic hover:scale-125" />
 			</a>
 		</article>
