@@ -4,7 +4,7 @@
 	>
 		<img
 			src="/images/logo-text.png"
-			alt="bootstrap academy logo"
+			alt="Bootstrap Academy logo"
 			class="w-40 mb-5 md:mt-2 block lg:hidden object-contain"
 		/>
 

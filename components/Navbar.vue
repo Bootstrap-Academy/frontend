@@ -4,7 +4,7 @@
     <NuxtLink to="/" class="hidden lg:flex gap-card-sm items-center">
       <img
         src="/images/logo-text.png"
-        alt="bootstrap academy logo"
+        alt="Bootstrap Academy logo"
         class="object-contain lg:w-28 xl:w-36 cursor-pointer"
       />
     </NuxtLink>
