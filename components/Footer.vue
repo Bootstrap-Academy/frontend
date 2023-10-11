@@ -1,6 +1,6 @@
 <template>
 	<footer
-		class="container-fluid bg-tertiary flex flex-col items-center gap-7 pt-8 relative z-10"
+		class="container-fluid bg-tertiary flex flex-col items-center gap-7 pt-8 relative z-0"
 	>
 		<img
 			src="/images/logo-text.png"
