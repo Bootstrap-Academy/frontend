@@ -1,0 +1,61 @@
+name: PR Preview on Cloudflare Pages
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: ["completed"]
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  preview:
+    name: Preview
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.event == 'pull_request'
+      && github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Download dist
+        uses: actions/github-script@v3
+        with:
+          script: |
+            var artifact = (await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            })).data.artifacts.find(x => x.name == "dist");
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: artifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/dist.zip', Buffer.from(download.data));
+      - name: Extract dist archive
+        run: |
+          unzip dist.zip
+          echo "pr=$(cat .pr)" >> $GITHUB_ENV
+      - name: Publish preview to Cloudflare Pages
+        id: publish
+        uses: cloudflare/pages-action@v1
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          projectName: academy-preview
+          directory: dist
+          branch: ${{ format('pr-{0}', env.pr) }}
+      - name: Prepare comment
+        run: |
+          url="${{ steps.publish.outputs.url }}"
+          size=$(du -sh dist | cut -f1)
+          echo "**Preview deployed to ${url}** (total size: ${size})" > comment
+      - name: Comment preview url
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: comment
+          pr_number: ${{ env.pr }}
+          comment_tag: preview
+          mode: recreate

@@ -16,7 +16,7 @@
 			:body="`List.HeroFAQS.${i + 1}.Body`"
 			:link="i + 1 == 1 ? { to: '/morphcoins', text: 'Links.Here' } : null"
 			:expand="expand"
-			@expand="setExpand(i, $event)"
+			@expand="setExpand(i)"
 		/>
 	</section>
 </template>
@@ -26,17 +26,16 @@ export default {
 	setup() {
 		const faqs = ref([
 			{ expand: false },
-			{ expand: true },
+			{ expand: false },
 			{ expand: false },
 			{ expand: false },
 			{ expand: false },
 		]);
 
-		function setExpand(index, value) {
-			if (!!value) {
-				for (let i = 0; i < faqs.value.length; i++) {
-					faqs.value[i].expand = i == index;
-				}
+		function setExpand(index) {
+			for (let i = 0; i < faqs.value.length; i++) {
+				// invert expand-state for clicked item, close all others
+				faqs.value[i].expand = i == index ? !faqs.value[i].expand : false;
 			}
 		}
 

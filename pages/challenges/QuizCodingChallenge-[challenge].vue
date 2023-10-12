@@ -31,21 +31,8 @@
         <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
       </Head>
 
-      <header class="w-fit flex items-items gap-card">
-        <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
-          {{ t("Headings.Active") }}
-        </p>
-      </header>
-
-      <div class="bg-secondary style-box w-fit h-fit">
-        <ChallengesItemProgress
-          :data="challenge"
-          class="!w-fit justify-self-end"
-        />
-      </div>
-
       <aside
-        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
+        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll min-h-[85vh]"
       >
         <ChallengesItemSubmission
           :data="challenge"
@@ -53,7 +40,6 @@
           :codingChallengeId="codingChallengeId"
         />
         <ChallengesItemDescription :data="codingChallenge" />
-        <ChallengesItemLimits :data="codingChallenge" />
         <ChallengesItemExamples
           :code="code"
           :environment="environment"
@@ -68,21 +54,9 @@
         :codingChallengeId="codingChallengeId"
         :showButtons="true"
         @environment="environment = $event"
+        :selectedLanguage="environment"
         v-model="code"
       />
-      <!-- <DialogSlot
-      v-if="dialogCodingChallengeFeedback"
-      :label="'Headings.Feedback'"
-      :propClass="'modal-width-lg lg:modal-width-sm'"
-      :show="dialogSlot"
-      @closeFunction="dialogClosed()"
-    >
-      <CodingChallengeModalFeedback
-        :challengeId="challengeID"
-        :codingChallengeId="codingChallengeId"
-        :isSolved="isSolved"
-      />
-    </DialogSlot> -->
     </main>
   </div>
 </template>
@@ -114,41 +88,23 @@ export default {
   setup() {
     const { t } = useI18n();
     const loading = ref(true);
-    // const isSolved = ref(false);
-
     const challenge = useChallenge();
     const codingChallenge = useCodingChallenge();
     const examples: any = useCodingExamples();
-
     const environment = ref();
     const allCodingChallenges = useAllCodingChallengesInATask();
-
     const route = useRoute();
-
+    const code = ref("// write your code here");
     const challengeID = computed((): string => {
       return <string>route?.params?.challenge ?? "";
     });
     const codingChallengeId: any = computed(() => {
       return route.query?.codingChallenge ?? "";
     });
-
     const heartInfo: any = useHeartInfo();
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
     });
-
-    // watch(
-    //   () => isSolved.value,
-    //   (newValue, oldValue) => {
-    //     console.log("watching ");
-
-    //     if (newValue) {
-    //       dialogCodingChallengeFeedback.value = true;
-    //       dialogSlot.value = true;
-    //       console.log("watching inside if");
-    //     }
-    //   }
-    // );
 
     onMounted(async () => {
       await Promise.all([
@@ -159,8 +115,6 @@ export default {
       ]);
       loading.value = false;
     });
-
-    const code = ref("// write your code here");
 
     return {
       t,
@@ -174,7 +128,6 @@ export default {
       hearts,
       codingChallenge,
       examples,
-      // isSolved,
     };
   },
 };
