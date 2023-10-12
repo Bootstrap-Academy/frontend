@@ -2,7 +2,7 @@
   <aside class="grid gap-container h-fit">
     <CalendarFeatures />
 
-    <article class="grid gap-card-sm xl:gap-box">
+    <article class="grid gap-card-sm xl:gap-box z-[100]">
       <h2 class="text-heading-2">
         {{ t("Headings.UpcomingEvents") }}
       </h2>

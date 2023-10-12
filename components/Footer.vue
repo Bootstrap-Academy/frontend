@@ -1,10 +1,10 @@
 <template>
 	<footer
-		class="container-fluid bg-tertiary flex flex-col items-center gap-7 pt-8 relative z-10"
+		class="container-fluid bg-tertiary flex flex-col items-center gap-7 pt-8 relative z-0"
 	>
 		<img
 			src="/images/logo-text.png"
-			alt="bootstrap academy logo"
+			alt="Bootstrap Academy logo"
 			class="w-40 mb-5 md:mt-2 block lg:hidden object-contain"
 		/>
 
@@ -31,7 +31,7 @@
 			<a href="https://www.youtube.com/user/themorpheus407" target="_blank">
 				<IconYoutube class="fill-accent transition-basic hover:scale-125" />
 			</a>
-			<a href="https://github.com/TheMorpheus407" target="_blank">
+			<a href="https://github.com/Bootstrap-Academy" target="_blank">
 				<IconGithub class="fill-accent transition-basic hover:scale-125" />
 			</a>
 		</article>

@@ -4,7 +4,7 @@
 			<img
 				@click="locale = 'en-US'"
 				src="/images/en.webp"
-				alt="english translation"
+				alt="English translation"
 				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
 				:class="locale == 'en-US' ? 'opacity-100' : 'opacity-60'"
 			/>
@@ -12,7 +12,7 @@
 			<img
 				@click="locale = 'de'"
 				src="/images/de.webp"
-				alt="french translation"
+				alt="German translation"
 				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
 				:class="locale == 'de' ? 'opacity-100' : 'opacity-60'"
 			/>

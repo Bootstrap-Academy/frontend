@@ -80,6 +80,7 @@
         :codingChallengeId="codingChallengeId"
         :showButtons="true"
         @environment="environment = $event"
+        :selectedLanguage="environment"
         v-model="code"
         :xp="codingChallenge?.xp"
       />
@@ -111,44 +112,14 @@ export default {
     const { t } = useI18n();
     const isSolved = ref(false);
     const loading = ref(true);
-
     const challenge = useChallenge();
     const category = useChallengeCategory();
     const codingChallenge: any = useCodingChallenge();
     const examples: any = useCodingExamples();
-
     const environment = ref();
     const allCodingChallenges = useAllCodingChallengesInATask();
-
     const route = useRoute();
-    const categoryID = computed((): string => {
-      return <string>route?.params?.category ?? "";
-    });
-    const codingChallengeId: any = computed(() => {
-      return route.query?.codingChallenge ?? "";
-    });
-    const challengeID = computed((): string => {
-      return <string>route?.params?.challenge ?? "";
-    });
-
-    const heartInfo: any = useHeartInfo();
-    const hearts = computed(() => {
-      return heartInfo.value?.hearts ?? 0;
-    });
-
-    onMounted(async () => {
-      await Promise.all([
-        getChallengeCategory(categoryID.value),
-        getChallenge(categoryID.value, challengeID.value),
-        getSubmissions(challengeID.value, codingChallengeId.value),
-        getCodingChallenge(challengeID.value, codingChallengeId.value),
-        getExamples(challengeID.value, codingChallengeId.value),
-        getHearts(),
-        getBalance(),
-      ]);
-      loading.value = false;
-    });
-
+    const code = ref("// write your code here");
     const breadcrumbs = computed(() => {
       return [
         {
@@ -166,9 +137,32 @@ export default {
         },
       ];
     });
+    const categoryID = computed((): string => {
+      return <string>route?.params?.category ?? "";
+    });
+    const codingChallengeId: any = computed(() => {
+      return route.query?.codingChallenge ?? "";
+    });
+    const challengeID = computed((): string => {
+      return <string>route?.params?.challenge ?? "";
+    });
+    const heartInfo: any = useHeartInfo();
+    const hearts = computed(() => {
+      return heartInfo.value?.hearts ?? 0;
+    });
 
-    const code = ref("// write your code here");
-
+    onMounted(async () => {
+      await Promise.all([
+        getChallengeCategory(categoryID.value),
+        getChallenge(categoryID.value, challengeID.value),
+        getSubmissions(challengeID.value, codingChallengeId.value),
+        getCodingChallenge(challengeID.value, codingChallengeId.value),
+        getExamples(challengeID.value, codingChallengeId.value),
+        getHearts(),
+        getBalance(),
+      ]);
+      loading.value = false;
+    });
     return {
       t,
       loading,

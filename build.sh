@@ -2,5 +2,5 @@
 
 set -ex
 
-nuxt generate
+npm run generate
 rm .output/public/404.html
