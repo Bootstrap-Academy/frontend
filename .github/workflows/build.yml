@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: bash build.sh
+      - name: Save PR number
+        if: github.event_name == 'pull_request'
+        run: |
+          echo ${{ github.event.number }} > .pr
+      - name: Upload dist
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: |
+            dist/
+            .pr
+          retention-days: 1
