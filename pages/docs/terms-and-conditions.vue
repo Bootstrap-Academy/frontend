@@ -532,7 +532,7 @@
 <script>
 export default {
 	setup() {
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 
 		const webLink = computed(() => {
 			return `${config.BASE_WEB_URL}`;

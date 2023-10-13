@@ -170,7 +170,7 @@ export default defineComponent({
 
     // ============================================================= OAuth Providers
     const oauthProviders = useOauthProviders();
-    const config = useRuntimeConfig();
+    const config = useRuntimeConfig().public;
 
     const providers = computed(() => {
       if (!!!oauthProviders.value || oauthProviders.value.length <= 0)

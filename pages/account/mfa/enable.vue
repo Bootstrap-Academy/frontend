@@ -86,7 +86,7 @@ export default {
 
 		const recovery_code = ref('');
 
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 		const accountLink = computed(() => {
 			return `${config.BASE_WEB_URL}/account`;
 		});

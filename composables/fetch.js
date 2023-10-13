@@ -24,7 +24,7 @@ export function DELETE(url, body = null) {
 }
 
 async function createApiFetch(url, method, body) {
-  const config = useRuntimeConfig();
+  const config = useRuntimeConfig().public;
   const accessToken = getAccessToken();
 
   return $fetch(url, {
@@ -62,7 +62,7 @@ const onRequest = async ({ request, options }) => {
 
 const onResponse = async ({ request, options, response }) => {
   let status = response?.ok ?? null;
-  const config = useRuntimeConfig();
+  const config = useRuntimeConfig().public;
   if (config.NODE_ENV == "development" && status == true) {
     console.log("success", response._data);
   }
@@ -92,7 +92,7 @@ const onResponseError = async ({ request, options, response }) => {
     details = details.toLocaleLowerCase();
   }
 
-  const config = useRuntimeConfig();
+  const config = useRuntimeConfig().public;
   if (config.NODE_ENV == "development") {
     // console.log("error", details);
   }

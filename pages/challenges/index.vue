@@ -44,7 +44,7 @@ export default {
 		const route = useRoute();
 
 		const challengesLoginUrl = useChallengesLoginUrl();
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 
 		onMounted(async () => {
 			setLoading(true);

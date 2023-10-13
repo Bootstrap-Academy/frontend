@@ -26,7 +26,7 @@ export async function loginViaOAuthProvider(body: any) {
 }
 
 export async function refresh() {
-	const config = useRuntimeConfig();
+	const config = useRuntimeConfig().public;
 	const refreshToken = getRefreshToken();
 
 	let body = JSON.stringify({ refresh_token: refreshToken });
