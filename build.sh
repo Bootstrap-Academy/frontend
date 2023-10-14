@@ -3,4 +3,4 @@
 set -ex
 
 npm run generate
-rm .output/public/404.html
+rm dist/404.html
