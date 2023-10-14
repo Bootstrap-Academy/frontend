@@ -13,7 +13,7 @@ export async function getCalendar() {
 		calendar.value = response ?? null;
 
 		const ics = useICS();
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 		ics.value = `${config.BASE_API_URL}/events/calendar/${
 			response?.ics_token ?? ''
 		}/academy.ics`;

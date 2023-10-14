@@ -45,7 +45,7 @@ export default {
 		const route = useRoute();
 
 		const dialog = <any>reactive({});
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 
 		onMounted(async () => {
 			setLoading(true);
