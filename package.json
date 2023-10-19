@@ -9,11 +9,11 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@types/dompurify": "^3.0.3",
-    "@types/katex": "^0.16.3",
-    "@types/markdown-it": "^13.0.2",
+    "@types/dompurify": "^3.0.4",
+    "@types/katex": "^0.16.5",
+    "@types/markdown-it": "^13.0.4",
     "autoprefixer": "^10.4.16",
-    "nuxt": "3.7.4",
+    "nuxt": "3.8.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
     "vue-i18n": "^9.5.0"
@@ -32,7 +32,7 @@
     "katex": "^0.16.9",
     "markdown-it": "^13.0.2",
     "monaco-editor": "^0.44.0",
-    "npm": "^10.2.0",
+    "npm": "^10.2.1",
     "qrcode.vue": "^3.4.1",
     "vue-recaptcha-v3": "^2.0.1"
   }
