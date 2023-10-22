@@ -25,7 +25,7 @@ import Gleap from 'gleap';
 
 export default defineComponent({
 	setup() {
-		const config = useRuntimeConfig();
+		const config = useRuntimeConfig().public;
 
 		const dialog = computed(() => {
 			return {
