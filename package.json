@@ -15,7 +15,7 @@
     "autoprefixer": "^10.4.16",
     "nuxt": "3.8.0",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.3",
+    "tailwindcss": "^3.3.5",
     "vue-i18n": "^9.5.0"
   },
   "dependencies": {
@@ -25,7 +25,7 @@
     "@vueuse/core": "^10.5.0",
     "async-mutex": "^0.4.0",
     "dompurify": "^3.0.6",
-    "gleap": "^12.1.1",
+    "gleap": "^12.1.2",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
     "jwt-decode": "^3.1.2",
