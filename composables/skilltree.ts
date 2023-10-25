@@ -116,3 +116,83 @@ export function scrollMapToNode(
 		behavior: smooth ? 'smooth' : 'auto',
 	});
 }
+
+export async function createBookmark(rootSkillTreeId, subSkillTreeId) {
+	// Fake API Request. Let it occasionally Fail.
+
+	const responseTimeMs = 100 + Math.floor(Math.random() * 99);
+
+	await new Promise((resolve, reject) => {
+		setTimeout(() => {
+			// 10 % Failing Rate
+			if (Math.floor(Math.random() * 10) === 0) {
+				reject();
+			}
+
+			resolve();
+		}, responseTimeMs);
+	});
+	
+	/*
+
+	possibly add the following api routes:
+	- POST /skills/skilltree/{rootSkillTreeId}/bookmark
+	- POST /skills/skilltree/{rootSkillTreeId}/bookmark/{subSkillTreeId}
+	
+	try {
+		var urlPath = `/skills/skilltree/${rootSkillTreeId}/bookmark`;
+
+		if (subSkillTreeId) {
+			urlPath += `/${subSkillTreeId}`;
+		}
+
+		const response = await POST(urlPath);
+
+		// const rootSkillTree = useRootSkillTree();
+		// rootSkillTree.value = response;
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}*/
+}
+
+export async function deleteBookmark(rootSkillTreeId, subSkillTreeId) {
+	// Fake API Request. Let it occasionally Fail.
+
+	const responseTimeMs = 100 + Math.floor(Math.random() * 99);
+
+	await new Promise((resolve, reject) => {
+		setTimeout(() => {
+			// 10 % Failing Rate
+			if (Math.floor(Math.random() * 10) === 0) {
+				reject();
+			}
+
+			resolve();
+		}, responseTimeMs);
+	});
+	
+	/*
+
+	possibly add the following api routes:
+	- DELETE /skills/skilltree/{rootSkillTreeId}/bookmark
+	- DELETE /skills/skilltree/{rootSkillTreeId}/bookmark/{subSkillTreeId}
+	
+	try {
+		var urlPath = `/skills/skilltree/${rootSkillTreeId}/bookmark`;
+
+		if (subSkillTreeId) {
+			urlPath += `/${subSkillTreeId}`;
+		}
+
+		const response = await DELETE(urlPath);
+
+		// const rootSkillTree = useRootSkillTree();
+		// rootSkillTree.value = response;
+
+		return [response, null];
+	} catch (error: any) {
+		return [null, error.data];
+	}*/
+}

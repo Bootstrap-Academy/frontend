@@ -19,12 +19,15 @@
       @activeStepper="activeStepper = $event"
     />
 
-    <div class="h-fit pointer-events-none">
+    <div class="h-fit">
       <SkillTreeNodeSvg
         :size="nodeSize"
         :node="subSkill"
         :active="true"
         :completed="subSkill?.completed ?? false"
+        :navigate="false"
+        :isBookmarked="isNodeBookmarked"
+        @bookmarked="toggleBookmark"
         class="mx-auto"
       />
       <h6
@@ -48,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from "vue";
+import { defineComponent, Ref, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
 definePageMeta({
@@ -65,6 +68,7 @@ export default defineComponent({
     const activeStepper = ref(0);
 
     const subSkillTree: Ref<any> = useSubSkillTree();
+    const isNodeBookmarked = ref(false); // Testing purpose
 
     const courses = useCourses();
     const coachings = useCoachings();
@@ -134,6 +138,24 @@ export default defineComponent({
 
     const nodeSize = ref(150);
 
+    async function toggleBookmark(isBookmarked: boolean) {
+      isNodeBookmarked.value = isBookmarked; // instant / optimistic update
+
+			try {
+				if (isBookmarked) {
+					await createBookmark(subSkill.value.parent_id, subSkill.value.id);
+				} else {
+					await deleteBookmark(subSkill.value.parent_id, subSkill.value.id);
+				}
+				
+				isNodeBookmarked.value = isBookmarked;
+				console.info(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark successful!`);
+			} catch (error) {
+				isNodeBookmarked.value = !isBookmarked; // reset state
+				console.error(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark failed!`);
+			}
+    }
+
     onMounted(async () => {
       if (window) {
         updateWindowWidth();
@@ -178,6 +200,8 @@ export default defineComponent({
       skillName,
       breadcrumbs,
       quizzes,
+      toggleBookmark,
+      isNodeBookmarked,
     };
   },
 });

@@ -6,6 +6,8 @@
 			:node="node"
 			:active="active"
 			:completed="completed"
+			:isBookmarked="isNodeBookmarked"
+			@bookmarked="toggleBookmark"
 		/>
 
 		<foreignObject
@@ -35,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -52,6 +54,8 @@ export default defineComponent({
 	emits: ['node', 'size', 'selected', 'move', 'ref'],
 	setup(props, { emit }) {
 		let occupiedSpace = 3;
+
+		const isNodeBookmarked = ref(false); // Testing purpose
 
 		const size = computed(() => {
 			switch (props.zoomLevel) {
@@ -124,6 +128,24 @@ export default defineComponent({
 			return !!current_node.value.id;
 		});
 
+		async function toggleBookmark(isBookmarked: boolean) {
+			isNodeBookmarked.value = isBookmarked; // instant / optimistic update
+
+			try {
+				if (isBookmarked) {
+					await createBookmark(props.node.parent_id, props.node.id);
+				} else {
+					await deleteBookmark(props.node.parent_id, props.node.id);
+				}
+				
+				isNodeBookmarked.value = isBookmarked;
+				console.info(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark successful!`);
+			} catch (error) {
+				isNodeBookmarked.value = !isBookmarked; // reset state
+				console.error(`${isBookmarked ? 'Creating' : 'Deleting'} Bookmark failed!`);
+			}
+		}
+
 		return {
 			current_node,
 			nodeRef,
@@ -134,6 +156,8 @@ export default defineComponent({
 			ondblclick,
 			isFilled,
 			occupiedSpace,
+			toggleBookmark,
+			isNodeBookmarked,
 		};
 	},
 });
