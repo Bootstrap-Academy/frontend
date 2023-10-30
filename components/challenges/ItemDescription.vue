@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
 	props: {

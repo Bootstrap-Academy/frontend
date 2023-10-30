@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from "vue";
+import { defineComponent } from "vue";
+import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({

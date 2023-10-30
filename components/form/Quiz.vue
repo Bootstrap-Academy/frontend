@@ -92,9 +92,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
+import { defineComponent, ref } from "vue";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { IForm } from "~/types/form";
+import type { IForm } from "~/types/form";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import {
   updateSubTaskInQuizForUser,

@@ -141,9 +141,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
+import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { IForm } from '~/types/form';
+import type { IForm } from '~/types/form';
 
 export default defineComponent({
 	props: { data: { type: Object as PropType<any>, default: null } },

@@ -50,7 +50,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
+import { defineComponent, ref } from "vue";
+import type { PropType } from "vue";
 import { CheckIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({

@@ -115,7 +115,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
 import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";

@@ -54,7 +54,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref } from "vue";
+import { defineComponent } from "vue";
+import type { Ref } from "vue";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
 

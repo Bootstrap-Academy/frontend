@@ -25,9 +25,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
+import type { Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { IForm } from '~/types/form';
+import type { IForm } from '~/types/form';
 
 export default defineComponent({
 	emits: ['data'],

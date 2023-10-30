@@ -70,8 +70,8 @@
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 import { CheckIcon, XMarkIcon, TrophyIcon } from "@heroicons/vue/24/outline";
-import { PropType } from "vue";
-import { ComputedRef } from "vue";
+import type { PropType } from "vue";
+import type { ComputedRef } from "vue";
 
 export default defineComponent({
   props: {

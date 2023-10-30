@@ -42,14 +42,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  Prop,
-  onMounted,
-  onBeforeUnmount,
-  watch,
-  Ref,
-} from "vue";
+import { defineComponent, onMounted, onBeforeUnmount, watch, } from "vue";
+import type { Prop, Ref } from "vue";
 import * as monaco from "monaco-editor";
 import { HeartIcon } from "@heroicons/vue/24/outline";
 import {

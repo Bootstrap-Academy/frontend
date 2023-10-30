@@ -102,7 +102,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { PropType } from "vue";
+import type { PropType } from "vue";
 import {
   ArrowPathIcon,
   CheckCircleIcon,

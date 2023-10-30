@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref } from "vue";
+import { defineComponent } from "vue";
+import type { PropType, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { PlayCircleIcon, CheckCircleIcon } from "@heroicons/vue/24/solid";
 import { useListOfCompletedCourses } from "../../composables/courses";
