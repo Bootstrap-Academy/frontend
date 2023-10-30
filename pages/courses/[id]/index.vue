@@ -118,7 +118,7 @@ export default {
     });
 
     onMounted(async () => {
-      if (!!!id.value) {
+      if (!id.value) {
         loading.value = false;
         return;
       }

@@ -23,7 +23,7 @@ export default defineComponent({
 		});
 
 		const color = computed(() => {
-			if (!!props.color) return props.color;
+			if (props.color) return props.color;
 			else if (props.body) return 'bg-[#2e405a]';
 			else return 'bg-[#42546e]';
 		});

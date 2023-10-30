@@ -114,11 +114,11 @@ export default defineComponent({
           if (rule(input.value) != true) {
             const [string, placeholder] = rule(input.value).split("_");
 
-            if (!!placeholder) {
+            if (placeholder) {
               msg = t(string, {
                 placeholder: t(placeholder),
               });
-            } else if (!!string) {
+            } else if (string) {
               msg = t(string);
             } else {
               msg = t(rule(input.value));

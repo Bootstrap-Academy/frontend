@@ -179,7 +179,7 @@ export default {
 		const user = useUser();
 
 		const canBuy = computed(() => {
-			if (!!!user.value) return false;
+			if (!user.value) return false;
 			if (!user.value.business) {
 				return user.value.email && user.value.country;
 			} else {
@@ -217,7 +217,7 @@ export default {
 						// Call your server to set up the transaction
 						createOrder: async function (data, actions) {
 							const [orderData, error] = await createPaypalOrder(orderBody);
-							if (!!!orderData) {
+							if (!orderData) {
 								throw new Error('Unable to create order');
 							}
 
@@ -234,7 +234,7 @@ export default {
 								data.orderID
 							);
 
-							if (!!!orderData) {
+							if (!orderData) {
 								throw 'Unable to approve order';
 							} else {
 								coins.value = orderData?.coins ?? coins.value;

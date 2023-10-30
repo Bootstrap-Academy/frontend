@@ -167,7 +167,7 @@ export default defineComponent({
 				return t.name.toLocaleLowerCase() == lastTask.name.toLocaleLowerCase();
 			});
 
-			if (!!!lastTask.name) {
+			if (!lastTask.name) {
 				msg = 'Errors.TaskNameCannotBeEmpty';
 			} else if (arr.length > 1) {
 				msg = 'Errors.TaskNameCannotBeSame';

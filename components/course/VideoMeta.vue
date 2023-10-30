@@ -127,7 +127,7 @@ export default defineComponent({
     });
 
     const path: any = computed(() => {
-      if (!!!courseID.value) {
+      if (!courseID.value) {
         return "/profile/courses";
       } else if (!!!activeSectionID.value || !!!activeLectureID.value) {
         return `/courses/${courseID.value}?skillID=${props.skillID}&subSkillID=${props.subSkillID}`;

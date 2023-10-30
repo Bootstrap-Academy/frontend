@@ -147,10 +147,10 @@ export async function requestEmailVerification() {
 	if (isAccountVerified) return [true, null];
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: { detail: 'Invalid User Id' } };
 		}
-		if (!!!user_email) {
+		if (!user_email) {
 			throw { data: { detail: 'User does not have email' } };
 		}
 

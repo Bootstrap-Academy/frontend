@@ -59,7 +59,7 @@ export default {
 
 		onMounted(async () => {
 			const [success, error] = await getRating(skillID.value);
-			if (!!success) rating.value = success;
+			if (success) rating.value = success;
 		});
 
 		return { skillID, rating };

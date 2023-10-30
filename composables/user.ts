@@ -9,7 +9,7 @@ export const useShowConfetti = () => useState('showConfetti', () => false);
 export function getAccessToken() {
 	const accessToken: any = useAccessToken();
 
-	if (!!!accessToken.value) return null;
+	if (!accessToken.value) return null;
 
 	const cookie_accessToken = useCookie('accessToken');
 	if (cookie_accessToken.value != accessToken.value) {
@@ -22,7 +22,7 @@ export function getAccessToken() {
 export function getRefreshToken() {
 	const refreshToken: any = useRefreshToken();
 
-	if (!!!refreshToken.value) return null;
+	if (!refreshToken.value) return null;
 
 	const cookie_refreshToken = useCookie('refreshToken');
 	if (cookie_refreshToken.value != refreshToken.value) {
@@ -83,7 +83,7 @@ export async function getUser() {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 		const response = await GET(`/auth/users/${user_id}`);
@@ -104,7 +104,7 @@ export async function editUser(body: any) {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 
@@ -126,7 +126,7 @@ export async function deleteUser() {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 

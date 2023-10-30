@@ -143,7 +143,7 @@ export default {
         let n = nodes.find((_n) => _n.id == node.id);
         Object.assign(selectedNode, { ...n });
 
-        if (!!!getAccessToken()) {
+        if (!getAccessToken()) {
           openDialog(
             "warning",
             "Headings.NotLoggedIn",
@@ -171,7 +171,7 @@ export default {
               },
             }
           );
-        } else if (selectedNode && selectedNode.id) {
+        } else if (selectedNode?.id) {
           router.push(`${route.path}/${selectedNode.id}`);
         }
       }
@@ -198,14 +198,14 @@ export default {
     );
 
     onMounted(async () => {
-      if (!!!subTreeId.value) {
+      if (!subTreeId.value) {
         loading.value = false;
         return;
       }
 
       const [success, error] = await getSubSkillTree(subTreeId.value);
 
-      if (!!error) {
+      if (error) {
         loading.value = false;
         return;
       }
@@ -251,10 +251,10 @@ export default {
 
     function scrollViaPathway(_node: any, parent: any) {
       let node = nodes.find((n) => n.id == _node);
-      if (!!!node) return;
+      if (!node) return;
 
       let parentNode = nodes.find((n) => n.id == parent);
-      if (!!!parentNode) return;
+      if (!parentNode) return;
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
@@ -263,7 +263,7 @@ export default {
         nextNode.value.column == node.column
       ) {
         nextNode.value = { ...previous };
-      } else if (!!previous) {
+      } else if (previous) {
         nextNode.value = { row: node.row, column: node.column };
       }
 

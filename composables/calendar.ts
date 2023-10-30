@@ -29,7 +29,7 @@ export async function getCalendar() {
 
 export async function cancelCalendarEvent(id: string) {
 	try {
-		if (!!!id) {
+		if (!id) {
 			throw { data: 'Invalid event ID' };
 		}
 

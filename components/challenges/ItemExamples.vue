@@ -166,12 +166,12 @@ function successHandler(success: any, id: any) {
     if (element.id == id) atIndex = index;
   });
 
-  if (!!success.compile) {
+  if (success.compile) {
     duplicateExamples.value[atIndex].stderr =
       success.compile?.stderr ?? "";
     duplicateExamples.value[atIndex].stdout =
       success.compile?.stdout ?? "";
-  } else if (!!success.run) {
+  } else if (success.run) {
     duplicateExamples.value[atIndex].stderr =
       success.run?.stderr ?? "";
     duplicateExamples.value[atIndex].stdout =

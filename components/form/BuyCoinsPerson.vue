@@ -99,7 +99,7 @@ export default defineComponent({
 		watch(
 			() => user.value,
 			(newValue, oldValue) => {
-				if (!!!newValue) return;
+				if (!newValue) return;
 
 				form.country.value = newValue.country
 					? newValue.country

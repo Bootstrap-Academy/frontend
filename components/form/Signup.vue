@@ -154,7 +154,7 @@ export default defineComponent({
 			validate: () => {
 				let isValid = true;
 
-				if (!!register_token.value) {
+				if (register_token.value) {
 					form.password.valid = true;
 				}
 
@@ -208,7 +208,7 @@ export default defineComponent({
 			return route?.query?.register_token ?? '';
 		});
 		onMounted(() => {
-			if (!!register_token.value) {
+			if (register_token.value) {
 				openDialog(
 					'success',
 					'Headings.OAuthSuccess',
@@ -230,7 +230,7 @@ export default defineComponent({
 
 				let recaptcha_response = await getReCaptchaToken();
 
-				const updatedBody = !!register_token.value
+				const updatedBody = (register_token.value)
 					? {
 							...form.body(),
 							recaptcha_response: recaptcha_response,
@@ -243,7 +243,7 @@ export default defineComponent({
 
 				const [success, error] = await signup(updatedBody);
 
-				if (!!success) await requestEmailVerification();
+				if (success) await requestEmailVerification();
 
 				let isNewsletter = false;
 				if (!!success && !!form.newsletter.value) {

@@ -183,7 +183,7 @@ export default defineComponent({
     watch(
       () => language.value,
       (newValue, oldValue) => {
-        if (!!updateCode.value) {
+        if (updateCode.value) {
           updateCodeAsExampleChange();
         }
       }

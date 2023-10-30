@@ -86,7 +86,7 @@ export default {
     watch(
       () => feedback.value,
       (newValue, oldValue) => {
-        if (!!newValue) {
+        if (newValue) {
           submitFeedBack();
         }
       }

@@ -62,7 +62,7 @@ export default defineComponent({
 
 		const lastUpdated = computed(() => {
 			let timestamp = props.data?.last_update ?? null;
-			if (!!!timestamp) return ``;
+			if (!timestamp) return ``;
 
 			return `${get_x_timeAgo(timestamp)}`;
 		});

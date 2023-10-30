@@ -143,7 +143,7 @@ export default defineComponent({
 
       return {
         label: label,
-        onclick: !!label ? props.dialog.secondaryBtn.onclick : () => {},
+        onclick: (label) ? props.dialog.secondaryBtn.onclick : () => {},
       };
     });
 

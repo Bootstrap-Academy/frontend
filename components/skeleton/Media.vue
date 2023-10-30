@@ -12,7 +12,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const color = computed(() => {
-			if (!!props.color) return props.color;
+			if (props.color) return props.color;
 			else return 'bg-[#2e405a]';
 		});
 

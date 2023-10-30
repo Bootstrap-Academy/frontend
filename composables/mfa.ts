@@ -3,7 +3,7 @@ export async function initializeMFA() {
 	const userID = user?.value?.id ?? '';
 
 	try {
-		if (!!!userID) {
+		if (!userID) {
 			throw { data: { detail: 'Missing user id' } };
 		}
 
@@ -20,7 +20,7 @@ export async function enableMFA(body: any) {
 	const userID = user?.value?.id ?? '';
 
 	try {
-		if (!!!userID) {
+		if (!userID) {
 			throw { data: { detail: 'Missing user id' } };
 		}
 
@@ -37,7 +37,7 @@ export async function disableMFA() {
 	const userID = user?.value?.id ?? '';
 
 	try {
-		if (!!!userID) {
+		if (!userID) {
 			throw { data: { detail: 'Missing user id' } };
 		}
 

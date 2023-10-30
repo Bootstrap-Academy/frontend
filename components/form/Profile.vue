@@ -278,7 +278,7 @@ export default defineComponent({
 
 		const hintNickname = computed(() => {
 			let timestamp = props.data?.last_name_change ?? '';
-			if (!!!timestamp) return '';
+			if (!timestamp) return '';
 
 			let after_30Days = timestamp + 60 * 60 * 24 * 30;
 			const { date, month, year } = convertTimestampToDate(after_30Days);
@@ -346,7 +346,7 @@ export default defineComponent({
 		async function successHandler(res: any, hasEmailChanged: boolean) {
 			if (!hasEmailChanged) {
 				openSnackbar('success', 'Success.EditProfile');
-				if (route.query && route.query.coins) {
+				if (route.query?.coins) {
 					router.push(`/morphcoins/paypal?coins=${route.query.coins}`);
 				}
 				return;

@@ -219,7 +219,7 @@ export default defineComponent({
       let isAllowed = true;
       if (options.value.length > 0) {
         let lastAddedOption = options.value[options.value.length - 1].answer;
-        if (!!!lastAddedOption) isAllowed = false;
+        if (!lastAddedOption) isAllowed = false;
       }
 
       if (!isAllowed) {
@@ -270,7 +270,7 @@ export default defineComponent({
 
     function setFormData(data: any) {
       console.log("set form data");
-      if (!!!data) return;
+      if (!data) return;
       form.question.value = data.question ?? "";
       form.coin.value = data.coins ?? "";
       form.xp.value = data.xp ?? "";
@@ -372,7 +372,7 @@ export default defineComponent({
           form.single_choice.value = false;
         }
 
-        if (!!!props.data) {
+        if (!props.data) {
           fnCreateSubTask();
         } else {
           if (!user?.value.admin) fnEditSubTaskForUser();
@@ -388,8 +388,8 @@ export default defineComponent({
       const [success, error] = await createSubTaskInQuiz(props.taskId, {
         answers: form.body().answers,
         question: form.body().question,
-        coins: !!form.body().coin ? form.body().coin : 0,
-        xp: !!form.body().xp ? form.body().xp : 0,
+        coins: (form.body().coin) ? form.body().coin : 0,
+        xp: (form.body().xp) ? form.body().xp : 0,
         single_choice: form.body().single_choice,
       });
       form.submitting = false;
@@ -413,7 +413,7 @@ export default defineComponent({
         }
       );
       form.submitting = false;
-      !!success
+      (success)
         ? openSnackbar("success", "Success.UpdatedQuiz")
         : openSnackbar("error", "error.UpdatedQuiz");
     }
@@ -428,13 +428,13 @@ export default defineComponent({
         {
           answers: form.body().answers,
           question: form.body().question,
-          coins: !!form.body().coin ? form.body().coin : 0,
-          xp: !!form.body().xp ? form.body().xp : 0,
+          coins: (form.body().coin) ? form.body().coin : 0,
+          xp: (form.body().xp) ? form.body().xp : 0,
           single_choice: form.body().single_choice,
         }
       );
       form.submitting = false;
-      !!success
+      (success)
         ? openSnackbar("success", "Success.UpdatedQuiz")
         : openSnackbar("error", "error.UpdatedQuiz");
     }
@@ -452,7 +452,7 @@ export default defineComponent({
     watch(
       () => props.data,
       async (newValue, oldValue) => {
-        if (!!!props.data) return;
+        if (!props.data) return;
         setLoading(true);
         const [success, error] = await getSubTaskAndSolutionInQuiz(
           props.taskId,

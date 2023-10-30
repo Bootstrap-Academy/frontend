@@ -208,7 +208,7 @@ function isAccessTokenExpired() {
   const accessToken = getAccessToken();
 
   try {
-    if (!!!accessToken) {
+    if (!accessToken) {
       throw { data: "Invalid Access Token: " + accessToken };
     }
 

@@ -32,10 +32,11 @@ export default {
 			{ expand: false },
 		]);
 
-		function setExpand(index) {
-			for (let i = 0; i < faqs.value.length; i++) {
-				// invert expand-state for clicked item, close all others
-				faqs.value[i].expand = i == index ? !faqs.value[i].expand : false;
+		function setExpand(index, value) {
+			if (value) {
+				for (let i = 0; i < faqs.value.length; i++) {
+					faqs.value[i].expand = i == index;
+				}
 			}
 		}
 

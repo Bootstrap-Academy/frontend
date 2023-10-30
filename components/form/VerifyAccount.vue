@@ -103,7 +103,7 @@ export default defineComponent({
 		async function onclickSubmitForm() {
 			if (user.value) {
 				let email = user?.value?.email ?? '';
-				if (!!!email) {
+				if (!email) {
 					openDialog(
 						'warning',
 						'Headings.MissingEmail',
@@ -139,7 +139,7 @@ export default defineComponent({
 		async function successHandler(res: any) {
 			const [success, error] = await refresh();
 
-			if (!!success) {
+			if (success) {
 				emit('status', 'success');
 			}
 		}

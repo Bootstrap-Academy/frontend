@@ -44,7 +44,7 @@ export default {
     const solvedQuizzes = computed(() => {
       let total = 0;
       props.quizzesToShow?.forEach((quiz: any) => {
-        if (!!quiz.solved) {
+        if (quiz.solved) {
           ++total;
         }
       });

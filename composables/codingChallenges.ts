@@ -15,7 +15,7 @@ export const useEvaluatorTemplate = () => useState('evaluatorTemplate', () => nu
 export async function getAllCodingChallengesInATask(taskId: any, creator: any = '') {
     try {
         let query = ''
-        if (!!creator) {
+        if (creator) {
             query = `/challenges/tasks/${taskId}/coding_challenges?creator=${creator}`
         }
         else {

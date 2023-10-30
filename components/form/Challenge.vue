@@ -206,7 +206,7 @@ export default {
     // ============================================================= functions
     async function onclickSubmitForm() {
       if (form.validate()) {
-        if (!!props?.data) fnEditChallenge();
+        if (props?.data) fnEditChallenge();
         else fnCreateChallenge();
       } else {
         openSnackbar("error", "Error.InvalidForm");
@@ -267,7 +267,7 @@ export default {
               props.data?.category,
               props.data?.id
             );
-            if (!!success) openSnackbar("success", "Success.DeletedChallenge");
+            if (success) openSnackbar("success", "Success.DeletedChallenge");
             router.push(`/challenges/all?category=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
           },
         },

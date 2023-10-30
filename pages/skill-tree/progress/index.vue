@@ -85,7 +85,7 @@ export default {
 				(item) => item.skill == rootSkillID
 			);
 
-			return !!rootSkill
+			return (rootSkill)
 				? {
 						...rootSkill,
 				  }
@@ -95,13 +95,13 @@ export default {
 		function getSubSkillInformation(rootSkillID: string, subSkillID: string) {
 			let rootSkill = getRootSkillInformation(rootSkillID);
 
-			if (!!!rootSkill) return null;
+			if (!rootSkill) return null;
 
 			let subSkill = (rootSkill?.skills ?? []).find(
 				(item: any) => item.skill == subSkillID
 			);
 
-			return !!subSkill
+			return (subSkill)
 				? {
 						...subSkill,
 				  }

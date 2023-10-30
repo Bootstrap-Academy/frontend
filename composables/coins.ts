@@ -47,7 +47,7 @@ export async function createPaypalOrder(body: any) {
 
 export async function onApproveCapturePaypalOrder(orderID: string) {
 	try {
-		if (!!!orderID) {
+		if (!orderID) {
 			throw { data: 'Missing order id' };
 		}
 

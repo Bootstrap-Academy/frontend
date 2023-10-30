@@ -118,7 +118,7 @@ export default {
         challengeId.value
       );
 
-      if (!!success) challengeData.value = success;
+      if (success) challengeData.value = success;
       else {
         openSnackbar("error", error?.detail);
         router.push(`/challenges/all?category=${route.query.category ?? ""}`);

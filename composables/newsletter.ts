@@ -3,7 +3,7 @@ export async function requestNewsletterRegistration() {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 
@@ -27,7 +27,7 @@ export async function registerForNewsletter(body: any) {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 
@@ -49,7 +49,7 @@ export async function unregisterFromNewsletter() {
 	let user_id = user?.value?.id ?? null;
 
 	try {
-		if (!!!user_id) {
+		if (!user_id) {
 			throw { data: 'Invalid User Id' };
 		}
 
