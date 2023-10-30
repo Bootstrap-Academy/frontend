@@ -1,4 +1,4 @@
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { Mutex, Semaphore, withTimeout } from "async-mutex";
 
 export const mutex = new Mutex();
@@ -212,7 +212,7 @@ function isAccessTokenExpired() {
       throw { data: "Invalid Access Token: " + accessToken };
     }
 
-    let exp = jwt_decode(accessToken).exp;
+    let exp = jwtDecode(accessToken).exp;
     let time = parseInt(Math.round(new Date().getTime() / 1000));
     let difference = exp - time;
     let isTokenExpired = difference <= 100 ? true : false;

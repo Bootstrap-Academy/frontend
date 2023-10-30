@@ -187,7 +187,8 @@ import {
   Cog8ToothIcon,
 } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
-import { PropType, ref } from "vue";
+import { ref } from "vue";
+import type { PropType } from "vue";
 import {
   updateCodingChallenge,
   createCodingChallenge,
@@ -200,7 +201,7 @@ import {
   useEvaluatorTemplate,
   getEvaluatorTemplate,
 } from "~~/composables/codingChallenges";
-import { IForm } from "~/types/form";
+import type { IForm } from "~/types/form";
 
 export default {
   props: {

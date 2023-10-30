@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Ref } from "vue";
+import type { Ref } from "vue";
 import "highlight.js/styles/github-dark.css";
 // <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
 

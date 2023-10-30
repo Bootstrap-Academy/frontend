@@ -124,7 +124,7 @@
 import { defineComponent, ref } from 'vue';
 import { ArrowDownCircleIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
-import { IForm } from '~~/types/form';
+import type { IForm } from '~~/types/form';
 
 export default defineComponent({
 	components: { ArrowDownCircleIcon },

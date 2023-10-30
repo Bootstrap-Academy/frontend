@@ -30,7 +30,8 @@ hear
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
 import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({

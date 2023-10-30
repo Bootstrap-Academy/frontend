@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts">
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import { AdjustmentsVerticalIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({

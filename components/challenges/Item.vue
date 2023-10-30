@@ -55,7 +55,7 @@ import {
   TrophyIcon,
   TrashIcon,
 } from "@heroicons/vue/24/outline";
-import { PropType } from "vue";
+import type { PropType } from "vue";
 import { PencilIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({

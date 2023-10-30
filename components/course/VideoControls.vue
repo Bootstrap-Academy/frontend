@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { PropType, Ref } from "vue";
+import type { PropType, Ref } from "vue";
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
