@@ -32,3 +32,8 @@ export class Lecture{
     type: string = "";
     video_id: string = "";
 }
+
+export interface GetUnseenLectureResponse {
+    lecture: Omit<Lecture, "completed">;
+    section: Omit<Section, "completed">;
+}

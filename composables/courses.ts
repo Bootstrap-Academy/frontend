@@ -229,7 +229,7 @@ export async function getFilteredMyCourses(filters: any[]) {
 	}
 }
 
-export async function getUnseenLecture (courseId: string) {
+export async function getUnseenLecture <GetUnseenLectureResponse>(courseId: string) {
 	const response = await GET(`skills/courses/${courseId}/next_unseen`);
 	if (response) {
 		return response;

@@ -1,35 +1,18 @@
 <template>
   <section>
-    <SectionTitle
-      sub
-      :heading="header.heading"
-      :body="header.body"
-      :link="header.link"
-    />
+    <SectionTitle sub :heading="header.heading" :body="header.body" :link="header.link" />
 
     <div class="overflow-hidden max-h-[175px] md:max-h-fit md:overflow-auto">
-      <div
-        class="overflow-x-scroll snap-x snap-mandatory flex md:grid md:grid-cols-4 gap-card-sm hide-scrollbar"
-      >
+      <div class="overflow-x-scroll snap-x snap-mandatory flex md:grid md:grid-cols-4 gap-card-sm hide-scrollbar">
         <template v-if="loading">
-          <CourseCardSmSkeleton
-            v-for="n in 5"
-            :key="n"
-            :class="{ 'md:row-span-2 md:col-span-2': n == 1 }"
-            class="flex-shrink-0 snap-center"
-          />
+          <CourseCardSmSkeleton v-for="n in 5" :key="n" :class="{ 'md:row-span-2 md:col-span-2': n == 1 }"
+            class="flex-shrink-0 snap-center" />
         </template>
 
         <template v-else-if="courses && courses.length > 0">
-          <NuxtLink
-            :key="i"
-            v-for="(course, i) of courses"
-            :class="{
-              'md:row-span-2 md:col-span-2': i == 0 && courses.length > 3,
-            }"
-            class="flex-shrink-0 snap-center cursor-pointer"
-            @click="watchUnseenLecture(course)"
-          >
+          <NuxtLink :key="i" v-for="(course, i) of courses" :class="{
+            'md:row-span-2 md:col-span-2': i == 0 && courses.length > 3,
+          }" class="flex-shrink-0 snap-center cursor-pointer" @click="watchUnseenLecture(course)">
             <CourseCardSm :data="course" />
           </NuxtLink>
         </template>
@@ -44,8 +27,7 @@
 import StateInline from 'markdown-it/lib/rules_inline/state_inline';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Section } from '~/types/courseTypes';
-import { Course } from '~/types/courseTypes';
+import { Course, GetUnseenLectureResponse, Section } from '~/types/courseTypes';
 
 export default defineComponent({
   setup() {
@@ -76,32 +58,17 @@ export default defineComponent({
         });
       }
     });
-    function getSectionIdForLectureId(sections: Section[], lectureId: string) {
-      for (const section of sections) {
-        if (section.lectures.some((lecture) => lecture.id === lectureId)) {
-          return section.id;
-        }
-      }
 
-      return null;
-    }
     const watchUnseenLecture = async (course: Course) => {
-      const detailsResponse = await GET(`skills/courses/${course.id}`);
-
-	  const unseenLectureResponse = await getUnseenLecture(course.id);
-
-      const sectionId = getSectionIdForLectureId(
-        detailsResponse.sections,
-        unseenLectureResponse.id
-      );
-	  
+      const unseenLectureResponse = await getUnseenLecture<GetUnseenLectureResponse>(course.id);
       router.push({
         path: `/courses/${course.id}/watch`,
         query: {
-          section: sectionId,
-          lecture: unseenLectureResponse.id,
+          section: unseenLectureResponse.section.id,
+          lecture: unseenLectureResponse.lecture.id,
         },
       });
+
     };
 
     return { t, loading, courses, header, watchUnseenLecture };
