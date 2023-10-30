@@ -28,7 +28,7 @@
     "gleap": "^12.1.2",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
     "katex": "^0.16.9",
     "markdown-it": "^13.0.2",
     "monaco-editor": "^0.44.0",
