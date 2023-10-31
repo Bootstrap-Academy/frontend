@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode";
+import  jwtDecode  from "jwt-decode";
 import { Mutex, Semaphore, withTimeout } from "async-mutex";
 
 export const mutex = new Mutex();
