@@ -60,8 +60,8 @@ export default defineComponent({
     });
 
     const watchUnseenLecture = async (course: Course) => {
-      const unseenLectureResponse = await getUnseenLecture<GetUnseenLectureResponse>(course.id);
-      router.push({
+      const unseenLectureResponse = await getUnseenLecture(course.id);
+      if (unseenLectureResponse) router.push({
         path: `/courses/${course.id}/watch`,
         query: {
           section: unseenLectureResponse.section.id,
