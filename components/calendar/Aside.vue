@@ -20,10 +20,11 @@
 <script lang="ts">
 import { defineComponent, Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { Event } from "~/types/calenderTypes";
 
 export default defineComponent({
   props: {
-    events: { default: [] },
+    events: { default: [], type: Array as () => Event[] },
     selected: {
       default: {
         date: null,
