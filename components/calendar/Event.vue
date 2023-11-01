@@ -9,13 +9,13 @@
     >
       <div v-if="type == 'coaching'" class="flex gap-box">
         <img
-          :src="instructor?.avatar_url ?? '/images/about-2.webp'"
+          :src="instructor.avatar_url ?? '/images/about-2.webp'"
           class="w-6 h-6 object-cover rounded-[50px]"
           alt=""
         />
 
         <h3 class="capitalize text-heading-4">
-          {{ instructor?.display_name ?? type }}
+          {{ instructor.display_name ?? instructor.name ?? type }}
         </h3>
       </div>
 
@@ -56,6 +56,7 @@
       :stats="stats"
       :description="description"
     />
+    <button @click="testF">testF</button>
   </article>
 </template>
 
@@ -66,21 +67,23 @@ import { ClockIcon, CalendarIcon } from "@heroicons/vue/24/outline";
 import IconMorphcoin from "~/components/icon/Morphcoin.vue";
 import IconSkill from "~/components/icon/Skill.vue";
 import { useUser } from "~/composables/user";
+import { Event } from "~/types/calenderTypes";
 export default defineComponent({
   components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
   props: {
-    data: { type: Object as PropType<any>, default: null },
+    data: { type: Object as PropType<Event>, default: new Event() },
     noBooking: { type: Boolean, default: false },
   },
   setup(props) {
     const { t } = useI18n();
     const user = useUser();
+
     const id = computed(() => {
-      return props.data?.id ?? "";
+      return props.data.id ?? "";
     });
 
     const type = computed(() => {
-      return props.data?.type ?? "";
+      return props.data.type ?? "";
     });
 
     const theme = computed(() => {
@@ -107,25 +110,23 @@ export default defineComponent({
     });
 
     const title = computed(() => {
-      return props.data?.title ?? "";
+      return props.data.title ?? "";
     });
 
     const instructor = computed(() => {
-      return props.data?.instructor ?? null;
+      return props.data.instructor;
     });
 
     const admin_link = computed(() => {
-      return props.data?.admin_link ?? "";
+      return props.data.admin_link ?? "";
     });
 
     const isMine = computed(() => {
-      // Todo: create userTypes
-      // Todo: create eventTypes
-      return user.value.id === props.data.instructor.id
+      return user.value.id === props.data.instructor.id;
     });
 
     const skillID = computed(() => {
-      return props.data?.skill_id ?? "";
+      return props.data.skill_id ?? "";
     });
 
     const skillName = computed(() => {
@@ -133,11 +134,13 @@ export default defineComponent({
     });
 
     const start = computed(() => {
-      return getTimeAndDate(props.data?.start ?? -1);
+      return getTimeAndDate(props.data.start);
     });
 
     const end = computed(() => {
-      return getTimeAndDate(props.data?.end ?? -1);
+      const endTime = props.data.start + props.data.duration * 60;
+
+      return getTimeAndDate(endTime);
     });
 
     function getTimeAndDate(timestamp: number) {
@@ -156,11 +159,11 @@ export default defineComponent({
     }
 
     const price = computed(() => {
-      return props.data?.price ?? props.data?.coaching?.price ?? 0;
+      return props.data.price ?? 0;
     });
 
     const description = computed(() => {
-      return props.data?.description ?? "";
+      return props.data.description ?? "";
     });
 
     const stats = computed(() => {
@@ -206,16 +209,21 @@ export default defineComponent({
     });
 
     const link = computed(() => {
-      return props.data?.link ?? props.data?.location ?? "";
+      return props.data.link ?? "";
     });
 
     function onclickCard() {
+      // Bug: they have some kind of access condition's -> asked for help
       if (!!window && !!admin_link.value) {
         window.open(admin_link.value, "_blank");
       } else if (!!window && !!link.value) {
         window.open(link.value, "_blank");
       }
     }
+    const testF = () => {
+      console.log(end.value);
+      console.log(getTimeAndDate(props.data.start));
+    };
 
     return {
       t,
@@ -231,6 +239,7 @@ export default defineComponent({
       isMine,
       skillID,
       description,
+      testF,
     };
   },
 });

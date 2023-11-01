@@ -8,7 +8,7 @@ export const useEventFilter = () => useState('eventFilter', () => 'all');
 
 export async function getCalendar() {
   try {
-    const response = await GET(`/events/calendar`);
+    const response :Calendar= await GET(`/events/calendar`);
 
     const calendar = useCalendar();
     calendar.value = response ?? null;
@@ -21,7 +21,7 @@ export async function getCalendar() {
 
     const events = useEvents();
     events.value = response?.events ?? [];
-	
+        
     return [response, null];
   } catch (error: any) {
     return [null, error.data];

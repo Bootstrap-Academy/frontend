@@ -21,7 +21,7 @@
 import { defineComponent, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Event } from "~/types/calenderTypes";
-
+import { User } from "~/types/userTypes";
 export default defineComponent({
   props: {
     events: { default: [], type: Array as () => Event[] },
@@ -37,11 +37,11 @@ export default defineComponent({
     const { t } = useI18n();
 
     const eventFilter = useEventFilter();
-    const user: Ref<any> = useUser();
+    const user: Ref<User> = useUser();
 
     const events = computed(() => {
       return props.events
-        .filter((event: any) => {
+        .filter((event: Event) => {
           let dates = convertTimestampToDate(event.start);
 
           return (
@@ -50,11 +50,11 @@ export default defineComponent({
             dates.year == props.selected.year
           );
         })
-        .filter((event: any) => {
-          if (eventFilter.value == "booked") {
+        .filter((event: Event) => {
+          if (eventFilter.value === "booked") {
             return event.booked == true;
-          } else if (eventFilter.value == "mine") {
-            return (event?.instructor?.id ?? "-") == (user.value?.id ?? "");
+          } else if (eventFilter.value === "mine") {
+            return (event.instructor.id ?? "-") === (user.value.id ?? "");
           } else {
             return true;
           }
