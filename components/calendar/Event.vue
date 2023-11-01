@@ -65,7 +65,7 @@ import { useI18n } from "vue-i18n";
 import { ClockIcon, CalendarIcon } from "@heroicons/vue/24/outline";
 import IconMorphcoin from "~/components/icon/Morphcoin.vue";
 import IconSkill from "~/components/icon/Skill.vue";
-
+import { useUser } from "~/composables/user";
 export default defineComponent({
   components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
   props: {
@@ -74,7 +74,7 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
-
+    const user = useUser();
     const id = computed(() => {
       return props.data?.id ?? "";
     });
@@ -119,7 +119,9 @@ export default defineComponent({
     });
 
     const isMine = computed(() => {
-      return !!admin_link.value;
+      // Todo: create userTypes
+      // Todo: create eventTypes
+      return user.value.id === props.data.instructor.id
     });
 
     const skillID = computed(() => {
