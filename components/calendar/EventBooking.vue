@@ -51,9 +51,6 @@
 				</span>
 			</Chip>
 		</template>
-		<Modal v-if="information" class="z-100">
-
-    </Modal>
 		<Modal v-if="confirm" class="z-100">
 			<Dialog :dialog="dialog">
 				<template #content>
@@ -78,23 +75,24 @@
 					</p>
 
 					<hr class="mt-card mb-card" />
-
-					<InputCheckbox
-						id="RightToWithdrawal"
-						class="mb-card-sm"
-						label="Links.RightToWithdrawal"
-						:link="{
-							to: '/docs/right-of-withdrawal',
-							label: 'Links.RightToWithdrawalLink',
-						}"
-						target="_blank"
-						v-model="confirmRightToWithdrawal"
-					/>
-					<InputCheckbox
-						id="DontUseRightToWithdrawal"
-						label="Links.DontUseRightToWithdrawal"
-						v-model="confirmDontUseRightToWithdrawal"
-					/>
+					<Accordion :title="dialog.heading">
+						<InputCheckbox
+							id="RightToWithdrawal"
+							class="mb-card-sm"
+							label="Links.RightToWithdrawal"
+							:link="{
+								to: '/docs/right-of-withdrawal',
+								label: 'Links.RightToWithdrawalLink',
+							}"
+							target="_blank"
+							v-model="confirmRightToWithdrawal"
+						/>
+						<InputCheckbox
+							id="DontUseRightToWithdrawal"
+							label="Links.DontUseRightToWithdrawal"
+							v-model="confirmDontUseRightToWithdrawal"
+						/>
+					</Accordion>
 				</template>
 			</Dialog>
 		</Modal>
