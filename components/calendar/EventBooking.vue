@@ -51,17 +51,30 @@
 				</span>
 			</Chip>
 		</template>
-		<Modal v-if="confirm" class="z-100">
-			<Dialog :dialog="dialog">
-				<template #content>
-					<!-- Todo: Name, Description, Skill & parentSkill, start-time, duration, end-time, price -->
-					<!-- Todo: Instructor, Link if the user has access to the link?, Admin-link if the user has access to the admin-link -->
-					<!-- Todo: Timestamp when this webinar has been created, Number of registered & number of Max participating, -->
-					<!-- Todo: Button to book webinar if it's bookable -->
-					<!-- Todo: In the Webinar summary, display skill-name instead of it's id -->
+		<Modal v-if="confirm" class="z-100 overflow-scroll">
+			<div
+				class="style-card bg-secondary w-full max-w-3xl relative overflow-y-scroll max-h-full p-10"
+			>
+				<div class="w-full flex content-center items-center gap-2">
+					<component
+						:is="InformationCircleIcon"
+						class="h-10 w-10 row-span-2 md:row-span-3"
+						:class="'fill-info'"
+					/>
+					<h6 class="text-heading-2 text-heading font-heading">
+						<!-- Todo: Locales.summary | event.summary? -->
+						<h6>Webinar Summary</h6>
+						<!-- {{ t(dialog.heading) }} -->
+					</h6>
+				</div>
+				<div>
+					<h4 class="font-bold text-heading">
+						{{ t("Headings.Name") }}
+					</h4>
+					<p>{{ event.title }}</p>
 					<hr class="mt-card text-transparent" />
 					<h4 class="font-bold text-heading">
-						{{t("Headings.Description") }}
+						{{ t("Headings.Description") }}
 					</h4>
 					<p>{{ description }}</p>
 
@@ -75,26 +88,36 @@
 					</p>
 
 					<hr class="mt-card mb-card" />
-					<Accordion :title="dialog.heading">
-						<InputCheckbox
-							id="RightToWithdrawal"
-							class="mb-card-sm"
-							label="Links.RightToWithdrawal"
-							:link="{
-								to: '/docs/right-of-withdrawal',
-								label: 'Links.RightToWithdrawalLink',
-							}"
-							target="_blank"
-							v-model="confirmRightToWithdrawal"
-						/>
-						<InputCheckbox
-							id="DontUseRightToWithdrawal"
-							label="Links.DontUseRightToWithdrawal"
-							v-model="confirmDontUseRightToWithdrawal"
-						/>
-					</Accordion>
-				</template>
-			</Dialog>
+				</div>
+				<!-- Todo: Name, Description, Skill & parentSkill, start-time, duration, end-time, price -->
+				<!-- Todo: Instructor, Link if the user has access to the link?, Admin-link if the user has access to the admin-link -->
+				<!-- Todo: Timestamp when this webinar has been created, Number of registered & number of Max participating, -->
+				<!-- Todo: Button to book webinar if it's bookable -->
+				<!-- Todo: In the Webinar summary, display skill-name instead of it's id -->
+
+				<Accordion :title="dialog.heading" class="w-full">
+					<Dialog :dialog="dialog">
+						<template #content>
+							<InputCheckbox
+								id="RightToWithdrawal"
+								class="mb-card-sm"
+								label="Links.RightToWithdrawal"
+								:link="{
+									to: '/docs/right-of-withdrawal',
+									label: 'Links.RightToWithdrawalLink',
+								}"
+								target="_blank"
+								v-model="confirmRightToWithdrawal"
+							/>
+							<InputCheckbox
+								id="DontUseRightToWithdrawal"
+								label="Links.DontUseRightToWithdrawal"
+								v-model="confirmDontUseRightToWithdrawal"
+							/>
+						</template>
+					</Dialog>
+				</Accordion>
+			</div>
 		</Modal>
 
 		<Modal v-if="confirmCancellation" class="z-100">
@@ -130,9 +153,10 @@
 	import { useI18n } from "vue-i18n";
 	import { CheckIcon } from "@heroicons/vue/24/outline";
 	import { Event } from "~/types/calenderTypes";
+	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 
 	export default defineComponent({
-		components: { CheckIcon },
+		components: { CheckIcon, InformationCircleIcon },
 		props: {
 			event: { type: Object as PropType<Event>, default: new Event() },
 
@@ -367,6 +391,7 @@
 				numberOfDaysUntil,
 				event: props.event,
 				information,
+				InformationCircleIcon,
 			};
 		},
 	});

@@ -9,7 +9,7 @@
 		</div>
 		<Transition name="fade" mode="out-in">
 			<div
-				class="mt-4 px-2 py-3 border-2 border-primary ease-out duration-300"
+				class="mt-4 px-2 py-3 border-2 border-primary flex justify-center w-full"
 				v-if="isOpen"
 			>
 				<slot />
