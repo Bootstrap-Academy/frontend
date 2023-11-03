@@ -7,22 +7,22 @@
     <header
       class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
     >
-      <div v-if="type == 'coaching'" class="flex gap-box">
+      <div v-if="data.type == 'coaching'" class="flex gap-box">
         <img
-          :src="instructor.avatar_url ?? '/images/about-2.webp'"
+          :src="data.instructor.avatar_url ?? '/images/about-2.webp'"
           class="w-6 h-6 object-cover rounded-[50px]"
           alt=""
         />
 
         <h3 class="capitalize text-heading-4">
-          {{ instructor.display_name ?? instructor.name ?? type }}
+          {{ data.instructor.display_name ?? data.instructor.name ?? type }}
         </h3>
       </div>
 
       <h3 v-else class="capitalize text-heading-4">{{ title }}</h3>
       <h3
         @click.self="onclickCard"
-        v-if="link"
+        v-if="data.link"
         :class="[theme.text, theme.bgLight]"
         class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
       >
@@ -55,6 +55,7 @@
       :start="data.start"
       :stats="stats"
       :description="description"
+      :event="data"
     />
     <button @click="testF">testF</button>
   </article>
@@ -169,6 +170,11 @@ export default defineComponent({
     const stats = computed(() => {
       return [
         {
+          // Todo: locales
+          value: props.data.title,
+          heading: 'Name'
+        },
+        {
           icon: IconSkill,
           value: skillName.value,
           heading: "Headings.Skill",
@@ -181,11 +187,16 @@ export default defineComponent({
         // 			: start.value.date,
         // 	heading: 'Headings.Date',
         // },
-        // {
-        // 	icon: ClockIcon,
-        // 	value: `${start.value.time} - ${end.value.time}`,
-        // 	heading: 'Headings.Time',
-        // },
+        {
+        	icon: ClockIcon,
+        	value: `${start.value.time} - ${end.value.time}`,
+        	heading: 'Headings.Time',
+        },
+        {
+          // Todo: locales
+          value: `${props.data.duration} min`,
+          heading: 'Dauer'
+        },
         {
           icon: CalendarIcon,
           value: start.value.date,
@@ -213,7 +224,6 @@ export default defineComponent({
     });
 
     function onclickCard() {
-      // Bug: they have some kind of access condition's -> asked for help
       if (!!window && !!admin_link.value) {
         window.open(admin_link.value, "_blank");
       } else if (!!window && !!link.value) {
