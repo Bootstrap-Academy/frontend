@@ -64,10 +64,26 @@
 					<h6 class="text-heading-2 text-heading font-heading">
 						<!-- Todo: Locales.summary | event.summary? -->
 						<h6>Webinar Summary</h6>
-						<!-- {{ t(dialog.heading) }} -->
 					</h6>
 				</div>
-				<div>
+				<hr class="mt-card text-transparent" />
+				<!-- ? Instructor below -->
+				<div class="h-full max-h-3xl">
+					<h4 class="font-bold text-heading">
+						{{ t("Headings.Instructor") }}
+					</h4>
+					<Rating :rating="event.instructor_rating ?? 0" sm stars />
+					<div class="flex gap-2">
+						<img
+							:src="event.instructor.avatar_url ?? '/images/about-2.webp'"
+							class="w-6 h-6 object-cover rounded-[50px]"
+							alt=""
+						/>
+						<p>{{ event.instructor.display_name }}</p>
+					</div>
+
+					<hr class="mt-card text-transparent" />
+
 					<h4 class="font-bold text-heading">
 						{{ t("Headings.Name") }}
 					</h4>
@@ -77,23 +93,26 @@
 						{{ t("Headings.Description") }}
 					</h4>
 					<p>{{ description }}</p>
-
 					<hr class="mt-card text-transparent" />
+					<!-- Todo: Skill & parentSkill -->
+					<!-- Todo: Instructor, Link?, Admin-link?-->
+					<!-- Todo: Timestamp when this webinar has been created,-->
+					<!-- Todo: Number of registered & number of Max participating,  -->
+					<!-- Todo: Button to book webinar if it's bookable -->
+					<!-- Todo: In the Webinar summary, display skill-name instead of it's id -->
 
-					<p v-for="(stat, i) of stats" :key="i">
-						{{ t(stat.heading) }}
-						<span class="font-bold text-heading">
-							{{ stat.value }}
-						</span>
-					</p>
-
+					<!-- Done: Name, Description, Skill, start-time duration , end time-->
+					<!-- Done: price -->
+					<div class="grid grid-cols-2 justify-items-center">
+						<p v-for="(stat, i) of stats" :key="i">
+							{{ t(stat.heading) }}
+							<span class="font-bold text-heading">
+								{{ stat.value }}
+							</span>
+						</p>
+					</div>
 					<hr class="mt-card mb-card" />
 				</div>
-				<!-- Todo: Name, Description, Skill & parentSkill, start-time, duration, end-time, price -->
-				<!-- Todo: Instructor, Link if the user has access to the link?, Admin-link if the user has access to the admin-link -->
-				<!-- Todo: Timestamp when this webinar has been created, Number of registered & number of Max participating, -->
-				<!-- Todo: Button to book webinar if it's bookable -->
-				<!-- Todo: In the Webinar summary, display skill-name instead of it's id -->
 
 				<Accordion :title="dialog.heading" class="w-full">
 					<Dialog :dialog="dialog">
