@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from "nuxt/dist/app/compat/capi";
+import type { PropType } from "vue";
 import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 export default {

@@ -100,7 +100,7 @@
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useReCaptcha } from "vue-recaptcha-v3";
-import { IForm } from "~/types/form";
+import type { IForm } from "~/types/form";
 import IconGithub from "~/components/icon/Github.vue";
 import IconGoogle from "~/components/icon/Google.vue";
 import IconDiscord from "~/components/icon/Discord.vue";

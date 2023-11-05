@@ -51,7 +51,7 @@
 <script lang="ts">
 import { useI18n } from "vue-i18n";
 import { PlusCircleIcon, ArrowUpTrayIcon } from "@heroicons/vue/24/solid";
-import { Ref } from "vue";
+import type { Ref } from "vue";
 
 export default {
   head: {

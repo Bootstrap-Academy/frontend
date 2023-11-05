@@ -14,7 +14,8 @@
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface PropData {

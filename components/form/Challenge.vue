@@ -73,9 +73,10 @@
 
 <script lang="ts">
 import { TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { PropType, ref } from "vue";
+import { ref } from "vue";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { IForm } from "~/types/form";
+import type { IForm } from "~/types/form";
 import { useUser } from "~~/composables/user";
 
 export default {

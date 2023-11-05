@@ -78,7 +78,7 @@ import {
   EyeIcon,
   PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
-import { PropType } from "vue";
+import type { PropType } from "vue";
 import { useDialogSlot } from "../../composables/dialogSlot";
 
 import { useI18n } from "vue-i18n";

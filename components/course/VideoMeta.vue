@@ -72,7 +72,8 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent, PropType, Ref } from "vue";
+import { defineComponent } from "vue";
+import type { PropType, Ref } from "vue";
 import { CheckIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({

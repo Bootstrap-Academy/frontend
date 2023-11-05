@@ -1,4 +1,4 @@
-import { Ref } from 'nuxt/dist/app/compat/capi';
+import type { Ref } from 'vue';
 import { GET } from './fetch';
 export const useAllCodingChallengesInATask: () => Ref<any[]> = () =>
     useState('allCodingChallengesInATask', () => []);
