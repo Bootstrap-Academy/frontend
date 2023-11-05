@@ -68,8 +68,7 @@
 						:class="'fill-info'"
 					/>
 					<h6 class="text-heading-2 text-heading font-heading">
-						<!-- Todo: Locales.summary | event.summary? -->
-						<h6>Webinar Summary</h6>
+						<h6>{{ t('Headings.Summary') }}</h6>
 					</h6>
 				</div>
 				<hr class="mt-card text-transparent" />
@@ -107,7 +106,7 @@
 					<p>{{ description }}</p>
 					<hr class="mt-card text-transparent" />
 
-					<div">
+					<div>
 						<p v-for="(stat, i) of stats" :key="i">
 							{{ t(stat.heading) }}
 							<span class="font-bold text-heading">

@@ -78,11 +78,12 @@
 			noBooking: { type: Boolean, default: false },
 		},
 		setup(props) {
-			const onMounted = async () => {
+			onMounted(async () => {
+        console.log("mounted Event.vue");
+        
 				await getRootSkillTree();
 				await getSubSkillTree(parentSkill.value?.id ?? "");
-			};
-
+			});
 			const skillTree = useRootSkillTree();
 			const subTree = useSubSkillTree();
 			const parentSkill = computed(() => {
@@ -190,7 +191,6 @@
 			const stats = computed(() => {
 				return [
 					{
-						// Todo: locales
 						value: props.data.title,
 						heading: "Name",
 					},
@@ -199,10 +199,10 @@
 						value: subSkill.value?.name ?? skillName.value,
 						heading: "Headings.Skill",
 					},
-          {
-            value: parentSkill.value?.name ?? "",
-            heading: "Headings.ParentSkill",
-          },
+					{
+						value: parentSkill.value?.name ?? "",
+						heading: "Headings.ParentSkill",
+					},
 					// {
 					// 	icon: CalendarIcon,
 					// 	value:
@@ -248,11 +248,11 @@
 			});
 
 			function onclickCard() {
-				if (!!window && !!admin_link.value) {
-					window.open(admin_link.value, "_blank");
-				} else if (!!window && !!link.value) {
-					window.open(link.value, "_blank");
-				}
+				// if (!!window && !!admin_link.value) {
+				// 	window.open(admin_link.value, "_blank");
+				// } else if (!!window && !!link.value) {
+				// 	window.open(link.value, "_blank");
+				// }
 			}
 
 			return {

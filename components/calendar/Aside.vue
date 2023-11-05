@@ -20,11 +20,11 @@
 <script lang="ts">
 import { defineComponent, Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { Event } from "~/types/calenderTypes";
+import { CoachingEvent, WebinarEvent } from "~/types/calenderTypes";
 import { User } from "~/types/userTypes";
 export default defineComponent({
   props: {
-    events: { default: [], type: Array as () => Event[] },
+    events: { default: [], type: Array<CoachingEvent | WebinarEvent> },
     selected: {
       default: {
         date: null,
@@ -41,7 +41,7 @@ export default defineComponent({
 
     const events = computed(() => {
       return props.events
-        .filter((event: Event) => {
+        .filter((event) => {
           let dates = convertTimestampToDate(event.start);
 
           return (
@@ -50,7 +50,7 @@ export default defineComponent({
             dates.year == props.selected.year
           );
         })
-        .filter((event: Event) => {
+        .filter((event) => {
           if (eventFilter.value === "booked") {
             return event.booked == true;
           } else if (eventFilter.value === "mine") {

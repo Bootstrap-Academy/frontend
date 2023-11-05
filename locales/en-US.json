@@ -326,7 +326,11 @@
     "And": "And",
     "ActiveSkills": "Active Skills",
     "CompletedSkills": "Completed Skills",
-    "OtherSkills": "Other Skills"
+    "OtherSkills": "Other Skills",
+    "Summary": "Event Summary",
+    "Instructor": "Instructor",
+    "ParentSkill": "Parent Skill",
+    "CreationDate": "created at"
   },
   "Body": {
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
