@@ -1,7 +1,7 @@
 <template>
 	<article
 		class="p-4 style-card lg:style-box bg-secondary border-l-4"
-		:class="[theme.border, { 'cursor-pointer': !!link }]"
+		:class="[theme.border]"
 		@click.self="onclickCard"
 	>
 		<header
@@ -229,9 +229,8 @@
 						heading: "Headings.Time",
 					},
 					{
-						// Todo: locales
 						value: `${props.data.duration} min`,
-						heading: "Dauer",
+						heading: "Headings.Duration",
 					},
 					{
 						icon: CalendarIcon,

@@ -23,7 +23,7 @@
 				sm
 				@click="onclickConfirm"
 			>
-				{{ t(btn) }}
+				{{ t(btnMoreInfo) }}
 			</Btn>
 
 			<!-- else if event is booked already -->
@@ -239,6 +239,8 @@
 				return "Buttons.BookWebinar";
 		}
 	});
+
+	const btnMoreInfo = ref("Buttons.MoreEventInfo");
 
 	const isEventBooked = ref(props.booked ?? false);
 
