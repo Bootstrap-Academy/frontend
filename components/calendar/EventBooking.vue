@@ -107,7 +107,7 @@
 					<p>{{ description }}</p>
 					<hr class="mt-card text-transparent" />
 
-					<div class="grid grid-cols-2 justify-items-center">
+					<div">
 						<p v-for="(stat, i) of stats" :key="i">
 							{{ t(stat.heading) }}
 							<span class="font-bold text-heading">
@@ -149,7 +149,8 @@
 							{{ t("Headings.CreationDate") }}
 							<span class="font-bold text-heading">
 								<!-- ? not possible to check instanceOf props.event -->
-								{{ getTimeAndDate(event.creation_date).date }} {{ getTimeAndDate(event.creation_date).time }}
+								{{ getTimeAndDate(event.creation_date).date }}
+								{{ getTimeAndDate(event.creation_date).time }}
 							</span>
 						</p>
 					</div>
@@ -213,7 +214,7 @@
 	import { useI18n } from "vue-i18n";
 	import { CheckIcon } from "@heroicons/vue/24/outline";
 	import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
-	import { EnvelopeIcon, InformationCircleIcon } from "@heroicons/vue/24/solid";
+	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 
 	const props = defineProps<{
 		event: WebinarEvent | CoachingEvent;
@@ -422,19 +423,19 @@
 	}
 
 	function getTimeAndDate(timestamp: number) {
-      if (timestamp == -1) {
-        return { time: ``, date: `` };
-      }
+		if (timestamp == -1) {
+			return { time: ``, date: `` };
+		}
 
-      let { date, month, year } = convertTimestampToDate(timestamp);
-      let time = new Date(timestamp * 1000).toTimeString();
-      let [hr, min, sec] = time.split(":");
+		let { date, month, year } = convertTimestampToDate(timestamp);
+		let time = new Date(timestamp * 1000).toTimeString();
+		let [hr, min, sec] = time.split(":");
 
-      return {
-        time: `${hr}:${min}`,
-        date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
-      };
-    }
+		return {
+			time: `${hr}:${min}`,
+			date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
+		};
+	}
 </script>
 
 <style scoped></style>
