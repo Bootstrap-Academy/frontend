@@ -14,12 +14,12 @@ export const useRootSkillTree = () =>
 
 export async function getRootSkillTree() {
 	try {
-		const response: SkillTree<RootSkill> = await GET("/skills/skilltree");
+		const response = await GET("/skills/skilltree");
 
 		const rootSkillTree = useRootSkillTree();
 		rootSkillTree.value = response;
 
-		return response;
+		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}
@@ -31,12 +31,12 @@ export async function getSubSkillTree(id: string) {
 			throw { data: { detail: "Missing sub skill id" } };
 		}
 
-		const response: SkillTree<SubSkill> = await GET(`/skills/skilltree/${id}`);
+		const response = await GET(`/skills/skilltree/${id}`);
 
 		const subSkillTree = useSubSkillTree();
 		subSkillTree.value = response;
 
-		return response;
+		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
 	}

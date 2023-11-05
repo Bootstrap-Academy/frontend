@@ -79,13 +79,17 @@
 		},
 		setup(props) {
 			onMounted(async () => {
-        console.log("mounted Event.vue");
-        
 				await getRootSkillTree();
 				await getSubSkillTree(parentSkill.value?.id ?? "");
 			});
 			const skillTree = useRootSkillTree();
 			const subTree = useSubSkillTree();
+
+      watch(() => props.data.id, async () => {
+        await getRootSkillTree();
+				await getSubSkillTree(parentSkill.value?.id ?? "");
+      })
+
 			const parentSkill = computed(() => {
 				return skillTree.value.skills.find((skill) =>
 					skill.skills.includes(props.data.skill_id)
@@ -96,6 +100,14 @@
 					(skill) => skill.id == props.data.skill_id
 				);
 			});
+
+      const parentSkillName = computed(() => {
+        return parentSkill.value?.name ?? "";
+      })
+      const subSkillName = computed(() => {
+        return subSkill.value?.name ;
+      })
+
 
 			const { t } = useI18n();
 			const user = useUser();
@@ -196,11 +208,11 @@
 					},
 					{
 						icon: IconSkill,
-						value: subSkill.value?.name ?? skillName.value,
+						value: subSkillName.value,
 						heading: "Headings.Skill",
 					},
 					{
-						value: parentSkill.value?.name ?? "",
+						value: parentSkillName.value,
 						heading: "Headings.ParentSkill",
 					},
 					// {
