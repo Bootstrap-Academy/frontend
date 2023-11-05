@@ -1,9 +1,9 @@
 import { useState } from '#app';
-import { Event , Calendar} from '~/types/calenderTypes';
+import { WebinarEvent,CoachingEvent, Calendar} from '~/types/calenderTypes';
 
 export const useCalendar = () => useState<Calendar>('calendar', () => new Calendar());
 export const useICS = () => useState('ics', () => '');
-export const useEvents = () => useState<Event[]>('events', () => [new Event()]);
+export const useEvents = () => useState<(WebinarEvent | CoachingEvent)[]>('events', () => []);
 export const useEventFilter = () => useState('eventFilter', () => 'all');
 
 export async function getCalendar() {

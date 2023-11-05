@@ -68,11 +68,11 @@ import { ClockIcon, CalendarIcon } from "@heroicons/vue/24/outline";
 import IconMorphcoin from "~/components/icon/Morphcoin.vue";
 import IconSkill from "~/components/icon/Skill.vue";
 import { useUser } from "~/composables/user";
-import { Event } from "~/types/calenderTypes";
+import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
 export default defineComponent({
   components: { ClockIcon, CalendarIcon, IconMorphcoin, IconSkill },
   props: {
-    data: { type: Object as PropType<Event>, default: new Event() },
+    data: { type: Object as PropType<WebinarEvent| CoachingEvent>, default: new WebinarEvent() },
     noBooking: { type: Boolean, default: false },
   },
   setup(props) {
