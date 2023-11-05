@@ -16,8 +16,6 @@
 		</template>
 
 		<template v-else>
-			<!-- else if user can book event and event is not booked yet -->
-			<!-- Todo: move this btn to the informationModal -->
 			<Btn
 				v-if="event.bookable && !event.booked"
 				:bgColor="theme.bg"
@@ -55,6 +53,14 @@
 			<div
 				class="style-card bg-secondary w-full max-w-3xl relative overflow-y-scroll max-h-full p-10"
 			>
+				<Btn
+					sm
+					secondary
+					class="relative -top-5 -left-5"
+					@click="confirm = false"
+					>Zurück</Btn
+				>
+
 				<div class="w-full flex content-center items-center gap-2">
 					<component
 						:is="InformationCircleIcon"
@@ -69,45 +75,81 @@
 				<hr class="mt-card text-transparent" />
 				<!-- ? Instructor below -->
 				<div class="h-full max-h-3xl">
-					<h4 class="font-bold text-heading">
-						{{ t("Headings.Instructor") }}
-					</h4>
-					<Rating :rating="event.instructor_rating ?? 0" sm stars />
-					<div class="flex gap-2">
-						<img
-							:src="event.instructor.avatar_url ?? '/images/about-2.webp'"
-							class="w-6 h-6 object-cover rounded-[50px]"
-							alt=""
-						/>
-						<p>{{ event.instructor.display_name }}</p>
+					<div class="flex flex-col">
+						<div>
+							<h4 class="font-bold text-heading">
+								{{ t("Headings.Instructor") }}
+							</h4>
+							<Rating :rating="event.instructor_rating ?? 0" sm stars />
+							<div class="flex gap-2">
+								<img
+									:src="event.instructor.avatar_url ?? '/images/about-2.webp'"
+									class="w-6 h-6 object-cover rounded-[50px]"
+									alt=""
+								/>
+								<p>{{ event.instructor.display_name }}</p>
+							</div>
+							<hr class="mt-card text-transparent" />
+						</div>
+						<div>
+							<h4 class="font-bold text-heading">
+								{{ t("Headings.Name") }}
+							</h4>
+							<p>{{ event.title }}</p>
+						</div>
 					</div>
 
 					<hr class="mt-card text-transparent" />
 
 					<h4 class="font-bold text-heading">
-						{{ t("Headings.Name") }}
-					</h4>
-					<p>{{ event.title }}</p>
-					<hr class="mt-card text-transparent" />
-					<h4 class="font-bold text-heading">
 						{{ t("Headings.Description") }}
 					</h4>
 					<p>{{ description }}</p>
 					<hr class="mt-card text-transparent" />
-					<!-- Todo: Skill & parentSkill -->
-					<!-- Todo: Instructor, Link?, Admin-link?-->
-					<!-- Todo: Timestamp when this webinar has been created,-->
-					<!-- Todo: Number of registered & number of Max participating,  -->
-					<!-- Todo: Button to book webinar if it's bookable -->
-					<!-- Todo: In the Webinar summary, display skill-name instead of it's id -->
 
-					<!-- Done: Name, Description, Skill, start-time duration , end time-->
-					<!-- Done: price -->
 					<div class="grid grid-cols-2 justify-items-center">
 						<p v-for="(stat, i) of stats" :key="i">
 							{{ t(stat.heading) }}
 							<span class="font-bold text-heading">
 								{{ stat.value }}
+							</span>
+						</p>
+						<p v-if="event.admin_link">
+							Admin-Link
+							<a
+								:href="event.admin_link"
+								class="font-bold text-accent"
+								target="_blank"
+								>link</a
+							>
+						</p>
+						<p v-else-if="event.link">
+							Link
+							<a
+								:href="event.link"
+								class="font-bold text-accent"
+								target="_blank"
+							>
+								link
+							</a>
+						</p>
+						<p
+							v-if="
+								event.hasOwnProperty('participants') &&
+								event.hasOwnProperty('max_participants')
+							"
+						>
+							{{ t("Headings.Participants") }}
+							<span class="font-bold text-heading">
+								<!-- ? not possible to check instanceOf props.event -->
+								{{ event.participants }}/{{ event.max_participants }}
+							</span>
+						</p>
+						<p v-if="event.hasOwnProperty('creation_date')">
+							{{ t("Headings.CreationDate") }}
+							<span class="font-bold text-heading">
+								<!-- ? not possible to check instanceOf props.event -->
+								{{ getTimeAndDate(event.creation_date).date }} {{ getTimeAndDate(event.creation_date).time }}
 							</span>
 						</p>
 					</div>
@@ -167,253 +209,232 @@
 	</div>
 </template>
 
-<script lang="ts">
-	import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
 	import { useI18n } from "vue-i18n";
 	import { CheckIcon } from "@heroicons/vue/24/outline";
-	import { Event } from "~/types/calenderTypes";
-	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
+	import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
+	import { EnvelopeIcon, InformationCircleIcon } from "@heroicons/vue/24/solid";
 
-	export default defineComponent({
-		components: { CheckIcon, InformationCircleIcon },
-		props: {
-			event: { type: Object as PropType<Event>, default: new Event() },
+	const props = defineProps<{
+		event: WebinarEvent | CoachingEvent;
+		isMine: boolean;
+		booked: boolean;
+		bookable: boolean;
+		id: string;
+		description: string;
+		type: string;
+		theme: any;
+		subSkillID: string;
+		start: number;
+		stats: any[];
+	}>();
 
-			isMine: { type: Boolean, default: false },
-			booked: { type: Boolean, default: false },
-			bookable: { type: Boolean, default: false },
+	const { t } = useI18n();
 
-			id: { type: String, default: "" },
-			description: { type: String, default: "" },
-			type: { type: String, default: "webinar" },
-			theme: { type: Object as PropType<any>, default: null },
-			subSkillID: { type: String, default: "" },
-			start: { type: Number, default: 0 },
+	const btn = computed(() => {
+		switch (props.type) {
+			case "coaching":
+				return "Buttons.BookCoaching";
+			default:
+				return "Buttons.BookWebinar";
+		}
+	});
 
-			stats: { type: Array as PropType<any[]>, default: [] },
-		},
-		setup(props) {
-			const { t } = useI18n();
+	const isEventBooked = ref(props.booked ?? false);
 
-			const btn = computed(() => {
-				switch (props.type) {
-					case "coaching":
-						return "Buttons.BookCoaching";
-					default:
-						return "Buttons.BookWebinar";
-				}
-			});
+	const dialog = <any>reactive({});
+	const confirm = ref(false);
+	const confirmRightToWithdrawal = ref(false);
+	const confirmDontUseRightToWithdrawal = ref(false);
+	const information = ref(false);
 
-			const isEventBooked = ref(props.booked ?? false);
+	function onclickConfirm() {
+		confirm.value = true;
 
-			const dialog = <any>reactive({});
-			const confirm = ref(false);
-			const confirmRightToWithdrawal = ref(false);
-			const confirmDontUseRightToWithdrawal = ref(false);
-			const information = ref(false);
+		let btnText = "";
+		let type = "";
 
-			function onclickConfirm() {
-				confirm.value = true;
+		switch (props.type) {
+			case "coaching":
+				btnText = "Buttons.YesBookCoaching";
+				type = "info";
+				break;
+			default:
+				btnText = "Buttons.YesBookWebinar";
+				type = "warning";
+				break;
+		}
 
-				let btnText = "";
-				let type = "";
+		Object.assign(dialog, {
+			type: type,
+			heading: btn.value,
+			body: "Body.ConfirmBooking",
+			primaryBtn: {
+				label: btnText,
+				onclick: async () => {
+					if (
+						!confirmRightToWithdrawal.value ||
+						!confirmDontUseRightToWithdrawal.value
+					) {
+						openSnackbar(
+							"error",
+							"Error.MustAgreeToBothPointsInOrderToMoveForward"
+						);
+						return;
+					}
 
-				switch (props.type) {
-					case "coaching":
-						btnText = "Buttons.YesBookCoaching";
-						type = "info";
-						break;
-					default:
-						btnText = "Buttons.YesBookWebinar";
-						type = "warning";
-						break;
-				}
+					setLoading(true);
+					switch (props.type) {
+						case "coaching":
+							await bookCoaching();
+							break;
+						default:
+							await bookWebinar();
+							break;
+					}
+					confirmRightToWithdrawal.value = false;
+					confirmDontUseRightToWithdrawal.value = false;
+					setLoading(false);
+					confirm.value = false;
+				},
+			},
+			secondaryBtn: {
+				label: "Buttons.Cancel",
+				onclick: () => {
+					confirm.value = false;
+				},
+			},
+		});
+	}
 
-				Object.assign(dialog, {
-					type: type,
-					heading: btn.value,
-					body: "Body.ConfirmBooking",
-					primaryBtn: {
-						label: btnText,
-						onclick: async () => {
-							if (
-								!confirmRightToWithdrawal.value ||
-								!confirmDontUseRightToWithdrawal.value
-							) {
-								openSnackbar(
-									"error",
-									"Error.MustAgreeToBothPointsInOrderToMoveForward"
-								);
-								return;
-							}
+	async function bookCoaching() {
+		const [success, error] =
+			await bookCoachingForThisSubSkillWithThisInstructor(
+				props.subSkillID ?? "",
+				props.id ?? ""
+			);
 
-							setLoading(true);
-							switch (props.type) {
-								case "coaching":
-									await bookCoaching();
-									break;
-								default:
-									await bookWebinar();
-									break;
-							}
-							confirmRightToWithdrawal.value = false;
-							confirmDontUseRightToWithdrawal.value = false;
-							setLoading(false);
-							confirm.value = false;
-						},
-					},
-					secondaryBtn: {
-						label: "Buttons.Cancel",
-						onclick: () => {
-							confirm.value = false;
-						},
-					},
-				});
-			}
+		openSnackbar(
+			success ? "success" : "error",
+			success ? "Success.BookedCoaching" : error?.detail ?? ""
+		);
 
-			async function bookCoaching() {
-				const [success, error] =
-					await bookCoachingForThisSubSkillWithThisInstructor(
-						props.subSkillID ?? "",
-						props.id ?? ""
+		isEventBooked.value = !!success;
+	}
+
+	async function bookWebinar() {
+		const [success, error] = await registerForWebinarByID(props.id ?? "");
+
+		openSnackbar(
+			success ? "success" : "error",
+			success ? "Success.BookedWebinar" : error?.detail ?? ""
+		);
+
+		isEventBooked.value = !!success;
+	}
+
+	const confirmCancellation = ref(false);
+	const cancellationPolicy = reactive([
+		"List.EventCancellationPolicy.1",
+		"List.EventCancellationPolicy.2",
+		"List.EventCancellationPolicy.3",
+	]);
+
+	const todayDate = ref("");
+	const startDate = ref("");
+	const numberOfDaysUntil = ref(0);
+
+	function onclickCancel() {
+		confirmCancellation.value = true;
+		let btnText = "";
+		let headingText = "";
+		let type = "";
+
+		switch (props.type) {
+			case "coaching":
+				btnText = "Buttons.YesCancelCoaching";
+				headingText = "Headings.CancelCoaching";
+				type = "info";
+				break;
+			default:
+				btnText = "Buttons.YesCancelWebinar";
+				headingText = "Headings.CancelWebinar";
+				type = "warning";
+				break;
+		}
+
+		let refund = getCancellationRefundStatus();
+		let body = t("Body.CancelEvent");
+
+		if (refund == 100) {
+			body = `${body} ${t("Body.CancelEvent100%")}`;
+		} else if (refund == 50) {
+			body = `${body} ${t("Body.CancelEvent50%")}`;
+		} else {
+			body = `${body} ${t("Body.CancelEvent0%")}`;
+		}
+
+		Object.assign(dialog, {
+			type: type,
+			heading: headingText,
+			body: body,
+			primaryBtn: {
+				label: btnText,
+				onclick: async () => {
+					setLoading(true);
+					const [success, error] = await cancelCalendarEvent(props.id);
+					setLoading(false);
+
+					openSnackbar(
+						success ? "success" : "error",
+						success ? "Success.EventCancelled" : error?.detail ?? ""
 					);
 
-				openSnackbar(
-					success ? "success" : "error",
-					success ? "Success.BookedCoaching" : error?.detail ?? ""
-				);
+					if (success) {
+						confirmCancellation.value = false;
+					}
+				},
+			},
+			secondaryBtn: {
+				label: "Buttons.Back",
+				onclick: () => {
+					confirmCancellation.value = false;
+				},
+			},
+		});
+	}
 
-				isEventBooked.value = !!success;
-			}
+	function getCancellationRefundStatus() {
+		let start = convertTimestampToDate(props.start);
+		let today = convertTimestampToDate(new Date().getTime() / 1000);
 
-			async function bookWebinar() {
-				const [success, error] = await registerForWebinarByID(props.id ?? "");
+		numberOfDaysUntil.value = start.date - today.date;
+		todayDate.value = `${today.date} ${t(today.month.string)}, ${today.year}`;
+		startDate.value = `${start.date} ${t(start.month.string)}, ${start.year}`;
 
-				openSnackbar(
-					success ? "success" : "error",
-					success ? "Success.BookedWebinar" : error?.detail ?? ""
-				);
+		if (numberOfDaysUntil.value > 7) {
+			return 100;
+		} else if (numberOfDaysUntil.value > 1 && numberOfDaysUntil.value <= 7) {
+			return 50;
+		} else {
+			return 0;
+		}
+	}
 
-				isEventBooked.value = !!success;
-			}
+	function getTimeAndDate(timestamp: number) {
+      if (timestamp == -1) {
+        return { time: ``, date: `` };
+      }
 
-			const confirmCancellation = ref(false);
-			const cancellationPolicy = reactive([
-				"List.EventCancellationPolicy.1",
-				"List.EventCancellationPolicy.2",
-				"List.EventCancellationPolicy.3",
-			]);
+      let { date, month, year } = convertTimestampToDate(timestamp);
+      let time = new Date(timestamp * 1000).toTimeString();
+      let [hr, min, sec] = time.split(":");
 
-			const todayDate = ref("");
-			const startDate = ref("");
-			const numberOfDaysUntil = ref(0);
-
-			function onclickCancel() {
-				confirmCancellation.value = true;
-				let btnText = "";
-				let headingText = "";
-				let type = "";
-
-				switch (props.type) {
-					case "coaching":
-						btnText = "Buttons.YesCancelCoaching";
-						headingText = "Headings.CancelCoaching";
-						type = "info";
-						break;
-					default:
-						btnText = "Buttons.YesCancelWebinar";
-						headingText = "Headings.CancelWebinar";
-						type = "warning";
-						break;
-				}
-
-				let refund = getCancellationRefundStatus();
-				let body = t("Body.CancelEvent");
-
-				if (refund == 100) {
-					body = `${body} ${t("Body.CancelEvent100%")}`;
-				} else if (refund == 50) {
-					body = `${body} ${t("Body.CancelEvent50%")}`;
-				} else {
-					body = `${body} ${t("Body.CancelEvent0%")}`;
-				}
-
-				Object.assign(dialog, {
-					type: type,
-					heading: headingText,
-					body: body,
-					primaryBtn: {
-						label: btnText,
-						onclick: async () => {
-							setLoading(true);
-							const [success, error] = await cancelCalendarEvent(props.id);
-							setLoading(false);
-
-							openSnackbar(
-								success ? "success" : "error",
-								success ? "Success.EventCancelled" : error?.detail ?? ""
-							);
-
-							if (success) {
-								confirmCancellation.value = false;
-							}
-						},
-					},
-					secondaryBtn: {
-						label: "Buttons.Back",
-						onclick: () => {
-							confirmCancellation.value = false;
-						},
-					},
-				});
-			}
-
-			function getCancellationRefundStatus() {
-				let start = convertTimestampToDate(props.start);
-				let today = convertTimestampToDate(new Date().getTime() / 1000);
-
-				numberOfDaysUntil.value = start.date - today.date;
-				todayDate.value = `${today.date} ${t(today.month.string)}, ${
-					today.year
-				}`;
-				startDate.value = `${start.date} ${t(start.month.string)}, ${
-					start.year
-				}`;
-
-				if (numberOfDaysUntil.value > 7) {
-					return 100;
-				} else if (
-					numberOfDaysUntil.value > 1 &&
-					numberOfDaysUntil.value <= 7
-				) {
-					return 50;
-				} else {
-					return 0;
-				}
-			}
-
-			return {
-				t,
-				btn,
-				CheckIcon,
-				isEventBooked,
-				onclickConfirm,
-				dialog,
-				confirm,
-				confirmRightToWithdrawal,
-				confirmDontUseRightToWithdrawal,
-				onclickCancel,
-				confirmCancellation,
-				cancellationPolicy,
-				todayDate,
-				startDate,
-				numberOfDaysUntil,
-				event: props.event,
-				information,
-				InformationCircleIcon,
-			};
-		},
-	});
+      return {
+        time: `${hr}:${min}`,
+        date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
+      };
+    }
 </script>
 
 <style scoped></style>
