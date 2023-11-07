@@ -21,24 +21,6 @@
         @valid="form.question.valid = $event"
         :rules="form.question.rules"
       />
-      <!-- <div class="grid md:grid-cols-2 md:gap-8">
-      <Input
-        v-if="!!user?.admin"
-        :label="t('Inputs.Morphcoins')"
-        v-model="form.coin.value"
-        :type="'number'"
-        @valid="form.coin.valid = $event"
-        :rules="form.coin.rules"
-      />
-      <Input
-        v-if="!!user?.admin"
-        :label="t('Inputs.Xp')"
-        v-model="form.xp.value"
-        :type="'number'"
-        @valid="form.xp.valid = $event"
-        :rules="form.xp.rules"
-      />
-    </div> -->
 
       <Btn
         :class="canEdit ? '' : 'pointer-events-none opacity-60'"
@@ -136,16 +118,6 @@ export default defineComponent({
         rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Question"],
       },
       single_choice: { value: false, valid: true },
-      coin: {
-        valid: true,
-        value: 0,
-        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
-      },
-      xp: {
-        valid: true,
-        value: 0,
-        rules: [(v: number) => v >= 0 || "Error.InputMinNumber_0"],
-      },
 
       submitting: false,
       validate: () => {
@@ -272,8 +244,6 @@ export default defineComponent({
       console.log("set form data");
       if (!!!data) return;
       form.question.value = data.question ?? "";
-      form.coin.value = data.coins ?? "";
-      form.xp.value = data.xp ?? "";
       form.question.valid = !!form.question.value;
 
       if (data?.single_choice) {
@@ -388,8 +358,8 @@ export default defineComponent({
       const [success, error] = await createSubTaskInQuiz(props.taskId, {
         answers: form.body().answers,
         question: form.body().question,
-        coins: !!form.body().coin ? form.body().coin : 0,
-        xp: !!form.body().xp ? form.body().xp : 0,
+        coins: 0,
+        xp: 5,
         single_choice: form.body().single_choice,
       });
       form.submitting = false;
@@ -407,8 +377,6 @@ export default defineComponent({
         {
           // answers: form.body().answers,
           // question: form.body().question,
-          // coins: !!form.body().coin ? form.body().coin : 0,
-          // xp: !!form.body().xp ? form.body().xp : 0,
           // single_choice: form.body().single_choice,
         }
       );
@@ -428,8 +396,6 @@ export default defineComponent({
         {
           answers: form.body().answers,
           question: form.body().question,
-          coins: !!form.body().coin ? form.body().coin : 0,
-          xp: !!form.body().xp ? form.body().xp : 0,
           single_choice: form.body().single_choice,
         }
       );
