@@ -1,4 +1,5 @@
 import { useState } from '#app';
+import { GetUnseenLectureResponse } from '~/types/courseTypes';
 
 export const useListOfCompletedCourses = () =>
 	useState('listOfCompletedCourses', (): any[] => []);
@@ -226,5 +227,14 @@ export async function getFilteredMyCourses(filters: any[]) {
 		return [response, null];
 	} catch (error: any) {
 		return [null, error.data];
+	}
+}
+
+export async function getUnseenLecture (courseId: string):Promise<GetUnseenLectureResponse | undefined> {
+	const response :GetUnseenLectureResponse = await GET(`skills/courses/${courseId}/next_unseen`).catch((err) => {
+		throw new Error('Error in getting unseen lecture + ' + err.message);
+	});
+	if (response) {
+		return response;
 	}
 }
