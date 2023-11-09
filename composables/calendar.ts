@@ -35,9 +35,10 @@ export async function cancelCalendarEvent(id: string) {
     }
 
     const response = await DELETE(`/events/calendar/${id}`);
-
+    getCalendar()
     return [response, null];
   } catch (error: any) {
     return [null, error.data];
   }
+
 }

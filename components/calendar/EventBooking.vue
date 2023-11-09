@@ -37,8 +37,8 @@
 				>
 					{{ t(btnMoreInfo) }}
 				</Btn>
-				<Chip  color="bg-success">
-					<IconCheck/>
+				<Chip color="bg-success">
+					<IconCheck />
 					{{ t("Headings.Booked") }}
 				</Chip>
 			</div>
@@ -118,7 +118,6 @@
 
 <script lang="ts" setup>
 	import { useI18n } from "vue-i18n";
-	import { CheckIcon } from "@heroicons/vue/24/outline";
 	import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
 
 	const props = defineProps<{
@@ -226,8 +225,8 @@
 			success ? "success" : "error",
 			success ? "Success.BookedCoaching" : error?.detail ?? ""
 		);
-
 		isEventBooked.value = !!success;
+		await getCalendar()
 	}
 
 	async function bookWebinar() {
@@ -237,8 +236,8 @@
 			success ? "success" : "error",
 			success ? "Success.BookedWebinar" : error?.detail ?? ""
 		);
-
 		isEventBooked.value = !!success;
+		await getCalendar()
 	}
 
 	const confirmCancellation = ref(false);
