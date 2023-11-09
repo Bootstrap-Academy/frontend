@@ -22,7 +22,7 @@
     "@floating-ui/dom": "^1.5.3",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
-    "@vueuse/core": "^10.5.0",
+    "@vueuse/core": "^10.6.0",
     "async-mutex": "^0.4.0",
     "dompurify": "^3.0.6",
     "gleap": "^12.1.2",
