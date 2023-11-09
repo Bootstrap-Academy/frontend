@@ -35,9 +35,10 @@
 					tertiary
 					@click="onclickCancel"
 				>
-					{{ t("Buttons.CancelEventCard") }}
+					{{ t(btnMoreInfo) }}
 				</Btn>
-				<Chip :icon="CheckIcon" color="bg-success">
+				<Chip  color="bg-success">
+					<IconCheck/>
 					{{ t("Headings.Booked") }}
 				</Chip>
 			</div>
@@ -50,112 +51,12 @@
 			</Chip>
 		</template>
 		<Modal v-if="confirm" class="z-100 overflow-scroll">
-			<div
-				class="style-card bg-secondary w-full max-w-3xl relative overflow-y-scroll max-h-full p-10"
+			<CalendarEventSummary
+				:event="event"
+				@cancel="confirm = false"
+				:stats="stats"
+				:description="description"
 			>
-				<Btn
-					sm
-					secondary
-					class="relative -top-5 -left-5"
-					@click="confirm = false"
-					>Zurück</Btn
-				>
-
-				<div class="w-full flex content-center items-center gap-2">
-					<component
-						:is="InformationCircleIcon"
-						class="h-10 w-10 row-span-2 md:row-span-3"
-						:class="'fill-info'"
-					/>
-					<h6 class="text-heading-2 text-heading font-heading">
-						<h6>{{ t('Headings.Summary') }}</h6>
-					</h6>
-				</div>
-				<hr class="mt-card text-transparent" />
-				<!-- ? Instructor below -->
-				<div class="h-full max-h-3xl">
-					<div class="flex flex-col">
-						<div>
-							<h4 class="font-bold text-heading">
-								{{ t("Headings.Instructor") }}
-							</h4>
-							<Rating :rating="event.instructor_rating ?? 0" sm stars />
-							<div class="flex gap-2">
-								<img
-									:src="event.instructor.avatar_url ?? '/images/about-2.webp'"
-									class="w-6 h-6 object-cover rounded-[50px]"
-									alt=""
-								/>
-								<p>{{ event.instructor.display_name }}</p>
-							</div>
-							<hr class="mt-card text-transparent" />
-						</div>
-						<div>
-							<h4 class="font-bold text-heading">
-								{{ t("Headings.Name") }}
-							</h4>
-							<p>{{ event.title }}</p>
-						</div>
-					</div>
-
-					<hr class="mt-card text-transparent" />
-
-					<h4 class="font-bold text-heading">
-						{{ t("Headings.Description") }}
-					</h4>
-					<p>{{ description }}</p>
-					<hr class="mt-card text-transparent" />
-
-					<div>
-						<p v-for="(stat, i) of stats" :key="i">
-							{{ t(stat.heading) }}
-							<span class="font-bold text-heading">
-								{{ stat.value }}
-							</span>
-						</p>
-						<p v-if="event.admin_link">
-							Admin-Link
-							<a
-								:href="event.admin_link"
-								class="font-bold text-accent"
-								target="_blank"
-								>link</a
-							>
-						</p>
-						<p v-else-if="event.link">
-							Link
-							<a
-								:href="event.link"
-								class="font-bold text-accent"
-								target="_blank"
-							>
-								link
-							</a>
-						</p>
-						<p
-							v-if="
-								event.hasOwnProperty('participants') &&
-								event.hasOwnProperty('max_participants')
-							"
-						>
-							{{ t("Headings.Participants") }}
-							<span class="font-bold text-heading">
-								<!-- ? not possible to check instanceOf props.event -->
-								{{ event.participants }}/{{ event.max_participants }}
-							</span>
-						</p>
-						<p v-if="event.hasOwnProperty('creation_date')">
-							{{ t("Headings.CreationDate") }}
-							<span class="font-bold text-heading">
-								<!-- ? not possible to check instanceOf props.event -->
-								{{ getTimeAndDate(event.creation_date).date }}
-								{{ getTimeAndDate(event.creation_date).time }}
-							</span>
-						</p>
-					</div>
-					<hr class="mt-card mb-card" />
-				</div>
-
 				<Accordion :title="dialog.heading" class="w-full">
 					<Dialog :dialog="dialog">
 						<template #content>
@@ -178,33 +79,39 @@
 						</template>
 					</Dialog>
 				</Accordion>
-			</div>
+			</CalendarEventSummary>
 		</Modal>
 
 		<Modal v-if="confirmCancellation" class="z-100">
-			<Dialog :dialog="dialog">
-				<template #content>
-					<div class="flex gap-box mt-card-sm">
-						<p class="text-body-2">{{ t("Headings.TodayDate") }}:</p>
-						<h6 class="text-body-1">{{ todayDate }}</h6>
-					</div>
-					<div class="flex gap-box">
-						<p class="text-body-2">{{ t("Headings.EventStartDate") }}:</p>
-						<h6 class="text-body-1">{{ startDate }}</h6>
-					</div>
-					<div class="flex gap-box">
-						<p class="text-body-2">{{ t("Headings.DaysRemaining") }}:</p>
-						<h6 class="text-body-1">{{ numberOfDaysUntil }} days</h6>
-					</div>
-
-					<hr class="mt-card mb-card" />
-
-					<h4 class="text-heading-4 mb-box">
-						{{ t("Headings.CancellationPolicy") }}
-					</h4>
-					<List :items="cancellationPolicy" id="cancellationPolicy" />
-				</template>
-			</Dialog>
+			<CalendarEventSummary
+				:event="event"
+				@cancel="confirmCancellation = false"
+				:stats="stats"
+				:description="description"
+			>
+				<Accordion :title="dialog.heading" class="w-full">
+					<Dialog :dialog="dialog">
+						<template #content>
+							<InputCheckbox
+								id="RightToWithdrawal"
+								class="mb-card-sm"
+								label="Links.RightToWithdrawal"
+								:link="{
+									to: '/docs/right-of-withdrawal',
+									label: 'Links.RightToWithdrawalLink',
+								}"
+								target="_blank"
+								v-model="confirmRightToWithdrawal"
+							/>
+							<InputCheckbox
+								id="DontUseRightToWithdrawal"
+								label="Links.DontUseRightToWithdrawal"
+								v-model="confirmDontUseRightToWithdrawal"
+							/>
+						</template>
+					</Dialog>
+				</Accordion>
+			</CalendarEventSummary>
 		</Modal>
 	</div>
 </template>
@@ -213,7 +120,6 @@
 	import { useI18n } from "vue-i18n";
 	import { CheckIcon } from "@heroicons/vue/24/outline";
 	import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
-	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 
 	const props = defineProps<{
 		event: WebinarEvent | CoachingEvent;
@@ -421,21 +327,6 @@
 		} else {
 			return 0;
 		}
-	}
-
-	function getTimeAndDate(timestamp: number) {
-		if (timestamp == -1) {
-			return { time: ``, date: `` };
-		}
-
-		let { date, month, year } = convertTimestampToDate(timestamp);
-		let time = new Date(timestamp * 1000).toTimeString();
-		let [hr, min, sec] = time.split(":");
-
-		return {
-			time: `${hr}:${min}`,
-			date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
-		};
 	}
 </script>
 
