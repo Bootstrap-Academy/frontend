@@ -129,6 +129,7 @@
         />
       </section>
     </Transition>
+    <button class="text-white" @click="testF">testF</button>
   </div>
 </template>
 
@@ -310,6 +311,11 @@ export default {
       showCurriculum.value = false;
     }
 
+    const testF = () => {
+      console.log('subTask', subtasks.value)
+      getQuizzesInCourse(course.value.id, activeSection.value.id, activeLecture.value.id)
+    }
+
     return {
       t,
       loading,
@@ -326,6 +332,7 @@ export default {
       codingChallenges,
       skillID,
       subSkillID,
+      testF
     };
   },
 };

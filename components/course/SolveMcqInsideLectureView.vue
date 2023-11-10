@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <article class="flex gap-4 flex-wrap mb-7">
+    <article class="flex gap-4 flex-wrap mb-7">
       <chip sm :color="'chip-color-13'" class="w-fit" md>
         {{ t("Headings.TotalQuizzes") }}:
         <span>{{ quizzesToShow.length }}</span>
@@ -11,7 +11,7 @@
       <chip sm :color="'chip-color-13'" class="w-fit" md>
         {{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
       </chip>
-    </article> -->
+    </article>
 
     <FormQuizAnswer
       v-if="quizzesToShow.length && !!selectedQuiz"
@@ -30,9 +30,10 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
+import type { Quiz } from "~/types/courseTypes";
 export default {
   props: {
-    quizzesToShow: { type: Object as PropType<any>, default: null },
+    quizzesToShow: { type: Object as PropType<Quiz[]>, default: null },
   },
 
   emits: ["update:modelValue"],
@@ -43,7 +44,7 @@ export default {
 
     const solvedQuizzes = computed(() => {
       let total = 0;
-      props.quizzesToShow?.forEach((quiz: any) => {
+      props.quizzesToShow?.forEach((quiz: Quiz) => {
         if (!!quiz.solved) {
           ++total;
         }
