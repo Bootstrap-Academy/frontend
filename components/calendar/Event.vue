@@ -2,7 +2,6 @@
 	<article
 		class="p-4 style-card lg:style-box bg-secondary border-l-4"
 		:class="[theme.border]"
-		@click.self="onclickCard"
 	>
 		<header
 			class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
@@ -20,14 +19,14 @@
 			</div>
 
 			<h3 v-else class="capitalize text-heading-4">{{ title }}</h3>
-			<h3
-				@click.self="onclickCard"
+			<button
+				@click="onclickCard"
 				v-if="data.link"
 				:class="[theme.text, theme.bgLight]"
 				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
 			>
 				{{ t("Links.Link") }}
-			</h3>
+			</button>
 		</header>
 
 		<IconText
@@ -260,11 +259,11 @@
 			});
 
 			function onclickCard() {
-				// if (!!window && !!admin_link.value) {
-				// 	window.open(admin_link.value, "_blank");
-				// } else if (!!window && !!link.value) {
-				// 	window.open(link.value, "_blank");
-				// }
+				if (!!window && !!admin_link.value) {
+					window.open(admin_link.value, "_blank");
+				} else if (!!window && !!link.value) {
+					window.open(link.value, "_blank");
+				}
 			}
 
 			return {
