@@ -59,6 +59,12 @@
 						{{ stat.value }}
 					</span>
 				</p>
+				<p v-if="event.link">
+					Link
+					<a :href="event.link" class="font-bold text-accent" target="_blank">
+						link
+					</a>
+				</p>
 				<p v-if="event.admin_link">
 					Admin-Link
 					<a
@@ -67,12 +73,6 @@
 						target="_blank"
 						>link</a
 					>
-				</p>
-				<p v-else-if="event.link">
-					Link
-					<a :href="event.link" class="font-bold text-accent" target="_blank">
-						link
-					</a>
 				</p>
 				<p
 					v-if="
