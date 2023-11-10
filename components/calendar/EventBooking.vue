@@ -1,5 +1,5 @@
 <template>
-	<div class="mt-4 flex justify-end">
+	<div class="mt-4 flex gap-4 justify-end">
 		<!-- if its your own event, then you can edit it -->
 		<template v-if="isMine">
 			<NuxtLink v-if="event.type == 'webinar'" :to="`/webinars/${id}`">
@@ -15,7 +15,7 @@
 			</NuxtLink>
 		</template>
 
-		<template v-else>
+		<div>
 			<Btn
 				v-if="event.bookable && !event.booked"
 				:bgColor="theme.bg"
@@ -27,12 +27,11 @@
 			</Btn>
 
 			<!-- else if event is booked already -->
-			<div v-else-if="event.booked" class="flex gap-card-sm">
+			<div v-else-if="event.booked" class="flex gap-3 gap-card-sm">
 				<Btn
 					:bgColor="theme.bg"
 					:borderColor="theme.border"
 					sm
-					tertiary
 					@click="onclickCancel"
 				>
 					{{ t(btnMoreInfo) }}
@@ -49,7 +48,7 @@
 					{{ t("Headings.Full") }}
 				</span>
 			</Chip>
-		</template>
+		</div>
 		<Modal v-if="confirm" class="z-100 overflow-scroll">
 			<CalendarEventSummary
 				:event="event"
@@ -226,7 +225,7 @@
 			success ? "Success.BookedCoaching" : error?.detail ?? ""
 		);
 		isEventBooked.value = !!success;
-		await getCalendar()
+		await getCalendar();
 	}
 
 	async function bookWebinar() {
@@ -237,7 +236,7 @@
 			success ? "Success.BookedWebinar" : error?.detail ?? ""
 		);
 		isEventBooked.value = !!success;
-		await getCalendar()
+		await getCalendar();
 	}
 
 	const confirmCancellation = ref(false);
