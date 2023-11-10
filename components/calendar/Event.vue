@@ -156,7 +156,7 @@
 			});
 
 			const isMine = computed(() => {
-				return user.value.id === props.data.instructor.id;
+				return user.value.id === props.data.instructor.id || !!props.data.admin_link;
 			});
 
 			const skillID = computed(() => {
