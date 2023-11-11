@@ -56,12 +56,11 @@
 			:description="description"
 			:event="data"
 		/>
-		<button class="text-white" @click="testF">testF</button>
 	</article>
 </template>
 
 <script lang="ts">
-	import { defineComponent} from "vue";
+	import { defineComponent } from "vue";
 	import type { PropType } from "vue";
 	import { useI18n } from "vue-i18n";
 	import { ClockIcon, CalendarIcon } from "@heroicons/vue/24/outline";
@@ -79,36 +78,7 @@
 			noBooking: { type: Boolean, default: false },
 		},
 		setup(props) {
-			onMounted(async () => {
-				await getRootSkillTree();
-				await getSubSkillTree(parentSkill.value?.id ?? "");
-			});
-			const skillTree = useRootSkillTree();
-			const subTree = useSubSkillTree();
-
-      watch(() => props.data.id, async () => {
-        await getRootSkillTree();
-				await getSubSkillTree(parentSkill.value?.id ?? "");
-      })
-
-			const parentSkill = computed(() => {
-				return skillTree.value.skills.find((skill) =>
-					skill.skills.includes(props.data.skill_id)
-				);
-			});
-			const subSkill = computed(() => {
-				return subTree.value.skills.find(
-					(skill) => skill.id == props.data.skill_id
-				);
-			});
-
-      const parentSkillName = computed(() => {
-        return parentSkill.value?.name ?? "";
-      })
-      const subSkillName = computed(() => {
-        return subSkill.value?.name ;
-      })
-
+			
 
 			const { t } = useI18n();
 			const user = useUser();
@@ -149,8 +119,7 @@
 			});
 
 			const instructor = computed(() => {
-				console.log('testF');
-				
+
 				return props.data.instructor;
 			});
 
@@ -205,19 +174,6 @@
 
 			const stats = computed(() => {
 				return [
-					{
-						value: props.data.title,
-						heading: "Name",
-					},
-					{
-						icon: IconSkill,
-						value: subSkillName.value,
-						heading: "Headings.Skill",
-					},
-					{
-						value: parentSkillName.value,
-						heading: "Headings.ParentSkill",
-					},
 					// {
 					// 	icon: CalendarIcon,
 					// 	value:
@@ -269,11 +225,6 @@
 				}
 			}
 
-			const testF = () => {
-				console.log(props.data);
-				
-			}
-
 			return {
 				t,
 				id,
@@ -288,7 +239,6 @@
 				isMine,
 				skillID,
 				description,
-				testF
 			};
 		},
 	});

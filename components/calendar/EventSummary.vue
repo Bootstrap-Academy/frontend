@@ -53,6 +53,15 @@
 			<hr class="mt-card text-transparent" />
 
 			<div>
+				<p>
+					Name <span class="font-bold text-heading">{{ event.title }}</span>
+				</p>
+				<p v-if="parentSkill?.id">
+					{{t('Headings.ParentSkill')}} <RouterLink :to="`/skill-tree/${parentSkill.id}`" class="font-bold text-accent">{{ parentSkillName }}</RouterLink>
+				</p>
+				<p v-if="subSkill?.id && parentSkill?.id">
+					{{t('Headings.Skill')}} <RouterLink :to="`/skill-tree/${parentSkill.id}/${subSkill.id}`" class="font-bold text-accent">{{ subSkillName }}</RouterLink>
+				</p>
 				<p v-for="(stat, i) of stats" :key="i">
 					{{ t(stat.heading) }}
 					<span class="font-bold text-heading">
@@ -103,13 +112,11 @@
 </template>
 
 <script setup lang="ts">
-// Todo: Skill is buggy
-// Todo: add link to Skill & ParentSkill in the skill-tree
 // Todo: Edit "Gebucht" tag if its your own event don't show it
 	import type { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
 	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 	import { useI18n } from "vue-i18n";
-	defineProps<{
+	const props = defineProps<{
 		event: WebinarEvent | CoachingEvent;
 		description: string;
 		stats: { heading: string; value: string; icon: string }[];
@@ -135,6 +142,39 @@
 			date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
 		};
 	}
+
+	onMounted(async () => {
+		await getRootSkillTree();
+		await getSubSkillTree(parentSkill.value?.id ?? "");
+	});
+	const skillTree = useRootSkillTree();
+	const subTree = useSubSkillTree();
+
+	watch(
+		() => props.event.id,
+		async () => {
+			await getRootSkillTree();
+			await getSubSkillTree(parentSkill.value?.id ?? "");
+		}
+	);
+
+	const parentSkill = computed(() => {
+		return skillTree.value.skills.find((skill) =>
+			skill.skills.includes(props.event.skill_id)
+		);
+	});
+	const subSkill = computed(() => {
+		return subTree.value.skills.find(
+			(skill) => skill.id == props.event.skill_id
+		);
+	});
+
+	const parentSkillName = computed(() => {
+		return parentSkill.value?.name ?? "";
+	});
+	const subSkillName = computed(() => {
+		return subSkill.value?.name;
+	});
 </script>
 
 <style scoped></style>
