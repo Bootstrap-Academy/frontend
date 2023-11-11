@@ -27,7 +27,7 @@
 			</Btn>
 
 			<!-- else if event is booked already -->
-			<div v-else-if="event.booked" class="flex gap-3 gap-card-sm">
+			<div v-else-if="event.booked" class="flex gap-3 gap-card-sm items-center">
 				<Btn
 					:bgColor="theme.bg"
 					:borderColor="theme.border"
@@ -36,9 +36,12 @@
 				>
 					{{ t(btnMoreInfo) }}
 				</Btn>
-				<Chip color="bg-success">
+				<Chip v-if="!isMine" color="bg-success">
 					<IconCheck />
 					{{ t("Headings.Booked") }}
+				</Chip>
+				<Chip v-if="isMine" color="bg-success">
+					<IconMorphcoin/> {{ t("Headings.isMine") }}
 				</Chip>
 			</div>
 
