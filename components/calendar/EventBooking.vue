@@ -1,7 +1,7 @@
 <template>
 	<div class="mt-4 flex gap-4 justify-end">
 		<!-- if its your own event, then you can edit it -->
-		<template v-if="isMine">
+		<template v-if="isMine || user.admin">
 			<NuxtLink v-if="event.type == 'webinar'" :to="`/webinars/${id}`">
 				<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
 					{{ t("Buttons.EditWebinar") }}
@@ -36,7 +36,7 @@
 				>
 					{{ t(btnMoreInfo) }}
 				</Btn>
-				<Chip v-if="!isMine" color="bg-success">
+				<Chip v-if="event.booked && !isMine" color="bg-success">
 					<IconCheck />
 					{{ t("Headings.Booked") }}
 				</Chip>
@@ -137,7 +137,7 @@
 	}>();
 
 	const { t } = useI18n();
-
+	const user = useUser()
 	const btn = computed(() => {
 		switch (props.type) {
 			case "coaching":
