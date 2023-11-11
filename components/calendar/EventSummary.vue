@@ -103,6 +103,9 @@
 </template>
 
 <script setup lang="ts">
+// Todo: Skill is buggy
+// Todo: add link to Skill & ParentSkill in the skill-tree
+// Todo: Edit "Gebucht" tag if its your own event don't show it
 	import type { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
 	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 	import { useI18n } from "vue-i18n";

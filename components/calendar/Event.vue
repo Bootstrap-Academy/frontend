@@ -56,6 +56,7 @@
 			:description="description"
 			:event="data"
 		/>
+		<button class="text-white" @click="testF">testF</button>
 	</article>
 </template>
 
@@ -148,6 +149,8 @@
 			});
 
 			const instructor = computed(() => {
+				console.log('testF');
+				
 				return props.data.instructor;
 			});
 
@@ -266,6 +269,11 @@
 				}
 			}
 
+			const testF = () => {
+				console.log(props.data);
+				
+			}
+
 			return {
 				t,
 				id,
@@ -280,6 +288,7 @@
 				isMine,
 				skillID,
 				description,
+				testF
 			};
 		},
 	});
