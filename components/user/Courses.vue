@@ -27,7 +27,7 @@
 import StateInline from 'markdown-it/lib/rules_inline/state_inline';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Course, GetUnseenLectureResponse, Section } from '~/types/courseTypes';
+import type { Course, GetUnseenLectureResponse, Section } from '~/types/courseTypes';
 
 export default defineComponent({
   setup() {

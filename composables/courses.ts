@@ -1,5 +1,5 @@
 import { useState } from '#app';
-import { GetUnseenLectureResponse } from '~/types/courseTypes';
+import type { GetUnseenLectureResponse } from '~/types/courseTypes';
 
 export const useListOfCompletedCourses = () =>
 	useState('listOfCompletedCourses', (): any[] => []);
