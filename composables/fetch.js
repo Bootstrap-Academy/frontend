@@ -3,8 +3,8 @@ import { Mutex, Semaphore, withTimeout } from "async-mutex";
 
 export const mutex = new Mutex();
 
-export function GET(url) {
-  return createApiFetch(url, "GET", null);
+export function GET(url, query) {
+  return createApiFetch(url, "GET", null, query);
 }
 
 export function POST(url, body = null) {
@@ -23,7 +23,7 @@ export function DELETE(url, body = null) {
   return createApiFetch(url, "DELETE", body);
 }
 
-async function createApiFetch(url, method, body) {
+async function createApiFetch(url, method, body, query) {
   const config = useRuntimeConfig().public;
   const accessToken = getAccessToken();
 
@@ -31,6 +31,7 @@ async function createApiFetch(url, method, body) {
     baseURL: config.BASE_API_URL,
     method: method,
     body: body,
+    query: query,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
