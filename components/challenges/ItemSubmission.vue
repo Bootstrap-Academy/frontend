@@ -71,12 +71,16 @@
                 !!submission.result.compile.stderr
               "
             >
-              <p class="text-sm bg-light p-2 rounded-md">{{ submission.result.compile.stderr }}</p>
+              <p class="text-sm bg-light p-2 rounded-md">
+                {{ submission.result.compile.stderr }}
+              </p>
             </div>
             <div
               v-if="!!submission.result.run && !!submission.result.run.stderr"
             >
-              <p class="text-sm bg-light p-2 rounded-md">{{ submission.result.run.stderr }}</p>
+              <p class="text-sm bg-light p-2 rounded-md">
+                {{ submission.result.run.stderr }}
+              </p>
             </div>
             <p
               v-if="
@@ -112,7 +116,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import type { PropType } from "vue";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
 import { useDateFormat } from "@vueuse/core";

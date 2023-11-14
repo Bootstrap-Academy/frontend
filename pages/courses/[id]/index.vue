@@ -21,7 +21,7 @@
 
 <template>
   <CourseSkeleton v-if="loading" />
-
+  
   <main
     v-else-if="course"
     class="relative container-fluid h-screen-main min mt-main mb-main"

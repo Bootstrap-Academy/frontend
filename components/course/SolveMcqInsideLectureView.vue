@@ -1,18 +1,11 @@
 <template>
   <div>
-    <!-- <article class="flex gap-4 flex-wrap mb-7">
-      <chip sm :color="'chip-color-13'" class="w-fit" md>
-        {{ t("Headings.TotalQuizzes") }}:
-        <span>{{ quizzesToShow.length }}</span>
-      </chip>
-      <chip sm :color="'chip-color-13'" class="w-fit" md>
-        {{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
-      </chip>
-      <chip sm :color="'chip-color-13'" class="w-fit" md>
-        {{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
-      </chip>
-    </article> -->
-
+    <p class="pr-7 text-end mt-2">
+      {{ t("Headings.Solved") }}
+      {{ solvedQuizzes }}
+      /
+      {{ quizzesToShow.length - userCreatedQuizzes }}
+    </p>
     <FormQuizAnswer
       v-if="quizzesToShow.length && !!selectedQuiz"
       doubleColumnOptions
@@ -26,17 +19,14 @@
     </p>
   </div>
 </template>
-
-<script lang="ts">
-import type { PropType } from "vue";
+ 
+<script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-export default {
-  props: {
+const  props=defineProps( {
     quizzesToShow: { type: Object as PropType<any>, default: null },
-  },
+  })
 
-  emits: ["update:modelValue"],
-  setup(props, { emit }) {
+const emits=defineEmits( ["update:modelValue"])
     const { t } = useI18n();
     const selectedQuiz = ref();
     const user: any = useUser();
@@ -109,17 +99,7 @@ export default {
       },
       { immediate: true }
     );
-    return {
-      selectedQuiz,
-      nextQuestion,
-      setSolvedLocally,
-      setRatedLocally,
-      t,
-      solvedQuizzes,
-      userCreatedQuizzes,
-    };
-  },
-};
+   
 </script>
 
 <style scoped></style>

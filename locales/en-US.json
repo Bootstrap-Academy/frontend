@@ -4,7 +4,7 @@
   "Subheadings": {
     "ContactUs": "Contact Us",
     "Hero": "Bootstrap Academy",
-    "About": "Why use Bootstrap Academy?",
+    "About": "Why to use bootstrap academy",
     "Features": "Features",
     "HeroFAQS": "FAQs",
     "GetMorphcoins": "Get MorphCoins",
@@ -12,6 +12,24 @@
   },
 
   "Headings": {
+    "AnswersForMatchingsRespectively": "Answers for Matchings Respectively",
+    "LabelForMatchings": "Label for Matchings",
+    "NoteCannotEditMatching": "Edit Restriction",
+    "DeleteMatching": "Delete Matching",
+    "EmptyMatchings": "Empty Matchings",
+    "NumberOfMatchings": "Number Of Matchings",
+    "One": "One",
+    "TwoMatchings": "Two Matchings",
+    "Two": "Two",
+    "Three": "Three",
+    "Four": "Four",
+    "Five": "Five",
+    "Six": "Six",
+    "Seven": "Seven",
+    "Eight": "Eight",
+    "Nine": "Nine",
+    "Matching": "Matching",
+    "Matchings": "Matchings",
     "Error": "Error",
     "NoErrorFound": "No Error Found",
     "ExampleError": "Example Error",
@@ -88,7 +106,7 @@
     "Other": "Other",
     "Dislike": "Dislike",
     "UnlockCodingChallenge": "Buy coding challenge to unlock",
-    "EmptySubtasks": "No Quiz Found For This Lecture",
+    "EmptyQuizzes": "No Quiz Found For This Lecture",
     "EmptyCodingChallenge": "No Coding Challenge Found For This Lecture",
     "DeleteQuiz": "Delete Quiz",
     "Quiz": "Quiz",
@@ -129,7 +147,7 @@
     "Challenge": "Challenge",
     "Explanation": "Explanation",
     "Input": "Input",
-    "ProgramInput": "If input to your code is",
+    "ProgramInputShouldBe": "If input to your code is",
     "ProgramOutputShouldBe": "Output should be",
     "ExpectedOutput": "Expected Output",
     "Name": "Name",
@@ -165,7 +183,6 @@
     "Person": "Private Person",
     "Business": "Business",
     "Skill": "Skill",
-    "Skills": "skills",
     "WebinarRating": "Rate Webinar",
     "CancellationPolicy": "Cancellation Policy",
     "TodayDate": "Today's Date",
@@ -330,8 +347,10 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
     "NoteCannotEditQuiz": "Once a quiz has been created you cannot edit it. But you can delete it and can recreate new one.",
+    "NoteCannotEditMatching": "Once a Matching has been created you cannot edit it. But you can delete it and can recreate new one.",
     "NoteCannotEditCodingChallenge": "Once a Coding Challenge has been created you cannot edit it. But you can delete it and can recreate new one.",
     "QuizDummyQuestion": "Which of the following is a programming language?",
     "UpdateYourCode": "Do you want to update your code with your selected language example code?",
@@ -503,7 +522,7 @@
     },
     "HeroFAQS": {
       "1": {
-        "Heading": "How can I participate? How can I get MorphCoins?",
+        "Heading": "How can I participate? How can I get MorphCoin?",
         "Body": "There are several possibilities to help us - and get coins: We're regularly offering small jobs, you can help me with a certain video, you can host a webinar, become a coach or an examiner or you can help us with finding and repairing bugs. More details are"
       },
       "2": {
@@ -520,7 +539,7 @@
       },
       "5": {
         "Heading": "I already studied computer science. Can I get my skills certified?",
-        "Body": "Sure. Contact us! We need to do that manually so we know, it's true. That's why we need a few MorphCoins for it."
+        "Body": "Sure. Contact us! We need to do that manually so we know, it's true. That's why we need a few MC for it."
       }
     },
     "GetMorphcoins": {
@@ -546,7 +565,7 @@
       },
       "6": {
         "Heading": "Bug Bounty",
-        "Body": "Find Bugs of any sorts and report those. You're hacker or you just found a bug, a security vulnerability or a mistake in text or ordering of any sorts? Use the Icon on the right to report it to us! Depending on the severity, you get a reward. Disclaimer: You may NOT use any services, that might crash the server or network or count as denial of service tools! All data you might have access to, need to be removed immediately(!) and completely from your systems. Data on our systems may NOT be changed! Please try to keep other user out of this, try and exploit yourselves, if it is a user based exploit. Also, please limit yourselves to the Bootstrap Academy. Everything that's not from the academy is out of scope. Example: We use Youtube videos, but we don't own Youtube, so it's out of scope. Also: Only the first reporter will be rewarded and if you are a third party provider, there will probably be no reward. Speaking of rewards: Rewards are most commonly paid out in morphcoins. The amount is defined by the severity of the bug and the quality of the report and how easy you make it for us to fix it. In cases where we discussed that you do bug hunting for us, a payout in euro is possible. Please contact us, if you want this BEFORE you search for a bug!"
+        "Body": "Find Bugs of any sorts and report those. You're hacker or you just found a bug, a security vulnerability or a mistake in text or ordering of any sorts? Use the Icon on the right to report it to us! Depending on the severity, you get a reward. Disclaimer: You may NOT use any services, that might crash the server or network or count as denial of service tools! All data you might have access to, need to be removed immediately(!) and completely from your systems. Data on our systems may NOT be changed! Please try to keep other user out of this, try and exploit yourselves, if it is a user based exploit. Also, please limit yourselves to the bootstrap academy. Everything that's not from the academy is out of scope. Example: We use Youtube videos, but we don't own Youtube, so it's out of scope. Also: Only the first reporter will be rewarded and if you are a third party provider, there will probably be no reward. Speaking of rewards: Rewards are most commonly paid out in morphcoins. The amount is defined by the severity of the bug and the quality of the report and how easy you make it for us to fix it. In cases where we discussed that you do bug hunting for us, a payout in euro is possible. Please contact us, if you want this BEFORE you search for a bug!"
       },
       "7": {
         "Heading": "Examiner",
@@ -667,6 +686,11 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "Matching": "Matching",
+    "Matchings": "Matchings",
+    "CreateMatching": "create Matching",
+    "UpdateMatching": "Update Matching",
+    "DeleteMatching": "Delete Matching",
     "TestAgainstAll": "Test Against All",
     "ManagePremium": "Manage Premium",
     "Challenge": "Challenge",
@@ -850,7 +874,7 @@
     "DontHaveSecretCode": "Don't have TOTP secret code?",
     "InitializeSecretCode": "Click to initialize it",
     "UseRecoveryCode": "Use Recovery Code",
-    "ExploreSkillTree": "Explore the skill tree",
+    "ExploreSkillTree": "Explore skill tree",
     "GetStarted": "to get started.",
     "GoToProfile": "Go To Profile",
     "GoToCourse": "Go To Course",
@@ -862,6 +886,9 @@
     "GravatarImage": "Change your gravatar image at"
   },
   "Success": {
+    "DeleteMatching": "Matching Delete Successfully",
+    "CreateMatching": "Matching Created Successfully",
+    "EditMatching": "Matching Updated Successfully",
     "RefilledHearts": "Your hearts are refilled SuccessFully",
     "AutopayUpdated": "Auto pay is updated SuccessFully",
     "SubscribedMonthly": "You have successfully subscribed to monthly subscription",
@@ -920,6 +947,7 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "MinimnumTwoFieldsRequired": "There should be minimum two fields",
     "Verdict": {
       "COMPILATION_ERROR": "The program failed to compile ❌",
       "INVALID_OUTPUT_FORMAT": "The program produced invalid output that could not be parsed by the evaluator",
@@ -944,7 +972,7 @@
     "Need20CoinsForRefill": "You need 20 morphcoins to refill your heart",
     "Need15CoinsForRefill": "You need 15 morphcoins to refill your heart",
     "CannotGetEvaluator": "Evaluator Not Found",
-    "Level20RequiredForCreatingCodingChallenge": "Level twenty (20) is required for creating a Coding Challenge",
+    "Level20RequiredForCreatingCodingChallenge": "You can create coding challenge once you reached level (20)",
     "UserIsBanned": "You are banned and cannot perform this action",
     "NotEnoughCoins": "You Don't have enough coins",
     "NotEnoughHearts": "A minimum of 1 Heart is required to solve. Buy more hearts or go premium",
@@ -1062,15 +1090,15 @@
     },
     "SkillProgress": {
       "Heading": "@:Headings.SkillPoints",
-      "Body": "Explore the skill tree to get started."
+      "Body": "Explore skill tree to get started."
     },
     "Course": {
       "Heading": "Course Not Found",
-      "Body": "This course may not exist or was removed."
+      "Body": "This course may not exist or is removed."
     },
     "CourseCardSM": {
       "Heading": "No Watched Courses",
-      "Body": "You have not watched any courses yet. Explore the skill tree to get started."
+      "Body": "You have not watched courses. Explore skill tree to get started."
     },
     "Courses": {
       "Heading": "No Matching Courses",
@@ -1078,7 +1106,7 @@
     },
     "Lecture": {
       "Heading": "Lecture Not Found",
-      "Body": "This lecture may not exist or was removed."
+      "Body": "This lecture may not exist or is removed."
     },
     "Jobs": {
       "Heading": "No Matching Jobs",
@@ -1086,11 +1114,11 @@
     },
     "Job": {
       "Heading": "Job Not Found",
-      "Body": "This job may not exist or was removed."
+      "Body": "This job may not exist or is removed."
     },
     "Certificates": {
       "Line1": "You have no certificates",
-      "Line2": "Explore the skill tree",
+      "Line2": "Explore skill tree",
       "Line3": "to get started."
     },
     "MyQuizQuestions": {

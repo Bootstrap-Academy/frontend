@@ -34,6 +34,9 @@
     "monaco-editor": "^0.44.0",
     "npm": "^10.2.3",
     "qrcode.vue": "^3.4.1",
-    "vue-recaptcha-v3": "^2.0.1"
+    "vue-recaptcha-v3": "^2.0.1",
+    "nanoid": "^5.0.3",
+    "vuedraggable": "^4.1.0"
+
   }
 }
