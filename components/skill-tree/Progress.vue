@@ -23,7 +23,7 @@
         >
           <div>
             <span class="text-body">{{ completed }}/{{ total }}</span>
-            skills
+             {{t("Headings.Skills")}}
           </div>
           <div class="text-heading-2 leading-none text-accent">•</div>
           <div>
