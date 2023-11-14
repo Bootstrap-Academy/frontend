@@ -41,15 +41,15 @@
 </template>
 
 <script lang="ts">
-	import { defineComponent } from "vue";
-	import { useI18n } from "vue-i18n";
-	import { Course } from "~/types/courseTypes";
-  
-	export default defineComponent({
-		setup() {
-			const { t } = useI18n();
-			const router = useRouter();
-			const loading = ref(true);
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { Course, GetUnseenLectureResponse, Section } from '~/types/courseTypes';
+
+export default defineComponent({
+  setup() {
+    const { t } = useI18n();
+    const router = useRouter();
+    const loading = ref(true);
 
 			const myCourses = useMyCourses();
 
