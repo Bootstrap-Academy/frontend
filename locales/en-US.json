@@ -165,6 +165,7 @@
     "Person": "Private Person",
     "Business": "Business",
     "Skill": "Skill",
+    "Skills": "skills",
     "WebinarRating": "Rate Webinar",
     "CancellationPolicy": "Cancellation Policy",
     "TodayDate": "Today's Date",
