@@ -1,10 +1,10 @@
 import { useState } from '#app';
-import type { Quiz } from '~/types/courseTypes';
+import { Quiz } from '~/types/courseTypes';
 import { GET } from './fetch';
 export const useQuizzes = () => useState<any[]>('quizzes', () => []);
 export const useQuiz = () => useState<any>('quiz', () => null);
 export const useSubTasksInQuiz = () => useState<Quiz[]>("subTasksInQuiz", () => [])
-export const useSubTaskInQuiz = () => useState<any>("subTaskInQuiz", () => null)
+export const useSubTaskInQuiz = () => useState<Quiz>("subTaskInQuiz", () => new Quiz())
 export const useSubTaskAndSolutionInQuiz = () => useState<any>("subTaskAndSolutionInQuiz", () => null)
 
 export async function getQuiz(id: string) {
@@ -200,7 +200,7 @@ export async function getQuizzesInSkill(skillId: any) {
 		return [null, error]
 	}
 }
-
+// Todo: step1 -> returns Quizzes []
 export async function getQuizzesInCourse(courseId: any, section_id: any = "", lecture_id: any = "") {
 	try {
 		if (!!!section_id && !!!lecture_id) {
@@ -225,7 +225,8 @@ export async function getQuizzesInCourse(courseId: any, section_id: any = "", le
 		return [null, error]
 	}
 }
-
+// Todo: step2 for each Quizz in Quizzes (getSubTasksInQuiz(Quiz.id))
+// Todo: step2 -> returns tasks[] -> v-for task in tasks[] => task === quizData
 export async function getSubTasksInQuiz(taskId: any, creator: any = '') {
 	try {
 		let query = ''
@@ -256,7 +257,8 @@ export async function createQuiz(courseId: any, body: any) {
 		return [null, error]
 	}
 }
-
+// Todo: step3 -> quizData -> getSubTaskInQuiz(quizId, subTaskId????)
+// Todo: What exactly is the subTaskId??
 export async function getSubTaskInQuiz(taskId: any, subTaskId: any) {
 	try {
 		const res = await GET(`/challenges/tasks/${taskId}/multiple_choice/${subTaskId}`)

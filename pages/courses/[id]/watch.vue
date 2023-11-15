@@ -54,6 +54,7 @@
             :activeLecture="activeLecture"
             v-if="!!activeSection && !!activeLecture && selectedButton == 0"
           />
+          <!-- Todo: below section is the one where the Quizzes should be displayed -->
           <section
             v-else-if="selectedButton == 1"
             class="w-full h-[71vh] overflow-scroll"
@@ -313,7 +314,7 @@ export default {
 
     const testF = () => {
       console.log('subTask', subtasks.value)
-      getQuizzesInCourse(course.value.id, activeSection.value.id, activeLecture.value.id)
+      console.log(!subtasks.value.length)
     }
 
     return {
