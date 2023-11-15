@@ -13,7 +13,7 @@
       </chip>
     </article>
 
-    <FormQuizAnswer
+    <!-- <FormQuizAnswer
       v-if="quizzesToShow.length && !!selectedQuiz"
       doubleColumnOptions
       :data="selectedQuiz"
@@ -23,7 +23,7 @@
     />
     <p v-else-if="!!!selectedQuiz" class="text-center">
       {{ t("Headings.NoQuizFoundForYouToSolve") }}
-    </p>
+    </p> -->
   </div>
 </template>
 
