@@ -131,12 +131,6 @@ export default {
         await getCourseSummaryByID(id.value);
       } else {
         isCourseAccessible.value = true;
-        const [quizzesSuccess, quizzesError] = await getQuizzesInCourse(
-          id.value
-        );
-        if (quizzesError) {
-          openSnackbar("error", "quizzesError");
-        }
       }
 
       loading.value = false;

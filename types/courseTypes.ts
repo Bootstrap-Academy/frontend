@@ -52,4 +52,5 @@ export class Quiz{
     task_id: string = "";
     type: string = ""; // ? 'MULTIPLE_CHOICE_QUESTION
     xp: number = 0;
+    answers: string [] = [];
 }

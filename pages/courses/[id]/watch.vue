@@ -61,15 +61,12 @@
 						<p class="w-full text-xl text-center" v-if="quizzes.length === 0">
 							{{ t("Headings.EmptySubtasks") }}
 						</p>
-						<CourseSolveMcqInsideLectureView
-							v-else-if="quizzes.length"
-							:quizzesToShow="subtasks"
-						/>
-						<QuizList
-							v-for="quiz in quizzes"
-							:key="quiz.id"
-							:quiz-id="quiz.id"
-						/>
+
+						<div v-else-if="quizzes.length">
+							<!-- Todo: check why getQuizzesFor course response is array of 4 times the same questions?? -->
+							<CourseSolveMcqInsideLectureView :quizzesToShow="quizzes" />
+							<QuizList" :quiz-id="[quizzes[0].id]" />
+						</div>
 					</section>
 
 					<section
@@ -237,40 +234,6 @@
 				}
 			}
 			watch(
-				() => [activeLecture.value, activeSection.value],
-				async () => {
-					setLoading(true);
-					if (
-						!!!activeLecture.value ||
-						!!!activeLecture?.value.id ||
-						!!!activeSection.value ||
-						!!!activeSection?.value.id ||
-						!!!courseId.value
-					) {
-						setLoading(false);
-						return;
-					}
-					const [success, error] = await getQuizzesInCourse(
-						courseId.value,
-						activeSection.value.id,
-						activeLecture.value.id
-					);
-
-					if (!!success[0]) {
-						taskId.value = success[0]?.id;
-						subtasks.value = [];
-						fnGetSubtasksInQuiz(success[0]?.id);
-						fnGetCodingChallengeInQuiz(success[0]?.id);
-					} else {
-						subtasks.value = [];
-						codingChallenges.value = [];
-					}
-					setLoading(false);
-				},
-				{ immediate: true, deep: true }
-			);
-
-			watch(
 				() => selectedButton.value,
 				(newValue) => {
 					localStorage.setItem("selectedButton", newValue.toString());
@@ -288,8 +251,8 @@
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
-				loading.value = false;
 				getQuizzesInCourse(courseID);
+				loading.value = false;
 			});
 
 			onBeforeUnmount(() => {
