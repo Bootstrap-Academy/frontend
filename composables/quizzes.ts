@@ -212,9 +212,6 @@ export async function getQuizzesInCourse(
 			quizzes.value = res ?? [];
 			return [res, null];
 
-			// ? restructured this part because below api-call is not used anywhere in the project
-			// ? If it will be use someday, maybe create new function for it
-
 			// else {
 			// 	const res = await GET(`/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`)
 			// 	const quizzes = useQuizzes()
