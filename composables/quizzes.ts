@@ -2,6 +2,8 @@ import { useState } from "#app";
 import { Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
+export const useQuizzesInCourse = () => useState<any[]>("quizzesInCourse", () => [])
+export const useQuizzesInLecture= () => useState<any[]>("quizzesInLecture", () => [])
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () =>
 	useState<Quiz[]>("subTasksInQuiz", () => []);
@@ -202,6 +204,24 @@ export async function getQuizzesInSkill(skillId: any) {
 	}
 }
 export async function getQuizzesInCourse(
+	courseId: string,
+) {
+	const res = await GET(`/challenges/courses/${courseId}/tasks`)
+		.then((res) => {
+			const quizzes = useQuizzesInCourse();
+			quizzes.value = res ?? [];
+			return [res, null];
+		})
+		.catch((error: any) => {
+			let msg = error?.data?.error;
+			if (msg == "unverified") {
+				openSnackbar("error", "Error.VerifyToGetQuizzes");
+				return [null, error];
+			}
+		});
+}
+
+export async function getQuizzesInLecture(
 	courseId: any,
 	section_id: string = "",
 	lecture_id: string = ""
@@ -211,7 +231,7 @@ export async function getQuizzesInCourse(
 		lecture_id: lecture_id === "" ? undefined : lecture_id,
 	})
 		.then((res) => {
-			const quizzes = useQuizzes();
+			const quizzes = useQuizzesInLecture();
 			quizzes.value = res ?? [];
 			return [res, null];
 		})

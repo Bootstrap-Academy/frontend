@@ -60,6 +60,7 @@
 					>
 						<p class="w-full text-xl text-center" v-if="quizzes.length === 0">
 							{{ t("Headings.EmptySubtasks") }}
+							
 						</p>
 
 						<div v-else-if="quizzes.length">
@@ -137,6 +138,7 @@
 	import { useI18n } from "vue-i18n";
 
 	import { XCircleIcon } from "@heroicons/vue/24/solid";
+import { useQuizzesInLecture } from "~/composables/quizzes";
 
 	definePageMeta({
 		middleware: ["auth"],
@@ -160,7 +162,7 @@
 			const taskId = ref();
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
-			const quizzes = useQuizzes();
+			const quizzes = useQuizzesInLecture();
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -250,7 +252,7 @@
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
-				getQuizzesInCourse(
+				getQuizzesInLecture(
 					course.value.id,
 					activeSection.value.id,
 					activeLecture.value.id
@@ -281,7 +283,7 @@
 			watch(
 				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				() => {
-					getQuizzesInCourse(
+					getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
