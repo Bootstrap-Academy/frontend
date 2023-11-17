@@ -203,23 +203,17 @@ export async function getQuizzesInSkill(skillId: any) {
 }
 export async function getQuizzesInCourse(
 	courseId: any,
-	section_id: any = "",
-	lecture_id: any = ""
+	section_id: string = "",
+	lecture_id: string = ""
 ) {
-	const res = await GET(`/challenges/courses/${courseId}/tasks`)
+	const res = await GET(`/challenges/courses/${courseId}/tasks`, {
+		section_id: section_id === "" ? undefined : section_id,
+		lecture_id: lecture_id === "" ? undefined : lecture_id,
+	})
 		.then((res) => {
 			const quizzes = useQuizzes();
 			quizzes.value = res ?? [];
 			return [res, null];
-
-			// else {
-			// 	const res = await GET(`/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`)
-			// 	const quizzes = useQuizzes()
-			// 	quizzes.value = res ?? []
-			// 	console.log('getQuizzesInCourse else', res);
-
-			// 	return [res, null]
-			// }
 		})
 		.catch((error: any) => {
 			let msg = error?.data?.error;

@@ -250,7 +250,11 @@
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
-				getQuizzesInCourse(courseID);
+				getQuizzesInCourse(
+					course.value.id,
+					activeSection.value.id,
+					activeLecture.value.id
+				);
 				loading.value = false;
 			});
 
@@ -273,10 +277,15 @@
 
 				showCurriculum.value = false;
 			}
+
 			watch(
-				() => selectedButton.value,
+				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				() => {
-					getQuizzesInCourse(course.value.id);
+					getQuizzesInCourse(
+						course.value.id,
+						activeSection.value.id,
+						activeLecture.value.id
+					);
 				}
 			);
 

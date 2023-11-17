@@ -122,7 +122,7 @@ export default {
         loading.value = false;
         return;
       }
-
+      getQuizzesInCourse(id.value)
       const [success, error] = await getCourseByID(id.value);
 
       if (error) {
