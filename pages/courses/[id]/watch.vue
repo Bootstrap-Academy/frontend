@@ -63,7 +63,6 @@
 						</p>
 
 						<div v-else-if="quizzes.length">
-							<!-- Todo: check why getQuizzesFor course response is array of 4 times the same questions?? -->
 							<CourseSolveMcqInsideLectureView :quizzesToShow="quizzes" />
 							<QuizList" :quiz-id="[quizzes[0].id]" />
 						</div>
