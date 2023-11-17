@@ -60,12 +60,15 @@
 					>
 						<p class="w-full text-xl text-center" v-if="quizzes.length === 0">
 							{{ t("Headings.EmptySubtasks") }}
-							
+							<!-- Todo: tell Client where to find next Quizzes if any -->
+							<!-- <QuizList :quiz-id="allQuizzes[0].id"/> -->
 						</p>
 
 						<div v-else-if="quizzes.length">
 							<CourseSolveMcqInsideLectureView :quizzesToShow="quizzes" />
-							<QuizList" :quiz-id="[quizzes[0].id]" />
+							<!-- Todo: typing -->
+							<!-- Bug: Quiz-list breaks the Project -> something is accessed before init -->
+							<!-- <QuizList :quiz-id="quizzesInLecture[0].id" /> -->
 						</div>
 					</section>
 
@@ -162,7 +165,9 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 			const taskId = ref();
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
-			const quizzes = useQuizzesInLecture();
+			const quizzes = useQuizzes()
+			const allQuizzes = useQuizzesInCourse()
+			const quizzesInLecture = useQuizzesInLecture();
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -260,9 +265,9 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 				loading.value = false;
 			});
 
-			onBeforeUnmount(() => {
-				localStorage.removeItem("selectedButton");
-			});
+			// onBeforeUnmount(() => {
+			// 	localStorage.removeItem("selectedButton");
+			// });
 
 			const showCurriculum = ref(false);
 
@@ -281,15 +286,26 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 			}
 
 			watch(
-				() => [selectedButton.value, activeLecture.value, activeSection.value],
+				() => [selectedButton.value],
 				() => {
 					getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
 					);
+					testF()
 				}
 			);
+
+			const testF = async () => {
+				console.log('lectureQuizzes');
+				console.table(JSON.parse(JSON.stringify(quizzesInLecture.value)))
+				console.log('allQuizzes');
+				console.table(JSON.parse(JSON.stringify(allQuizzes.value)))
+				// const [success, error] = await getSubTasksInQuiz(allQuizzes.value[0].id);
+				// console.log(success);
+				
+			}
 
 			return {
 				t,
@@ -308,6 +324,8 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 				skillID,
 				subSkillID,
 				quizzes,
+				allQuizzes,
+				quizzesInLecture
 			};
 		},
 	};

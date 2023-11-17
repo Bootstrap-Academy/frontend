@@ -38,6 +38,13 @@ export interface GetUnseenLectureResponse {
     section: Omit<Section, "completed">;
 }
 
+export class LecturesWithQuiz{
+    course_id: string = ""
+    id: string = ""
+    lecture_id: string = ""
+    section_id: string = ""
+}
+
 export class Quiz{
     coins: number = 0;
     creation_timestamp: string = "";
