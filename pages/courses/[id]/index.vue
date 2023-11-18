@@ -84,7 +84,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { getQuizzesInCourse, useQuizzesInCourse } from "~~/composables/quizzes";
+import { getQuizzesInCourse } from "~~/composables/quizzes";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -100,7 +100,7 @@ export default {
     const course = useCourse();
     const isCourseAccessible = ref(false);
 
-    const quizzes = useQuizzesInCourse();
+    const quizzes = useQuizzes();
 
     const route = useRoute();
     const router = useRouter();

@@ -95,7 +95,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const quizzes: any = useQuizzesInCourse();
+    const quizzes: any = useQuizzes();
     const selectedQuiz = ref();
     const loading = ref(true);
     const user: any = useUser();
