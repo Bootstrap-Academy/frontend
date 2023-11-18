@@ -60,12 +60,15 @@
 					>
 						<p
 							class="w-full text-xl text-center"
-							v-if="quizzesInLecture.length === 0"
+							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
 						>
 							{{ t("Headings.EmptySubtasks") }}
 							<!-- Todo: tell Client where to find next Quizzes if any -->
-							<QuizList :quizzes="allQuizzes" />
 						</p>
+						<div v-if="!quizzesInLecture.length && allQuizzes.length">
+							<p class="w-full text-xl text-center">{{ t("Headings.EmptySubtasks") }}</p>
+							<p class="w-full text-xl text-center">Die nächsten Quizze findest du </p>
+						</div>
 
 						<div v-else-if="quizzesInLecture.length">
 							<CourseSolveMcqInsideLectureView
@@ -137,13 +140,14 @@
 				/>
 			</section>
 		</Transition>
+		<button @click="testF" class="text-accent">testF</button>
 	</div>
 </template>
 
 <script lang="ts">
 	import { useI18n } from "vue-i18n";
 	import { XCircleIcon } from "@heroicons/vue/24/solid";
-	import { Quiz } from "~/types/courseTypes";
+	import { Quiz, QuizInUnseenLecture } from "~/types/courseTypes";
 
 	definePageMeta({
 		middleware: ["auth"],
@@ -171,6 +175,7 @@
 			const quizzesInLectureInfo = useQuizzesInLecture();
 			const allQuizzes = ref<Quiz[]>([]);
 			const quizzesInLecture = ref<Quiz[]>([]);
+			const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -259,8 +264,8 @@
 					return;
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-
-				getQuizzesInLecture(
+				await getQuizzesInCourse(course.value.id);
+				await getQuizzesInLecture(
 					course.value.id,
 					activeSection.value.id,
 					activeLecture.value.id
@@ -268,9 +273,9 @@
 				loading.value = false;
 			});
 
-			// onBeforeUnmount(() => {
-			// 	localStorage.removeItem("selectedButton");
-			// });
+			onBeforeUnmount(() => {
+				localStorage.removeItem("selectedButton");
+			});
 
 			const showCurriculum = ref(false);
 
@@ -289,7 +294,7 @@
 			}
 
 			watch(
-				() => [selectedButton.value, activeLecture.value],
+				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				async () => {
 					quizzesInLecture.value.splice(0);
 					allQuizzes.value.splice(0);
@@ -298,8 +303,10 @@
 						activeSection.value.id,
 						activeLecture.value.id
 					);
+					await getQuizzesInCourse(course.value.id);
 					await assignLectureQuizzes();
 					await assignAllQuizzes();
+					await getQuizzesInUnfinishedLectures();
 				}
 			);
 
@@ -316,7 +323,7 @@
 
 			const assignAllQuizzes = async () => {
 				const subTasks = useSubTasksInQuiz();
-				console.table(JSON.parse(JSON.stringify(allQuizzesInfo.value)));
+				// console.table(JSON.parse(JSON.stringify(allQuizzesInfo.value)));
 				if (allQuizzesInfo.value.length) {
 					allQuizzesInfo.value.forEach(async (lecture) => {
 						await getSubTasksInQuiz(lecture.id).then(() => {
@@ -328,8 +335,30 @@
 				}
 			};
 
-			const testF = async () => {
-				//
+			const getQuizzesInUnfinishedLectures = async () => {
+				let testSections: QuizInUnseenLecture[] = [];
+				allQuizzesInfo.value.forEach((info) => {
+					course.value.sections.find((section) => {
+						section.lectures.forEach((lecture) => {
+							if (lecture.id == info.lecture_id) {
+								testSections.push({
+									section: section.id ?? "",
+									sectionTitle: section.title,
+									lectureId: lecture.id,
+									lecture: lecture.title,
+									lectureFinished: lecture.completed,
+								});
+							}
+						});
+					});
+				});
+				unseenLectureQuizzes.value = testSections.filter(
+					(section) => !section.lectureFinished
+				);
+			};
+
+			const testF = () => {
+				console.log(unseenLectureQuizzes.value);
 			};
 
 			return {
@@ -350,6 +379,7 @@
 				subSkillID,
 				allQuizzes,
 				quizzesInLecture,
+				testF,
 			};
 		},
 	};

@@ -61,3 +61,11 @@ export class Quiz{
     xp: number = 0;
     answers: string [] = [];
 }
+
+export class QuizInUnseenLecture {
+    section: string = "";
+    sectionTitle: string = "";
+    lecture: string = "";
+    lectureId: string = "";
+    lectureFinished: boolean = false;
+}
