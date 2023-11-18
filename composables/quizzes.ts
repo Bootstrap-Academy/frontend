@@ -2,8 +2,10 @@ import { useState } from "#app";
 import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
-export const useQuizzesInCourse = () => useState<LecturesWithQuiz[]>("quizzesInCourse", () => [])
-export const useQuizzesInLecture= () => useState<LecturesWithQuiz[]>("quizzesInLecture", () => [])
+export const useQuizzesInCourse = () =>
+	useState<LecturesWithQuiz[]>("quizzesInCourse", () => []);
+export const useQuizzesInLecture = () =>
+	useState<LecturesWithQuiz[]>("quizzesInLecture", () => []);
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () =>
 	useState<Quiz[]>("subTasksInQuiz", () => []);
@@ -203,13 +205,13 @@ export async function getQuizzesInSkill(skillId: any) {
 		return [null, error];
 	}
 }
-export async function getQuizzesInCourse(
-	courseId: string,
-) {
+export async function getQuizzesInCourse(courseId: string) {
+	
 	const res = await GET(`/challenges/courses/${courseId}/tasks`)
 		.then((res) => {
 			const quizzes = useQuizzesInCourse();
-			quizzes.value = res ?? [];
+			quizzes.value = res;
+			
 			return [res, null];
 		})
 		.catch((error: any) => {
@@ -247,6 +249,7 @@ export async function getQuizzesInLecture(
 export async function getSubTasksInQuiz(taskId: any, creator: any = "") {
 	try {
 		let query = "";
+
 		if (!!creator) {
 			query = `/challenges/tasks/${taskId}/multiple_choice?creator=${creator}`;
 		} else {
