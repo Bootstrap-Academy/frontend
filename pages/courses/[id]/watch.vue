@@ -58,17 +58,20 @@
 						v-if="selectedButton == 1"
 						class="w-full h-[71vh] overflow-scroll"
 					>
-						<p class="w-full text-xl text-center" v-if="quizzes.length === 0">
+						<p
+							class="w-full text-xl text-center"
+							v-if="quizzesInLecture.length === 0"
+						>
 							{{ t("Headings.EmptySubtasks") }}
 							<!-- Todo: tell Client where to find next Quizzes if any -->
-							<!-- <QuizList :quiz-id="allQuizzes[0].id"/> -->
+							<QuizList :quizzes="allQuizzes" />
 						</p>
 
-						<div v-else-if="quizzes.length">
-							<CourseSolveMcqInsideLectureView :quizzesToShow="quizzes" />
-							<!-- Todo: typing -->
-							<!-- Bug: Quiz-list breaks the Project -> something is accessed before init -->
-							<!-- <QuizList :quiz-id="quizzesInLecture[0].id" /> -->
+						<div v-else-if="quizzesInLecture.length">
+							<CourseSolveMcqInsideLectureView
+								:quizzesToShow="quizzesInLecture"
+							/>
+							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
 
@@ -139,9 +142,8 @@
 
 <script lang="ts">
 	import { useI18n } from "vue-i18n";
-
 	import { XCircleIcon } from "@heroicons/vue/24/solid";
-import { useQuizzesInLecture } from "~/composables/quizzes";
+	import { Quiz } from "~/types/courseTypes";
 
 	definePageMeta({
 		middleware: ["auth"],
@@ -165,9 +167,10 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 			const taskId = ref();
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
-			const quizzes = useQuizzes()
-			const allQuizzes = useQuizzesInCourse()
-			const quizzesInLecture = useQuizzesInLecture();
+			const allQuizzesInfo = useQuizzesInCourse();
+			const quizzesInLectureInfo = useQuizzesInLecture();
+			const allQuizzes = ref<Quiz[]>([]);
+			const quizzesInLecture = ref<Quiz[]>([]);
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -286,26 +289,48 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 			}
 
 			watch(
-				() => [selectedButton.value],
-				() => {
-					getQuizzesInLecture(
+				() => [selectedButton.value, activeLecture.value],
+				async () => {
+					quizzesInLecture.value.splice(0);
+					allQuizzes.value.splice(0);
+					await getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
 					);
-					testF()
+					await assignLectureQuizzes();
+					await assignAllQuizzes();
 				}
 			);
 
+			const assignLectureQuizzes = async () => {
+				const subTasksInSkill = useSubTasksInQuiz();
+				quizzesInLecture.value[0];
+				if (quizzesInLectureInfo.value.length) {
+					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
+					subTasksInSkill.value.forEach((quiz) => {
+						quizzesInLecture.value.push(quiz);
+					});
+				}
+			};
+
+			const assignAllQuizzes = async () => {
+				const subTasks = useSubTasksInQuiz();
+				console.table(JSON.parse(JSON.stringify(allQuizzesInfo.value)));
+				if (allQuizzesInfo.value.length) {
+					allQuizzesInfo.value.forEach(async (lecture) => {
+						await getSubTasksInQuiz(lecture.id).then(() => {
+							subTasks.value.forEach((quiz) => {
+								allQuizzes.value.push(quiz);
+							});
+						});
+					});
+				}
+			};
+
 			const testF = async () => {
-				console.log('lectureQuizzes');
-				console.table(JSON.parse(JSON.stringify(quizzesInLecture.value)))
-				console.log('allQuizzes');
-				console.table(JSON.parse(JSON.stringify(allQuizzes.value)))
-				// const [success, error] = await getSubTasksInQuiz(allQuizzes.value[0].id);
-				// console.log(success);
-				
-			}
+				//
+			};
 
 			return {
 				t,
@@ -323,9 +348,8 @@ import { useQuizzesInLecture } from "~/composables/quizzes";
 				codingChallenges,
 				skillID,
 				subSkillID,
-				quizzes,
 				allQuizzes,
-				quizzesInLecture
+				quizzesInLecture,
 			};
 		},
 	};
