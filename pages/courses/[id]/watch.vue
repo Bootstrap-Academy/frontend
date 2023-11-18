@@ -63,11 +63,31 @@
 							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
 						>
 							{{ t("Headings.EmptySubtasks") }}
-							<!-- Todo: tell Client where to find next Quizzes if any -->
 						</p>
 						<div v-if="!quizzesInLecture.length && allQuizzes.length">
-							<p class="w-full text-xl text-center">{{ t("Headings.EmptySubtasks") }}</p>
-							<p class="w-full text-xl text-center">Die nächsten Quizze findest du </p>
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.EmptySubtasks") }}
+							</p>
+							<p
+								class="w-full text-xl text-center"
+								v-if="unseenLectureQuizzes.length"
+							>
+								{{ t("Headings.NextSubTasksLocation") }}
+								
+								<ul>
+									<li v-for="(unseenQuiz, index) in unseenLectureQuizzes" :key="index">
+										{{ t("Headings.Section") }} {{ getSectionNumber(unseenQuiz.section)  }}, <NuxtLink @click="watchThisLecture({sectionID: unseenQuiz.section,lectureID: unseenQuiz.lectureId })" class="cursor-pointer text-accent">{{ unseenQuiz.lecture }}</NuxtLink>
+									</li>
+								</ul>
+							</p>
+						</div>
+
+						<div
+							v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
+						>
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.NoMoreSubTasksInThisCourse") }}
+							</p>
 						</div>
 
 						<div v-else-if="quizzesInLecture.length">
@@ -140,7 +160,6 @@
 				/>
 			</section>
 		</Transition>
-		<button @click="testF" class="text-accent">testF</button>
 	</div>
 </template>
 
@@ -270,6 +289,7 @@
 					activeSection.value.id,
 					activeLecture.value.id
 				);
+				await getQuizzesInUnfinishedLectures();
 				loading.value = false;
 			});
 
@@ -357,9 +377,20 @@
 				);
 			};
 
-			const testF = () => {
-				console.log(unseenLectureQuizzes.value);
-			};
+			function getSectionNumber(sectionString: string): number {
+				if (sectionString === 'section') {
+					return 1; // Return 1 for "section"
+				}
+
+				const sectionRegex = /^section(\d+)$/;
+				const match = sectionRegex.exec(sectionString);
+
+				if (match) {
+					return parseInt(match[1]) + 1; // Add 1 to the parsed section number
+				} else {
+					throw new Error(`Invalid section string: ${sectionString}`);
+				}
+			}
 
 			return {
 				t,
@@ -379,7 +410,8 @@
 				subSkillID,
 				allQuizzes,
 				quizzesInLecture,
-				testF,
+				unseenLectureQuizzes,
+				getSectionNumber,
 			};
 		},
 	};
