@@ -1,9 +1,9 @@
 import { useState } from "#app";
-import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
+import { Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
-export const useQuizzesInCourse = () => useState<LecturesWithQuiz[]>("quizzesInCourse", () => [])
-export const useQuizzesInLecture= () => useState<LecturesWithQuiz[]>("quizzesInLecture", () => [])
+export const useQuizzesInCourse = () => useState<any[]>("quizzesInCourse", () => [])
+export const useQuizzesInLecture= () => useState<any[]>("quizzesInLecture", () => [])
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () =>
 	useState<Quiz[]>("subTasksInQuiz", () => []);
@@ -41,69 +41,69 @@ export async function getQuizzes() {
 
 		await sleep(3000);
 		const quizzes = useQuizzes();
-		// quizzes.value = [
-		// 	{
-		// 		id: "2342344234",
-		// 		question: "What is Vue?",
-		// 		type: "multi-choice",
-		// 		price: 0,
-		// 		options: [
-		// 			{
-		// 				id: "23432443",
-		// 				answer: "Framework",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "23432443",
-		// 				answer: "Framework",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "23432443",
-		// 				answer: "Framework",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "23432443",
-		// 				answer: "Framework",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "9284ruh3ifjcnio3hprv",
-		// 				answer: "Node JS",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "2343229ru389gfuhbvwjcio2hc19vg443",
-		// 				answer: "Library",
-		// 				correct: true,
-		// 			},
-		// 		],
-		// 	},
-		// 	{
-		// 		id: "fnhiuhriu4nvr",
-		// 		question: "Which is the powerhouse of cell?",
-		// 		type: "multi-choice",
-		// 		price: 1,
-		// 		options: [
-		// 			{
-		// 				id: ";3qjfnvjr noi2vhg7re3refbi1rf",
-		// 				answer: "Mitochondria",
-		// 				correct: true,
-		// 			},
-		// 			{
-		// 				id: "0982j2lfmlef",
-		// 				answer: "Plasma",
-		// 				correct: false,
-		// 			},
-		// 			{
-		// 				id: "01tu",
-		// 				answer: "Brain",
-		// 				correct: false,
-		// 			},
-		// 		],
-		// 	},
-		// ];
+		quizzes.value = [
+			{
+				id: "2342344234",
+				question: "What is Vue?",
+				type: "multi-choice",
+				price: 0,
+				options: [
+					{
+						id: "23432443",
+						answer: "Framework",
+						correct: false,
+					},
+					{
+						id: "23432443",
+						answer: "Framework",
+						correct: false,
+					},
+					{
+						id: "23432443",
+						answer: "Framework",
+						correct: false,
+					},
+					{
+						id: "23432443",
+						answer: "Framework",
+						correct: false,
+					},
+					{
+						id: "9284ruh3ifjcnio3hprv",
+						answer: "Node JS",
+						correct: false,
+					},
+					{
+						id: "2343229ru389gfuhbvwjcio2hc19vg443",
+						answer: "Library",
+						correct: true,
+					},
+				],
+			},
+			{
+				id: "fnhiuhriu4nvr",
+				question: "Which is the powerhouse of cell?",
+				type: "multi-choice",
+				price: 1,
+				options: [
+					{
+						id: ";3qjfnvjr noi2vhg7re3refbi1rf",
+						answer: "Mitochondria",
+						correct: true,
+					},
+					{
+						id: "0982j2lfmlef",
+						answer: "Plasma",
+						correct: false,
+					},
+					{
+						id: "01tu",
+						answer: "Brain",
+						correct: false,
+					},
+				],
+			},
+		];
 	} catch (error: any) {
 		return [null, error.data];
 	}
