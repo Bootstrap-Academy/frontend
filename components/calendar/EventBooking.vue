@@ -41,7 +41,7 @@
 					{{ t("Headings.Booked") }}
 				</Chip>
 				<Chip v-if="isMine" color="bg-success">
-					<IconMorphcoin/> {{ t("Headings.isMine") }}
+					<IconMorphcoin/> {{ t("Headings.IsMine") }}
 				</Chip>
 			</div>
 

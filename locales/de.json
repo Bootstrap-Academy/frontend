@@ -328,7 +328,13 @@
     "And": "Und",
     "ActiveSkills": "Aktive Skills",
     "CompletedSkills": "Abgeschlossene Skills",
-    "OtherSkills": "Andere Skills"
+    "OtherSkills": "Andere Skills",
+    "IsMine": "Meins",
+    "Instructor": "Instruktor",
+    "Summary": "Zusammenfassung",
+    "ParentSkill": "Übergeordneter Skill",
+    "CreationDate": "Erstellungsdatum"
+
   },
   "Body": {
     "WhyWeUseTests": "Die Zahlen, die du beim Erstellen oder Ändern einer Coding - Challenge eingibst, sind einfach die Anzahl der statischen/zufälligen Testfälle, anhand derer die Lösung des Benutzers getestet werden soll. Wenn ich beispielsweise static_tests=5 und random_tests=3 setze, werden für jede Übermittlung 5 statische Testfälle und 3 zufällige Testfälle generiert, anhand derer die Eingabe des Lösenden getestet wird",
