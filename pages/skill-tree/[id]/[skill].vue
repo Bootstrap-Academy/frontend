@@ -51,6 +51,7 @@
 import { defineComponent } from "vue";
 import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import type { Quiz } from "~/types/courseTypes";
 import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
 definePageMeta({
   middleware: ["auth"],
@@ -70,8 +71,8 @@ export default defineComponent({
     const courses = useCourses();
     const coachings = useCoachings();
     const webinars = useWebinars();
-    const quizzes = useQuizzes();
-
+    const quizzesInfo = useQuizzes();
+    const quizzes = ref<Quiz[]>([]);
     const route = useRoute();
 
     const rootSkillID = computed(() => {
@@ -153,10 +154,24 @@ export default defineComponent({
           getQuizzesInSkill(subSkillID.value),
           // getQuizzes(), //This api is fake and will return only static quizzes from list
         ]);
+        assignQuizzes()
       }
 
       loading.value = false;
     });
+
+      const assignQuizzes = async () => {
+        quizzes.value.splice(0)
+
+        const subTasks = useSubTasksInQuiz();
+        quizzesInfo.value.forEach(async (lecture) => {
+          await getSubTasksInQuiz(lecture.id).then(() => {
+            subTasks.value.forEach((quiz) => {
+              quizzes.value.push(quiz);
+            });
+          });
+        });
+      };
 
     onUnmounted(() => {
       if (window) {

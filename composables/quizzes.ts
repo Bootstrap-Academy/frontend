@@ -2,6 +2,10 @@ import { useState } from "#app";
 import { Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
+export const useQuizzesInCourse = () =>
+	useState<LecturesWithQuiz[]>("quizzesInCourse", () => []);
+export const useQuizzesInLecture = () =>
+	useState<LecturesWithQuiz[]>("quizzesInLecture", () => []);
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () =>
 	useState<Quiz[]>("subTasksInQuiz", () => []);
@@ -201,7 +205,25 @@ export async function getQuizzesInSkill(skillId: any) {
 		return [null, error];
 	}
 }
-export async function getQuizzesInCourse(
+export async function getQuizzesInCourse(courseId: string) {
+	
+	const res = await GET(`/challenges/courses/${courseId}/tasks`)
+		.then((res) => {
+			const quizzes = useQuizzesInCourse();
+			quizzes.value = res;
+			
+			return [res, null];
+		})
+		.catch((error: any) => {
+			let msg = error?.data?.error;
+			if (msg == "unverified") {
+				openSnackbar("error", "Error.VerifyToGetQuizzes");
+				return [null, error];
+			}
+		});
+}
+
+export async function getQuizzesInLecture(
 	courseId: any,
 	section_id: string = "",
 	lecture_id: string = ""
@@ -227,6 +249,7 @@ export async function getQuizzesInCourse(
 export async function getSubTasksInQuiz(taskId: any, creator: any = "") {
 	try {
 		let query = "";
+
 		if (!!creator) {
 			query = `/challenges/tasks/${taskId}/multiple_choice?creator=${creator}`;
 		} else {

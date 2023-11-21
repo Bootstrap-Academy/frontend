@@ -89,6 +89,8 @@
     "Dislike": "Nicht gefallen",
     "UnlockCodingChallenge": "Kaufe eine Coding challenge, um sie freizuschalten",
     "EmptySubtasks": "Für diese Vorlesung wurde kein Quiz gefunden",
+    "NextSubTasksLocation": "Die nächsten Quizze findest du in den Vorlesungen zu: ",
+    "NoMoreSubTasksInThisCourse": "In diesem Kurs gibt es keine weiteren Quizze",
     "EmptyCodingChallenge": "Für diese Vorlesung wurde keine Programmieraufgabe gefunden",
     "DeleteQuiz": "Quiz löschen",
     "Quiz": "Quiz",

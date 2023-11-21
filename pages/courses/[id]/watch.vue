@@ -58,13 +58,43 @@
 						v-if="selectedButton == 1"
 						class="w-full h-[71vh] overflow-scroll"
 					>
-						<p class="w-full text-xl text-center" v-if="quizzes.length === 0">
+						<p
+							class="w-full text-xl text-center"
+							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
+						>
 							{{ t("Headings.EmptySubtasks") }}
 						</p>
+						<div v-if="!quizzesInLecture.length && allQuizzes.length">
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.EmptySubtasks") }}
+							</p>
+							<p
+								class="w-full text-xl text-center"
+								v-if="unseenLectureQuizzes.length"
+							>
+								{{ t("Headings.NextSubTasksLocation") }}
+								
+								<ul>
+									<li v-for="(unseenQuiz, index) in unseenLectureQuizzes" :key="index">
+										{{ t("Headings.Section") }} {{ getSectionNumber(unseenQuiz.section)  }}, <NuxtLink @click="watchThisLecture({sectionID: unseenQuiz.section,lectureID: unseenQuiz.lectureId })" class="cursor-pointer text-accent">{{ unseenQuiz.lecture }}</NuxtLink>
+									</li>
+								</ul>
+							</p>
+						</div>
 
-						<div v-else-if="quizzes.length">
-							<CourseSolveMcqInsideLectureView :quizzesToShow="quizzes" />
-							<QuizList" :quiz-id="[quizzes[0].id]" />
+						<div
+							v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
+						>
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.NoMoreSubTasksInThisCourse") }}
+							</p>
+						</div>
+
+						<div v-else-if="quizzesInLecture.length">
+							<CourseSolveMcqInsideLectureView
+								:quizzesToShow="quizzesInLecture"
+							/>
+							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
 
@@ -135,8 +165,8 @@
 
 <script lang="ts">
 	import { useI18n } from "vue-i18n";
-
 	import { XCircleIcon } from "@heroicons/vue/24/solid";
+	import { Quiz, QuizInUnseenLecture } from "~/types/courseTypes";
 
 	definePageMeta({
 		middleware: ["auth"],
@@ -160,7 +190,11 @@
 			const taskId = ref();
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
-			const quizzes = useQuizzes();
+			const allQuizzesInfo = useQuizzesInCourse();
+			const quizzesInLectureInfo = useQuizzesInLecture();
+			const allQuizzes = ref<Quiz[]>([]);
+			const quizzesInLecture = ref<Quiz[]>([]);
+			const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -249,12 +283,13 @@
 					return;
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-
-				getQuizzesInCourse(
+				await getQuizzesInCourse(course.value.id);
+				await getQuizzesInLecture(
 					course.value.id,
 					activeSection.value.id,
 					activeLecture.value.id
 				);
+				await getQuizzesInUnfinishedLectures();
 				loading.value = false;
 			});
 
@@ -280,14 +315,82 @@
 
 			watch(
 				() => [selectedButton.value, activeLecture.value, activeSection.value],
-				() => {
-					getQuizzesInCourse(
+				async () => {
+					quizzesInLecture.value.splice(0);
+					allQuizzes.value.splice(0);
+					await getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
 					);
+					await getQuizzesInCourse(course.value.id);
+					await assignLectureQuizzes();
+					await assignAllQuizzes();
+					await getQuizzesInUnfinishedLectures();
 				}
 			);
+
+			const assignLectureQuizzes = async () => {
+				const subTasksInSkill = useSubTasksInQuiz();
+				quizzesInLecture.value[0];
+				if (quizzesInLectureInfo.value.length) {
+					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
+					subTasksInSkill.value.forEach((quiz) => {
+						quizzesInLecture.value.push(quiz);
+					});
+				}
+			};
+
+			const assignAllQuizzes = async () => {
+				const subTasks = useSubTasksInQuiz();
+				// console.table(JSON.parse(JSON.stringify(allQuizzesInfo.value)));
+				if (allQuizzesInfo.value.length) {
+					allQuizzesInfo.value.forEach(async (lecture) => {
+						await getSubTasksInQuiz(lecture.id).then(() => {
+							subTasks.value.forEach((quiz) => {
+								allQuizzes.value.push(quiz);
+							});
+						});
+					});
+				}
+			};
+
+			const getQuizzesInUnfinishedLectures = async () => {
+				let testSections: QuizInUnseenLecture[] = [];
+				allQuizzesInfo.value.forEach((info) => {
+					course.value.sections.find((section) => {
+						section.lectures.forEach((lecture) => {
+							if (lecture.id == info.lecture_id) {
+								testSections.push({
+									section: section.id ?? "",
+									sectionTitle: section.title,
+									lectureId: lecture.id,
+									lecture: lecture.title,
+									lectureFinished: lecture.completed,
+								});
+							}
+						});
+					});
+				});
+				unseenLectureQuizzes.value = testSections.filter(
+					(section) => !section.lectureFinished
+				);
+			};
+
+			function getSectionNumber(sectionString: string): number {
+				if (sectionString === 'section') {
+					return 1; // Return 1 for "section"
+				}
+
+				const sectionRegex = /^section(\d+)$/;
+				const match = sectionRegex.exec(sectionString);
+
+				if (match) {
+					return parseInt(match[1]) + 1; // Add 1 to the parsed section number
+				} else {
+					throw new Error(`Invalid section string: ${sectionString}`);
+				}
+			}
 
 			return {
 				t,
@@ -305,7 +408,10 @@
 				codingChallenges,
 				skillID,
 				subSkillID,
-				quizzes,
+				allQuizzes,
+				quizzesInLecture,
+				unseenLectureQuizzes,
+				getSectionNumber,
 			};
 		},
 	};
