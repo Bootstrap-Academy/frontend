@@ -8,11 +8,11 @@
 				</Btn>
 			</NuxtLink>
 
-			<NuxtLink v-else-if="event.type == 'coaching'" :to="`/coachings/${id}`">
+			<!-- <NuxtLink v-else-if="event.type == 'coaching'" :to="`/coachings/${id}`">
 				<Btn :bgColor="theme.bg" :borderColor="theme.border" sm>
 					{{ t("Buttons.EditCoaching") }}
 				</Btn>
-			</NuxtLink>
+			</NuxtLink> -->
 		</template>
 
 		<div>
