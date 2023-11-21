@@ -37,6 +37,12 @@ export interface GetUnseenLectureResponse {
     lecture: Omit<Lecture, "completed">;
     section: Omit<Section, "completed">;
 }
+export class LecturesWithQuiz{
+    course_id: string = ""
+    id: string = ""
+    lecture_id: string = ""
+    section_id: string = ""
+}
 
 export class Quiz{
     coins: number = 0;

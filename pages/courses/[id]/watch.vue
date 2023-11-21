@@ -59,38 +59,38 @@
 						class="w-full h-[71vh] overflow-scroll"
 					>
 						<p
-							class="w-full text-xl text-center"
-							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
-						>
-							{{ t("Headings.EmptySubtasks") }}
-						</p>
-						<div v-if="!quizzesInLecture.length && allQuizzes.length">
-							<p class="w-full text-xl text-center">
+								class="w-full text-xl text-center"
+								v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
+							>
 								{{ t("Headings.EmptySubtasks") }}
 							</p>
-							<p
-								class="w-full text-xl text-center"
-								v-if="unseenLectureQuizzes.length"
-							>
-								{{ t("Headings.NextSubTasksLocation") }}
+							<div v-if="!quizzesInLecture.length && allQuizzes.length">
+								<p class="w-full text-xl text-center">
+								{{ t("Headings.EmptySubtasks") }}
+							</p>
+						<p
+									class="w-full text-xl text-center"
+									v-if="unseenLectureQuizzes.length"
+								>
+									{{ t("Headings.NextSubTasksLocation") }}
 								
-								<ul>
-									<li v-for="(unseenQuiz, index) in unseenLectureQuizzes" :key="index">
-										{{ t("Headings.Section") }} {{ getSectionNumber(unseenQuiz.section)  }}, <NuxtLink @click="watchThisLecture({sectionID: unseenQuiz.section,lectureID: unseenQuiz.lectureId })" class="cursor-pointer text-accent">{{ unseenQuiz.lecture }}</NuxtLink>
-									</li>
-								</ul>
-							</p>
-						</div>
+									<ul>
+										<li v-for="(unseenQuiz, index) in unseenLectureQuizzes" :key="index">
+											{{ t("Headings.Section") }} {{ getSectionNumber(unseenQuiz.section) }}, <NuxtLink @click="watchThisLecture({ sectionID: unseenQuiz.section, lectureID: unseenQuiz.lectureId })" class="cursor-pointer text-accent">{{ unseenQuiz.lecture }}</NuxtLink>
+										</li>
+									</ul>
+								</p>
+							</div>
 
-						<div
-							v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
-						>
-							<p class="w-full text-xl text-center">
-								{{ t("Headings.NoMoreSubTasksInThisCourse") }}
-							</p>
-						</div>
+							<div
+								v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
+							>
+								<p class="w-full text-xl text-center">
+									{{ t("Headings.NoMoreSubTasksInThisCourse") }}
+								</p>
+							</div>
 
-						<div v-else-if="quizzesInLecture.length">
+							<div v-else-if="quizzesInLecture.length">
 							<CourseSolveMcqInsideLectureView
 								:quizzesToShow="quizzesInLecture"
 							/>
@@ -190,11 +190,13 @@
 			const taskId = ref();
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
+
 			const allQuizzesInfo = useQuizzesInCourse();
 			const quizzesInLectureInfo = useQuizzesInLecture();
 			const allQuizzes = ref<Quiz[]>([]);
 			const quizzesInLecture = ref<Quiz[]>([]);
 			const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
+
 			const premiumInfo: any = usePremiumInfo();
 			const isPremium: any = computed(() => {
 				return premiumInfo.value?.premium;
@@ -206,11 +208,12 @@
 			});
 
 			const selectedButton = ref(0);
-			const buttonOptions = [
+			const buttonOptions = ref([
 				{ name: "Buttons.Video" },
-				{ name: "Buttons.Quiz" },
+				// Bug: Number does not get updated in Component -> I guess reactivity problem
+				{ name: `${t('Buttons.Quiz')} (${quizzesInLecture.value.length})` },
 				{ name: "Buttons.Challenge" },
-			];
+			]);
 
 			const activeSection = computed(() => {
 				const sectionID = <string>(route.query?.section ?? "");
@@ -272,9 +275,12 @@
 					localStorage.setItem("selectedButton", newValue.toString());
 				}
 			);
+			//Todo: remove all console.logs
+			//Todo: fix button options -> display number of quizzes 
 
 			onMounted(async () => {
 				const courseID = <string>(route.params?.id ?? "");
+
 				let a = localStorage.getItem("selectedButton");
 				selectedButton.value = Number(a);
 
@@ -316,8 +322,10 @@
 			watch(
 				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				async () => {
-					quizzesInLecture.value.splice(0);
-					allQuizzes.value.splice(0);
+					await quizzesInLecture.value.splice(0);
+					await allQuizzes.value.splice(0);
+					console.log('watcher', course.value.id, activeSection.value.id, activeLecture.value.id);
+					
 					await getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
@@ -332,12 +340,18 @@
 
 			const assignLectureQuizzes = async () => {
 				const subTasksInSkill = useSubTasksInQuiz();
+
 				quizzesInLecture.value[0];
+				console.log('assignLectureQuizzes', quizzesInLectureInfo.value);
+				// Bug: quizzesInLectureInfo.value is empty but why?
 				if (quizzesInLectureInfo.value.length) {
 					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
+					
 					subTasksInSkill.value.forEach((quiz) => {
 						quizzesInLecture.value.push(quiz);
 					});
+					console.log(quizzesInLecture.value, 'quizzesInLecture.value');
+					
 				}
 			};
 

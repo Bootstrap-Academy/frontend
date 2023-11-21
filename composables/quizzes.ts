@@ -1,6 +1,7 @@
 import { useState } from "#app";
-import { Quiz } from "~/types/courseTypes";
+import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
+
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourse = () =>
 	useState<LecturesWithQuiz[]>("quizzesInCourse", () => []);
@@ -33,82 +34,82 @@ export async function getQuiz(id: string) {
 }
 
 export async function getQuizzes() {
-	try {
-		// const response = await GET('/quizzes/quizzes');
+	// try {
+	// 	// const response = await GET('/quizzes/quizzes');
 
-		// const quizzes = useQuizzes();
-		// quizzes.value = response ?? [];
+	// 	// const quizzes = useQuizzes();
+	// 	// quizzes.value = response ?? [];
 
-		// return [response, null];
+	// 	// return [response, null];
 
-		await sleep(3000);
-		const quizzes = useQuizzes();
-		quizzes.value = [
-			{
-				id: "2342344234",
-				question: "What is Vue?",
-				type: "multi-choice",
-				price: 0,
-				options: [
-					{
-						id: "23432443",
-						answer: "Framework",
-						correct: false,
-					},
-					{
-						id: "23432443",
-						answer: "Framework",
-						correct: false,
-					},
-					{
-						id: "23432443",
-						answer: "Framework",
-						correct: false,
-					},
-					{
-						id: "23432443",
-						answer: "Framework",
-						correct: false,
-					},
-					{
-						id: "9284ruh3ifjcnio3hprv",
-						answer: "Node JS",
-						correct: false,
-					},
-					{
-						id: "2343229ru389gfuhbvwjcio2hc19vg443",
-						answer: "Library",
-						correct: true,
-					},
-				],
-			},
-			{
-				id: "fnhiuhriu4nvr",
-				question: "Which is the powerhouse of cell?",
-				type: "multi-choice",
-				price: 1,
-				options: [
-					{
-						id: ";3qjfnvjr noi2vhg7re3refbi1rf",
-						answer: "Mitochondria",
-						correct: true,
-					},
-					{
-						id: "0982j2lfmlef",
-						answer: "Plasma",
-						correct: false,
-					},
-					{
-						id: "01tu",
-						answer: "Brain",
-						correct: false,
-					},
-				],
-			},
-		];
-	} catch (error: any) {
-		return [null, error.data];
-	}
+	// 	await sleep(3000);
+	// 	const quizzes = useQuizzes();
+		// quizzes.value = [
+		// 	{
+		// 		id: "2342344234",
+		// 		question: "What is Vue?",
+		// 		type: "multi-choice",
+		// 		price: 0,
+		// 		options: [
+		// 			{
+		// 				id: "23432443",
+		// 				answer: "Framework",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "23432443",
+		// 				answer: "Framework",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "23432443",
+		// 				answer: "Framework",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "23432443",
+		// 				answer: "Framework",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "9284ruh3ifjcnio3hprv",
+		// 				answer: "Node JS",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "2343229ru389gfuhbvwjcio2hc19vg443",
+		// 				answer: "Library",
+		// 				correct: true,
+		// 			},
+		// 		],
+		// 	},
+		// 	{
+		// 		id: "fnhiuhriu4nvr",
+		// 		question: "Which is the powerhouse of cell?",
+		// 		type: "multi-choice",
+		// 		price: 1,
+		// 		options: [
+		// 			{
+		// 				id: ";3qjfnvjr noi2vhg7re3refbi1rf",
+		// 				answer: "Mitochondria",
+		// 				correct: true,
+		// 			},
+		// 			{
+		// 				id: "0982j2lfmlef",
+		// 				answer: "Plasma",
+		// 				correct: false,
+		// 			},
+		// 			{
+		// 				id: "01tu",
+		// 				answer: "Brain",
+		// 				correct: false,
+		// 			},
+		// 		],
+		// 	},
+		// ];
+	// } catch (error: any) {
+	// 	return [null, error.data];
+	// }
 }
 
 export async function getFilteredQuizzes(filters: any[]) {
@@ -211,7 +212,7 @@ export async function getQuizzesInCourse(courseId: string) {
 		.then((res) => {
 			const quizzes = useQuizzesInCourse();
 			quizzes.value = res;
-			
+			console.log('getQuizzesInCourse', res)
 			return [res, null];
 		})
 		.catch((error: any) => {
@@ -233,8 +234,11 @@ export async function getQuizzesInLecture(
 		lecture_id: lecture_id === "" ? undefined : lecture_id,
 	})
 		.then((res) => {
-			const quizzes = useQuizzes();
+			const quizzes = useQuizzesInLecture();
 			quizzes.value = res ?? [];
+			console.log('getQuizzesInLecture', quizzes.value)
+
+			
 			return [res, null];
 		})
 		.catch((error: any) => {
@@ -266,11 +270,9 @@ export async function getSubTasksInQuiz(taskId: any, creator: any = "") {
 
 export async function createQuiz(courseId: any, body: any) {
 	try {
-		console.log("body is", body);
 		const res = await POST(`/challenges/courses/${courseId}/tasks`, body);
 		return [res, null];
 	} catch (error: any) {
-		console.log("errorrrrrrrrrrrrr", error);
 		return [null, error];
 	}
 }
