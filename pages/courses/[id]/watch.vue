@@ -58,6 +58,12 @@
 						v-if="selectedButton == 1"
 						class="w-full h-[71vh] overflow-scroll"
 					>
+					<!-- Information: SolveMcInsideLectureView here -->
+					<CourseSolveMcqInsideLectureView
+									:quizzesToShow="allQuizzes"
+								/>
+								<!-- Todo: onclick on "alle Quizzes -> show list with description where to find it" -->
+								<!-- Todo: should be similar to the list in the Course-summary -->
 						<p
 								class="w-full text-xl text-center"
 								v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
@@ -91,13 +97,11 @@
 							</div>
 
 							<div v-else-if="quizzesInLecture.length">
-							<CourseSolveMcqInsideLectureView
-								:quizzesToShow="quizzesInLecture"
-							/>
+							
 							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
-
+					<!-- Information: Challenges Section here -->
 					<section
 						class="px-6 h-[71vh] overflow-scroll w-full"
 						v-else-if="selectedButton == 2"
@@ -181,6 +185,8 @@
 		},
 		setup() {
 			const { t } = useI18n();
+			// Important: Use loading in all api-calls
+			// Todo: useLoading in all api-calls
 			const loading = ref(true);
 
 			const route = useRoute();
@@ -188,6 +194,7 @@
 
 			const course = useCourse();
 			const taskId = ref();
+			// Bug: Fix- display codingChallenges & number
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
 
@@ -275,8 +282,6 @@
 					localStorage.setItem("selectedButton", newValue.toString());
 				}
 			);
-			//Todo: remove all console.logs
-			//Todo: fix button options -> display number of quizzes 
 
 			onMounted(async () => {
 				const courseID = <string>(route.params?.id ?? "");
@@ -288,6 +293,7 @@
 					loading.value = false;
 					return;
 				}
+				// Todo: for performance, check for button-states and then load only whats required
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 				await getQuizzesInCourse(course.value.id);
 				await getQuizzesInLecture(
@@ -322,9 +328,10 @@
 			watch(
 				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				async () => {
+					//Todo: check active-button-option and load only whats required for current step
+					// Todo: add functionality to load Challenges
 					await quizzesInLecture.value.splice(0);
 					await allQuizzes.value.splice(0);
-					console.log('watcher', course.value.id, activeSection.value.id, activeLecture.value.id);
 					
 					await getQuizzesInLecture(
 						course.value.id,
@@ -338,20 +345,18 @@
 				}
 			);
 
+			// Todo: move all below functions to composables & bundle-call them here
+
 			const assignLectureQuizzes = async () => {
 				const subTasksInSkill = useSubTasksInQuiz();
 
 				quizzesInLecture.value[0];
-				console.log('assignLectureQuizzes', quizzesInLectureInfo.value);
-				// Bug: quizzesInLectureInfo.value is empty but why?
 				if (quizzesInLectureInfo.value.length) {
 					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 					
 					subTasksInSkill.value.forEach((quiz) => {
 						quizzesInLecture.value.push(quiz);
 					});
-					console.log(quizzesInLecture.value, 'quizzesInLecture.value');
-					
 				}
 			};
 

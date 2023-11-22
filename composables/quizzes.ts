@@ -147,7 +147,7 @@ export async function getFilteredQuizzes(filters: any[]) {
 
 // export async function createQuiz(body: any) {
 // 	try {
-// 		console.log("body is", body)
+// 		("body is", body)
 // 		// const response = await POST(`/quizzes/quizzes`,body);
 
 // 		// const quiz = useQuiz();
@@ -212,7 +212,6 @@ export async function getQuizzesInCourse(courseId: string) {
 		.then((res) => {
 			const quizzes = useQuizzesInCourse();
 			quizzes.value = res;
-			console.log('getQuizzesInCourse', res)
 			return [res, null];
 		})
 		.catch((error: any) => {
@@ -236,9 +235,6 @@ export async function getQuizzesInLecture(
 		.then((res) => {
 			const quizzes = useQuizzesInLecture();
 			quizzes.value = res ?? [];
-			console.log('getQuizzesInLecture', quizzes.value)
-
-			
 			return [res, null];
 		})
 		.catch((error: any) => {
@@ -289,7 +285,6 @@ export async function getSubTaskInQuiz(taskId: any, subTaskId: any) {
 		return [null, error];
 	}
 }
-
 export async function getSubTaskAndSolutionInQuiz(taskId: any, subTaskId: any) {
 	try {
 		const res = await GET(
@@ -297,7 +292,6 @@ export async function getSubTaskAndSolutionInQuiz(taskId: any, subTaskId: any) {
 		);
 		const subTaskAndSolutionInQuiz = useSubTaskAndSolutionInQuiz();
 		subTaskAndSolutionInQuiz.value = res ?? null;
-		console.log("subtask and solution", subTaskAndSolutionInQuiz.value);
 		return [res, null];
 	} catch (error) {
 		return [null, error];
@@ -387,7 +381,6 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 			body
 		);
 		let success = null;
-		console.log("ress", res);
 		if (!!res.error) {
 			success = "Too Much Requests";
 		} else if (!!res.solved) {
@@ -395,7 +388,6 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		} else if (!!!res.solved) {
 			success = false;
 		}
-		console.log("returnnig", success);
 		return [success, null];
 	} catch (error: any) {
 		if (error.data.error == "not_enough_hearts") {
@@ -403,7 +395,6 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
 		} else if (error.detail == "Error.TooManyAttemptsForQuiz") {
 			return [null, "Error.TooManyAttemptsForQuiz"];
 		}
-		console.log("error for attempting", error.data);
 		return [null, error.data];
 	}
 }
@@ -414,7 +405,6 @@ export async function rateQuiz(taskId: any, subTaskid: any, body: any) {
 			`challenges/tasks/${taskId}/subtasks/${subTaskid}/feedback`,
 			body
 		);
-		console.log("returnnig", res);
 		return [res, null];
 	} catch (error: any) {
 		let msg = error?.data?.error ?? "";

@@ -39,6 +39,8 @@ import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 export default defineComponent({
+  // Todo: refactor this component & its props
+  // Todo: buttonOptions has to become computed getter & setter
   props: {
     modelValue: { type: Number, default: 0 },
     buttonOptions: { type: Array as PropType<any>, default: [] },

@@ -31,6 +31,9 @@
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import type { Quiz } from "~/types/courseTypes";
+// Information: Right now I'm displaying all quizzes per given prop
+// Information: this Component is used only in watch.vue -> so i can do whatever i want with it
+// Todo: add another prop (not required) to display another button with "Quizzes in this lecture"
 export default {
   props: {
     quizzesToShow: { type: Object as PropType<Quiz[]>, default: null },
