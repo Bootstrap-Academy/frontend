@@ -25,7 +25,7 @@
     "@vueuse/core": "^10.6.1",
     "async-mutex": "^0.4.0",
     "dompurify": "^3.0.6",
-    "gleap": "^12.8.1",
+    "gleap": "^13.0.2",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
