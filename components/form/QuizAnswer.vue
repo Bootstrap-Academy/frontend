@@ -15,7 +15,11 @@
         class="text-heading2 text-sm"
         v-if="!subtask?.solved && user?.id != subtask?.creator"
       >
-        {{ t("Headings.ChooseCorrectOption") }}
+        {{
+          subtask?.single_choice
+            ? t("Headings.ChooseSingleCorrectOption")
+            : t("Headings.ChooseMultipleCorrectOption")
+        }}
       </p>
 
       <p class="text-xs text-accent" v-if="showMaxAttemptsError">
