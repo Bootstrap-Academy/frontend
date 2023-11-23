@@ -796,7 +796,9 @@
     "RegisterForNewsletter": "Melde dich für den Newsletter an",
     "ConfirmUnregisterNewsletter": "Ja, vom Newsletter abmelden",
     "CookiePolicy": "Okay ich verstehe",
-    "AddEmail": "E-Mail hinzufügen"
+    "AddEmail": "E-Mail hinzufügen",
+    "CalendarNextMonth": "Nächster Monat",
+    "CalendarPrevMonth": "Vorheriger Monat"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",

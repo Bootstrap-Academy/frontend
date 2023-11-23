@@ -799,7 +799,9 @@
     "RegisterForNewsletter": "Register For Newsletter",
     "ConfirmUnregisterNewsletter": "Yes, Unregister From Newsletter",
     "CookiePolicy": "Okay, I understand",
-    "AddEmail": "Add Email"
+    "AddEmail": "Add Email",
+    "CalendarNextMonth": "Next month",
+    "CalendarPrevMonth": "Previous month"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",
