@@ -74,7 +74,11 @@
           mt
           :icon="HalfHeart"
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{
+            subtask?.single_choice
+              ? t("Buttons.SubmitAnswer")
+              : t("Buttons.SubmitAnswers")
+          }}
         </InputBtnWithHeart>
 
         <InputBtn
@@ -84,7 +88,11 @@
           @click="onclickSubmitForm()"
           mt
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{
+            subtask?.single_choice
+              ? t("Buttons.SubmitAnswer")
+              : t("Buttons.SubmitAnswers")
+          }}
         </InputBtn>
 
         <InputBtn
