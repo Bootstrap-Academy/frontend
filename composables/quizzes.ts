@@ -36,7 +36,11 @@ export async function getQuizzes(
 ) {
 	const quizzesInLecture = useQuizzesInLecture();
 	const quizzesInCourse = useQuizzesInCourse();
+	const quizInfo = useQuizzesInCourseInfo()
+	const challenges = useAllCodingChallengesInATask()
 
+	quizInfo.value.splice(0);
+	challenges.value.splice(0);
 	quizzesInCourse.value.splice(0);
 	quizzesInLecture.value.splice(0);
 
@@ -46,6 +50,7 @@ export async function getQuizzes(
 	if (sectionId && lectureId) {
 		await getQuizzesInLecture(courseId, sectionId, lectureId);
 		assignLectureQuizzes();
+		await getAllCodingChallengesInATask(quizInfo.value[0].id)
 	}
 }
 
@@ -156,6 +161,7 @@ export async function getQuizzesInLecture(
 		.then((res) => {
 			const quizzes = useQuizzesInLectureInfo();
 			quizzes.value = res ?? [];
+			
 			return [res, null];
 		})
 		.catch((error: any) => {

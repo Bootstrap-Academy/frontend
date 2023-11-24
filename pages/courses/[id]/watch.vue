@@ -58,7 +58,6 @@
 						v-if="selectedButton == 1"
 						class="w-full h-[71vh] overflow-scroll"
 					>
-						<!-- Information: SolveMcInsideLectureView here -->
 						<CourseSolveMcqInsideLectureView
 							:total-quizzes="allQuizzes"
 							:quizzes-in-this-lecture="quizzesInLecture"
@@ -113,7 +112,6 @@
 							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
-					<!-- Information: Challenges Section here -->
 					<section
 						class="px-6 h-[71vh] overflow-scroll w-full"
 						v-else-if="selectedButton == 2"
@@ -204,7 +202,6 @@
 
 			const course = useCourse();
 			const taskId = ref();
-			// Bug: Fix- display codingChallenges & number
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
 
@@ -227,7 +224,7 @@
 			const buttonOptions = computed(() => [
 				{ name: "Buttons.Video" },
 				{ name: `${t("Buttons.Quiz")} ${quizzesInLecture.value.length}` },
-				{ name: "Buttons.Challenge" },
+				{ name: `${t("Buttons.Challenge")} ${codingChallenges.value.length}` },
 			]);
 
 			const activeSection = computed(() => {
@@ -330,7 +327,6 @@
 			watch(
 				() => [activeLecture.value, activeSection.value],
 				async () => {
-					// Todo: add functionality to load Challenges
 					loading.value = true;
 					await getQuizzes(
 						course.value.id,
