@@ -59,9 +59,10 @@
 						class="w-full h-[71vh] overflow-scroll"
 					>
 						<!-- Information: SolveMcInsideLectureView here -->
-						<CourseSolveMcqInsideLectureView :quizzesToShow="allQuizzes" />
-						<!-- Todo: onclick on "alle Quizzes -> show list with description where to find it" -->
-						<!-- Todo: should be similar to the list in the Course-summary -->
+						<CourseSolveMcqInsideLectureView
+							:total-quizzes="allQuizzes"
+							:quizzes-in-this-lecture="quizzesInLecture"
+						/>
 						<p
 							class="w-full text-xl text-center"
 							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
@@ -211,7 +212,7 @@
 
 			const allQuizzesInfo = useQuizzesInCourseInfo();
 			const allQuizzes = useQuizzesInCourse();
-			const quizzesInLecture = useQuizzesInLecture()
+			const quizzesInLecture = useQuizzesInLecture();
 			const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
 
 			const premiumInfo: any = usePremiumInfo();
@@ -305,7 +306,11 @@
 				}
 				// Todo: for performance, check for button-states and then load only whats required
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-				await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id)
+				await getQuizzes(
+					course.value.id,
+					activeSection.value.id,
+					activeLecture.value.id
+				);
 				await getQuizzesInUnfinishedLectures();
 				loading.value = false;
 			});
@@ -335,7 +340,11 @@
 				async () => {
 					//Todo: check active-button-option and load only whats required for current step
 					// Todo: add functionality to load Challenges
-					await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id)
+					await getQuizzes(
+						course.value.id,
+						activeSection.value.id,
+						activeLecture.value.id
+					);
 					await getQuizzesInUnfinishedLectures();
 				}
 			);
