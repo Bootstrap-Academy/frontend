@@ -58,46 +58,57 @@
 						v-if="selectedButton == 1"
 						class="w-full h-[71vh] overflow-scroll"
 					>
-					<!-- Information: SolveMcInsideLectureView here -->
-					<CourseSolveMcqInsideLectureView
-									:quizzesToShow="allQuizzes"
-								/>
-								<!-- Todo: onclick on "alle Quizzes -> show list with description where to find it" -->
-								<!-- Todo: should be similar to the list in the Course-summary -->
+						<!-- Information: SolveMcInsideLectureView here -->
+						<CourseSolveMcqInsideLectureView :quizzesToShow="allQuizzes" />
+						<!-- Todo: onclick on "alle Quizzes -> show list with description where to find it" -->
+						<!-- Todo: should be similar to the list in the Course-summary -->
 						<p
+							class="w-full text-xl text-center"
+							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
+						>
+							{{ t("Headings.EmptySubtasks") }}
+						</p>
+						<div v-if="!quizzesInLecture.length && allQuizzes.length">
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.EmptySubtasks") }}
+							</p>
+							<p
 								class="w-full text-xl text-center"
-								v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
+								v-if="unseenLectureQuizzes.length"
 							>
-								{{ t("Headings.EmptySubtasks") }}
+								{{ t("Headings.NextSubTasksLocation") }}
 							</p>
-							<div v-if="!quizzesInLecture.length && allQuizzes.length">
-								<p class="w-full text-xl text-center">
-								{{ t("Headings.EmptySubtasks") }}
-							</p>
-						<p
-									class="w-full text-xl text-center"
-									v-if="unseenLectureQuizzes.length"
+
+							<ul>
+								<li
+									v-for="(unseenQuiz, index) in unseenLectureQuizzes"
+									:key="index"
 								>
-									{{ t("Headings.NextSubTasksLocation") }}
-								
-									<ul>
-										<li v-for="(unseenQuiz, index) in unseenLectureQuizzes" :key="index">
-											{{ t("Headings.Section") }} {{ getSectionNumber(unseenQuiz.section) }}, <NuxtLink @click="watchThisLecture({ sectionID: unseenQuiz.section, lectureID: unseenQuiz.lectureId })" class="cursor-pointer text-accent">{{ unseenQuiz.lecture }}</NuxtLink>
-										</li>
-									</ul>
-								</p>
-							</div>
+									{{ t("Headings.Section") }}
+									{{ getSectionNumber(unseenQuiz.section) }},
+									<NuxtLink
+										@click="
+											watchThisLecture({
+												sectionID: unseenQuiz.section,
+												lectureID: unseenQuiz.lectureId,
+											})
+										"
+										class="cursor-pointer text-accent"
+										>{{ unseenQuiz.lecture }}</NuxtLink
+									>
+								</li>
+							</ul>
+						</div>
 
-							<div
-								v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
-							>
-								<p class="w-full text-xl text-center">
-									{{ t("Headings.NoMoreSubTasksInThisCourse") }}
-								</p>
-							</div>
+						<div
+							v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length"
+						>
+							<p class="w-full text-xl text-center">
+								{{ t("Headings.NoMoreSubTasksInThisCourse") }}
+							</p>
+						</div>
 
-							<div v-else-if="quizzesInLecture.length">
-							
+						<div v-else-if="quizzesInLecture.length">
 							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
@@ -218,7 +229,7 @@
 			const buttonOptions = ref([
 				{ name: "Buttons.Video" },
 				// Bug: Number does not get updated in Component -> I guess reactivity problem
-				{ name: `${t('Buttons.Quiz')} (${quizzesInLecture.value.length})` },
+				{ name: `${t("Buttons.Quiz")} (${quizzesInLecture.value.length})` },
 				{ name: "Buttons.Challenge" },
 			]);
 
@@ -332,7 +343,7 @@
 					// Todo: add functionality to load Challenges
 					await quizzesInLecture.value.splice(0);
 					await allQuizzes.value.splice(0);
-					
+
 					await getQuizzesInLecture(
 						course.value.id,
 						activeSection.value.id,
@@ -353,7 +364,7 @@
 				quizzesInLecture.value[0];
 				if (quizzesInLectureInfo.value.length) {
 					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
-					
+
 					subTasksInSkill.value.forEach((quiz) => {
 						quizzesInLecture.value.push(quiz);
 					});
@@ -397,7 +408,7 @@
 			};
 
 			function getSectionNumber(sectionString: string): number {
-				if (sectionString === 'section') {
+				if (sectionString === "section") {
 					return 1; // Return 1 for "section"
 				}
 
