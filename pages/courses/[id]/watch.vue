@@ -83,21 +83,26 @@
 							</p>
 							<ul>
 								<li
-									v-for="(unseenQuiz, index) in unseenLectureQuizzes.sort((a, b) => a.section.length - b.section.length)"
+									v-for="(unseenQuiz, index) in unseenLectureQuizzes.sort(
+										(a, b) => a.section.length - b.section.length
+									)"
 									:key="index"
 								>
-									{{ t("Headings.Section") }}
-									{{ getSectionNumber(unseenQuiz.section) }},
-									<NuxtLink
-										@click="
-											watchThisLecture({
-												sectionID: unseenQuiz.section,
-												lectureID: unseenQuiz.lectureId,
-											})
-										"
-										class="cursor-pointer text-accent"
-										>{{ unseenQuiz.lecture }}</NuxtLink
-									>
+									<span v-if="activeLecture.id !== unseenQuiz.lectureId"
+										>
+										{{ t("Headings.Section") }}
+										{{ getSectionNumber(unseenQuiz.section) }},
+										<NuxtLink
+											@click="
+												watchThisLecture({
+													sectionID: unseenQuiz.section,
+													lectureID: unseenQuiz.lectureId,
+												})
+											"
+											class="cursor-pointer text-accent"
+											>{{ unseenQuiz.lecture }}</NuxtLink
+										>
+									</span>
 								</li>
 							</ul>
 						</div>
