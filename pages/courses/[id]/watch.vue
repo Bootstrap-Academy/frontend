@@ -78,7 +78,7 @@
 							>
 								{{ t("Headings.EmptySubtasks") }}
 							</p>
-							<p v-if="unseenLectureQuizzes.length">
+							<p v-if="unseenLectureQuizzes.length && unseenLectureQuizzes[0].lectureId !== activeLecture.id">
 								{{ t("Headings.NextSubTasksLocation") }}
 							</p>
 							<ul>
