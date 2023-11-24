@@ -62,26 +62,28 @@
 							:total-quizzes="allQuizzes"
 							:quizzes-in-this-lecture="quizzesInLecture"
 						/>
+						<div v-if="quizzesInLecture.length">
+							<QuizList :quizzes="quizzesInLecture" />
+						</div>
 						<p
 							class="w-full text-xl text-center"
-							v-if="quizzesInLecture.length === 0 && allQuizzes.length === 0"
+							v-if="!quizzesInLecture.length && !allQuizzes.length"
 						>
 							{{ t("Headings.EmptySubtasks") }}
 						</p>
-						<div v-if="!quizzesInLecture.length && allQuizzes.length">
-							<p class="w-full text-xl text-center">
+						<div v-if="allQuizzes.length" class="mt-10">
+							<p
+								v-if="!quizzesInLecture.length"
+								class="w-full text-xl text-center pb-10"
+							>
 								{{ t("Headings.EmptySubtasks") }}
 							</p>
-							<p
-								class="w-full text-xl text-center"
-								v-if="unseenLectureQuizzes.length"
-							>
+							<p v-if="unseenLectureQuizzes.length">
 								{{ t("Headings.NextSubTasksLocation") }}
 							</p>
-
 							<ul>
 								<li
-									v-for="(unseenQuiz, index) in unseenLectureQuizzes"
+									v-for="(unseenQuiz, index) in unseenLectureQuizzes.sort((a, b) => a.section.length - b.section.length)"
 									:key="index"
 								>
 									{{ t("Headings.Section") }}
@@ -106,10 +108,6 @@
 							<p class="w-full text-xl text-center">
 								{{ t("Headings.NoMoreSubTasksInThisCourse") }}
 							</p>
-						</div>
-
-						<div v-else-if="quizzesInLecture.length">
-							<QuizList :quizzes="quizzesInLecture" />
 						</div>
 					</section>
 					<section
@@ -196,6 +194,7 @@
 		setup() {
 			const { t } = useI18n();
 			const loading = ref(true);
+			const callActive = ref(false);
 
 			const route = useRoute();
 			const router = useRouter();
@@ -328,12 +327,17 @@
 				() => [activeLecture.value, activeSection.value],
 				async () => {
 					loading.value = true;
-					await getQuizzes(
-						course.value.id,
-						activeSection.value.id,
-						activeLecture.value.id
-					);
-					await getQuizzesInUnfinishedLectures();
+					if (!callActive.value) {
+						callActive.value = true;
+						await getQuizzes(
+							course.value.id,
+							activeSection.value.id,
+							activeLecture.value.id
+						);
+						await getQuizzesInUnfinishedLectures();
+					}
+
+					callActive.value = false;
 					loading.value = false;
 				}
 			);
@@ -369,7 +373,7 @@
 				const match = sectionRegex.exec(sectionString);
 
 				if (match) {
-					return parseInt(match[1]) + 1; // Add 1 to the parsed section number
+					return parseInt(match[1]); // Add 1 to the parsed section number
 				} else {
 					throw new Error(`Invalid section string: ${sectionString}`);
 				}
