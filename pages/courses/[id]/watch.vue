@@ -182,7 +182,7 @@
 <script lang="ts">
 	import { useI18n } from "vue-i18n";
 	import { XCircleIcon } from "@heroicons/vue/24/solid";
-	import { Quiz, QuizInUnseenLecture } from "~/types/courseTypes";
+	import { QuizInUnseenLecture } from "~/types/courseTypes";
 
 	definePageMeta({
 		middleware: ["auth"],
@@ -197,8 +197,6 @@
 		},
 		setup() {
 			const { t } = useI18n();
-			// Important: Use loading in all api-calls
-			// Todo: useLoading in all api-calls
 			const loading = ref(true);
 
 			const route = useRoute();
@@ -226,10 +224,9 @@
 			});
 
 			const selectedButton = ref(0);
-			const buttonOptions = ref([
+			const buttonOptions = computed(() => [
 				{ name: "Buttons.Video" },
-				// Bug: Number does not get updated in Component -> I guess reactivity problem
-				{ name: `${t("Buttons.Quiz")} (${quizzesInLecture.value.length})` },
+				{ name: `${t("Buttons.Quiz")} ${quizzesInLecture.value.length}` },
 				{ name: "Buttons.Challenge" },
 			]);
 
@@ -295,6 +292,7 @@
 			);
 
 			onMounted(async () => {
+				loading.value = true
 				const courseID = <string>(route.params?.id ?? "");
 
 				let a = localStorage.getItem("selectedButton");
@@ -304,7 +302,6 @@
 					loading.value = false;
 					return;
 				}
-				// Todo: for performance, check for button-states and then load only whats required
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 				await getQuizzes(
 					course.value.id,
@@ -338,14 +335,15 @@
 			watch(
 				() => [selectedButton.value, activeLecture.value, activeSection.value],
 				async () => {
-					//Todo: check active-button-option and load only whats required for current step
 					// Todo: add functionality to load Challenges
+					loading.value = true
 					await getQuizzes(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
 					);
 					await getQuizzesInUnfinishedLectures();
+					loading.value = false
 				}
 			);
 
