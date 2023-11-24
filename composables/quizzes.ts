@@ -1,7 +1,6 @@
 import { useState } from "#app";
 import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
-import type { RefSymbol } from "@vue/reactivity";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourseInfo = () =>
@@ -47,7 +46,6 @@ export async function getQuizzes(
 	if (sectionId && lectureId) {
 		await getQuizzesInLecture(courseId, sectionId, lectureId);
 		assignLectureQuizzes();
-		
 	}
 }
 
@@ -173,7 +171,6 @@ export const assignLectureQuizzes = async () => {
 	const subTasksInSkill = useSubTasksInQuiz();
 	const quizzesInLectureInfo = useQuizzesInLectureInfo();
 	const quizzesInLecture = useQuizzesInLecture();
-	
 	if (quizzesInLectureInfo.value.length) {
 		await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 

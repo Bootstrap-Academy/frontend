@@ -292,7 +292,7 @@
 			);
 
 			onMounted(async () => {
-				loading.value = true
+				loading.value = true;
 				const courseID = <string>(route.params?.id ?? "");
 
 				let a = localStorage.getItem("selectedButton");
@@ -303,12 +303,7 @@
 					return;
 				}
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-				await getQuizzes(
-					course.value.id,
-					activeSection.value.id,
-					activeLecture.value.id
-				);
-				await getQuizzesInUnfinishedLectures();
+
 				loading.value = false;
 			});
 
@@ -333,17 +328,17 @@
 			}
 
 			watch(
-				() => [selectedButton.value, activeLecture.value, activeSection.value],
+				() => [activeLecture.value, activeSection.value],
 				async () => {
 					// Todo: add functionality to load Challenges
-					loading.value = true
+					loading.value = true;
 					await getQuizzes(
 						course.value.id,
 						activeSection.value.id,
 						activeLecture.value.id
 					);
 					await getQuizzesInUnfinishedLectures();
-					loading.value = false
+					loading.value = false;
 				}
 			);
 
