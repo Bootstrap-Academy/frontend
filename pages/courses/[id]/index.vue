@@ -97,8 +97,7 @@
 			const course = useCourse();
 			const isCourseAccessible = ref(false);
 
-			const quizzInfo = useQuizzesInCourse();
-			const allQuizzes = ref<Quiz[]>([]);
+			const allQuizzes = useQuizzesInCourse();
 			const route = useRoute();
 			const router = useRouter();
 
@@ -128,7 +127,8 @@
 				} else {
 					isCourseAccessible.value = true;
 				}
-				await getQuizInfos();
+				// await getQuizInfos();
+				await getQuizzes(course.value.id)
 
 				loading.value = false;
 			});
@@ -144,22 +144,6 @@
 					},
 				});
 			}
-
-			const getQuizInfos = async () => {
-				if (course.value.id) await getQuizzesInCourse(course.value.id);
-				assignQuizzes();
-			};
-
-			const assignQuizzes = async () => {
-				const subTasks = useSubTasksInQuiz();
-				quizzInfo.value.forEach(async (lecture) => {
-					await getSubTasksInQuiz(lecture.id).then(() => {
-						subTasks.value.forEach((quiz) => {
-							allQuizzes.value.push(quiz);
-						});
-					});
-				});
-			};
 
 			return {
 				loading,

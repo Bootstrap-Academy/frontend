@@ -1,12 +1,17 @@
 import { useState } from "#app";
 import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
+import type { RefSymbol } from "@vue/reactivity";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourseInfo = () =>
-	useState<LecturesWithQuiz[]>("quizzesInCourse", () => []);
+	useState<LecturesWithQuiz[]>("quizzesInCourseInfo", () => []);
+export const useQuizzesInCourse = () =>
+	useState<Quiz[]>("quizzesInCourse", () => []);
+export const useQuizzesInLectureInfo = () =>
+	useState<LecturesWithQuiz[]>("quizzesInLectureInfo", () => []);
 export const useQuizzesInLecture = () =>
-	useState<LecturesWithQuiz[]>("quizzesInLecture", () => []);
+	useState<Quiz[]>("quizzesInLecture", () => []);
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () =>
 	useState<Quiz[]>("subTasksInQuiz", () => []);
@@ -15,10 +20,8 @@ export const useSubTaskInQuiz = () =>
 export const useSubTaskAndSolutionInQuiz = () =>
 	useState<any>("subTaskAndSolutionInQuiz", () => null);
 
-
 export async function getQuiz(id: string) {
 	try {
-		await getQuizzes();
 		const quizzes = useQuizzes();
 		const quiz = useQuiz();
 		quiz.value = quizzes.value.find((q) => q.id == id);
@@ -27,7 +30,26 @@ export async function getQuiz(id: string) {
 	}
 }
 
-export async function getQuizzes() {}
+export async function getQuizzes(
+	courseId: string,
+	sectionId?: string,
+	lectureId?: string
+) {
+	const quizzesInLecture = useQuizzesInLecture();
+	const quizzesInCourse = useQuizzesInCourse();
+
+	quizzesInCourse.value.splice(0);
+	quizzesInLecture.value.splice(0);
+
+	await getQuizzesInCourse(courseId);
+	await assignQuizzesInCourse();
+
+	if (sectionId && lectureId) {
+		await getQuizzesInLecture(courseId, sectionId, lectureId);
+		assignLectureQuizzes();
+		
+	}
+}
 
 export async function getFilteredQuizzes(filters: any[]) {
 	try {
@@ -50,7 +72,6 @@ export async function getFilteredQuizzes(filters: any[]) {
 				query = query + `${key}=${filters[key]}&`;
 			}
 		}
-		await getQuizzes();
 		const quizzes = useQuizzes();
 		const response = quizzes.value;
 
@@ -62,7 +83,6 @@ export async function getFilteredQuizzes(filters: any[]) {
 
 export async function editQuiz(id: string, body: any) {
 	try {
-		await getQuizzes();
 		const quizzes = useQuizzes();
 		quizzes.value = quizzes.value.map((q) => {
 			return q.id == id ? body : q;
@@ -93,6 +113,7 @@ export async function getQuizzesInSkill(skillId: any) {
 		return [null, error];
 	}
 }
+
 export async function getQuizzesInCourse(courseId: string) {
 	const res = await GET(`/challenges/courses/${courseId}/tasks`)
 		.then((res) => {
@@ -108,14 +129,18 @@ export async function getQuizzesInCourse(courseId: string) {
 			}
 		});
 }
-const assignLectureQuizzes = async () => {
-	const subTasksInSkill = useSubTasksInQuiz();
-	const quizzesInLectureInfo = useQuizzesInLecture();
-	if (quizzesInLectureInfo.value.length) {
-		await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 
-		subTasksInSkill.value.forEach((quiz) => {
-			quizzesInLecture.value.push(quiz);
+export const assignQuizzesInCourse = async () => {
+	const subTasks = useSubTasksInQuiz();
+	const allQuizzesInfo = useQuizzesInCourseInfo();
+	const allQuizzes = useQuizzesInCourse();
+	if (allQuizzesInfo.value.length) {
+		allQuizzesInfo.value.forEach(async (lecture) => {
+			await getSubTasksInQuiz(lecture.id).then(() => {
+				subTasks.value.forEach((quiz) => {
+					allQuizzes.value.push(quiz);
+				});
+			});
 		});
 	}
 };
@@ -125,12 +150,13 @@ export async function getQuizzesInLecture(
 	section_id: string = "",
 	lecture_id: string = ""
 ) {
+	
 	const res = await GET(`/challenges/courses/${courseId}/tasks`, {
 		section_id: section_id === "" ? undefined : section_id,
 		lecture_id: lecture_id === "" ? undefined : lecture_id,
 	})
 		.then((res) => {
-			const quizzes = useQuizzesInLecture();
+			const quizzes = useQuizzesInLectureInfo();
 			quizzes.value = res ?? [];
 			return [res, null];
 		})
@@ -142,6 +168,21 @@ export async function getQuizzesInLecture(
 			}
 		});
 }
+
+export const assignLectureQuizzes = async () => {
+	const subTasksInSkill = useSubTasksInQuiz();
+	const quizzesInLectureInfo = useQuizzesInLectureInfo();
+	const quizzesInLecture = useQuizzesInLecture();
+	
+	if (quizzesInLectureInfo.value.length) {
+		await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
+
+		subTasksInSkill.value.forEach((quiz) => {
+			quizzesInLecture.value.push(quiz);
+			
+		});
+	}
+};
 
 export async function getSubTasksInQuiz(taskId: any, creator: any = "") {
 	try {

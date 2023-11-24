@@ -209,10 +209,9 @@
 			const subtasks = useSubTasksInQuiz();
 			const codingChallenges = useAllCodingChallengesInATask();
 
-			const allQuizzesInfo = useQuizzesInCourse();
-			const quizzesInLectureInfo = useQuizzesInLecture();
-			const allQuizzes = ref<Quiz[]>([]);
-			const quizzesInLecture = ref<Quiz[]>([]);
+			const allQuizzesInfo = useQuizzesInCourseInfo();
+			const allQuizzes = useQuizzesInCourse();
+			const quizzesInLecture = useQuizzesInLecture()
 			const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
 
 			const premiumInfo: any = usePremiumInfo();
@@ -306,12 +305,7 @@
 				}
 				// Todo: for performance, check for button-states and then load only whats required
 				await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-				await getQuizzesInCourse(course.value.id);
-				await getQuizzesInLecture(
-					course.value.id,
-					activeSection.value.id,
-					activeLecture.value.id
-				);
+				await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id)
 				await getQuizzesInUnfinishedLectures();
 				loading.value = false;
 			});
@@ -341,49 +335,10 @@
 				async () => {
 					//Todo: check active-button-option and load only whats required for current step
 					// Todo: add functionality to load Challenges
-					await quizzesInLecture.value.splice(0);
-					await allQuizzes.value.splice(0);
-
-					await getQuizzesInLecture(
-						course.value.id,
-						activeSection.value.id,
-						activeLecture.value.id
-					);
-					await getQuizzesInCourse(course.value.id);
-					await assignLectureQuizzes();
-					await assignAllQuizzes();
+					await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id)
 					await getQuizzesInUnfinishedLectures();
 				}
 			);
-
-			// Todo: move all below functions to composables & bundle-call them here
-
-			const assignLectureQuizzes = async () => {
-				const subTasksInSkill = useSubTasksInQuiz();
-
-				quizzesInLecture.value[0];
-				if (quizzesInLectureInfo.value.length) {
-					await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
-
-					subTasksInSkill.value.forEach((quiz) => {
-						quizzesInLecture.value.push(quiz);
-					});
-				}
-			};
-
-			const assignAllQuizzes = async () => {
-				const subTasks = useSubTasksInQuiz();
-				// console.table(JSON.parse(JSON.stringify(allQuizzesInfo.value)));
-				if (allQuizzesInfo.value.length) {
-					allQuizzesInfo.value.forEach(async (lecture) => {
-						await getSubTasksInQuiz(lecture.id).then(() => {
-							subTasks.value.forEach((quiz) => {
-								allQuizzes.value.push(quiz);
-							});
-						});
-					});
-				}
-			};
 
 			const getQuizzesInUnfinishedLectures = async () => {
 				let testSections: QuizInUnseenLecture[] = [];
