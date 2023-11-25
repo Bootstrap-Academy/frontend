@@ -11,6 +11,7 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "DragAndDropToMatchMatchings": "Per Drag-and-Drop können Matching",
     "AnswersForMatchingsRespectively": "Antworten für Matchings bzw",
     "LabelForMatchings": "Beschriftung für Matchings",
     "DeleteMatching": "Übereinstimmung löschen",
@@ -43,6 +44,7 @@
     "SolvedQuizzes": "Gelöst Quizzes",
     "ViewQuizzesForLastViewCourse": "Quizzes für den letzten View-Kurs anzeigen",
     "NoQuizFoundForYouToSolve": "Es wurde kein Quiz zum Lösen gefunden",
+    "NoMatchingFoundForYouToSolve": "Es wurde kein Matching zum Lösen gefunden",
     "Rank": "Rang",
     "HTML": "HTML",
     "Excel": "Ubertreffen",
@@ -888,6 +890,7 @@
     "GravatarImage": "Ändere dein Gravatar-Bild unter"
   },
   "Success": {
+    "SolvedMatching": "Matching gelöst ✅",
     "DeleteMatching": "Übereinstimmung erfolgreich gelöscht",
     "CreateMatching": "Matching erfolgreich erstellt",
     "EditMatching": "Übereinstimmung erfolgreich aktualisiert",
@@ -948,6 +951,7 @@
     "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
   },
   "Error": {
+    "WrongMatchingAttempt": "Falsche Matching❌. Versuchen Sie es erneut",
     "MinimnumTwoFieldsRequired": "Es sollten mindestens zwei Felder vorhanden sein",
     "Verdict": {
       "COMPILATION_ERROR": "Das Programm konnte nicht kompiliert werden❌",
@@ -979,6 +983,7 @@
     "NotEnoughCoins": "Sie haben nicht genug Münzen",
     "NotEnoughHearts": "Zum Lösen ist mindestens 1 Herz erforderlich. Wählen Sie mehr Herzen oder entscheiden Sie sich für Premium",
     "NotEnoughHeartsForQuiz": "Zur Lösung der MCQ sind mindestens 0,5 Herzen erforderlich. Kaufen Sie mehr Herzen oder entscheiden Sie sich für Premium",
+    "NotEnoughHeartsForMatching": "Zum Lösen des Matchings sind mindestens 0,5 Herzen erforderlich. Kaufen Sie mehr Herzen oder entscheiden Sie sich für Premium",
     "NoCourseAccess": "Sie haben keinen Zugriff auf diesen Kurs",
     "NotAllowedForRatings": "Sie sind für Bewertungen nicht zugelassen",
     "NotAllowedForReport": "Es ist Ihnen nicht gestattet, sich zu melden",
