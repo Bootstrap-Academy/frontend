@@ -1,48 +1,4 @@
 <template>
-  <!-- <article class="box style-box bg-secondary flex gap-box w-full">
-import { CheckIcon } from "@heroicons/vue/24/solid";
-		<img :src="`/svgs/{{img}}.svg`" alt="" class="w-12 h-12 object-contain" />
-, LockClosedIcon
-		<div>
-			<h3 class="text-heading-4">{{ data.question }}</h3>
-			<p class="my-1 mb-2">{{ data.type }}</p>
-			<p v-if="data && data.price > 0">
-        {{
-					t(
-						'Headings.Morphcoins',
-						{ n: abbreviateNumber(data.price) },
-						data.price
-					)
-				}}
-			</p>
-			<Chip v-else sm color="chip-color-6" class="w-fit">
-				{{ t('Headings.Free') }}
-			</Chip>
-		</div>
-	</article> -->
-
-  <!-- <article class="box style-box bg-secondary w-full">
-		<h3 class="text-heading-4">Q). {{ data.question }}</h3>
-		<div class="flex justify-between gap-box items-center">
-			<p class="text-body-2">{{ data.type }}</p>
-
-			<p
-				class="text-body-2 py-0.5 px-2.5 bg-error-light border border-dashed border-error text-heading style-box"
-				v-if="data && data.price > 0"
-			>
-				{{ data.price }} MC
-			</p>
-			<Chip
-				v-if="data && data.price <= 0"
-				xs
-				color="chip-color-6"
-				class="w-fit"
-			>
-				{{ t('Headings.Free') }}
-			</Chip>
-		</div>
-	</article> -->
-
   <article
     @click="solveThis(data?.id ?? '')"
     class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"

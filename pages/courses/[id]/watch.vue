@@ -47,6 +47,7 @@
             :buttonOptions="buttonOptions"
             v-model="selectedButton"
             class="mb-5"
+            sm-in-mobile
           />
           <CourseVideo
             :course="course"
@@ -87,15 +88,11 @@
             </p>
           </section>
           <section
-            class="px-6 h-[71vh] overflow-scroll w-full"
+            class="md:px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 3"
           >
             <div v-if="matchings.length">
-              <MatchingCard
-                :subtask="matching"
-                v-for="(matching, i) of matchings"
-                :key="i"
-              />
+              <MatchingSolveInsideCourse :matchings="matchings" />
             </div>
             <p v-if="!matchings.length" class="w-full text-xl text-center">
               {{ t("Headings.EmptyMatchings") }}
@@ -303,6 +300,7 @@ export default {
         } else {
           subtasks.value = [];
           codingChallenges.value = [];
+          matchings.value = [];
         }
         setLoading(false);
       },

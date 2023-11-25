@@ -12,6 +12,7 @@
   },
 
   "Headings": {
+    "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
     "AnswersForMatchingsRespectively": "Answers for Matchings Respectively",
     "LabelForMatchings": "Label for Matchings",
     "NoteCannotEditMatching": "Edit Restriction",
@@ -46,6 +47,7 @@
     "SolvedQuizzes": "Solved Quizzes",
     "ViewQuizzesForLastViewCourse": "View Quizzes For Last View Course",
     "NoQuizFoundForYouToSolve": "No Quiz Found For You To Solve",
+    "NoMatchingFoundForYouToSolve": "No Matching Found For You To Solve",
     "ButAdditionalSubscription": "Buying an additional subscription will be added with your previous subscription duration",
     "PremiumEndsIn": "Your premium subscription ends",
     "More": "More",
@@ -886,6 +888,7 @@
     "GravatarImage": "Change your gravatar image at"
   },
   "Success": {
+    "SolvedMatching": "Matching Solved ✅",
     "DeleteMatching": "Matching Delete Successfully",
     "CreateMatching": "Matching Created Successfully",
     "EditMatching": "Matching Updated Successfully",
@@ -947,6 +950,7 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "WrongMatchingAttempt": "Incorrect Matchings❌. Try Again",
     "MinimnumTwoFieldsRequired": "There should be minimum two fields",
     "Verdict": {
       "COMPILATION_ERROR": "The program failed to compile ❌",
@@ -977,6 +981,7 @@
     "NotEnoughCoins": "You Don't have enough coins",
     "NotEnoughHearts": "A minimum of 1 Heart is required to solve. Buy more hearts or go premium",
     "NotEnoughHeartsForQuiz": "A minimum of 0.5 Heart is required to solve MCQ. Buy more hearts or go premium",
+    "NotEnoughHeartsForMatching": "A minimum of 0.5 Heart is required to solve Matching. Buy more hearts or go premium",
     "NoCourseAccess": "You don't have access to this course",
     "NotAllowedForRatings": "You are Not Allowed For Ratings",
     "NotAllowedForReport": "You are Not Allowed To Report",

@@ -7,14 +7,6 @@
       :-note-type="'error'"
       v-if="!!data"
     />
-    <!-- <InputSelect
-      :options="options"
-      :label="'Headings.NumberOfMatchings'"
-      v-model="matchingsLength"
-    /> -->
-    <!-- <p>
-      {{ matching }}
-    </p> -->
 
     <section class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full mt-10">
       <article>
