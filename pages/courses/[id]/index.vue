@@ -81,7 +81,7 @@
 
         <article v-show="selectedbutton == 1">
           <h2 class="mb-box text-heading-3">
-            {{ t("Headings.QuizzesInCourse") }}
+            {{ t("Headings.Matchings") }}
           </h2>
 
           <div class="content" v-for="(quiz, i) of quizzes" :key="i">
