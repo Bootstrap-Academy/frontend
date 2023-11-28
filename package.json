@@ -10,13 +10,13 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
-    "@types/katex": "^0.16.6",
-    "@types/markdown-it": "^13.0.6",
+    "@types/katex": "^0.16.7",
+    "@types/markdown-it": "^13.0.7",
     "autoprefixer": "^10.4.16",
-    "nuxt": "3.8.1",
+    "nuxt": "3.8.2",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
-    "vue-i18n": "^9.7.0"
+    "vue-i18n": "^9.8.0"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.5.3",
