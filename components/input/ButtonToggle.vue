@@ -60,8 +60,13 @@ export default defineComponent({
     );
 
     function emitSelected(selected: any) {
-      selectedOption.value = selected;
-      emit("update:modelValue", selected);
+      // When in a list each button is associated with specific content based on its index,
+      // hiding some of them becomes impossible due to the shifting indexes.
+      // To support this use-case, each button may have an "id" field, making changes in indexes irrelevant.
+      const idOfSelectedItem = props.buttonOptions[selected].id ?? selected;
+
+      selectedOption.value = idOfSelectedItem;
+      emit("update:modelValue", idOfSelectedItem);
     }
     return { emitSelected, selectedOption, t };
   },
