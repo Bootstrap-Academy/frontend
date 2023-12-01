@@ -21,7 +21,7 @@
       @rated="setRatedLocally($event)"
       @solved="setSolvedLocally($event)"
     />
-    <p v-else-if="!!!selectedQuiz" class="text-center">
+    <p v-else-if="!!!selectedQuiz" class="w-full text-xl text-center">
       {{ t("Headings.NoQuizFoundForYouToSolve") }}
     </p>
   </div>
