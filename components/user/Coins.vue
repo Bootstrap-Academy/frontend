@@ -1,7 +1,7 @@
 <template>
   <NuxtLink to="/morphcoins/buy">
     <article
-      class="flex items-center w-fit min-w-fit cursor-pointer"
+      class="flex items-center w-fit min-w-fit cursor-pointer h-10 py-2 px-5"
       :class="sm ? 'p-1' : 'p-2 bg-tertiary rounded-3xl'"
     >
       <img

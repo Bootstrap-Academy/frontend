@@ -2,7 +2,7 @@
   <div class="flex items-center gap-2 group" @click="gotoSubscription()">
     <div v-if="!isPremmium" class="text-heading hover:text-white">
       <article
-        class="flex items-center gap-1 bg-tertiary px-5 py-2 rounded-full"
+        class="flex items-center gap-1 bg-tertiary px-5 py-2 h-10 rounded-full"
       >
         <!-- <HeartIcon
           class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
