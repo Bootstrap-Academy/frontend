@@ -445,7 +445,8 @@
     "EditNickname": "kann nach dem {placeholder} geändert werden",
     "ActiveSkills": "Alle Skills, die du gerade verbesserst.",
     "CompletedSkills": "Alle Skills, die du schon abgeschlossen hast.",
-    "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind."
+    "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
+    "NoUpcomingEvents": "Keine Veranstaltungen geplant"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {

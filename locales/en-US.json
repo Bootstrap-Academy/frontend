@@ -443,7 +443,8 @@
     "EditNickname": "can be changed after {placeholder}",
     "ActiveSkills": "All skills you are currently working on.",
     "CompletedSkills": "All skills which you have completed.",
-    "OtherSkills": "Rest of the skills which are available for exploring."
+    "OtherSkills": "Rest of the skills which are available for exploring.",
+    "NoUpcomingEvents": "No Events planned"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {

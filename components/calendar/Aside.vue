@@ -6,6 +6,9 @@
       <h2 class="text-heading-2">
         {{ t("Headings.UpcomingEvents") }}
       </h2>
+      <p class="text-body-1" v-if="events.length == 0">
+        {{ t("Body.NoUpcomingEvents") }}
+      </p>
 
       <CalendarEvent
         v-for="(event, i) of events"
@@ -39,7 +42,7 @@ export default defineComponent({
     const eventFilter = useEventFilter();
     const user: Ref<any> = useUser();
 
-    const events = computed(() => {
+    var events = computed(() => {
       return props.events
         .filter((event: any) => {
           let dates = convertTimestampToDate(event.start);
