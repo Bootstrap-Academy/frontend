@@ -191,42 +191,42 @@ function setResonBasedOnVerdict(success: any, id: any) {
     if (element.id == id) atIndex = i;
   });
   switch (success?.verdict) {
-    case "COMPILATION_ERROR":
-      duplicateExamples.value[atIndex].solved =
+  case "COMPILATION_ERROR":
+    duplicateExamples.value[atIndex].solved =
         "Error.Verdict.COMPILATION_ERROR";
-      break;
-    case "INVALID_OUTPUT_FORMAT":
-      duplicateExamples.value[atIndex].solved =
+    break;
+  case "INVALID_OUTPUT_FORMAT":
+    duplicateExamples.value[atIndex].solved =
         "Error.Verdict.INVALID_OUTPUT_FORMAT";
-      break;
-    case "MEMORY_LIMIT_EXCEEDED":
-      duplicateExamples.value[atIndex].solved =
+    break;
+  case "MEMORY_LIMIT_EXCEEDED":
+    duplicateExamples.value[atIndex].solved =
         "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
-      break;
-    case "NO_OUTPUT":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
-      break;
-    case "OK":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
-      break;
-    case "PRE_CHECK_FAILED":
-      duplicateExamples.value[atIndex].solved =
+    break;
+  case "NO_OUTPUT":
+    duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
+    break;
+  case "OK":
+    duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
+    break;
+  case "PRE_CHECK_FAILED":
+    duplicateExamples.value[atIndex].solved =
         "Error.Verdict.PRE_CHECK_FAILED";
-      break;
-    case "RUNTIME_ERROR":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
-      break;
-    case "TIME_LIMIT_EXCEEDED":
-      duplicateExamples.value[atIndex].solved =
+    break;
+  case "RUNTIME_ERROR":
+    duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
+    break;
+  case "TIME_LIMIT_EXCEEDED":
+    duplicateExamples.value[atIndex].solved =
         "Error.Verdict.TIME_LIMIT_EXCEEDED";
-      break;
-    case "WRONG_ANSWER":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
-      break;
+    break;
+  case "WRONG_ANSWER":
+    duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
+    break;
 
-    default:
-      duplicateExamples.value[atIndex].solved = null;
-      break;
+  default:
+    duplicateExamples.value[atIndex].solved = null;
+    break;
   }
 }
 

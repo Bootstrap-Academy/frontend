@@ -32,52 +32,52 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Challenges',
-	},
-	setup() {
-		const router = useRouter();
-		const route = useRoute();
+  head: {
+    title: 'Challenges',
+  },
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
 
-		const challengesLoginUrl = useChallengesLoginUrl();
-		const config = useRuntimeConfig().public;
+    const challengesLoginUrl = useChallengesLoginUrl();
+    const config = useRuntimeConfig().public;
 
-		onMounted(async () => {
-			setLoading(true);
-			const [success, error] = await getChallengesLoginUrl();
-			setLoading(false);
+    onMounted(async () => {
+      setLoading(true);
+      const [success, error] = await getChallengesLoginUrl();
+      setLoading(false);
 
-			if (success) {
-				window.location.replace(challengesLoginUrl.value);
-			} else
-				setTimeout(() => {
-					openDialog(
-						'info',
-						'Links.Challenges',
-						'Body.Challenges',
-						false,
-						{
-							label: 'Buttons.Okay',
-							onclick: () => {
-								router.replace('/auth/login?redirect=/challenges');
-							},
-						},
-						{
-							label: 'Buttons.Cancel',
-							onclick: () => {
-								window.location.assign(config.ChallengesLoginURL);
-							},
-						}
-					);
-				}, 0);
-		});
+      if (success) {
+        window.location.replace(challengesLoginUrl.value);
+      } else
+        setTimeout(() => {
+          openDialog(
+            'info',
+            'Links.Challenges',
+            'Body.Challenges',
+            false,
+            {
+              label: 'Buttons.Okay',
+              onclick: () => {
+                router.replace('/auth/login?redirect=/challenges');
+              },
+            },
+            {
+              label: 'Buttons.Cancel',
+              onclick: () => {
+                window.location.assign(config.ChallengesLoginURL);
+              },
+            }
+          );
+        }, 0);
+    });
 
-		return {};
-	},
+    return {};
+  },
 };
 </script>
 

@@ -62,45 +62,45 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+  setup() {
+    const { t } = useI18n();
 
-		let webLinks = [
-			{
-				label: 'Links.Home',
-				pathname: '/',
-			},
-			{
-				label: 'Links.SkillTree',
-				pathname: '/skill-tree',
-			},
-			{
-				label: 'Links.Contact',
-				pathname: '/contact',
-			},
-		];
+    let webLinks = [
+      {
+        label: 'Links.Home',
+        pathname: '/',
+      },
+      {
+        label: 'Links.SkillTree',
+        pathname: '/skill-tree',
+      },
+      {
+        label: 'Links.Contact',
+        pathname: '/contact',
+      },
+    ];
 
-		let usefulLinks = [
-			{
-				label: 'Links.Privacy',
-				pathname: '/docs/privacy',
-			},
-			{
-				label: 'Links.TermsAndConditions',
-				pathname: '/docs/terms-and-conditions',
-			},
-			{
-				label: 'Links.Imprint',
-				pathname: '/docs/imprint',
-			},
-		];
+    let usefulLinks = [
+      {
+        label: 'Links.Privacy',
+        pathname: '/docs/privacy',
+      },
+      {
+        label: 'Links.TermsAndConditions',
+        pathname: '/docs/terms-and-conditions',
+      },
+      {
+        label: 'Links.Imprint',
+        pathname: '/docs/imprint',
+      },
+    ];
 
-		return {
-			webLinks,
-			usefulLinks,
-			t,
-		};
-	},
+    return {
+      webLinks,
+      usefulLinks,
+      t,
+    };
+  },
 });
 </script>
 

@@ -51,30 +51,30 @@
 import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	setup() {
-		const { t } = useI18n();
+  setup() {
+    const { t } = useI18n();
 
-		const loading = ref(true);
+    const loading = ref(true);
 
-		const job = useJob();
+    const job = useJob();
 
-		const route = useRoute();
-		const jobID = computed((): string => {
-			return <string>route?.params?.id ?? '';
-		});
+    const route = useRoute();
+    const jobID = computed((): string => {
+      return <string>route?.params?.id ?? '';
+    });
 
-		onMounted(async () => {
-			await getJob(jobID.value);
-			loading.value = false;
-		});
+    onMounted(async () => {
+      await getJob(jobID.value);
+      loading.value = false;
+    });
 
-		return { t, loading, job };
-	},
+    return { t, loading, job };
+  },
 };
 </script>
 

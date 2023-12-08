@@ -45,26 +45,26 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'My Webinars',
-	},
-	setup() {
-		const myWebinars = useMyWebinars();
+  head: {
+    title: 'My Webinars',
+  },
+  setup() {
+    const myWebinars = useMyWebinars();
 
-		const loading = ref(myWebinars.value.length <= 0);
+    const loading = ref(myWebinars.value.length <= 0);
 
-		onMounted(async () => {
-			await getMyWebinars();
-			loading.value = false;
-		});
+    onMounted(async () => {
+      await getMyWebinars();
+      loading.value = false;
+    });
 
-		return { loading, myWebinars };
-	},
+    return { loading, myWebinars };
+  },
 };
 </script>
 

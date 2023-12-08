@@ -93,10 +93,10 @@
 
 <script lang="ts">
 import {
-	PencilIcon,
-	PlusCircleIcon,
-	PlusIcon,
-	XMarkIcon,
+  PencilIcon,
+  PlusCircleIcon,
+  PlusIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/solid';
 import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
@@ -104,143 +104,143 @@ import { useI18n } from 'vue-i18n';
 import { description } from '~~/description';
 
 export default defineComponent({
-	props: {
-		min: { type: String || Number, default: '' },
-		autocomplete: { type: String, default: 'true' },
-		hint: { type: String, default: '' },
-		name: { type: String, default: '' },
-		id: { type: String, default: '' },
-		type: { type: String, default: 'text' },
-		label: { type: String, default: '' },
-		noLabel: { type: Boolean, default: false },
-		noTrim: { type: Boolean, default: false },
-		light: { type: Boolean, default: false },
-		placeholder: { type: String, default: '' },
-		rules: { type: Array, default: [] },
-		modelValue: { default: [] },
-		max: { type: Number, default: 10 },
-	},
-	emits: ['update:modelValue', 'valid'],
-	components: { PlusCircleIcon, XMarkIcon, PencilIcon, PlusIcon },
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    min: { type: String || Number, default: '' },
+    autocomplete: { type: String, default: 'true' },
+    hint: { type: String, default: '' },
+    name: { type: String, default: '' },
+    id: { type: String, default: '' },
+    type: { type: String, default: 'text' },
+    label: { type: String, default: '' },
+    noLabel: { type: Boolean, default: false },
+    noTrim: { type: Boolean, default: false },
+    light: { type: Boolean, default: false },
+    placeholder: { type: String, default: '' },
+    rules: { type: Array, default: [] },
+    modelValue: { default: [] },
+    max: { type: Number, default: 10 },
+  },
+  emits: ['update:modelValue', 'valid'],
+  components: { PlusCircleIcon, XMarkIcon, PencilIcon, PlusIcon },
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const tasks = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: Array<any>) {
-				emit('update:modelValue', value);
-			},
-		});
+    const tasks = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: Array<any>) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		function onclickAddTask() {
-			if (
-				(!!nameErrorMsg.value && tasks.value.length > 0) ||
+    function onclickAddTask() {
+      if (
+        (!!nameErrorMsg.value && tasks.value.length > 0) ||
 				(!!pointsErrorMsg.value && tasks.value.length > 0)
-			)
-				return;
+      )
+        return;
 
-			tasks.value = [
-				...tasks.value,
-				{
-					name: `Task ${tasks.value.length + 1}`,
-					totalPoints: 5,
-					description: '',
-				},
-			];
-		}
-		function onclickRemoveTask(index: number) {
-			let arr = [...tasks.value];
-			arr.splice(index, 1);
-			tasks.value = [...arr];
-		}
+      tasks.value = [
+        ...tasks.value,
+        {
+          name: `Task ${tasks.value.length + 1}`,
+          totalPoints: 5,
+          description: '',
+        },
+      ];
+    }
+    function onclickRemoveTask(index: number) {
+      let arr = [...tasks.value];
+      arr.splice(index, 1);
+      tasks.value = [...arr];
+    }
 
-		const nameErrorMsg = computed(() => {
-			let msg = '';
+    const nameErrorMsg = computed(() => {
+      let msg = '';
 
-			let length = tasks.value.length;
-			if (length == 0) return true;
+      let length = tasks.value.length;
+      if (length == 0) return true;
 
-			let lastTask = tasks.value[length - 1];
-			let arr = tasks.value.filter((t) => {
-				return t.name.toLocaleLowerCase() == lastTask.name.toLocaleLowerCase();
-			});
+      let lastTask = tasks.value[length - 1];
+      let arr = tasks.value.filter((t) => {
+        return t.name.toLocaleLowerCase() == lastTask.name.toLocaleLowerCase();
+      });
 
-			if (!!!lastTask.name) {
-				msg = 'Errors.TaskNameCannotBeEmpty';
-			} else if (arr.length > 1) {
-				msg = 'Errors.TaskNameCannotBeSame';
-			}
+      if (!!!lastTask.name) {
+        msg = 'Errors.TaskNameCannotBeEmpty';
+      } else if (arr.length > 1) {
+        msg = 'Errors.TaskNameCannotBeSame';
+      }
 
-			return msg;
-		});
+      return msg;
+    });
 
-		const pointsErrorMsg = computed(() => {
-			let msg = '';
+    const pointsErrorMsg = computed(() => {
+      let msg = '';
 
-			let length = tasks.value.length;
+      let length = tasks.value.length;
 
-			if (length == 0) return msg;
+      if (length == 0) return msg;
 
-			let lastTask = tasks.value[length - 1];
+      let lastTask = tasks.value[length - 1];
 
-			if (lastTask.totalPoints < 5) {
-				msg = 'must be >= 5';
-			} else if (lastTask.totalPoints > 100) {
-				msg = 'must be <= 100';
-			}
+      if (lastTask.totalPoints < 5) {
+        msg = 'must be >= 5';
+      } else if (lastTask.totalPoints > 100) {
+        msg = 'must be <= 100';
+      }
 
-			return msg;
-		});
+      return msg;
+    });
 
-		const openMarkdown = ref(false);
-		const taskIndex = ref(-1);
+    const openMarkdown = ref(false);
+    const taskIndex = ref(-1);
 
-		const description = ref('');
+    const description = ref('');
 
-		function onclickSaveDescription() {
-			let arr = tasks.value.map((t, index) => {
-				return {
-					...t,
-					description:
+    function onclickSaveDescription() {
+      let arr = tasks.value.map((t, index) => {
+        return {
+          ...t,
+          description:
 						index == taskIndex.value ? description.value : t.description,
-				};
-			});
+        };
+      });
 
-			tasks.value = [...arr];
+      tasks.value = [...arr];
 
-			taskIndex.value = -1;
-		}
+      taskIndex.value = -1;
+    }
 
-		function onclickDeleteDescription() {
-			let arr = tasks.value.map((t, index) => {
-				return {
-					...t,
-					description: index == taskIndex.value ? '' : t.description,
-				};
-			});
+    function onclickDeleteDescription() {
+      let arr = tasks.value.map((t, index) => {
+        return {
+          ...t,
+          description: index == taskIndex.value ? '' : t.description,
+        };
+      });
 
-			tasks.value = [...arr];
+      tasks.value = [...arr];
 
-			taskIndex.value = -1;
-		}
+      taskIndex.value = -1;
+    }
 
-		return {
-			description,
-			t,
-			tasks,
-			PlusIcon,
-			onclickAddTask,
-			onclickRemoveTask,
-			nameErrorMsg,
-			pointsErrorMsg,
-			openMarkdown,
-			taskIndex,
-			onclickSaveDescription,
-			onclickDeleteDescription,
-		};
-	},
+    return {
+      description,
+      t,
+      tasks,
+      PlusIcon,
+      onclickAddTask,
+      onclickRemoveTask,
+      nameErrorMsg,
+      pointsErrorMsg,
+      openMarkdown,
+      taskIndex,
+      onclickSaveDescription,
+      onclickDeleteDescription,
+    };
+  },
 });
 </script>
 

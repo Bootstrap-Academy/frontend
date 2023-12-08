@@ -98,16 +98,16 @@
 
 <script>
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Structures',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: 'Structures',
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 

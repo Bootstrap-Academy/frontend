@@ -29,96 +29,96 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import {
-	BriefcaseIcon,
-	CurrencyDollarIcon,
-	MapPinIcon,
+  BriefcaseIcon,
+  CurrencyDollarIcon,
+  MapPinIcon,
 } from '@heroicons/vue/24/solid';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	components: {
-		BriefcaseIcon,
-		CurrencyDollarIcon,
-		MapPinIcon,
-		IconMorphcoin,
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  components: {
+    BriefcaseIcon,
+    CurrencyDollarIcon,
+    MapPinIcon,
+    IconMorphcoin,
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const jobID = computed(() => {
-			return props.data?.id ?? '';
-		});
+    const jobID = computed(() => {
+      return props.data?.id ?? '';
+    });
 
-		const companyName = computed(() => {
-			return props.data?.company?.name ?? '';
-		});
+    const companyName = computed(() => {
+      return props.data?.company?.name ?? '';
+    });
 
-		const jobTitle = computed(() => {
-			return props.data?.title ?? '';
-		});
+    const jobTitle = computed(() => {
+      return props.data?.title ?? '';
+    });
 
-		const lastUpdated = computed(() => {
-			let timestamp = props.data?.last_update ?? null;
-			if (!!!timestamp) return ``;
+    const lastUpdated = computed(() => {
+      let timestamp = props.data?.last_update ?? null;
+      if (!!!timestamp) return ``;
 
-			return `${get_x_timeAgo(timestamp)}`;
-		});
+      return `${get_x_timeAgo(timestamp)}`;
+    });
 
-		const salary = computed(() => {
-			let min = props.data?.salary?.min ?? 0;
-			let max = props.data?.salary?.max ?? 0;
-			let per = props.data?.salary?.per ?? '';
-			return `${abbreviateNumber(min)} - ${abbreviateNumber(max)} ${
-				per != 'once' ? '/' : ''
-			} ${per}`;
-		});
+    const salary = computed(() => {
+      let min = props.data?.salary?.min ?? 0;
+      let max = props.data?.salary?.max ?? 0;
+      let per = props.data?.salary?.per ?? '';
+      return `${abbreviateNumber(min)} - ${abbreviateNumber(max)} ${
+        per != 'once' ? '/' : ''
+      } ${per}`;
+    });
 
-		const salaryIcon = computed(() => {
-			let unit = props.data?.salary?.unit ?? '';
-			return unit == 'morphcoins' ? IconMorphcoin : CurrencyDollarIcon;
-		});
+    const salaryIcon = computed(() => {
+      let unit = props.data?.salary?.unit ?? '';
+      return unit == 'morphcoins' ? IconMorphcoin : CurrencyDollarIcon;
+    });
 
-		const stats = computed(() => {
-			return [
-				{
-					icon: salaryIcon.value,
-					value: salary.value,
-					capitalize: false,
-				},
-				{
-					icon: BriefcaseIcon,
-					value: (props.data?.type ?? '').replace('_', ' '),
-					capitalize: true,
-				},
-				{
-					icon: MapPinIcon,
-					value: props.data?.location ?? '',
-					capitalize: true,
-				},
-			];
-		});
+    const stats = computed(() => {
+      return [
+        {
+          icon: salaryIcon.value,
+          value: salary.value,
+          capitalize: false,
+        },
+        {
+          icon: BriefcaseIcon,
+          value: (props.data?.type ?? '').replace('_', ' '),
+          capitalize: true,
+        },
+        {
+          icon: MapPinIcon,
+          value: props.data?.location ?? '',
+          capitalize: true,
+        },
+      ];
+    });
 
-		const jobDescription = computed(() => {
-			return props.data?.description ?? '';
-		});
+    const jobDescription = computed(() => {
+      return props.data?.description ?? '';
+    });
 
-		const link = computed(() => {
-			return `/jobs/${jobID.value}`;
-		});
+    const link = computed(() => {
+      return `/jobs/${jobID.value}`;
+    });
 
-		return {
-			t,
-			companyName,
-			lastUpdated,
-			jobTitle,
-			stats,
-			jobDescription,
-			link,
-		};
-	},
+    return {
+      t,
+      companyName,
+      lastUpdated,
+      jobTitle,
+      stats,
+      jobDescription,
+      link,
+    };
+  },
 });
 </script>
 

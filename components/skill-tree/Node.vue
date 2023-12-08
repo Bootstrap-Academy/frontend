@@ -39,104 +39,104 @@ import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		active: { type: Boolean, default: false },
-		completed: { type: Boolean, default: false },
-		node: { type: Object as PropType<any>, default: null },
-		selectedNode: { default: null },
-		row: { type: Number, default: 0 },
-		column: { type: Number, default: 0 },
-		zoomLevel: { type: Number, default: 2 },
-		viewSubtree: { type: Boolean, default: false },
-		viewSkill: { type: Boolean, default: false },
-	},
-	emits: ['node', 'size', 'selected', 'move', 'ref'],
-	setup(props, { emit }) {
-		let occupiedSpace = 3;
+  props: {
+    active: { type: Boolean, default: false },
+    completed: { type: Boolean, default: false },
+    node: { type: Object as PropType<any>, default: null },
+    selectedNode: { default: null },
+    row: { type: Number, default: 0 },
+    column: { type: Number, default: 0 },
+    zoomLevel: { type: Number, default: 2 },
+    viewSubtree: { type: Boolean, default: false },
+    viewSkill: { type: Boolean, default: false },
+  },
+  emits: ['node', 'size', 'selected', 'move', 'ref'],
+  setup(props, { emit }) {
+    let occupiedSpace = 3;
 
-		const size = computed(() => {
-			switch (props.zoomLevel) {
-				case 5:
-					return 125;
-				case 4:
-					return 100;
-				case 3:
-					return 75;
-				case 2:
-					return 50;
-				default:
-					return 25;
-			}
-		});
+    const size = computed(() => {
+      switch (props.zoomLevel) {
+      case 5:
+        return 125;
+      case 4:
+        return 100;
+      case 3:
+        return 75;
+      case 2:
+        return 50;
+      default:
+        return 25;
+      }
+    });
 
-		const nodeSize = computed(() => {
-			emit('size', size.value * occupiedSpace);
-			return size.value * occupiedSpace;
-		});
+    const nodeSize = computed(() => {
+      emit('size', size.value * occupiedSpace);
+      return size.value * occupiedSpace;
+    });
 
-		const cx = computed(() => {
-			return props.row * occupiedSpace * size.value;
-		});
-		const cy = computed(() => {
-			return props.column * occupiedSpace * size.value;
-		});
+    const cx = computed(() => {
+      return props.row * occupiedSpace * size.value;
+    });
+    const cy = computed(() => {
+      return props.column * occupiedSpace * size.value;
+    });
 
-		const nodeRef = ref<SVGElement | null>(null);
+    const nodeRef = ref<SVGElement | null>(null);
 
-		const current_node = computed(() => {
-			return {
-				id: props.node?.id ?? '',
-				name: props.node?.name ?? '',
-				dependencies: props.node?.dependencies ?? [],
-				row: props.node?.row ?? props.row,
-				column: props.node?.column ?? props.column,
-				icon: props.node?.icon ?? '',
-			};
-		});
+    const current_node = computed(() => {
+      return {
+        id: props.node?.id ?? '',
+        name: props.node?.name ?? '',
+        dependencies: props.node?.dependencies ?? [],
+        row: props.node?.row ?? props.row,
+        column: props.node?.column ?? props.column,
+        icon: props.node?.icon ?? '',
+      };
+    });
 
-		onMounted(() => {
-			emit('ref', nodeRef.value);
-		});
+    onMounted(() => {
+      emit('ref', nodeRef.value);
+    });
 
-		const router = useRouter();
+    const router = useRouter();
 
-		function ondblclick() {
-			if (!!!current_node.value.id) return;
+    function ondblclick() {
+      if (!!!current_node.value.id) return;
 
-			if (props.active) {
-				emit('move', {
-					id: '',
-					name: '',
-					dependencies: [],
-					row: null,
-					column: null,
-					icon: '',
-				});
-			} else {
-				emit('move', current_node.value);
-			}
+      if (props.active) {
+        emit('move', {
+          id: '',
+          name: '',
+          dependencies: [],
+          row: null,
+          column: null,
+          icon: '',
+        });
+      } else {
+        emit('move', current_node.value);
+      }
 
-			if (props.viewSubtree) {
-				router.push(`/skill-tree/${current_node.value.id}`);
-			}
-		}
+      if (props.viewSubtree) {
+        router.push(`/skill-tree/${current_node.value.id}`);
+      }
+    }
 
-		const isFilled = computed(() => {
-			return !!current_node.value.id;
-		});
+    const isFilled = computed(() => {
+      return !!current_node.value.id;
+    });
 
-		return {
-			current_node,
-			nodeRef,
-			cx,
-			cy,
-			size,
-			nodeSize,
-			ondblclick,
-			isFilled,
-			occupiedSpace,
-		};
-	},
+    return {
+      current_node,
+      nodeRef,
+      cx,
+      cy,
+      size,
+      nodeSize,
+      ondblclick,
+      isFilled,
+      occupiedSpace,
+    };
+  },
 });
 </script>
 

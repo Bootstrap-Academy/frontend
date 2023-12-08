@@ -59,89 +59,89 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	emits: ['done'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  emits: ['done'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		// ============================================================= Data
-		const rating = reactive({
-			value: 0,
-			valid: false,
-		});
+    // ============================================================= Data
+    const rating = reactive({
+      value: 0,
+      valid: false,
+    });
 
-		const rating_id = computed(() => {
-			return props.data?.id ?? '';
-		});
+    const rating_id = computed(() => {
+      return props.data?.id ?? '';
+    });
 
-		const instructor = computed(() => {
-			return props.data?.instructor ?? null;
-		});
+    const instructor = computed(() => {
+      return props.data?.instructor ?? null;
+    });
 
-		const webinar_name = computed(() => {
-			return props.data?.webinar_name ?? '';
-		});
+    const webinar_name = computed(() => {
+      return props.data?.webinar_name ?? '';
+    });
 
-		const theme = computed(() => {
-			return {
-				bg: 'bg-warning',
-				bgLight: 'bg-warning-light',
-				fill: 'fill-warning',
-				stroke: 'stroke-warning',
-				border: 'border-warning',
-				text: 'text-warning',
-			};
-		});
+    const theme = computed(() => {
+      return {
+        bg: 'bg-warning',
+        bgLight: 'bg-warning-light',
+        fill: 'fill-warning',
+        stroke: 'stroke-warning',
+        border: 'border-warning',
+        text: 'text-warning',
+      };
+    });
 
-		// ============================================================= functions
-		async function onclickSubmitWebinarRating() {
-			if (!rating.valid) {
-				return;
-			}
+    // ============================================================= functions
+    async function onclickSubmitWebinarRating() {
+      if (!rating.valid) {
+        return;
+      }
 
-			setLoading(true);
-			const [success, error] = await submitWebinarRating(
-				rating_id.value,
-				rating.value
-			);
-			setLoading(false);
+      setLoading(true);
+      const [success, error] = await submitWebinarRating(
+        rating_id.value,
+        rating.value
+      );
+      setLoading(false);
 
-			success
-				? successHandler('Success.SubmitWebinarRating')
-				: errorHandler(error);
-		}
+      success
+        ? successHandler('Success.SubmitWebinarRating')
+        : errorHandler(error);
+    }
 
-		async function onclickCancelWebinarRating() {
-			setLoading(true);
-			const [success, error] = await cancelWebinarRating(rating_id.value);
-			setLoading(false);
+    async function onclickCancelWebinarRating() {
+      setLoading(true);
+      const [success, error] = await cancelWebinarRating(rating_id.value);
+      setLoading(false);
 
-			success
-				? successHandler('Success.CancelWebinarRating')
-				: errorHandler(error);
-		}
+      success
+        ? successHandler('Success.CancelWebinarRating')
+        : errorHandler(error);
+    }
 
-		function successHandler(res: any) {
-			openSnackbar('success', res);
-			emit('done', rating_id.value);
-		}
+    function successHandler(res: any) {
+      openSnackbar('success', res);
+      emit('done', rating_id.value);
+    }
 
-		function errorHandler(res: any) {
-			openSnackbar('error', res?.detail ?? '');
-		}
+    function errorHandler(res: any) {
+      openSnackbar('error', res?.detail ?? '');
+    }
 
-		return {
-			rating,
-			t,
-			instructor,
-			webinar_name,
-			onclickSubmitWebinarRating,
-			onclickCancelWebinarRating,
-			theme,
-		};
-	},
+    return {
+      rating,
+      t,
+      instructor,
+      webinar_name,
+      onclickSubmitWebinarRating,
+      onclickCancelWebinarRating,
+      theme,
+    };
+  },
 });
 </script>
 

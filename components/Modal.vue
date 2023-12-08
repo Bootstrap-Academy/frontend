@@ -17,10 +17,10 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emit: ['backdrop'],
-	setup(props, { emit }) {
-		return { emit };
-	},
+  emit: ['backdrop'],
+  setup(props, { emit }) {
+    return { emit };
+  },
 });
 </script>
 

@@ -26,23 +26,23 @@ import { PlayIcon } from '@heroicons/vue/24/outline';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 
 export default defineComponent({
-	components: { PlayIcon, IconMorphcoin },
+  components: { PlayIcon, IconMorphcoin },
 
-	setup(props) {
-		const price = computed(() => {
-			return {
-				icon: IconMorphcoin,
-			};
-		});
+  setup(props) {
+    const price = computed(() => {
+      return {
+        icon: IconMorphcoin,
+      };
+    });
 
-		const lectures = computed(() => {
-			return {
-				icon: PlayIcon,
-			};
-		});
+    const lectures = computed(() => {
+      return {
+        icon: PlayIcon,
+      };
+    });
 
-		return { price, lectures };
-	},
+    return { price, lectures };
+  },
 });
 </script>
 

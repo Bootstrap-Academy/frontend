@@ -24,31 +24,31 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const description = computed(() => {
-			return props.data?.description ?? '';
-		});
+    const description = computed(() => {
+      return props.data?.description ?? '';
+    });
 
-		const learningGoals = computed(() => {
-			return props.data?.learning_goals ?? [];
-		});
+    const learningGoals = computed(() => {
+      return props.data?.learning_goals ?? [];
+    });
 
-		const requirements = computed(() => {
-			return props.data?.requirements ?? [];
-		});
+    const requirements = computed(() => {
+      return props.data?.requirements ?? [];
+    });
 
-		return {
-			description,
-			learningGoals,
-			requirements,
-			t,
-		};
-	},
+    return {
+      description,
+      learningGoals,
+      requirements,
+      t,
+    };
+  },
 });
 </script>
 

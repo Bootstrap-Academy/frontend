@@ -197,18 +197,18 @@ export default defineComponent({
         let hoursString =
           roundedHours > 0
             ? t(
-                "Headings.Hours",
-                { n: roundedHours },
-                roundedHours
-              ).toLocaleLowerCase()
+              "Headings.Hours",
+              { n: roundedHours },
+              roundedHours
+            ).toLocaleLowerCase()
             : "";
         let minsString =
           minutesLeftInHours > 0
             ? t(
-                "Headings.Mins",
-                { n: minutesLeftInHours },
-                minutesLeftInHours
-              ).toLocaleLowerCase()
+              "Headings.Mins",
+              { n: minutesLeftInHours },
+              minutesLeftInHours
+            ).toLocaleLowerCase()
             : "";
         return {
           quantity: allLectures.length,

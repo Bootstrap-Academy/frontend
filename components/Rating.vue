@@ -39,71 +39,71 @@
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
-	StarIcon,
-	ExclamationCircleIcon,
-	InformationCircleIcon,
-	XCircleIcon,
-	CheckCircleIcon,
+  StarIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+  CheckCircleIcon,
 } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
-	props: {
-		rating: { type: Number, default: 0 },
-		sm: { type: Boolean, default: false },
-		stars: { type: Boolean, default: false },
-	},
-	components: {
-		StarIcon,
-		ExclamationCircleIcon,
-		InformationCircleIcon,
-		XCircleIcon,
-		CheckCircleIcon,
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    rating: { type: Number, default: 0 },
+    sm: { type: Boolean, default: false },
+    stars: { type: Boolean, default: false },
+  },
+  components: {
+    StarIcon,
+    ExclamationCircleIcon,
+    InformationCircleIcon,
+    XCircleIcon,
+    CheckCircleIcon,
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const type = computed(() => {
-			if (props.rating > 4) return 'success';
-			else if (props.rating > 2 && props.rating <= 4) return 'info';
-			else return 'error';
-		});
+    const type = computed(() => {
+      if (props.rating > 4) return 'success';
+      else if (props.rating > 2 && props.rating <= 4) return 'info';
+      else return 'error';
+    });
 
-		const theme = computed(() => {
-			if (type.value == 'success') {
-				return {
-					bg: 'bg-success',
-					bgLight: 'bg-success-light',
-					fill: 'fill-success',
-					stroke: 'stroke-success',
-					border: 'border-success',
-					text: 'text-success',
-					icon: CheckCircleIcon,
-				};
-			} else if (type.value == 'error') {
-				return {
-					bg: 'bg-error',
-					bgLight: 'bg-error-light',
-					fill: 'fill-error',
-					stroke: 'stroke-error',
-					border: 'border-error',
-					text: 'text-error',
-					icon: XCircleIcon,
-				};
-			} else {
-				return {
-					bg: 'bg-info',
-					bgLight: 'bg-info-light',
-					fill: 'fill-info',
-					stroke: 'stroke-info',
-					border: 'border-info',
-					text: 'text-info',
-					icon: InformationCircleIcon,
-				};
-			}
-		});
+    const theme = computed(() => {
+      if (type.value == 'success') {
+        return {
+          bg: 'bg-success',
+          bgLight: 'bg-success-light',
+          fill: 'fill-success',
+          stroke: 'stroke-success',
+          border: 'border-success',
+          text: 'text-success',
+          icon: CheckCircleIcon,
+        };
+      } else if (type.value == 'error') {
+        return {
+          bg: 'bg-error',
+          bgLight: 'bg-error-light',
+          fill: 'fill-error',
+          stroke: 'stroke-error',
+          border: 'border-error',
+          text: 'text-error',
+          icon: XCircleIcon,
+        };
+      } else {
+        return {
+          bg: 'bg-info',
+          bgLight: 'bg-info-light',
+          fill: 'fill-info',
+          stroke: 'stroke-info',
+          border: 'border-info',
+          text: 'text-info',
+          icon: InformationCircleIcon,
+        };
+      }
+    });
 
-		return { theme, t };
-	},
+    return { theme, t };
+  },
 });
 </script>
 

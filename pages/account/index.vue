@@ -31,16 +31,16 @@
 
 <script lang="ts">
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Account Settings',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: 'Account Settings',
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 

@@ -138,8 +138,8 @@ export default defineComponent({
         query: showChallenges.value
           ? {}
           : {
-              category: category.value,
-            },
+            category: category.value,
+          },
       });
     }
 

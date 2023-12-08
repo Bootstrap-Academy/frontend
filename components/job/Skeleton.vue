@@ -91,62 +91,62 @@
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
-	BriefcaseIcon,
-	CurrencyDollarIcon,
-	MapPinIcon,
+  BriefcaseIcon,
+  CurrencyDollarIcon,
+  MapPinIcon,
 } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
-	components: { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon },
-	setup() {
-		const { t } = useI18n();
+  components: { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon },
+  setup() {
+    const { t } = useI18n();
 
-		const statsHeader = computed(() => {
-			return [
-				{
-					icon: CurrencyDollarIcon,
-				},
-				{
-					icon: BriefcaseIcon,
-				},
-				{
-					icon: MapPinIcon,
-				},
-			];
-		});
+    const statsHeader = computed(() => {
+      return [
+        {
+          icon: CurrencyDollarIcon,
+        },
+        {
+          icon: BriefcaseIcon,
+        },
+        {
+          icon: MapPinIcon,
+        },
+      ];
+    });
 
-		const statsOverview = computed(() => {
-			return [
-				{
-					heading: 'Headings.Experience',
-				},
-				{
-					heading: 'Headings.ProfessionalLevel',
-				},
-				{
-					heading: 'Headings.EmploymentType',
-				},
-				{
-					heading: 'Headings.OfferSalary',
-				},
-				{
-					heading: 'Headings.Location',
-				},
-				{
-					heading: 'Headings.JobEnvironment',
-					chip: true,
-				},
-				{
-					heading: 'Headings.Contact',
-				},
-				{
-					heading: 'Headings.LastUpdated',
-				},
-			];
-		});
+    const statsOverview = computed(() => {
+      return [
+        {
+          heading: 'Headings.Experience',
+        },
+        {
+          heading: 'Headings.ProfessionalLevel',
+        },
+        {
+          heading: 'Headings.EmploymentType',
+        },
+        {
+          heading: 'Headings.OfferSalary',
+        },
+        {
+          heading: 'Headings.Location',
+        },
+        {
+          heading: 'Headings.JobEnvironment',
+          chip: true,
+        },
+        {
+          heading: 'Headings.Contact',
+        },
+        {
+          heading: 'Headings.LastUpdated',
+        },
+      ];
+    });
 
-		return { t, statsHeader, statsOverview };
-	},
+    return { t, statsHeader, statsOverview };
+  },
 });
 </script>
 

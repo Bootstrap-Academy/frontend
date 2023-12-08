@@ -31,92 +31,92 @@ import { useI18n } from 'vue-i18n';
 import type { IForm } from '~/types/form';
 
 export default defineComponent({
-	emits: ['data'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  emits: ['data'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const user: Ref<any> = useUser();
+    const user: Ref<any> = useUser();
 
-		// ============================================================= refs
-		const refForm = ref<HTMLFormElement | null>(null);
+    // ============================================================= refs
+    const refForm = ref<HTMLFormElement | null>(null);
 
-		// ============================================================= reactive
-		const form = reactive<IForm>({
-			country: {
-				valid: user.value?.country ?? '',
-				value: '',
-				rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Country'],
-			},
-			email: {
-				value: user.value?.email ?? '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-					(v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
-				],
-			},
-			submitting: false,
-			validate: () => {
-				let isValid = true;
+    // ============================================================= reactive
+    const form = reactive<IForm>({
+      country: {
+        valid: user.value?.country ?? '',
+        value: '',
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Country'],
+      },
+      email: {
+        value: user.value?.email ?? '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
+          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+        ],
+      },
+      submitting: false,
+      validate: () => {
+        let isValid = true;
 
-				for (const key in form) {
-					if (
-						key != 'validate' &&
+        for (const key in form) {
+          if (
+            key != 'validate' &&
 						key != 'body' &&
 						key != 'submitting' &&
 						!form[key].valid
-					) {
-						isValid = false;
-					}
-				}
+          ) {
+            isValid = false;
+          }
+        }
 
-				if (refForm.value) refForm.value.reportValidity();
-				return isValid;
-			},
-			body: () => {
-				let obj: any = {};
-				for (const key in form) {
-					if (key != 'validate' && key != 'body' && key != 'submitting')
-						obj[key] = form[key].value;
-				}
-				return obj;
-			},
-		});
+        if (refForm.value) refForm.value.reportValidity();
+        return isValid;
+      },
+      body: () => {
+        let obj: any = {};
+        for (const key in form) {
+          if (key != 'validate' && key != 'body' && key != 'submitting')
+            obj[key] = form[key].value;
+        }
+        return obj;
+      },
+    });
 
-		// ============================================================= functions
-		watch(
-			() => form,
-			(newValue, oldValue) => {
-				if (form.validate()) {
-					emit('data', form.body());
-				} else {
-					emit('data', null);
-				}
-			},
-			{ immediate: true, deep: true }
-		);
+    // ============================================================= functions
+    watch(
+      () => form,
+      (newValue, oldValue) => {
+        if (form.validate()) {
+          emit('data', form.body());
+        } else {
+          emit('data', null);
+        }
+      },
+      { immediate: true, deep: true }
+    );
 
-		watch(
-			() => user.value,
-			(newValue, oldValue) => {
-				if (!!!newValue) return;
+    watch(
+      () => user.value,
+      (newValue, oldValue) => {
+        if (!!!newValue) return;
 
-				form.country.value = newValue.country
-					? newValue.country
-					: form.country.value;
+        form.country.value = newValue.country
+          ? newValue.country
+          : form.country.value;
 
-				form.email.value = newValue.email ? newValue.email : form.email.value;
-			},
-			{ immediate: true, deep: true }
-		);
+        form.email.value = newValue.email ? newValue.email : form.email.value;
+      },
+      { immediate: true, deep: true }
+    );
 
-		return {
-			form,
-			refForm,
-			t,
-			user,
-		};
-	},
+    return {
+      form,
+      refForm,
+      t,
+      user,
+    };
+  },
 });
 </script>
 
