@@ -248,8 +248,6 @@ async function fnCreateMatching() {
 watch(
   () => matchingsLength.value,
   (newValue, oldValue) => {
-    // left.value.length = newValue;
-    // right.value.length = newValue;
     solution.value = [];
     if (!!!props.data) {
       for (let index = 0; index < newValue; index++) {
