@@ -9,8 +9,16 @@ export async function createMatching(body: any, task_id: any) {
     const user: any = useUser();
     await getMyMatchingsInTask(task_id, user?.value.id ?? "");
     return [response, null];
-  } catch (error) {
+  } catch (error: any) {
     console.log("error is", error);
+    let msg = error?.data?.error ?? "";
+    if (msg == "subtask_not_found") {
+      return [null, "Error.QuizOrCodingChallengeNotFound"];
+    } else if (msg == "permission_denied") {
+      return [null, "Error.NotAllowedForRatings"];
+    } else if (msg == "banned") {
+      return [null, "Error.UserIsBanned"];
+    }
     return [null, error];
   }
 }

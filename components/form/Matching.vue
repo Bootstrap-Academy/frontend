@@ -102,12 +102,28 @@ const rules = ref([
   (v: String) => !!v || "Required!",
 ]);
 
-const shuffleArray = (arr: Array<Number | String>) => {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+function shuffleArrays(A: any, B: any) {
+  // Check if both arrays have the same length
+  if (A.length !== B.length) {
+    throw new Error("Arrays must have the same length");
   }
-};
+
+  // Create copies of the input arrays
+  const shuffledA = [...A];
+  const shuffledB = [...B];
+
+  // Fisher-Yates shuffle algorithm
+  for (let i = shuffledA.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    // Swap elements in the shuffled arrays
+    [shuffledA[i], shuffledA[j]] = [shuffledA[j], shuffledA[i]];
+    [shuffledB[i], shuffledB[j]] = [shuffledB[j], shuffledB[i]];
+  }
+
+  // Return the shuffled arrays
+  return [shuffledA, shuffledB];
+}
 
 function restoreArraysPattern(stringArray: any, numberArray: any) {
   // Combine the string and number arrays into an array of objects
@@ -204,17 +220,12 @@ async function fnCreateMatching() {
     return openSnackbar("error", "Matchings cannot contain duplicates");
   }
 
-  let combinedArray: any = right.value.map((str: any, index: any) => ({
-    string: str,
-    number: solution.value[index],
-  }));
-
-  console.log("combined array", combinedArray);
-
-  shuffleArray(combinedArray);
-  const rightArray = combinedArray.map((obj: any) => obj.string);
-  const solutionArray = combinedArray.map((obj: any) => obj.number);
-  console.log("right array,", rightArray);
+  const [rightArray, solutionArray] = shuffleArrays(
+    right.value,
+    solution.value
+  );
+  console.log("right value array", rightArray);
+  console.log("silution value", solutionArray);
   // return;
   const body = {
     solution: solutionArray,
@@ -228,6 +239,9 @@ async function fnCreateMatching() {
     dialog.value = false;
     dialogCreateMatching.value = false;
     openSnackbar("success", "Success.CreateMatching");
+  } else if (!!error) {
+    console.log("in errorrrrrrr", error);
+    openSnackbar("error", error);
   }
 }
 
