@@ -52,6 +52,7 @@
 import { useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
 import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
+import type { matching } from "~/types/matching";
 
 const props = defineProps({
   matchings: { type: Array as PropType<any>, default: [] },
@@ -62,8 +63,7 @@ const { t } = useI18n();
 const dialog = useDialogSlot();
 const dialogCreateMatching = useDialogCreateMatching();
 const propData = ref();
-const user: any = useUser();
-const matching: any = useMatching();
+const matching: Ref<matching | null> = useMatching();
 
 function openDialogCreateMatching(subtask: any) {
   propData.value = subtask;
@@ -77,7 +77,7 @@ function openDialogAndAddNew() {
   dialogCreateMatching.value = true;
 }
 
-function fnDeleteSubtask(id: any) {
+function fnDeleteSubtask(id: string) {
   openDialog(
     "info",
     "Headings.DeleteMatching",

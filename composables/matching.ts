@@ -1,6 +1,7 @@
+import type { matching } from "~~/types/matching";
 export const useMyMatchings = () => useState("myMatchings", () => []);
 export const useMatchings = () => useState("matchings", () => []);
-export const useMatching = () => useState("matching", () => {});
+export const useMatching = () => useState("matching", (): matching | any => {});
 
 export async function createMatching(body: any, task_id: any) {
   try {

@@ -77,12 +77,17 @@
 <script setup lang="ts">
 import { PlusCircleIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { ArrowRightIcon } from "@heroicons/vue/24/solid";
+import type { PropType } from "nuxt/dist/app/compat/capi";
 import { useI18n } from "vue-i18n";
 import { useDialogSlot } from "~~/composables/dialogSlot";
-
+import type {
+  matching as matchingType,
+  matchingOptionArray,
+  matchingSolutionArray,
+} from "~~/types/matching";
 const props = defineProps({
   taskId: { type: String, default: "" },
-  data: { type: Object, default: null },
+  data: { type: Object as PropType<matchingType>, default: null },
 });
 
 const { t } = useI18n();
@@ -91,18 +96,18 @@ const dialog = useDialogSlot();
 const loading = ref(false);
 
 const user: any = useUser();
-const matching: any = useMatching();
+const matching: Ref<matchingType | null> = useMatching();
 const matchingsLength = ref(4);
-const left: any = ref([]);
-const right: any = ref([]);
-const solution: any = ref([]);
+const left = ref<matchingOptionArray>([]);
+const right = ref<matchingOptionArray>([]);
+const solution = ref<matchingSolutionArray>([]);
 
 const rules = ref([
   (v: String) => v.length <= 256 || "Maximum 256 Characters are Allowed",
   (v: String) => !!v || "Required!",
 ]);
 
-function shuffleArrays(A: any, B: any) {
+function shuffleArrays(A: matchingOptionArray, B: matchingSolutionArray) {
   // Check if both arrays have the same length
   if (A.length !== B.length) {
     throw new Error("Arrays must have the same length");
@@ -125,9 +130,12 @@ function shuffleArrays(A: any, B: any) {
   return [shuffledA, shuffledB];
 }
 
-function restoreArraysPattern(stringArray: any, numberArray: any) {
+function restoreArraysPattern(
+  stringArray: matchingOptionArray,
+  numberArray: matchingSolutionArray
+) {
   // Combine the string and number arrays into an array of objects
-  const combinedArray = stringArray.map((str: any, index: any) => ({
+  const combinedArray = stringArray.map((str: string, index: number) => ({
     string: str,
     number: numberArray[index],
   }));
@@ -142,7 +150,7 @@ function restoreArraysPattern(stringArray: any, numberArray: any) {
   return [restoredStringArray, restoredNumberArray];
 }
 
-const hasDuplicate = (array: any) => {
+const hasDuplicate = (array: Array<string>) => {
   const seen: { [key: string]: number | Boolean } = {};
 
   for (const item of array) {
@@ -155,16 +163,16 @@ const hasDuplicate = (array: any) => {
   return false;
 };
 
-const IsAnyEmptyIndex = (array: any) => {
+const IsAnyEmptyIndex = (array: Array<string>) => {
   let valid = true;
-  array.forEach((element: any) => {
+  array.forEach((element: string) => {
     if (!!!element || element == null) valid = false;
   });
   if (valid) return false;
   else return true;
 };
 
-function alphabetIs(number: Number) {
+function alphabetIs(number: number) {
   switch (number) {
     case 1: {
       return "A";
@@ -199,7 +207,8 @@ function alphabetIs(number: Number) {
 function addNewMatching() {
   matchingsLength.value += 1;
 }
-function removeMatching(i: any) {
+
+function removeMatching(i: number) {
   if (matchingsLength.value <= 2) {
     return openSnackbar("info", "Error.MinimnumTwoFieldsRequired");
   }
