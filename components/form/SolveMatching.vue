@@ -126,6 +126,8 @@ function setSolution() {
 
 async function onclickSubmitForm() {
   setSolution();
+  console.log("solutiuon", solution.value);
+
   if (props.data.solved == true || props.data?.creator == user.value?.id)
     return;
   formSubmitting.value = true;

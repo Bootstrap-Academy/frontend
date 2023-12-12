@@ -107,27 +107,32 @@ const rules = ref([
   (v: String) => !!v || "Required!",
 ]);
 
-function shuffleArrays(A: matchingOptionArray, B: matchingSolutionArray) {
-  // Check if both arrays have the same length
-  if (A.length !== B.length) {
-    throw new Error("Arrays must have the same length");
-  }
+function shuffleArrays(A: matchingOptionArray) {
+  A = [...A];
+  let solutionArr: any = [];
 
-  // Create copies of the input arrays
-  const shuffledA = [...A];
-  const shuffledB = [...B];
+  // creating array of object with user inputed string and index of that string in array
+  let arr: any = A.map((element, index) => {
+    return { element, index };
+  });
 
-  // Fisher-Yates shuffle algorithm
-  for (let i = shuffledA.length - 1; i > 0; i--) {
+  // shuffling array
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-
-    // Swap elements in the shuffled arrays
-    [shuffledA[i], shuffledA[j]] = [shuffledA[j], shuffledA[i]];
-    [shuffledB[i], shuffledB[j]] = [shuffledB[j], shuffledB[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 
-  // Return the shuffled arrays
-  return [shuffledA, shuffledB];
+  // creating solutionArr according to out arr shuffled
+  arr.forEach((element: any, i: number) => {
+    solutionArr[element.index] = i;
+  });
+
+  // restore only string elements from object Array
+  arr = arr.map((element: any) => {
+    return element.element;
+  });
+
+  return [arr, solutionArr];
 }
 
 function restoreArraysPattern(
@@ -135,19 +140,28 @@ function restoreArraysPattern(
   numberArray: matchingSolutionArray
 ) {
   // Combine the string and number arrays into an array of objects
-  const combinedArray = stringArray.map((str: string, index: number) => ({
-    string: str,
-    number: numberArray[index],
-  }));
+  // const combinedArray = stringArray.map((str: string, index: number) => ({
+  //   string: str,
+  //   number: numberArray[index],
+  // }));
 
-  // Sort the combined array based on the 'number' property
-  combinedArray.sort((a: any, b: any) => a.number - b.number);
+  // // Sort the combined array based on the 'number' property
+  // combinedArray.sort((a: any, b: any) => a.number - b.number);
 
-  // Split the sorted array back into separate arrays
-  const restoredStringArray = combinedArray.map((obj: any) => obj.string);
-  const restoredNumberArray = combinedArray.map((obj: any) => obj.number);
+  // // Split the sorted array back into separate arrays
+  // const restoredStringArray = combinedArray.map((obj: any) => obj.string);
+  // const restoredNumberArray = combinedArray.map((obj: any) => obj.number);
 
-  return [restoredStringArray, restoredNumberArray];
+  // return [restoredStringArray, restoredNumberArray];
+
+  let copiedStringArray: any = [...stringArray];
+  let copiedNumberArray: any = [...numberArray];
+
+  numberArray.forEach((number: any, index: any) => {
+    copiedStringArray[index] = stringArray[number];
+    copiedNumberArray[index] = index;
+  });
+  return [copiedStringArray, copiedNumberArray];
 }
 
 const hasDuplicate = (array: Array<string>) => {
@@ -229,13 +243,11 @@ async function fnCreateMatching() {
     return openSnackbar("error", "Matchings cannot contain duplicates");
   }
 
-  const [rightArray, solutionArray] = shuffleArrays(
-    right.value,
-    solution.value
-  );
+  const [rightArray, solutionArray] = shuffleArrays(right.value);
+
   console.log("right value array", rightArray);
   console.log("silution value", solutionArray);
-  // return;
+
   const body = {
     solution: solutionArray,
     right: rightArray,
