@@ -3,30 +3,25 @@
     <InputBtn class="my-7" full @click="openDialogAndAddNew()">
       {{ t("Buttons.AddNew") }}
     </InputBtn>
-    <section v-if="quizzes?.length">
+    <section v-if="matchings?.length">
       <div
-        v-for="(quiz, i) of quizzes"
+        v-for="(subtask, i) of matchings"
         :key="i"
         class="p-4 xl:p-5 bg-secondary mb-4 rounded-md"
       >
         <article class="flex justify-between gap-4">
           <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
-            {{ quiz?.question ?? "" }}
+            {{ t("Headings.Matching") }} {{ subtask?.left.length ?? "" }} x
+            {{ subtask?.left.length ?? "" }}
           </p>
 
           <div class="flex gap-3 items-center">
             <TrashIcon
-              @click="fnDeleteQuiz(quiz?.id)"
-              class="h-5 w-5 cursor-pointer text-accent"
-            />
-            <PencilSquareIcon
-              v-if="!!user?.admin"
-              @click="openDialogCreate(quiz)"
+              @click="fnDeleteSubtask(subtask?.id)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
             <EyeIcon
-              v-else-if="!user?.admin"
-              @click="openDialogCreate(quiz)"
+              @click="openDialogCreateMatching(subtask)"
               class="h-5 w-5 cursor-pointer text-accent"
             />
           </div>
@@ -37,66 +32,65 @@
       class="border border-accent rounded-md w-full p-5 text-xl text-center"
       v-else
     >
-      {{ t("Headings.EmptyQuizzes") }}
+      {{ t("Headings.EmptyMatchings") }}
     </p>
     <div>
       <DialogSlot
-        v-if="dialogCreateQiuz"
-        :label="'Headings.Quiz'"
-        :propClass="'modal-width-lg lg:modal-width-md'"
+        v-if="dialogCreateMatching"
+        :label="'Headings.Matching'"
+        :propClass="'modal-width-lg '"
         :show="dialog"
-        @closeFunction="dialogCreateQiuz = false"
+        @closeFunction="(dialogCreateMatching = false), (matching = null)"
       >
-        <LazyFormQuiz :data="propData" :taskId="taskId" />
+        <LazyFormMatching :data="propData" :taskId="taskId" />
       </DialogSlot>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useDialogSlot } from "@/composables/dialogSlot";
+import { useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
-import {
-  TrashIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
+import type { matching } from "~/types/matching";
 
 const props = defineProps({
-  quizzes: { type: Array as PropType<any>, default: [] },
+  matchings: { type: Array as PropType<any>, default: [] },
   taskId: { type: String, default: "" },
 });
+
 const { t } = useI18n();
 const dialog = useDialogSlot();
-const dialogCreateQiuz = useDialogCreateSubtask();
+const dialogCreateMatching = useDialogCreateMatching();
 const propData = ref();
-const user: any = useUser();
+const matching: Ref<matching | null> = useMatching();
 
-function openDialogCreate(quiz: any) {
-  propData.value = quiz;
+function openDialogCreateMatching(subtask: any) {
+  propData.value = subtask;
   dialog.value = true;
-  dialogCreateQiuz.value = true;
+  dialogCreateMatching.value = true;
 }
 
 function openDialogAndAddNew() {
   propData.value = null;
   dialog.value = true;
-  dialogCreateQiuz.value = true;
+  dialogCreateMatching.value = true;
 }
-function fnDeleteQuiz(id: any) {
+
+function fnDeleteSubtask(id: string) {
   openDialog(
     "info",
-    "Headings.DeleteQuiz",
-    "Body.DeleteQuiz",
+    "Headings.DeleteMatching",
+    "Body.DeleteMatching",
     false,
     {
-      label: "Buttons.DeleteQuiz",
+      label: "Buttons.DeleteMatching",
       onclick: async () => {
-        const [success, error] = await deleteSubTaskInQuiz(props.taskId, id);
+        const [success, error] = await deleteMatching(props.taskId, id);
 
         if (success) {
           setTimeout(() => {
-            openSnackbar("success", "Success.DeleteQuiz");
+            openSnackbar("success", "Success.DeleteMatching");
           }, 1000);
         } else {
           openSnackbar("error", error?.detail ?? "");

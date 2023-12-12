@@ -78,9 +78,7 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
+<script lang="ts" setup>
 import {
   ClockIcon,
   PlayIcon,
@@ -89,22 +87,13 @@ import {
   Square3Stack3DIcon,
 } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
-
-export default defineComponent({
-  components: {
-    ClockIcon,
-    PlayIcon,
-    KeyIcon,
-    LanguageIcon,
-    Square3Stack3DIcon,
-  },
-  props: {
+  
+ const props= defineProps({
     isCourseAccessible: { type: Boolean, default: false },
     data: { type: Object as PropType<any>, default: null },
     skillID: { type: String, default: null },
     subSkillID: { type: String, default: null },
-  },
-  setup(props) {
+  })
     const { t } = useI18n();
     const route = useRoute();
 
@@ -263,19 +252,7 @@ export default defineComponent({
       ];
     });
 
-    return {
-      stats,
-      price,
-      t,
-      onclickEnroll,
-      loading,
-      termsAndConditions,
-      confirmRightToWithdrawal,
-      confirmDontUseRightToWithdrawal,
-      completed,
-    };
-  },
-});
+  
 </script>
 
 <style scoped></style>
