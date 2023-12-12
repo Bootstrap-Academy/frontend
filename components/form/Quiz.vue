@@ -412,6 +412,7 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
+      console.log("error isssssssss", res);
       openSnackbar("error", res ?? "");
     }
 

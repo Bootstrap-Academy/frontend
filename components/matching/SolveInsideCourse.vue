@@ -4,18 +4,17 @@
       {{ t("Headings.Solved") }}
       {{ solvedQuizzes }}
       /
-      {{ quizzesToShow.length - userCreatedQuizzes }}
+      {{ matchings?.length - userCreatedQuizzes }}
     </p>
-    <FormQuizAnswer
-      v-if="quizzesToShow.length && !!selectedQuiz"
-      doubleColumnOptions
+    <FormSolveMatching
+      v-if="matchings.length && !!selectedQuiz"
       :data="selectedQuiz"
-      @nextQuestion="nextQuestion($event)"
       @rated="setRatedLocally($event)"
       @solved="setSolvedLocally($event)"
+      @nextQuestion="nextQuestion($event)"
     />
     <p v-else-if="!!!selectedQuiz" class="text-center">
-      {{ t("Headings.NoQuizFoundForYouToSolve") }}
+      {{ t("Headings.NoMatchingFoundForYouToSolve") }}
     </p>
   </div>
 </template>
@@ -23,7 +22,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 const props = defineProps({
-  quizzesToShow: { type: Object as PropType<any>, default: null },
+  matchings: { type: Object as PropType<any>, default: null },
 });
 
 const emits = defineEmits(["update:modelValue"]);
@@ -33,7 +32,7 @@ const user: any = useUser();
 
 const solvedQuizzes = computed(() => {
   let total = 0;
-  props.quizzesToShow?.forEach((quiz: any) => {
+  props.matchings?.forEach((quiz: any) => {
     if (!!quiz.solved) {
       ++total;
     }
@@ -43,7 +42,7 @@ const solvedQuizzes = computed(() => {
 
 const userCreatedQuizzes = computed(() => {
   let total = 0;
-  props.quizzesToShow?.forEach((quiz: any) => {
+  props.matchings?.forEach((quiz: any) => {
     if (quiz?.creator == user?.value.id) {
       ++total;
     }
@@ -53,31 +52,34 @@ const userCreatedQuizzes = computed(() => {
 
 function nextQuestion(id: any) {
   let index = 0;
-  props.quizzesToShow.forEach((element: any, i: any) => {
+  props.matchings.forEach((element: any, i: any) => {
     if (element.id == id) {
       console.log("inside index", index);
       index = i;
     }
   });
 
-  if (index == props.quizzesToShow?.length - 1 && index != 0) {
+  if (index == props.matchings?.length - 1 && index != 0) {
     selectedQuiz.value = null;
+    console.log("returning");
     return;
   }
-  for (let i = index; i < props.quizzesToShow?.length; i++) {
+  console.log("index is ", index);
+  for (let i = index; i < props.matchings?.length; i++) {
+    console.log("inside loop");
     if (
-      !props.quizzesToShow[i]?.solved &&
-      props.quizzesToShow[i]?.creator != user?.value.id
-      // && i != index
+      !props.matchings[i]?.solved &&
+      props.matchings[i]?.creator != user?.value.id
+      // &&      i != index
     ) {
-      selectedQuiz.value = props.quizzesToShow[i];
+      selectedQuiz.value = props.matchings[i];
       break;
     }
   }
 }
 
 function setRatedLocally(id: any) {
-  props.quizzesToShow?.forEach((element: any, i: any) => {
+  props.matchings?.forEach((element: any, i: any) => {
     if (element.id == id) {
       element.rated = true;
     }
@@ -85,7 +87,7 @@ function setRatedLocally(id: any) {
 }
 
 function setSolvedLocally(id: any) {
-  props.quizzesToShow.forEach((element: any) => {
+  props.matchings.forEach((element: any) => {
     if (element.id == id) {
       element.solved = true;
     }
@@ -93,7 +95,7 @@ function setSolvedLocally(id: any) {
 }
 
 watch(
-  () => props.quizzesToShow,
+  () => props.matchings,
   (newValue, oldValue) => {
     nextQuestion(0);
   },

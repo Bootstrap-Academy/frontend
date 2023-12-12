@@ -4,3 +4,4 @@ export const useDialogCreateSubtask = () => useState("dialogCreateSubtask", () =
 export const useDialogReportTask = () => useState("dialogReportTask", () => false);
 export const useDialogCodingChallengeFeedback = () => useState("dalogCodingChallengeFeedback", () => false);
 export const useDialogLeaderBoardChallengeBased = () => useState("dialogLeaderBoardChallengeBased", () => false);
+export const useDialogCreateMatching = () => useState("dialogCreateMatching", () => false);
