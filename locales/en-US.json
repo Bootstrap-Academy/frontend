@@ -13,8 +13,8 @@
 
   "Headings": {
     "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
-    "AnswersForMatchingsRespectively": "Answers for Matchings Respectively",
-    "LabelForMatchings": "Label for Matchings",
+    "AnswersForMatchingsRespectively": "Answers for Matchings",
+    "LabelForMatchings": "Labels for Matchings",
     "NoteCannotEditMatching": "Edit Restriction",
     "DeleteMatching": "Delete Matching",
     "EmptyMatchings": "Empty Matchings",
