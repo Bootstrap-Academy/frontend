@@ -91,7 +91,7 @@
           </div>
         </template>
         <h3 v-else class="text-center text-heading-3">
-          {{ t("Headings.NoQuizQuestion") }}
+          {{ t("Headings.NoMatchings") }}
         </h3>
       </div>
     </article>
