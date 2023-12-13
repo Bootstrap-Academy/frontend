@@ -13,8 +13,8 @@
 
   "Headings": {
     "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
-    "AnswersForMatchingsRespectively": "Answers for Matchings Respectively",
-    "LabelForMatchings": "Label for Matchings",
+    "AnswersForMatchingsRespectively": "Answers for Matchings",
+    "LabelForMatchings": "Labels for Matchings",
     "NoteCannotEditMatching": "Edit Restriction",
     "DeleteMatching": "Delete Matching",
     "EmptyMatchings": "Empty Matchings",
@@ -125,6 +125,7 @@
     "Quizzes": "Quizzes",
     "QuizzesInCourse": "Quizzes In This Course",
     "NoQuizQuestion": "No Quizz Questions available",
+    "NoMatchings": "No Matchings available",
     "NoQuizTitle": "No Title is provided for this Quiz",
     "EvaluatorCode": "Evaluator Code",
     "SolutionCode": "Solution Code",
@@ -149,9 +150,8 @@
     "Challenge": "Challenge",
     "Explanation": "Explanation",
     "Input": "Input",
-    "ProgramInputShouldBe": "If input to your code is",
-    "ProgramOutputShouldBe": "Output should be",
     "ExpectedOutput": "Expected Output",
+    "ActualOutput": "Actual Output",
     "Name": "Name",
     "Attempts": "Attempts",
     "Tasks": "Tasks",
@@ -524,7 +524,7 @@
     },
     "HeroFAQS": {
       "1": {
-        "Heading": "How can I participate? How can I get MorphCoin?",
+        "Heading": "How can I participate? How can I get MorphCoins?",
         "Body": "There are several possibilities to help us - and get coins: We're regularly offering small jobs, you can help me with a certain video, you can host a webinar, become a coach or an examiner or you can help us with finding and repairing bugs. More details are"
       },
       "2": {
@@ -541,7 +541,7 @@
       },
       "5": {
         "Heading": "I already studied computer science. Can I get my skills certified?",
-        "Body": "Sure. Contact us! We need to do that manually so we know, it's true. That's why we need a few MC for it."
+        "Body": "Sure. Contact us! We need to do that manually so we know, it's true. That's why we need a few MorphCoins for it."
       }
     },
     "GetMorphcoins": {
@@ -567,7 +567,7 @@
       },
       "6": {
         "Heading": "Bug Bounty",
-        "Body": "Find Bugs of any sorts and report those. You're hacker or you just found a bug, a security vulnerability or a mistake in text or ordering of any sorts? Use the Icon on the right to report it to us! Depending on the severity, you get a reward. Disclaimer: You may NOT use any services, that might crash the server or network or count as denial of service tools! All data you might have access to, need to be removed immediately(!) and completely from your systems. Data on our systems may NOT be changed! Please try to keep other user out of this, try and exploit yourselves, if it is a user based exploit. Also, please limit yourselves to the bootstrap academy. Everything that's not from the academy is out of scope. Example: We use Youtube videos, but we don't own Youtube, so it's out of scope. Also: Only the first reporter will be rewarded and if you are a third party provider, there will probably be no reward. Speaking of rewards: Rewards are most commonly paid out in morphcoins. The amount is defined by the severity of the bug and the quality of the report and how easy you make it for us to fix it. In cases where we discussed that you do bug hunting for us, a payout in euro is possible. Please contact us, if you want this BEFORE you search for a bug!"
+        "Body": "Find Bugs of any sorts and report those. You're hacker or you just found a bug, a security vulnerability or a mistake in text or ordering of any sorts? Use the Icon on the right to report it to us! Depending on the severity, you get a reward. Disclaimer: You may NOT use any services, that might crash the server or network or count as denial of service tools! All data you might have access to, need to be removed immediately(!) and completely from your systems. Data on our systems may NOT be changed! Please try to keep other user out of this, try and exploit yourselves, if it is a user based exploit. Also, please limit yourselves to the Bootstrap Academy. Everything that's not from the academy is out of scope. Example: We use Youtube videos, but we don't own Youtube, so it's out of scope. Also: Only the first reporter will be rewarded and if you are a third party provider, there will probably be no reward. Speaking of rewards: Rewards are most commonly paid out in morphcoins. The amount is defined by the severity of the bug and the quality of the report and how easy you make it for us to fix it. In cases where we discussed that you do bug hunting for us, a payout in euro is possible. Please contact us, if you want this BEFORE you search for a bug!"
       },
       "7": {
         "Heading": "Examiner",
@@ -610,7 +610,6 @@
   "Inputs": {
     "Morphcoins": "Morphcoins",
     "Fee": "Fee",
-    "Skills": "Skills",
     "Xp": "Xp",
     "Coins": "Coins",
     "TimeLimit": "Time Limit (ms)",
@@ -638,11 +637,11 @@
     "Correct": "Correct",
     "Question": "Question",
     "Skill": "Skill",
+    "Skills": "Skills",
     "SubSkill": "SubSkill",
     "Course": "Course",
     "Section": "Section",
     "Lecture": "Lecture",
-    "ShowFreeQuizzesOnly": "Show Free Quizzes Only",
     "FirstName": "First Name",
     "LastName": "Last Name",
     "City": "City",
