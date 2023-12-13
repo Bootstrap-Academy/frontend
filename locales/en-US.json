@@ -611,7 +611,6 @@
   "Inputs": {
     "Morphcoins": "Morphcoins",
     "Fee": "Fee",
-    "Skills": "Skills",
     "Xp": "Xp",
     "Coins": "Coins",
     "TimeLimit": "Time Limit (ms)",
@@ -639,6 +638,7 @@
     "Correct": "Correct",
     "Question": "Question",
     "Skill": "Skill",
+    "Skills": "Skills",
     "SubSkill": "SubSkill",
     "Course": "Course",
     "Section": "Section",

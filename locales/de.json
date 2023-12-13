@@ -188,6 +188,7 @@
     "Person": "Privatperson",
     "Business": "Gewerbe",
     "Skill": "Skill",
+    "Skills": "Skills",
     "WebinarRating": "Webinar bewerten",
     "CancellationPolicy": "Stornierungsbedingungen",
     "TodayDate": "Heutiges Datum",
