@@ -43,37 +43,10 @@ export default {
 		const router = useRouter();
 		const route = useRoute();
 
-		const challengesLoginUrl = useChallengesLoginUrl();
 		const config = useRuntimeConfig().public;
 
 		onMounted(async () => {
-			setLoading(true);
-			const [success, error] = await getChallengesLoginUrl();
-			setLoading(false);
-
-			if (success) {
-				window.location.replace(challengesLoginUrl.value);
-			} else
-				setTimeout(() => {
-					openDialog(
-						'info',
-						'Links.Challenges',
-						'Body.Challenges',
-						false,
-						{
-							label: 'Buttons.Okay',
-							onclick: () => {
-								router.replace('/auth/login?redirect=/challenges');
-							},
-						},
-						{
-							label: 'Buttons.Cancel',
-							onclick: () => {
-								window.location.assign(config.ChallengesLoginURL);
-							},
-						}
-					);
-				}, 0);
+			router.replace('/challenges/all');
 		});
 
 		return {};
