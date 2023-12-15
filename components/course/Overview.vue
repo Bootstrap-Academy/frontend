@@ -88,102 +88,102 @@ import {
 } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
   
- const props= defineProps({
-    isCourseAccessible: { type: Boolean, default: false },
-    data: { type: Object as PropType<any>, default: null },
-    skillID: { type: String, default: null },
-    subSkillID: { type: String, default: null },
-  })
-    const { t } = useI18n();
-    const route = useRoute();
+const props= defineProps({
+  isCourseAccessible: { type: Boolean, default: false },
+  data: { type: Object as PropType<any>, default: null },
+  skillID: { type: String, default: null },
+  subSkillID: { type: String, default: null },
+})
+const { t } = useI18n();
+const route = useRoute();
 
-    const link = computed(() => {
-      let courseID = props.data?.id ?? "HTML";
-      return `/courses/${courseID}/watch?skillID=${props?.skillID}&subSkillID=${props?.subSkillID}`;
-    });
+const link = computed(() => {
+  let courseID = props.data?.id ?? "HTML";
+  return `/courses/${courseID}/watch?skillID=${props?.skillID}&subSkillID=${props?.subSkillID}`;
+});
 
-    const loading = ref(false);
-    const snackbar = useSnackbar();
-    const router = useRouter();
+const loading = ref(false);
+const snackbar = useSnackbar();
+const router = useRouter();
 
-    const termsAndConditions = ref(false);
-    const confirmRightToWithdrawal = ref(false);
-    const confirmDontUseRightToWithdrawal = ref(false);
+const termsAndConditions = ref(false);
+const confirmRightToWithdrawal = ref(false);
+const confirmDontUseRightToWithdrawal = ref(false);
 
-    async function onclickEnroll() {
-      if (props.isCourseAccessible == false) {
-        if (
-          !termsAndConditions.value ||
+async function onclickEnroll() {
+  if (props.isCourseAccessible == false) {
+    if (
+      !termsAndConditions.value ||
           !confirmRightToWithdrawal.value ||
           !confirmDontUseRightToWithdrawal.value
-        ) {
-          snackbar.value = {
-            show: true,
-            type: "error",
-            heading: "Error.MustAgreeToBothPointsInOrderToMoveForward",
-            body: "",
-          };
-          return;
-        }
-      }
+    ) {
+      snackbar.value = {
+        show: true,
+        type: "error",
+        heading: "Error.MustAgreeToBothPointsInOrderToMoveForward",
+        body: "",
+      };
+      return;
+    }
+  }
 
-      if (!props.isCourseAccessible) {
-        loading.value = true;
+  if (!props.isCourseAccessible) {
+    loading.value = true;
 
-        const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
-        if (success) await getCourseByID(props.data?.id ?? "");
-        loading.value = false;
+    const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
+    if (success) await getCourseByID(props.data?.id ?? "");
+    loading.value = false;
 
-        if (error) {
-          snackbar.value = {
-            show: true,
-            type: "error",
-            heading: error?.detail ?? "",
-            body: "",
-          };
-          return;
-        }
-
-        router.push(`${link.value}`);
-      } else {
-        router.push(`${link.value}`);
-      }
+    if (error) {
+      snackbar.value = {
+        show: true,
+        type: "error",
+        heading: error?.detail ?? "",
+        body: "",
+      };
+      return;
     }
 
-    const price = computed(() => {
-      return props.data?.price ?? 0;
+    router.push(`${link.value}`);
+  } else {
+    router.push(`${link.value}`);
+  }
+}
+
+const price = computed(() => {
+  return props.data?.price ?? 0;
+});
+
+const totalSections = computed(() => {
+  let sections = props.data?.sections ?? 0;
+  return typeof sections != "number" ? sections.length : sections;
+});
+
+const totalLectures = computed(() => {
+  let lectures = props.data?.lectures ?? null;
+
+  if (typeof lectures != "number") {
+    let sections: any[] = props.data?.sections ?? [];
+
+    let allLectures: any = [];
+
+    sections.forEach((section) => {
+      allLectures = [...allLectures, ...section.lectures];
     });
 
-    const totalSections = computed(() => {
-      let sections = props.data?.sections ?? 0;
-      return typeof sections != "number" ? sections.length : sections;
-    });
+    const totalDuration = allLectures.reduce(
+      (previousValue: number, currentValue: any) =>
+        previousValue + currentValue.duration ?? 0,
+      0
+    );
 
-    const totalLectures = computed(() => {
-      let lectures = props.data?.lectures ?? null;
+    const { minutes, hours } = convertTimestampToDate(totalDuration);
 
-      if (typeof lectures != "number") {
-        let sections: any[] = props.data?.sections ?? [];
+    let roundedHours = Math.round(hours);
+    let minutesLeftInHours = hours - roundedHours;
+    minutesLeftInHours = Math.round(minutesLeftInHours * 60);
 
-        let allLectures: any = [];
-
-        sections.forEach((section) => {
-          allLectures = [...allLectures, ...section.lectures];
-        });
-
-        const totalDuration = allLectures.reduce(
-          (previousValue: number, currentValue: any) =>
-            previousValue + currentValue.duration ?? 0,
-          0
-        );
-
-        const { minutes, hours } = convertTimestampToDate(totalDuration);
-
-        let roundedHours = Math.round(hours);
-        let minutesLeftInHours = hours - roundedHours;
-        minutesLeftInHours = Math.round(minutesLeftInHours * 60);
-
-        let hoursString =
+    let hoursString =
           roundedHours > 0
             ? t(
               "Headings.Hours",
@@ -191,7 +191,7 @@ import { useI18n } from "vue-i18n";
               roundedHours
             ).toLocaleLowerCase()
             : "";
-        let minsString =
+    let minsString =
           minutesLeftInHours > 0
             ? t(
               "Headings.Mins",
@@ -199,58 +199,58 @@ import { useI18n } from "vue-i18n";
               minutesLeftInHours
             ).toLocaleLowerCase()
             : "";
-        return {
-          quantity: allLectures.length,
-          duration: `${hoursString} ${
-            !!hoursString && !!minsString
-              ? t("Headings.And").toLocaleLowerCase()
-              : ""
-          } ${minsString}`,
-        };
-      } else {
-        return {
-          quantity: lectures,
-          duration: 0,
-        };
-      }
-    });
+    return {
+      quantity: allLectures.length,
+      duration: `${hoursString} ${
+        !!hoursString && !!minsString
+          ? t("Headings.And").toLocaleLowerCase()
+          : ""
+      } ${minsString}`,
+    };
+  } else {
+    return {
+      quantity: lectures,
+      duration: 0,
+    };
+  }
+});
 
-    const completed = computed(() => {
-      return props.data?.completed ?? false;
-    });
+const completed = computed(() => {
+  return props.data?.completed ?? false;
+});
 
-    const stats = computed(() => {
-      return [
-        {
-          icon: ClockIcon,
-          value: totalLectures.value.duration,
-        },
-        {
-          icon: Square3Stack3DIcon,
-          value: t(
-            "Headings.Sections",
-            { n: totalSections.value },
-            totalSections.value
-          ).toLocaleLowerCase(),
-        },
-        {
-          icon: PlayIcon,
-          value: t(
-            "Headings.Lectures",
-            { n: totalLectures.value.quantity },
-            totalLectures.value.quantity
-          ).toLocaleLowerCase(),
-        },
-        {
-          icon: KeyIcon,
-          value: t("Headings.FullTimeAccess"),
-        },
-        {
-          icon: LanguageIcon,
-          value: (props.data?.language ?? "DE").toUpperCase(),
-        },
-      ];
-    });
+const stats = computed(() => {
+  return [
+    {
+      icon: ClockIcon,
+      value: totalLectures.value.duration,
+    },
+    {
+      icon: Square3Stack3DIcon,
+      value: t(
+        "Headings.Sections",
+        { n: totalSections.value },
+        totalSections.value
+      ).toLocaleLowerCase(),
+    },
+    {
+      icon: PlayIcon,
+      value: t(
+        "Headings.Lectures",
+        { n: totalLectures.value.quantity },
+        totalLectures.value.quantity
+      ).toLocaleLowerCase(),
+    },
+    {
+      icon: KeyIcon,
+      value: t("Headings.FullTimeAccess"),
+    },
+    {
+      icon: LanguageIcon,
+      value: (props.data?.language ?? "DE").toUpperCase(),
+    },
+  ];
+});
 
   
 </script>

@@ -40,30 +40,30 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-  const props=defineProps({
-    modelValue: { type: Number, default: 0 },
-    buttonOptions: { type: Array as PropType<any>, default: [] },
-    primary: { type: Boolean, default: true },
-    secondary: { type: Boolean, default: false },
-    mobileResponsive: { type: Boolean, default: true },
-    smInMobile: { type: Boolean, default: false },
-  })
- const emits=defineEmits(["update:modelValue"])
-    const { t } = useI18n();
-    const selectedOption = ref(0);
+const props=defineProps({
+  modelValue: { type: Number, default: 0 },
+  buttonOptions: { type: Array as PropType<any>, default: [] },
+  primary: { type: Boolean, default: true },
+  secondary: { type: Boolean, default: false },
+  mobileResponsive: { type: Boolean, default: true },
+  smInMobile: { type: Boolean, default: false },
+})
+const emits=defineEmits(["update:modelValue"])
+const { t } = useI18n();
+const selectedOption = ref(0);
 
-    watch(
-      () => props.modelValue,
-      (newValue, oldValue) => {
-        selectedOption.value = newValue;
-      },
-      { immediate: true }
-    );
+watch(
+  () => props.modelValue,
+  (newValue, oldValue) => {
+    selectedOption.value = newValue;
+  },
+  { immediate: true }
+);
 
-    function emitSelected(selected: any) {
-      selectedOption.value = selected;
-      emits("update:modelValue", selected);
-    }
+function emitSelected(selected: any) {
+  selectedOption.value = selected;
+  emits("update:modelValue", selected);
+}
     
 </script>
 
