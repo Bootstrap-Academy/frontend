@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			BASE_API_URL: 'https://api.test.bootstrap.academy',
-			BASE_WEB_URL: 'https://bootstrap-academy-frontend.pages.dev',
+			BASE_WEB_URL: 'https://test.bootstrap.academy',
 			Gleap_API_KEY: '8TVLuULNmWxZHIifA1PW6TYHUCKEb5so',
 			Vue3ReCaptcha_SITE_KEY: '6Ldb070iAAAAAKsAt_M_ilgDbnWcF-N_Pj2DBBeP',
 			NODE_ENV: 'production',
