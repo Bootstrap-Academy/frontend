@@ -18,7 +18,6 @@
       :activeStepper="activeStepper"
       @activeStepper="activeStepper = $event"
     />
-
     <div class="h-fit pointer-events-none">
       <SkillTreeNodeSvg
         :size="nodeSize"
@@ -151,7 +150,6 @@ export default defineComponent({
           getCoachingsForThisSubSkill(subSkillID.value),
           getWebinarsForThisSubSkill(subSkillID.value),
           getQuizzesInSkill(subSkillID.value),
-          // getQuizzes(), //This api is fake and will return only static quizzes from list
         ]);
       }
 

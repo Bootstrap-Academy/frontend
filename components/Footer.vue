@@ -16,9 +16,6 @@
 			>
 				{{ t(label) }}
 			</NuxtLink>
-			<a href="https://the-morpheus.cc/" target="_blank">
-				{{ t('Links.Challenges') }}
-			</a>
 		</nav>
 
 		<article class="my-2.5 md:my-5 flex gap-10 justify-center">
