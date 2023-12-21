@@ -21,47 +21,47 @@ import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {
-	props: {
-		placeholder: { type: String, default: '' },
-		modelValue: { type: String, default: '' },
-	},
-	emits: ['update:modelValue'],
-	components: { MagnifyingGlassIcon },
-	setup(props, { emit }) {
-		const search = ref(props.modelValue);
+  props: {
+    placeholder: { type: String, default: '' },
+    modelValue: { type: String, default: '' },
+  },
+  emits: ['update:modelValue'],
+  components: { MagnifyingGlassIcon },
+  setup(props, { emit }) {
+    const search = ref(props.modelValue);
 
-		function onchange() {
-			emit('update:modelValue', search.value);
+    function onchange() {
+      emit('update:modelValue', search.value);
 
-			// if (search.value.length == 1) {
-			// 	emit('update:modelValue', search.value);
-			// } else if (search.value.length >= props.modelValue.length + 3) {
-			// 	emit('update:modelValue', search.value);
-			// } else if (search.value.length <= props.modelValue.length - 3) {
-			// 	emit('update:modelValue', search.value);
-			// } else if (!!!search.value.length) {
-			// 	emit('update:modelValue', search.value);
-			// }
-		}
+      // if (search.value.length == 1) {
+      // 	emit('update:modelValue', search.value);
+      // } else if (search.value.length >= props.modelValue.length + 3) {
+      // 	emit('update:modelValue', search.value);
+      // } else if (search.value.length <= props.modelValue.length - 3) {
+      // 	emit('update:modelValue', search.value);
+      // } else if (!!!search.value.length) {
+      // 	emit('update:modelValue', search.value);
+      // }
+    }
 
-		function onclickForceSearch() {
-			emit('update:modelValue', search.value + ' ');
-		}
+    function onclickForceSearch() {
+      emit('update:modelValue', search.value + ' ');
+    }
 
-		const { t } = useI18n();
+    const { t } = useI18n();
 
-		const translatedPlaceholder = computed(() => {
-			return t(props.placeholder);
-		});
+    const translatedPlaceholder = computed(() => {
+      return t(props.placeholder);
+    });
 
-		return {
-			MagnifyingGlassIcon,
-			translatedPlaceholder,
-			search,
-			onclickForceSearch,
-			onchange,
-		};
-	},
+    return {
+      MagnifyingGlassIcon,
+      translatedPlaceholder,
+      search,
+      onclickForceSearch,
+      onchange,
+    };
+  },
 };
 </script>
 

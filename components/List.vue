@@ -25,17 +25,17 @@ import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		items: { default: Array as PropType<any[]> },
-		list: { type: Boolean, default: true },
-		checklist: { type: Boolean, default: false },
-		points: { type: Boolean, default: false },
-		link: { type: Boolean, default: false },
-		id: { type: String, default: 'list-' },
-	},
-	setup() {
-		return {};
-	},
+  props: {
+    items: { default: Array as PropType<any[]> },
+    list: { type: Boolean, default: true },
+    checklist: { type: Boolean, default: false },
+    points: { type: Boolean, default: false },
+    link: { type: Boolean, default: false },
+    id: { type: String, default: 'list-' },
+  },
+  setup() {
+    return {};
+  },
 });
 </script>
 

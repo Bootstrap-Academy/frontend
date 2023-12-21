@@ -83,12 +83,12 @@
 
 <script>
 export default {
-	head: {
-		title: 'Imprint',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: 'Imprint',
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 

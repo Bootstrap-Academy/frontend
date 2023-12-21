@@ -13,11 +13,11 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	setup() {
-		const loading = useLoading();
+  setup() {
+    const loading = useLoading();
 
-		return { loading };
-	},
+    return { loading };
+  },
 });
 </script>
 

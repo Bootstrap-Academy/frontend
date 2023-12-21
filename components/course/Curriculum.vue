@@ -85,10 +85,10 @@ export default defineComponent({
 
         return !!!section.id && !!section.title
           ? {
-              ...section,
-              id: `${section.title.replace(/ /g, "_")}-${i}`,
-              duration: getTotalDurationOfThisSection(section),
-            }
+            ...section,
+            id: `${section.title.replace(/ /g, "_")}-${i}`,
+            duration: getTotalDurationOfThisSection(section),
+          }
           : { ...section, duration: getTotalDurationOfThisSection(section) };
       });
     });
@@ -180,18 +180,18 @@ export default defineComponent({
       let hoursString =
         roundedHours > 0
           ? t(
-              "Headings.Hours",
-              { n: roundedHours },
-              roundedHours
-            ).toLocaleLowerCase()
+            "Headings.Hours",
+            { n: roundedHours },
+            roundedHours
+          ).toLocaleLowerCase()
           : "";
       let minsString =
         minutesLeftInHours > 0
           ? t(
-              "Headings.Mins",
-              { n: minutesLeftInHours },
-              minutesLeftInHours
-            ).toLocaleLowerCase()
+            "Headings.Mins",
+            { n: minutesLeftInHours },
+            minutesLeftInHours
+          ).toLocaleLowerCase()
           : "";
 
       return `${hoursString} ${

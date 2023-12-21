@@ -36,28 +36,28 @@ import { ChevronDownIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	components: { ChevronDownIcon },
-	props: {
-		expand: { type: Boolean, default: false },
-		heading: { type: String, default: '' },
-		body: { type: String, default: '' },
-		link: { default: null },
-	},
-	emits: ['expand'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  components: { ChevronDownIcon },
+  props: {
+    expand: { type: Boolean, default: false },
+    heading: { type: String, default: '' },
+    body: { type: String, default: '' },
+    link: { default: null },
+  },
+  emits: ['expand'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const article = ref(null);
+    const article = ref(null);
 
-		const max_height = computed(() => {
-			return props.expand ? `${article?.value?.scrollHeight ?? 0}px` : `0px`;
-		});
+    const max_height = computed(() => {
+      return props.expand ? `${article?.value?.scrollHeight ?? 0}px` : `0px`;
+    });
 
-		function onclickToggleBoxBody() {
-			emit('expand', !props.expand);
-		}
-		return { onclickToggleBoxBody, article, max_height, t };
-	},
+    function onclickToggleBoxBody() {
+      emit('expand', !props.expand);
+    }
+    return { onclickToggleBoxBody, article, max_height, t };
+  },
 });
 </script>
 

@@ -531,18 +531,18 @@
 
 <script>
 export default {
-	setup() {
-		const config = useRuntimeConfig().public;
+  setup() {
+    const config = useRuntimeConfig().public;
 
-		const webLink = computed(() => {
-			return `${config.BASE_WEB_URL}`;
-		});
+    const webLink = computed(() => {
+      return `${config.BASE_WEB_URL}`;
+    });
 
-		return { webLink };
-	},
-	head: {
-		title: 'Right of Withdrawal',
-	},
+    return { webLink };
+  },
+  head: {
+    title: 'Right of Withdrawal',
+  },
 };
 </script>
 

@@ -34,30 +34,30 @@
 import { defineComponent } from 'vue';
 
 import {
-	BriefcaseIcon,
-	CurrencyDollarIcon,
-	MapPinIcon,
+  BriefcaseIcon,
+  CurrencyDollarIcon,
+  MapPinIcon,
 } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
-	components: { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon },
-	setup(props) {
-		const stats = computed(() => {
-			return [
-				{
-					icon: CurrencyDollarIcon,
-				},
-				{
-					icon: BriefcaseIcon,
-				},
-				{
-					icon: MapPinIcon,
-				},
-			];
-		});
+  components: { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon },
+  setup(props) {
+    const stats = computed(() => {
+      return [
+        {
+          icon: CurrencyDollarIcon,
+        },
+        {
+          icon: BriefcaseIcon,
+        },
+        {
+          icon: MapPinIcon,
+        },
+      ];
+    });
 
-		return { stats };
-	},
+    return { stats };
+  },
 });
 </script>
 

@@ -51,17 +51,17 @@
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	components: { ArrowRightIcon, ArrowLeftIcon },
-	head: {
-		title: 'Elements',
-	},
-	setup() {
-		return { ArrowRightIcon, ArrowLeftIcon };
-	},
+  components: { ArrowRightIcon, ArrowLeftIcon },
+  head: {
+    title: 'Elements',
+  },
+  setup() {
+    return { ArrowRightIcon, ArrowLeftIcon };
+  },
 };
 </script>
 

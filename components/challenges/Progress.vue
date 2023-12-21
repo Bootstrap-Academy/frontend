@@ -25,25 +25,25 @@ interface PropData {
 }
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<PropData | null>, default: null },
-		loading: { type: Boolean, default: true },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<PropData | null>, default: null },
+    loading: { type: Boolean, default: true },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const DEFAULT_MAX_VALUE = 10;
+    const DEFAULT_MAX_VALUE = 10;
 
-		const value = computed(() => {
-			return props.data?.current ?? getRandomNumber(1, DEFAULT_MAX_VALUE - 1);
-		});
+    const value = computed(() => {
+      return props.data?.current ?? getRandomNumber(1, DEFAULT_MAX_VALUE - 1);
+    });
 
-		const max = computed(() => {
-			return props.data?.total ?? DEFAULT_MAX_VALUE;
-		});
+    const max = computed(() => {
+      return props.data?.total ?? DEFAULT_MAX_VALUE;
+    });
 
-		return { t, value, max };
-	},
+    return { t, value, max };
+  },
 });
 </script>
 

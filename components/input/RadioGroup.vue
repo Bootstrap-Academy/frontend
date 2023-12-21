@@ -19,39 +19,39 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		horizontal: { type: Boolean, default: false },
-		sm: { type: Boolean, default: false },
-		gap: { type: String, default: 'gap-card-sm' },
-		options: { type: Array as PropType<any[]>, default: [] },
-		label: { type: String, default: '' },
-		name: { type: String, default: '' },
-		modelValue: { default: '' },
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit, expose }) {
-		const { t } = useI18n();
+  props: {
+    horizontal: { type: Boolean, default: false },
+    sm: { type: Boolean, default: false },
+    gap: { type: String, default: 'gap-card-sm' },
+    options: { type: Array as PropType<any[]>, default: [] },
+    label: { type: String, default: '' },
+    name: { type: String, default: '' },
+    modelValue: { default: '' },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit, expose }) {
+    const { t } = useI18n();
 
-		const input = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: string) {
-				emit('update:modelValue', value);
-			},
-		});
+    const input = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: string) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		function reset() {
-			input.value = '';
-		}
+    function reset() {
+      input.value = '';
+    }
 
-		expose({ reset });
+    expose({ reset });
 
-		return {
-			t,
-			input,
-		};
-	},
+    return {
+      t,
+      input,
+    };
+  },
 });
 </script>
 

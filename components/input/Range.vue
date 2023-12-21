@@ -25,61 +25,61 @@
 import { defineComponent, onMounted } from 'vue';
 
 export default defineComponent({
-	props: {
-		min: { type: Number, default: 1500 },
-		max: { type: Number, default: 9000 },
-		modelValue: { type: Number, default: 4000 },
-		label: { type: String, default: '' },
-		prefix: { type: String, default: '' },
-		reduce: { type: Number, default: 10 },
-	},
-	emits: ['update:modelValue', 'valid'],
-	setup(props, { emit }) {
-		const DOM_INPUT = ref<HTMLInputElement | null>(null);
+  props: {
+    min: { type: Number, default: 1500 },
+    max: { type: Number, default: 9000 },
+    modelValue: { type: Number, default: 4000 },
+    label: { type: String, default: '' },
+    prefix: { type: String, default: '' },
+    reduce: { type: Number, default: 10 },
+  },
+  emits: ['update:modelValue', 'valid'],
+  setup(props, { emit }) {
+    const DOM_INPUT = ref<HTMLInputElement | null>(null);
 
-		const value = ref(0);
+    const value = ref(0);
 
-		onMounted(() => {
-			value.value = props.modelValue;
-			setRange(props.modelValue);
-		});
+    onMounted(() => {
+      value.value = props.modelValue;
+      setRange(props.modelValue);
+    });
 
-		watch(
-			() => props.modelValue,
-			(newValue, oldValue) => {
-				value.value = newValue;
-			}
-		);
+    watch(
+      () => props.modelValue,
+      (newValue, oldValue) => {
+        value.value = newValue;
+      }
+    );
 
-		function setRange(val: string | number) {
-			let value = val;
+    function setRange(val: string | number) {
+      let value = val;
 
-			if (typeof value == 'string') {
-				value = parseInt(value);
-			}
+      if (typeof value == 'string') {
+        value = parseInt(value);
+      }
 
-			let total = props.max - props.min;
-			let filled = value / total;
-			let percent = filled * 100;
-			percent = percent - props.reduce;
+      let total = props.max - props.min;
+      let filled = value / total;
+      let percent = filled * 100;
+      percent = percent - props.reduce;
 
-			if (!DOM_INPUT.value) return;
-			DOM_INPUT.value.style.background = `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${percent}%, white ${percent}%,  white 100%)`;
-		}
+      if (!DOM_INPUT.value) return;
+      DOM_INPUT.value.style.background = `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${percent}%, white ${percent}%,  white 100%)`;
+    }
 
-		function emitRange() {
-			emit('update:modelValue', value.value);
-		}
+    function emitRange() {
+      emit('update:modelValue', value.value);
+    }
 
-		watch(
-			() => value.value,
-			(newValue, oldValue) => {
-				setRange(newValue);
-			}
-		);
+    watch(
+      () => value.value,
+      (newValue, oldValue) => {
+        setRange(newValue);
+      }
+    );
 
-		return { DOM_INPUT, setRange, emitRange, value };
-	},
+    return { DOM_INPUT, setRange, emitRange, value };
+  },
 });
 </script>
 

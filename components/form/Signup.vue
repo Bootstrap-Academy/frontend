@@ -92,205 +92,205 @@ import { useReCaptcha } from 'vue-recaptcha-v3';
 import type { IForm } from '~/types/form';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+  setup() {
+    const { t } = useI18n();
 
-		// ============================================================= refs
-		const refForm = ref<HTMLFormElement | null>(null);
+    // ============================================================= refs
+    const refForm = ref<HTMLFormElement | null>(null);
 
-		// ============================================================= reactive
-		const form = reactive<IForm>({
-			name: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
-					(v: string) => v.length >= 3 || 'Error.InputMinLength_3',
-					(v: string) => v.length <= 32 || 'Error.InputMinLength_32',
-					(v: string) =>
-						/^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
-				],
-			},
-			display_name: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
-					(v: string) => v.length >= 3 || 'Error.InputMinLength_3',
-					(v: string) => v.length <= 64 || 'Error.InputMinLength_64',
-				],
-			},
-			email: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-					(v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
-				],
-			},
-			password: {
-				valid: false,
-				value: '',
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
-					(v: string) =>
-						/^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
+    // ============================================================= reactive
+    const form = reactive<IForm>({
+      name: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
+          (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
+          (v: string) => v.length <= 32 || 'Error.InputMinLength_32',
+          (v: string) =>
+            /^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
+        ],
+      },
+      display_name: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
+          (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
+          (v: string) => v.length <= 64 || 'Error.InputMinLength_64',
+        ],
+      },
+      email: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
+          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+        ],
+      },
+      password: {
+        valid: false,
+        value: '',
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
+          (v: string) =>
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
 						'Error.InputPasswordError',
-				],
-			},
-			termsAndConditions: {
-				value: false,
-				valid: false,
-			},
-			privacy: {
-				value: false,
-				valid: false,
-			},
-			newsletter: {
-				value: false,
-				valid: true,
-			},
-			submitting: false,
-			validate: () => {
-				let isValid = true;
+        ],
+      },
+      termsAndConditions: {
+        value: false,
+        valid: false,
+      },
+      privacy: {
+        value: false,
+        valid: false,
+      },
+      newsletter: {
+        value: false,
+        valid: true,
+      },
+      submitting: false,
+      validate: () => {
+        let isValid = true;
 
-				if (!!register_token.value) {
-					form.password.valid = true;
-				}
+        if (!!register_token.value) {
+          form.password.valid = true;
+        }
 
-				for (const key in form) {
-					if (
-						key != 'validate' &&
+        for (const key in form) {
+          if (
+            key != 'validate' &&
 						key != 'body' &&
 						key != 'submitting' &&
 						key != 'newsletter' &&
 						!form[key].valid
-					) {
-						isValid = false;
-					}
-				}
+          ) {
+            isValid = false;
+          }
+        }
 
-				if (refForm.value) refForm.value.reportValidity();
-				return isValid;
-			},
-			body: () => {
-				let obj: any = {};
-				for (const key in form) {
-					if (
-						key != 'validate' &&
+        if (refForm.value) refForm.value.reportValidity();
+        return isValid;
+      },
+      body: () => {
+        let obj: any = {};
+        for (const key in form) {
+          if (
+            key != 'validate' &&
 						key != 'body' &&
 						key != 'submitting' &&
 						key != 'termsAndConditions' &&
 						key != 'newsletter' &&
 						key != 'privacy'
-					)
-						obj[key] = form[key].value;
-				}
-				return obj;
-			},
-		});
+          )
+            obj[key] = form[key].value;
+        }
+        return obj;
+      },
+    });
 
-		// ============================================================= reCaptcha
-		const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
-		const getReCaptchaToken = async () => {
-			try {
-				await recaptchaLoaded();
-				const token = await executeRecaptcha('login');
-				return token;
-			} catch (error) {
-				return null;
-			}
-		};
+    // ============================================================= reCaptcha
+    const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
+    const getReCaptchaToken = async () => {
+      try {
+        await recaptchaLoaded();
+        const token = await executeRecaptcha('login');
+        return token;
+      } catch (error) {
+        return null;
+      }
+    };
 
-		// ============================================================= OAuth Signup
-		const route = useRoute();
-		const register_token = computed(() => {
-			return route?.query?.register_token ?? '';
-		});
-		onMounted(() => {
-			if (!!register_token.value) {
-				openDialog(
-					'success',
-					'Headings.OAuthSuccess',
-					'Success.OAuthSuccess',
-					true,
-					{
-						label: 'Buttons.Okay',
-						onclick: () => {},
-					},
-					null
-				);
-			}
-		});
+    // ============================================================= OAuth Signup
+    const route = useRoute();
+    const register_token = computed(() => {
+      return route?.query?.register_token ?? '';
+    });
+    onMounted(() => {
+      if (!!register_token.value) {
+        openDialog(
+          'success',
+          'Headings.OAuthSuccess',
+          'Success.OAuthSuccess',
+          true,
+          {
+            label: 'Buttons.Okay',
+            onclick: () => {},
+          },
+          null
+        );
+      }
+    });
 
-		// ============================================================= functions
-		async function onclickSubmitForm() {
-			if (form.validate()) {
-				form.submitting = true;
+    // ============================================================= functions
+    async function onclickSubmitForm() {
+      if (form.validate()) {
+        form.submitting = true;
 
-				let recaptcha_response = await getReCaptchaToken();
+        let recaptcha_response = await getReCaptchaToken();
 
-				const updatedBody = !!register_token.value
-					? {
-							...form.body(),
-							recaptcha_response: recaptcha_response,
-							oauth_register_token: register_token.value,
+        const updatedBody = !!register_token.value
+          ? {
+            ...form.body(),
+            recaptcha_response: recaptcha_response,
+            oauth_register_token: register_token.value,
 					  }
-					: {
-							...form.body(),
-							recaptcha_response: recaptcha_response,
+          : {
+            ...form.body(),
+            recaptcha_response: recaptcha_response,
 					  };
 
-				const [success, error] = await signup(updatedBody);
+        const [success, error] = await signup(updatedBody);
 
-				if (!!success) await requestEmailVerification();
+        if (!!success) await requestEmailVerification();
 
-				let isNewsletter = false;
-				if (!!success && !!form.newsletter.value) {
-					const [suc, err] = await requestNewsletterRegistration();
-					isNewsletter = !!suc;
-				}
+        let isNewsletter = false;
+        if (!!success && !!form.newsletter.value) {
+          const [suc, err] = await requestNewsletterRegistration();
+          isNewsletter = !!suc;
+        }
 
-				form.submitting = false;
+        form.submitting = false;
 
-				success ? successHandler(success, isNewsletter) : errorHandler(error);
-			} else {
-				openSnackbar('error', 'Error.InvalidForm');
-			}
-		}
+        success ? successHandler(success, isNewsletter) : errorHandler(error);
+      } else {
+        openSnackbar('error', 'Error.InvalidForm');
+      }
+    }
 
-		const router = useRouter();
+    const router = useRouter();
 
-		function successHandler(res: any, isNewsletter: boolean) {
-			openDialog(
-				'success',
-				'Success.SignupSuccessful',
-				`${t('Success.AccountCreated')} ${
-					isNewsletter ? t('Success.NewsletterSignup') : ''
-				}`,
-				true,
-				{
-					label: 'Buttons.VerifyAccount',
-					onclick: () => {
-						router.push('/auth/verify-account');
-					},
-				},
-				null
-			);
-		}
+    function successHandler(res: any, isNewsletter: boolean) {
+      openDialog(
+        'success',
+        'Success.SignupSuccessful',
+        `${t('Success.AccountCreated')} ${
+          isNewsletter ? t('Success.NewsletterSignup') : ''
+        }`,
+        true,
+        {
+          label: 'Buttons.VerifyAccount',
+          onclick: () => {
+            router.push('/auth/verify-account');
+          },
+        },
+        null
+      );
+    }
 
-		function errorHandler(res: any) {
-			openSnackbar('error', res?.detail ?? '');
-		}
+    function errorHandler(res: any) {
+      openSnackbar('error', res?.detail ?? '');
+    }
 
-		return {
-			form,
-			onclickSubmitForm,
-			refForm,
-			t,
-			register_token,
-		};
-	},
+    return {
+      form,
+      onclickSubmitForm,
+      refForm,
+      t,
+      register_token,
+    };
+  },
 });
 </script>
 

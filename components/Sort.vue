@@ -24,37 +24,37 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		text: { type: String, default: 'Headings.SortBy' },
-		quantity: { type: Number, default: 0 },
-		options: {
-			default: [
-				{
-					label: 'Headings.BestMatch',
-					value: 'bestMatch',
-				},
-				{
-					label: 'Headings.Latest',
-					value: 'latest',
-				},
-			],
-		},
-	},
-	emits: ['selected'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    text: { type: String, default: 'Headings.SortBy' },
+    quantity: { type: Number, default: 0 },
+    options: {
+      default: [
+        {
+          label: 'Headings.BestMatch',
+          value: 'bestMatch',
+        },
+        {
+          label: 'Headings.Latest',
+          value: 'latest',
+        },
+      ],
+    },
+  },
+  emits: ['selected'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const selected = ref();
+    const selected = ref();
 
-		watch(
-			() => selected.value,
-			(newValue, oldValue) => {
-				emit('selected', newValue);
-			}
-		);
+    watch(
+      () => selected.value,
+      (newValue, oldValue) => {
+        emit('selected', newValue);
+      }
+    );
 
-		return { t, selected };
-	},
+    return { t, selected };
+  },
 });
 </script>
 

@@ -19,21 +19,21 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: {
-		modelValue: { type: Boolean, default: false },
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const input = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value) {
-				emit('update:modelValue', value);
-			},
-		});
-		return { input };
-	},
+  props: {
+    modelValue: { type: Boolean, default: false },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const input = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value) {
+        emit('update:modelValue', value);
+      },
+    });
+    return { input };
+  },
 });
 </script>
 

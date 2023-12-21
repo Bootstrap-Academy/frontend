@@ -37,59 +37,59 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+  setup() {
+    const { t } = useI18n();
 
-		const ics = useICS();
+    const ics = useICS();
 
-		const coaching = reactive({
-			label: 'Headings.Coaching',
-			text: 'text-info',
-			bg: 'bg-info',
-			bgLight: 'bg-info-light',
-			border: 'border-info',
-		});
+    const coaching = reactive({
+      label: 'Headings.Coaching',
+      text: 'text-info',
+      bg: 'bg-info',
+      bgLight: 'bg-info-light',
+      border: 'border-info',
+    });
 
-		const exam = reactive({
-			label: 'Headings.Exam',
-			text: 'text-error',
-			bg: 'bg-error',
-			bgLight: 'bg-error-light',
-			border: 'border-error',
-		});
+    const exam = reactive({
+      label: 'Headings.Exam',
+      text: 'text-error',
+      bg: 'bg-error',
+      bgLight: 'bg-error-light',
+      border: 'border-error',
+    });
 
-		const webinar = reactive({
-			label: 'Headings.Webinar',
-			text: 'text-warning',
-			bg: 'bg-warning',
-			bgLight: 'bg-warning-light',
-			border: 'border-warning',
-		});
+    const webinar = reactive({
+      label: 'Headings.Webinar',
+      text: 'text-warning',
+      bg: 'bg-warning',
+      bgLight: 'bg-warning-light',
+      border: 'border-warning',
+    });
 
-		const types = computed(() => {
-			return [webinar, coaching];
-		});
+    const types = computed(() => {
+      return [webinar, coaching];
+    });
 
-		const eventFilter = useEventFilter();
+    const eventFilter = useEventFilter();
 
-		const eventFilterOptions = reactive([
-			{
-				label: 'List.Filter.All',
-				value: 'all',
-			},
-			{
-				label: 'List.Filter.Booked',
-				value: 'booked',
-				tooltip: 'Body.BookedEventsFilterToolTip',
-			},
-			{
-				label: 'List.Filter.Mine',
-				value: 'mine',
-				tooltip: 'Body.MyEventsFilterToolTip',
-			},
-		]);
-		return { t, types, eventFilter, eventFilterOptions, ics };
-	},
+    const eventFilterOptions = reactive([
+      {
+        label: 'List.Filter.All',
+        value: 'all',
+      },
+      {
+        label: 'List.Filter.Booked',
+        value: 'booked',
+        tooltip: 'Body.BookedEventsFilterToolTip',
+      },
+      {
+        label: 'List.Filter.Mine',
+        value: 'mine',
+        tooltip: 'Body.MyEventsFilterToolTip',
+      },
+    ]);
+    return { t, types, eventFilter, eventFilterOptions, ics };
+  },
 });
 </script>
 

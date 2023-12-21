@@ -28,19 +28,19 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		const user = <any>useUser();
+  setup() {
+    const { t } = useI18n();
+    const user = <any>useUser();
 
-		const show = computed(() => {
-			return user.value?.mfa_enabled ?? false;
-		});
+    const show = computed(() => {
+      return user.value?.mfa_enabled ?? false;
+    });
 
-		return {
-			t,
-			show,
-		};
-	},
+    return {
+      t,
+      show,
+    };
+  },
 });
 </script>
 
