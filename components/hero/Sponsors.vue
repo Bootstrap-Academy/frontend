@@ -13,11 +13,11 @@
 
 <script>
 export default {
-	setup() {
-		let sponsors = ['BWB', 'FHDW', 'GBI', 'ITCS', 'MT5', 'WINGO'];
+  setup() {
+    let sponsors = ['BWB', 'FHDW', 'GBI', 'ITCS', 'MT5', 'WINGO'];
 
-		return { sponsors };
-	},
+    return { sponsors };
+  },
 };
 </script>
 

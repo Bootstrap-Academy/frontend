@@ -44,37 +44,37 @@
 import type { Ref } from 'vue';
 
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Manage Webinar',
-	},
-	setup() {
-		const route = useRoute();
+  head: {
+    title: 'Manage Webinar',
+  },
+  setup() {
+    const route = useRoute();
 
-		const webinarID = computed(() => {
-			return <string>(route.params?.id ?? '');
-		});
+    const webinarID = computed(() => {
+      return <string>(route.params?.id ?? '');
+    });
 
-		const webinar: Ref<any> = useWebinar();
+    const webinar: Ref<any> = useWebinar();
 
-		const rating = computed(() => {
-			return webinar.value?.instructor_rating ?? 0;
-		});
+    const rating = computed(() => {
+      return webinar.value?.instructor_rating ?? 0;
+    });
 
-		const skillID = computed(() => {
-			return webinar.value?.skillID ?? '';
-		});
+    const skillID = computed(() => {
+      return webinar.value?.skillID ?? '';
+    });
 
-		onMounted(async () => {
-			await getWebinar(webinarID.value);
-		});
+    onMounted(async () => {
+      await getWebinar(webinarID.value);
+    });
 
-		return { webinar, skillID, rating };
-	},
+    return { webinar, skillID, rating };
+  },
 };
 </script>
 

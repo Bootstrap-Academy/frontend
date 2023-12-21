@@ -26,32 +26,32 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'MFA Disabled',
-	},
-	setup() {
-		const router = useRouter();
+  head: {
+    title: 'MFA Disabled',
+  },
+  setup() {
+    const router = useRouter();
 
-		const dialog = <any>reactive({
-			type: 'warning',
-			heading: 'Headings.DisabledMFAViaRecoveryCode',
-			body: 'Body.DisabledMFAViaRecoveryCode',
-			primaryBtn: {
-				label: 'Buttons.Re-EnableMFA',
-				onclick: () => {
-					router.push('/account/mfa/initialize');
-				},
-			},
-			secondaryBtn: null,
-		});
+    const dialog = <any>reactive({
+      type: 'warning',
+      heading: 'Headings.DisabledMFAViaRecoveryCode',
+      body: 'Body.DisabledMFAViaRecoveryCode',
+      primaryBtn: {
+        label: 'Buttons.Re-EnableMFA',
+        onclick: () => {
+          router.push('/account/mfa/initialize');
+        },
+      },
+      secondaryBtn: null,
+    });
 
-		return { dialog };
-	},
+    return { dialog };
+  },
 };
 </script>
 

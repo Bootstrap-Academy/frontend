@@ -42,28 +42,28 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Manage Webinar',
-	},
-	setup() {
-		const route = useRoute();
-		const rating = ref(0);
-		const skillID = computed(() => {
-			return <string>(route.params?.skill ?? '');
-		});
+  head: {
+    title: 'Manage Webinar',
+  },
+  setup() {
+    const route = useRoute();
+    const rating = ref(0);
+    const skillID = computed(() => {
+      return <string>(route.params?.skill ?? '');
+    });
 
-		onMounted(async () => {
-			const [success, error] = await getRating(skillID.value);
-			if (!!success) rating.value = success;
-		});
+    onMounted(async () => {
+      const [success, error] = await getRating(skillID.value);
+      if (!!success) rating.value = success;
+    });
 
-		return { skillID, rating };
-	},
+    return { skillID, rating };
+  },
 };
 </script>
 

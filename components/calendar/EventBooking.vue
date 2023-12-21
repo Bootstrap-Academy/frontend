@@ -119,10 +119,10 @@
 </template>
 
 <script lang="ts" setup>
-	import { useI18n } from "vue-i18n";
-	import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
+import { useI18n } from "vue-i18n";
+import { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
 
-	const props = defineProps<{
+const props = defineProps<{
 		event: WebinarEvent | CoachingEvent;
 		isMine: boolean;
 		booked: boolean;
@@ -136,199 +136,199 @@
 		stats: any[];
 	}>();
 
-	const { t } = useI18n();
-	const user = useUser()
-	const btn = computed(() => {
-		switch (props.type) {
-			case "coaching":
-				return "Buttons.BookCoaching";
-			default:
-				return "Buttons.BookWebinar";
-		}
-	});
+const { t } = useI18n();
+const user = useUser()
+const btn = computed(() => {
+  switch (props.type) {
+  case "coaching":
+    return "Buttons.BookCoaching";
+  default:
+    return "Buttons.BookWebinar";
+  }
+});
 
-	const btnMoreInfo = ref("Buttons.MoreEventInfo");
+const btnMoreInfo = ref("Buttons.MoreEventInfo");
 
-	const isEventBooked = ref(props.booked ?? false);
+const isEventBooked = ref(props.booked ?? false);
 
-	const dialog = <any>reactive({});
-	const confirm = ref(false);
-	const confirmRightToWithdrawal = ref(false);
-	const confirmDontUseRightToWithdrawal = ref(false);
-	const information = ref(false);
+const dialog = <any>reactive({});
+const confirm = ref(false);
+const confirmRightToWithdrawal = ref(false);
+const confirmDontUseRightToWithdrawal = ref(false);
+const information = ref(false);
 
-	function onclickConfirm() {
-		confirm.value = true;
+function onclickConfirm() {
+  confirm.value = true;
 
-		let btnText = "";
-		let type = "";
+  let btnText = "";
+  let type = "";
 
-		switch (props.type) {
-			case "coaching":
-				btnText = "Buttons.YesBookCoaching";
-				type = "info";
-				break;
-			default:
-				btnText = "Buttons.YesBookWebinar";
-				type = "warning";
-				break;
-		}
+  switch (props.type) {
+  case "coaching":
+    btnText = "Buttons.YesBookCoaching";
+    type = "info";
+    break;
+  default:
+    btnText = "Buttons.YesBookWebinar";
+    type = "warning";
+    break;
+  }
 
-		Object.assign(dialog, {
-			type: type,
-			heading: btn.value,
-			body: "Body.ConfirmBooking",
-			primaryBtn: {
-				label: btnText,
-				onclick: async () => {
-					if (
-						!confirmRightToWithdrawal.value ||
+  Object.assign(dialog, {
+    type: type,
+    heading: btn.value,
+    body: "Body.ConfirmBooking",
+    primaryBtn: {
+      label: btnText,
+      onclick: async () => {
+        if (
+          !confirmRightToWithdrawal.value ||
 						!confirmDontUseRightToWithdrawal.value
-					) {
-						openSnackbar(
-							"error",
-							"Error.MustAgreeToBothPointsInOrderToMoveForward"
-						);
-						return;
-					}
+        ) {
+          openSnackbar(
+            "error",
+            "Error.MustAgreeToBothPointsInOrderToMoveForward"
+          );
+          return;
+        }
 
-					setLoading(true);
-					switch (props.type) {
-						case "coaching":
-							await bookCoaching();
-							break;
-						default:
-							await bookWebinar();
-							break;
-					}
-					confirmRightToWithdrawal.value = false;
-					confirmDontUseRightToWithdrawal.value = false;
-					setLoading(false);
-					confirm.value = false;
-				},
-			},
-			secondaryBtn: {
-				label: "Buttons.Cancel",
-				onclick: () => {
-					confirm.value = false;
-				},
-			},
-		});
-	}
+        setLoading(true);
+        switch (props.type) {
+        case "coaching":
+          await bookCoaching();
+          break;
+        default:
+          await bookWebinar();
+          break;
+        }
+        confirmRightToWithdrawal.value = false;
+        confirmDontUseRightToWithdrawal.value = false;
+        setLoading(false);
+        confirm.value = false;
+      },
+    },
+    secondaryBtn: {
+      label: "Buttons.Cancel",
+      onclick: () => {
+        confirm.value = false;
+      },
+    },
+  });
+}
 
-	async function bookCoaching() {
-		const [success, error] =
+async function bookCoaching() {
+  const [success, error] =
 			await bookCoachingForThisSubSkillWithThisInstructor(
-				props.subSkillID ?? "",
-				props.id ?? ""
+			  props.subSkillID ?? "",
+			  props.id ?? ""
 			);
 
-		openSnackbar(
-			success ? "success" : "error",
-			success ? "Success.BookedCoaching" : error?.detail ?? ""
-		);
-		isEventBooked.value = !!success;
-		await getCalendar();
-	}
+  openSnackbar(
+    success ? "success" : "error",
+    success ? "Success.BookedCoaching" : error?.detail ?? ""
+  );
+  isEventBooked.value = !!success;
+  await getCalendar();
+}
 
-	async function bookWebinar() {
-		const [success, error] = await registerForWebinarByID(props.id ?? "");
+async function bookWebinar() {
+  const [success, error] = await registerForWebinarByID(props.id ?? "");
 
-		openSnackbar(
-			success ? "success" : "error",
-			success ? "Success.BookedWebinar" : error?.detail ?? ""
-		);
-		isEventBooked.value = !!success;
-		await getCalendar();
-	}
+  openSnackbar(
+    success ? "success" : "error",
+    success ? "Success.BookedWebinar" : error?.detail ?? ""
+  );
+  isEventBooked.value = !!success;
+  await getCalendar();
+}
 
-	const confirmCancellation = ref(false);
-	const cancellationPolicy = reactive([
-		"List.EventCancellationPolicy.1",
-		"List.EventCancellationPolicy.2",
-		"List.EventCancellationPolicy.3",
-	]);
+const confirmCancellation = ref(false);
+const cancellationPolicy = reactive([
+  "List.EventCancellationPolicy.1",
+  "List.EventCancellationPolicy.2",
+  "List.EventCancellationPolicy.3",
+]);
 
-	const todayDate = ref("");
-	const startDate = ref("");
-	const numberOfDaysUntil = ref(0);
+const todayDate = ref("");
+const startDate = ref("");
+const numberOfDaysUntil = ref(0);
 
-	function onclickCancel() {
-		confirmCancellation.value = true;
-		let btnText = "";
-		let headingText = "";
-		let type = "";
+function onclickCancel() {
+  confirmCancellation.value = true;
+  let btnText = "";
+  let headingText = "";
+  let type = "";
 
-		switch (props.type) {
-			case "coaching":
-				btnText = "Buttons.YesCancelCoaching";
-				headingText = "Headings.CancelCoaching";
-				type = "info";
-				break;
-			default:
-				btnText = "Buttons.YesCancelWebinar";
-				headingText = "Headings.CancelWebinar";
-				type = "warning";
-				break;
-		}
+  switch (props.type) {
+  case "coaching":
+    btnText = "Buttons.YesCancelCoaching";
+    headingText = "Headings.CancelCoaching";
+    type = "info";
+    break;
+  default:
+    btnText = "Buttons.YesCancelWebinar";
+    headingText = "Headings.CancelWebinar";
+    type = "warning";
+    break;
+  }
 
-		let refund = getCancellationRefundStatus();
-		let body = t("Body.CancelEvent");
+  let refund = getCancellationRefundStatus();
+  let body = t("Body.CancelEvent");
 
-		if (refund == 100) {
-			body = `${body} ${t("Body.CancelEvent100%")}`;
-		} else if (refund == 50) {
-			body = `${body} ${t("Body.CancelEvent50%")}`;
-		} else {
-			body = `${body} ${t("Body.CancelEvent0%")}`;
-		}
+  if (refund == 100) {
+    body = `${body} ${t("Body.CancelEvent100%")}`;
+  } else if (refund == 50) {
+    body = `${body} ${t("Body.CancelEvent50%")}`;
+  } else {
+    body = `${body} ${t("Body.CancelEvent0%")}`;
+  }
 
-		Object.assign(dialog, {
-			type: type,
-			heading: headingText,
-			body: body,
-			primaryBtn: {
-				label: btnText,
-				onclick: async () => {
-					setLoading(true);
-					const [success, error] = await cancelCalendarEvent(props.id);
-					setLoading(false);
+  Object.assign(dialog, {
+    type: type,
+    heading: headingText,
+    body: body,
+    primaryBtn: {
+      label: btnText,
+      onclick: async () => {
+        setLoading(true);
+        const [success, error] = await cancelCalendarEvent(props.id);
+        setLoading(false);
 
-					openSnackbar(
-						success ? "success" : "error",
-						success ? "Success.EventCancelled" : error?.detail ?? ""
-					);
+        openSnackbar(
+          success ? "success" : "error",
+          success ? "Success.EventCancelled" : error?.detail ?? ""
+        );
 
-					if (success) {
-						confirmCancellation.value = false;
-					}
-				},
-			},
-			secondaryBtn: {
-				label: "Buttons.Back",
-				onclick: () => {
-					confirmCancellation.value = false;
-				},
-			},
-		});
-	}
+        if (success) {
+          confirmCancellation.value = false;
+        }
+      },
+    },
+    secondaryBtn: {
+      label: "Buttons.Back",
+      onclick: () => {
+        confirmCancellation.value = false;
+      },
+    },
+  });
+}
 
-	function getCancellationRefundStatus() {
-		let start = convertTimestampToDate(props.start);
-		let today = convertTimestampToDate(new Date().getTime() / 1000);
+function getCancellationRefundStatus() {
+  let start = convertTimestampToDate(props.start);
+  let today = convertTimestampToDate(new Date().getTime() / 1000);
 
-		numberOfDaysUntil.value = start.date - today.date;
-		todayDate.value = `${today.date} ${t(today.month.string)}, ${today.year}`;
-		startDate.value = `${start.date} ${t(start.month.string)}, ${start.year}`;
+  numberOfDaysUntil.value = start.date - today.date;
+  todayDate.value = `${today.date} ${t(today.month.string)}, ${today.year}`;
+  startDate.value = `${start.date} ${t(start.month.string)}, ${start.year}`;
 
-		if (numberOfDaysUntil.value > 7) {
-			return 100;
-		} else if (numberOfDaysUntil.value > 1 && numberOfDaysUntil.value <= 7) {
-			return 50;
-		} else {
-			return 0;
-		}
-	}
+  if (numberOfDaysUntil.value > 7) {
+    return 100;
+  } else if (numberOfDaysUntil.value > 1 && numberOfDaysUntil.value <= 7) {
+    return 50;
+  } else {
+    return 0;
+  }
+}
 </script>
 
 <style scoped></style>

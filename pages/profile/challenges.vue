@@ -44,58 +44,58 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'My Challenges',
-	},
-	setup() {
-		const challengesCategories = useChallengesCategories();
-		const loading = ref(challengesCategories.value.length <= 0);
+  head: {
+    title: 'My Challenges',
+  },
+  setup() {
+    const challengesCategories = useChallengesCategories();
+    const loading = ref(challengesCategories.value.length <= 0);
 
-		function onSelectedOption(option: string) {
-			filters.free = option == 'free';
-			filters.recent_first = option == 'lastSeen';
-		}
+    function onSelectedOption(option: string) {
+      filters.free = option == 'free';
+      filters.recent_first = option == 'lastSeen';
+    }
 
-		const filters: any = reactive({
-			free: false,
-			recent_first: false,
-			search_term: '',
-		});
+    const filters: any = reactive({
+      free: false,
+      recent_first: false,
+      search_term: '',
+    });
 
-		watch(
-			() => filters,
-			async (newValue, oldValue) => {
-				loading.value = true;
-				await getChallengesCategories();
-				loading.value = false;
-			},
-			{ deep: true }
-		);
+    watch(
+      () => filters,
+      async (newValue, oldValue) => {
+        loading.value = true;
+        await getChallengesCategories();
+        loading.value = false;
+      },
+      { deep: true }
+    );
 
-		const options = reactive([
-			{
-				label: 'Headings.Free',
-				value: 'free',
-			},
-			{
-				label: 'Headings.LastSeen',
-				value: 'lastSeen',
-			},
-		]);
+    const options = reactive([
+      {
+        label: 'Headings.Free',
+        value: 'free',
+      },
+      {
+        label: 'Headings.LastSeen',
+        value: 'lastSeen',
+      },
+    ]);
 
-		return {
-			loading,
-			challengesCategories,
-			onSelectedOption,
-			filters,
-			options,
-		};
-	},
+    return {
+      loading,
+      challengesCategories,
+      onSelectedOption,
+      filters,
+      options,
+    };
+  },
 };
 </script>
 

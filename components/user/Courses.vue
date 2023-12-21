@@ -51,45 +51,45 @@ export default defineComponent({
     const router = useRouter();
     const loading = ref(true);
 
-			const myCourses = useMyCourses();
+    const myCourses = useMyCourses();
 
-			const courses = computed((): Course[] => {
-				return myCourses.value.slice(0, 5);
-			});
-			const header = reactive({
-				heading: "Headings.WatchedCourses",
-				body: "Body.WatchedCourses",
-				link: { to: "/profile/courses", text: "Buttons.ViewAll" },
-			});
+    const courses = computed((): Course[] => {
+      return myCourses.value.slice(0, 5);
+    });
+    const header = reactive({
+      heading: "Headings.WatchedCourses",
+      body: "Body.WatchedCourses",
+      link: { to: "/profile/courses", text: "Buttons.ViewAll" },
+    });
 
-			onMounted(async () => {
-				await getMyCourses();
-				loading.value = false;
+    onMounted(async () => {
+      await getMyCourses();
+      loading.value = false;
 
-				if (courses.value && courses.value.length <= 0) {
-					Object.assign(header, {
-						heading: "EmptyStates.CourseCardSM.Heading",
-						body: "EmptyStates.CourseCardSM.Body",
-						link: { to: "/profile/courses", text: "Buttons.ViewAll" },
-					});
-				}
-			});
+      if (courses.value && courses.value.length <= 0) {
+        Object.assign(header, {
+          heading: "EmptyStates.CourseCardSM.Heading",
+          body: "EmptyStates.CourseCardSM.Body",
+          link: { to: "/profile/courses", text: "Buttons.ViewAll" },
+        });
+      }
+    });
 
-			const watchUnseenLecture = async (course: Course) => {
-				const unseenLectureResponse = await getUnseenLecture(course.id);
-				if (unseenLectureResponse)
-					router.push({
-						path: `/courses/${course.id}/watch`,
-						query: {
-							section: unseenLectureResponse.section.id,
-							lecture: unseenLectureResponse.lecture.id,
-						},
-					});
-			};
+    const watchUnseenLecture = async (course: Course) => {
+      const unseenLectureResponse = await getUnseenLecture(course.id);
+      if (unseenLectureResponse)
+        router.push({
+          path: `/courses/${course.id}/watch`,
+          query: {
+            section: unseenLectureResponse.section.id,
+            lecture: unseenLectureResponse.lecture.id,
+          },
+        });
+    };
 
-			return { t, loading, courses, header, watchUnseenLecture };
-		},
-	});
+    return { t, loading, courses, header, watchUnseenLecture };
+  },
+});
 </script>
 
 <style scoped></style>
