@@ -63,16 +63,32 @@
         'hide-scrollbar': !!!quizzes || quizzes.length <= 1,
       }"
     >
-      <h2 class="mb-box text-heading-3" v-if="quizzes.length > 0">
-        {{ t("Headings.QuizzesInCourse") }}
-      </h2>
+      <InputButtonToggle
+        :buttonOptions="buttonOptions"
+        v-model="selectedbutton"
+        class="my-10"
+      />
+      <section v-if="quizzes && !!quizzes.length">
+        <article v-show="selectedbutton == 0">
+          <h2 class="mb-box text-heading-3">
+            {{ t("Headings.QuizzesInCourse") }}
+          </h2>
 
-      <template v-if="quizzes && quizzes.length > 0">
-        <div class="content" v-for="(quiz, i) of quizzes" :key="i">
-          <QuizList full :quizId="quiz?.id" />
-          <!-- {{ quiz?.id }} -->
-        </div>
-      </template>
+          <div class="content" v-for="(quiz, i) of quizzes" :key="i">
+            <QuizList full :quizId="quiz?.id" />
+          </div>
+        </article>
+
+        <article v-show="selectedbutton == 1">
+          <h2 class="mb-box text-heading-3">
+            {{ t("Headings.Matchings") }}
+          </h2>
+
+          <div class="content" v-for="(quiz, i) of quizzes" :key="i">
+            <MatchingList :quizId="quiz?.id" />
+          </div>
+        </article>
+      </section>
       <h3 v-else class="text-center text-heading-3">
         {{ t("Headings.NoQuizQuestion") }}
       </h3>
@@ -99,6 +115,13 @@ export default {
     const loading = ref(true);
     const course = useCourse();
     const isCourseAccessible = ref(false);
+
+    let buttonOptions: any = [
+      // { name: "Buttons.SeasonalBased" },
+      { name: "Buttons.Quiz" },
+      { name: "Buttons.Matchings" },
+    ];
+    const selectedbutton = ref(0);
 
     const quizzes = useQuizzes();
 
@@ -165,6 +188,8 @@ export default {
       quizzes,
       skillID,
       subSkillID,
+      buttonOptions,
+      selectedbutton,
     };
   },
 };

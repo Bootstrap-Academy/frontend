@@ -47,6 +47,7 @@
             :buttonOptions="buttonOptions"
             v-model="selectedButton"
             class="mb-5"
+            sm-in-mobile
           />
           <CourseVideo
             :course="course"
@@ -59,7 +60,7 @@
             class="w-full h-[71vh] overflow-scroll"
           >
             <p class="w-full text-xl text-center" v-if="!subtasks.length">
-              {{ t("Headings.EmptySubtasks") }}
+              {{ t("Headings.EmptyQuizzes") }}
             </p>
             <CourseSolveMcqInsideLectureView
               v-else-if="subtasks.length"
@@ -84,6 +85,17 @@
               class="w-full text-xl text-center"
             >
               {{ t("Headings.EmptyCodingChallenge") }}
+            </p>
+          </section>
+          <section
+            class="md:px-6 h-[71vh] overflow-scroll w-full"
+            v-else-if="selectedButton == 3"
+          >
+            <div v-if="matchings.length">
+              <MatchingSolveInsideCourse :matchings="matchings" />
+            </div>
+            <p v-if="!matchings.length" class="w-full text-xl text-center">
+              {{ t("Headings.EmptyMatchings") }}
             </p>
           </section>
         </div>
@@ -151,14 +163,15 @@ export default {
   setup() {
     const { t } = useI18n();
     const loading = ref(true);
-
     const route = useRoute();
     const router = useRouter();
 
+    const showCurriculum = ref(false);
     const course = useCourse();
     const taskId = ref();
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
+    const matchings = useMatchings();
 
     const premiumInfo: any = usePremiumInfo();
     const isPremium: any = computed(() => {
@@ -175,24 +188,9 @@ export default {
       { name: "Buttons.Video" },
       { name: "Buttons.Quiz" },
       { name: "Buttons.Challenge" },
+      { name: "Buttons.Matching" },
     ];
 
-    const activeSection = computed(() => {
-      const sectionID = <string>(route.query?.section ?? "");
-      let sections: any[] = course.value?.sections ?? [];
-      if (!!!sections || sections.length <= 0) return null;
-      let section = sections.find((sec) => sec.id == sectionID);
-      return !!section ? section : null;
-    });
-    const activeLecture = computed(() => {
-      const lectureID = <string>(route.query?.lecture ?? "");
-      let lectures: any[] = activeSection.value?.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return null;
-
-      let lecture = lectures.find((lec) => lec.id == lectureID);
-
-      return !!lecture ? lecture : null;
-    });
     const courseId: any = computed(() => {
       return route.params.id;
     });
@@ -202,6 +200,38 @@ export default {
     const subSkillID = computed(() => {
       return <string>(route.query?.subSkillID ?? "");
     });
+
+    const activeSection = computed(() => {
+      const sectionID = <string>(route.query?.section ?? "");
+      let sections: any[] = course.value?.sections ?? [];
+      if (!!!sections || sections.length <= 0) return null;
+      let section = sections.find((sec) => sec.id == sectionID);
+      return !!section ? section : null;
+    });
+
+    const activeLecture = computed(() => {
+      const lectureID = <string>(route.query?.lecture ?? "");
+      let lectures: any[] = activeSection.value?.lectures ?? [];
+      if (!!!lectures || lectures.length <= 0) return null;
+
+      let lecture = lectures.find((lec) => lec.id == lectureID);
+
+      return !!lecture ? lecture : null;
+    });
+
+    function watchThisLecture({ sectionID, lectureID }: any) {
+      router.replace({
+        path: route.path,
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value,
+        },
+      });
+
+      showCurriculum.value = false;
+    }
 
     function solveCodingChallenge(codingChallenge: any) {
       if (!isPremium.value && hearts.value < 2) {
@@ -233,6 +263,14 @@ export default {
       }
     }
 
+    async function fnGetMatchingsInQuiz(quizId: any) {
+      const [success, error] = await getMatchingsInTask(quizId);
+      if (error) {
+        setLoading(false);
+        openSnackbar("error", error);
+      }
+    }
+
     watch(
       () => [activeLecture.value, activeSection.value],
       async () => {
@@ -258,9 +296,11 @@ export default {
           subtasks.value = [];
           fnGetSubtasksInQuiz(success[0]?.id);
           fnGetCodingChallengeInQuiz(success[0]?.id);
+          fnGetMatchingsInQuiz(success[0]?.id);
         } else {
           subtasks.value = [];
           codingChallenges.value = [];
+          matchings.value = [];
         }
         setLoading(false);
       },
@@ -294,22 +334,6 @@ export default {
       localStorage.removeItem("selectedButton");
     });
 
-    const showCurriculum = ref(false);
-
-    function watchThisLecture({ sectionID, lectureID }: any) {
-      router.replace({
-        path: route.path,
-        query: {
-          section: sectionID,
-          lecture: lectureID,
-          skillID: skillID.value,
-          subSkillID: subSkillID.value,
-        },
-      });
-
-      showCurriculum.value = false;
-    }
-
     return {
       t,
       loading,
@@ -326,6 +350,7 @@ export default {
       codingChallenges,
       skillID,
       subSkillID,
+      matchings,
     };
   },
 };

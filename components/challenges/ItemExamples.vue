@@ -57,12 +57,12 @@
 
         <article class="mt-3">
           <p class="text-white">
-            {{ t("Headings.ProgramInput") }}
+            {{ t("Headings.Input") }}
           </p>
           <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
 
           <p class="text-white mt-4">
-            {{ t("Headings.ProgramOutputShouldBe") }}
+            {{ t("Headings.ExpectedOutput") }}
           </p>
           <p class="whitespace-pre">{{ example?.output ?? '' }}</p>
         </article>
@@ -74,7 +74,7 @@
         </p>
         <p v-if="!!example?.stdout">
           <span class="block text-success">
-            {{ t("Headings.ExampleOutput") }}:
+            {{ t("Headings.ActualOutput") }}:
           </span>
 
           <p class="whitespace-pre">{{ example?.stdout ?? '' }}</p>

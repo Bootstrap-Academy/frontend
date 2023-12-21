@@ -62,7 +62,7 @@ export default {
     const { t } = useI18n();
     const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
-    const selectedbutton = ref(
+    const selectedbutton: any = ref(
       localStorage.getItem("selectedButtonLeaderBoard") ?? 0
     );
     const router = useRouter();
