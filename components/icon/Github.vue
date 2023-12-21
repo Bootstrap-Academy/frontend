@@ -18,10 +18,10 @@
 
 <script>
 export default {
-	props: {
-		lg: { type: Boolean, default: false },
-		color: { type: String, default: '' },
-	},
+  props: {
+    lg: { type: Boolean, default: false },
+    color: { type: String, default: '' },
+  },
 };
 </script>
 

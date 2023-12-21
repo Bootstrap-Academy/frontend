@@ -39,53 +39,53 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'My Courses',
-	},
-	setup() {
-		const quizzes = useQuizzes();
+  head: {
+    title: 'My Courses',
+  },
+  setup() {
+    const quizzes = useQuizzes();
 
-		const loading = ref(quizzes.value.length <= 0);
+    const loading = ref(quizzes.value.length <= 0);
 
-		function onSelectedOption(option: string) {
-			filters.latest = option == 'latest';
-			filters.oldest = option == 'oldest';
-		}
+    function onSelectedOption(option: string) {
+      filters.latest = option == 'latest';
+      filters.oldest = option == 'oldest';
+    }
 
-		const filters: any = reactive({
-			latest: false,
-			oldest: false,
-			search_term: '',
-		});
+    const filters: any = reactive({
+      latest: false,
+      oldest: false,
+      search_term: '',
+    });
 
-		watch(
-			() => filters,
-			async (newValue, oldValue) => {
-				loading.value = true;
-				await getFilteredQuizzes(newValue);
-				loading.value = false;
-			},
-			{ deep: true }
-		);
+    watch(
+      () => filters,
+      async (newValue, oldValue) => {
+        loading.value = true;
+        await getFilteredQuizzes(newValue);
+        loading.value = false;
+      },
+      { deep: true }
+    );
 
-		const options = reactive([
-			{
-				label: 'Headings.Latest',
-				value: 'latest',
-			},
-			{
-				label: 'Headings.Oldest',
-				value: 'oldest',
-			},
-		]);
+    const options = reactive([
+      {
+        label: 'Headings.Latest',
+        value: 'latest',
+      },
+      {
+        label: 'Headings.Oldest',
+        value: 'oldest',
+      },
+    ]);
 
-		return { loading, quizzes, onSelectedOption, filters, options };
-	},
+    return { loading, quizzes, onSelectedOption, filters, options };
+  },
 };
 </script>
 

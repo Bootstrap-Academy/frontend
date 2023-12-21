@@ -19,15 +19,15 @@
 </template>
 
 <script setup lang="ts">
-	import { useI18n } from "vue-i18n";
+import { useI18n } from "vue-i18n";
 
-	const props = defineProps<{
+const props = defineProps<{
 		title: string;
 	}>();
 
-	const { t } = useI18n();
+const { t } = useI18n();
 
-	const isOpen = ref(false);
+const isOpen = ref(false);
 </script>
 
 <style scoped>

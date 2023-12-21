@@ -1054,12 +1054,12 @@
 
 <script>
 export default {
-	setup() {
-		return {};
-	},
-	head: {
-		title: 'Privacy',
-	},
+  setup() {
+    return {};
+  },
+  head: {
+    title: 'Privacy',
+  },
 };
 </script>
 

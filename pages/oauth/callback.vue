@@ -31,62 +31,62 @@
 import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'OAuth Login',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'OAuth Login',
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const router = useRouter();
-		const route = useRoute();
+    const router = useRouter();
+    const route = useRoute();
 
-		const dialog = <any>reactive({});
-		const config = useRuntimeConfig().public;
+    const dialog = <any>reactive({});
+    const config = useRuntimeConfig().public;
 
-		onMounted(async () => {
-			setLoading(true);
-			const [success, error] = await loginViaOAuthProvider({
-				code: route?.query?.code ?? '',
-				provider_id: route?.query?.state ?? '',
-				redirect_uri: `${config.BASE_WEB_URL}/oauth/callback`,
-			});
-			setLoading(false);
+    onMounted(async () => {
+      setLoading(true);
+      const [success, error] = await loginViaOAuthProvider({
+        code: route?.query?.code ?? '',
+        provider_id: route?.query?.state ?? '',
+        redirect_uri: `${config.BASE_WEB_URL}/oauth/callback`,
+      });
+      setLoading(false);
 
-			success ? successHandler(success) : errorHandler(error);
-		});
+      success ? successHandler(success) : errorHandler(error);
+    });
 
-		function successHandler(res: any) {
-			const register_token = res?.register_token ?? '';
+    function successHandler(res: any) {
+      const register_token = res?.register_token ?? '';
 
-			if (!!register_token) {
-				router.push(`/auth/signup?register_token=${register_token}`);
-			} else {
-				setStates(res?.login ?? null);
-				router.push(`/profile`);
-			}
-		}
+      if (!!register_token) {
+        router.push(`/auth/signup?register_token=${register_token}`);
+      } else {
+        setStates(res?.login ?? null);
+        router.push(`/profile`);
+      }
+    }
 
-		function errorHandler(res: any) {
-			Object.assign(dialog, {
-				type: 'error',
-				heading: 'Headings.UnableToOAuth',
-				body: `${t('Error.UnableToOAuth')}: ${t(res?.detail ?? '')}`,
-				primaryBtn: {
-					label: 'Links.GoBack',
-					onclick: () => {
-						router.push('/auth/login');
-					},
-				},
-				secondaryBtn: null,
-			});
-		}
+    function errorHandler(res: any) {
+      Object.assign(dialog, {
+        type: 'error',
+        heading: 'Headings.UnableToOAuth',
+        body: `${t('Error.UnableToOAuth')}: ${t(res?.detail ?? '')}`,
+        primaryBtn: {
+          label: 'Links.GoBack',
+          onclick: () => {
+            router.push('/auth/login');
+          },
+        },
+        secondaryBtn: null,
+      });
+    }
 
-		return { dialog };
-	},
+    return { dialog };
+  },
 };
 </script>
 

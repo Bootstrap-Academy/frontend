@@ -44,12 +44,12 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: {
-		color: { default: '' },
-	},
-	setup() {
-		return {};
-	},
+  props: {
+    color: { default: '' },
+  },
+  setup() {
+    return {};
+  },
 });
 </script>
 

@@ -39,24 +39,24 @@ export default defineComponent({
 
     const theme = computed(() => {
       switch (type.value) {
-        case "coaching":
-          return {
-            bg: "bg-info",
-            bgLight: "bg-info-light",
-            fill: "fill-info",
-            stroke: "stroke-info",
-            border: "border-info",
-            text: "text-info",
-          };
-        default:
-          return {
-            bg: "bg-warning",
-            bgLight: "bg-warning-light",
-            fill: "fill-warning",
-            stroke: "stroke-warning",
-            border: "border-warning",
-            text: "text-warning",
-          };
+      case "coaching":
+        return {
+          bg: "bg-info",
+          bgLight: "bg-info-light",
+          fill: "fill-info",
+          stroke: "stroke-info",
+          border: "border-info",
+          text: "text-info",
+        };
+      default:
+        return {
+          bg: "bg-warning",
+          bgLight: "bg-warning-light",
+          fill: "fill-warning",
+          stroke: "stroke-warning",
+          border: "border-warning",
+          text: "text-warning",
+        };
       }
     });
 

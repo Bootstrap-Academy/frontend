@@ -112,68 +112,68 @@
 </template>
 
 <script setup lang="ts">
-	import type { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
-	import { InformationCircleIcon } from "@heroicons/vue/24/solid";
-	import { useI18n } from "vue-i18n";
-	const props = defineProps<{
+import type { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
+import { InformationCircleIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
+const props = defineProps<{
 		event: WebinarEvent | CoachingEvent;
 		description: string;
 		stats: { heading: string; value: string; icon: string }[];
 	}>();
 
-	defineEmits<{
+defineEmits<{
 		(e: "cancel"): void;
 	}>();
 
-	const { t } = useI18n();
+const { t } = useI18n();
 
-	function getTimeAndDate(timestamp: number) {
-		if (timestamp == -1) {
-			return { time: ``, date: `` };
-		}
+function getTimeAndDate(timestamp: number) {
+  if (timestamp == -1) {
+    return { time: ``, date: `` };
+  }
 
-		let { date, month, year } = convertTimestampToDate(timestamp);
-		let time = new Date(timestamp * 1000).toTimeString();
-		let [hr, min, sec] = time.split(":");
+  let { date, month, year } = convertTimestampToDate(timestamp);
+  let time = new Date(timestamp * 1000).toTimeString();
+  let [hr, min, sec] = time.split(":");
 
-		return {
-			time: `${hr}:${min}`,
-			date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
-		};
-	}
+  return {
+    time: `${hr}:${min}`,
+    date: `${date} ${t(month.string).slice(0, 3)}, ${year}`,
+  };
+}
 
-	onMounted(async () => {
-		await getRootSkillTree();
-		await getSubSkillTree(parentSkill.value?.id ?? "");
-	});
-	const skillTree = useRootSkillTree();
-	const subTree = useSubSkillTree();
+onMounted(async () => {
+  await getRootSkillTree();
+  await getSubSkillTree(parentSkill.value?.id ?? "");
+});
+const skillTree = useRootSkillTree();
+const subTree = useSubSkillTree();
 
-	watch(
-		() => props.event.id,
-		async () => {
-			await getRootSkillTree();
-			await getSubSkillTree(parentSkill.value?.id ?? "");
-		}
-	);
+watch(
+  () => props.event.id,
+  async () => {
+    await getRootSkillTree();
+    await getSubSkillTree(parentSkill.value?.id ?? "");
+  }
+);
 
-	const parentSkill = computed(() => {
-		return skillTree.value.skills.find((skill) =>
-			skill.skills.includes(props.event.skill_id)
-		);
-	});
-	const subSkill = computed(() => {
-		return subTree.value.skills.find(
-			(skill) => skill.id == props.event.skill_id
-		);
-	});
+const parentSkill = computed(() => {
+  return skillTree.value.skills.find((skill) =>
+    skill.skills.includes(props.event.skill_id)
+  );
+});
+const subSkill = computed(() => {
+  return subTree.value.skills.find(
+    (skill) => skill.id == props.event.skill_id
+  );
+});
 
-	const parentSkillName = computed(() => {
-		return parentSkill.value?.name ?? "";
-	});
-	const subSkillName = computed(() => {
-		return subSkill.value?.name;
-	});
+const parentSkillName = computed(() => {
+  return parentSkill.value?.name ?? "";
+});
+const subSkillName = computed(() => {
+  return subSkill.value?.name;
+});
 </script>
 
 <style scoped></style>

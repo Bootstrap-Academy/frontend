@@ -37,16 +37,16 @@
 
 <script>
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Reset Password',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: 'Reset Password',
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 

@@ -36,66 +36,66 @@
 </template>
 
 <script lang="ts" setup>
-	import { useI18n } from "vue-i18n";
-	import {
-		StarIcon,
-		InformationCircleIcon,
-		XCircleIcon,
-		CheckCircleIcon,
-	} from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
+import {
+  StarIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+  CheckCircleIcon,
+} from "@heroicons/vue/24/solid";
 
-	const props = withDefaults(defineProps<ComponentProps>(), {
-		rating: 0,
-		sm: false,
-		stars: false,
-	});
+const props = withDefaults(defineProps<ComponentProps>(), {
+  rating: 0,
+  sm: false,
+  stars: false,
+});
 	interface ComponentProps {
 		rating?: number;
 		sm?: boolean;
 		stars?: boolean;
 	}
 
-	const { t } = useI18n();
+const { t } = useI18n();
 
-	const type = computed(() => {
-		if (props.rating > 4) return "success";
-		else if (props.rating > 2 && props.rating <= 4) return "info";
-		else return "error";
-	});
+const type = computed(() => {
+  if (props.rating > 4) return "success";
+  else if (props.rating > 2 && props.rating <= 4) return "info";
+  else return "error";
+});
 
-	const theme = computed(() => {
-		if (type.value == "success") {
-			return {
-				bg: "bg-success",
-				bgLight: "bg-success-light",
-				fill: "fill-success",
-				stroke: "stroke-success",
-				border: "border-success",
-				text: "text-success",
-				icon: CheckCircleIcon,
-			};
-		} else if (type.value == "error") {
-			return {
-				bg: "bg-error",
-				bgLight: "bg-error-light",
-				fill: "fill-error",
-				stroke: "stroke-error",
-				border: "border-error",
-				text: "text-error",
-				icon: XCircleIcon,
-			};
-		} else {
-			return {
-				bg: "bg-info",
-				bgLight: "bg-info-light",
-				fill: "fill-info",
-				stroke: "stroke-info",
-				border: "border-info",
-				text: "text-info",
-				icon: InformationCircleIcon,
-			};
-		}
-	});
+const theme = computed(() => {
+  if (type.value == "success") {
+    return {
+      bg: "bg-success",
+      bgLight: "bg-success-light",
+      fill: "fill-success",
+      stroke: "stroke-success",
+      border: "border-success",
+      text: "text-success",
+      icon: CheckCircleIcon,
+    };
+  } else if (type.value == "error") {
+    return {
+      bg: "bg-error",
+      bgLight: "bg-error-light",
+      fill: "fill-error",
+      stroke: "stroke-error",
+      border: "border-error",
+      text: "text-error",
+      icon: XCircleIcon,
+    };
+  } else {
+    return {
+      bg: "bg-info",
+      bgLight: "bg-info-light",
+      fill: "fill-info",
+      stroke: "stroke-info",
+      border: "border-info",
+      text: "text-info",
+      icon: InformationCircleIcon,
+    };
+  }
+});
 </script>
 
 <style scoped></style>

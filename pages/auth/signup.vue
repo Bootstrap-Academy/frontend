@@ -45,18 +45,18 @@
 import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Signup',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Signup',
+  },
+  setup() {
+    const { t } = useI18n();
 
-		return { t };
-	},
+    return { t };
+  },
 };
 </script>
 

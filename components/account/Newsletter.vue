@@ -35,63 +35,63 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		const user = <any>useUser();
+  setup() {
+    const { t } = useI18n();
+    const user = <any>useUser();
 
-		const show = computed(() => {
-			return user.value?.newsletter ?? false;
-		});
+    const show = computed(() => {
+      return user.value?.newsletter ?? false;
+    });
 
-		const loading = ref(false);
+    const loading = ref(false);
 
-		async function onclickRequestNewsletterRegistration() {
-			loading.value = true;
-			const [success, error] = await requestNewsletterRegistration();
-			loading.value = false;
+    async function onclickRequestNewsletterRegistration() {
+      loading.value = true;
+      const [success, error] = await requestNewsletterRegistration();
+      loading.value = false;
 
-			if (success) {
-				openSnackbar('success', 'Success.NewsLetterRegistration');
-			} else {
-				openSnackbar('error', error?.detail ?? '');
-			}
-		}
+      if (success) {
+        openSnackbar('success', 'Success.NewsLetterRegistration');
+      } else {
+        openSnackbar('error', error?.detail ?? '');
+      }
+    }
 
-		async function onclickUnregisterFromNewsletter() {
-			openDialog(
-				'warning',
-				'Headings.UnregisterNewsletter',
-				'Body.ConfirmUnregisterNewsletter',
-				false,
-				{
-					label: 'Buttons.ConfirmUnregisterNewsletter',
-					onclick: async () => {
-						loading.value = true;
-						const [success, error] = await unregisterFromNewsletter();
-						loading.value = false;
+    async function onclickUnregisterFromNewsletter() {
+      openDialog(
+        'warning',
+        'Headings.UnregisterNewsletter',
+        'Body.ConfirmUnregisterNewsletter',
+        false,
+        {
+          label: 'Buttons.ConfirmUnregisterNewsletter',
+          onclick: async () => {
+            loading.value = true;
+            const [success, error] = await unregisterFromNewsletter();
+            loading.value = false;
 
-						if (success) {
-							openSnackbar('success', 'Success.UnregisterFromNewsletter');
-						} else {
-							openSnackbar('error', error?.detail ?? '');
-						}
-					},
-				},
-				{
-					label: 'Buttons.Cancel',
-					onclick: () => {},
-				}
-			);
-		}
+            if (success) {
+              openSnackbar('success', 'Success.UnregisterFromNewsletter');
+            } else {
+              openSnackbar('error', error?.detail ?? '');
+            }
+          },
+        },
+        {
+          label: 'Buttons.Cancel',
+          onclick: () => {},
+        }
+      );
+    }
 
-		return {
-			t,
-			show,
-			loading,
-			onclickRequestNewsletterRegistration,
-			onclickUnregisterFromNewsletter,
-		};
-	},
+    return {
+      t,
+      show,
+      loading,
+      onclickRequestNewsletterRegistration,
+      onclickUnregisterFromNewsletter,
+    };
+  },
 });
 </script>
 

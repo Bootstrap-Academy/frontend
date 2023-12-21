@@ -60,16 +60,16 @@
 
 <script>
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Typography',
-	},
-	setup() {
-		return {};
-	},
+  head: {
+    title: 'Typography',
+  },
+  setup() {
+    return {};
+  },
 };
 </script>
 <style scoped></style>
