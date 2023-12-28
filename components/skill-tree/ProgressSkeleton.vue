@@ -76,25 +76,25 @@ import { defineComponent } from 'vue';
 import { EyeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
-	props: { noAnimate: { type: Boolean, default: false } },
-	components: { EyeIcon, ChevronDownIcon },
-	setup() {
-		const total = computed(() => {
-			return getRandomNumber(20, 50);
-		});
-		const completed = computed(() => {
-			return getRandomNumber(1, total.value);
-		});
+  props: { noAnimate: { type: Boolean, default: false } },
+  components: { EyeIcon, ChevronDownIcon },
+  setup() {
+    const total = computed(() => {
+      return getRandomNumber(20, 50);
+    });
+    const completed = computed(() => {
+      return getRandomNumber(1, total.value);
+    });
 
-		const progress = computed(() => {
-			return Math.round((completed.value / total.value) * 100);
-		});
+    const progress = computed(() => {
+      return Math.round((completed.value / total.value) * 100);
+    });
 
-		const progressBar = computed(() => {
-			return `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${progress.value}%, var(--color-tertiary) ${progress.value}%,  var(--color-tertiary) 100%)`;
-		});
-		return { total, completed, progressBar, EyeIcon, ChevronDownIcon };
-	},
+    const progressBar = computed(() => {
+      return `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${progress.value}%, var(--color-tertiary) ${progress.value}%,  var(--color-tertiary) 100%)`;
+    });
+    return { total, completed, progressBar, EyeIcon, ChevronDownIcon };
+  },
 });
 </script>
 

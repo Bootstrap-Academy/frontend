@@ -138,123 +138,123 @@
 
 <script lang="ts">
 import {
-	PencilIcon,
-	PlusCircleIcon,
-	PlusIcon,
-	XMarkIcon,
+  PencilIcon,
+  PlusCircleIcon,
+  PlusIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/solid';
 import { defineComponent } from 'vue';
 import type { PropType, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		modelValue: { default: [] },
-		max: { type: Number, default: 10 },
-		label: { type: String, default: '' },
-	},
-	emits: ['update:modelValue', 'valid'],
-	components: { PlusCircleIcon, XMarkIcon, PencilIcon, PlusIcon },
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    modelValue: { default: [] },
+    max: { type: Number, default: 10 },
+    label: { type: String, default: '' },
+  },
+  emits: ['update:modelValue', 'valid'],
+  components: { PlusCircleIcon, XMarkIcon, PencilIcon, PlusIcon },
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const list = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: Array<any>) {
-				emit('update:modelValue', value);
-			},
-		});
+    const list = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: Array<any>) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		function onclickAddItem() {
-			list.value = [
-				{
-					name: `Example ${list.value.length + 1}`,
-					input: '',
-					output: '',
-				},
-				...list.value,
-			];
-		}
-		function onclickDeleteItem(index: number) {
-			let arr = [...list.value];
-			arr.splice(index, 1);
-			list.value = [...arr];
-		}
+    function onclickAddItem() {
+      list.value = [
+        {
+          name: `Example ${list.value.length + 1}`,
+          input: '',
+          output: '',
+        },
+        ...list.value,
+      ];
+    }
+    function onclickDeleteItem(index: number) {
+      let arr = [...list.value];
+      arr.splice(index, 1);
+      list.value = [...arr];
+    }
 
-		const selectedItemIndex = ref(-1);
+    const selectedItemIndex = ref(-1);
 
-		const input = ref('');
-		const inputMarkdownModal = ref(false);
+    const input = ref('');
+    const inputMarkdownModal = ref(false);
 
-		const output = ref('');
-		const outputMarkdownModal = ref(false);
+    const output = ref('');
+    const outputMarkdownModal = ref(false);
 
-		function updateItemInList(obj: any) {
-			list.value.splice(selectedItemIndex.value, 1, {
-				...list.value[selectedItemIndex.value],
-				...obj,
-			});
+    function updateItemInList(obj: any) {
+      list.value.splice(selectedItemIndex.value, 1, {
+        ...list.value[selectedItemIndex.value],
+        ...obj,
+      });
 
-			selectedItemIndex.value = -1;
-			inputMarkdownModal.value = false;
-			outputMarkdownModal.value = false;
-		}
+      selectedItemIndex.value = -1;
+      inputMarkdownModal.value = false;
+      outputMarkdownModal.value = false;
+    }
 
-		function filterListBasedOnKey(key: string) {
-			return list.value.filter((item) => {
-				return (
-					item[key].toLocaleLowerCase() ==
+    function filterListBasedOnKey(key: string) {
+      return list.value.filter((item) => {
+        return (
+          item[key].toLocaleLowerCase() ==
 					lastItemInList.value[key].toLocaleLowerCase()
-				);
-			});
-		}
+        );
+      });
+    }
 
-		const isListEmpty = computed(() => {
-			return list.value.length <= 0;
-		});
+    const isListEmpty = computed(() => {
+      return list.value.length <= 0;
+    });
 
-		const lastItemInList = computed(() => {
-			return isListEmpty.value ? null : list.value[list.value.length - 1];
-		});
+    const lastItemInList = computed(() => {
+      return isListEmpty.value ? null : list.value[list.value.length - 1];
+    });
 
-		const nameErrorMsg = computed(() => {
-			let msg = '';
+    const nameErrorMsg = computed(() => {
+      let msg = '';
  
-			if (!!!lastItemInList.value) return msg;
+      if (!!!lastItemInList.value) return msg;
 
-			let arrOfThisItem = filterListBasedOnKey('name');
+      let arrOfThisItem = filterListBasedOnKey('name');
 
-			if (!!!lastItemInList.value.name) {
-				msg = 'Errors.ExampleNameCannotBeEmpty';
-			} else if (arrOfThisItem.length > 1) {
-				msg = 'Errors.ExampleNameCannotBeSame';
-			}
+      if (!!!lastItemInList.value.name) {
+        msg = 'Errors.ExampleNameCannotBeEmpty';
+      } else if (arrOfThisItem.length > 1) {
+        msg = 'Errors.ExampleNameCannotBeSame';
+      }
 
-			return msg;
-		});
+      return msg;
+    });
 
-		const isValid = computed(() => {
-			return isListEmpty.value ? true : !!!nameErrorMsg.value;
-		});
+    const isValid = computed(() => {
+      return isListEmpty.value ? true : !!!nameErrorMsg.value;
+    });
 
-		return {
-			PlusIcon,
-			t,
-			list,
-			onclickAddItem,
-			onclickDeleteItem,
-			selectedItemIndex,
-			inputMarkdownModal,
-			outputMarkdownModal,
-			input,
-			output,
-			updateItemInList,
-			nameErrorMsg,
-			isValid,
-		};
-	},
+    return {
+      PlusIcon,
+      t,
+      list,
+      onclickAddItem,
+      onclickDeleteItem,
+      selectedItemIndex,
+      inputMarkdownModal,
+      outputMarkdownModal,
+      input,
+      output,
+      updateItemInList,
+      nameErrorMsg,
+      isValid,
+    };
+  },
 });
 </script>
 

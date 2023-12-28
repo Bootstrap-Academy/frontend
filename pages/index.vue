@@ -25,18 +25,18 @@
 
 <script lang="ts">
 export default {
-	head: {
-		title: 'Bootstrap Academy',
-	},
-	setup() {
-		const aos = ref<HTMLDivElement | null>(null);
+  head: {
+    title: 'Bootstrap Academy',
+  },
+  setup() {
+    const aos = ref<HTMLDivElement | null>(null);
 
-		onMounted(() => {
-			setAOSViaParent(aos.value, 'aos', 'show', [3]);
-		});
+    onMounted(() => {
+      setAOSViaParent(aos.value, 'aos', 'show', [3]);
+    });
 
-		return { aos };
-	},
+    return { aos };
+  },
 };
 </script>
 

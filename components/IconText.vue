@@ -20,28 +20,28 @@ import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		sm: { type: Boolean, default: false },
-		md: { type: Boolean, default: true },
-		lg: { type: Boolean, default: false },
-		icon: { type: Object as PropType<any>, default: null },
-		highlightLabel: { type: Boolean, default: false },
-		highlightIcon: { type: Boolean, default: true },
-		labelColor: { type: String, default: 'text-subheading' },
-		iconColor: { type: String, default: 'text-subheading' },
-		fill: { type: String, default: 'fill-subheading' },
-	},
-	setup(props) {
-		const classes = computed(() => {
-			return {
-				lg: props.lg,
-				md: props.md && !props.lg && !props.sm,
-				sm: props.sm,
-			};
-		});
+  props: {
+    sm: { type: Boolean, default: false },
+    md: { type: Boolean, default: true },
+    lg: { type: Boolean, default: false },
+    icon: { type: Object as PropType<any>, default: null },
+    highlightLabel: { type: Boolean, default: false },
+    highlightIcon: { type: Boolean, default: true },
+    labelColor: { type: String, default: 'text-subheading' },
+    iconColor: { type: String, default: 'text-subheading' },
+    fill: { type: String, default: 'fill-subheading' },
+  },
+  setup(props) {
+    const classes = computed(() => {
+      return {
+        lg: props.lg,
+        md: props.md && !props.lg && !props.sm,
+        sm: props.sm,
+      };
+    });
 
-		return { classes };
-	},
+    return { classes };
+  },
 });
 </script>
 

@@ -45,62 +45,62 @@ import { useI18n } from 'vue-i18n';
 import QrcodeVue from 'qrcode.vue';
 
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Initialize MFA',
-	},
-	components: { QrcodeVue },
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Initialize MFA',
+  },
+  components: { QrcodeVue },
+  setup() {
+    const { t } = useI18n();
 
-		const router = useRouter();
-		const user = <any>useUser();
+    const router = useRouter();
+    const user = <any>useUser();
 
-		// ============================================================= OR Code
-		const QR_code = ref('');
-		function getQR_code(secret: any, username: any) {
-			QR_code.value = `otpauth://totp/${encodeURIComponent(
-				username
-			)}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
-				'Bootstrap Academy'
-			)}`;
-		}
+    // ============================================================= OR Code
+    const QR_code = ref('');
+    function getQR_code(secret: any, username: any) {
+      QR_code.value = `otpauth://totp/${encodeURIComponent(
+        username
+      )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
+        'Bootstrap Academy'
+      )}`;
+    }
 
-		const dialog = <any>reactive({});
-		const TOTP_secret = ref('');
+    const dialog = <any>reactive({});
+    const TOTP_secret = ref('');
 
-		onMounted(async () => {
-			setLoading(true);
-			const [success, error] = await initializeMFA();
-			setLoading(false);
+    onMounted(async () => {
+      setLoading(true);
+      const [success, error] = await initializeMFA();
+      setLoading(false);
 
-			if (!!success) {
-				TOTP_secret.value = success;
-				getQR_code(TOTP_secret.value, user.value.name);
-			}
+      if (!!success) {
+        TOTP_secret.value = success;
+        getQR_code(TOTP_secret.value, user.value.name);
+      }
 
-			Object.assign(dialog, {
-				type: !!success ? 'success' : 'error',
-				heading: 'InitializeMFA',
-				body: !!success
-					? 'Success.InitializeMFA'
-					: `${t('Error.InitializeMFA')}: ${error?.detail ?? ''}`,
-				primaryBtn: {
-					label: !!success ? 'Buttons.EnableMFA' : 'Links.GoBack',
-					onclick: () => {
-						router.push(!!success ? '/account/mfa/enable' : '/account');
-					},
-				},
-				secondaryBtn: null,
-			});
-		});
+      Object.assign(dialog, {
+        type: !!success ? 'success' : 'error',
+        heading: 'InitializeMFA',
+        body: !!success
+          ? 'Success.InitializeMFA'
+          : `${t('Error.InitializeMFA')}: ${error?.detail ?? ''}`,
+        primaryBtn: {
+          label: !!success ? 'Buttons.EnableMFA' : 'Links.GoBack',
+          onclick: () => {
+            router.push(!!success ? '/account/mfa/enable' : '/account');
+          },
+        },
+        secondaryBtn: null,
+      });
+    });
 
-		return { t, dialog, TOTP_secret, QR_code };
-	},
+    return { t, dialog, TOTP_secret, QR_code };
+  },
 };
 </script>
 

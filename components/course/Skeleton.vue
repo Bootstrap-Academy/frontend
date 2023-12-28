@@ -124,46 +124,46 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import {
-	ClockIcon,
-	PlayIcon,
-	KeyIcon,
-	LanguageIcon,
-	ChevronDownIcon,
+  ClockIcon,
+  PlayIcon,
+  KeyIcon,
+  LanguageIcon,
+  ChevronDownIcon,
 } from '@heroicons/vue/24/outline';
 
 import { PlayIcon as PlayIconSolid } from '@heroicons/vue/24/solid';
 
 export default {
-	components: {
-		ClockIcon,
-		PlayIcon,
-		KeyIcon,
-		LanguageIcon,
-		ChevronDownIcon,
-		PlayIconSolid,
-	},
-	setup() {
-		const { t } = useI18n();
+  components: {
+    ClockIcon,
+    PlayIcon,
+    KeyIcon,
+    LanguageIcon,
+    ChevronDownIcon,
+    PlayIconSolid,
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const stats = computed(() => {
-			return [
-				{
-					icon: ClockIcon,
-				},
-				{
-					icon: PlayIcon,
-				},
-				{
-					icon: KeyIcon,
-				},
-				{
-					icon: LanguageIcon,
-				},
-			];
-		});
+    const stats = computed(() => {
+      return [
+        {
+          icon: ClockIcon,
+        },
+        {
+          icon: PlayIcon,
+        },
+        {
+          icon: KeyIcon,
+        },
+        {
+          icon: LanguageIcon,
+        },
+      ];
+    });
 
-		return { t, stats };
-	},
+    return { t, stats };
+  },
 };
 </script>
 

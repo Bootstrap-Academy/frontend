@@ -46,12 +46,12 @@ import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {
-	components: { CheckCircleIcon },
-	setup() {
-		const { t } = useI18n();
+  components: { CheckCircleIcon },
+  setup() {
+    const { t } = useI18n();
 
-		return { t };
-	},
+    return { t };
+  },
 };
 </script>
 

@@ -144,37 +144,37 @@ export default defineComponent({
       let toReturnVerdict: string | any = "";
 
       switch (verdict) {
-        case "COMPILATION_ERROR":
-          toReturnVerdict = "Error.Verdict.COMPILATION_ERROR";
-          break;
-        case "INVALID_OUTPUT_FORMAT":
-          toReturnVerdict = "Error.Verdict.INVALID_OUTPUT_FORMAT";
-          break;
-        case "MEMORY_LIMIT_EXCEEDED":
-          toReturnVerdict = "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
-          break;
-        case "NO_OUTPUT":
-          toReturnVerdict = "Error.Verdict.NO_OUTPUT";
-          break;
-        case "OK":
-          toReturnVerdict = "Error.Verdict.OK";
-          break;
-        case "PRE_CHECK_FAILED":
-          toReturnVerdict = "Error.Verdict.PRE_CHECK_FAILED";
-          break;
-        case "RUNTIME_ERROR":
-          toReturnVerdict = "Error.Verdict.RUNTIME_ERROR";
-          break;
-        case "TIME_LIMIT_EXCEEDED":
-          toReturnVerdict = "Error.Verdict.TIME_LIMIT_EXCEEDED";
-          break;
-        case "WRONG_ANSWER":
-          toReturnVerdict = "Error.Verdict.WRONG_ANSWER";
-          break;
+      case "COMPILATION_ERROR":
+        toReturnVerdict = "Error.Verdict.COMPILATION_ERROR";
+        break;
+      case "INVALID_OUTPUT_FORMAT":
+        toReturnVerdict = "Error.Verdict.INVALID_OUTPUT_FORMAT";
+        break;
+      case "MEMORY_LIMIT_EXCEEDED":
+        toReturnVerdict = "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
+        break;
+      case "NO_OUTPUT":
+        toReturnVerdict = "Error.Verdict.NO_OUTPUT";
+        break;
+      case "OK":
+        toReturnVerdict = "Error.Verdict.OK";
+        break;
+      case "PRE_CHECK_FAILED":
+        toReturnVerdict = "Error.Verdict.PRE_CHECK_FAILED";
+        break;
+      case "RUNTIME_ERROR":
+        toReturnVerdict = "Error.Verdict.RUNTIME_ERROR";
+        break;
+      case "TIME_LIMIT_EXCEEDED":
+        toReturnVerdict = "Error.Verdict.TIME_LIMIT_EXCEEDED";
+        break;
+      case "WRONG_ANSWER":
+        toReturnVerdict = "Error.Verdict.WRONG_ANSWER";
+        break;
 
-        default:
-          toReturnVerdict = "No_Output";
-          break;
+      default:
+        toReturnVerdict = "No_Output";
+        break;
       }
       return toReturnVerdict;
     };

@@ -349,7 +349,12 @@
     "And": "And",
     "ActiveSkills": "Active Skills",
     "CompletedSkills": "Completed Skills",
-    "OtherSkills": "Other Skills"
+    "OtherSkills": "Other Skills",
+    "IsMine": "Is mine",
+    "Instructor": "Instructor",
+    "Summary": "Summary",
+    "ParentSkill": "Parent skill",
+    "CreationDate": "Creation date"
   },
   "Body": {
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
@@ -826,7 +831,8 @@
     "RegisterForNewsletter": "Register For Newsletter",
     "ConfirmUnregisterNewsletter": "Yes, Unregister From Newsletter",
     "CookiePolicy": "Okay, I understand",
-    "AddEmail": "Add Email"
+    "AddEmail": "Add Email",
+    "MoreEventInfo": "More info"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",

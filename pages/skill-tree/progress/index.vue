@@ -45,93 +45,93 @@
 import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Skill Progress',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Skill Progress',
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const xp = useXP();
+    const xp = useXP();
 
-		const loading = ref(!!!xp.value);
+    const loading = ref(!!!xp.value);
 
-		onMounted(async () => {
-			await getXP();
-			loading.value = false;
-		});
+    onMounted(async () => {
+      await getXP();
+      loading.value = false;
+    });
 
-		const rootProgress = computed(() => {
-			return xp.value?.progress ?? 0;
-		});
+    const rootProgress = computed(() => {
+      return xp.value?.progress ?? 0;
+    });
 
-		const rootSkills = computed((): any[] => {
-			return xp.value?.skills ?? [];
-		});
+    const rootSkills = computed((): any[] => {
+      return xp.value?.skills ?? [];
+    });
 
-		const rootLevel = computed(() => {
-			return xp.value?.level ?? 0;
-		});
+    const rootLevel = computed(() => {
+      return xp.value?.level ?? 0;
+    });
 
-		const rootXP = computed(() => {
-			return xp.value?.xp ?? 0;
-		});
+    const rootXP = computed(() => {
+      return xp.value?.xp ?? 0;
+    });
 
-		function getRootSkillInformation(rootSkillID: string) {
-			let rootSkill = rootSkills.value.find(
-				(item) => item.skill == rootSkillID
-			);
+    function getRootSkillInformation(rootSkillID: string) {
+      let rootSkill = rootSkills.value.find(
+        (item) => item.skill == rootSkillID
+      );
 
-			return !!rootSkill
-				? {
-						...rootSkill,
+      return !!rootSkill
+        ? {
+          ...rootSkill,
 				  }
-				: null;
-		}
+        : null;
+    }
 
-		function getSubSkillInformation(rootSkillID: string, subSkillID: string) {
-			let rootSkill = getRootSkillInformation(rootSkillID);
+    function getSubSkillInformation(rootSkillID: string, subSkillID: string) {
+      let rootSkill = getRootSkillInformation(rootSkillID);
 
-			if (!!!rootSkill) return null;
+      if (!!!rootSkill) return null;
 
-			let subSkill = (rootSkill?.skills ?? []).find(
-				(item: any) => item.skill == subSkillID
-			);
+      let subSkill = (rootSkill?.skills ?? []).find(
+        (item: any) => item.skill == subSkillID
+      );
 
-			return !!subSkill
-				? {
-						...subSkill,
+      return !!subSkill
+        ? {
+          ...subSkill,
 				  }
-				: null;
-		}
+        : null;
+    }
 
-		const rootSkillsProgress = computed(() => {
-			return [
-				{
-					heading: 'Headings.ActiveSkills',
-					body: 'Body.ActiveSkills',
-					skills: rootSkills.value.filter((skill: any) => skill.progress > 0),
-				},
-				{
-					heading: 'Headings.CompletedSkills',
-					body: 'Body.CompletedSkills',
-					skills: rootSkills.value.filter(
-						(skill: any) => skill.progress == 100
-					),
-				},
-				{
-					heading: 'Headings.OtherSkills',
-					body: 'Body.OtherSkills',
-					skills: rootSkills.value.filter((skill: any) => skill.progress == 0),
-				},
-			];
-		});
+    const rootSkillsProgress = computed(() => {
+      return [
+        {
+          heading: 'Headings.ActiveSkills',
+          body: 'Body.ActiveSkills',
+          skills: rootSkills.value.filter((skill: any) => skill.progress > 0),
+        },
+        {
+          heading: 'Headings.CompletedSkills',
+          body: 'Body.CompletedSkills',
+          skills: rootSkills.value.filter(
+            (skill: any) => skill.progress == 100
+          ),
+        },
+        {
+          heading: 'Headings.OtherSkills',
+          body: 'Body.OtherSkills',
+          skills: rootSkills.value.filter((skill: any) => skill.progress == 0),
+        },
+      ];
+    });
 
-		return { t, loading, xp, rootSkillsProgress };
-	},
+    return { t, loading, xp, rootSkillsProgress };
+  },
 };
 </script>
 

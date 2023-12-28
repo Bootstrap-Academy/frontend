@@ -29,38 +29,38 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		const image = computed(() => {
-			return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
-		});
+    const image = computed(() => {
+      return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
+    });
 
-		const category = computed(() => {
-			return (props.data?.category ?? props.data?.id ?? '').replace(/_/g, ' ');
-		});
+    const category = computed(() => {
+      return (props.data?.category ?? props.data?.id ?? '').replace(/_/g, ' ');
+    });
 
-		const title = computed(() => {
-			return props.data?.title ?? '';
-		});
+    const title = computed(() => {
+      return props.data?.title ?? '';
+    });
 
-		const author = computed(() => {
-			return props.data?.author ?? '';
-		});
+    const author = computed(() => {
+      return props.data?.author ?? '';
+    });
 
-		const lastUpdated = computed(() => {
-			let timestamp = props.data?.last_update ?? '';
-			if (!!!timestamp) return ``;
+    const lastUpdated = computed(() => {
+      let timestamp = props.data?.last_update ?? '';
+      if (!!!timestamp) return ``;
 
-			let { month, year } = convertTimestampToDate(timestamp);
-			return `${t(month.string).substring(0, 3)}, ${year}`;
-		});
+      let { month, year } = convertTimestampToDate(timestamp);
+      return `${t(month.string).substring(0, 3)}, ${year}`;
+    });
 
-		return { image, title, category, author, lastUpdated, t };
-	},
+    return { image, title, category, author, lastUpdated, t };
+  },
 });
 </script>
 

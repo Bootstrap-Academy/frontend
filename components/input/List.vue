@@ -50,97 +50,97 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		min: { type: String || Number, default: '' },
-		autocomplete: { type: String, default: 'true' },
-		hint: { type: String, default: '' },
-		name: { type: String, default: '' },
-		id: { type: String, default: '' },
-		type: { type: String, default: 'text' },
-		label: { type: String, default: '' },
-		noLabel: { type: Boolean, default: false },
-		noTrim: { type: Boolean, default: false },
-		light: { type: Boolean, default: false },
-		placeholder: { type: String, default: '' },
-		rules: { type: Array, default: [] },
-		modelValue: { default: [] },
-		max: { type: Number, default: 10 },
-	},
-	emits: ['update:modelValue', 'valid'],
-	components: { PlusCircleIcon, XMarkIcon, PencilIcon },
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    min: { type: String || Number, default: '' },
+    autocomplete: { type: String, default: 'true' },
+    hint: { type: String, default: '' },
+    name: { type: String, default: '' },
+    id: { type: String, default: '' },
+    type: { type: String, default: 'text' },
+    label: { type: String, default: '' },
+    noLabel: { type: Boolean, default: false },
+    noTrim: { type: Boolean, default: false },
+    light: { type: Boolean, default: false },
+    placeholder: { type: String, default: '' },
+    rules: { type: Array, default: [] },
+    modelValue: { default: [] },
+    max: { type: Number, default: 10 },
+  },
+  emits: ['update:modelValue', 'valid'],
+  components: { PlusCircleIcon, XMarkIcon, PencilIcon },
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const input = ref('');
-		const editItem = ref('');
+    const input = ref('');
+    const editItem = ref('');
 
-		const list = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: Array<string>) {
-				emit('update:modelValue', value);
-				emit('valid', value && value.length > 0 && value.length <= props.max);
-			},
-		});
+    const list = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: Array<string>) {
+        emit('update:modelValue', value);
+        emit('valid', value && value.length > 0 && value.length <= props.max);
+      },
+    });
 
-		function onclickAddToList() {
-			let alreadyExistsIndex = list.value.findIndex((item) => {
-				return item.toLocaleLowerCase() == input.value.toLocaleLowerCase();
-			});
+    function onclickAddToList() {
+      let alreadyExistsIndex = list.value.findIndex((item) => {
+        return item.toLocaleLowerCase() == input.value.toLocaleLowerCase();
+      });
 
-			// input is empty
-			if (!!!input.value) {
-				input.value = '';
-				return;
-			}
+      // input is empty
+      if (!!!input.value) {
+        input.value = '';
+        return;
+      }
 
-			// if item already exists
-			if (alreadyExistsIndex != -1) {
-				input.value = '';
-				return;
-			}
+      // if item already exists
+      if (alreadyExistsIndex != -1) {
+        input.value = '';
+        return;
+      }
 
-			// if this is for edit item
-			if (!!editItem) {
-				let arr = list.value.filter((item) => {
-					return item.toLocaleLowerCase() != editItem.value.toLocaleLowerCase();
-				});
+      // if this is for edit item
+      if (!!editItem) {
+        let arr = list.value.filter((item) => {
+          return item.toLocaleLowerCase() != editItem.value.toLocaleLowerCase();
+        });
 
-				arr = [input.value, ...arr];
-				list.value = [...arr];
+        arr = [input.value, ...arr];
+        list.value = [...arr];
 
-				editItem.value = '';
-			} else {
-				let arr = [input.value, ...list.value];
-				list.value = [...arr];
-			}
+        editItem.value = '';
+      } else {
+        let arr = [input.value, ...list.value];
+        list.value = [...arr];
+      }
 
-			input.value = '';
-		}
+      input.value = '';
+    }
 
-		function onclickRemoveFromList(item: string) {
-			let arr = list.value.filter((i) => {
-				return i.toLocaleLowerCase() != item.toLocaleLowerCase();
-			});
+    function onclickRemoveFromList(item: string) {
+      let arr = list.value.filter((i) => {
+        return i.toLocaleLowerCase() != item.toLocaleLowerCase();
+      });
 
-			list.value = [...arr];
-		}
+      list.value = [...arr];
+    }
 
-		function onclickEditListItem(item: string) {
-			editItem.value = item;
-			input.value = item;
-		}
+    function onclickEditListItem(item: string) {
+      editItem.value = item;
+      input.value = item;
+    }
 
-		return {
-			t,
-			list,
-			input,
-			onclickAddToList,
-			onclickRemoveFromList,
-			onclickEditListItem,
-		};
-	},
+    return {
+      t,
+      list,
+      input,
+      onclickAddToList,
+      onclickRemoveFromList,
+      onclickEditListItem,
+    };
+  },
 });
 </script>
 

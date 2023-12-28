@@ -20,29 +20,29 @@ import { TrophyIcon } from '@heroicons/vue/24/outline';
 import type { PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-		modelValue: { default: '' },
-	},
-	components: { TrophyIcon },
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+    modelValue: { default: '' },
+  },
+  components: { TrophyIcon },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const markdown = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: string) {
-				emit('update:modelValue', value);
-			},
-		});
+    const markdown = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: string) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		return {
-			t,
-			markdown,
-		};
-	},
+    return {
+      t,
+      markdown,
+    };
+  },
 });
 </script>
 

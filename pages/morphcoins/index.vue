@@ -53,80 +53,80 @@
 
 <script lang="ts">
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ['auth'],
 });
 
 import {
-	AcademicCapIcon,
-	BriefcaseIcon,
-	UserGroupIcon,
-	IdentificationIcon,
-	ShoppingCartIcon,
-	ChatBubbleLeftIcon,
+  AcademicCapIcon,
+  BriefcaseIcon,
+  UserGroupIcon,
+  IdentificationIcon,
+  ShoppingCartIcon,
+  ChatBubbleLeftIcon,
 } from '@heroicons/vue/24/outline';
 import IconBug from '~/components/icon/Bug.vue';
 import IconCoaching from '~/components/icon/Coaching.vue';
 import { useI18n } from 'vue-i18n';
 
 export default {
-	head: {
-		title: 'Get Morphcoins without paying',
-	},
-	components: {
-		AcademicCapIcon,
-		BriefcaseIcon,
-		UserGroupIcon,
-		IdentificationIcon,
-		ShoppingCartIcon,
-		IconBug,
-		IconCoaching,
-		ChatBubbleLeftIcon,
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Get Morphcoins without paying',
+  },
+  components: {
+    AcademicCapIcon,
+    BriefcaseIcon,
+    UserGroupIcon,
+    IdentificationIcon,
+    ShoppingCartIcon,
+    IconBug,
+    IconCoaching,
+    ChatBubbleLeftIcon,
+  },
+  setup() {
+    const { t } = useI18n();
 
-		let options = [
-			{
-				icon: ShoppingCartIcon,
-				button: 'Buttons.GoToShop',
-				pathname: '/morphcoins/buy',
-				type: 'buy',
-			},
-			{
-				icon: BriefcaseIcon,
-				button: 'Buttons.ExploreJobs',
-				pathname: '/jobs',
-				type: 'jobs',
-			},
-			{
-				icon: AcademicCapIcon,
-				button: 'Buttons.ContactUs',
-				pathname: '/contact',
-				type: 'lectures',
-			},
-			{
-				icon: UserGroupIcon,
-				button: 'Buttons.ExploreSkill',
-				pathname: '/skill-tree/it_paedagoge_und_dozent',
-				type: 'webinars',
-			},
-			{
-				icon: IconCoaching,
-				button: 'Buttons.ExploreSkill',
-				pathname: '/skill-tree/it_paedagoge_und_dozent',
-				type: 'coach',
-			},
-			{
-				icon: IconBug,
-				lg: true,
-				button: 'Buttons.ContactUs',
-				pathname: '/contact',
-				type: 'bugBounty',
-			},
-		];
+    let options = [
+      {
+        icon: ShoppingCartIcon,
+        button: 'Buttons.GoToShop',
+        pathname: '/morphcoins/buy',
+        type: 'buy',
+      },
+      {
+        icon: BriefcaseIcon,
+        button: 'Buttons.ExploreJobs',
+        pathname: '/jobs',
+        type: 'jobs',
+      },
+      {
+        icon: AcademicCapIcon,
+        button: 'Buttons.ContactUs',
+        pathname: '/contact',
+        type: 'lectures',
+      },
+      {
+        icon: UserGroupIcon,
+        button: 'Buttons.ExploreSkill',
+        pathname: '/skill-tree/it_paedagoge_und_dozent',
+        type: 'webinars',
+      },
+      {
+        icon: IconCoaching,
+        button: 'Buttons.ExploreSkill',
+        pathname: '/skill-tree/it_paedagoge_und_dozent',
+        type: 'coach',
+      },
+      {
+        icon: IconBug,
+        lg: true,
+        button: 'Buttons.ContactUs',
+        pathname: '/contact',
+        type: 'bugBounty',
+      },
+    ];
 
-		return { options, t };
-	},
+    return { options, t };
+  },
 };
 </script>
 

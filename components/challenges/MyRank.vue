@@ -16,26 +16,26 @@ import { useI18n } from 'vue-i18n';
 import { TrophyIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
-	props: {
-		rank: { type: Number, default: 0 },
-	},
-	components: { TrophyIcon },
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    rank: { type: Number, default: 0 },
+  },
+  components: { TrophyIcon },
+  setup(props) {
+    const { t } = useI18n();
 
-		const ordinalRank = computed(() => {
-			let suffix = 'th';
+    const ordinalRank = computed(() => {
+      let suffix = 'th';
 
-			if (props.rank == 0) suffix = '';
-			else if (props.rank == 1) suffix = 'st';
-			else if (props.rank == 2) suffix = 'nd';
-			else if (props.rank == 3) suffix = 'rd';
+      if (props.rank == 0) suffix = '';
+      else if (props.rank == 1) suffix = 'st';
+      else if (props.rank == 2) suffix = 'nd';
+      else if (props.rank == 3) suffix = 'rd';
 
-			return `${props.rank}${suffix}`;
-		});
+      return `${props.rank}${suffix}`;
+    });
 
-		return { t, ordinalRank };
-	},
+    return { t, ordinalRank };
+  },
 });
 </script>
 

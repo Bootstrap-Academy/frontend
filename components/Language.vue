@@ -24,24 +24,24 @@
 import { useI18n } from 'vue-i18n';
 
 export default {
-	props: {
-		color: { type: String, default: 'bg-tertiary' },
-	},
-	setup() {
-		const { t, locale } = useI18n();
+  props: {
+    color: { type: String, default: 'bg-tertiary' },
+  },
+  setup() {
+    const { t, locale } = useI18n();
 
-		const cookie_locale = useCookie('locale');
+    const cookie_locale = useCookie('locale');
 
-		watch(
-			() => locale.value,
-			(newValue, oldValue) => {
-				cookie_locale.value = newValue;
-			},
-			{ deep: true, immediate: true }
-		);
+    watch(
+      () => locale.value,
+      (newValue, oldValue) => {
+        cookie_locale.value = newValue;
+      },
+      { deep: true, immediate: true }
+    );
 
-		return { locale };
-	},
+    return { locale };
+  },
 };
 </script>
 

@@ -153,106 +153,106 @@ import { useI18n } from 'vue-i18n';
 import { ExclamationCircleIcon } from '@heroicons/vue/24/outline';
 
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Buy Morphcoins via Paypal',
-	},
-	components: { ExclamationCircleIcon },
-	setup() {
-		const { t, locale } = useI18n();
+  head: {
+    title: 'Buy Morphcoins via Paypal',
+  },
+  components: { ExclamationCircleIcon },
+  setup() {
+    const { t, locale } = useI18n();
 
-		const route = useRoute();
-		const router = useRouter();
+    const route = useRoute();
+    const router = useRouter();
 
-		const coins = useCoins();
-		const coinsToBuy = computed(() => {
-			return parseInt(route?.query?.coins ?? '0');
-		});
-		const coinsInEuros = computed(() => {
-			let coins = coinsToBuy.value ?? 0;
-			return Number((coins / 100).toFixed(2));
-		});
-		const user = useUser();
+    const coins = useCoins();
+    const coinsToBuy = computed(() => {
+      return parseInt(route?.query?.coins ?? '0');
+    });
+    const coinsInEuros = computed(() => {
+      let coins = coinsToBuy.value ?? 0;
+      return Number((coins / 100).toFixed(2));
+    });
+    const user = useUser();
 
-		const canBuy = computed(() => {
-			if (!!!user.value) return false;
-			if (!user.value.business) {
-				return user.value.email && user.value.country;
-			} else {
-				return (
-					user.value.street &&
+    const canBuy = computed(() => {
+      if (!!!user.value) return false;
+      if (!user.value.business) {
+        return user.value.email && user.value.country;
+      } else {
+        return (
+          user.value.street &&
 					user.value.zip_code &&
 					user.value.vat_id &&
 					user.value.first_name &&
 					user.value.last_name
-				);
-			}
-		});
+        );
+      }
+    });
 
-		const paypal = ref(null);
-		const paypalClientID = usePaypalClientID();
+    const paypal = ref(null);
+    const paypalClientID = usePaypalClientID();
 
-		onMounted(async () => {
-			// setting paypal client ID
-			await getPaypalClientID();
+    onMounted(async () => {
+      // setting paypal client ID
+      await getPaypalClientID();
 
-			if (!!!coinsToBuy.value || !!!paypalClientID.value) return;
+      if (!!!coinsToBuy.value || !!!paypalClientID.value) return;
 
-			let clientID = paypalClientID.value;
-			let orderBody = JSON.stringify({
-				coins: coinsToBuy.value,
-			});
+      let clientID = paypalClientID.value;
+      let orderBody = JSON.stringify({
+        coins: coinsToBuy.value,
+      });
 
-			const script = document.createElement('script');
-			script.setAttribute('data-namespace', 'paypal_sdk');
-			script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}&currency=EUR`;
+      const script = document.createElement('script');
+      script.setAttribute('data-namespace', 'paypal_sdk');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}&currency=EUR`;
 
-			script.addEventListener('load', () => {
-				paypal_sdk
-					.Buttons({
-						// Call your server to set up the transaction
-						createOrder: async function (data, actions) {
-							const [orderData, error] = await createPaypalOrder(orderBody);
-							if (!!!orderData) {
-								throw new Error('Unable to create order');
-							}
+      script.addEventListener('load', () => {
+        paypal_sdk
+          .Buttons({
+            // Call your server to set up the transaction
+            createOrder: async function (data, actions) {
+              const [orderData, error] = await createPaypalOrder(orderBody);
+              if (!!!orderData) {
+                throw new Error('Unable to create order');
+              }
 
-							return orderData;
-						},
+              return orderData;
+            },
 
-						// Call your server to finalize the transaction
-						onApprove: async function (data, actions) {
-							if (!!!data || !!!data.orderID) {
-								throw new Error('No Order Data');
-							}
+            // Call your server to finalize the transaction
+            onApprove: async function (data, actions) {
+              if (!!!data || !!!data.orderID) {
+                throw new Error('No Order Data');
+              }
 
-							const [orderData, error] = await onApproveCapturePaypalOrder(
-								data.orderID
-							);
+              const [orderData, error] = await onApproveCapturePaypalOrder(
+                data.orderID
+              );
 
-							if (!!!orderData) {
-								throw 'Unable to approve order';
-							} else {
-								coins.value = orderData?.coins ?? coins.value;
-								router.push(`/morphcoins/success?coins=${coinsToBuy.value}`);
-							}
-						},
-						// handler error
-						onError: function (err) {
-							router.push(`/morphcoins/error?msg=${err}`);
-						},
-					})
-					.render(paypal.value);
-			});
-			document.body.appendChild(script);
-		});
+              if (!!!orderData) {
+                throw 'Unable to approve order';
+              } else {
+                coins.value = orderData?.coins ?? coins.value;
+                router.push(`/morphcoins/success?coins=${coinsToBuy.value}`);
+              }
+            },
+            // handler error
+            onError: function (err) {
+              router.push(`/morphcoins/error?msg=${err}`);
+            },
+          })
+          .render(paypal.value);
+      });
+      document.body.appendChild(script);
+    });
 
-		return { t, locale, coinsToBuy, coinsInEuros, user, canBuy, paypal };
-	},
+    return { t, locale, coinsToBuy, coinsInEuros, user, canBuy, paypal };
+  },
 };
 </script>
 
