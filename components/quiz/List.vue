@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import type { Quiz } from "~/types/courseTypes";
 
-	const props = defineProps<{
+const props = defineProps<{
     quizzes: Quiz[];
   }>()
 </script>

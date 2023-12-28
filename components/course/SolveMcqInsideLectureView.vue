@@ -32,90 +32,90 @@
 </template>
 
 <script lang="ts" setup>
-	import { useI18n } from "vue-i18n";
-	import type { Quiz } from "~/types/courseTypes";
+import { useI18n } from "vue-i18n";
+import type { Quiz } from "~/types/courseTypes";
 
-	const props = defineProps<{
+const props = defineProps<{
     totalQuizzes: Quiz[];
     quizzesInThisLecture?: Quiz[];
   }>();
 
 
-	const { t } = useI18n();
-	const selectedQuiz = ref();
-	const user: any = useUser();
+const { t } = useI18n();
+const selectedQuiz = ref();
+const user: any = useUser();
 
-  const allQuizzes = computed(() => props.totalQuizzes)
+const allQuizzes = computed(() => props.totalQuizzes)
 
 
-	const solvedQuizzes = computed(() => {
-		let total = 0;
-		allQuizzes.value?.forEach((quiz: Quiz) => {
-			if (!!quiz.solved) {
-				++total;
-			}
-		});
-		return total;
-	});
+const solvedQuizzes = computed(() => {
+  let total = 0;
+  allQuizzes.value?.forEach((quiz: Quiz) => {
+    if (!!quiz.solved) {
+      ++total;
+    }
+  });
+  return total;
+});
 
-	const userCreatedQuizzes = computed(() => {
-		let total = 0;
-		allQuizzes.value.forEach((quiz: any) => {
-			if (quiz?.creator == user?.value.id) {
-				++total;
-			}
-		});
-		return total;
-	});
+const userCreatedQuizzes = computed(() => {
+  let total = 0;
+  allQuizzes.value.forEach((quiz: any) => {
+    if (quiz?.creator == user?.value.id) {
+      ++total;
+    }
+  });
+  return total;
+});
 
-	function nextQuestion(id: any) {
-		let index = 0;
-		allQuizzes.value.forEach((element: any, i: any) => {
-			if (element.id == id) {
-				console.log("inside index", index);
-				index = i;
-			}
-		});
+function nextQuestion(id: any) {
+  let index = 0;
+  allQuizzes.value.forEach((element: any, i: any) => {
+    if (element.id == id) {
+      console.log("inside index", index);
+      index = i;
+    }
+  });
 
-		if (index == allQuizzes.value?.length - 1 && index !== 0) {
-			selectedQuiz.value = null;
-			return;
-		}
-		for (let i = index; i < allQuizzes.value?.length; i++) {
-			if (
-				!allQuizzes.value[i]?.solved &&
+  if (index == allQuizzes.value?.length - 1 && index !== 0) {
+    selectedQuiz.value = null;
+    return;
+  }
+  for (let i = index; i < allQuizzes.value?.length; i++) {
+    if (
+      !allQuizzes.value[i]?.solved &&
 				allQuizzes.value[i]?.creator != user?.value.id 
-        // && i != index
-			) {
-				selectedQuiz.value = allQuizzes.value[i];
-				break;
-			}
-		}
-	}
+    // && i != index
+    ) {
+      selectedQuiz.value = allQuizzes.value[i];
+      break;
+    }
+  }
+}
 
-	function setRatedLocally(id: any) {
-		allQuizzes.value?.forEach((element: any, i: any) => {
-			if (element.id == id) {
-				element.rated = true;
-			}
-		});
-	}
+function setRatedLocally(id: any) {
+  allQuizzes.value?.forEach((element: any, i: any) => {
+    if (element.id == id) {
+      element.rated = true;
+    }
+  });
+}
 
-	function setSolvedLocally(id: any) {
-		allQuizzes.value.forEach((element: any) => {
-			if (element.id == id) {
-				element.solved = true;
-			}
-		});
-	}
+function setSolvedLocally(id: any) {
+  allQuizzes.value.forEach((element: any) => {
+    if (element.id == id) {
+      element.solved = true;
+    }
+  });
+}
 
-	watch(
-		() => allQuizzes.value,
-		(newValue, oldValue) => {
-			nextQuestion(0);
-		},
-		{ immediate: true }
-	);
+watch(
+  () => allQuizzes.value,
+  (newValue, oldValue) => {
+    nextQuestion(0);
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped></style>

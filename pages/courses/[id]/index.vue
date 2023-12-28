@@ -97,18 +97,18 @@
 </template>
 
 <script lang="ts">
-	import { useI18n } from "vue-i18n";
-	import type { Quiz } from "~/types/courseTypes";
-	definePageMeta({
-		middleware: ["auth"],
-	});
+import { useI18n } from "vue-i18n";
+import type { Quiz } from "~/types/courseTypes";
+definePageMeta({
+  middleware: ["auth"],
+});
 
-	export default {
-		head: {
-			title: "Course Details",
-		},
-		setup() {
-			const { t } = useI18n();
+export default {
+  head: {
+    title: "Course Details",
+  },
+  setup() {
+    const { t } = useI18n();
 
     const loading = ref(true);
     const course = useCourse();
@@ -121,68 +121,68 @@
     ];
     const selectedbutton = ref(0);
 
-			const allQuizzes = useQuizzesInCourse();
-			const route = useRoute();
-			const router = useRouter();
+    const allQuizzes = useQuizzesInCourse();
+    const route = useRoute();
+    const router = useRouter();
 
-			const id = computed(() => {
-				return <string>(route.params?.id ?? "");
-			});
+    const id = computed(() => {
+      return <string>(route.params?.id ?? "");
+    });
 
-			const skillID = computed(() => {
-				return <string>(route.query?.skillID ?? "");
-			});
+    const skillID = computed(() => {
+      return <string>(route.query?.skillID ?? "");
+    });
 
-			const subSkillID = computed(() => {
-				return <string>(route.query?.subSkillID ?? "");
-			});
+    const subSkillID = computed(() => {
+      return <string>(route.query?.subSkillID ?? "");
+    });
 
-			onMounted(async () => {
-				if (!!!id.value) {
-					loading.value = false;
-					return;
-				}
-				const [success, error] = await getCourseByID(id.value);
+    onMounted(async () => {
+      if (!!!id.value) {
+        loading.value = false;
+        return;
+      }
+      const [success, error] = await getCourseByID(id.value);
 
-				if (error) {
-					console.log("error in");
-					openSnackbar("error", error.detail);
-					await getCourseSummaryByID(id.value);
-				} else {
-					isCourseAccessible.value = true;
-				}
-				// await getQuizInfos();
-				await getQuizzes(course.value.id)
+      if (error) {
+        console.log("error in");
+        openSnackbar("error", error.detail);
+        await getCourseSummaryByID(id.value);
+      } else {
+        isCourseAccessible.value = true;
+      }
+      // await getQuizInfos();
+      await getQuizzes(course.value.id)
 
-				loading.value = false;
-			});
+      loading.value = false;
+    });
 
-			function watchThisLecture({ sectionID, lectureID }: any) {
-				router.push({
-					path: `${route.path}/watch`,
-					query: {
-						section: sectionID,
-						lecture: lectureID,
-						skillID: skillID.value,
-						subSkillID: subSkillID.value,
-					},
-				});
-			}
+    function watchThisLecture({ sectionID, lectureID }: any) {
+      router.push({
+        path: `${route.path}/watch`,
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value,
+        },
+      });
+    }
 
-			return {
-				loading,
-				course,
-				t,
-				isCourseAccessible,
-				watchThisLecture,
-				skillID,
-				allQuizzes,
-				subSkillID,
+    return {
+      loading,
+      course,
+      t,
+      isCourseAccessible,
+      watchThisLecture,
+      skillID,
+      allQuizzes,
+      subSkillID,
       			buttonOptions,
       			selectedbutton,
-			};
-		},
-	};
+    };
+  },
+};
 </script>
 
 <style scoped>

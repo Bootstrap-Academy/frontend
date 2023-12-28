@@ -158,18 +158,18 @@ export default defineComponent({
       loading.value = false;
     });
 
-      const assignQuizzes = async () => {
-        quizzes.value.splice(0)
+    const assignQuizzes = async () => {
+      quizzes.value.splice(0)
 
-        const subTasks = useSubTasksInQuiz();
-        quizzesInfo.value.forEach(async (lecture) => {
-          await getSubTasksInQuiz(lecture.id).then(() => {
-            subTasks.value.forEach((quiz) => {
-              quizzes.value.push(quiz);
-            });
+      const subTasks = useSubTasksInQuiz();
+      quizzesInfo.value.forEach(async (lecture) => {
+        await getSubTasksInQuiz(lecture.id).then(() => {
+          subTasks.value.forEach((quiz) => {
+            quizzes.value.push(quiz);
           });
         });
-      };
+      });
+    };
 
     onUnmounted(() => {
       if (window) {

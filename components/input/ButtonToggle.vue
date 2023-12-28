@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-	import { useI18n } from "vue-i18n";
+import { useI18n } from "vue-i18n";
 	  const props=defineProps({
 	    modelValue: { type: Number, default: 0 },
 	    buttonOptions: { type: Array as PropType<any>, default: [] },
@@ -47,17 +47,17 @@
 	    const { t } = useI18n();
 	    const selectedOption = ref(0);
 
-		const options = computed(() => props.buttonOptions)
+const options = computed(() => props.buttonOptions)
 
 
 
-				watch(
-					() => props.modelValue,
-					(newValue, oldValue) => {
-						selectedOption.value = newValue;
-					},
-					{ immediate: true }
-				);
+watch(
+  () => props.modelValue,
+  (newValue, oldValue) => {
+    selectedOption.value = newValue;
+  },
+  { immediate: true }
+);
 
 	    function emitSelected(selected: any) {
 	      selectedOption.value = selected;
