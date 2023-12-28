@@ -4,7 +4,7 @@
   "Subheadings": {
     "ContactUs": "Contact Us",
     "Hero": "Bootstrap Academy",
-    "About": "Why use Bootstrap Academy?",
+    "About": "Why to use bootstrap academy",
     "Features": "Features",
     "HeroFAQS": "FAQs",
     "GetMorphcoins": "Get MorphCoins",
@@ -12,6 +12,25 @@
   },
 
   "Headings": {
+    "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
+    "AnswersForMatchingsRespectively": "Answers for Matchings",
+    "LabelForMatchings": "Labels for Matchings",
+    "NoteCannotEditMatching": "Edit Restriction",
+    "DeleteMatching": "Delete Matching",
+    "EmptyMatchings": "Empty Matchings",
+    "NumberOfMatchings": "Number Of Matchings",
+    "One": "One",
+    "TwoMatchings": "Two Matchings",
+    "Two": "Two",
+    "Three": "Three",
+    "Four": "Four",
+    "Five": "Five",
+    "Six": "Six",
+    "Seven": "Seven",
+    "Eight": "Eight",
+    "Nine": "Nine",
+    "Matching": "Matching",
+    "Matchings": "Matchings",
     "Error": "Error",
     "NoErrorFound": "No Error Found",
     "ExampleError": "Example Error",
@@ -29,6 +48,7 @@
     "SolvedQuizzes": "Solved Quizzes",
     "ViewQuizzesForLastViewCourse": "View Quizzes For Last View Course",
     "NoQuizFoundForYouToSolve": "No Quiz Found For You To Solve",
+    "NoMatchingFoundForYouToSolve": "No Matching Found For You To Solve",
     "ButAdditionalSubscription": "Buying an additional subscription will be added with your previous subscription duration",
     "PremiumEndsIn": "Your premium subscription ends",
     "More": "More",
@@ -89,7 +109,7 @@
     "Other": "Other",
     "Dislike": "Dislike",
     "UnlockCodingChallenge": "Buy coding challenge to unlock",
-    "EmptySubtasks": "No Quiz Found For This Lecture",
+    "EmptyQuizzes": "No Quiz Found For This Lecture",
     "NextSubTasksLocation": "The next quizzes are in the lectures on: ",
     "NoMoreSubTasksInThisCourse": "There are no more quizzes in this course",
     "EmptyCodingChallenge": "No Coding Challenge Found For This Lecture",
@@ -108,6 +128,7 @@
     "Quizzes": "Quizzes",
     "QuizzesInCourse": "Quizzes In This Course",
     "NoQuizQuestion": "No Quizz Questions available",
+    "NoMatchings": "No Matchings available",
     "NoQuizTitle": "No Title is provided for this Quiz",
     "EvaluatorCode": "Evaluator Code",
     "SolutionCode": "Solution Code",
@@ -132,9 +153,8 @@
     "Challenge": "Challenge",
     "Explanation": "Explanation",
     "Input": "Input",
-    "ProgramInput": "If input to your code is",
-    "ProgramOutputShouldBe": "Output should be",
     "ExpectedOutput": "Expected Output",
+    "ActualOutput": "Actual Output",
     "Name": "Name",
     "Attempts": "Attempts",
     "Tasks": "Tasks",
@@ -168,7 +188,6 @@
     "Person": "Private Person",
     "Business": "Business",
     "Skill": "Skill",
-    "Skills": "skills",
     "WebinarRating": "Rate Webinar",
     "CancellationPolicy": "Cancellation Policy",
     "TodayDate": "Today's Date",
@@ -333,8 +352,10 @@
     "OtherSkills": "Other Skills"
   },
   "Body": {
+    "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
     "NoteCannotEditQuiz": "Once a quiz has been created you cannot edit it. But you can delete it and can recreate new one.",
+    "NoteCannotEditMatching": "Once a Matching has been created you cannot edit it. But you can delete it and can recreate new one.",
     "NoteCannotEditCodingChallenge": "Once a Coding Challenge has been created you cannot edit it. But you can delete it and can recreate new one.",
     "QuizDummyQuestion": "Which of the following is a programming language?",
     "UpdateYourCode": "Do you want to update your code with your selected language example code?",
@@ -592,7 +613,6 @@
   "Inputs": {
     "Morphcoins": "Morphcoins",
     "Fee": "Fee",
-    "Skills": "Skills",
     "Xp": "Xp",
     "Coins": "Coins",
     "TimeLimit": "Time Limit (ms)",
@@ -620,11 +640,11 @@
     "Correct": "Correct",
     "Question": "Question",
     "Skill": "Skill",
+    "Skills": "Skills",
     "SubSkill": "SubSkill",
     "Course": "Course",
     "Section": "Section",
     "Lecture": "Lecture",
-    "ShowFreeQuizzesOnly": "Show Free Quizzes Only",
     "FirstName": "First Name",
     "LastName": "Last Name",
     "City": "City",
@@ -670,6 +690,11 @@
     "RegistrationCode": "Registration Code"
   },
   "Buttons": {
+    "Matching": "Matching",
+    "Matchings": "Matchings",
+    "CreateMatching": "create Matching",
+    "UpdateMatching": "Update Matching",
+    "DeleteMatching": "Delete Matching",
     "TestAgainstAll": "Test Against All",
     "ManagePremium": "Manage Premium",
     "Challenge": "Challenge",
@@ -853,7 +878,7 @@
     "DontHaveSecretCode": "Don't have TOTP secret code?",
     "InitializeSecretCode": "Click to initialize it",
     "UseRecoveryCode": "Use Recovery Code",
-    "ExploreSkillTree": "Explore the skill tree",
+    "ExploreSkillTree": "Explore skill tree",
     "GetStarted": "to get started.",
     "GoToProfile": "Go To Profile",
     "GoToCourse": "Go To Course",
@@ -865,6 +890,10 @@
     "GravatarImage": "Change your gravatar image at"
   },
   "Success": {
+    "SolvedMatching": "Matching Solved ✅",
+    "DeleteMatching": "Matching Delete Successfully",
+    "CreateMatching": "Matching Created Successfully",
+    "EditMatching": "Matching Updated Successfully",
     "RefilledHearts": "Your hearts are refilled SuccessFully",
     "AutopayUpdated": "Auto pay is updated SuccessFully",
     "SubscribedMonthly": "You have successfully subscribed to monthly subscription",
@@ -923,6 +952,8 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "WrongMatchingAttempt": "Incorrect Matchings❌. Try Again",
+    "MinimnumTwoFieldsRequired": "There should be minimum two fields",
     "Verdict": {
       "COMPILATION_ERROR": "The program failed to compile ❌",
       "INVALID_OUTPUT_FORMAT": "The program produced invalid output that could not be parsed by the evaluator",
@@ -947,11 +978,12 @@
     "Need20CoinsForRefill": "You need 20 morphcoins to refill your heart",
     "Need15CoinsForRefill": "You need 15 morphcoins to refill your heart",
     "CannotGetEvaluator": "Evaluator Not Found",
-    "Level20RequiredForCreatingCodingChallenge": "Level twenty (20) is required for creating a Coding Challenge",
+    "Level20RequiredForCreatingCodingChallenge": "You can create coding challenge once you reached level (20)",
     "UserIsBanned": "You are banned and cannot perform this action",
     "NotEnoughCoins": "You Don't have enough coins",
     "NotEnoughHearts": "A minimum of 1 Heart is required to solve. Buy more hearts or go premium",
     "NotEnoughHeartsForQuiz": "A minimum of 0.5 Heart is required to solve MCQ. Buy more hearts or go premium",
+    "NotEnoughHeartsForMatching": "A minimum of 0.5 Heart is required to solve Matching. Buy more hearts or go premium",
     "NoCourseAccess": "You don't have access to this course",
     "NotAllowedForRatings": "You are Not Allowed For Ratings",
     "NotAllowedForReport": "You are Not Allowed To Report",
@@ -1065,15 +1097,15 @@
     },
     "SkillProgress": {
       "Heading": "@:Headings.SkillPoints",
-      "Body": "Explore the skill tree to get started."
+      "Body": "Explore skill tree to get started."
     },
     "Course": {
       "Heading": "Course Not Found",
-      "Body": "This course may not exist or was removed."
+      "Body": "This course may not exist or is removed."
     },
     "CourseCardSM": {
       "Heading": "No Watched Courses",
-      "Body": "You have not watched any courses yet. Explore the skill tree to get started."
+      "Body": "You have not watched courses. Explore skill tree to get started."
     },
     "Courses": {
       "Heading": "No Matching Courses",
@@ -1081,7 +1113,7 @@
     },
     "Lecture": {
       "Heading": "Lecture Not Found",
-      "Body": "This lecture may not exist or was removed."
+      "Body": "This lecture may not exist or is removed."
     },
     "Jobs": {
       "Heading": "No Matching Jobs",
@@ -1089,11 +1121,11 @@
     },
     "Job": {
       "Heading": "Job Not Found",
-      "Body": "This job may not exist or was removed."
+      "Body": "This job may not exist or is removed."
     },
     "Certificates": {
       "Line1": "You have no certificates",
-      "Line2": "Explore the skill tree",
+      "Line2": "Explore skill tree",
       "Line3": "to get started."
     },
     "MyQuizQuestions": {

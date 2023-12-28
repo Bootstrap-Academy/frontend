@@ -72,8 +72,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent } from "vue";
-import type { PropType, Ref } from "vue";
+import { defineComponent} from "vue";
 import { CheckIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
@@ -107,6 +106,7 @@ export default defineComponent({
         if (props.skillID == skill.skill) {
           skill.skills.forEach((subSkill: any) => {
             if (props.subSkillID == subSkill.skill && subSkill.level >= 5) {
+              totalLevel.value = subSkill.level;
               eligible = true;
             }
             if (props.subSkillID == subSkill.skill && subSkill.level >= 20) {

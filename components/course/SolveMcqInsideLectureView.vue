@@ -1,24 +1,24 @@
 <template>
-	<div>
-		<article class="flex gap-4 flex-wrap mb-7">
-			<chip sm :color="'chip-color-13'" class="w-fit" md>
-				{{ t("Headings.TotalQuizzes") }}:
-				<span>{{ allQuizzes.length }}</span>
-			</chip>
-			<chip color="chip-color-13" class="w-fit" md v-if="quizzesInThisLecture">
-				{{ t("Headings.TotalQuizzesInLecture") }}:
-				<span>{{ quizzesInThisLecture.length }}</span>
-			</chip>
-			<chip sm :color="'chip-color-13'" class="w-fit" md>
-				{{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
-			</chip>
-			<chip sm :color="'chip-color-13'" class="w-fit" md>
-				{{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
-			</chip>
-		</article>
+  <div>
+  		<article class="flex gap-4 flex-wrap mb-7">
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.TotalQuizzes") }}:
+  				<span>{{ allQuizzes.length }}</span>
+  			</chip>
+  			<chip color="chip-color-13" class="w-fit" md v-if="quizzesInThisLecture">
+  				{{ t("Headings.TotalQuizzesInLecture") }}:
+  				<span>{{ quizzesInThisLecture.length }}</span>
+  			</chip>
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
+  			</chip>
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
+  			</chip>
+  		</article>
 
-		<!-- <FormQuizAnswer
-      v-if="allQuizzes.length && !!selectedQuiz"
+    <!--<FormQuizAnswer
+      v-if="quizzesToShow.length && !!selectedQuiz"
       doubleColumnOptions
       :data="selectedQuiz"
       @nextQuestion="nextQuestion($event)"
@@ -77,15 +77,15 @@
 			}
 		});
 
-		if (index == allQuizzes.value?.length - 1) {
+		if (index == allQuizzes.value?.length - 1 && index !== 0) {
 			selectedQuiz.value = null;
 			return;
 		}
 		for (let i = index; i < allQuizzes.value?.length; i++) {
 			if (
 				!allQuizzes.value[i]?.solved &&
-				allQuizzes.value[i]?.creator != user?.value.id &&
-				i != index
+				allQuizzes.value[i]?.creator != user?.value.id 
+        // && i != index
 			) {
 				selectedQuiz.value = allQuizzes.value[i];
 				break;

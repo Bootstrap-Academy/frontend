@@ -55,8 +55,8 @@ export async function getQuizzes(
 }
 
 export async function getFilteredQuizzes(filters: any[]) {
-	try {
-		let query = "";
+  try {
+    let query = "";
 
 		for (let key in filters) {
 			if (typeof filters[key] == "object" && filters[key].length > 0) {
@@ -78,10 +78,10 @@ export async function getFilteredQuizzes(filters: any[]) {
 		const quizzes = useQuizzes();
 		const response = quizzes.value;
 
-		return [response, null];
-	} catch (error: any) {
-		return [null, error.data];
-	}
+    return [response, null];
+  } catch (error: any) {
+    return [null, error.data];
+  }
 }
 
 export async function editQuiz(id: string, body: any) {
@@ -91,12 +91,12 @@ export async function editQuiz(id: string, body: any) {
 			return q.id == id ? body : q;
 		});
 
-		const quiz = useQuiz();
-		quiz.value = body;
-		return [body, null];
-	} catch (error: any) {
-		return [null, error.data];
-	}
+    const quiz = useQuiz();
+    quiz.value = body;
+    return [body, null];
+  } catch (error: any) {
+    return [null, error.data];
+  }
 }
 
 // functions written by usman
