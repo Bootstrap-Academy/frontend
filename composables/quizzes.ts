@@ -145,7 +145,8 @@ export async function getQuizzesInLecture(courseId: any, section_id: string = ""
     section_id: section_id === "" ? undefined : section_id,
     lecture_id: lecture_id === "" ? undefined : lecture_id
   })
-    .then((res) => {
+    .then(async(res) => {
+      await getMatchingsInCourse(courseId, section_id, lecture_id)
       const quizzes = useQuizzesInLectureInfo();
       quizzes.value = res ?? [];
 
