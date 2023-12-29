@@ -25,9 +25,9 @@ export async function getQuiz(id: string) {
 export async function getQuizzes(courseId: string, sectionId?: string, lectureId?: string) {
   const quizzesInLecture = useQuizzesInLecture();
   const quizzesInCourse = useQuizzesInCourse();
-  const quizInfo = useQuizzesInCourseInfo();
+  const quizInfo = useQuizzes();
   const challenges = useAllCodingChallengesInATask();
-  const matchings = useMatchings()
+  const matchings = useMatchings();
 
   quizInfo.value.splice(0);
   challenges.value.splice(0);
@@ -36,7 +36,6 @@ export async function getQuizzes(courseId: string, sectionId?: string, lectureId
 
   await getQuizzesInCourse(courseId);
   await assignQuizzesInCourse();
-  await getMatchingsInSkill(courseId)
 
   if (sectionId && lectureId) {
     await getQuizzesInLecture(courseId, sectionId, lectureId);
@@ -93,6 +92,7 @@ export async function getQuizzesInSkill(skillId: any) {
     const res = await GET(`/challenges/skills/${skillId}/tasks`);
     const quizzes = useQuizzes();
     quizzes.value = res ?? [];
+    assignQuizzesInCourse()
     return [res, null];
   } catch (error: any) {
     let msg = error?.data?.error;
@@ -107,7 +107,7 @@ export async function getQuizzesInSkill(skillId: any) {
 export async function getQuizzesInCourse(courseId: string) {
   const res = await GET(`/challenges/courses/${courseId}/tasks`)
     .then((res) => {
-      const quizzes = useQuizzesInCourseInfo();
+      const quizzes = useQuizzes();
       quizzes.value = res;
       return [res, null];
     })
@@ -122,8 +122,9 @@ export async function getQuizzesInCourse(courseId: string) {
 
 export const assignQuizzesInCourse = async () => {
   const subTasks = useSubTasksInQuiz();
-  const allQuizzesInfo = useQuizzesInCourseInfo();
+  const allQuizzesInfo = useQuizzes();
   const allQuizzes = useQuizzesInCourse();
+  const matchings = useMatchings()
   if (allQuizzesInfo.value.length) {
     allQuizzesInfo.value.forEach(async (lecture) => {
       await getSubTasksInQuiz(lecture.id).then(() => {
@@ -131,6 +132,10 @@ export const assignQuizzesInCourse = async () => {
           allQuizzes.value.push(quiz);
         });
       });
+    });
+
+    allQuizzesInfo.value.forEach(async (lecture) => {
+      await getMatchingsInTask(lecture.id);
     });
   }
 };

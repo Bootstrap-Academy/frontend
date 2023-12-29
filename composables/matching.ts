@@ -6,7 +6,6 @@ export const useMatching = () => useState("matching", (): matching | any => {});
 export async function createMatching(body: any, task_id: any) {
   try {
     const response = await POST(`/challenges/tasks/${task_id}/matchings`, body);
-    console.log("response ", response);
     const user: any = useUser();
     await getMyMatchingsInTask(task_id, user?.value.id ?? "");
     return [response, null];
@@ -76,7 +75,6 @@ export async function getMatchingsInTask(task_id: any) {
     const matchings = useMatchings();
     matchings.value = response;
 
-    console.log("response ", response);
     return [response, null];
   } catch (error) {
     console.log("error is", error);
@@ -92,7 +90,6 @@ export async function getMyMatchingsInTask(task_id: any, creator: any) {
     const myMatchings = useMyMatchings();
     myMatchings.value = response;
 
-    console.log("response ", response);
     return [response, null];
   } catch (error) {
     console.log("error is", error);

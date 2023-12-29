@@ -178,8 +178,8 @@ export default {
       skillID,
       allQuizzes,
       subSkillID,
-      			buttonOptions,
-      			selectedbutton,
+      buttonOptions,
+      selectedbutton,
     };
   },
 };
