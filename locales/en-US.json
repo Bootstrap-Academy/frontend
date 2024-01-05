@@ -354,7 +354,8 @@
     "Instructor": "Instructor",
     "Summary": "Summary",
     "ParentSkill": "Parent skill",
-    "CreationDate": "Creation date"
+    "CreationDate": "Creation date",
+    "EmptySubtasks" : "In this lecture, there are no quizzes yet."
   },
   "Body": {
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",

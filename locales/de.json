@@ -356,7 +356,8 @@
     "Instructor": "Instruktor",
     "Summary": "Zusammenfassung",
     "ParentSkill": "Übergeordneter Skill",
-    "CreationDate": "Erstellungsdatum"
+    "CreationDate": "Erstellungsdatum",
+    "EmptySubtasks" : "In dieser Vorlesung gibt es noch keine Quizze."
 
   },
   "Body": {
