@@ -139,7 +139,9 @@ export const assignQuizzesInCourse = async () => {
     allQuizzesInfo.value.forEach(async (lecture) => {
       await getSubTasksInQuiz(lecture.id).then(() => {
         subTasks.value.forEach((quiz) => {
-          allQuizzes.value.push(quiz);
+          if (!allQuizzes.value.some((question) => question.id === quiz.id)) {
+            allQuizzes.value.push(quiz);
+          }
         });
       });
     });
@@ -185,6 +187,7 @@ export const assignLectureQuizzes = async () => {
     await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 
     subTasksInSkill.value.forEach((quiz) => {
+      console.log('subTasksInSkill', subTasksInSkill.value, quiz)
       quizzesInLecture.value.push(quiz);
     });
 

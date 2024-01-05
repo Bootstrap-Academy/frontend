@@ -24,7 +24,6 @@
     <Head>
       <Title>Watch Course - {{ course?.title ?? "" }}</Title>
     </Head>
-
     <section>
       <main
         v-if="course"
@@ -76,36 +75,6 @@
               v-if="allQuizzes.length"
               class="mt-10"
             >
-              <p
-                v-if="!quizzesInLecture.length"
-                class="w-full text-xl text-center pb-10"
-              >
-                {{ t("Headings.EmptySubtasks") }}
-              </p>
-              <p v-if="unseenLectureQuizzes.length && unseenLectureQuizzes[0].lectureId !== activeLecture.id">
-                {{ t("Headings.NextSubTasksLocation") }}
-              </p>
-              <ul>
-                <li
-                  v-for="(unseenQuiz, index) in unseenLectureQuizzes.sort((a, b) => a.section.length - b.section.length)"
-                  :key="index"
-                >
-                  <span v-if="activeLecture.id !== unseenQuiz.lectureId">
-                    {{ t("Headings.Section") }}
-                    {{ getSectionNumber(unseenQuiz.section) }},
-                    <NuxtLink
-                      @click="
-                        watchThisLecture({
-                          sectionID: unseenQuiz.section,
-                          lectureID: unseenQuiz.lectureId
-                        })
-                      "
-                      class="cursor-pointer text-accent"
-                      >{{ unseenQuiz.lecture }}</NuxtLink
-                    >
-                  </span>
-                </li>
-              </ul>
             </div>
 
             <div v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length">
@@ -231,7 +200,7 @@ export default {
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
     const matches = useMatchingsForLectures()
 
-    const currentMatches = computed(() => matches.value.filter((match) => match.sectionId === activeSection.value.id))
+    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture.value.id))
 
     const showCurriculum = ref(false);
 
