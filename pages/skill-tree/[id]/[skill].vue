@@ -70,8 +70,7 @@ export default defineComponent({
     const courses = useCourses();
     const coachings = useCoachings();
     const webinars = useWebinars();
-    const quizzesInfo = useQuizzes();
-    const quizzes = ref<Quiz[]>([]);
+    const quizzes = useQuizzes();
     const route = useRoute();
 
     const rootSkillID = computed(() => {
@@ -152,24 +151,13 @@ export default defineComponent({
           getWebinarsForThisSubSkill(subSkillID.value),
           getQuizzesInSkill(subSkillID.value),
         ]);
-        assignQuizzes()
+        // assignQuizzes()
       }
 
       loading.value = false;
     });
 
-    const assignQuizzes = async () => {
-      quizzes.value.splice(0)
 
-      const subTasks = useSubTasksInQuiz();
-      quizzesInfo.value.forEach(async (lecture) => {
-        await getSubTasksInQuiz(lecture.id).then(() => {
-          subTasks.value.forEach((quiz) => {
-            quizzes.value.push(quiz);
-          });
-        });
-      });
-    };
 
     onUnmounted(() => {
       if (window) {

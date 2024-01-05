@@ -1,6 +1,9 @@
 import { useState } from "#app";
 import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
+import { useMatchingsForLectures } from "./matching";
+import { MatchingForSections } from "~/types/matching";
+import type { RefSymbol } from "@vue/reactivity";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourseInfo = () => useState<LecturesWithQuiz[]>("quizzesInCourseInfo", () => []);
@@ -27,7 +30,6 @@ export async function getQuizzes(courseId: string, sectionId?: string, lectureId
   const quizzesInCourse = useQuizzesInCourse();
   const quizInfo = useQuizzes();
   const challenges = useAllCodingChallengesInATask();
-  const matchings = useMatchings();
 
   quizInfo.value.splice(0);
   challenges.value.splice(0);
@@ -92,7 +94,7 @@ export async function getQuizzesInSkill(skillId: any) {
     const res = await GET(`/challenges/skills/${skillId}/tasks`);
     const quizzes = useQuizzes();
     quizzes.value = res ?? [];
-    assignQuizzesInCourse()
+    assignQuizzesInCourse();
     return [res, null];
   } catch (error: any) {
     let msg = error?.data?.error;
@@ -109,6 +111,7 @@ export async function getQuizzesInCourse(courseId: string) {
     .then((res) => {
       const quizzes = useQuizzes();
       quizzes.value = res;
+      assignQuizzesInCourse();
       return [res, null];
     })
     .catch((error: any) => {
@@ -124,7 +127,14 @@ export const assignQuizzesInCourse = async () => {
   const subTasks = useSubTasksInQuiz();
   const allQuizzesInfo = useQuizzes();
   const allQuizzes = useQuizzesInCourse();
-  const matchings = useMatchings()
+  const matchings = useMatchings();
+  const matchesForLectures = useMatchingsForLectures();
+
+  matchesForLectures.value.splice(0);
+  subTasks.value.splice(0);
+  allQuizzes.value.splice(0);
+  matchings.value.splice(0);
+
   if (allQuizzesInfo.value.length) {
     allQuizzesInfo.value.forEach(async (lecture) => {
       await getSubTasksInQuiz(lecture.id).then(() => {
@@ -133,9 +143,14 @@ export const assignQuizzesInCourse = async () => {
         });
       });
     });
-
     allQuizzesInfo.value.forEach(async (lecture) => {
-      await getMatchingsInTask(lecture.id);
+      console.log('getting Matches')
+      const matchesInLecture = await getMatchingsInLecture(lecture.id);
+      matchesInLecture?.forEach((matching) => {
+        if (!matchesForLectures.value.some((match) => match.matching.id === matching.id)) {
+          matchesForLectures.value.push(new MatchingForSections(lecture.section_id, lecture.lecture_id, matching));
+        }
+      });
     });
   }
 };
@@ -145,8 +160,8 @@ export async function getQuizzesInLecture(courseId: any, section_id: string = ""
     section_id: section_id === "" ? undefined : section_id,
     lecture_id: lecture_id === "" ? undefined : lecture_id
   })
-    .then(async(res) => {
-      await getMatchingsInCourse(courseId, section_id, lecture_id)
+    .then(async (res) => {
+      await getMatchingsInCourse(courseId, section_id, lecture_id);
       const quizzes = useQuizzesInLectureInfo();
       quizzes.value = res ?? [];
 
@@ -165,12 +180,15 @@ export const assignLectureQuizzes = async () => {
   const subTasksInSkill = useSubTasksInQuiz();
   const quizzesInLectureInfo = useQuizzesInLectureInfo();
   const quizzesInLecture = useQuizzesInLecture();
+
   if (quizzesInLectureInfo.value.length) {
     await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 
     subTasksInSkill.value.forEach((quiz) => {
       quizzesInLecture.value.push(quiz);
     });
+
+    await getMatchingsInLecture(quizzesInLectureInfo.value[0].id);
   }
 };
 

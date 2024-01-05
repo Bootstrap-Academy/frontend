@@ -137,11 +137,11 @@
             class="md:px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 3"
           >
-            <div v-if="matchings.length">
-              <MatchingSolveInsideCourse :matchings="matchings" />
+            <div v-if="currentMatches.length">
+              <MatchingSolveInsideCourse :matchings="currentMatches" />
             </div>
             <p
-              v-if="!matchings.length"
+              v-if="!currentMatches.length"
               class="w-full text-xl text-center"
             >
               {{ t("Headings.EmptyMatchings") }}
@@ -199,6 +199,7 @@
 import { useI18n } from "vue-i18n";
 import { XCircleIcon } from "@heroicons/vue/24/solid";
 import { QuizInUnseenLecture } from "~/types/courseTypes";
+import { useMatchingsForLectures, useMatchingsInLecture } from "~/composables/matching";
 
 definePageMeta({
   middleware: ["auth"]
@@ -224,11 +225,14 @@ export default {
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
 
-    const allQuizzesInfo = useQuizzesInCourseInfo();
+    const allQuizzesInfo = useQuizzes();
     const allQuizzes = useQuizzesInCourse();
     const quizzesInLecture = useQuizzesInLecture();
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
-    const matchings = useMatchings();
+    const matches = useMatchingsForLectures()
+
+    const currentMatches = computed(() => matches.value.filter((match) => match.sectionId === activeSection.value.id))
+
     const showCurriculum = ref(false);
 
     const premiumInfo: any = usePremiumInfo();
@@ -246,7 +250,7 @@ export default {
       { name: "Buttons.Video" },
       { name: `${t("Buttons.Quiz")} ${quizzesInLecture.value.length}` },
       { name: `${t("Buttons.Challenge")} ${codingChallenges.value.length}` },
-      { name: `${t("Buttons.Matching")} ${matchings.value.length}` }
+      { name: `${t("Buttons.Matching")} ${currentMatches.value.length}` }
     ]);
 
     const activeSection = computed(() => {
@@ -407,6 +411,7 @@ export default {
       }
     }
 
+
     return {
       t,
       loading,
@@ -427,7 +432,7 @@ export default {
       quizzesInLecture,
       unseenLectureQuizzes,
       getSectionNumber,
-      matchings,
+      currentMatches
     };
   }
 };
