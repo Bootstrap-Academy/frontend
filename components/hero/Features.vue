@@ -34,26 +34,26 @@ import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {
-	components: { CheckCircleIcon },
-	setup() {
-		const { t } = useI18n();
+  components: { CheckCircleIcon },
+  setup() {
+    const { t } = useI18n();
 
-		const aos = ref<HTMLDivElement | null>(null);
+    const aos = ref<HTMLDivElement | null>(null);
 
-		let features = [
-			CheckCircleIcon,
-			CheckCircleIcon,
-			CheckCircleIcon,
-			CheckCircleIcon,
-			CheckCircleIcon,
-			CheckCircleIcon,
-		];
+    let features = [
+      CheckCircleIcon,
+      CheckCircleIcon,
+      CheckCircleIcon,
+      CheckCircleIcon,
+      CheckCircleIcon,
+      CheckCircleIcon,
+    ];
 
-		onMounted(() => {
-			setStaggeringAOSViaParent(aos.value, 'aos', 'show', [0]);
-		});
-		return { features, t, aos };
-	},
+    onMounted(() => {
+      setStaggeringAOSViaParent(aos.value, 'aos', 'show', [0]);
+    });
+    return { features, t, aos };
+  },
 };
 </script>
 

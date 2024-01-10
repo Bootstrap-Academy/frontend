@@ -57,70 +57,70 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		hint: { type: String, default: '' },
-		name: { type: String, default: '' },
-		id: { type: String, default: '' },
-		type: { type: String, default: 'text' },
-		label: { type: String, default: '' },
-		noLabel: { type: Boolean, default: false },
-		placeholder: { type: String, default: '' },
-		rows: { type: Number, default: 6 },
-		rules: { type: Array, default: [] },
-		min: { type: Number, default: -1 },
-		max: { type: Number, default: -1 },
-		required: { type: Boolean, default: false },
-		modelValue: { type: String, default: '' },
-	},
-	emits: ['update:modelValue', 'valid'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    hint: { type: String, default: '' },
+    name: { type: String, default: '' },
+    id: { type: String, default: '' },
+    type: { type: String, default: 'text' },
+    label: { type: String, default: '' },
+    noLabel: { type: Boolean, default: false },
+    placeholder: { type: String, default: '' },
+    rows: { type: Number, default: 6 },
+    rules: { type: Array, default: [] },
+    min: { type: Number, default: -1 },
+    max: { type: Number, default: -1 },
+    required: { type: Boolean, default: false },
+    modelValue: { type: String, default: '' },
+  },
+  emits: ['update:modelValue', 'valid'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		const input = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value: string) {
-				emit('update:modelValue', value);
-			},
-		});
+    const input = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value: string) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		const touched = ref(!!props.modelValue);
+    const touched = ref(!!props.modelValue);
 
-		const DOM_INPUT = ref<HTMLInputElement | null>(null);
+    const DOM_INPUT = ref<HTMLInputElement | null>(null);
 
-		const error = computed(() => {
-			if (!!!DOM_INPUT.value || (!touched.value && !input.value)) return '';
+    const error = computed(() => {
+      if (!!!DOM_INPUT.value || (!touched.value && !input.value)) return '';
 
-			let msg: string = '';
+      let msg: string = '';
 
-			props.rules
-				.slice()
-				.reverse()
-				.forEach((rule: any) => {
-					if (rule(input.value) != true) {
-						const [string, placeholder] = rule(input.value).split('_');
+      props.rules
+        .slice()
+        .reverse()
+        .forEach((rule: any) => {
+          if (rule(input.value) != true) {
+            const [string, placeholder] = rule(input.value).split('_');
 
-						if (!!placeholder) {
-							msg = t(string, {
-								placeholder: t(placeholder),
-							});
-						} else if (!!string) {
-							msg = t(string);
-						} else {
-							msg = t(rule(input.value));
-						}
-					}
-				});
+            if (!!placeholder) {
+              msg = t(string, {
+                placeholder: t(placeholder),
+              });
+            } else if (!!string) {
+              msg = t(string);
+            } else {
+              msg = t(rule(input.value));
+            }
+          }
+        });
 
-			DOM_INPUT.value.setCustomValidity(msg);
-			emit('valid', !!!msg);
+      DOM_INPUT.value.setCustomValidity(msg);
+      emit('valid', !!!msg);
 
-			return msg;
-		});
+      return msg;
+    });
 
-		return { t, input, error, DOM_INPUT, touched };
-	},
+    return { t, input, error, DOM_INPUT, touched };
+  },
 });
 </script>
 

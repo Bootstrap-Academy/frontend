@@ -64,41 +64,41 @@ import { MapPinIcon, EnvelopeIcon, PhoneIcon } from '@heroicons/vue/24/solid';
 import { useI18n } from 'vue-i18n';
 
 export default {
-	head: {
-		title: 'Contact Us',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Contact Us',
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const staggeringAOS = ref<HTMLDivElement | null>(null);
+    const staggeringAOS = ref<HTMLDivElement | null>(null);
 
-		const title = {
-			subheading: `Subheadings.ContactUs`,
-			heading: `Headings.ContactUs`,
-			body: `Body.ContactUs`,
-		};
+    const title = {
+      subheading: `Subheadings.ContactUs`,
+      heading: `Headings.ContactUs`,
+      body: `Body.ContactUs`,
+    };
 
-		let contactInfo = [
-			{
-				icon: MapPinIcon,
-				body: 'Wittelsbacherplatz 1 80333 München',
-			},
-			{
-				icon: EnvelopeIcon,
-				body: 'hallo@bootstrap.academy',
-			},
-			{
-				icon: PhoneIcon,
-				body: '+49 89 24 88 62 51 - 8',
-			},
-		];
+    let contactInfo = [
+      {
+        icon: MapPinIcon,
+        body: 'Wittelsbacherplatz 1 80333 München',
+      },
+      {
+        icon: EnvelopeIcon,
+        body: 'hallo@bootstrap.academy',
+      },
+      {
+        icon: PhoneIcon,
+        body: '+49 89 24 88 62 51 - 8',
+      },
+    ];
 
-		onMounted(() => {
-			setStaggeringAOSViaParent(staggeringAOS.value, 'aos', 'show', [0]);
-		});
+    onMounted(() => {
+      setStaggeringAOSViaParent(staggeringAOS.value, 'aos', 'show', [0]);
+    });
 
-		return { title, contactInfo, staggeringAOS, t };
-	},
+    return { title, contactInfo, staggeringAOS, t };
+  },
 };
 </script>
 

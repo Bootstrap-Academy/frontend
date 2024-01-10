@@ -89,66 +89,66 @@ import type { Ref } from 'vue';
 import { AdjustmentsVerticalIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Explore Jobs',
-	},
-	components: { AdjustmentsVerticalIcon, XCircleIcon },
-	setup() {
-		const jobs: Ref<any[]> = useJobs();
+  head: {
+    title: 'Explore Jobs',
+  },
+  components: { AdjustmentsVerticalIcon, XCircleIcon },
+  setup() {
+    const jobs: Ref<any[]> = useJobs();
 
-		const loading = ref(!(jobs.value && jobs.value.length > 0));
+    const loading = ref(!(jobs.value && jobs.value.length > 0));
 
-		const cookie_filters = <any>useCookie('job_filters');
-		const filters = reactive(
-			cookie_filters.value ?? {
-				type: [],
-				remote: false,
-				search_term: '',
-				requirements_met: false,
-				professional_level: [],
-				salary_min: 0,
-				salary_unit: '---',
-			}
-		);
+    const cookie_filters = <any>useCookie('job_filters');
+    const filters = reactive(
+      cookie_filters.value ?? {
+        type: [],
+        remote: false,
+        search_term: '',
+        requirements_met: false,
+        professional_level: [],
+        salary_min: 0,
+        salary_unit: '---',
+      }
+    );
 
-		async function setFilters(paramFilters: any) {
-			Object.assign(filters, {
-				...filters,
-				...paramFilters,
-			});
+    async function setFilters(paramFilters: any) {
+      Object.assign(filters, {
+        ...filters,
+        ...paramFilters,
+      });
 
-			cookie_filters.value = JSON.stringify(filters);
+      cookie_filters.value = JSON.stringify(filters);
 
-			// loading.value = !(jobs.value && jobs.value.length > 0);
-			loading.value = true;
-			await Promise.all([getFilteredJobs(filters), getJobMaxSalary()]);
-			loading.value = false;
-		}
+      // loading.value = !(jobs.value && jobs.value.length > 0);
+      loading.value = true;
+      await Promise.all([getFilteredJobs(filters), getJobMaxSalary()]);
+      loading.value = false;
+    }
 
-		function onSelectedOption(option: string) {
-			setFilters({ requirements_met: option == 'bestMatch' });
+    function onSelectedOption(option: string) {
+      setFilters({ requirements_met: option == 'bestMatch' });
 
-			if (option == 'latest' && jobs.value && jobs.value.length > 0) {
-				jobs.value.sort(function (x, y) {
-					return x.last_update - y.last_update;
-				});
-			}
-		}
+      if (option == 'latest' && jobs.value && jobs.value.length > 0) {
+        jobs.value.sort(function (x, y) {
+          return x.last_update - y.last_update;
+        });
+      }
+    }
 
-		const show = ref(false);
-		return {
-			loading,
-			jobs,
-			filters,
-			setFilters,
-			onSelectedOption,
-			show,
-		};
-	},
+    const show = ref(false);
+    return {
+      loading,
+      jobs,
+      filters,
+      setFilters,
+      onSelectedOption,
+      show,
+    };
+  },
 };
 </script>
 

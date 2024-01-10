@@ -37,39 +37,39 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+  setup() {
+    const { t } = useI18n();
 
-		const xp = useXP();
+    const xp = useXP();
 
-		const loading = ref(!!!xp.value);
+    const loading = ref(!!!xp.value);
 
-		const header = reactive({
-			heading: 'Headings.SkillPoints',
-			body: '',
-		});
+    const header = reactive({
+      heading: 'Headings.SkillPoints',
+      body: '',
+    });
 
-		onMounted(async () => {
-			await getXP();
-			loading.value = false;
+    onMounted(async () => {
+      await getXP();
+      loading.value = false;
 
-			if (
-				activeSkillsProgress.value &&
+      if (
+        activeSkillsProgress.value &&
 				activeSkillsProgress.value.length <= 0
-			) {
-				Object.assign(header, {
-					heading: 'EmptyStates.SkillProgress.Heading',
-					body: 'EmptyStates.SkillProgress.Body',
-				});
-			}
-		});
+      ) {
+        Object.assign(header, {
+          heading: 'EmptyStates.SkillProgress.Heading',
+          body: 'EmptyStates.SkillProgress.Body',
+        });
+      }
+    });
 
-		const arrLastX = computed(() => {
-			return activeSkillsProgress.value.splice(0, 3);
-		});
+    const arrLastX = computed(() => {
+      return activeSkillsProgress.value.splice(0, 3);
+    });
 
-		return { t, loading, xp, header, arrLastX };
-	},
+    return { t, loading, xp, header, arrLastX };
+  },
 });
 </script>
 

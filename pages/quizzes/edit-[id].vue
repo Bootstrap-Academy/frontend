@@ -16,32 +16,32 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Create Quiz',
-	},
-	setup() {
-		const route = useRoute();
+  head: {
+    title: 'Create Quiz',
+  },
+  setup() {
+    const route = useRoute();
 
-		const quizID = computed(() => {
-			return (route.params?.id ?? '').toString();
-		});
+    const quizID = computed(() => {
+      return (route.params?.id ?? '').toString();
+    });
 
-		const quiz = useQuiz();
+    const quiz = useQuiz();
 
-		const loading = ref(true);
+    const loading = ref(true);
 
-		onMounted(async () => {
-			loading.value = true;
-			await getQuiz(quizID.value);
-			loading.value = false;
-		});
-		return { quiz };
-	},
+    onMounted(async () => {
+      loading.value = true;
+      await getQuiz(quizID.value);
+      loading.value = false;
+    });
+    return { quiz };
+  },
 };
 </script>
 

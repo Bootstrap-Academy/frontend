@@ -34,126 +34,126 @@ import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		numberOfFields: { type: Number, default: 6 },
-		numberOfCharsPerField: { type: Number, default: 1 },
-		breakAfterHowManyFields: { type: Number, default: 3 },
-		label: { type: String, default: '' },
-		type: { type: String, default: 'number' },
-		modelValue: { type: String, default: '' },
-		rules: { type: Array, default: [] },
-	},
-	emits: ['update:modelValue', 'valid'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    numberOfFields: { type: Number, default: 6 },
+    numberOfCharsPerField: { type: Number, default: 1 },
+    breakAfterHowManyFields: { type: Number, default: 3 },
+    label: { type: String, default: '' },
+    type: { type: String, default: 'number' },
+    modelValue: { type: String, default: '' },
+    rules: { type: Array, default: [] },
+  },
+  emits: ['update:modelValue', 'valid'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		// ============================================================= computed
-		const input = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value) {
-				emit('update:modelValue', value);
-			},
-		});
+    // ============================================================= computed
+    const input = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value) {
+        emit('update:modelValue', value);
+      },
+    });
 
-		// ============================================================= refs
-		const touched = ref(!!props.modelValue);
-		const DOM_INPUTS = ref<HTMLInputElement[] | []>([]);
+    // ============================================================= refs
+    const touched = ref(!!props.modelValue);
+    const DOM_INPUTS = ref<HTMLInputElement[] | []>([]);
 
-		const totalOTPChars = computed(() => {
-			return props.numberOfFields * props.numberOfCharsPerField;
-		});
-		// ============================================================= functions
-		function onblur() {
-			touched.value = true;
-		}
+    const totalOTPChars = computed(() => {
+      return props.numberOfFields * props.numberOfCharsPerField;
+    });
+    // ============================================================= functions
+    function onblur() {
+      touched.value = true;
+    }
 
-		function oninput(index: number) {
-			let value = DOM_INPUTS.value[index].value;
+    function oninput(index: number) {
+      let value = DOM_INPUTS.value[index].value;
 
-			if (
-				value.length >= props.numberOfCharsPerField * props.numberOfFields &&
+      if (
+        value.length >= props.numberOfCharsPerField * props.numberOfFields &&
 				index >= props.numberOfFields
-			) {
-				DOM_INPUTS.value[index].value = value[0];
-			}
+      ) {
+        DOM_INPUTS.value[index].value = value[0];
+      }
 
-			let otp = '';
-			DOM_INPUTS.value.forEach((input) => {
-				otp = otp + input.value;
-			});
+      let otp = '';
+      DOM_INPUTS.value.forEach((input) => {
+        otp = otp + input.value;
+      });
 
-			let finalOTP = '';
+      let finalOTP = '';
 
-			for (let i = 0; i < otp.length; i++) {
-				if (!!otp[i] && !!DOM_INPUTS.value[i]) {
-					DOM_INPUTS.value[i].value = otp[i];
-					finalOTP = finalOTP + otp[i];
-					DOM_INPUTS.value[i].focus();
-				}
-			}
+      for (let i = 0; i < otp.length; i++) {
+        if (!!otp[i] && !!DOM_INPUTS.value[i]) {
+          DOM_INPUTS.value[i].value = otp[i];
+          finalOTP = finalOTP + otp[i];
+          DOM_INPUTS.value[i].focus();
+        }
+      }
 
-			emit('update:modelValue', finalOTP);
+      emit('update:modelValue', finalOTP);
 
-			let msg: string = '';
+      let msg: string = '';
 
-			props.rules
-				.slice()
-				.reverse()
-				.forEach((rule: any) => {
-					if (rule(finalOTP) != true) {
-						const [string, placeholder] = rule(finalOTP).split('_');
+      props.rules
+        .slice()
+        .reverse()
+        .forEach((rule: any) => {
+          if (rule(finalOTP) != true) {
+            const [string, placeholder] = rule(finalOTP).split('_');
 
-						if (!!placeholder) {
-							msg = t(string, {
-								placeholder: t(placeholder),
-							});
-						} else if (!!string) {
-							msg = t(string);
-						} else {
-							msg = t(rule(finalOTP));
-						}
-					}
-				});
+            if (!!placeholder) {
+              msg = t(string, {
+                placeholder: t(placeholder),
+              });
+            } else if (!!string) {
+              msg = t(string);
+            } else {
+              msg = t(rule(finalOTP));
+            }
+          }
+        });
 
-			DOM_INPUTS.value[0].setCustomValidity(msg);
-			emit('valid', !!!msg);
-			error.value = msg;
-		}
+      DOM_INPUTS.value[0].setCustomValidity(msg);
+      emit('valid', !!!msg);
+      error.value = msg;
+    }
 
-		function onkeydownDelete(index: number) {
-			let value = DOM_INPUTS.value[index].value;
+    function onkeydownDelete(index: number) {
+      let value = DOM_INPUTS.value[index].value;
 
-			if (!!!value && index > 0) {
-				DOM_INPUTS.value[index].focus();
-			}
-		}
+      if (!!!value && index > 0) {
+        DOM_INPUTS.value[index].focus();
+      }
+    }
 
-		const width = computed(() => {
-			return `${21 * props.numberOfCharsPerField}px`;
-		});
+    const width = computed(() => {
+      return `${21 * props.numberOfCharsPerField}px`;
+    });
 
-		const error = ref('');
+    const error = ref('');
 
-		onMounted(() => {
-			nextTick(() => {
-				if (!!DOM_INPUTS.value[0]) DOM_INPUTS.value[0].focus();
-			});
-		});
+    onMounted(() => {
+      nextTick(() => {
+        if (!!DOM_INPUTS.value[0]) DOM_INPUTS.value[0].focus();
+      });
+    });
 
-		return {
-			input,
-			error,
-			touched,
-			onblur,
-			DOM_INPUTS,
-			t,
-			oninput,
-			onkeydownDelete,
-			width,
-		};
-	},
+    return {
+      input,
+      error,
+      touched,
+      onblur,
+      DOM_INPUTS,
+      t,
+      oninput,
+      onkeydownDelete,
+      width,
+    };
+  },
 });
 </script>
 

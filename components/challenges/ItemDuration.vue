@@ -22,14 +22,14 @@ import { useI18n } from 'vue-i18n';
 import type { PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		return { t };
-	},
+    return { t };
+  },
 });
 </script>
 

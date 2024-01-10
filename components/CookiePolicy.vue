@@ -24,48 +24,48 @@ import { defineComponent } from 'vue';
 import Gleap from 'gleap';
 
 export default defineComponent({
-	setup() {
-		const config = useRuntimeConfig().public;
+  setup() {
+    const config = useRuntimeConfig().public;
 
-		const dialog = computed(() => {
-			return {
-				type: 'info',
-				heading: 'Headings.CookiePolicy',
-				body: '',
-				primaryBtn: {
-					label: 'Buttons.CookiePolicy',
-					onclick: () => {
-						agreed.value = true;
-						if (process.client) {
-							Gleap.initialize(config.Gleap_API_KEY);
-						}
-					},
-				},
-				secondaryBtn: {
-					label: '',
-					onclick: () => {},
-				},
-			};
-		});
+    const dialog = computed(() => {
+      return {
+        type: 'info',
+        heading: 'Headings.CookiePolicy',
+        body: '',
+        primaryBtn: {
+          label: 'Buttons.CookiePolicy',
+          onclick: () => {
+            agreed.value = true;
+            if (process.client) {
+              Gleap.initialize(config.Gleap_API_KEY);
+            }
+          },
+        },
+        secondaryBtn: {
+          label: '',
+          onclick: () => {},
+        },
+      };
+    });
 
-		const cookie_agreedToCookiePolicy = useCookie<boolean>(
-			'agreedToCookiePolicy'
-		);
+    const cookie_agreedToCookiePolicy = useCookie<boolean>(
+      'agreedToCookiePolicy'
+    );
 
-		const router = useRouter();
-		const route = useRoute();
+    const router = useRouter();
+    const route = useRoute();
 
-		const agreed = computed({
-			get() {
-				return cookie_agreedToCookiePolicy.value || false;
-			},
-			set(data: boolean) {
-				cookie_agreedToCookiePolicy.value = data;
-			},
-		});
+    const agreed = computed({
+      get() {
+        return cookie_agreedToCookiePolicy.value || false;
+      },
+      set(data: boolean) {
+        cookie_agreedToCookiePolicy.value = data;
+      },
+    });
 
-		return { agreed, dialog, route };
-	},
+    return { agreed, dialog, route };
+  },
 });
 </script>
 

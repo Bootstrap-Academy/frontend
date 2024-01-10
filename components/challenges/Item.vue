@@ -100,12 +100,12 @@ export default defineComponent({
         path: route.path,
         query: showChallengeContent.value
           ? {
-              ...baseQuery.value,
-            }
+            ...baseQuery.value,
+          }
           : {
-              ...baseQuery.value,
-              challenge: challenge.value,
-            },
+            ...baseQuery.value,
+            challenge: challenge.value,
+          },
       });
     }
 

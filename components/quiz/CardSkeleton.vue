@@ -12,8 +12,8 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: { noAnimate: { type: Boolean, default: false } },
-	setup() {},
+  props: { noAnimate: { type: Boolean, default: false } },
+  setup() {},
 });
 </script>
 

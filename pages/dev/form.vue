@@ -155,194 +155,194 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Form',
-	},
-	setup() {
-		const refForm = ref<HTMLFormElement | null>(null);
-		const refInputs = ref([]);
+  head: {
+    title: 'Form',
+  },
+  setup() {
+    const refForm = ref<HTMLFormElement | null>(null);
+    const refInputs = ref([]);
 
-		const form: any = reactive({
-			image: {
-				valid: false,
-				value: '',
-				url: '',
-			},
-			video: {
-				valid: false,
-				value: '',
-				url: '',
-			},
-			name: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
-					(v: string) => v.length >= 2 || 'Error.InputMinLength_2',
-					(v: string) => v.length <= 256 || 'Error.InputMaxLength_256',
-				],
-			},
-			email: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-					(v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
-				],
-			},
-			password: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
-					(v: string) => v.length >= 10 || 'Error.InputMinLength_10',
-				],
-			},
-			about: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.About',
-					(v: string) => v.length <= 100 || 'Error.InputMaxLength_100',
-				],
-			},
-			tags: {
-				value: [],
-				valid: true,
-				rules: [
-					(v: string) =>
-						!v || form.tags.value.length < 5 || 'Error.InputMaxTags_5',
-				],
-			},
-			remote: {
-				value: false,
-				rules: [(v: boolean) => !!v || 'Error.InputEmpty_Inputs.Remote'],
-			},
-			salary: {
-				min: 0,
-				max: 9000,
-				value: 4000,
-			},
-			mfa_code: {
-				value: '',
-				valid: false,
-				rules: [
-					(v: string) => !!v || 'Error.InputEmpty_Inputs.MFACode',
-					(v: string) => v.length >= 6 || 'Error.InputMinLength_6',
-				],
-			},
-			jobType: {
-				value: ['full_time', 'part_time'],
-				options: [
-					{
-						value: 'full_time',
-						label: 'List.Filter.FullTime',
-					},
-					{
-						value: 'internship',
-						label: 'List.Filter.Internship',
-					},
-					{
-						value: 'part_time',
-						label: 'List.Filter.PartTime',
-					},
-					{
-						value: 'temporary',
-						label: 'List.Filter.Temporary',
-					},
-					{
-						value: 'mini_job',
-						label: 'List.Filter.MiniJob',
-					},
-				],
-			},
-			salaryUnit: {
-				value: 'morphcoins',
-				options: [
-					{
-						label: 'List.Filter.Any',
-						value: '---',
-					},
-					{
-						label: 'List.Filter.Morphcoins',
-						value: 'morphcoins',
-					},
-					{
-						label: 'List.Filter.Euros',
-						value: 'euros',
-					},
-				],
-			},
-			sort: {
-				value: 'latest',
-				options: [
-					{
-						label: 'List.Sort.Any',
-						value: '---',
-					},
-					{
-						label: 'List.Sort.Latest',
-						value: 'latest',
-					},
-					{
-						label: 'List.Sort.Free',
-						value: 'free',
-					},
-				],
-			},
-			termsAndConditions: {
-				value: false,
-				valid: false,
-			},
-			submitting: false,
-			validate: () => {
-				let isValid = true;
+    const form: any = reactive({
+      image: {
+        valid: false,
+        value: '',
+        url: '',
+      },
+      video: {
+        valid: false,
+        value: '',
+        url: '',
+      },
+      name: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
+          (v: string) => v.length >= 2 || 'Error.InputMinLength_2',
+          (v: string) => v.length <= 256 || 'Error.InputMaxLength_256',
+        ],
+      },
+      email: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
+          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+        ],
+      },
+      password: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
+          (v: string) => v.length >= 10 || 'Error.InputMinLength_10',
+        ],
+      },
+      about: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.About',
+          (v: string) => v.length <= 100 || 'Error.InputMaxLength_100',
+        ],
+      },
+      tags: {
+        value: [],
+        valid: true,
+        rules: [
+          (v: string) =>
+            !v || form.tags.value.length < 5 || 'Error.InputMaxTags_5',
+        ],
+      },
+      remote: {
+        value: false,
+        rules: [(v: boolean) => !!v || 'Error.InputEmpty_Inputs.Remote'],
+      },
+      salary: {
+        min: 0,
+        max: 9000,
+        value: 4000,
+      },
+      mfa_code: {
+        value: '',
+        valid: false,
+        rules: [
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.MFACode',
+          (v: string) => v.length >= 6 || 'Error.InputMinLength_6',
+        ],
+      },
+      jobType: {
+        value: ['full_time', 'part_time'],
+        options: [
+          {
+            value: 'full_time',
+            label: 'List.Filter.FullTime',
+          },
+          {
+            value: 'internship',
+            label: 'List.Filter.Internship',
+          },
+          {
+            value: 'part_time',
+            label: 'List.Filter.PartTime',
+          },
+          {
+            value: 'temporary',
+            label: 'List.Filter.Temporary',
+          },
+          {
+            value: 'mini_job',
+            label: 'List.Filter.MiniJob',
+          },
+        ],
+      },
+      salaryUnit: {
+        value: 'morphcoins',
+        options: [
+          {
+            label: 'List.Filter.Any',
+            value: '---',
+          },
+          {
+            label: 'List.Filter.Morphcoins',
+            value: 'morphcoins',
+          },
+          {
+            label: 'List.Filter.Euros',
+            value: 'euros',
+          },
+        ],
+      },
+      sort: {
+        value: 'latest',
+        options: [
+          {
+            label: 'List.Sort.Any',
+            value: '---',
+          },
+          {
+            label: 'List.Sort.Latest',
+            value: 'latest',
+          },
+          {
+            label: 'List.Sort.Free',
+            value: 'free',
+          },
+        ],
+      },
+      termsAndConditions: {
+        value: false,
+        valid: false,
+      },
+      submitting: false,
+      validate: () => {
+        let isValid = true;
 
-				for (const key in form) {
-					if (
-						key != 'validate' &&
+        for (const key in form) {
+          if (
+            key != 'validate' &&
 						key != 'body' &&
 						key != 'submitting' &&
 						key != 'termsAndConditions' &&
 						form[key].valid == false
-					) {
-						isValid = false;
-					}
-				}
+          ) {
+            isValid = false;
+          }
+        }
 
-				if (refForm.value) refForm.value.reportValidity();
+        if (refForm.value) refForm.value.reportValidity();
 
-				return isValid;
-			},
-			body: () => {
-				let obj: any = {};
-				for (const key in form) {
-					if (
-						key != 'validate' &&
+        return isValid;
+      },
+      body: () => {
+        let obj: any = {};
+        for (const key in form) {
+          if (
+            key != 'validate' &&
 						key != 'body' &&
 						key != 'submitting' &&
 						key != 'termsAndConditions'
-					)
-						obj[key] = form[key].value;
-				}
-				return obj;
-			},
-		});
+          )
+            obj[key] = form[key].value;
+        }
+        return obj;
+      },
+    });
 
-		async function onclickSubmitForm() {
-			if (form.validate()) {
-				form.submitting = true;
-				setTimeout(() => {
-					form.submitting = false;
-				}, 3000);
-			}
-		}
+    async function onclickSubmitForm() {
+      if (form.validate()) {
+        form.submitting = true;
+        setTimeout(() => {
+          form.submitting = false;
+        }, 3000);
+      }
+    }
 
-		return { refInputs, refForm, form, onclickSubmitForm };
-	},
+    return { refInputs, refForm, form, onclickSubmitForm };
+  },
 };
 </script>

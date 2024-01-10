@@ -42,34 +42,34 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Disable MFA',
-	},
-	setup() {
-		const router = useRouter();
+  head: {
+    title: 'Disable MFA',
+  },
+  setup() {
+    const router = useRouter();
 
-		const dialog = reactive({
-			type: 'success',
-			heading: 'Headings.DisableMFA',
-			body: 'Success.DisabledMFA',
-			primaryBtn: {
-				label: 'Buttons.Okay',
-				onclick: () => {
-					router.push('/auth/login');
-				},
-			},
-			secondaryBtn: null,
-		});
+    const dialog = reactive({
+      type: 'success',
+      heading: 'Headings.DisableMFA',
+      body: 'Success.DisabledMFA',
+      primaryBtn: {
+        label: 'Buttons.Okay',
+        onclick: () => {
+          router.push('/auth/login');
+        },
+      },
+      secondaryBtn: null,
+    });
 
-		const isSuccess = ref(null);
+    const isSuccess = ref(null);
 
-		return { dialog, isSuccess };
-	},
+    return { dialog, isSuccess };
+  },
 };
 </script>
 

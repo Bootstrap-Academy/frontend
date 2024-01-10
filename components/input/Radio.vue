@@ -40,40 +40,40 @@ import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		value: { type: String, default: '' },
-		name: { type: String, default: '' },
-		sm: { type: Boolean, default: false },
-		required: { type: Boolean, default: false },
-		label: { type: String, default: '' },
-		link: {
-			type: Object as PropType<{ to: string; label: string }>,
-			default: null,
-		},
-		modelValue: { default: false },
-	},
-	emits: ['update:modelValue', 'valid'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+  props: {
+    value: { type: String, default: '' },
+    name: { type: String, default: '' },
+    sm: { type: Boolean, default: false },
+    required: { type: Boolean, default: false },
+    label: { type: String, default: '' },
+    link: {
+      type: Object as PropType<{ to: string; label: string }>,
+      default: null,
+    },
+    modelValue: { default: false },
+  },
+  emits: ['update:modelValue', 'valid'],
+  setup(props, { emit }) {
+    const { t } = useI18n();
 
-		// ============================================================= computed
-		const input = computed({
-			get() {
-				return props.modelValue;
-			},
-			set(value) {
-				emit('update:modelValue', value);
-				error.value = value ? '' : 'This is required';
-				emit('valid', !!!error.value);
-			},
-		});
+    // ============================================================= computed
+    const input = computed({
+      get() {
+        return props.modelValue;
+      },
+      set(value) {
+        emit('update:modelValue', value);
+        error.value = value ? '' : 'This is required';
+        emit('valid', !!!error.value);
+      },
+    });
 
-		// ============================================================= refs
-		const error = ref('');
+    // ============================================================= refs
+    const error = ref('');
 
-		// ============================================================= functions
-		return { input, error, t };
-	},
+    // ============================================================= functions
+    return { input, error, t };
+  },
 });
 </script>
 

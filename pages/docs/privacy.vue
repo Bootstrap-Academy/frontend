@@ -265,29 +265,31 @@
 				<div>
 					<h4>5.3.4 Empfänger personenbezogener Daten</h4>
 					<p>Wir setzen folgende Dienstleister ein:</p>
-					<table>
-						<tr>
-							<th>Dienst</th>
-							<th>Anbieter</th>
-							<th>Zweck</th>
-							<th>Rechtsgrundlage</th>
-							<th>Speicherdauer</th>
-						</tr>
-						<tr>
-							<td>Google Recaptcha</td>
-							<td>
-								Google Ireland Limited Gordon House, Barrow Street, Dublin 4,
-								Irland
-							</td>
-							<td>Optimierung unseres Online-Angebots</td>
-							<td>Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO</td>
-							<td>
-								Wir löschen Ihre personenbezogenen Daten, sobald sie für die
-								Erreichung des Zweckes der Erhebung nicht mehr erforderlich
-								sind.
-							</td>
-						</tr>
-					</table>
+          <div class="overflow-x-auto">
+            <table>
+              <tr>
+                <th>Dienst</th>
+                <th>Anbieter</th>
+                <th>Zweck</th>
+                <th>Rechtsgrundlage</th>
+                <th>Speicherdauer</th>
+              </tr>
+              <tr>
+                <td>Google Recaptcha</td>
+                <td>
+                  Google Ireland Limited Gordon House, Barrow Street, Dublin 4,
+                  Irland
+                </td>
+                <td>Optimierung unseres Online-Angebots</td>
+                <td>Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO</td>
+                <td>
+                  Wir löschen Ihre personenbezogenen Daten, sobald sie für die
+                  Erreichung des Zweckes der Erhebung nicht mehr erforderlich
+                  sind.
+                </td>
+              </tr>
+            </table>
+          </div>
 				</div>
 			</article>
 		</section>
@@ -354,50 +356,52 @@
 
 			<article>
 				<h3>6.5 Empfänger personenbezogener Daten</h3>
-				<table>
-					<tr>
-						<th>Dienst</th>
-						<th>Anbieter</th>
-						<th>Zweck</th>
-						<th>Rechtsgrundlage</th>
-						<th>Datenschutzhinweis</th>
-					</tr>
-					<tr>
-						<td>Calendly</td>
-						<td>
-							Calendly LLC, 3423 Piedmont Road NE, Atlanta, GA 30305-1754, USA
-						</td>
-						<td>Kommunikation und Terminvereinbarung</td>
-						<td>
-							Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;
-							Vertragserfüllung und Durchführung vorvertraglicher Maßnahmen gem.
-							Art. 6 Abs. 1 S. 1 lit. b. DSGVO
-						</td>
-						<td>
-							<a href="https://calendly.com/pages/privacy" target="_blank">
-								https://calendly.com/pages/privacy
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Gleap</td>
-						<td>
-							Gleap GmbH, Dr.-Walter-Zumtobel-Straße 2, 6850 Dornbirn,
-							Österreich
-						</td>
-						<td>Kommunikation und Fehlermeldung/-behebung</td>
-						<td>
-							Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;
-							Vertragserfüllung und Durchführung vorvertraglicher Maßnahmen gem.
-							Art. 6 Abs. 1 S. 1 lit. b. DSGVO
-						</td>
-						<td>
-							<a href="https://www.gleap.io/privacy-policy" target="_blank">
-								https://www.gleap.io/privacy-policy
-							</a>
-						</td>
-					</tr>
-				</table>
+        <div class="overflow-x-auto">
+          <table>
+            <tr>
+              <th>Dienst</th>
+              <th>Anbieter</th>
+              <th>Zweck</th>
+              <th>Rechtsgrundlage</th>
+              <th>Datenschutzhinweis</th>
+            </tr>
+            <tr>
+              <td>Calendly</td>
+              <td>
+                Calendly LLC, 3423 Piedmont Road NE, Atlanta, GA 30305-1754, USA
+              </td>
+              <td>Kommunikation und Terminvereinbarung</td>
+              <td>
+                Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;
+                Vertragserfüllung und Durchführung vorvertraglicher Maßnahmen gem.
+                Art. 6 Abs. 1 S. 1 lit. b. DSGVO
+              </td>
+              <td>
+                <a href="https://calendly.com/pages/privacy" target="_blank">
+                  https://calendly.com/pages/privacy
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Gleap</td>
+              <td>
+                Gleap GmbH, Dr.-Walter-Zumtobel-Straße 2, 6850 Dornbirn,
+                Österreich
+              </td>
+              <td>Kommunikation und Fehlermeldung/-behebung</td>
+              <td>
+                Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;
+                Vertragserfüllung und Durchführung vorvertraglicher Maßnahmen gem.
+                Art. 6 Abs. 1 S. 1 lit. b. DSGVO
+              </td>
+              <td>
+                <a href="https://www.gleap.io/privacy-policy" target="_blank">
+                  https://www.gleap.io/privacy-policy
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
 			</article>
 		</section>
 
@@ -705,188 +709,190 @@
 			<article>
 				<h3>9.4 Empfänger personenbezogener Daten</h3>
 				<p>Wir unterhalten Präsenzen in folgenden sozialen Medien:</p>
-				<table>
-					<tr>
-						<th>Soziales Netzwerk</th>
-						<th>Anbieter</th>
-						<th>Rechtsgrundlage</th>
-						<th>Weitere Informationen</th>
-					</tr>
-					<tr>
-						<td>LinkedIn</td>
-						<td>
-							LinkedIn Ireland Unlimited Company Wilton Place, Dublin 2, Irland
-						</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a
-								href="https://de.linkedin.com/legal/privacy-policy?src=or-search&veh=www.google.com%7Cor-search "
-								target="_blank"
-							>
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out"
-								target="_blank"
-							>
-								Opt-out und Werbeeinstellungen
-							</a>
-							<a
-								href="https://legal.linkedin.com/pages-joint-controller-addendum"
-								target="_blank"
-							>
-								Vertrag zur gemeinsamen Verantwortlichkeit
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Twitter</td>
-						<td>
-							Twitter International Company, One Cumberland Place, Fenian
-							Street, Dublin 2, Irland
-						</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a href="https://twitter.com/de/privacy" target="_blank">
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://twitter.com/settings/account/personalization"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Facebook</td>
-						<td>
-							Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour,
-							Dublin 2, Irland
-						</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a
-								href="https://www.facebook.com/privacy/policy/?entry_point=data_policy_redirect&entry=0"
-								target="_blank"
-							>
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://www.facebook.com/settings?tab=ads"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-							<a
-								href="https://de-de.facebook.com/legal/terms/page_controller_addendum"
-								target="_blank"
-							>
-								Vertrag zur gemeinsamen Verantwortlichkeit
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Instagram</td>
-						<td>
-							Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour,
-							Dublin 2, Irland
-						</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a
-								href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect"
-								target="_blank"
-							>
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Xing</td>
-						<td>Xing AG, Dammtorstraße 29-32, 20354 Hamburg</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a
-								href="https://privacy.xing.com/de/datenschutzerklaerung"
-								target="_blank"
-							>
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://privacy.xing.com/de/datenschutzerklaerung"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Youtube</td>
-						<td>
-							Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
-							Irland
-						</td>
-						<td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a href="https://policies.google.com/privacy" target="_blank">
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://adssettings.google.com/authenticated"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>LinkedIn</td>
-						<td>
-							LinkedIn Ireland Unlimited Company Wilton Place, Dublin 2, Irland
-						</td>
-						<td>Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a
-								href="https://de.linkedin.com/legal/privacy-policy?src=or-search&veh=www.google.com%7Cor-search"
-								target="_blank"
-							>
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out"
-								target="_blank"
-							>
-								Opt-out und Werbeeinstellungen
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>Twitter</td>
-						<td>
-							Twitter International Company, One Cumberland Place, Fenian
-							Street, Dublin 2, Irland
-						</td>
-						<td>Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
-						<td>
-							<a href="https://twitter.com/de/privacy" target="_blank">
-								Datenschutzerklärung
-							</a>
-							<a
-								href="https://twitter.com/settings/account/personalization"
-								target="_blank"
-							>
-								Widerspruchseinstellungen
-							</a>
-						</td>
-					</tr>
-				</table>
+        <div class="overflow-x-auto">
+          <table>
+            <tr>
+              <th>Soziales Netzwerk</th>
+              <th>Anbieter</th>
+              <th>Rechtsgrundlage</th>
+              <th>Weitere Informationen</th>
+            </tr>
+            <tr>
+              <td>LinkedIn</td>
+              <td>
+                LinkedIn Ireland Unlimited Company Wilton Place, Dublin 2, Irland
+              </td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a
+                  href="https://de.linkedin.com/legal/privacy-policy?src=or-search&veh=www.google.com%7Cor-search "
+                  target="_blank"
+                >
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out"
+                  target="_blank"
+                >
+                  Opt-out und Werbeeinstellungen
+                </a>
+                <a
+                  href="https://legal.linkedin.com/pages-joint-controller-addendum"
+                  target="_blank"
+                >
+                  Vertrag zur gemeinsamen Verantwortlichkeit
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Twitter</td>
+              <td>
+                Twitter International Company, One Cumberland Place, Fenian
+                Street, Dublin 2, Irland
+              </td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a href="https://twitter.com/de/privacy" target="_blank">
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://twitter.com/settings/account/personalization"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Facebook</td>
+              <td>
+                Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour,
+                Dublin 2, Irland
+              </td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a
+                  href="https://www.facebook.com/privacy/policy/?entry_point=data_policy_redirect&entry=0"
+                  target="_blank"
+                >
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://www.facebook.com/settings?tab=ads"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+                <a
+                  href="https://de-de.facebook.com/legal/terms/page_controller_addendum"
+                  target="_blank"
+                >
+                  Vertrag zur gemeinsamen Verantwortlichkeit
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Instagram</td>
+              <td>
+                Facebook Ireland Ltd., 4 Grand Canal Square, Grand Canal Harbour,
+                Dublin 2, Irland
+              </td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a
+                  href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect"
+                  target="_blank"
+                >
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Xing</td>
+              <td>Xing AG, Dammtorstraße 29-32, 20354 Hamburg</td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a
+                  href="https://privacy.xing.com/de/datenschutzerklaerung"
+                  target="_blank"
+                >
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://privacy.xing.com/de/datenschutzerklaerung"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Youtube</td>
+              <td>
+                Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
+                Irland
+              </td>
+              <td>Berechtigte Interessen gem. Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a href="https://policies.google.com/privacy" target="_blank">
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://adssettings.google.com/authenticated"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>LinkedIn</td>
+              <td>
+                LinkedIn Ireland Unlimited Company Wilton Place, Dublin 2, Irland
+              </td>
+              <td>Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a
+                  href="https://de.linkedin.com/legal/privacy-policy?src=or-search&veh=www.google.com%7Cor-search"
+                  target="_blank"
+                >
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://www.linkedin.com/psettings/guest-controls/retargeting-opt-out"
+                  target="_blank"
+                >
+                  Opt-out und Werbeeinstellungen
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td>Twitter</td>
+              <td>
+                Twitter International Company, One Cumberland Place, Fenian
+                Street, Dublin 2, Irland
+              </td>
+              <td>Art. 6 Abs. 1 S. 1 lit. f DSGVO</td>
+              <td>
+                <a href="https://twitter.com/de/privacy" target="_blank">
+                  Datenschutzerklärung
+                </a>
+                <a
+                  href="https://twitter.com/settings/account/personalization"
+                  target="_blank"
+                >
+                  Widerspruchseinstellungen
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
 			</article>
 		</section>
 
@@ -1048,12 +1054,12 @@
 
 <script>
 export default {
-	setup() {
-		return {};
-	},
-	head: {
-		title: 'Privacy',
-	},
+  setup() {
+    return {};
+  },
+  head: {
+    title: 'Privacy',
+  },
 };
 </script>
 
