@@ -1,0 +1,65 @@
+{
+  "name": "Bootstrap Academy",
+  "theme_color": "#0cc9ab",
+  "background_color": "#0b192e",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "Learn all the skills you need in tech, become part of a large tech community and get the job you always wanted.",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "images/icons/icon-48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-144.png",
+      "sizes": "144x114",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-168.png",
+      "sizes": "168x168",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icons/icon-196.png",
+      "sizes": "196x196",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshots/startpage.png",
+      "sizes": "1391x633",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "The Bootstrap Academy"
+    },
+    {
+      "src": "images/screenshots/why.png",
+      "sizes": "1945x607",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Why to use Bootstrap Academy?"
+    },
+    {
+      "src": "images/screenshots/features.png",
+      "sizes": "1718x847",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "What do we provide?"
+    }
+  ]
+}
