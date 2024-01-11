@@ -34,7 +34,7 @@
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
     "katex": "^0.16.9",
-    "markdown-it": "^13.0.2",
+    "markdown-it": "^14.0.0",
     "monaco-editor": "^0.45.0",
     "npm": "^10.3.0",
     "qrcode.vue": "^3.4.1",
