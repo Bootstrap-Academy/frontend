@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Bootstrap Academy",
-      link: [{ rel: "manifest", href: "static/manifest.json" }],
+      link: [{ rel: "manifest", href: "manifest.txt" }],
     },
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "layout", mode: "out-in" },
