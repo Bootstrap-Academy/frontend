@@ -27,7 +27,7 @@
     },
     {
       "src": "images/icons/icon-144.png",
-      "sizes": "144x114",
+      "sizes": "144x144",
       "type": "image/png"
     },
     {
@@ -66,14 +66,14 @@
 
     {
       "src": "images/screenshots/startpage_mobile.png",
-      "sizes": "1920x2250",
+      "sizes": "1290x2250",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "What do we provide?"
     },
     {
       "src": "images/screenshots/why_mobile.png",
-      "sizes": "1920x2250",
+      "sizes": "1290x2250",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "What do we provide?"
