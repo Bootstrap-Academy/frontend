@@ -143,12 +143,12 @@
 
 <script>
 export default {
-	setup() {
-		return {};
-	},
-	head: {
-		title: 'Right of Withdrawal',
-	},
+  setup() {
+    return {};
+  },
+  head: {
+    title: 'Right of Withdrawal',
+  },
 };
 </script>
 

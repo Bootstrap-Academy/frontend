@@ -9,50 +9,50 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: {
-		full: { type: Boolean, default: false },
-		sm: { type: Boolean, default: false },
-		md: { type: Boolean, default: true },
-		lg: { type: Boolean, default: false },
-		primary: { type: Boolean, default: true },
-		secondary: { type: Boolean, default: false },
-		tertiary: { type: Boolean, default: false },
-		icon: { default: null },
-		iconRight: { type: Boolean, default: false },
-		bgColor: { type: String, default: 'bg-accent' },
-		borderColor: { type: String, default: 'border-accent' },
-	},
-	emits: ['click'],
-	setup(props, { emit }) {
-		function onclick() {
-			emit('click', true);
-		}
+  props: {
+    full: { type: Boolean, default: false },
+    sm: { type: Boolean, default: false },
+    md: { type: Boolean, default: true },
+    lg: { type: Boolean, default: false },
+    primary: { type: Boolean, default: true },
+    secondary: { type: Boolean, default: false },
+    tertiary: { type: Boolean, default: false },
+    icon: { default: null },
+    iconRight: { type: Boolean, default: false },
+    bgColor: { type: String, default: 'bg-accent' },
+    borderColor: { type: String, default: 'border-accent' },
+  },
+  emits: ['click'],
+  setup(props, { emit }) {
+    function onclick() {
+      emit('click', true);
+    }
 
-		const textColor = computed(() => {
-			return props.bgColor.includes('warning') ? 'text-primary' : 'text-white';
-		});
-		const classes = computed(() => {
-			return [
-				{
-					lg: props.lg,
-					md: props.md && !props.lg && !props.sm,
-					sm: props.sm,
-					'flex-row-reverse': props.iconRight,
-					'text-center justify-center w-full': props.full,
-				},
-				props.primary && !props.secondary && !props.tertiary
-					? `primary ${props.bgColor} text-primary hover:${props.bgColor} border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
-					: '',
-				props.secondary
-					? `secondary bg-transparent text-heading hover:bg-transparent border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
-					: '',
-				props.tertiary
-					? `tertiary bg-transparent text-heading hover:bg-transparent hover:scale-105 border border-transparent hover:ring-4 md:hover:ring-8 hover:ring-transparent`
-					: '',
-			];
-		});
-		return { classes, onclick };
-	},
+    const textColor = computed(() => {
+      return props.bgColor.includes('warning') ? 'text-primary' : 'text-white';
+    });
+    const classes = computed(() => {
+      return [
+        {
+          lg: props.lg,
+          md: props.md && !props.lg && !props.sm,
+          sm: props.sm,
+          'flex-row-reverse': props.iconRight,
+          'text-center justify-center w-full': props.full,
+        },
+        props.primary && !props.secondary && !props.tertiary
+          ? `primary ${props.bgColor} text-primary hover:${props.bgColor} border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
+          : '',
+        props.secondary
+          ? `secondary bg-transparent text-heading hover:bg-transparent border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
+          : '',
+        props.tertiary
+          ? `tertiary bg-transparent text-heading hover:bg-transparent hover:scale-105 border border-transparent hover:ring-4 md:hover:ring-8 hover:ring-transparent`
+          : '',
+      ];
+    });
+    return { classes, onclick };
+  },
 });
 </script>
 <style scoped>

@@ -16,16 +16,16 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	props: {
-		list: { type: Boolean, default: true },
-		checklist: { type: Boolean, default: false },
-		points: { type: Boolean, default: false },
-		noAnimate: { type: Boolean, default: false },
-		id: { type: String, default: 'skeleton-' },
-	},
-	setup() {
-		return {};
-	},
+  props: {
+    list: { type: Boolean, default: true },
+    checklist: { type: Boolean, default: false },
+    points: { type: Boolean, default: false },
+    noAnimate: { type: Boolean, default: false },
+    id: { type: String, default: 'skeleton-' },
+  },
+  setup() {
+    return {};
+  },
 });
 </script>
 

@@ -58,41 +58,41 @@
 import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Enable MFA',
-	},
-	setup() {
-		const { t } = useI18n();
+  head: {
+    title: 'Enable MFA',
+  },
+  setup() {
+    const { t } = useI18n();
 
-		const router = useRouter();
+    const router = useRouter();
 
-		const dialog = reactive({
-			type: 'success',
-			heading: 'Success.EnabledMFA',
-			body: 'Success.EnableMFACode',
-			primaryBtn: {
-				label: 'Buttons.Okay',
-				onclick: () => {
-					router.push('/auth/login');
-				},
-			},
-			secondaryBtn: null,
-		});
+    const dialog = reactive({
+      type: 'success',
+      heading: 'Success.EnabledMFA',
+      body: 'Success.EnableMFACode',
+      primaryBtn: {
+        label: 'Buttons.Okay',
+        onclick: () => {
+          router.push('/auth/login');
+        },
+      },
+      secondaryBtn: null,
+    });
 
-		const recovery_code = ref('');
+    const recovery_code = ref('');
 
-		const config = useRuntimeConfig().public;
-		const accountLink = computed(() => {
-			return `${config.BASE_WEB_URL}/account`;
-		});
+    const config = useRuntimeConfig().public;
+    const accountLink = computed(() => {
+      return `${config.BASE_WEB_URL}/account`;
+    });
 
-		return { t, dialog, recovery_code, accountLink };
-	},
+    return { t, dialog, recovery_code, accountLink };
+  },
 };
 </script>
 

@@ -349,7 +349,13 @@
     "And": "Und",
     "ActiveSkills": "Aktive Skills",
     "CompletedSkills": "Abgeschlossene Skills",
-    "OtherSkills": "Andere Skills"
+    "OtherSkills": "Andere Skills",
+    "IsMine": "Meins",
+    "Instructor": "Instruktor",
+    "Summary": "Zusammenfassung",
+    "ParentSkill": "Übergeordneter Skill",
+    "CreationDate": "Erstellungsdatum"
+
   },
   "Body": {
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -828,6 +834,7 @@
     "AddEmail": "E-Mail hinzufügen",
     "CalendarNextMonth": "Nächster Monat",
     "CalendarPrevMonth": "Vorheriger Monat"
+    "MoreEventInfo": "Mehr Infos"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",

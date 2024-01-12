@@ -23,24 +23,24 @@
 
 <script>
 export default {
-	setup() {
-		const faqs = ref([
-			{ expand: false },
-			{ expand: false },
-			{ expand: false },
-			{ expand: false },
-			{ expand: false },
-		]);
+  setup() {
+    const faqs = ref([
+      { expand: false },
+      { expand: false },
+      { expand: false },
+      { expand: false },
+      { expand: false },
+    ]);
 
-		function setExpand(index) {
-			for (let i = 0; i < faqs.value.length; i++) {
-				// invert expand-state for clicked item, close all others
-				faqs.value[i].expand = i == index ? !faqs.value[i].expand : false;
-			}
-		}
+    function setExpand(index) {
+      for (let i = 0; i < faqs.value.length; i++) {
+        // invert expand-state for clicked item, close all others
+        faqs.value[i].expand = i == index ? !faqs.value[i].expand : false;
+      }
+    }
 
-		return { faqs, setExpand };
-	},
+    return { faqs, setExpand };
+  },
 };
 </script>
 

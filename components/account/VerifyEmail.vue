@@ -16,43 +16,43 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	setup() {
-		const { t } = useI18n();
-		const user = <any>useUser();
-		const router = useRouter();
+  setup() {
+    const { t } = useI18n();
+    const user = <any>useUser();
+    const router = useRouter();
 
-		const show = computed(() => {
-			return user.value?.email_verified ?? false;
-		});
+    const show = computed(() => {
+      return user.value?.email_verified ?? false;
+    });
 
-		const loading = ref(false);
+    const loading = ref(false);
 
-		async function onclick() {
-			let email = user?.value?.email ?? '';
-			if (!!!email) {
-				openDialog(
-					'warning',
-					'Headings.MissingEmail',
-					'Body.MissingEmail',
-					false,
-					{
-						label: 'Buttons.AddEmail',
-						onclick: () => {
-							router.push('/profile/edit');
-						},
-					},
-					{
-						label: 'Buttons.Cancel',
-						onclick: () => {},
-					}
-				);
-			} else {
-				router.push('/auth/verify-account');
-			}
-		}
+    async function onclick() {
+      let email = user?.value?.email ?? '';
+      if (!!!email) {
+        openDialog(
+          'warning',
+          'Headings.MissingEmail',
+          'Body.MissingEmail',
+          false,
+          {
+            label: 'Buttons.AddEmail',
+            onclick: () => {
+              router.push('/profile/edit');
+            },
+          },
+          {
+            label: 'Buttons.Cancel',
+            onclick: () => {},
+          }
+        );
+      } else {
+        router.push('/auth/verify-account');
+      }
+    }
 
-		return { t, show, loading, onclick };
-	},
+    return { t, show, loading, onclick };
+  },
 });
 </script>
 

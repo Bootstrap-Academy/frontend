@@ -21,14 +21,14 @@
 
 <script lang="ts">
 definePageMeta({
-	middleware: ['auth'],
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Skill Progress Details - ',
-	},
-	setup() {},
+  head: {
+    title: 'Skill Progress Details - ',
+  },
+  setup() {},
 };
 </script>
 

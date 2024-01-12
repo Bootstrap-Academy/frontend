@@ -37,35 +37,35 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
-	middleware: ['auth'],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
-	head: {
-		title: 'Edit Profile',
-	},
-	setup() {
-		const user = useUser();
+  head: {
+    title: 'Edit Profile',
+  },
+  setup() {
+    const user = useUser();
 
-		onMounted(async () => {
-			if (!hasEmail.value) {
-				openDialog(
-					'warning',
-					'Headings.MissingEmail',
-					'Body.MissingEmail',
-					true,
-					{
-						label: 'Buttons.Okay',
-						onclick: () => {},
-					},
-					null
-				);
-			}
-		});
+    onMounted(async () => {
+      if (!hasEmail.value) {
+        openDialog(
+          'warning',
+          'Headings.MissingEmail',
+          'Body.MissingEmail',
+          true,
+          {
+            label: 'Buttons.Okay',
+            onclick: () => {},
+          },
+          null
+        );
+      }
+    });
 
-		return { user };
-	},
+    return { user };
+  },
 };
 </script>
 

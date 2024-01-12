@@ -30,80 +30,71 @@
 			{{ roundOffTo(rating, 1) }}
 		</h6>
 		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-else>
-			{{ t('Headings.Stars', { n: rating }, rating) }}
+			{{ t("Headings.Stars", { n: rating }, rating) }}
 		</h6>
 	</article>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+<script lang="ts" setup>
+import { useI18n } from "vue-i18n";
 import {
-	StarIcon,
-	ExclamationCircleIcon,
-	InformationCircleIcon,
-	XCircleIcon,
-	CheckCircleIcon,
-} from '@heroicons/vue/24/solid';
+  StarIcon,
+  InformationCircleIcon,
+  XCircleIcon,
+  CheckCircleIcon,
+} from "@heroicons/vue/24/solid";
 
-export default defineComponent({
-	props: {
-		rating: { type: Number, default: 0 },
-		sm: { type: Boolean, default: false },
-		stars: { type: Boolean, default: false },
-	},
-	components: {
-		StarIcon,
-		ExclamationCircleIcon,
-		InformationCircleIcon,
-		XCircleIcon,
-		CheckCircleIcon,
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = withDefaults(defineProps<ComponentProps>(), {
+  rating: 0,
+  sm: false,
+  stars: false,
+});
+	interface ComponentProps {
+		rating?: number;
+		sm?: boolean;
+		stars?: boolean;
+	}
 
-		const type = computed(() => {
-			if (props.rating > 4) return 'success';
-			else if (props.rating > 2 && props.rating <= 4) return 'info';
-			else return 'error';
-		});
+const { t } = useI18n();
 
-		const theme = computed(() => {
-			if (type.value == 'success') {
-				return {
-					bg: 'bg-success',
-					bgLight: 'bg-success-light',
-					fill: 'fill-success',
-					stroke: 'stroke-success',
-					border: 'border-success',
-					text: 'text-success',
-					icon: CheckCircleIcon,
-				};
-			} else if (type.value == 'error') {
-				return {
-					bg: 'bg-error',
-					bgLight: 'bg-error-light',
-					fill: 'fill-error',
-					stroke: 'stroke-error',
-					border: 'border-error',
-					text: 'text-error',
-					icon: XCircleIcon,
-				};
-			} else {
-				return {
-					bg: 'bg-info',
-					bgLight: 'bg-info-light',
-					fill: 'fill-info',
-					stroke: 'stroke-info',
-					border: 'border-info',
-					text: 'text-info',
-					icon: InformationCircleIcon,
-				};
-			}
-		});
+const type = computed(() => {
+  if (props.rating > 4) return "success";
+  else if (props.rating > 2 && props.rating <= 4) return "info";
+  else return "error";
+});
 
-		return { theme, t };
-	},
+const theme = computed(() => {
+  if (type.value == "success") {
+    return {
+      bg: "bg-success",
+      bgLight: "bg-success-light",
+      fill: "fill-success",
+      stroke: "stroke-success",
+      border: "border-success",
+      text: "text-success",
+      icon: CheckCircleIcon,
+    };
+  } else if (type.value == "error") {
+    return {
+      bg: "bg-error",
+      bgLight: "bg-error-light",
+      fill: "fill-error",
+      stroke: "stroke-error",
+      border: "border-error",
+      text: "text-error",
+      icon: XCircleIcon,
+    };
+  } else {
+    return {
+      bg: "bg-info",
+      bgLight: "bg-info-light",
+      fill: "fill-info",
+      stroke: "stroke-info",
+      border: "border-info",
+      text: "text-info",
+      icon: InformationCircleIcon,
+    };
+  }
 });
 </script>
 

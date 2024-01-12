@@ -31,9 +31,9 @@
 
 <script>
 export default {
-	props: {
-		lg: { type: Boolean, default: false },
-	},
+  props: {
+    lg: { type: Boolean, default: false },
+  },
 };
 </script>
 

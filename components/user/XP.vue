@@ -15,17 +15,17 @@ import type { PropType } from 'vue';
 import { BoltIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	components: { BoltIcon },
-	setup(props) {
-		const xp = computed(() => {
-			return props.data?.total_xp ?? 0;
-		});
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  components: { BoltIcon },
+  setup(props) {
+    const xp = computed(() => {
+      return props.data?.total_xp ?? 0;
+    });
 
-		return { xp };
-	},
+    return { xp };
+  },
 });
 </script>
 

@@ -23,24 +23,24 @@ import { defineComponent } from 'vue';
 import type {  PropType } from 'vue';
 
 export default defineComponent({
-	props: {
-		data: { type: Object as PropType<any>, default: null },
-	},
-	setup(props) {
-		const image = computed(() => {
-			return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
-		});
+  props: {
+    data: { type: Object as PropType<any>, default: null },
+  },
+  setup(props) {
+    const image = computed(() => {
+      return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
+    });
 
-		const title = computed(() => {
-			return props.data?.title ?? '';
-		});
+    const title = computed(() => {
+      return props.data?.title ?? '';
+    });
 
-		const description = computed(() => {
-			return props.data?.description ?? '';
-		});
+    const description = computed(() => {
+      return props.data?.description ?? '';
+    });
 
-		return { image, title, description };
-	},
+    return { image, title, description };
+  },
 });
 </script>
 

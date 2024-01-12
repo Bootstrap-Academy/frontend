@@ -32,25 +32,25 @@
 
 <script lang="ts">
 definePageMeta({
-	layout: 'inner',
+  layout: 'inner',
 });
 
 export default {
-	head: {
-		title: 'Challenges',
-	},
-	setup() {
-		const router = useRouter();
-		const route = useRoute();
+  head: {
+    title: 'Challenges',
+  },
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
 
-		const config = useRuntimeConfig().public;
+    const config = useRuntimeConfig().public;
 
-		onMounted(async () => {
-			router.replace('/challenges/all');
-		});
+    onMounted(async () => {
+      router.replace('/challenges/all');
+    });
 
-		return {};
-	},
+    return {};
+  },
 };
 </script>
 

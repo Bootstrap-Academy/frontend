@@ -40,22 +40,22 @@
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-	props: {
-		size: { type: String, default: 'md' },
-		center: { type: Boolean, default: false },
-		full: { type: Boolean, default: false },
-		heading: { type: String, default: `` },
-		subheading: { type: String, default: `` },
-		body: { type: String, default: `` },
-		sub: { type: Boolean, default: false },
-		noLink: { type: Boolean, default: false },
-		link: { default: { to: '', text: '' } },
-	},
-	setup(props) {
-		const { t } = useI18n();
+  props: {
+    size: { type: String, default: 'md' },
+    center: { type: Boolean, default: false },
+    full: { type: Boolean, default: false },
+    heading: { type: String, default: `` },
+    subheading: { type: String, default: `` },
+    body: { type: String, default: `` },
+    sub: { type: Boolean, default: false },
+    noLink: { type: Boolean, default: false },
+    link: { default: { to: '', text: '' } },
+  },
+  setup(props) {
+    const { t } = useI18n();
 
-		return { t };
-	},
+    return { t };
+  },
 });
 </script>
 
