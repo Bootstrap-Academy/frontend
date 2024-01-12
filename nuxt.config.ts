@@ -7,23 +7,23 @@ export default defineNuxtConfig({
       title: "Bootstrap Academy",
       link: [{ rel: "manifest", href: "manifest.json" }],
     },
-		pageTransition: { name: 'page', mode: 'out-in' },
-		layoutTransition: { name: 'layout', mode: 'out-in' },
-	},
-	css: ['~/assets/css/tailwind.css'],
-	postcss: {
-		plugins: {
-			tailwindcss: {},
-			autoprefixer: {},
-		},
-	},
-	runtimeConfig: {
-		public: {
-			BASE_API_URL: 'https://api.test.bootstrap.academy',
-			BASE_WEB_URL: 'https://test.bootstrap.academy',
-			Gleap_API_KEY: '8TVLuULNmWxZHIifA1PW6TYHUCKEb5so',
-			Vue3ReCaptcha_SITE_KEY: '6Ldb070iAAAAAKsAt_M_ilgDbnWcF-N_Pj2DBBeP',
-			NODE_ENV: 'production',
-		},
-	},
+    pageTransition: { name: "page", mode: "out-in" },
+    layoutTransition: { name: "layout", mode: "out-in" },
+  },
+  css: ["~/assets/css/tailwind.css"],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+  runtimeConfig: {
+    public: {
+      BASE_API_URL: "https://api.test.bootstrap.academy",
+      BASE_WEB_URL: "https://test.bootstrap.academy",
+      Gleap_API_KEY: "8TVLuULNmWxZHIifA1PW6TYHUCKEb5so",
+      Vue3ReCaptcha_SITE_KEY: "6Ldb070iAAAAAKsAt_M_ilgDbnWcF-N_Pj2DBBeP",
+      NODE_ENV: "production",
+    },
+  },
 });
