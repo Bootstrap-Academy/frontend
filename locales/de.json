@@ -355,7 +355,6 @@
     "Summary": "Zusammenfassung",
     "ParentSkill": "Übergeordneter Skill",
     "CreationDate": "Erstellungsdatum"
-
   },
   "Body": {
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -833,7 +832,7 @@
     "CookiePolicy": "Okay ich verstehe",
     "AddEmail": "E-Mail hinzufügen",
     "CalendarNextMonth": "Nächster Monat",
-    "CalendarPrevMonth": "Vorheriger Monat"
+    "CalendarPrevMonth": "Vorheriger Monat",
     "MoreEventInfo": "Mehr Infos"
   },
   "Links": {
