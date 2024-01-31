@@ -19,7 +19,7 @@
     "nuxt": "3.10.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.4.1",
-    "vue-i18n": "^9.9.0"
+    "vue-i18n": "^9.9.1"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.1",
@@ -29,7 +29,7 @@
     "@vueuse/core": "^10.7.2",
     "async-mutex": "^0.4.1",
     "dompurify": "^3.0.8",
-    "gleap": "^13.1.4",
+    "gleap": "^13.2.1",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
