@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.1",
-    "@headlessui/vue": "^1.7.18",
+    "@headlessui/vue": "^1.7.19",
     "@heroicons/vue": "^2.1.1",
     "@typescript-eslint/parser": "^6.21.0",
     "@vueuse/core": "^10.7.2",
@@ -35,7 +35,7 @@
     "jwt-decode": "^4.0.0",
     "katex": "^0.16.9",
     "markdown-it": "^14.0.0",
-    "monaco-editor": "^0.45.0",
+    "monaco-editor": "^0.46.0",
     "npm": "^10.4.0",
     "qrcode.vue": "^3.4.1",
     "vue-recaptcha-v3": "^2.0.1",
