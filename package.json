@@ -25,7 +25,7 @@
     "@floating-ui/dom": "^1.6.3",
     "@headlessui/vue": "^1.7.19",
     "@heroicons/vue": "^2.1.1",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/parser": "^7.0.1",
     "@vueuse/core": "^10.7.2",
     "async-mutex": "^0.4.1",
     "dompurify": "^3.0.8",
