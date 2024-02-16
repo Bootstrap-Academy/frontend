@@ -43,6 +43,7 @@
     "NoteCannotEditCodingChallenge": "Edit Restrictions",
     "ZoomLevel": "Zoom Level",
     "TotalQuizzes": "Total Quizzes",
+    "TotalQuizzesInLecture": "Quizzes in this lecture",
     "MyQuizzes": "My Quizzes",
     "SolvedQuizzes": "Solved Quizzes",
     "ViewQuizzesForLastViewCourse": "View Quizzes For Last View Course",
@@ -109,6 +110,8 @@
     "Dislike": "Dislike",
     "UnlockCodingChallenge": "Buy coding challenge to unlock",
     "EmptyQuizzes": "No Quiz Found For This Lecture",
+    "NextSubTasksLocation": "The next quizzes are in the lectures on: ",
+    "NoMoreSubTasksInThisCourse": "There are no more quizzes in this course",
     "EmptyCodingChallenge": "No Coding Challenge Found For This Lecture",
     "DeleteQuiz": "Delete Quiz",
     "Quiz": "Quiz",
@@ -351,7 +354,8 @@
     "Instructor": "Instructor",
     "Summary": "Summary",
     "ParentSkill": "Parent skill",
-    "CreationDate": "Creation date"
+    "CreationDate": "Creation date",
+    "EmptySubtasks" : "In this lecture, there are no quizzes yet."
   },
   "Body": {
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",

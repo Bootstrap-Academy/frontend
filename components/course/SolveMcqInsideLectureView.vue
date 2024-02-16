@@ -1,12 +1,23 @@
 <template>
   <div>
-    <p class="pr-7 text-end mt-2">
-      {{ t("Headings.Solved") }}
-      {{ solvedQuizzes }}
-      /
-      {{ quizzesToShow.length - userCreatedQuizzes }}
-    </p>
-    <FormQuizAnswer
+  		<article class="flex gap-4 flex-wrap mb-7">
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.TotalQuizzes") }}:
+  				<span>{{ allQuizzes.length }}</span>
+  			</chip>
+  			<chip color="chip-color-13" class="w-fit" md v-if="quizzesInThisLecture">
+  				{{ t("Headings.TotalQuizzesInLecture") }}:
+  				<span>{{ quizzesInThisLecture.length }}</span>
+  			</chip>
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
+  			</chip>
+  			<chip sm :color="'chip-color-13'" class="w-fit" md>
+  				{{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
+  			</chip>
+  		</article>
+
+    <!--<FormQuizAnswer
       v-if="quizzesToShow.length && !!selectedQuiz"
       doubleColumnOptions
       :data="selectedQuiz"
@@ -16,24 +27,30 @@
     />
     <p v-else-if="!!!selectedQuiz" class="w-full text-xl text-center">
       {{ t("Headings.NoQuizFoundForYouToSolve") }}
-    </p>
-  </div>
+    </p> -->
+	</div>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-const props = defineProps({
-  quizzesToShow: { type: Object as PropType<any>, default: null },
-});
+import type { Quiz } from "~/types/courseTypes";
 
-const emits = defineEmits(["update:modelValue"]);
+const props = defineProps<{
+    totalQuizzes: Quiz[];
+    quizzesInThisLecture?: Quiz[];
+  }>();
+
+
 const { t } = useI18n();
 const selectedQuiz = ref();
 const user: any = useUser();
 
+const allQuizzes = computed(() => props.totalQuizzes)
+
+
 const solvedQuizzes = computed(() => {
   let total = 0;
-  props.quizzesToShow?.forEach((quiz: any) => {
+  allQuizzes.value?.forEach((quiz: Quiz) => {
     if (!!quiz.solved) {
       ++total;
     }
@@ -43,7 +60,7 @@ const solvedQuizzes = computed(() => {
 
 const userCreatedQuizzes = computed(() => {
   let total = 0;
-  props.quizzesToShow?.forEach((quiz: any) => {
+  allQuizzes.value.forEach((quiz: any) => {
     if (quiz?.creator == user?.value.id) {
       ++total;
     }
@@ -53,31 +70,31 @@ const userCreatedQuizzes = computed(() => {
 
 function nextQuestion(id: any) {
   let index = 0;
-  props.quizzesToShow.forEach((element: any, i: any) => {
+  allQuizzes.value.forEach((element: any, i: any) => {
     if (element.id == id) {
       console.log("inside index", index);
       index = i;
     }
   });
 
-  if (index == props.quizzesToShow?.length - 1 && index != 0) {
+  if (index == allQuizzes.value?.length - 1 && index !== 0) {
     selectedQuiz.value = null;
     return;
   }
-  for (let i = index; i < props.quizzesToShow?.length; i++) {
+  for (let i = index; i < allQuizzes.value?.length; i++) {
     if (
-      !props.quizzesToShow[i]?.solved &&
-      props.quizzesToShow[i]?.creator != user?.value.id
-      // && i != index
+      !allQuizzes.value[i]?.solved &&
+				allQuizzes.value[i]?.creator != user?.value.id 
+    // && i != index
     ) {
-      selectedQuiz.value = props.quizzesToShow[i];
+      selectedQuiz.value = allQuizzes.value[i];
       break;
     }
   }
 }
 
 function setRatedLocally(id: any) {
-  props.quizzesToShow?.forEach((element: any, i: any) => {
+  allQuizzes.value?.forEach((element: any, i: any) => {
     if (element.id == id) {
       element.rated = true;
     }
@@ -85,7 +102,7 @@ function setRatedLocally(id: any) {
 }
 
 function setSolvedLocally(id: any) {
-  props.quizzesToShow.forEach((element: any) => {
+  allQuizzes.value.forEach((element: any) => {
     if (element.id == id) {
       element.solved = true;
     }
@@ -93,7 +110,7 @@ function setSolvedLocally(id: any) {
 }
 
 watch(
-  () => props.quizzesToShow,
+  () => allQuizzes.value,
   (newValue, oldValue) => {
     nextQuestion(0);
   },

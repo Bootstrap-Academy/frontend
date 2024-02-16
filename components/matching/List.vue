@@ -10,23 +10,12 @@
 </template>
 
 <script lang="ts" setup>
-import { getMatchingsInTask } from "~~/composables/matching";
 
 const props = defineProps({
   quizId: { type: String, default: "" },
 });
-const matchings: any = ref([]);
-onMounted(async () => {
-  const [success, error] = await getMatchingsInTask(props?.quizId);
-  if (success) matchings.value = success ?? [];
-});
-watch(
-  () => props.quizId,
-  async () => {
-    const [success, error] = await getMatchingsInTask(props?.quizId);
-    if (success) matchings.value = success ?? [];
-  }
-);
+const matchings = useMatchings();
+
 </script>
 
 <style scoped></style>
