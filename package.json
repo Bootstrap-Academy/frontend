@@ -15,8 +15,8 @@
     "@types/markdown-it": "^13.0.7",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.55.0",
-    "eslint-plugin-vue": "^9.21.1",
-    "nuxt": "3.10.1",
+    "eslint-plugin-vue": "^9.22.0",
+    "nuxt": "3.10.3",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "vue-i18n": "^9.9.1"
@@ -26,9 +26,9 @@
     "@headlessui/vue": "^1.7.19",
     "@heroicons/vue": "^2.1.1",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vueuse/core": "^10.7.2",
+    "@vueuse/core": "^10.8.0",
     "async-mutex": "^0.4.1",
-    "dompurify": "^3.0.8",
+    "dompurify": "^3.0.9",
     "gleap": "^13.2.6",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
@@ -39,7 +39,7 @@
     "npm": "^10.4.0",
     "qrcode.vue": "^3.4.1",
     "vue-recaptcha-v3": "^2.0.1",
-    "nanoid": "^5.0.5",
+    "nanoid": "^5.0.6",
     "vuedraggable": "^4.1.0"
   }
 }
