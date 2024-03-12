@@ -63,7 +63,8 @@
     "UpdateYourCode": "Aktualisiere deinen Code",
     "Since": "seit",
     "Until": "bis",
-    "ChooseCorrectOption": "Wähle die richtigen Antworten",
+    "ChooseMultipleCorrectOption": "Wähle die richtigen Antworten",
+    "ChooseSingleCorrectOption": "Wähle die richtige Antwort",
     "EnableAutopay": "Aktiviere Autopay",
     "DisableAutopay": "Deaktiviere AutoPay",
     "QuizzesInCourse": "Quizze in diesem Kurs",
@@ -97,7 +98,7 @@
     "Feedback": "Rückmeldung",
     "Course": "Kurs",
     "Lecture": "Vorlesung",
-    "EmptyQuizForThis": "Für diesen {placeholder} wurden keine Tests gefunden",
+    "EmptyQuizForThis": "Für diesen {placeholder} wurden keine Quizfragen gefunden",
     "UnlockQuiz": "Kaufe das Quiz, um es freizuschalten",
     "ReportComment": "Grund für die Meldung",
     "Report": "Bericht",
@@ -354,7 +355,6 @@
     "Summary": "Zusammenfassung",
     "ParentSkill": "Übergeordneter Skill",
     "CreationDate": "Erstellungsdatum"
-
   },
   "Body": {
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -472,7 +472,8 @@
     "EditNickname": "kann nach dem {placeholder} geändert werden",
     "ActiveSkills": "Alle Skills, die du gerade verbesserst.",
     "CompletedSkills": "Alle Skills, die du schon abgeschlossen hast.",
-    "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind."
+    "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
+    "NoUpcomingEvents": "Keine Veranstaltungen geplant"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {
@@ -760,6 +761,7 @@
     "CreateQuiz": "Quiz erstellen",
     "CreateQuizQuestion": "Quizfrage erstellen",
     "SubmitAnswer": "Antwort einreichen",
+    "SubmitAnswers": "Antworten einreichen",
     "Continue": "Weiter",
     "AddQuizQuestion": "Quizfrage hinzufügen",
     "EditCoaching": "Coaching bearbeiten",
@@ -829,6 +831,8 @@
     "ConfirmUnregisterNewsletter": "Ja, vom Newsletter abmelden",
     "CookiePolicy": "Okay ich verstehe",
     "AddEmail": "E-Mail hinzufügen",
+    "CalendarNextMonth": "Nächster Monat",
+    "CalendarPrevMonth": "Vorheriger Monat",
     "MoreEventInfo": "Mehr Infos"
   },
   "Links": {

@@ -15,7 +15,11 @@
         class="text-heading2 text-sm"
         v-if="!subtask?.solved && user?.id != subtask?.creator"
       >
-        {{ t("Headings.ChooseCorrectOption") }}
+        {{
+          subtask?.single_choice
+            ? t("Headings.ChooseSingleCorrectOption")
+            : t("Headings.ChooseMultipleCorrectOption")
+        }}
       </p>
 
       <p class="text-xs text-accent" v-if="showMaxAttemptsError">
@@ -70,7 +74,11 @@
           mt
           :icon="HalfHeart"
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{
+            subtask?.single_choice
+              ? t("Buttons.SubmitAnswer")
+              : t("Buttons.SubmitAnswers")
+          }}
         </InputBtnWithHeart>
 
         <InputBtn
@@ -80,7 +88,11 @@
           @click="onclickSubmitForm()"
           mt
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{
+            subtask?.single_choice
+              ? t("Buttons.SubmitAnswer")
+              : t("Buttons.SubmitAnswers")
+          }}
         </InputBtn>
 
         <InputBtn

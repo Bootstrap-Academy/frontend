@@ -18,33 +18,35 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="dialog && dialog.type" :dialog="dialog">
-				<template #content>
-					<div
-						v-if="!!TOTP_secret"
-						class="text-body-1 text-body font-body m-0 mt-box"
-					>
-						{{ t('Headings.TOTPSecret') }}:
-						<span class="allow-selection">{{ TOTP_secret }}</span>
-						<div class="bg-white p-10 w-fit h-fit mt-card">
-							<qrcode-vue :size="200" :value="QR_code"></qrcode-vue>
-						</div>
-					</div>
-				</template>
-			</Dialog>
-		</Transition>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="dialog && dialog.type" :dialog="dialog">
+        <template #content>
+          <div
+            v-if="!!TOTP_secret"
+            class="text-body-1 text-body font-body m-0 mt-box"
+          >
+            {{ t("Headings.TOTPSecret") }}:
+            <span class="allow-selection">{{ TOTP_secret }}</span>
+            <div class="bg-white p-10 w-fit h-fit mt-card">
+              <qrcode-vue :size="200" :value="QR_code"></qrcode-vue>
+            </div>
+          </div>
+        </template>
+      </Dialog>
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import QrcodeVue from 'qrcode.vue';
+import { useI18n } from "vue-i18n";
+import QrcodeVue from "qrcode.vue";
 
 definePageMeta({
+  layout: "inner",
+  middleware: ["auth"],
   layout: 'inner',
   middleware: ['auth'],
 });

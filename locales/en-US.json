@@ -62,7 +62,8 @@
     "NoOutput": "There is no output for your provided code 🫣",
     "SubmissionSolved": "Solved ✅",
     "PendingResult": "Wait! We are processing your given code",
-    "ChooseCorrectOption": "Choose the correct answers",
+    "ChooseMultipleCorrectOption": "Choose the correct answers",
+    "ChooseSingleCorrectOption": "Choose the correct answer",
     "UpdateYourCode": "Update Your Code",
     "Since": "Since",
     "Until": "Until",
@@ -468,7 +469,8 @@
     "EditNickname": "can be changed after {placeholder}",
     "ActiveSkills": "All skills you are currently working on.",
     "CompletedSkills": "All skills which you have completed.",
-    "OtherSkills": "Rest of the skills which are available for exploring."
+    "OtherSkills": "Rest of the skills which are available for exploring.",
+    "NoUpcomingEvents": "No Events planned"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {
@@ -760,6 +762,7 @@
     "CreateQuiz": "Create Quiz",
     "CreateQuizQuestion": "Create Quiz Question",
     "SubmitAnswer": "Submit Answer",
+    "SubmitAnswers": "Submit Answers",
     "Continue": "Continue",
     "AddQuizQuestion": "Add Quiz Question",
     "EditCoaching": "Edit Coach",
@@ -829,6 +832,8 @@
     "ConfirmUnregisterNewsletter": "Yes, Unregister From Newsletter",
     "CookiePolicy": "Okay, I understand",
     "AddEmail": "Add Email",
+    "CalendarNextMonth": "Next month",
+    "CalendarPrevMonth": "Previous month",
     "MoreEventInfo": "More info"
   },
   "Links": {

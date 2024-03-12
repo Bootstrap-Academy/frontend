@@ -28,7 +28,7 @@
       <Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
     </article>
 
-    <InputBtn class="mt-4" @click="navigateTo('/subscription')">
+    <InputBtn class="mt-8 w-full" @click="navigateTo('/subscription')">
       {{
         !isPremium ? t("Buttons.BuySubscription") : t("Buttons.ManagePremium")
       }}

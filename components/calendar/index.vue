@@ -2,7 +2,9 @@
   <div>
     <header class="flex gap-card justify-between items-center mb-card">
       <Btn sm secondary :icon="ArrowLeftIcon" @click="prevMonth">
-        <span class="hidden md:block">{{ t("Buttons.Back") }}</span>
+        <span class="hidden md:block">{{
+          t("Buttons.CalendarPrevMonth")
+        }}</span>
       </Btn>
 
       <h1 class="text-heading-3">
@@ -10,7 +12,9 @@
       </h1>
 
       <Btn sm :icon="ArrowRightIcon" @click="nextMonth" icon-right>
-        <span class="hidden md:block">{{ t("Buttons.Next") }}</span>
+        <span class="hidden md:block">{{
+          t("Buttons.CalendarNextMonth")
+        }}</span>
       </Btn>
     </header>
 
