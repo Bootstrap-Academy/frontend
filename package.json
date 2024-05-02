@@ -14,7 +14,7 @@
     "@types/katex": "^0.16.7",
     "@types/markdown-it": "^14.1.1",
     "autoprefixer": "^10.4.19",
-    "eslint": "^8.55.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.25.0",
     "nuxt": "3.11.2",
     "postcss": "^8.4.35",
