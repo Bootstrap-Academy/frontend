@@ -47,13 +47,11 @@ import QrcodeVue from "qrcode.vue";
 definePageMeta({
   layout: "inner",
   middleware: ["auth"],
-  layout: 'inner',
-  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: 'Initialize MFA',
+    title: "Initialize MFA",
   },
   components: { QrcodeVue },
   setup() {
@@ -63,17 +61,17 @@ export default {
     const user = <any>useUser();
 
     // ============================================================= OR Code
-    const QR_code = ref('');
+    const QR_code = ref("");
     function getQR_code(secret: any, username: any) {
       QR_code.value = `otpauth://totp/${encodeURIComponent(
         username
       )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
-        'Bootstrap Academy'
+        "Bootstrap Academy"
       )}`;
     }
 
     const dialog = <any>reactive({});
-    const TOTP_secret = ref('');
+    const TOTP_secret = ref("");
 
     onMounted(async () => {
       setLoading(true);
@@ -86,15 +84,15 @@ export default {
       }
 
       Object.assign(dialog, {
-        type: !!success ? 'success' : 'error',
-        heading: 'InitializeMFA',
+        type: !!success ? "success" : "error",
+        heading: "InitializeMFA",
         body: !!success
-          ? 'Success.InitializeMFA'
-          : `${t('Error.InitializeMFA')}: ${error?.detail ?? ''}`,
+          ? "Success.InitializeMFA"
+          : `${t("Error.InitializeMFA")}: ${error?.detail ?? ""}`,
         primaryBtn: {
-          label: !!success ? 'Buttons.EnableMFA' : 'Links.GoBack',
+          label: !!success ? "Buttons.EnableMFA" : "Links.GoBack",
           onclick: () => {
-            router.push(!!success ? '/account/mfa/enable' : '/account');
+            router.push(!!success ? "/account/mfa/enable" : "/account");
           },
         },
         secondaryBtn: null,
