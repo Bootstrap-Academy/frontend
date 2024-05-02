@@ -40,6 +40,7 @@
     "NoteCannotEditQuiz": "Einschränkungen bearbeiten",
     "ZoomLevel": "Zoomstufe",
     "TotalQuizzes": "Alle Quizze",
+    "TotalQuizzesInLecture": "Quizze in dieser Vorlesung",
     "MyQuizzes": "Meine Quizze",
     "SolvedQuizzes": "Gelöste Quizze",
     "ViewQuizzesForLastViewCourse": "Quizze für den zuletzt angesehenen Kurs anzeigen",
@@ -109,6 +110,8 @@
     "Dislike": "Nicht gefallen",
     "UnlockCodingChallenge": "Kaufe eine Coding challenge, um sie freizuschalten",
     "EmptyQuizzes": "Für diese Vorlesung wurde kein Quiz gefunden",
+    "NextSubTasksLocation": "Die nächsten Quizze findest du in den Vorlesungen zu: ",
+    "NoMoreSubTasksInThisCourse": "In diesem Kurs gibt es keine weiteren Quizze",
     "EmptyCodingChallenge": "Für diese Vorlesung wurde keine Programmieraufgabe gefunden",
     "DeleteQuiz": "Quiz löschen",
     "Quiz": "Quiz",
@@ -353,7 +356,8 @@
     "Instructor": "Instruktor",
     "Summary": "Zusammenfassung",
     "ParentSkill": "Übergeordneter Skill",
-    "CreationDate": "Erstellungsdatum"
+    "CreationDate": "Erstellungsdatum",
+    "EmptySubtasks" : "In dieser Vorlesung gibt es noch keine Quizze."
 
   },
   "Body": {

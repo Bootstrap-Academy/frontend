@@ -50,6 +50,7 @@
 import { defineComponent } from "vue";
 import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import type { Quiz } from "~/types/courseTypes";
 import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
 definePageMeta({
   middleware: ["auth"],
@@ -70,7 +71,6 @@ export default defineComponent({
     const coachings = useCoachings();
     const webinars = useWebinars();
     const quizzes = useQuizzes();
-
     const route = useRoute();
 
     const rootSkillID = computed(() => {
@@ -151,10 +151,13 @@ export default defineComponent({
           getWebinarsForThisSubSkill(subSkillID.value),
           getQuizzesInSkill(subSkillID.value),
         ]);
+        // assignQuizzes()
       }
 
       loading.value = false;
     });
+
+
 
     onUnmounted(() => {
       if (window) {

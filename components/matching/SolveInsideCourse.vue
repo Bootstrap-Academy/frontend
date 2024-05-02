@@ -21,9 +21,10 @@
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-const props = defineProps({
-  matchings: { type: Object as PropType<any>, default: null },
-});
+import type { Matching, MatchingForSections } from "~/types/matching";
+const props = defineProps<{
+  matchings: MatchingForSections[]
+}>()
 
 const emits = defineEmits(["update:modelValue"]);
 const { t } = useI18n();
@@ -32,8 +33,8 @@ const user: any = useUser();
 
 const solvedQuizzes = computed(() => {
   let total = 0;
-  props.matchings?.forEach((quiz: any) => {
-    if (!!quiz.solved) {
+  props.matchings?.forEach((quiz: MatchingForSections) => {
+    if (!!quiz.matching.solved) {
       ++total;
     }
   });
@@ -42,54 +43,47 @@ const solvedQuizzes = computed(() => {
 
 const userCreatedQuizzes = computed(() => {
   let total = 0;
-  props.matchings?.forEach((quiz: any) => {
-    if (quiz?.creator == user?.value.id) {
+  props.matchings?.forEach((quiz: MatchingForSections) => {
+    if (quiz?.matching.creator == user?.value.id) {
       ++total;
     }
   });
   return total;
 });
 
-function nextQuestion(id: any) {
+function nextQuestion(id: number) {
   let index = 0;
-  props.matchings.forEach((element: any, i: any) => {
-    if (element.id == id) {
-      console.log("inside index", index);
-      index = i;
-    }
-  });
 
   if (index == props.matchings?.length - 1 && index != 0) {
     selectedQuiz.value = null;
-    console.log("returning");
     return;
   }
   console.log("index is ", index);
   for (let i = index; i < props.matchings?.length; i++) {
     console.log("inside loop");
     if (
-      !props.matchings[i]?.solved &&
-      props.matchings[i]?.creator != user?.value.id
+      !props.matchings[i]?.matching.solved &&
+      props.matchings[i]?.matching.creator != user?.value.id
       // &&      i != index
     ) {
-      selectedQuiz.value = props.matchings[i];
+      selectedQuiz.value = props.matchings[i].matching;
       break;
     }
   }
 }
 
 function setRatedLocally(id: any) {
-  props.matchings?.forEach((element: any, i: any) => {
-    if (element.id == id) {
-      element.rated = true;
+  props.matchings?.forEach((element: MatchingForSections, i: any) => {
+    if (element.matching.id == id) {
+      element.matching.rated = true;
     }
   });
 }
 
 function setSolvedLocally(id: any) {
-  props.matchings.forEach((element: any) => {
-    if (element.id == id) {
-      element.solved = true;
+  props.matchings.forEach((element: MatchingForSections) => {
+    if (element.matching.id == id) {
+      element.matching.solved = true;
     }
   });
 }

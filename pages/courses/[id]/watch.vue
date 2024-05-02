@@ -24,7 +24,6 @@
     <Head>
       <Title>Watch Course - {{ course?.title ?? "" }}</Title>
     </Head>
-
     <section>
       <main
         v-if="course"
@@ -56,18 +55,34 @@
             v-if="!!activeSection && !!activeLecture && selectedButton == 0"
           />
           <section
-            v-else-if="selectedButton == 1"
+            v-if="selectedButton == 1"
             class="w-full h-[71vh] overflow-scroll"
           >
-            <p class="w-full text-xl text-center" v-if="!subtasks.length">
-              {{ t("Headings.EmptyQuizzes") }}
-            </p>
             <CourseSolveMcqInsideLectureView
-              v-else-if="subtasks.length"
-              :quizzesToShow="subtasks"
+              :total-quizzes="allQuizzes"
+              :quizzes-in-this-lecture="quizzesInLecture"
             />
-          </section>
+            <div v-if="quizzesInLecture.length">
+              <QuizList :quizzes="quizzesInLecture" />
+            </div>
+            <p
+              class="w-full text-xl text-center"
+              v-if="!quizzesInLecture.length && !allQuizzes.length"
+            >
+              {{ t("Headings.EmptySubtasks") }}
+            </p>
+            <div
+              v-if="allQuizzes.length"
+              class="mt-10"
+            >
+            </div>
 
+            <div v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length">
+              <p class="w-full text-xl text-center">
+                {{ t("Headings.NoMoreSubTasksInThisCourse") }}
+              </p>
+            </div>
+          </section>
           <section
             class="px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 2"
@@ -91,18 +106,19 @@
             class="md:px-6 h-[71vh] overflow-scroll w-full"
             v-else-if="selectedButton == 3"
           >
-            <div v-if="matchings.length">
-              <MatchingSolveInsideCourse :matchings="matchings" />
+            <div v-if="currentMatches.length">
+              <MatchingSolveInsideCourse :matchings="currentMatches" />
             </div>
-            <p v-if="!matchings.length" class="w-full text-xl text-center">
+            <p
+              v-if="!currentMatches.length"
+              class="w-full text-xl text-center"
+            >
               {{ t("Headings.EmptyMatchings") }}
             </p>
           </section>
         </div>
 
-        <div
-          class="hidden midXl:block aside sticky self-start top-container mt-16"
-        >
+        <div class="hidden midXl:block aside sticky self-start top-container mt-16">
           <article class="flex justify-end">
             <CourseVideoControls
               class="hidden midXl:block mb-7 -mt-3"
@@ -123,7 +139,11 @@
       </main>
     </section>
 
-    <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
+    <Transition
+      class="block midXl:hidden"
+      name="fade-in"
+      mode="in-out"
+    >
       <section
         v-if="showCurriculum"
         @click.self="showCurriculum = false"
@@ -146,32 +166,43 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-
 import { XCircleIcon } from "@heroicons/vue/24/solid";
+import { QuizInUnseenLecture } from "~/types/courseTypes";
+import { useMatchingsForLectures, useMatchingsInLecture } from "~/composables/matching";
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ["auth"]
 });
 
 export default {
   components: {
-    XCircleIcon,
+    XCircleIcon
   },
   head: {
-    title: "Watch Course",
+    title: "Watch Course"
   },
   setup() {
     const { t } = useI18n();
     const loading = ref(true);
+    const callActive = ref(false);
+
     const route = useRoute();
     const router = useRouter();
 
-    const showCurriculum = ref(false);
     const course = useCourse();
     const taskId = ref();
     const subtasks = useSubTasksInQuiz();
     const codingChallenges = useAllCodingChallengesInATask();
-    const matchings = useMatchings();
+
+    const allQuizzesInfo = useQuizzes();
+    const allQuizzes = useQuizzesInCourse();
+    const quizzesInLecture = useQuizzesInLecture();
+    const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
+    const matches = useMatchingsForLectures()
+
+    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture.value.id))
+
+    const showCurriculum = ref(false);
 
     const premiumInfo: any = usePremiumInfo();
     const isPremium: any = computed(() => {
@@ -184,13 +215,29 @@ export default {
     });
 
     const selectedButton = ref(0);
-    const buttonOptions = [
+    const buttonOptions = computed(() => [
       { name: "Buttons.Video" },
-      { name: "Buttons.Quiz" },
-      { name: "Buttons.Challenge" },
-      { name: "Buttons.Matching" },
-    ];
+      { name: `${t("Buttons.Quiz")} ${quizzesInLecture.value.length}` },
+      { name: `${t("Buttons.Challenge")} ${codingChallenges.value.length}` },
+      { name: `${t("Buttons.Matching")} ${currentMatches.value.length}` }
+    ]);
 
+    const activeSection = computed(() => {
+      const sectionID = <string>(route.query?.section ?? "");
+      let sections: any[] = course.value?.sections ?? [];
+      if (!!!sections || sections.length <= 0) return null;
+      let section = sections.find((sec) => sec.id == sectionID);
+      return !!section ? section : null;
+    });
+    const activeLecture = computed(() => {
+      const lectureID = <string>(route.query?.lecture ?? "");
+      let lectures: any[] = activeSection.value?.lectures ?? [];
+      if (!!!lectures || lectures.length <= 0) return null;
+
+      let lecture = lectures.find((lec) => lec.id == lectureID);
+
+      return !!lecture ? lecture : null;
+    });
     const courseId: any = computed(() => {
       return route.params.id;
     });
@@ -201,49 +248,12 @@ export default {
       return <string>(route.query?.subSkillID ?? "");
     });
 
-    const activeSection = computed(() => {
-      const sectionID = <string>(route.query?.section ?? "");
-      let sections: any[] = course.value?.sections ?? [];
-      if (!!!sections || sections.length <= 0) return null;
-      let section = sections.find((sec) => sec.id == sectionID);
-      return !!section ? section : null;
-    });
-
-    const activeLecture = computed(() => {
-      const lectureID = <string>(route.query?.lecture ?? "");
-      let lectures: any[] = activeSection.value?.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return null;
-
-      let lecture = lectures.find((lec) => lec.id == lectureID);
-
-      return !!lecture ? lecture : null;
-    });
-
-    function watchThisLecture({ sectionID, lectureID }: any) {
-      router.replace({
-        path: route.path,
-        query: {
-          section: sectionID,
-          lecture: lectureID,
-          skillID: skillID.value,
-          subSkillID: subSkillID.value,
-        },
-      });
-
-      showCurriculum.value = false;
-    }
-
     function solveCodingChallenge(codingChallenge: any) {
       if (!isPremium.value && hearts.value < 2) {
         return openSnackbar("info", "Error.NotEnoughHearts");
       } else if (isPremium.value || hearts.value >= 2) {
-        router.push(
-          `/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${
-            codingChallenge?.id
-          }&solveFrom=${"course"}`
-        );
-        if (!isPremium.value)
-          return openSnackbar("info", "Body.BuyCodingChallnge");
+        router.push(`/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`);
+        if (!isPremium.value) return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
 
@@ -271,41 +281,6 @@ export default {
       }
     }
 
-    watch(
-      () => [activeLecture.value, activeSection.value],
-      async () => {
-        setLoading(true);
-        if (
-          !!!activeLecture.value ||
-          !!!activeLecture?.value.id ||
-          !!!activeSection.value ||
-          !!!activeSection?.value.id ||
-          !!!courseId.value
-        ) {
-          setLoading(false);
-          return;
-        }
-        const [success, error] = await getQuizzesInCourse(
-          courseId.value,
-          activeSection.value.id,
-          activeLecture.value.id
-        );
-
-        if (!!success[0]) {
-          taskId.value = success[0]?.id;
-          subtasks.value = [];
-          fnGetSubtasksInQuiz(success[0]?.id);
-          fnGetCodingChallengeInQuiz(success[0]?.id);
-          fnGetMatchingsInQuiz(success[0]?.id);
-        } else {
-          subtasks.value = [];
-          codingChallenges.value = [];
-          matchings.value = [];
-        }
-        setLoading(false);
-      },
-      { immediate: true, deep: true }
-    );
 
     watch(
       () => selectedButton.value,
@@ -315,6 +290,7 @@ export default {
     );
 
     onMounted(async () => {
+      loading.value = true;
       const courseID = <string>(route.params?.id ?? "");
 
       let a = localStorage.getItem("selectedButton");
@@ -324,7 +300,6 @@ export default {
         loading.value = false;
         return;
       }
-
       await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
       loading.value = false;
@@ -333,6 +308,78 @@ export default {
     onBeforeUnmount(() => {
       localStorage.removeItem("selectedButton");
     });
+
+
+    function watchThisLecture({ sectionID, lectureID }: any) {
+      router.replace({
+        path: route.path,
+        query: {
+          section: sectionID,
+          lecture: lectureID,
+          skillID: skillID.value,
+          subSkillID: subSkillID.value
+        }
+      });
+
+      showCurriculum.value = false;
+    }
+    watch(
+      () => [activeLecture.value, activeSection.value],
+      async () => {
+        loading.value = true;
+        if (!callActive.value) {
+          callActive.value = true;
+          await getQuizzes(
+            course.value.id,
+            activeSection.value.id,
+            activeLecture.value.id
+          );
+          await getQuizzesInUnfinishedLectures();
+            
+        }
+
+        callActive.value = false;
+        loading.value = false;
+      }
+    );
+
+    const getQuizzesInUnfinishedLectures = async () => {
+      let testSections: QuizInUnseenLecture[] = [];
+      allQuizzesInfo.value.forEach((info) => {
+        course.value.sections.find((section) => {
+          section.lectures.forEach((lecture) => {
+            if (lecture.id == info.lecture_id) {
+              testSections.push({
+                section: section.id ?? "",
+                sectionTitle: section.title,
+                lectureId: lecture.id,
+                lecture: lecture.title,
+                lectureFinished: lecture.completed,
+              });
+            }
+          });
+        });
+      });
+      unseenLectureQuizzes.value = testSections.filter(
+        (section) => !section.lectureFinished
+      );
+    };
+
+    function getSectionNumber(sectionString: string): number {
+      if (sectionString === "section") {
+        return 1; // Return 1 for "section"
+      }
+
+      const sectionRegex = /^section(\d+)$/;
+      const match = sectionRegex.exec(sectionString);
+
+      if (match) {
+        return parseInt(match[1]); // Add 1 to the parsed section number
+      } else {
+        throw new Error(`Invalid section string: ${sectionString}`);
+      }
+    }
+
 
     return {
       t,
@@ -350,25 +397,29 @@ export default {
       codingChallenges,
       skillID,
       subSkillID,
-      matchings,
+      allQuizzes,
+      quizzesInLecture,
+      unseenLectureQuizzes,
+      getSectionNumber,
+      currentMatches
     };
-  },
+  }
 };
 </script>
 
 <style scoped>
-.slide-right {
-  animation: slideRight 0.25s ease-out forwards;
-}
+  .slide-right {
+    animation: slideRight 0.25s ease-out forwards;
+  }
 
-@keyframes slideRight {
-  0% {
-    opacity: 0;
-    transform: translateX(30px);
+  @keyframes slideRight {
+    0% {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
 </style>
