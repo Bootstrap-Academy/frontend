@@ -30,7 +30,7 @@
 						<img
 							:src="event.instructor.avatar_url ?? '/images/about-2.webp'"
 							class="w-6 h-6 object-cover rounded-[50px]"
-							alt=""
+							alt="event instructor avatar"
 						/>
 						<p>{{ event.instructor.display_name }}</p>
 					</div>

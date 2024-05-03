@@ -5,7 +5,7 @@
     <img
       class="h-20 w-20 rounded-full object-cover"
       :src="user?.user?.avatar_url ?? '/images/user1.jpg'"
-      alt="image not found."
+      alt="user avatar"
     />
     <p class="mt-1">
       {{ user?.rank }}<span v-if="user?.rank == 1">st </span>

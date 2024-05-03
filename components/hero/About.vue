@@ -6,17 +6,17 @@
 			<img
 				src="/images/about-1.webp"
 				class="rounded shadow-md object-cover w-full h-full row-span-2"
-				alt=""
+				alt="Glasses resting on laptop screen displaying lines of code"
 			/>
 			<img
 				src="/images/about-4.webp"
 				class="rounded shadow-md object-cover w-full h-full"
-				alt=""
+				alt="A man sitting at a desk with a computer screen in front of him"
 			/>
 			<img
 				src="/images/about-3.webp"
 				class="rounded shadow-md object-cover w-full h-full"
-				alt=""
+				alt="View of a circuit board, showing intricate electronic components and pathways"
 			/>
 		</article>
 

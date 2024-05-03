@@ -3,7 +3,7 @@
     class="container-fluid bg-secondary flex gap-4 items-center justify-between"
   >
     <Btn tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
-      <img src="/images/logo.png" class="w-6 h-auto object-contain" alt="" />
+      <img src="/images/logo.png" class="w-6 h-auto object-contain" alt="Bootstrap Academy logo" />
 
       {{ t(backRoute.label) }}
     </Btn>

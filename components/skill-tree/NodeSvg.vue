@@ -34,7 +34,7 @@
 					@click="onclickToggleActive"
 				></object> -->
 
-        <img :src="icon" class="cursor-pointer" v-if="node && node.icon" />
+        <img :src="icon" class="cursor-pointer" v-if="node && node.icon" alt="skilltree course icon" />
       </foreignObject>
     </g>
 

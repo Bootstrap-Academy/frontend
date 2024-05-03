@@ -11,6 +11,7 @@
 		  <a
 			href="https://de.gravatar.com/"
 			target="_blank"
+			alt="user avatar"
 			class="cursor-pointer"
 		  >
 			gravatar.com

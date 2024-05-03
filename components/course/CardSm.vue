@@ -4,7 +4,7 @@
 	>
 		<img
 			:src="image"
-			alt=""
+			alt="couse cover"
 			class="absolute top-0 left-0 w-full h-full object-cover"
 		/>
 		<div

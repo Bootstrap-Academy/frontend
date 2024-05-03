@@ -2,7 +2,7 @@
 	<section class="bg-secondary relative rounded shadow-xl md:col-span-2 h-fit">
 		<img
 			:src="companyImage"
-			alt=""
+			alt="company logo"
 			class="w-full h-52 object-cover brightness-50"
 		/>
 

@@ -1,6 +1,6 @@
 <template>
   <article class="bg-secondary style-card overflow-hidden">
-    <img :src="image" alt="" class="w-full h-32 object-cover" />
+    <img :src="image" alt="course cover" class="w-full h-32 object-cover" />
     <div class="card-sm">
       <h3 class="text-heading-3 clamp tight line-2">{{ title }}</h3>
       <p class="text-body-2 mt-2 clamp line-2">{{ description }}</p>
