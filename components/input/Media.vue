@@ -71,7 +71,7 @@ export default defineComponent({
   components: { PlusIcon },
   props: {
     label: { type: String, default: '' },
-	alt: { type: String, default: '' },
+    alt: { type: String, default: '' },
     noLabel: { type: Boolean, default: false },
     hint: { type: String, default: '' },
     rounded: { type: Boolean, default: false },
