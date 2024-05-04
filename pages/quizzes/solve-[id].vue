@@ -31,6 +31,7 @@
       </div>
 
       <FormQuizAnswer
+        :amount-questions-left="quizzesToShow.filter((quiz: any) => !quiz.solved).length"
         v-if="quizzesToShow.length || loading"
         :data="selectedQuiz ?? quizzesToShow[0]"
         @solved="setSolvedLocally($event)"
@@ -40,9 +41,15 @@
         class="row-span-2 md:mt-48"
       />
       <div>
-        <p class="mb-3 text-xs pl-2" v-if="!!arrayOfSubtasks.length">
-          <span class="text-accent"> {{ t("Headings.Total") }} </span>:
-          {{ quizzesToShow?.length }}
+        <p class="mb-3 text-xs pl-2 flex justify-between" v-if="!!arrayOfSubtasks.length">
+          <div v-if="(selectedOption == 1 && quizzesToShow?.lenght > 0) || selectedOption == 0">
+            <span class="text-accent"> {{ t("Headings.Total") }} </span>:
+            {{ quizzesToShow?.length }}
+          </div>
+          <div class="mr-4" v-if="selectedOption == 0">
+            <span class="text-accent">{{ t("Headings.OfWhichUnsolved") }}</span>:
+            {{ arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length }}
+          </div>
         </p>
         <aside class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4">
           <template v-if="loading">
@@ -69,7 +76,15 @@
       </div>
     </main>
     <p
-      v-if="!loading && !quizzesToShow.length"
+      v-if="!loading && !quizzesToShow.length && arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length == 0"
+      class="text-center w-full mb-20 text-xl"
+    >
+      {{
+        t("Headings.AllQuestionsSolved")
+      }}
+    </p>
+    <p
+      v-else-if="!loading && !quizzesToShow.length"
       class="text-center w-full mb-20 text-xl"
     >
       {{
