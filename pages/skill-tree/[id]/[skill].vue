@@ -15,6 +15,9 @@
 
     <SkillTreeNodeDetailsStepper
       class="h-fit"
+      :quizzes="quizzes"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
       :activeStepper="activeStepper"
       @activeStepper="activeStepper = $event"
     />
