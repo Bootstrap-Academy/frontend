@@ -360,7 +360,6 @@
     "IsMine": "Meins",
     "Instructor": "Instruktor",
     "Summary": "Zusammenfassung",
-    "ParentSkill": "Übergeordneter Skill",
     "CreationDate": "Erstellungsdatum",
     "EmptySubtasks" : "In dieser Vorlesung gibt es noch keine Quizze."
   },

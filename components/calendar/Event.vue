@@ -183,22 +183,13 @@ export default defineComponent({
         // 	heading: 'Headings.Date',
         // },
         {
-          icon: ClockIcon,
-          value: `${start.value.time} - ${end.value.time}`,
-          heading: "Headings.Time",
-        },
-        {
-          value: `${props.data.duration} min`,
-          heading: "Headings.Duration",
-        },
-        {
           icon: CalendarIcon,
           value: start.value.date,
           heading: "Headings.Date",
         },
         {
           icon: ClockIcon,
-          value: start.value.time,
+          value: `${start.value.time} - ${end.value.time} (${props.data.duration} min)`,
           heading: "Headings.Time",
         },
         {
