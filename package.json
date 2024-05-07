@@ -29,7 +29,7 @@
     "@vueuse/core": "^10.9.0",
     "async-mutex": "^0.5.0",
     "dompurify": "^3.1.2",
-    "gleap": "^13.6.4",
+    "gleap": "^13.6.5",
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
