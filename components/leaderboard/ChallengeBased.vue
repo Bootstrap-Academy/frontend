@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[80vh] overflow-y-scroll px-7">
+  <div class="px-7">
     <SkeletonLeaderBoardChallenges v-if="loading" />
     <section
       v-else-if="!loading && allGlobalChallenges.length"
