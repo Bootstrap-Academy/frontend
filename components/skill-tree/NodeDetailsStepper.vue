@@ -8,11 +8,20 @@
       )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
         {{ t(label) }}
       </Btn>
+      <Btn full v-else-if="level == 4" :key="5" @click="openMatchings(
+          subSkillID,
+          matchings[0].id,
+          matchings[0].task_id,
+          skillID
+        )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
+        {{ t(label) }}
+      </Btn>
       <Btn full v-else :key="level" @click="_activeStepper = level" :secondary="_activeStepper != level"
         :bgColor="bgColor" :borderColor="borderColor">
         {{ t(label) }}
       </Btn>
     </div>
+      {{matchings}}
   </article>
 </template>
 
@@ -25,6 +34,7 @@ export default defineComponent({
     subSkill: { default: null },
     activeStepper: { default: 0 },
     quizzes: { type: Array as PropType<any[]>, default: [] },
+    matchings: { type: Array as PropType<any[]>, default: [] },
     skillID: { default: "" },
     subSkillID: { default: "" },
   },
@@ -72,6 +82,12 @@ export default defineComponent({
       );
     }
 
+    function openMatchings(subSkillID: string, subTaskId: string, taskId: string, rootSkillID: string) {
+      router.push(
+        `/matchings/solve-${subSkillID}?quizzesFrom=${"skill"}&querySubTaskId=${subTaskId}&taskId=${taskId}&rootSkillID=${rootSkillID}&subSkillID=${subSkillID}`
+      );
+    }
+
     const _activeStepper = ref(props.activeStepper ?? 0);
 
     watch(
@@ -82,7 +98,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    return { steppers, t, _activeStepper, openQuiz };
+    return { steppers, t, _activeStepper, openQuiz, openMatchings };
   },
 });
 </script>
