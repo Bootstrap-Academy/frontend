@@ -18,7 +18,7 @@
           v-if="!!leaderBoardList[2]"
         />
       </article>
-      <article class="max-h-[80vh] overflow-y-scroll px-3 pb-24 sm:px-10">
+      <article class="px-3 pb-24 sm:px-10">
         <div v-for="(user, i) of leaderBoardList" :key="i">
           <LeaderboardUserCard v-if="user.rank > 3" :item="user" />
         </div>
@@ -27,6 +27,7 @@
 
     <div class="flex justify-center mt-6">
       <InputBtn
+      v-if="leaderBoardList.length < totalLeaderboardUsers"
         :loading="btnLoading"
         @click="loadMore()"
         :icon="TrophyIcon"
@@ -36,14 +37,15 @@
             btnLoading || leaderBoardList.length >= totalLeaderboardUsers,
         }"
       >
-        <div v-if="leaderBoardList.length < totalLeaderboardUsers">
+        <div>
           {{ t("Headings.More") }}
-        </div>
-        <div v-else>
-          {{ t("Headings.NoMoreUser") }}
         </div>
       </InputBtn>
     </div>
+    <p v-if="leaderBoardList.length == totalLeaderboardUsers" class="flex flex-col items-center text-accent">      
+      <component v-if="TrophyIcon" :is="TrophyIcon" class="w-10 h-10 bg-primary mb-4"/>
+      {{ t("Headings.NoMoreUser") }}
+    </p>
   </div>
 </template>
 
