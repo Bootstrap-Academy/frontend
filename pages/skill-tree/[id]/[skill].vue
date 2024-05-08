@@ -15,8 +15,6 @@
 
     <SkillTreeNodeDetailsStepper
       class="h-fit"
-      :quizzes="quizzes"
-      :matchings="matchings"
       :subSkillID="subSkillID"
       :skillID="rootSkillID"
       :activeStepper="activeStepper"
@@ -75,7 +73,6 @@ export default defineComponent({
     const coachings = useCoachings();
     const webinars = useWebinars();
     const quizzes = useQuizzes();
-    const matchings = useMatchings();
     const route = useRoute();
 
     const rootSkillID = computed(() => {
@@ -185,7 +182,6 @@ export default defineComponent({
       skillName,
       breadcrumbs,
       quizzes,
-      matchings,
     };
   },
 });

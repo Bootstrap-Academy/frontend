@@ -2,17 +2,13 @@
   <article class="flex flex-col gap-card w-full h-fit">
     <div v-for="{ level, label, bgColor, borderColor } of steppers">
       <Btn full v-if="level == 3" :key="3" @click="openQuiz(
-        subSkillID,
         quizzes[0].id,
-        skillID
       )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
         {{ t(label) }}
       </Btn>
       <Btn full v-else-if="level == 4" :key="5" @click="openMatchings(
-          subSkillID,
           matchings[0].id,
           matchings[0].task_id,
-          skillID
         )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
         {{ t(label) }}
       </Btn>
@@ -21,7 +17,6 @@
         {{ t(label) }}
       </Btn>
     </div>
-      {{matchings}}
   </article>
 </template>
 
@@ -33,8 +28,6 @@ export default defineComponent({
   props: {
     subSkill: { default: null },
     activeStepper: { default: 0 },
-    quizzes: { type: Array as PropType<any[]>, default: [] },
-    matchings: { type: Array as PropType<any[]>, default: [] },
     skillID: { default: "" },
     subSkillID: { default: "" },
   },
@@ -42,6 +35,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const router = useRouter();
+
+    const quizzes = useQuizzes();
+    const matchings = useMatchings();
 
     const steppers = reactive([
       {
@@ -76,15 +72,15 @@ export default defineComponent({
       },
     ]);
 
-    function openQuiz(subSkillID: string, subTaskId: string, rootSkillID: string) {
+    function openQuiz(subTaskId: string) {
       router.push(
-        `/quizzes/solve-${subSkillID}?quizzesFrom=${"skill"}&querySubTaskId=${subTaskId}&rootSkillID=${rootSkillID}&subSkillID=${subSkillID}`
+        `/quizzes/solve-${props.subSkillID}?quizzesFrom=${"skill"}&querySubTaskId=${subTaskId}&rootSkillID=${props.skillID}&subSkillID=${props.subSkillID}`
       );
     }
 
-    function openMatchings(subSkillID: string, subTaskId: string, taskId: string, rootSkillID: string) {
+    function openMatchings(subTaskId: string, taskId: string) {
       router.push(
-        `/matchings/solve-${subSkillID}?quizzesFrom=${"skill"}&querySubTaskId=${subTaskId}&taskId=${taskId}&rootSkillID=${rootSkillID}&subSkillID=${subSkillID}`
+        `/matchings/solve-${props.subSkillID}?quizzesFrom=${"skill"}&querySubTaskId=${subTaskId}&taskId=${taskId}&rootSkillID=${props.skillID}&subSkillID=${props.subSkillID}`
       );
     }
 
@@ -98,7 +94,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    return { steppers, t, _activeStepper, openQuiz, openMatchings };
+    return { steppers, t, _activeStepper, quizzes, matchings, openQuiz, openMatchings };
   },
 });
 </script>
