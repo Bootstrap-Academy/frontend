@@ -3,17 +3,36 @@
     <section v-if="!isPremium" class="flex flex-col items-center mt-10 gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
-        <!-- {{ premiumStatusAutoPay }} -->
       </h2>
-      <div class="max-w-xs">
-        <InputBtn
-          @click="filHearts"
-          :icon="SvgHeart"
-          full
-          iconRight
-          secondary
-          >{{ t("Buttons.Refill") }}</InputBtn
-        >
+      
+      <p v-if="hearts == 5" class="text-xl text-center">
+        {{ t("Body.HeartsAreFilled") }}
+      </p>
+
+      <div v-else class="md:flex md:space-x-8 w-full">
+        <div class="w-full ring-1 ring-gray text-center p-8 rounded-xl">
+          <h2 class="text-2xl font-bold tracking-tight text-accent mb-6">
+            {{ t("Headings.AutomaticRefill") }}
+          </h2>
+          <SubscriptionTimer :target-time="getNextMidnight()" />
+        </div>
+        <div class="flex items-center max-md:justify-center max-md:my-4 uppercase">
+          <p class="text-3xl">{{ t("Headings.Or") }}</p>
+        </div>
+        <div class="w-full ring-1 ring-gray text-center p-8 rounded-xl">  
+          <h2 class="text-2xl font-bold tracking-tight text-accent mb-6">
+            {{ t("Headings.RefillHeartsNow") }}
+          </h2>
+          
+          <div v-if="coins < 50" class="flex justify-center mt-4">
+            <p class="text-xl max-w-sm">
+              {{ t("Body.Need50MorphCoinsForRefill") }}
+            </p>
+          </div>
+          <InputBtn @click="filHearts" :icon="SvgHeart" full iconRight secondary v-else>
+            {{ t("Buttons.Refill") }}
+          </InputBtn>
+        </div>
       </div>
     </section>
     <hr v-if="!isPremium" class="mt-10" />
@@ -295,6 +314,31 @@ export default {
       );
     }
 
+    const formatTime = (time: number) => {
+      const hours = Math.floor(time / (1000 * 60 * 60));
+      const minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((time % (1000 * 60)) / 1000);
+      return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+      function pad(number: number) {
+        return (number < 10 ? "0" : "") + number;
+      }
+    };
+
+    function getNextMidnight() {
+      const now = new Date();
+      const nextDay = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1,
+        0,
+        0,
+        0
+      );
+      
+      return nextDay.getTime();
+    }
+
     async function fnUpdatePremiumAutoPay(value: any) {
       setLoading(true);
       const [success, error] = await updatePremiumAutoPay({ plan: value });
@@ -325,6 +369,10 @@ export default {
       HeartIcon,
       changeSubscriptionAutopayButtons,
       hearts,
+      heartInfo,
+      coins,
+      formatTime,
+      getNextMidnight,
       filHearts,
       setValueForAutopayButton,
       autopay,
