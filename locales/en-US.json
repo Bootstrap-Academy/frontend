@@ -192,6 +192,7 @@
     "Person": "Private Person",
     "Business": "Business",
     "Skill": "Skill",
+    "Skills": "Skills",
     "WebinarRating": "Rate Webinar",
     "CancellationPolicy": "Cancellation Policy",
     "TodayDate": "Today's Date",
