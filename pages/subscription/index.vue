@@ -5,7 +5,7 @@
         {{ t("Headings.RefillHearts") }}
       </h2>
       
-      <p v-if="hearts == 5" class="text-xl text-center">
+      <p v-if="hearts >= 6" class="text-xl text-center">
         {{ t("Body.HeartsAreFilled") }}
       </p>
 
