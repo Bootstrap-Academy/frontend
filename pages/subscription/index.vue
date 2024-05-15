@@ -29,9 +29,18 @@
               {{ t("Body.Need50MorphCoinsForRefill") }}
             </p>
           </div>
-          <InputBtn @click="filHearts" :icon="SvgHeart" full iconRight secondary v-else>
-            {{ t("Buttons.Refill") }}
-          </InputBtn>
+          <div v-else>
+            <div class="flex justify-center" v-if="hearts != 0">
+              <p class="text-xl text-center text-warning mb-6">
+                {{ t("Body.NotAllHeartsUsed") }}
+                <br/>
+                {{ t("Body.RefillHeartsNow") }}
+              </p>
+            </div>
+            <InputBtn @click="filHearts" :icon="SvgHeart" full iconRight secondary >
+              {{ t("Buttons.Refill") }}
+            </InputBtn>
+          </div>
         </div>
       </div>
     </section>
