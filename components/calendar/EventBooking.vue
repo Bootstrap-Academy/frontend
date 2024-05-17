@@ -94,22 +94,6 @@
 				<Accordion :title="dialog.heading" class="w-full">
 					<Dialog :dialog="dialog">
 						<template #content>
-							<InputCheckbox
-								id="RightToWithdrawal"
-								class="mb-card-sm"
-								label="Links.RightToWithdrawal"
-								:link="{
-									to: '/docs/right-of-withdrawal',
-									label: 'Links.RightToWithdrawalLink',
-								}"
-								target="_blank"
-								v-model="confirmRightToWithdrawal"
-							/>
-							<InputCheckbox
-								id="DontUseRightToWithdrawal"
-								label="Links.DontUseRightToWithdrawal"
-								v-model="confirmDontUseRightToWithdrawal"
-							/>
 						</template>
 					</Dialog>
 				</Accordion>
