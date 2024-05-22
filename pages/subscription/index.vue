@@ -30,7 +30,7 @@
 
       <div class="flex justify-center">
         <p class="text-accent mt-3 text-center max-w-md" v-if="isPremium">
-          {{ t("Headings.ButAdditionalSubscription") }}
+          {{ t("Headings.BuyAdditionalSubscription") }}
         </p>
       </div>
       <SubscriptionCard :subscribeMonthly="() => subscribe(false)" :subscribeYearly="() => subscribe(true)"
