@@ -17,7 +17,7 @@
         <img
           @click="toggleMenu"
           :src="image"
-          alt="user image"
+          :alt="t('AltAttributes.UserAvatar')"
           class="min-w-[2.5rem] min-h-[2.5rem] w-10 h-10 object-cover rounded-full"
         />
       </div>

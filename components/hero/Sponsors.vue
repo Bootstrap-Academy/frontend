@@ -6,7 +6,7 @@
 			v-for="(sponsor, i) of sponsors"
 			:key="i"
 			:src="`/images/sponsors/${sponsor}.webp`"
-			alt="sponsor logo"
+			:alt="t('AltAttributes.SponsorLogo')"
 			class="flex-shrink-0 snap-center object-contain w-28 transition duration-200 ease-out opacity-80 hover:opacity-100"
 		/>
 	</section>

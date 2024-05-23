@@ -2,7 +2,7 @@
   <section class="card style-card bg-secondary">
     <img
       :src="image"
-      alt="user profile image"
+      :alt="t('AltAttributes.UserAvatar')"
       class="w-32 h-32 rounded-full bg-tertiary mx-auto mb-box shadow-xl shadow-primary"
     />
     <h2 class="text-heading-2 text-center clamp line-1">{{ username }}</h2>
