@@ -492,7 +492,8 @@
     "CodingImage": "coding image",
     "SponsorLogo": "sponsor logo",
     "CompanyLogo": "company logo",
-    "CourseIcon": "course icon"
+    "CourseIcon": "course icon",
+    "SkillCover": "skill cover"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {

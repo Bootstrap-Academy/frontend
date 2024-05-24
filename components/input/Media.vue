@@ -25,6 +25,7 @@
 				class="object-cover w-full h-full"
 				v-if="url && !video"
 				:src="url"
+				:alt="alt"
 			/>
 			<video
 				v-else-if="url && video"
