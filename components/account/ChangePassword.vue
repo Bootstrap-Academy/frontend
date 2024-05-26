@@ -1,22 +1,34 @@
 <template>
-	<article class="bg-secondary card style-card grid">
-		<h2 class="text-heading-2">{{ t('Headings.ResetPassword') }}</h2>
+  <article class="bg-secondary card style-card flex flex-col items-center justify-center">
+    <KeyIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
 
-		<p class="mt-2 mb-4">
-			{{ t('Body.ResetPasswordCard') }}
-		</p>
-		<InputBtn class="justify-self-end" :loading="loading" @click="onclick">
-			{{ t('Buttons.ResetPassword') }}
-		</InputBtn>
-	</article>
+    <h2 class="text-heading-2">{{ t('Headings.ResetPassword') }}</h2>
+
+    <div class="flex items-center space-x-4 mb-8 mt-2">
+      <EnvelopeOpenIcon class="h-8 w-8 text-accent max-w-xl" />
+      <p class="text-center">
+        {{ t('Body.GetCodeViaEmail') }}
+      </p>
+    </div>
+
+    <InputBtn :loading="loading" @click="onclick">
+      {{ t('Buttons.ResetPassword') }}
+    </InputBtn>
+  </article>
 </template>
 
 <script lang="ts">
+import { EnvelopeOpenIcon } from '@heroicons/vue/24/outline';
+import { KeyIcon } from '@heroicons/vue/24/solid';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useReCaptcha } from 'vue-recaptcha-v3';
 
 export default defineComponent({
+  components: {
+    KeyIcon,
+    EnvelopeOpenIcon,
+  },
   setup() {
     const { t } = useI18n();
     const user = <any>useUser();
@@ -90,5 +102,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

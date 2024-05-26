@@ -360,7 +360,8 @@
     "Instructor": "Instructor",
     "Summary": "Summary",
     "CreationDate": "Creation date",
-    "EmptySubtasks" : "In this lecture, there are no quizzes yet."
+    "EmptySubtasks" : "In this lecture, there are no quizzes yet.",
+    "MyAccount": "My Account"
   },
   "Body": {
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
@@ -449,11 +450,7 @@
     "AddTags": "Press space to add new tag",
     "DeleteAccount": "Are you sure you want to delete your account? All of your progress and courses you have bought will be lost. This action is cannot be reversed.",
     "VerifyAccountCard": "Your account is not verified. Please verify your account in order to buy coins, watch courses and more!",
-    "ResetPasswordCard": "Want to change your password? No worries! Click to request password change and a code will be emailed to you.",
-    "DeleteAccountCard": "Click to delete your user account. This action cannot be reversed and you will lose all of your skill progress, coins you have bought and courses you have bought.",
     "UploadCertificates": "Already got certifications? Send proofs of your certificates at: ",
-    "DisableMFA": "Don't want MFA anymore? Click on button to remove your multi-factor authentication (MFA)",
-    "EnableMFA": "Multi-factor authentication (MFA) is a process in which you are prompted during login process for a code which you can get from your TOTP app on your cellphone. This way you protect your account against phishing attacks and more.",
     "AreYouSureDisableMFA": "You you sure you want to disable your multi-factor authentication?",
     "EnableMFACode": "Please enter TOTP key to your TOTP app e.g Google Authenticator, Authy, etc to get the 6-digit short-lived authentication code. Enter this 6-digit code to enable your MFA.",
     "DoubleClickToClose": "To view tree, double click on node or outside.",
@@ -463,8 +460,6 @@
     "DisabledMFAViaRecoveryCode": "Since you used your recovery code to login, you Multi-factor authentication (MFA) has been disabled. Click the button if you wish to re-enable MFA.",
     "SubscribedToNewsLetter": "Congratulations! You have successfully subscribed to Bootstrap Academy Newsletter. We cannot wait to share exciting updates with you!",
     "BootstrapNewsletter": "In order to receive Bootstrap Newsletter, enter the registration code that was emailed to you.",
-    "UnregisterNewsletter": "Want to unregister from Bootstrap Newsletter? Click here!",
-    "RegisterForNewsletter": "Register to Bootstrap Newsletter for exciting news and updates!",
     "ConfirmUnregisterNewsletter": "Are you sure you want to unregister from Bootstrap Newsletter? You can always register again.",
     "Challenges": "Please login in order to use Morpheus Coding Challenges",
     "OrLoginWith": "Or login with",
@@ -478,7 +473,16 @@
     "ActiveSkills": "All skills you are currently working on.",
     "CompletedSkills": "All skills which you have completed.",
     "OtherSkills": "Rest of the skills which are available for exploring.",
-    "NoUpcomingEvents": "No Events planned"
+    "GetCodeViaEmail": "Receive a code by email",
+    "IrreversibleAction": "cannot be reversed",
+    "LooseProgressMorphCoinsAndCourses": "You lose all progress,%%%purchased MorphCoins and courses",
+    "NotRecommended": "not recommended",
+    "MFATooltipTitle": "Multi-factor authentication (MFA)",
+    "MFATooltipBody": "MFA means that you not only need a password to log in, but also an additional code. Even if a hacker finds out your password, they still have to overcome this additional protection to access your account.",
+    "IncreasedSecurity": "Increased security",
+    "NoMoreIncreaseSecurity": "No more increased security",
+    "ExcitingUpdates": "Exciting news and updates",
+    "NoMoreExcitingUpdates": "No more exciting news and updates"
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -857,7 +861,8 @@
     "AddEmail": "Add Email",
     "CalendarNextMonth": "Next month",
     "CalendarPrevMonth": "Previous month",
-    "MoreEventInfo": "More info"
+    "MoreEventInfo": "More info",
+    "LearnMore": "Learn More"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",

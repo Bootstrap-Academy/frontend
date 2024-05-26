@@ -1,26 +1,38 @@
 <template>
-	<article class="bg-secondary card style-card grid">
-		<h2 class="text-heading-2">{{ t('Headings.DeleteAccount') }}</h2>
+  <article class="bg-secondary card style-card flex flex-col items-center justify-center">
+    <TrashIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
 
-		<p class="mt-2 mb-4">
-			{{ t('Body.DeleteAccountCard') }}
-		</p>
-		<InputBtn
-			secondary
-			class="justify-self-end"
-			:loading="loading"
-			@click="onclick"
-		>
-			{{ t('Buttons.DeleteAccount') }}
-		</InputBtn>
-	</article>
+    <h2 class="text-heading-2">{{ t('Headings.DeleteAccount') }}</h2>
+
+    <p class="text-warning mb-4">
+      {{ t('Body.IrreversibleAction') }}
+    </p>
+
+    <div class="flex items-center space-x-4 mb-8 mt-2">
+      <NoSymbolIcon class="h-8 w-8 text-accent max-w-xl" />
+      <p class="text-center">
+        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[0] }} <br />
+        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[1] }}
+      </p>
+    </div>
+
+    <InputBtn :loading="loading" @click="onclick">
+      {{ t('Buttons.DeleteAccount') }}
+    </InputBtn>
+  </article>
 </template>
 
 <script lang="ts">
+import { NoSymbolIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon } from '@heroicons/vue/24/solid';
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
+  components: {
+    TrashIcon,
+    NoSymbolIcon,
+  },
   setup() {
     const { t } = useI18n();
     const router = useRouter();
@@ -61,5 +73,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>
