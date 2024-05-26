@@ -16,7 +16,7 @@
       <img
         :src="item?.user?.avatar_url ?? '/images/user1.jpg'"
         class="h-20 w-20 object-cover rounded-full"
-        alt="leaderboard user avatar"
+        :alt="t('AltAttributes.UserAvatar')"
       />
       <p
         :class="[

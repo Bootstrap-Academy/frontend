@@ -67,8 +67,6 @@
           <p class="text-black">{{ t("Body.LearnNewThings") }}</p>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>

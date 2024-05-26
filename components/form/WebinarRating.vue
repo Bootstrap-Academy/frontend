@@ -11,7 +11,7 @@
 				<img
 					class="w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-full object-cover mt-card"
 					:src="instructor.avatar_url"
-					alt="webinar instructor avatar"
+					:alt="t('AltAttributes.EventInstructorAvatar')"
 				/>
 				<h3 class="text-heading-3 mt-2 text-center">
 					{{ webinar_name }}

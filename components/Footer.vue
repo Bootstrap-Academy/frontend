@@ -4,7 +4,7 @@
 	>
 		<img
 			src="/images/logo-text.png"
-			alt="Bootstrap Academy logo"
+			:alt="t('AltAttributes.BootstrapAcademyLogo')"
 			class="w-40 mb-5 md:mt-2 block lg:hidden object-contain"
 		/>
 

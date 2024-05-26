@@ -10,7 +10,7 @@
 				<img
 					:src="data.instructor.avatar_url ?? '/images/about-2.webp'"
 					class="w-6 h-6 object-cover rounded-[50px]"
-					alt="event instructor avatar"
+          :alt="t('AltAttributes.EventInstructorAvatar')"
 				/>
 
 				<h3 class="capitalize text-heading-4">

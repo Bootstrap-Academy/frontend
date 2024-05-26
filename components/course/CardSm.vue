@@ -4,7 +4,7 @@
 	>
 		<img
 			:src="image"
-			alt="couse cover"
+			:alt="t('AltAttributes.CourseCover')"
 			class="absolute top-0 left-0 w-full h-full object-cover"
 		/>
 		<div
@@ -21,12 +21,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import type {  PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
   setup(props) {
+    const { t } = useI18n();
+	
     const image = computed(() => {
       return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
     });
@@ -39,7 +42,7 @@ export default defineComponent({
       return props.data?.description ?? '';
     });
 
-    return { image, title, description };
+    return { t, image, title, description };
   },
 });
 </script>
