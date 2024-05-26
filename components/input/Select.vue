@@ -27,7 +27,6 @@
         class="relative z-20 appearance-none bg-transparent cursor-pointer"
       >
         <option
-          class="text-dark"
           v-for="{ label, value } of options"
           :key="value"
           :value="value"
