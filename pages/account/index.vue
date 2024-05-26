@@ -23,11 +23,11 @@
   <main class="container grid gap-container mt-main mb-main">
     <h1 class="text-heading-1 text-center">{{ t('Headings.MyAccount') }}</h1>
     <AccountVerifyEmail />
-    <div class="md:flex justify-between md:space-x-12 max-md:space-y-10">
+    <div class="md:flex justify-between md:space-x-12 max-md:space-y-6">
       <AccountNewsletter class="md:w-1/2" />
       <AccountMFA class="md:w-1/2" />
     </div>
-    <div class="md:flex justify-between md:space-x-12 max-md:space-y-10">
+    <div class="md:flex justify-between md:space-x-12 max-md:space-y-6 mb-16">
       <AccountChangePassword class="md:w-1/2" />
       <AccountDelete class="md:w-1/2" />
     </div>
