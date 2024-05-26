@@ -11,7 +11,7 @@
       <img
         :src="image"
         class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded order-1"
-        alt="skill cover"
+        :alt="t('AltAttributes.SkillCover')"
       />
 
       <div class="grow order-3 md:order-2 w-full md:w-min">

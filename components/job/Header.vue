@@ -2,7 +2,7 @@
 	<section class="bg-secondary relative rounded shadow-xl md:col-span-2 h-fit">
 		<img
 			:src="companyImage"
-			alt="company logo"
+			:alt="t('AltAttributes.CompanyLogo')"
 			class="w-full h-52 object-cover brightness-50"
 		/>
 
@@ -11,7 +11,7 @@
 				<p class="text-subheading-1 mb-0 text-accent flex gap-box items-center">
 					<img
 						:src="companyImage"
-						alt="company logo"
+						:alt="t('AltAttributes.CompanyLogo')"
 						class="object-cover w-7 h-7 rounded-3xl"
 					/>
 					{{ companyName }}

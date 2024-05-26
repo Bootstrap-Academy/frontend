@@ -10,7 +10,7 @@
 				<img
 					:src="data.instructor.avatar_url ?? '/images/about-2.webp'"
 					class="w-6 h-6 object-cover rounded-[50px]"
-					alt="event instructor avatar"
+          :alt="t('AltAttributes.EventInstructorAvatar')"
 				/>
 
 				<h3 class="capitalize text-heading-4">
@@ -183,22 +183,13 @@ export default defineComponent({
         // 	heading: 'Headings.Date',
         // },
         {
-          icon: ClockIcon,
-          value: `${start.value.time} - ${end.value.time}`,
-          heading: "Headings.Time",
-        },
-        {
-          value: `${props.data.duration} min`,
-          heading: "Headings.Duration",
-        },
-        {
           icon: CalendarIcon,
           value: start.value.date,
           heading: "Headings.Date",
         },
         {
           icon: ClockIcon,
-          value: start.value.time,
+          value: `${start.value.time} - ${end.value.time} (${props.data.duration} min)`,
           heading: "Headings.Time",
         },
         {

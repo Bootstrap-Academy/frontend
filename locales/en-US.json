@@ -196,6 +196,7 @@
     "Person": "Private Person",
     "Business": "Business",
     "Skill": "Skill",
+    "Skills": "Skills",
     "WebinarRating": "Rate Webinar",
     "CancellationPolicy": "Cancellation Policy",
     "TodayDate": "Today's Date",
@@ -362,7 +363,6 @@
     "IsMine": "Is mine",
     "Instructor": "Instructor",
     "Summary": "Summary",
-    "ParentSkill": "Parent skill",
     "CreationDate": "Creation date",
     "EmptySubtasks" : "In this lecture, there are no quizzes yet."
   },
@@ -488,6 +488,21 @@
     "CompletedSkills": "All skills which you have completed.",
     "OtherSkills": "Rest of the skills which are available for exploring.",
     "NoUpcomingEvents": "No Events planned"
+  },
+  "AltAttributes": {
+    "BootstrapAcademyLogo": "Bootstrap Academy logo",
+    "EnglishTranslation": "English translation",
+    "GermanTranslation": "German translation",
+    "EventInstructorAvatar": "event instructor avatar",
+    "CourseCover": "course cover",
+    "Euro": "euro",
+    "Morphcoin": "morphcoin",
+    "UserAvatar": "user avatar",
+    "CodingImage": "coding image",
+    "SponsorLogo": "sponsor logo",
+    "CompanyLogo": "company logo",
+    "CourseIcon": "course icon",
+    "SkillCover": "skill cover"
   },
   "List": {
     "WebinarCancellationByOwnerPolicy": {

@@ -18,7 +18,7 @@
     >
       <img
         src="/images/coin.png"
-        alt="morphcoins"
+        :alt="t('AltAttributes.Morphcoin')"
         class="w-8 h-8 object-contain"
       />
       <h3 class="text-heading-3">{{ t("Headings.Morphcoins") }}</h3>

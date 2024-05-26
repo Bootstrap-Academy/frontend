@@ -4,7 +4,7 @@
 	>
 		<img
 			:src="image"
-			alt="course cover"
+			:alt="t('AltAttributes.CourseCover')"
 			class="object-cover h-[200px] sm:h-[250px] w-full rounded-md shadow-xl md:row-span-2 lg:row-span-1"
 		/>
 

@@ -34,7 +34,7 @@
 					@click="onclickToggleActive"
 				></object> -->
 
-        <img :src="icon" class="cursor-pointer" v-if="node && node.icon" alt="skilltree course icon" />
+        <img :src="icon" class="cursor-pointer" v-if="node && node.icon" :alt="t('AltAttributes.CourseIcon')" />
       </foreignObject>
     </g>
 
@@ -68,6 +68,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default {
   props: {
@@ -80,6 +81,7 @@ export default {
   },
   emits: ["active", "completed"],
   setup(props, { emit }) {
+    const { t } = useI18n();
     function onclickToggleActive() {
       if (!props.active && !props.completed) {
         emit("active", true);
@@ -153,6 +155,7 @@ export default {
     });
 
     return {
+      t,
       dashed,
       outline,
       half,

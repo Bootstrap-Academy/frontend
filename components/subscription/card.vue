@@ -52,7 +52,7 @@
                 </p>
                 <img
                   src="/images/coin.png"
-                  alt="coin"
+                  :alt="t('AltAttributes.Morphcoin')"
                   class="object-contain w-10 h-10"
                 />
               </div>
