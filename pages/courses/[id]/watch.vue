@@ -200,7 +200,7 @@ export default {
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
     const matches = useMatchingsForLectures()
 
-    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture.value.id))
+    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture?.value?.id))
 
     const showCurriculum = ref(false);
 
