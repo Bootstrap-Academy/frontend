@@ -16,7 +16,7 @@
 			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
 			:class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
 		>
-			<img src="/images/euro.png" alt="euro" class="w-8 h-8 object-contain" />
+			<img src="/images/euro.png" :alt="t('AltAttributes.Euro')" class="w-8 h-8 object-contain" />
 			<h3 class="text-heading-3">{{ t('Headings.Euros') }}</h3>
 			<input
 				id="Euros"
@@ -39,7 +39,7 @@
 		>
 			<img
 				src="/images/coin.png"
-				alt="morphcoins"
+				:alt="t('AltAttributes.Morphcoin')"
 				class="w-8 h-8 object-contain"
 			/>
 			<h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>

@@ -482,6 +482,21 @@
     "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
     "NoUpcomingEvents": "Keine Veranstaltungen geplant"
   },
+  "AltAttributes": {
+    "BootstrapAcademyLogo": "Bootstrap Academy Logo",
+    "EnglishTranslation": "Englische Übersetzung",
+    "GermanTranslation": "Deutsche Übersetzung",
+    "EventInstructorAvatar": "Profilbild des Veranstaltungsleiters",
+    "CourseCover": "Kurscover",
+    "Euro": "Euro",
+    "Morphcoin": "Morphcoin",
+    "UserAvatar": "Profilbild des Benutzers",
+    "CodingImage": "Programmier-Bild",
+    "SponsorLogo": "Sponsor-Logo",
+    "CompanyLogo": "Firmenlogo",
+    "CourseIcon": "Kurs-Icon",
+    "SkillCover": "Skill-Cover"
+  },
   "List": {
     "WebinarCancellationByOwnerPolicy": {
       "1": "Wenn kein Benutzer dieses Webinar gebucht hat, kannst du es ohne Strafe stornieren.",

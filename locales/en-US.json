@@ -480,6 +480,21 @@
     "OtherSkills": "Rest of the skills which are available for exploring.",
     "NoUpcomingEvents": "No Events planned"
   },
+  "AltAttributes": {
+    "BootstrapAcademyLogo": "Bootstrap Academy logo",
+    "EnglishTranslation": "English translation",
+    "GermanTranslation": "German translation",
+    "EventInstructorAvatar": "event instructor avatar",
+    "CourseCover": "course cover",
+    "Euro": "euro",
+    "Morphcoin": "morphcoin",
+    "UserAvatar": "user avatar",
+    "CodingImage": "coding image",
+    "SponsorLogo": "sponsor logo",
+    "CompanyLogo": "company logo",
+    "CourseIcon": "course icon",
+    "SkillCover": "skill cover"
+  },
   "List": {
     "WebinarCancellationByOwnerPolicy": {
       "1": "If no user has booked this webinar, then you can cancel without any penalty.",

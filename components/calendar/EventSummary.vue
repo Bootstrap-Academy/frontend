@@ -16,7 +16,8 @@
 			    	<Rating :rating="event.instructor_rating ?? 0" sm stars />
 			    	<div class="flex items-center gap-2">
 			    		<img :src="event.instructor.avatar_url ?? '/images/about-2.webp'"
-			    			class="w-6 h-6 object-cover rounded-[50px]" alt="event instructor avatar" />
+			    			class="w-6 h-6 object-cover rounded-[50px]" 
+							:alt="t('AltAttributes.EventInstructorAvatar')" />
 			    		<p>{{ event.instructor.display_name }}</p>
 			    	</div>
 			    </div>

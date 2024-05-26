@@ -6,7 +6,7 @@
     >
       <img
         src="/images/coin.png"
-        alt="coin"
+        :alt="t('AltAttributes.Morphcoin')"
         class="object-contain h-4 w-4 sm:w-5 sm:h-5"
       />
       <p class="font-heading text-heading ml-2.5 mr-2 text-body-1">
@@ -22,6 +22,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   props: {
@@ -29,6 +30,8 @@ export default defineComponent({
   },
   components: { PlusIcon },
   setup() {
+    const { t } = useI18n();
+    
     const coins = useCoins();
     const loading = ref(true);
 
@@ -37,7 +40,7 @@ export default defineComponent({
       loading.value = false;
     });
 
-    return { coins, loading };
+    return { t, coins, loading };
   },
 });
 </script>
