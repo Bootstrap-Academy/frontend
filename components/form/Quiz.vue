@@ -336,6 +336,11 @@ export default defineComponent({
         }
         if (hasDuplicates(options.value))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
+        for (let i = 0; i < options.value.length; i++) {
+          if (options.value[i].answer.length > 255) {
+            return openSnackbar("error", "Error.OptionCannotBeMoreThen256");
+          }
+        }
         if (checkIsSingleChoice(options.value)) {
           form.single_choice.value = true;
         } else {
