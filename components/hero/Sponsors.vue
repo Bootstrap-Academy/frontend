@@ -13,11 +13,15 @@
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   setup() {
+    const { t } = useI18n();
+
     let sponsors = ['BWB', 'FHDW', 'GBI', 'ITCS', 'MT5', 'WINGO'];
 
-    return { sponsors };
+    return { t, sponsors };
   },
 };
 </script>
