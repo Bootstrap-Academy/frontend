@@ -17,7 +17,7 @@ import { useI18n } from 'vue-i18n';
 
 export default {
   setup() {
-	let {t} = useI18n();
+    let {t} = useI18n();
 	
     let sponsors = ['BWB', 'FHDW', 'GBI', 'ITCS', 'MT5', 'WINGO'];
 
