@@ -200,7 +200,7 @@ export default {
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
     const matches = useMatchingsForLectures()
 
-    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture.value.id))
+    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture?.value?.id))
 
     const showCurriculum = ref(false);
 
@@ -252,7 +252,7 @@ export default {
       if (!isPremium.value && hearts.value < 2) {
         return openSnackbar("info", "Error.NotEnoughHearts");
       } else if (isPremium.value || hearts.value >= 2) {
-        router.push(`/challenges/QuizCodingChallenge-${taskId.value}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`);
+        router.push(`/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`);
         if (!isPremium.value) return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
