@@ -64,10 +64,16 @@
       />
     </div>
 
+    <div class="flex justify-center items-center space-x-2 mb-4" v-if="totalUnfinishedLectures == 0">
+      <CheckBadgeIcon class="w-8 h-8 text-success" />
+      <p>
+        {{t("Headings.CourseCompleted")}}
+      </p>
+    </div>
+
     <InputBtn
       :loading="loading"
       full
-      mt
       @click="onclickEnroll"
       :class="{ 'pointer-events-none opacity-70': loading }"
     >
@@ -86,6 +92,7 @@ import {
   LanguageIcon,
   Square3Stack3DIcon,
 } from "@heroicons/vue/24/outline";
+import { CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
   
 const props= defineProps({
@@ -212,6 +219,28 @@ const totalLectures = computed(() => {
       quantity: lectures,
       duration: 0,
     };
+  }
+});
+
+const totalUnfinishedLectures = computed(() => {
+  let lectures = props.data?.lectures ?? null;
+
+  if (typeof lectures != "number") {
+    let sections: any[] = props.data?.sections ?? [];
+
+    let allLectures: any = [];
+
+    sections.forEach((section) => {
+      allLectures = [...allLectures, ...section.lectures];
+    });
+
+    const unfinishedLectures = allLectures.filter(
+      (lecture: any) => !lecture.completed
+    );
+
+    return unfinishedLectures.length;
+  } else {
+    return 0;
   }
 });
 
