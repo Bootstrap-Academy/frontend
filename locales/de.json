@@ -221,7 +221,7 @@
     "Features": "Was gibt es hier?",
     "HeroFAQS": "Häufige Fragen",
     "Subscribe": "Newsletter abonnieren",
-    "VerifyAccount": "Konto überprüfen",
+    "VerifyAccount": "Konto verifizieren",
     "EditProfile": "Profil bearbeiten",
     "SkillPoints": "Skillpunkte",
     "Nodes": "Knoten",
@@ -364,7 +364,8 @@
     "Instructor": "Instruktor",
     "Summary": "Zusammenfassung",
     "CreationDate": "Erstellungsdatum",
-    "EmptySubtasks" : "In dieser Vorlesung gibt es noch keine Quizze."
+    "EmptySubtasks" : "In dieser Vorlesung gibt es noch keine Quizze.",
+    "MyAccount": "Mein Konto"
   },
   "Body": {
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -459,11 +460,7 @@
     "AddTags": "Drück Leertaste, um ein neues Tag hinzuzufügen",
     "DeleteAccount": "Möchtest du dein Konto wirklich löschen? Alle deine Fortschritte und Kurse, die du gekauft hast, gehen verloren. Diese Aktion kann nicht rückgängig gemacht werden.",
     "VerifyAccountCard": "Dein Profil ist nicht verifiziert. Bitte verifiziere dein Konto, um Coins zu kaufen, Kurse anzusehen und mehr!",
-    "ResetPasswordCard": "Du möchtest dein Passwort ändern? Klicke hier, um eine Passwortänderung anzufordern, und ein Code wird dir per E-Mail zugesandt.",
-    "DeleteAccountCard": "Klicke hier, um dein Benutzerkonto vollständig zu löschen. Diese Aktion kann nicht rückgängig gemacht werden und du verlierst deinen gesamten Fertigkeitsfortschritt, deine gekauften Münzen und deine gekauften Kurse.",
     "UploadCertificates": "Du hast bereits Zertifizierungen? Schick mir die Nachweise an:",
-    "DisableMFA": "Du willst Multi-Faktor-Authentifizierung (MFA) deaktivieren? Das geht hier - wird aber wirklich nicht empfohlen!",
-    "EnableMFA": "Bei Multi-Faktor-Authentifizierung (MFA) gibst du während des Anmeldevorgangs einen zusätzlichen Code ein, der in deiner TOTP-App auf dem Smartphone generiert wird. Dadurch schützt du dich und deinen Account unter anderem vor Phishing-Angriffen.",
     "AreYouSureDisableMFA": "Möchtest du MFA wirklich deaktivieren? (Nicht empfohlen!)",
     "EnableMFACode": "Bitte gib jetzt den TOTP-Schlüssel in deine TOTP-App ein, z. B. Google Authenticator oder Authy. Diese baut dir dann einen 6-stelligen Authentifizierungscode, der alle 30 Sekunden neu generiert wird. Gib diesen 6-stelligen Code hier ein, um das Setup zu bestätigen.",
     "DoubleClickToClose": "Um zurück zum Baum zu kommen, klicke doppelt neben den Knoten.",
@@ -472,10 +469,7 @@
     "AreYouSureCancelEvent": "Möchtest du diese Veranstaltung wirklich stornieren?",
     "DisabledMFAViaRecoveryCode": "Da du dich mit deinem Wiederherstellungscode angemeldet hast, wurde deine Multi-Faktor-Authentifizierung (MFA) deaktiviert. Klicke auf die Schaltfläche, wenn du MFA wieder aktivieren möchtest.",
     "SubscribedToNewsLetter": "Herzlichen Glückwunsch! Du hast den Newsletter der Bootstrap Academy erfolgreich abonniert. Wir können es kaum erwarten, aufregende Neuigkeiten mit dir direkt zu teilen!",
-    "RegisterForNewsLetter": "Ich möchte mich für den Newsletter anmelden.",
     "BootstrapNewsletter": "Um den Bootstrap-Newsletter zu erhalten, gib bitte den Registrierungscode ein, der dir per E-Mail zugesandt wurde.",
-    "UnregisterNewsletter": "Möchtest du dich vom Bootstrap-Newsletter abmelden? Klick hier!",
-    "RegisterForNewsletter": "Melde dich für den Bootstrap-Newsletter an, um spannende Neuigkeiten und Updates zu erhalten!",
     "ConfirmUnregisterNewsletter": "Möchtest du dich wirklich vom Bootstrap-Newsletter abmelden? Du kannst dich jederzeit neu anmelden.",
     "Challenges": "Bitte melde dich an, um die Coding Challenges zu nutzen",
     "OrLoginWith": "Oder logge dich so ein",
@@ -502,7 +496,17 @@
     "UnlimitedHearts": "Unbegrenzte Herzen",
     "UnlimitedHeartsTooltip": "Jedes Mal, wenn du eine Challenge oder ein Quiz bearbeitest, verlierst du ein- oder ein halbes Herz. Du kannst aber auch eine einmalige Nachfüllung der Herzen mit Deinen MorphCoins kaufen.",
     "AccessToAllCourses": "Zugriff auf alle Kurse",
-    "NotEnoughMorphcoins": "Du hast nicht genügend MorphCoins"
+    "NotEnoughMorphcoins": "Du hast nicht genügend MorphCoins",
+    "GetCodeViaEmail": "Erhalte einen Code per E-Mail",
+    "IrreversibleAction": "nicht rückgängig machbar",
+    "LooseProgressMorphCoinsAndCourses": "Du verlierst allen Fortschritt,%%%gekaufte MorphCoins und Kurse",
+    "NotRecommended": "nicht empfohlen",
+    "MFATooltipTitle": "Multi-Faktor-Authentifizierung (MFA)",
+    "MFATooltipBody": "MFA bedeutet, dass Du zum Anmelden nicht nur ein Passwort, sondern auch einen zusätzlichen Code benötigst. Selbst wenn ein Hacker Dein Passwort herausfindet, muss er immer noch diesen zusätzlichen Schutz überwinden, um auf Dein Konto zuzugreifen.",
+    "IncreasedSecurity": "Erhöhte Sicherheit",
+    "NoMoreIncreaseSecurity": "Keine erhöhte Sicherheit mehr",
+    "ExcitingUpdates": "spannende Neuigkeiten und Updates",
+    "NoMoreExcitingUpdates": "keine spannende Neuigkeiten und Updates mehr"
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -872,13 +876,14 @@
     "YesCancelEvent": "Ja, Veranstaltung stornieren",
     "Re-EnableMFA": "Ja, MFA erneut aktivieren",
     "UnregisterNewsletter": "Vom Newsletter abmelden",
-    "RegisterForNewsletter": "Melde dich für den Newsletter an",
+    "RegisterForNewsletter": "Für den Newsletter anmelden",
     "ConfirmUnregisterNewsletter": "Ja, vom Newsletter abmelden",
     "CookiePolicy": "Okay ich verstehe",
     "AddEmail": "E-Mail hinzufügen",
     "CalendarNextMonth": "Nächster Monat",
     "CalendarPrevMonth": "Vorheriger Monat",
-    "MoreEventInfo": "Mehr Infos"
+    "MoreEventInfo": "Mehr Infos",
+    "LearnMore": "Mehr erfahren"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",
