@@ -29,7 +29,7 @@
 			<section class="container-form" v-else>
 				<SectionTitle
 					center
-					heading="Headings.EnableMFA"
+					heading="Headings.DisableMFA"
 					body="Body.EnableMFACode"
 					size="sm"
 					class="mb-card"
