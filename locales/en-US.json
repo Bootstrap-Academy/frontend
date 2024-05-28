@@ -735,7 +735,8 @@
     "Description": "Description",
     "MFACode": "MFA 6 digit Code",
     "RecoveryCode": "Recovery Code",
-    "RegistrationCode": "Registration Code"
+    "RegistrationCode": "Registration Code",
+    "AnswerOption": "Answer Option"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -1049,6 +1050,7 @@
     "TooManyAttemptsForQuiz": "Too Many Attempts For Solving. Try Again In {second} seconds",
     "TooManyAttemptsForCodingChallenge": "Wait! Too Many Attempts",
     "OneCorrectOptionIsMust": "There should must be one correct option",
+    "CannotHaveMoreCharacters": "{input} must not have more than {max} characters",
     "MinimumTwoOptionsForQuiz": "There should be minimum two options provided",
     "OptionsCannotBeSame": "Provided Options Should Not Be Duplicated",
     "QuizAttempt": "Incorrect Option Provided!!",

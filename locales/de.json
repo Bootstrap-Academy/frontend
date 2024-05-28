@@ -738,7 +738,8 @@
     "Description": "Beschreibung",
     "MFACode": "6-stelliger MFA-Code",
     "RecoveryCode": "Wiederherstellungscode",
-    "RegistrationCode": "Registrierungscode"
+    "RegistrationCode": "Registrierungscode",
+    "AnswerOption": "Antwort-Möglichkeit"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -1053,6 +1054,7 @@
     "TooManyAttemptsForCodingChallenge": "Chill! Zu viele Versuche",
     "NoEnoughCoinsToSolve": "Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen welche im Webshop",
     "OneCorrectOptionIsMust": "Es muss eine richtige Option geben",
+    "CannotHaveMoreCharacters": "{input} darf nicht mehr als {max} Zeichen haben",
     "MinimumTwoOptionsForQuiz": "Es sollten mindestens zwei Optionen bereitgestellt werden",
     "QuizAttempt": "Falsche Option angegeben!",
     "NoEnoughCoins": "Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen welche im Webshop",
