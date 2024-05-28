@@ -72,6 +72,10 @@
     "DisableAutopay": "Disable AutoPay",
     "Premium": "Premium",
     "RefillHearts": "Refill Hearts",
+    "AutomaticRefill": "Automatic Refill",
+    "RefillHeartsNow": "Refill now",
+    "Or": "or",
+    "RefillIn": "Refill in",
     "Empty": "Empty",
     "AutoPay": "Auto Pay",
     "BuyMonthlySubscription": "Buy Monthly Subscription",
@@ -384,6 +388,11 @@
 
     "Refill2p5Hearts": "Refill 2.5 Hearts for 45 morphcoins",
     "Refill3Hearts": "Refill 3 Hearts for 50 morphcoins",
+
+    "HeartsAreFilled": "First consume your hearts to refill them later.",
+    "Need50MorphCoinsForRefill": "You need at least 50 Morphcoins to refill your hearts.",
+    "NotAllHeartsUsed": "You have not used all your hearts yet.",
+    "RefillHeartsNow": "Do you really want to refill them?",
 
     "BuyMonthlySubscription": "1,000 morphcoins will be deducted from your account for Monthly subscription",
     "BuyYearlySubscription": "10,000 morphcoins will be deducted from your account for Yearly subscription",
@@ -714,7 +723,8 @@
     "Description": "Description",
     "MFACode": "MFA 6 digit Code",
     "RecoveryCode": "Recovery Code",
-    "RegistrationCode": "Registration Code"
+    "RegistrationCode": "Registration Code",
+    "AnswerOption": "Answer Option"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -736,7 +746,7 @@
     "Yes": "Yes",
     "Yearly": "Yearly",
     "Monthly": "Monthly",
-    "Refill": "Refill",
+    "Refill": "Refill now",
     "BuySubscription": "Buy Subscription",
     "GoPremium": "Go Premium",
     "GoMonthly": "Go Monthly",
@@ -1028,6 +1038,7 @@
     "TooManyAttemptsForQuiz": "Too Many Attempts For Solving. Try Again In {second} seconds",
     "TooManyAttemptsForCodingChallenge": "Wait! Too Many Attempts",
     "OneCorrectOptionIsMust": "There should must be one correct option",
+    "CannotHaveMoreCharacters": "{input} must not have more than {max} characters",
     "MinimumTwoOptionsForQuiz": "There should be minimum two options provided",
     "OptionsCannotBeSame": "Provided Options Should Not Be Duplicated",
     "QuizAttempt": "Incorrect Option Provided!!",

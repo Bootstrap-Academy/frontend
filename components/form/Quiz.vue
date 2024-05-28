@@ -336,6 +336,14 @@ export default defineComponent({
         }
         if (hasDuplicates(options.value))
           return openSnackbar("error", "Error.OptionsCannotBeSame");
+        for (let i = 0; i < options.value.length; i++) {
+          if (options.value[i].answer.length > 256) {
+            return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.AnswerOption"), max: 256 }));
+          }
+        }
+        if (form.question.value.length > 4096) {
+          return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.Question"), max: 4096 }));
+        }
         if (checkIsSingleChoice(options.value)) {
           form.single_choice.value = true;
         } else {

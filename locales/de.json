@@ -73,6 +73,10 @@
     "Premium": "Premium",
     "AutoPay": "Automatische Zahlung",
     "RefillHearts": "Herzen auffüllen",
+    "AutomaticRefill": "Automatische Auffüllung",
+    "RefillHeartsNow": "Jetzt auffüllen",
+    "Or": "oder",
+    "RefillIn": "Nachfüllung in",
     "BuyMonthlySubscription": "Kaufe ein Monatsabonnement",
     "BuyYearlySubscription": "Kaufe ein Jahresabonnement",
     "Thousand": "1.000",
@@ -386,6 +390,12 @@
 
     "Refill2p5Hearts": "2.5 Herzen für 45 Morphcoins auffüllen",
     "Refill3Hearts": "3 Herz für 50 Morphcoins auffüllen",
+
+    "HeartsAreFilled": "Verbrauchen Sie zuerst Ihre Herzen, um sie anschließend wieder aufzufüllen.",
+    "Need50MorphCoinsForRefill": "Du benötigst mindestens 50 Morphcoins, um deine Herzen wieder aufzufüllen.",
+    "NotAllHeartsUsed": "Du hast noch nicht alle Herzen verbraucht.",
+    "RefillHeartsNow": "Möchtest du sie wirklich wieder auffüllen?",
+
     "BuyMonthlySubscription": "Für das Monatsabonnement werden 1,000 Morphcoins von deinem Konto abgebucht",
     "BuyYearlySubscription": "Für das Jahresabonnement werden 10,000 Morphcoins von deinem Konto abgebucht",
     "PremiumCardMain": "Erhalte monatlichen Zugang zu über 50 Kursen und jeder heute verfügbaren Vorlesung sowie allen neuen Inhalten, die wir in Zukunft hinzufügen, mit einem Monats- oder Jahresabonnement.",
@@ -716,7 +726,8 @@
     "Description": "Beschreibung",
     "MFACode": "6-stelliger MFA-Code",
     "RecoveryCode": "Wiederherstellungscode",
-    "RegistrationCode": "Registrierungscode"
+    "RegistrationCode": "Registrierungscode",
+    "AnswerOption": "Antwort-Möglichkeit"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -738,7 +749,7 @@
     "Yes": "Ja",
     "Yearly": "Jährlich",
     "Monthly": "Monatlich",
-    "Refill": "Nachfüllung",
+    "Refill": "Jetzt nachfüllen",
     "BuySubscription": "Abonnement kaufen",
     "GoMonthly": "Monatlich",
     "GoYearly": "Jährlich",
@@ -1031,6 +1042,7 @@
     "TooManyAttemptsForCodingChallenge": "Chill! Zu viele Versuche",
     "NoEnoughCoinsToSolve": "Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen welche im Webshop",
     "OneCorrectOptionIsMust": "Es muss eine richtige Option geben",
+    "CannotHaveMoreCharacters": "{input} darf nicht mehr als {max} Zeichen haben",
     "MinimumTwoOptionsForQuiz": "Es sollten mindestens zwei Optionen bereitgestellt werden",
     "QuizAttempt": "Falsche Option angegeben!",
     "NoEnoughCoins": "Du hast nicht genug Münzen, um das Problem zu lösen! Bitte kaufen welche im Webshop",
