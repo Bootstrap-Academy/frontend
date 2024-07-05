@@ -6,6 +6,27 @@ export default defineNuxtConfig({
     head: {
       title: "Bootstrap Academy",
       link: [{ rel: "manifest", href: "manifest.txt" }],
+      meta: [
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#000000" },
+        { hid: "description", name: "description", content: "Bootstrap Academy" },
+
+        { property: "name", content: "Bootstrap Academy" },
+        { property: "description", content: "Bootstrap Academy" },
+        { property: "image", content: "https://bootstrap.academy/images/logo-text.png" },
+
+        { property: "og:url", content: "https://bootstrap.academy" },
+        { property: "og:type", content: "website" },
+        { property: "og:title", content: "Bootstrap Academy" },
+        { property: "og:description", content: "Bootstrap Academy" },
+        { property: "og:image", content: "https://bootstrap.academy/images/logo-text.png" },
+
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: "Bootstrap Academy" },
+        { name: "twitter:description", content: "Bootstrap Academy" },
+        { name: "twitter:image", content: "https://bootstrap.academy/images/logo-text.png" },
+      ],
     },
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "layout", mode: "out-in" },
