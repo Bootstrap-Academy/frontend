@@ -110,6 +110,7 @@
         {{ t("Headings.NoSubmissionCreated") }}
       </p>
     </div>
+    <ChallengesCompleted v-if="showCompletedDialog" :codingChallengeId="codingChallengeId" />
   </article>
 </template>
 
@@ -133,6 +134,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
+    const showCompletedDialog = ref(false);
 
     const verdictIs: any = (submission: any) => {
       let verdict = submission.result?.verdict ?? "";
@@ -157,6 +159,7 @@ export default defineComponent({
         toReturnVerdict = "Error.Verdict.NO_OUTPUT";
         break;
       case "OK":
+        showCompletedDialog.value = true;
         toReturnVerdict = "Error.Verdict.OK";
         break;
       case "PRE_CHECK_FAILED":
@@ -211,6 +214,7 @@ export default defineComponent({
       CheckIcon,
       dateFormat,
       verdictIs,
+      showCompletedDialog
     };
   },
 });
