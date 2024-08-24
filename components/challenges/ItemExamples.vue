@@ -4,49 +4,30 @@
     <div class="flex justify-between items-center mb-10">
       <div class="flex items-center gap-2">
         <p>{{ t("Headings.Examples") }}:</p>
-        <Tooltip
-          :heading="'Headings.ResetExamples'"
-          :placement="'right'"
-          @click="resetExamples()"
-        >
-          <ArrowPathIcon
-            class="h-5 w-5 text-accent cursor-pointer hover:rotate-180 transition-all duration-700"
-          />
+        <Tooltip :heading="'Headings.ResetExamples'" :placement="'right'" @click="resetExamples()">
+          <ArrowPathIcon class="h-5 w-5 text-accent cursor-pointer hover:rotate-180 transition-all duration-700" />
         </Tooltip>
       </div>
       <Btn @click="testAgainstAll()">{{ t("Buttons.TestAgainstAll") }}</Btn>
     </div>
 
-    <section
-      class="relative"
-      v-for="(example, i) of duplicateExamples"
-      :key="i"
-    >
-      <div
-        class="bg-light my-3 card-sm rounded-md"
-        :class="{
-          'border border-light': example.solved == 'pending',
-          'border border-success': example.solved == 'solved',
-          'border border-error': example.solved != 'solved',
-        }"
-      >
+    <section class="relative" v-for="(example, i) of duplicateExamples" :key="i">
+      <div class="bg-light my-3 card-sm rounded-md" :class="{
+        'border border-light': example.solved == 'pending',
+        'border border-success': example.solved == 'solved',
+        'border border-error': example.solved != 'solved',
+      }">
         <p class="text-white text-md">
           {{ t("Headings.Example") }} {{ i + 1 }}
         </p>
 
-        <div
-          v-if="example.solved == 'solved' && example.solved != 'pending'"
-          class="flex items-center gap-2"
-        >
+        <div v-if="example.solved == 'solved' && example.solved != 'pending'" class="flex items-center gap-2">
           <p class="text-sm capitalize text-success mt-2">
             Example Test Passed
           </p>
           <CheckCircleIcon class="h-5 w-5 text-accent -mb-2.5" />
         </div>
-        <p
-          class="text-sm capitalize text-error mt-2"
-          v-if="example.solved != 'solved' && example.solved != 'pending'"
-        >
+        <p class="text-sm capitalize text-error mt-2" v-if="example.solved != 'solved' && example.solved != 'pending'">
           Error:
           {{
             example.solved == null
@@ -70,14 +51,14 @@
         <p v-if="!!example?.stderr" class="mt-3">
           <span class="text-error"> {{ t("Headings.ExampleError") }}: </span>
 
-          <p class="whitespace-pre">{{ example?.stderr ?? '' }}</p>
+        <p class="whitespace-pre">{{ example?.stderr ?? '' }}</p>
         </p>
         <p v-if="!!example?.stdout">
           <span class="block text-success">
             {{ t("Headings.ActualOutput") }}:
           </span>
 
-          <p class="whitespace-pre">{{ example?.stdout ?? '' }}</p>
+        <p class="whitespace-pre">{{ example?.stdout ?? '' }}</p>
         </p>
 
         <p v-if="example?.explanation" class="my-5 text-sm">
@@ -86,14 +67,8 @@
         </p>
 
         <div class="flex justify-end">
-          <InputBtn
-            secondary
-            :loading="example.loading"
-            @click="TestAgainstMe(example.id)"
-            sm
-            class="text-white"
-            >{{ t("Buttons.ExamplesTestMe") }}</InputBtn
-          >
+          <InputBtn secondary :loading="example.loading" @click="TestAgainstMe(example.id)" sm class="text-white">{{
+            t("Buttons.ExamplesTestMe") }}</InputBtn>
         </div>
       </div>
     </section>
@@ -191,42 +166,42 @@ function setResonBasedOnVerdict(success: any, id: any) {
     if (element.id == id) atIndex = i;
   });
   switch (success?.verdict) {
-  case "COMPILATION_ERROR":
-    duplicateExamples.value[atIndex].solved =
+    case "COMPILATION_ERROR":
+      duplicateExamples.value[atIndex].solved =
         "Error.Verdict.COMPILATION_ERROR";
-    break;
-  case "INVALID_OUTPUT_FORMAT":
-    duplicateExamples.value[atIndex].solved =
+      break;
+    case "INVALID_OUTPUT_FORMAT":
+      duplicateExamples.value[atIndex].solved =
         "Error.Verdict.INVALID_OUTPUT_FORMAT";
-    break;
-  case "MEMORY_LIMIT_EXCEEDED":
-    duplicateExamples.value[atIndex].solved =
+      break;
+    case "MEMORY_LIMIT_EXCEEDED":
+      duplicateExamples.value[atIndex].solved =
         "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
-    break;
-  case "NO_OUTPUT":
-    duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
-    break;
-  case "OK":
-    duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
-    break;
-  case "PRE_CHECK_FAILED":
-    duplicateExamples.value[atIndex].solved =
+      break;
+    case "NO_OUTPUT":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
+      break;
+    case "OK":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
+      break;
+    case "PRE_CHECK_FAILED":
+      duplicateExamples.value[atIndex].solved =
         "Error.Verdict.PRE_CHECK_FAILED";
-    break;
-  case "RUNTIME_ERROR":
-    duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
-    break;
-  case "TIME_LIMIT_EXCEEDED":
-    duplicateExamples.value[atIndex].solved =
+      break;
+    case "RUNTIME_ERROR":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
+      break;
+    case "TIME_LIMIT_EXCEEDED":
+      duplicateExamples.value[atIndex].solved =
         "Error.Verdict.TIME_LIMIT_EXCEEDED";
-    break;
-  case "WRONG_ANSWER":
-    duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
-    break;
+      break;
+    case "WRONG_ANSWER":
+      duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
+      break;
 
-  default:
-    duplicateExamples.value[atIndex].solved = null;
-    break;
+    default:
+      duplicateExamples.value[atIndex].solved = null;
+      break;
   }
 }
 
