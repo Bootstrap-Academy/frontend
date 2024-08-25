@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- <p>{{ duplicateExamples ?? "" }}</p> -->
     <div class="flex justify-between items-center mb-10">
       <div class="flex items-center gap-2">
         <p>{{ t("Headings.Examples") }}:</p>
@@ -8,67 +7,79 @@
           <ArrowPathIcon class="h-5 w-5 text-accent cursor-pointer hover:rotate-180 transition-all duration-700" />
         </Tooltip>
       </div>
-      <Btn @click="testAgainstAll()">{{ t("Buttons.TestAgainstAll") }}</Btn>
+      <Btn @click="testAgainstAll()" sm :icon="BeakerIcon"> {{ t("Buttons.TestAgainstAll") }}</Btn>
     </div>
 
-    <section class="relative" v-for="(example, i) of duplicateExamples" :key="i">
-      <div class="bg-light my-3 card-sm rounded-md" :class="{
-        'border border-light': example.solved == 'pending',
-        'border border-success': example.solved == 'solved',
-        'border border-error': example.solved != 'solved',
+
+    <section v-for="(example, i) of duplicateExamples" :key="i" class="relative">
+      <div class="bg-light my-3 card-sm rounded-md border-2 duration-500" :class="{
+        'border-light': example.solved == 'pending',
+        'border-success': example.solved == 'solved',
+        'border-error': example.solved != 'solved' && example.solved != 'pending',
       }">
-        <p class="text-white text-md">
-          {{ t("Headings.Example") }} {{ i + 1 }}
-        </p>
+        <div class="flex">
+          <div class="w-full">
+            <p class="text-white">
+              {{ t("Headings.Input") }}
+            </p>
+            <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
+          </div>
 
-        <div v-if="example.solved == 'solved' && example.solved != 'pending'" class="flex items-center gap-2">
-          <p class="text-sm capitalize text-success mt-2">
-            Example Test Passed
-          </p>
-          <CheckCircleIcon class="h-5 w-5 text-accent -mb-2.5" />
+          <div class="w-full">
+            <p class="text-white">
+              {{ t("Headings.ExpectedOutput") }}
+            </p>
+            <p class="whitespace-pre">{{ example?.output ?? '' }}</p>
+          </div>
         </div>
-        <p class="text-sm capitalize text-error mt-2" v-if="example.solved != 'solved' && example.solved != 'pending'">
-          Error:
-          {{
-            example.solved == null
-              ? "There is no output for your provided code"
-              : t(example.solved)
-          }}
-        </p>
 
-        <article class="mt-3">
-          <p class="text-white">
-            {{ t("Headings.Input") }}
-          </p>
-          <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
+        <div class="text-sm text-error bg-primary py-2 px-4 rounded-md my-4 flex items-center space-x-6"
+          v-if="example.solved != 'solved' && example.solved != 'pending'">
+          <ExclamationCircleIcon class="h-5 w-5 text-error" />
+          <div class="flex space-x-2 items-center text-sm">
+            <p class="text-error">{{ t("Headings.Error") }}:</p>
+            <p>
+              {{
+                example.solved == null
+                  ? "There is no output for your provided code"
+                  : t(example.solved)
+              }}
+            </p>
+          </div>
+        </div>
 
-          <p class="text-white mt-4">
-            {{ t("Headings.ExpectedOutput") }}
-          </p>
-          <p class="whitespace-pre">{{ example?.output ?? '' }}</p>
-        </article>
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stderr">
+          <p class="text-error mb-2">{{ t("Headings.ErrorMessage") }}:</p>
+          <p> {{ example?.stderr ?? '' }} </p>
+        </div>
 
-        <p v-if="!!example?.stderr" class="mt-3">
-          <span class="text-error"> {{ t("Headings.ExampleError") }}: </span>
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stdout">
+          <p class="text-success mb-2">{{ t("Headings.ActualOutput") }}:</p>
+          <p> {{ example?.stdout ?? '' }} </p>
+        </div>
 
-        <p class="whitespace-pre">{{ example?.stderr ?? '' }}</p>
-        </p>
-        <p v-if="!!example?.stdout">
-          <span class="block text-success">
-            {{ t("Headings.ActualOutput") }}:
-          </span>
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation">
+          <p class="text-success mb-2">{{ t("Headings.Explanation") }}:</p>
+          <p> {{ example?.explanation ?? '' }} </p>
+        </div>
 
-        <p class="whitespace-pre">{{ example?.stdout ?? '' }}</p>
-        </p>
-
-        <p v-if="example?.explanation" class="my-5 text-sm">
-          Explanation:
-          {{ example?.explanation ?? "" }}
-        </p>
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example">
+          <p class="text-warning mb-2">DEBUG:</p>
+          <p> {{ example ?? '' }} </p>
+        </div>
 
         <div class="flex justify-end">
-          <InputBtn secondary :loading="example.loading" @click="TestAgainstMe(example.id)" sm class="text-white">{{
-            t("Buttons.ExamplesTestMe") }}</InputBtn>
+          <div v-if="example.solved == 'solved' && !example.loading"
+            class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
+            <CheckCircleIcon class="h-5 w-5 text-accent mr-2" />
+            <p class="text-sm text-success">
+              {{ t("Headings.Solved") }}
+            </p>
+          </div>
+          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="TestAgainstMe(example.id)" sm
+            class="text-white">
+            {{ t("Buttons.Test") }}
+          </InputBtn>
         </div>
       </div>
     </section>
@@ -82,6 +93,9 @@ import {
   ArrowPathIcon,
   CheckCircleIcon,
   CheckIcon,
+  BeakerIcon,
+  ExclamationCircleIcon,
+  PlayIcon,
 } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
@@ -91,8 +105,13 @@ const props = defineProps({
   challengeId: { type: String, default: "" },
   codingChallengeId: { type: String, default: "" },
 });
+
 const { t } = useI18n();
 const duplicateExamples: any = ref([]);
+
+function getExampleIndexById(id: any) {
+  return duplicateExamples.value.findIndex((example: any) => example.id == id);
+}
 
 async function TestAgainstMe(id: any) {
   if (id == undefined || !!!id)
@@ -136,10 +155,7 @@ function resetExamples() {
 }
 
 function successHandler(success: any, id: any) {
-  let atIndex: any;
-  duplicateExamples.value.forEach((element: any, index: any) => {
-    if (element.id == id) atIndex = index;
-  });
+  let atIndex: number = getExampleIndexById(id);
 
   if (!!success.compile) {
     duplicateExamples.value[atIndex].stderr =
@@ -161,48 +177,22 @@ function successHandler(success: any, id: any) {
 }
 
 function setResonBasedOnVerdict(success: any, id: any) {
-  let atIndex: any;
-  duplicateExamples.value.forEach((element: any, i: any) => {
-    if (element.id == id) atIndex = i;
-  });
-  switch (success?.verdict) {
-    case "COMPILATION_ERROR":
-      duplicateExamples.value[atIndex].solved =
-        "Error.Verdict.COMPILATION_ERROR";
-      break;
-    case "INVALID_OUTPUT_FORMAT":
-      duplicateExamples.value[atIndex].solved =
-        "Error.Verdict.INVALID_OUTPUT_FORMAT";
-      break;
-    case "MEMORY_LIMIT_EXCEEDED":
-      duplicateExamples.value[atIndex].solved =
-        "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
-      break;
-    case "NO_OUTPUT":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.NO_OUTPUT";
-      break;
-    case "OK":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.OK";
-      break;
-    case "PRE_CHECK_FAILED":
-      duplicateExamples.value[atIndex].solved =
-        "Error.Verdict.PRE_CHECK_FAILED";
-      break;
-    case "RUNTIME_ERROR":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.RUNTIME_ERROR";
-      break;
-    case "TIME_LIMIT_EXCEEDED":
-      duplicateExamples.value[atIndex].solved =
-        "Error.Verdict.TIME_LIMIT_EXCEEDED";
-      break;
-    case "WRONG_ANSWER":
-      duplicateExamples.value[atIndex].solved = "Error.Verdict.WRONG_ANSWER";
-      break;
+  let atIndex: number = getExampleIndexById(id);
 
-    default:
-      duplicateExamples.value[atIndex].solved = null;
-      break;
-  }
+  const verdictMapping: { [key: string]: string } = {
+    "COMPILATION_ERROR": "Error.Verdict.COMPILATION_ERROR",
+    "INVALID_OUTPUT_FORMAT": "Error.Verdict.INVALID_OUTPUT_FORMAT",
+    "MEMORY_LIMIT_EXCEEDED": "Error.Verdict.MEMORY_LIMIT_EXCEEDED",
+    "NO_OUTPUT": "Error.Verdict.NO_OUTPUT",
+    "OK": "Error.Verdict.OK",
+    "PRE_CHECK_FAILED": "Error.Verdict.PRE_CHECK_FAILED",
+    "RUNTIME_ERROR": "Error.Verdict.RUNTIME_ERROR",
+    "TIME_LIMIT_EXCEEDED": "Error.Verdict.TIME_LIMIT_EXCEEDED",
+    "WRONG_ANSWER": "Error.Verdict.WRONG_ANSWER",
+  };
+
+  duplicateExamples.value[atIndex].solved =
+    verdictMapping[success?.verdict] || null;
 }
 
 function errorHandler(error: any) {
@@ -224,5 +214,3 @@ watch(
   }
 );
 </script>
-
-<style scoped></style>
