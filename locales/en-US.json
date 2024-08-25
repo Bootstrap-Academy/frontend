@@ -34,6 +34,7 @@
     "Error": "Error",
     "NoErrorFound": "No Error Found",
     "ErrorMessage": "Error Message",
+    "ShowErrorMessage": "Show Error Message",
     "ExampleOutput": "Output",
     "Example": "Example",
     "ResetExamples": "Reset Examples",

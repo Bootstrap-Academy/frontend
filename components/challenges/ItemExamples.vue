@@ -11,20 +11,20 @@
     </div>
 
     <section v-for="(example, i) of exampleElements" :key="i" class="relative">
-      <div class="bg-light my-3 card-sm rounded-md border-2 duration-500" :class="{
+      <div class="bg-light my-3 card-sm rounded-md border-2 duration-700" :class="{
         'border-light': example.solved == 'pending',
         'border-success': example.solved == 'solved',
         'border-error': example.solved != 'solved' && example.solved != 'pending',
       }">
-        <div class="sm:flex max-sm:space-y-2">
-          <div class="w-full">
+        <div class="sm:flex max-sm:space-y-2 sm:space-x-4 mb-4">
+          <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
             <p class="text-white">
               {{ t("Headings.Input") }}
             </p>
             <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
           </div>
 
-          <div class="w-full">
+          <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
             <p class="text-white">
               {{ t("Headings.ExpectedOutput") }}
             </p>
@@ -34,32 +34,34 @@
 
         <div class="text-sm text-error bg-primary py-2 px-4 rounded-md my-4 flex items-center space-x-6"
           v-if="example.solved != 'solved' && example.solved != 'pending'">
-          <ExclamationCircleIcon class="h-5 w-5 text-error" />
           <div class="sm:flex sm:space-x-2 items-center text-sm">
             <p class="text-error">{{ t("Headings.Error") }}:</p>
-            <p>
-              {{
-                example.solved == null
-                  ? "There is no output for your provided code"
-                  : t(example.solved)
-              }}
-            </p>
+            <div class="flex space-x-2 items-center">
+              <component :is="verdictIcons(example.solved)" class="h-5 w-5" />
+              <p>
+                {{
+                  example.solved == null
+                    ? "There is no output for your provided code"
+                    : t(example.solved)
+                }}
+              </p>
+            </div>
           </div>
         </div>
 
         <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stderr">
           <p class="text-error mb-2">{{ t("Headings.ErrorMessage") }}:</p>
-          <p> {{ example?.stderr ?? '' }} </p>
+          <p class="whitespace-pre"> {{ example?.stderr ?? '' }} </p>
         </div>
 
         <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stdout">
           <p class="text-success mb-2">{{ t("Headings.ActualOutput") }}:</p>
-          <p> {{ example?.stdout ?? '' }} </p>
+          <p class="whitespace-pre"> {{ example?.stdout ?? '' }} </p>
         </div>
 
         <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation">
           <p class="text-success mb-2">{{ t("Headings.Explanation") }}:</p>
-          <p> {{ example?.explanation ?? '' }} </p>
+          <p class="whitespace-pre"> {{ example?.explanation ?? '' }} </p>
         </div>
 
         <div class="flex justify-end">
@@ -86,10 +88,16 @@ import type { PropType } from "vue";
 import {
   ArrowPathIcon,
   CheckCircleIcon,
-  CheckIcon,
   BeakerIcon,
-  ExclamationCircleIcon,
   PlayIcon,
+  NoSymbolIcon,
+  FlagIcon,
+  CircleStackIcon,
+  DocumentIcon,
+  ShieldExclamationIcon,
+  PowerIcon,
+  ClockIcon,
+  XMarkIcon,
 } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
@@ -110,7 +118,6 @@ function getExampleIndexById(id: any) {
 async function testExample(id: any) {
   if (id == undefined || !!!id)
     return openSnackbar("info", "Headings.CannotTestForThisExample");
-  // setLoading(true);
   exampleElements.value.forEach((example: any) => {
     if (example.id == id) example.loading = true;
   });
@@ -124,7 +131,6 @@ async function testExample(id: any) {
       environment: props.environment,
     }
   );
-  // setLoading(false);
   exampleElements.value.forEach((example: any) => {
     if (example.id == id) example.loading = false;
   });
@@ -191,6 +197,21 @@ function setResonBasedOnVerdict(success: any, id: any) {
 
 function errorHandler(error: any) {
   openSnackbar("error", error);
+}
+
+function verdictIcons(verdict: string) {
+  const verdictIconMapping: { [key: string]: any } = {
+    "COMPILATION_ERROR": NoSymbolIcon,
+    "INVALID_OUTPUT_FORMAT": FlagIcon,
+    "MEMORY_LIMIT_EXCEEDED": CircleStackIcon,
+    "NO_OUTPUT": DocumentIcon,
+    "OK": CheckCircleIcon,
+    "PRE_CHECK_FAILED": ShieldExclamationIcon,
+    "RUNTIME_ERROR": PowerIcon,
+    "TIME_LIMIT_EXCEEDED": ClockIcon,
+    "WRONG_ANSWER": XMarkIcon,
+  };
+  return verdictIconMapping[verdict.replace("Error.Verdict.", "")];
 }
 
 watch(
