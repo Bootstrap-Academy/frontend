@@ -21,14 +21,14 @@
             <p class="text-white">
               {{ t("Headings.Input") }}
             </p>
-            <p class="whitespace-pre">{{ example?.input ?? '' }}</p>
+            <p class="whitespace-pre-wrap">{{ example?.input ?? '' }}</p>
           </div>
 
           <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
             <p class="text-white">
               {{ t("Headings.ExpectedOutput") }}
             </p>
-            <p class="whitespace-pre">{{ example?.output ?? '' }}</p>
+            <p class="whitespace-pre-wrap">{{ example?.output ?? '' }}</p>
           </div>
         </div>
 
@@ -51,17 +51,17 @@
 
         <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stderr">
           <p class="text-error mb-2">{{ t("Headings.ErrorMessage") }}:</p>
-          <p class="whitespace-pre"> {{ example?.stderr ?? '' }} </p>
+          <p class="whitespace-pre-wrap"> {{ example?.stderr ?? '' }} </p>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stdout">
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stdout && example.solved != 'solved' && !example.loading">
           <p class="text-success mb-2">{{ t("Headings.ActualOutput") }}:</p>
-          <p class="whitespace-pre"> {{ example?.stdout ?? '' }} </p>
+          <p class="whitespace-pre-wrap"> {{ example?.stdout ?? '' }} </p>
         </div>
 
         <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation">
           <p class="text-success mb-2">{{ t("Headings.Explanation") }}:</p>
-          <p class="whitespace-pre"> {{ example?.explanation ?? '' }} </p>
+          <p class="whitespace-pre-wrap"> {{ example?.explanation ?? '' }} </p>
         </div>
 
         <div class="flex justify-end">
