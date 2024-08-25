@@ -7,11 +7,10 @@
           <ArrowPathIcon class="h-5 w-5 text-accent cursor-pointer hover:rotate-180 transition-all duration-700" />
         </Tooltip>
       </div>
-      <Btn @click="testAgainstAll()" sm :icon="BeakerIcon"> {{ t("Buttons.TestAgainstAll") }}</Btn>
+      <Btn @click="testAllExamples()" sm :icon="BeakerIcon"> {{ t("Buttons.TestAgainstAll") }}</Btn>
     </div>
 
-
-    <section v-for="(example, i) of duplicateExamples" :key="i" class="relative">
+    <section v-for="(example, i) of exampleElements" :key="i" class="relative">
       <div class="bg-light my-3 card-sm rounded-md border-2 duration-500" :class="{
         'border-light': example.solved == 'pending',
         'border-success': example.solved == 'solved',
@@ -76,7 +75,7 @@
               {{ t("Headings.Solved") }}
             </p>
           </div>
-          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="TestAgainstMe(example.id)" sm
+          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="testExample(example.id)" sm
             class="text-white">
             {{ t("Buttons.Test") }}
           </InputBtn>
@@ -107,17 +106,17 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const duplicateExamples: any = ref([]);
+const exampleElements: any = ref([]);
 
 function getExampleIndexById(id: any) {
-  return duplicateExamples.value.findIndex((example: any) => example.id == id);
+  return exampleElements.value.findIndex((example: any) => example.id == id);
 }
 
-async function TestAgainstMe(id: any) {
+async function testExample(id: any) {
   if (id == undefined || !!!id)
     return openSnackbar("info", "Headings.CannotTestForThisExample");
   // setLoading(true);
-  duplicateExamples.value.forEach((example: any) => {
+  exampleElements.value.forEach((example: any) => {
     if (example.id == id) example.loading = true;
   });
 
@@ -131,23 +130,23 @@ async function TestAgainstMe(id: any) {
     }
   );
   // setLoading(false);
-  duplicateExamples.value.forEach((example: any) => {
+  exampleElements.value.forEach((example: any) => {
     if (example.id == id) example.loading = false;
   });
   success ? successHandler(success, id) : errorHandler(error);
 }
 
-async function testAgainstAll() {
+async function testAllExamples() {
   if (!props.examples.length) return;
   let promisesArray: any = [];
   props.examples.forEach(async (example: any) => {
-    promisesArray.push(await TestAgainstMe(example.id));
+    promisesArray.push(await testExample(example.id));
   });
   await Promise.all(promisesArray);
 }
 
 function resetExamples() {
-  duplicateExamples.value.map((example: any) => {
+  exampleElements.value.map((example: any) => {
     example.solved = "pending";
     example.stderr = "";
     example.stdout = "";
@@ -158,19 +157,19 @@ function successHandler(success: any, id: any) {
   let atIndex: number = getExampleIndexById(id);
 
   if (!!success.compile) {
-    duplicateExamples.value[atIndex].stderr =
+    exampleElements.value[atIndex].stderr =
       success.compile?.stderr ?? "";
-    duplicateExamples.value[atIndex].stdout =
+    exampleElements.value[atIndex].stdout =
       success.compile?.stdout ?? "";
   } else if (!!success.run) {
-    duplicateExamples.value[atIndex].stderr =
+    exampleElements.value[atIndex].stderr =
       success.run?.stderr ?? "";
-    duplicateExamples.value[atIndex].stdout =
+    exampleElements.value[atIndex].stdout =
       success.run?.stdout ?? "";
   }
 
   if (success?.verdict == "OK") {
-    duplicateExamples.value[atIndex].solved = "solved";
+    exampleElements.value[atIndex].solved = "solved";
   } else {
     setResonBasedOnVerdict(success, id);
   }
@@ -191,7 +190,7 @@ function setResonBasedOnVerdict(success: any, id: any) {
     "WRONG_ANSWER": "Error.Verdict.WRONG_ANSWER",
   };
 
-  duplicateExamples.value[atIndex].solved =
+  exampleElements.value[atIndex].solved =
     verdictMapping[success?.verdict] || null;
 }
 
@@ -204,13 +203,13 @@ watch(
   (newValue: any, oldValue: any) => {
     if (!newValue.length) return;
     console.log("watching");
-    duplicateExamples.value = newValue.map((element: any) => {
+    exampleElements.value = newValue.map((element: any) => {
       element.solved = "pending";
       element.stdout = "";
       element.stderr = "";
       element.loading = false;
     });
-    duplicateExamples.value = newValue;
+    exampleElements.value = newValue;
   }
 );
 </script>
