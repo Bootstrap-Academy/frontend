@@ -62,11 +62,6 @@
           <p> {{ example?.explanation ?? '' }} </p>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example">
-          <p class="text-warning mb-2">DEBUG:</p>
-          <p> {{ example ?? '' }} </p>
-        </div>
-
         <div class="flex justify-end">
           <div v-if="example.solved == 'solved' && !example.loading"
             class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
@@ -156,12 +151,12 @@ function resetExamples() {
 function successHandler(success: any, id: any) {
   let atIndex: number = getExampleIndexById(id);
 
-  if (!!success.compile) {
+  if (!!success.compile && (success.compile?.stdout != "" || success.compile?.stderr != "")) {
     exampleElements.value[atIndex].stderr =
       success.compile?.stderr ?? "";
     exampleElements.value[atIndex].stdout =
       success.compile?.stdout ?? "";
-  } else if (!!success.run) {
+  } else if (!!success.run && (success.run?.stdout != "" || success.run?.stderr != "")) {
     exampleElements.value[atIndex].stderr =
       success.run?.stderr ?? "";
     exampleElements.value[atIndex].stdout =
