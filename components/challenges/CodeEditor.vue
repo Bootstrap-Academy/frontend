@@ -22,7 +22,7 @@
           :iconColor="'#FF0000'"
           @click="openDialogSubmission()"
           :loading="submitButtonLoading"
-          >Submit</InputBtn
+          >{{ t("Buttons.Submit") }}</InputBtn
         >
 
         <InputBtn
@@ -30,7 +30,7 @@
           iconRight
           @click="fnCreateSubmission()"
           :loading="submitButtonLoading"
-          >Submit</InputBtn
+          >{{ t("Buttons.Submit") }}</InputBtn
         >
       </article>
     </header>
@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from "vue-i18n";
 import { defineComponent, onMounted, onBeforeUnmount, watch, } from "vue";
 import type { Prop, Ref } from "vue";
 import * as monaco from "monaco-editor";
@@ -65,6 +66,7 @@ export default defineComponent({
   emits: ["update:modelValue", "valid", "environment"],
   components: { HeartIcon },
   setup(props, { emit }) {
+    const { t } = useI18n();
     let editor: monaco.editor.IStandaloneCodeEditor;
     const editorContainer = ref<HTMLDivElement | null>(null);
     const environments: any = useEnvironments();
@@ -254,6 +256,7 @@ export default defineComponent({
     });
 
     return {
+      t,
       handleEditorDidMount,
       editorContainer,
       languages,

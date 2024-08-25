@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-10">
+    <div class="flex max-sm:flex-col max-sm:space-y-2 justify-between items-center mb-10">
       <div class="flex items-center gap-2">
         <p>{{ t("Headings.Examples") }}:</p>
         <Tooltip :heading="'Headings.ResetExamples'" :placement="'right'" @click="resetExamples()">
@@ -16,7 +16,7 @@
         'border-success': example.solved == 'solved',
         'border-error': example.solved != 'solved' && example.solved != 'pending',
       }">
-        <div class="flex">
+        <div class="sm:flex max-sm:space-y-2">
           <div class="w-full">
             <p class="text-white">
               {{ t("Headings.Input") }}
@@ -35,7 +35,7 @@
         <div class="text-sm text-error bg-primary py-2 px-4 rounded-md my-4 flex items-center space-x-6"
           v-if="example.solved != 'solved' && example.solved != 'pending'">
           <ExclamationCircleIcon class="h-5 w-5 text-error" />
-          <div class="flex space-x-2 items-center text-sm">
+          <div class="sm:flex sm:space-x-2 items-center text-sm">
             <p class="text-error">{{ t("Headings.Error") }}:</p>
             <p>
               {{
