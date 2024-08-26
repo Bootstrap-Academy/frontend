@@ -167,7 +167,7 @@ export default defineComponent({
       }
 
       if (skillID){
-        router.push(`/quizzes/${skillID}/${subSkillID}/create?course=${courseID.value}&section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel.value}`);
+        return router.push(`/quizzes/${skillID}/${subSkillID}/create?course=${courseID.value}&section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel.value}`);
       }
 
       showSkillSelection.value = true;
