@@ -365,9 +365,11 @@
     "Summary": "Summary",
     "CreationDate": "Creation date",
     "EmptySubtasks": "In this lecture, there are no quizzes yet.",
-    "MyAccount": "My Account"
+    "MyAccount": "My Account",
+    "SelectSkill": "Select Skill"
   },
   "Body": {
+    "SelectSkillDescription": "We need to know under which root skill you want to create the content.",
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
     "NoteCannotEditQuiz": "Once a quiz has been created you cannot edit it. But you can delete it and can recreate new one.",

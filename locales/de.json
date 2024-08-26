@@ -366,9 +366,11 @@
     "Summary": "Zusammenfassung",
     "CreationDate": "Erstellungsdatum",
     "EmptySubtasks": "In dieser Vorlesung gibt es noch keine Quizze.",
-    "MyAccount": "Mein Konto"
+    "MyAccount": "Mein Konto",
+    "SelectSkill": "Skill auswählen"
   },
   "Body": {
+    "SelectSkillDescription": "Wir müssen wissen, unter welchem Root-Skill du die Inhalte erstellen möchtest.",
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "WhyWeUseTests": "Die Zahlen, die du beim Erstellen oder Ändern einer Coding - Challenge eingibst, sind einfach die Anzahl der statischen/zufälligen Testfälle, anhand derer die Lösung des Benutzers getestet werden soll. Wenn ich beispielsweise static_tests=5 und random_tests=3 setze, werden für jede Übermittlung 5 statische Testfälle und 3 zufällige Testfälle generiert, anhand derer die Eingabe des Lösenden getestet wird",
     "NoteCannotEditQuiz": "Sobald ein Quiz erstellt wurde, kannst du es nicht mehr bearbeiten. Du kannst es aber löschen und neu erstellen.",
