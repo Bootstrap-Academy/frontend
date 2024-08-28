@@ -12,12 +12,12 @@
 
     <section v-for="(example, i) of exampleElements" :key="i" class="relative">
       <div class="bg-light my-3 card-sm rounded-md border-2 duration-700" :class="{
-        'border-light': example.solved == 'pending',
+        'border-light': example.solved == 'pending' || example.loading,
         'border-success': example.solved == 'solved',
         'border-error': example.solved != 'solved' && example.solved != 'pending',
       }">
         <div class="flex justify-between mb-4">
-          <p class="text-heading">{{ t("Headings.Example") }}: {{ i + 1 }}</p>
+          <p class="text-heading">{{ t("Headings.Example") }} {{ i + 1 }}</p>
           <div v-if="example.solved == 'solved' && !example.loading"
             class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
             <CheckCircleIcon class="h-5 w-5 text-accent mr-2" />
@@ -30,7 +30,7 @@
             {{ t("Buttons.Test") }}
           </InputBtn>
         </div>
-        <div class="sm:flex max-sm:space-y-2 sm:space-x-4 mb-4">
+        <div class="sm:flex max-sm:space-y-2 sm:space-x-4">
           <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
             <p class="text-white">
               {{ t("Headings.Input") }}
@@ -47,7 +47,7 @@
         </div>
 
         <div class="text-sm text-error bg-primary py-2 px-4 rounded-md my-4 flex items-center space-x-6"
-          v-if="example.solved != 'solved' && example.solved != 'pending'">
+          v-if="example.solved != 'solved' && example.solved != 'pending' && !example.loading">
           <div class="sm:flex sm:space-x-2 items-center text-sm">
             <p class="text-error">{{ t("Headings.Error") }}:</p>
             <div class="flex space-x-2 items-center">
@@ -63,7 +63,7 @@
           </div>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stderr">
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stderr && !example.loading">
           <p class="text-error mb-2">{{ t("Headings.ErrorMessage") }}:</p>
           <p class="whitespace-pre-wrap"> {{ example?.stderr ?? '' }} </p>
         </div>
@@ -74,7 +74,7 @@
           <p class="whitespace-pre-wrap"> {{ example?.stdout ?? '' }} </p>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation">
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation && !example.loading">
           <p class="text-success mb-2">{{ t("Headings.Explanation") }}:</p>
           <p class="whitespace-pre-wrap"> {{ example?.explanation ?? '' }} </p>
         </div>
