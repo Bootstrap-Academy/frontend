@@ -16,6 +16,20 @@
         'border-success': example.solved == 'solved',
         'border-error': example.solved != 'solved' && example.solved != 'pending',
       }">
+        <div class="flex justify-between mb-4">
+          <p class="text-heading">{{ t("Headings.Example") }}: {{ i + 1 }}</p>
+          <div v-if="example.solved == 'solved' && !example.loading"
+            class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
+            <CheckCircleIcon class="h-5 w-5 text-accent mr-2" />
+            <p class="text-sm text-success">
+              {{ t("Headings.Solved") }}
+            </p>
+          </div>
+          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="testExample(example.id)" sm
+            class="text-white">
+            {{ t("Buttons.Test") }}
+          </InputBtn>
+        </div>
         <div class="sm:flex max-sm:space-y-2 sm:space-x-4 mb-4">
           <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
             <p class="text-white">
@@ -54,7 +68,8 @@
           <p class="whitespace-pre-wrap"> {{ example?.stderr ?? '' }} </p>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.stdout && example.solved != 'solved' && !example.loading">
+        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4"
+          v-if="!!example?.stdout && example.solved != 'solved' && !example.loading">
           <p class="text-success mb-2">{{ t("Headings.ActualOutput") }}:</p>
           <p class="whitespace-pre-wrap"> {{ example?.stdout ?? '' }} </p>
         </div>
@@ -64,19 +79,7 @@
           <p class="whitespace-pre-wrap"> {{ example?.explanation ?? '' }} </p>
         </div>
 
-        <div class="flex justify-end">
-          <div v-if="example.solved == 'solved' && !example.loading"
-            class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
-            <CheckCircleIcon class="h-5 w-5 text-accent mr-2" />
-            <p class="text-sm text-success">
-              {{ t("Headings.Solved") }}
-            </p>
-          </div>
-          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="testExample(example.id)" sm
-            class="text-white">
-            {{ t("Buttons.Test") }}
-          </InputBtn>
-        </div>
+
       </div>
     </section>
   </div>
