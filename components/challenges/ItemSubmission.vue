@@ -24,12 +24,6 @@
           >
             {{ t("Headings.Status") }}
           </th>
-
-          <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
-          >
-            {{ t("Headings.Error") }}
-          </th>
           <th
             class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
           >
@@ -53,43 +47,21 @@
           >
             {{ submission?.environment ?? "" }}
           </td>
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[200px]"
-          >
-            <p class="text-sm bg-light p-2 rounded-md">
-              {{ t(verdictIs(submission)) }}
-            </p>
-          </td>
-
-          <!-- error for submission-->
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
-          >
-            <div
-              v-if="
-                !!submission.result.compile &&
-                !!submission.result.compile.stderr
-              "
-            >
-              <p class="text-sm bg-light p-2 rounded-md">
-                {{ submission.result.compile.stderr }}
-              </p>
+          <td class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[200px]">
+            <div class="text-sm bg-primary p-2 rounded-md flex items-center space-x-4">
+              <div class="w-full flex space-x-2 items-center">
+                <div class="min-w-max">
+                  <component :is="verdictIcons(submission.result?.verdict)" class="h-5 w-5" />
+                </div>
+                <span>
+                  {{ t(verdictIs(submission)) }}
+                </span>
+              </div>
+              <Tooltip :heading="t('Headings.ShowErrorMessage')">
+                <ExclamationTriangleIcon v-if="submission.result.compile?.stderr || submission.result.run?.stderr"
+                  class="h-5 w-5 text-accent cursor-pointer" @click="openErrorMessageDialog(submission)" />
+              </Tooltip>
             </div>
-            <div
-              v-if="!!submission.result.run && !!submission.result.run.stderr"
-            >
-              <p class="text-sm bg-light p-2 rounded-md">
-                {{ submission.result.run.stderr }}
-              </p>
-            </div>
-            <p
-              v-if="
-                !!!submission?.result?.run?.stderr &&
-                !!!submission?.result?.compile?.stderr
-              "
-            >
-              {{ t("Headings.NoErrorFound") }}
-            </p>
           </td>
           <td
             class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
@@ -119,64 +91,41 @@ import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
 import { useDateFormat } from "@vueuse/core";
-import { CheckIcon } from "@heroicons/vue/24/outline";
+import { CheckIcon, ExclamationTriangleIcon, NoSymbolIcon, FlagIcon, CircleStackIcon, DocumentIcon, CheckCircleIcon, ShieldExclamationIcon, PowerIcon, ClockIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   emits: ["id"],
-
   props: {
     data: { type: Object as PropType<any>, default: null },
     challengeId: { type: String, default: "" },
     codingChallengeId: { type: String, default: "" },
   },
-  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
+  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon, ExclamationTriangleIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
 
     const verdictIs: any = (submission: any) => {
-      let verdict = submission.result?.verdict ?? "";
+      const verdictMapping: { [key: string]: string } = {
+        COMPILATION_ERROR: "Error.Verdict.COMPILATION_ERROR",
+        INVALID_OUTPUT_FORMAT: "Error.Verdict.INVALID_OUTPUT_FORMAT",
+        MEMORY_LIMIT_EXCEEDED: "Error.Verdict.MEMORY_LIMIT_EXCEEDED",
+        NO_OUTPUT: "Error.Verdict.NO_OUTPUT",
+        OK: "Error.Verdict.OK",
+        PRE_CHECK_FAILED: "Error.Verdict.PRE_CHECK_FAILED",
+        RUNTIME_ERROR: "Error.Verdict.RUNTIME_ERROR",
+        TIME_LIMIT_EXCEEDED: "Error.Verdict.TIME_LIMIT_EXCEEDED",
+        WRONG_ANSWER: "Error.Verdict.WRONG_ANSWER",
+      };
+
+      const verdict = submission.result?.verdict ?? "";
       console.log("verdict is ", verdict);
-      if (!!!submission.result) {
+
+      if (!submission.result) {
         return "Headings.PendingResult";
       }
 
-      let toReturnVerdict: string | any = "";
-
-      switch (verdict) {
-      case "COMPILATION_ERROR":
-        toReturnVerdict = "Error.Verdict.COMPILATION_ERROR";
-        break;
-      case "INVALID_OUTPUT_FORMAT":
-        toReturnVerdict = "Error.Verdict.INVALID_OUTPUT_FORMAT";
-        break;
-      case "MEMORY_LIMIT_EXCEEDED":
-        toReturnVerdict = "Error.Verdict.MEMORY_LIMIT_EXCEEDED";
-        break;
-      case "NO_OUTPUT":
-        toReturnVerdict = "Error.Verdict.NO_OUTPUT";
-        break;
-      case "OK":
-        toReturnVerdict = "Error.Verdict.OK";
-        break;
-      case "PRE_CHECK_FAILED":
-        toReturnVerdict = "Error.Verdict.PRE_CHECK_FAILED";
-        break;
-      case "RUNTIME_ERROR":
-        toReturnVerdict = "Error.Verdict.RUNTIME_ERROR";
-        break;
-      case "TIME_LIMIT_EXCEEDED":
-        toReturnVerdict = "Error.Verdict.TIME_LIMIT_EXCEEDED";
-        break;
-      case "WRONG_ANSWER":
-        toReturnVerdict = "Error.Verdict.WRONG_ANSWER";
-        break;
-
-      default:
-        toReturnVerdict = "No_Output";
-        break;
-      }
-      return toReturnVerdict;
+      return verdictMapping[verdict] || "No_Output";
     };
 
     const dateFormat = (date: any) => {
@@ -201,19 +150,59 @@ export default defineComponent({
       if (!!error) openSnackbar("error", error);
     }
 
+    function openErrorMessageDialog(submission: any) {
+      const errorMessage = submission.result.compile?.stderr || submission.result.run?.stderr;
+      openDialog(
+        'error',
+        'Headings.ErrorMessage',
+        errorMessage,
+        false,
+        {
+          label: 'Buttons.Okay',
+          onclick: async () => { },
+        },
+        {},
+      );
+    }
+
+    function verdictIcons(verdict: string){
+      const verdictIconMapping: { [key: string]: any } = {
+        "COMPILATION_ERROR": NoSymbolIcon,
+        "INVALID_OUTPUT_FORMAT": FlagIcon,
+        "MEMORY_LIMIT_EXCEEDED": CircleStackIcon,
+        "NO_OUTPUT": DocumentIcon,
+        "OK": CheckCircleIcon,
+        "PRE_CHECK_FAILED": ShieldExclamationIcon,
+        "RUNTIME_ERROR": PowerIcon,
+        "TIME_LIMIT_EXCEEDED": ClockIcon,
+        "WRONG_ANSWER": XMarkIcon,
+      };
+      return verdictIconMapping[verdict];
+    }
+
     return {
       t,
       submissions,
-      CodeBracketIcon,
-      CheckBadgeIcon,
       formattedTimeStamp,
       loadSubmission,
-      CheckIcon,
       dateFormat,
       verdictIs,
+      openErrorMessageDialog,
+      verdictIcons,
+      CheckIcon,
+      CodeBracketIcon,
+      CheckBadgeIcon,
+      NoSymbolIcon,
+      FlagIcon,
+      CircleStackIcon,
+      DocumentIcon,
+      CheckCircleIcon,
+      ShieldExclamationIcon,
+      PowerIcon,
+      ClockIcon,
+      XMarkIcon,
+      ExclamationTriangleIcon,
     };
   },
 });
 </script>
-
-<style scoped></style>
