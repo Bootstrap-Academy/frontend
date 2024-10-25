@@ -17,7 +17,7 @@
             </template>
           </div>
 
-          <div class="flex justify-center w-full">
+          <div v-if="quizzesToShow.length > 0 || selectedOption != 0" class="flex justify-center w-full">
             <InputButtonToggle :mobileResponsive="true" v-model="selectedOption" :buttonOptions="buttonOptions"
               class="w-full" />
           </div>
@@ -69,13 +69,26 @@
           class="lg:w-3/5 md:w-2/5 w-full" />
       </div>
     </main>
-    <p v-if="!loading && !quizzesToShow.length" class="text-center w-full mb-20 text-xl">
-      {{
-        t("Headings.EmptyQuizForThis", {
-          placeholder: t(notFoundFor),
-        })
-      }}
-    </p>
+    <div v-if="!loading && quizzesToShow.length > 0 && arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length == 0">
+      <CheckCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
+      <p class="text-center w-full mb-20 text-xl">
+        {{
+          t("Headings.AllSolved")
+        }}
+      </p>
+    </div>
+    <div v-else-if="!loading && quizzesToShow.length == 0">
+      <MagnifyingGlassCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
+      <p class="text-center w-full mb-20 text-xl">
+        {{
+          t(selectedOption == 0 ? "Headings.EmptyTasksForThis" : "Headings.EmptyTasksForThisFilter", {
+            placeholder: t(notFoundFor),
+            filter: t(buttonOptions[selectedOption].name),
+            type: t("Headings.Matchings"),
+          })
+        }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -87,6 +100,7 @@ import {
   getQuizzesInSkill,
 } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
+import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
 
 const route = useRoute();
 const router = useRouter();
@@ -117,6 +131,8 @@ const notFoundFor = computed(() => {
     return "Headings.Course";
   } else if (quizzesFrom.value == "skill") {
     return "Headings.Skill";
+  } else if (quizzesFrom.value == "quiz") {
+    return "Headings.Quiz";
   } else {
     return "Headings.Lecture";
   }
