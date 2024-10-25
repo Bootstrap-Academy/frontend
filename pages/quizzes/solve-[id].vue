@@ -86,7 +86,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import {
   getQuizzesInCourse,
   getSubTasksInQuiz,
@@ -97,6 +96,7 @@ import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   setup() {
+    const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
     const quizzes: any = useQuizzes();
@@ -104,7 +104,6 @@ export default defineComponent({
     const loading = ref(true);
     const user: any = useUser();
     const selectedOption = ref(0);
-    const { t } = useI18n();
     const quizzesToShow: any = ref([]);
     let arrayOfSubtasks: any = ref([]);
     const buttonOptions = [
@@ -113,20 +112,12 @@ export default defineComponent({
       { name: "Buttons.Solved" },
       { name: "Buttons.Own" },
     ];
-    const id: any = computed(() => {
-      return route?.params?.id ?? "";
-    });
-
-    const querySubTaskId: any = computed(() => {
-      return route.query?.querySubTaskId ?? "";
-    });
-    const taskId = computed(() => {
-      return route.query?.taskId ?? "";
-    });
-
-    const quizzesFrom = computed(() => {
-      return route?.query?.quizzesFrom ?? "no found";
-    });
+    const id: any = computed(() => route?.params?.id ?? "");
+    const querySubTaskId: any = computed(() => route.query?.querySubTaskId ?? "");
+    const taskId = computed(() => route.query?.taskId ?? "");
+    const quizzesFrom = computed(() => route?.query?.quizzesFrom ?? "no found");
+    const rootSkillID = computed(() => route?.query?.rootSkillID ?? "");
+    const subSkillID = computed(() => route?.query?.subSkillID ?? "");
 
     const notFoundFor = computed(() => {
       if (quizzesFrom.value == "course") {
@@ -154,34 +145,31 @@ export default defineComponent({
       });
     }
 
-    const rootSkillID = computed(() => {
-      return route?.query?.rootSkillID ?? "";
-    });
+    const breadcrumbs = computed<Array<{ label: string; to?: string }>>(() => {
+      let quizLabel = { label: "Headings.Quizzes" };
+      let hasRootAndSubSkill = rootSkillID.value && subSkillID.value;
 
-    const subSkillID = computed(() => {
-      return route?.query?.subSkillID ?? "";
-    });
-
-    const breadcrumbs: any = computed(() => {
-      if (quizzesFrom.value == "course") {
+      if (quizzesFrom.value === "course" && hasRootAndSubSkill) {
         return [
           {
             label: id.value,
             to: `/courses/${id.value}?skillID=${rootSkillID.value}&subSkillID=${subSkillID.value}`,
           },
-          { label: "Headings.Quizzes" },
+          quizLabel,
         ];
-      } else if (quizzesFrom.value == "skill") {
-        console.log("bradl crum quizzs from skill");
+      }
+
+      if ((quizzesFrom.value === "skill" || quizzesFrom.value === "quiz") && hasRootAndSubSkill) {
         return [
           {
             label: subSkillID.value,
             to: `/skill-tree/${rootSkillID.value}/${subSkillID.value}`,
           },
-          { label: "Headings.Quizzes" },
+          quizLabel,
         ];
-      } else if (quizzesFrom.value == "quiz") {
-      } else return [{ label: "Quizzes" }];
+      }
+
+      return [quizLabel];
     });
 
     function nextQuestion(id: any) {
