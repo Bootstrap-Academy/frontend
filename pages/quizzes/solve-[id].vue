@@ -58,8 +58,7 @@
             <template v-else-if="quizzesToShow && quizzesToShow.length">
               <div class="max-h-fit grid gap-card">
                 <QuizCard :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'" class="max-h-fit" :class="quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
-                  " v-for="(quiz, i) of sortQuizzes(quizzesToShow)" :key="i" full :data="quiz"
-                  @click="solveThis(quiz)" />
+                  " v-for="(quiz, i) of sortQuizzes()" :key="i" full :data="quiz" @click="solveThis(quiz)" />
               </div>
             </template>
           </aside>
@@ -198,7 +197,7 @@ export default defineComponent({
       for (let i = index; i < arrayOfSubtasks?.value?.length; i++) {
         if (
           !arrayOfSubtasks?.value[i]?.solved &&
-          arrayOfSubtasks?.value[i]?.creator != user?.value.id &&
+          !isQuizOwner(arrayOfSubtasks?.value[i]) &&
           i != index
         ) {
           console.log("next quiz id", arrayOfSubtasks.value[i].creator);
@@ -290,64 +289,62 @@ export default defineComponent({
       scroolToView();
     }
 
+    function isQuizOwner(quiz: { creator: string }) {
+      return quiz.creator === user.value?.id;
+    }
+
     function sortQuizzes() {
       return quizzesToShow.value
-        .sort((a, b) => {
-          const aSolved = a.solved;
-          const bSolved = b.solved;
-          const aCreatedByMe = a.creator === user.value?.id;
-          const bCreatedByMe = b.creator === user.value?.id;
+        .sort((prevItem: { solved: boolean; creator: string }, nextItem: { solved: boolean; creator: string }) => {
+          const prevSolved = prevItem.solved;
+          const nextSolved = nextItem.solved;
+          const prevOwn = isQuizOwner(prevItem);
+          const nextOwn = isQuizOwner(nextItem);
 
-          // First, sort by whether the task is created by me (tasks not created by me come first)
-          if (aCreatedByMe !== bCreatedByMe) {
-            return aCreatedByMe ? 1 : -1; // tasks created by me come last
-          }
+          // Tasks not created by me come first
+          if (prevOwn !== nextOwn) return prevOwn ? 1 : -1;
 
-          // If both are either created by me or not, sort by solved status (unsolved tasks come first)
-          if (aSolved !== bSolved) {
-            return aSolved ? 1 : -1; // unsolved tasks come first
-          }
+          // Then, unsolved tasks come first
+          if (prevSolved !== nextSolved) return prevSolved ? 1 : -1;
 
-          return 0; // Maintain original order if all criteria are the same
+          return 0;
         });
     }
 
     watch(selectedOption, (selectedOptionValue) => {
       switch (selectedOptionValue) {
-      case 0: // All
-        quizzesToShow.value = arrayOfSubtasks.value;
-        break;
-      case 1: // Unsolved
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz) => !quiz.solved && quiz.creator !== user.value?.id
-        );
-        break;
-      case 2: // Solved
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz) => quiz.solved && quiz.creator !== user.value?.id
-        );
-        break;
-      case 3: // Own
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz) => quiz.creator === user.value?.id
-        );
-        break;
+        case 0: // All
+          quizzesToShow.value = arrayOfSubtasks.value;
+          break;
+        case 1: // Unsolved
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => !quiz.solved && !isQuizOwner(quiz)
+          );
+          break;
+        case 2: // Solved
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => quiz.solved && !isQuizOwner(quiz)
+          );
+          break;
+        case 3: // Own
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => isQuizOwner(quiz)
+          );
+          break;
       }
     });
 
     function scroolToView() {
       setTimeout(() => {
-        let eleme = document.getElementById(querySubTaskId.value);
-        eleme?.scrollIntoView({
+        let element = document.getElementById(querySubTaskId.value);
+        element?.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
       }, 0);
     }
 
-    onMounted(async () => {
-      manageAllDataForQuizzes();
-    });
+    onMounted(async () => manageAllDataForQuizzes());
 
     return {
       t,
@@ -373,5 +370,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>
