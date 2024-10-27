@@ -20,8 +20,6 @@
       controlsList="nodownload"
       oncontextmenu="return false;"
       :key="`video-${videoSRC}`"
-      @timeupdate="onTimeUpdate(activeLecture.id,$event)"
-      @loadstart="setTime(activeLecture.id,$event)"
     >      
       <track kind="captions" />
       <source ref="refSource" :src="videoSRC" type="video/mp4" />
@@ -82,28 +80,7 @@ export default defineComponent({
     );
 
 
-    function onTimeUpdate(videoID: any,event:any) {
-      const currentTime = event.target.currentTime;
-      const currentvideotime: any = useCookie("currentvideotime");
-      currentvideotime.value = currentTime;
-      const currentvideo: any = useCookie("currentvideo");
-      if ( currentTime < 1){
-        currentvideo.value = videoID;
-      }
-    }
-
-    function setTime(videoID: any,event:any){
-      const currentvideo: any = useCookie("currentvideo");
-      const currentvideotime: any = useCookie("currentvideotime");
-      if (currentvideo.value === videoID){
-        event.target.currentTime = currentvideotime?.value;
-      }
-      else{
-        currentvideotime.removeItem
-        currentvideo.removeItem
-      }
-    }
-    return { videoSRC, refSource, onTimeUpdate, setTime };
+    return { videoSRC, refSource };
   },
 });
 </script>
