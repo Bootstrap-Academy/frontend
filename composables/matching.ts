@@ -74,6 +74,22 @@ export async function getMatchingsInTask(task_id: any) {
   }
 }
 
+export async function getMatchingsInSkill(skillId: any) {
+  try {
+    const res = await GET(`/challenges/skills/${skillId}/tasks`);
+    const matchings = useMatchings();
+    matchings.value = res ?? [];
+    return [res, null];
+  } catch (error: any) {
+    let msg = error?.data?.error;
+    if (msg == "unverified") {
+      openSnackbar("error", "Error.VerifyToGetQuizzes");
+      return [null, error];
+    }
+    return [null, error];
+  }
+}
+
 export async function getMyMatchingsInTask(task_id: any, creator: any) {
   try {
     const response = await GET(`/challenges/tasks/${task_id}/matchings?creator=${creator}`);

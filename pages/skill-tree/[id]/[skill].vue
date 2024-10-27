@@ -19,6 +19,11 @@
       :skillID="rootSkillID"
       :activeStepper="activeStepper"
       @activeStepper="activeStepper = $event"
+      :courses="courses"
+      :coachings="coachings"
+      :webinars="webinars"
+      :quizzes="quizzes"
+      :matchings="matchings"
     />
     <div class="h-fit pointer-events-none">
       <SkillTreeNodeSvg
@@ -38,22 +43,21 @@
     <SkillTreeNodeDetailsStepperContent
       class="h-fit"
       :activeStepper="activeStepper"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
       :courses="courses"
       :coachings="coachings"
       :webinars="webinars"
-      :subSkillID="subSkillID"
-      :skillID="rootSkillID"
       :quizzes="quizzes"
+      :matchings="matchings"
     />
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import type { Quiz } from "~/types/courseTypes";
 import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
+
 definePageMeta({
   middleware: ["auth"],
 });
@@ -73,32 +77,20 @@ export default defineComponent({
     const coachings = useCoachings();
     const webinars = useWebinars();
     const quizzes = useQuizzes();
+    const matchings = useMatchings();
     const route = useRoute();
 
-    const rootSkillID = computed(() => {
-      return <string>(route?.params?.id ?? "");
-    });
-
-    const subTreeName = computed(() => {
-      return rootSkillID.value.replace(/_/g, " ");
-    });
-
-    const subSkillID = computed(() => {
-      return <string>(route?.params?.skill ?? "");
-    });
-
-    const skillName = computed(() => {
-      return subSkillID.value.replace(/_/g, " ");
-    });
+    const rootSkillID = computed(() => <string>(route?.params?.id ?? ""));
+    const subTreeName = computed(() => rootSkillID.value.replace(/_/g, " "));
+    const subSkillID = computed(() => <string>(route?.params?.skill ?? ""));
+    const skillName = computed(() => subSkillID.value.replace(/_/g, " "));
 
     const subSkill = computed(() => {
       let skills: any[] = subSkillTree.value?.skills ?? [];
       return skills.find((skill) => skill.id == subSkillID.value);
     });
 
-    const courseIDs = computed(() => {
-      return subSkill.value?.courses ?? [];
-    });
+    const courseIDs = computed(() => subSkill.value?.courses ?? []);
 
     const breadcrumbs = computed(() => {
       return [
@@ -152,14 +144,12 @@ export default defineComponent({
           getCoachingsForThisSubSkill(subSkillID.value),
           getWebinarsForThisSubSkill(subSkillID.value),
           getQuizzesInSkill(subSkillID.value),
+          getMatchingsInSkill(subSkillID.value),
         ]);
-        // assignQuizzes()
       }
 
       loading.value = false;
     });
-
-
 
     onUnmounted(() => {
       if (window) {
@@ -182,9 +172,8 @@ export default defineComponent({
       skillName,
       breadcrumbs,
       quizzes,
+      matchings,
     };
   },
 });
 </script>
-
-<style scoped></style>
