@@ -4,7 +4,7 @@
   >
     <div class="flex flex-wrap items-center">
       <NuxtLink :to="path" class="flex">
-        <span class="max-w-[200px] clamp"> {{ course?.title ?? "" }} </span>
+        <span class="max-w-max clamp"> {{ course?.title ?? "" }} </span>
         <span>/</span>
       </NuxtLink>
 
