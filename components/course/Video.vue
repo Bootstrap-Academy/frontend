@@ -75,7 +75,7 @@ export default defineComponent({
             await getLectureVideoSRC(courseID, newValue);
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
-          }, 40000);
+          }, 4000000);
         }
       },
       { deep: true, immediate: true }
