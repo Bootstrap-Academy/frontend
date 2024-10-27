@@ -25,12 +25,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 const props = defineProps({
-	modelValue: { type: Number, default: 0 },
-	buttonOptions: { type: Array as PropType<any>, default: [] },
-	primary: { type: Boolean, default: true },
-	secondary: { type: Boolean, default: false },
-	mobileResponsive: { type: Boolean, default: true },
-	smInMobile: { type: Boolean, default: false },
+  modelValue: { type: Number, default: 0 },
+  buttonOptions: { type: Array as PropType<any>, default: [] },
+  primary: { type: Boolean, default: true },
+  secondary: { type: Boolean, default: false },
+  mobileResponsive: { type: Boolean, default: true },
+  smInMobile: { type: Boolean, default: false },
 })
 
 const emits = defineEmits(["update:modelValue"])
@@ -40,29 +40,29 @@ const selectedOption = ref(0);
 const options = computed(() => props.buttonOptions)
 
 watch(
-	() => props.modelValue,
-	(newValue, oldValue) => {
-		selectedOption.value = newValue;
-		if (options.value[selectedOption.value]?.disabled) {
-			selectedOption.value = 0;
-			emits("update:modelValue", 0);
-		}
-	},
-	{ immediate: true }
+  () => props.modelValue,
+  (newValue, oldValue) => {
+    selectedOption.value = newValue;
+    if (options.value[selectedOption.value]?.disabled) {
+      selectedOption.value = 0;
+      emits("update:modelValue", 0);
+    }
+  },
+  { immediate: true }
 );
 
 watch(
-	() => options.value,
-	(newOptions) => {
-		if (newOptions[selectedOption.value]?.disabled) {
-			selectedOption.value = 0;
-			emits("update:modelValue", 0);
-		}
-	}
+  () => options.value,
+  (newOptions) => {
+    if (newOptions[selectedOption.value]?.disabled) {
+      selectedOption.value = 0;
+      emits("update:modelValue", 0);
+    }
+  }
 );
 
 function emitSelected(selected: any) {
-	selectedOption.value = selected;
-	emits("update:modelValue", selected);
+  selectedOption.value = selected;
+  emits("update:modelValue", selected);
 }
 </script>
