@@ -44,7 +44,7 @@
     "TotalQuizzesInLecture": "Quizze in dieser Vorlesung",
     "MyQuizzes": "Meine Quizze",
     "SolvedQuizzes": "Gelöste Quizze",
-    "ViewQuizzesForLastViewCourse": "Quizze für den zuletzt angesehenen Kurs anzeigen",
+    "ViewQuizzesForLastViewCourse": "Schau Dir die {type} Deines letzten Kurses an!",
     "NoQuizFoundForYouToSolve": "Es wurde kein Quiz zum Lösen gefunden",
     "NoMatchingFoundForYouToSolve": "Es wurde kein Matching zum Lösen gefunden",
     "Rank": "Rang",

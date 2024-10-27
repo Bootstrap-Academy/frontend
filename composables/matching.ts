@@ -4,6 +4,7 @@ export const useMatchings = () => useState<Matching[]>("matchings", () => []);
 export const useMatchingsInLecture = () => useState<Matching[]>("matchingsInLecture", () => []);
 export const useMatching = () => useState<Matching>("matching", (): Matching => new Matching());
 export const useMatchingsForLectures = () => useState<MatchingForSections[]>("matchingForLectures", (): MatchingForSections[] => [] )
+export const useMatchingsInCourse = () => useState<Matching[]>("matchingsInCourse", () => []);
 
 export async function createMatching(body: any, task_id: any) {
   try {
@@ -141,15 +142,14 @@ export async function getMatchingsInLecture(lecture: string) {
 
 export async function getMatchingsInCourse(courseId: any, section_id: any = "", lecture_id: any = "") {
   try {
+    const matchingsInCourse = useMatchingsInCourse();
     if (!!!section_id && !!!lecture_id) {
       const res = await GET(`/challenges/courses/${courseId}/tasks`);
-      const quizzes = useQuizzes();
-      quizzes.value = res ?? [];
+      matchingsInCourse.value = res ?? [];
       return [res, null];
     } else {
       const res = await GET(`/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`);
-      const quizzes = useQuizzes();
-      quizzes.value = res ?? [];
+      matchingsInCourse.value = res ?? [];
       return [res, null];
     }
   } catch (error: any) {

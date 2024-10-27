@@ -19,10 +19,14 @@
     </div>
 
     <NuxtLink
-      v-if="quizzesQuickStart && lastViewCourse"
+      v-if="quizzesQuickStart && lastViewCourse && lastViewCourseInfo.existing"
       :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&rootSkillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
     >
-      <Btn>{{ t("Headings.ViewQuizzesForLastViewCourse") }}</Btn>
+      <Btn>
+        {{ t("Headings.ViewQuizzesForLastViewCourse", {
+          type: t(lastViewCourseInfo.type)
+        }) }}
+      </Btn>
     </NuxtLink>
 
     <SkillTreeZoomLevel
@@ -49,9 +53,19 @@ export default defineComponent({
     const { t } = useI18n();
     const lastViewCourse: any = useCookie("lastViewCourse");
 
-    return { emit, t, lastViewCourse };
+    const lastViewCourseInfo = computed(() => {
+      let quizzes = useQuizzesInCourse();
+      let matchings = useMatchingsInCourse();
+
+      return {
+        existing: (
+          quizzes.value.length > 0 || matchings.value.length > 0
+        ),
+        type: quizzes.value.length > 0 ? "Headings.Quizzes" : "Headings.Matchings", 
+      }
+    });
+
+    return { emit, t, lastViewCourse, lastViewCourseInfo };
   },
 });
 </script>
-
-<style scoped></style>
