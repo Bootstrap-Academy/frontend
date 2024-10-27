@@ -28,10 +28,11 @@ export default defineComponent({
     function hasHistory() {
       return window.history.length > 2;
     }
+
     function onclickNavigate() {
       if (!!!backRoute.value.pathname) {
         console.log("jas history", hasHistory());
-        hasHistory() ? router.go(-1) : router.push("/");
+        hasHistory() ? window.history.back(): router.push("/");
       } else {
         router.push(backRoute.value.pathname);
       }
