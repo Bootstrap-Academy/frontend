@@ -20,21 +20,46 @@
 
     <g id="icon-box" class="cursor-pointer">
       <foreignObject
+        v-if="flameEffect"
+        x="43.8984"
+        y="44.0664"
+        :width="iconSize"
+        :height="iconSize"
+        class="bg-[#451b80] rounded-full origin-center scale-[1.4] animate-pulse"
+      >
+        <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
+      </foreignObject>
+
+      <foreignObject
         x="43.8984"
         y="44.0664"
         :width="iconSize"
         :height="iconSize"
         class="cursor-pointer"
       >
-        <!-- <object
-					class="cursor-pointer"
-					type="image/svg+xml"
-					:data="icon"
-					v-if="node && node.icon"
-					@click="onclickToggleActive"
-				></object> -->
-
         <img :src="icon" class="cursor-pointer" v-if="node && node.icon" :alt="t('AltAttributes.CourseIcon')" />
+      </foreignObject>
+
+      <foreignObject
+        v-if="dottedBorder"
+        x="43.8984"
+        y="44.0664"
+        :width="iconSize"
+        :height="iconSize"
+        class="border-8 border-[#f0a000] border-dotted rounded-full"
+      >
+        <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
+      </foreignObject>
+    
+      <foreignObject
+        v-if="segmentedBorder"
+        x="43.8984"
+        y="44.0664"
+        :width="iconSize"
+        :height="iconSize"
+        class="border-8 border-[#f0a000] rounded-full"
+      >
+        <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
       </foreignObject>
     </g>
 
@@ -78,6 +103,9 @@ export default {
     active: { type: Boolean, default: false },
     completed: { type: Boolean, default: false },
     failed: { type: Boolean, default: false },
+    dottedBorder: { type: Boolean, default: false },
+    segmentedBorder: { type: Boolean, default: false },
+    flameEffect: { type: Boolean, default: false },
   },
   emits: ["active", "completed"],
   setup(props, { emit }) {
