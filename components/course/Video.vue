@@ -73,7 +73,7 @@ export default defineComponent({
             await getLectureVideoSRC(courseID, newValue);
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
-          }, 28800); //8 hours
+          },  28800000); //8 hours
         }
       },
       { deep: true, immediate: true }
