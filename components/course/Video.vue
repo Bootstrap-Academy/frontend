@@ -11,6 +11,7 @@
     ></iframe>
 
     <video
+      ref="video"
       v-else-if="activeLecture.type == 'mp4'"
       :poster="course.image"
       controls
@@ -20,7 +21,7 @@
       controlsList="nodownload"
       oncontextmenu="return false;"
       :key="`video-${videoSRC}`"
-    >      
+    >
       <track kind="captions" />
       <source ref="refSource" :src="videoSRC" type="video/mp4" />
       <p class="vjs-no-js">
@@ -53,6 +54,7 @@ export default defineComponent({
 
     let videoInterval: any;
     const refSource = ref<HTMLSourceElement | any>(null);
+    const video = ref<HTMLVideoElement | null>(null); 
 
     watch(
       () => props.activeLecture,
@@ -71,6 +73,12 @@ export default defineComponent({
           refSource.value.setAttribute("src", videoSRC.value);
           videoInterval = setInterval(async () => {
             await getLectureVideoSRC(courseID, newValue);
+            if (video.value) {
+              video.value.pause();
+              refSource.value.src = videoSRC.value;
+              video.value.load();
+              video.value.play();
+            };
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
           },  28800000); //8 hours
@@ -80,7 +88,7 @@ export default defineComponent({
     );
 
 
-    return { videoSRC, refSource };
+    return { videoSRC, refSource, video };
   },
 });
 </script>
