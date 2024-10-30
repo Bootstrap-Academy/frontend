@@ -3,6 +3,7 @@
     <article class="flex midXl:hidden gap-card items-center">
       <div class="flex gap-2">
         <ArrowLeftCircleIcon
+          v-if="!isFirstLecture"
           @click="goToPrevLecture"
           class="w-10 h-10 text-accent cursor-pointer"
         />
@@ -14,7 +15,7 @@
     </article>
     <!-- pr-[70px] -->
     <article class="hidden midXl:flex gap-box items-center">
-      <Btn sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
+      <Btn v-if="!isFirstLecture" sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
         {{ t("Buttons.Prev") }}
       </Btn>
       <Btn sm @click="goToNextLecture" :icon="ArrowRightIcon" icon-right>
@@ -43,6 +44,10 @@ const props = defineProps({
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
+
+const isFirstLecture = computed(() => lectures.value.findIndex(
+  (lecture) => lecture.id == activeLectureID.value
+) <= 0);
 
 const activeLectureID = computed(() => {
   return props.activeLecture?.id ?? "";

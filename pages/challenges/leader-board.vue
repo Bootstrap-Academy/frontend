@@ -20,13 +20,19 @@
 -->
 <template>
   <main
-    class="grid-auto gap-card container min pb-container pt-container grid-rows-[auto_auto_1fr]"
+    class="grid-auto gap-card container min pb-container pt-container-sm grid-rows-[auto_auto_1fr]"
   >
-    <InputButtonToggle
-      :buttonOptions="buttonOptions"
-      v-model="selectedbutton"
-    />
-    <p class="text-heading-1 mt-6 mb-12">{{ t("Headings.LeaderBoard") }}:</p>
+    <div class="flex flex-col items-center mb-8">
+      <div class="flex space-x-4 items-center mb-4">
+        <TrophyIcon class="w-8 h-8 text-accent" />
+        <p class="text-heading-1 text-accent">{{ t("Headings.LeaderBoard") }}</p>
+      </div>
+
+      <InputButtonToggle
+        :buttonOptions="buttonOptions"
+        v-model="selectedbutton"
+      />
+    </div>
 
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />
 
@@ -48,6 +54,7 @@
 </template>
 
 <script lang="ts">
+import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { useLeaderBoardList } from "~~/composables/leaderboard";
 definePageMeta({
@@ -57,6 +64,9 @@ definePageMeta({
 export default {
   head: {
     title: "Leader board",
+  },
+  components: {
+    TrophyIcon
   },
   setup() {
     const { t } = useI18n();
@@ -91,9 +101,7 @@ export default {
       localStorage.removeItem("selectedButtonLeaderBoard");
     });
 
-    return { buttonOptions, selectedbutton, t, leaderBoardList, loading };
+    return { buttonOptions, selectedbutton, t, leaderBoardList, loading, TrophyIcon };
   },
 };
 </script>
-
-<style scoped></style>
