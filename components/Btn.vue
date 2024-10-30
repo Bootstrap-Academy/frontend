@@ -1,13 +1,11 @@
 <template>
-  <button :class="classes" @click="onclick" type="button">
-    <component v-if="icon" :is="icon" class="icon"></component>
+  <button :class="classes" @click="onclick" :disabled="disabled" type="button">
+    <component v-if="icon" :is="icon" class="icon" />
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
 export default defineComponent({
   props: {
     full: { type: Boolean, default: false },
@@ -21,11 +19,12 @@ export default defineComponent({
     iconRight: { type: Boolean, default: false },
     bgColor: { type: String, default: "bg-accent" },
     borderColor: { type: String, default: "border-accent" },
+    disabled: { type: Boolean, default: false },
   },
   emits: ["click"],
   setup(props, { emit }) {
     function onclick() {
-      emit("click", true);
+      if (!props.disabled) emit("click", true);
     }
 
     const textColor = computed(() => {
@@ -39,15 +38,16 @@ export default defineComponent({
           sm: props.sm,
           "flex-row-reverse": props.iconRight,
           "text-center justify-center w-full": props.full,
+          disabled: props.disabled,
         },
         props.primary && !props.secondary && !props.tertiary
-          ? `primary ${props.bgColor} text-primary hover:${props.bgColor} border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
+          ? `primary ${props.bgColor} text-primary enabled:hover:${props.bgColor} border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
           : "",
         props.secondary
-          ? `secondary bg-transparent text-heading hover:bg-transparent border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
+          ? `secondary bg-transparent text-heading enabled:hover:bg-transparent border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
           : "",
         props.tertiary
-          ? `tertiary bg-transparent text-heading hover:bg-transparent hover:scale-105 border border-transparent hover:ring-4 md:hover:ring-8 hover:ring-transparent`
+          ? `tertiary bg-transparent text-heading enabled:hover:bg-transparent enabled:hover:scale-105 border border-transparent enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-transparent`
           : "",
       ];
     });
@@ -55,10 +55,15 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 button {
   @apply h-fit rounded flex items-center text-center
 			 uppercase tracking-widest transition-basic font-body;
+}
+
+button:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STYLE */

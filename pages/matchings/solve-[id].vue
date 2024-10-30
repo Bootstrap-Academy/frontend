@@ -39,7 +39,7 @@
             {{ quizzesToShow?.length }}
           </p>
           <aside
-            class="p-2 grid max-h-[600px] h-fit pb-44 overflow-scroll gap-4"
+            class="p-2 grid max-h-[600px] h-fit pb-44 overflow-auto gap-4"
           >
             <template v-if="loading">
               <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />

@@ -1,45 +1,23 @@
 <template>
   <main class="relative h-screen-main min grid place-items-center">
-    <SkillTreeHeader
-      @zoomLevel="zoomLevel = $event"
-      :breadcrumbs="breadcrumbs"
-      :quizzesQuickStart="true"
-    />
+    <SkillTreeHeader @zoomLevel="zoomLevel = $event" :breadcrumbs="breadcrumbs" :quizzesQuickStart="true" />
 
     <LoadingDots v-if="loading">
       {{ t("Body.RootSkillTreeLoading") }}
     </LoadingDots>
 
-    <section
-      v-else-if="nodes && nodes.length"
-      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-scroll"
-      ref="mainRef"
-    >
+    <section v-else-if="nodes && nodes.length"
+      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-auto" ref="mainRef">
       <svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete">
-          <SkillTreePathway
-            v-for="(pathway, p) of pathways"
-            :key="p"
-            :pathway="pathway.path"
-            :zoomLevel="zoomLevel"
-            @click="scrollViaPathway(pathway.node, pathway.parent)"
-          />
+          <SkillTreePathway v-for="(pathway, p) of pathways" :key="p" :pathway="pathway.path" :zoomLevel="zoomLevel"
+            @click="scrollViaPathway(pathway.node, pathway.parent)" />
         </g>
 
         <template v-for="(row, i) in map" :key="i">
-          <SkillTreeNode
-            v-for="(column, j) in row"
-            :key="`${i}${j}`"
-            :row="i"
-            :column="j"
-            @ref="insertRefInMap($event, i, j)"
-            :node="getNode(i, j)"
-            :zoomLevel="zoomLevel"
-            @size="nodeSize = $event"
-            @click="scrollToNode(i, j, true)"
-            view-subtree
-            :completed="getNode(i, j) && getNode(i, j).id == 'start'"
-          />
+          <SkillTreeNode v-for="(column, j) in row" :key="`${i}${j}`" :row="i" :column="j"
+            @ref="insertRefInMap($event, i, j)" :node="getNode(i, j)" :zoomLevel="zoomLevel" @size="nodeSize = $event"
+            @click="scrollToNode(i, j, true)" view-subtree :completed="getNode(i, j) && getNode(i, j).id == 'start'" :xp="xp" />
         </template>
       </svg>
     </section>
@@ -68,6 +46,7 @@ export default {
     });
     const { t } = useI18n();
     const user = useUser();
+    const xp = useXP();
 
     // ! ======================================================= Set Up
     function onclickUploadCertificates() {
@@ -78,7 +57,7 @@ export default {
         false,
         {
           label: "Buttons.Okay",
-          onclick: () => {},
+          onclick: () => { },
         },
         null
       );
@@ -106,6 +85,8 @@ export default {
 
     onMounted(async () => {
       const [success, error] = await getRootSkillTree();
+
+      await getXP();
 
       if (!!error || !!!success) {
         loading.value = false;
@@ -286,6 +267,8 @@ export default {
       onclickUploadCertificates,
       ArrowUpTrayIcon,
       breadcrumbs,
+      
+      xp,
     };
   },
 };
@@ -296,6 +279,13 @@ export default {
 .map::-webkit-scrollbar {
   width: 5px;
   height: 5px;
+}
+
+/* hides the horizontal scrollbar with tablet and handy to avoid white pixels*/
+@media (pointer: coarse) {
+  .map::-webkit-scrollbar {
+    height: 0;
+  }
 }
 
 /* Track */

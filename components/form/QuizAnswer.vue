@@ -27,7 +27,7 @@
       </p>
 
       <article
-        class="grid gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+        class="grid gap-card-sm overflow-auto max-h-[45vh] place-content-start"
         :class="
           doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
         "
