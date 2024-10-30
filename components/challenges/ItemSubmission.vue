@@ -1,7 +1,7 @@
 <template>
   <article>
     <h4 class="text-heading-3">{{ t("Headings.Submissions") }}</h4>
-    <div class="border border-primary rounded-md overflow-scroll mt-3">
+    <div class="border border-primary rounded-md overflow-auto mt-3">
       <table class="w-full overflow-scroll">
         <tr>
           <th

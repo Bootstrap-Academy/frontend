@@ -6,6 +6,9 @@
 			:node="node"
 			:active="active"
 			:completed="completed"
+      :dottedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 25 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 42"
+      :segmentedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 42 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 50"
+      :flameEffect="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 50"
 		/>
 
 		<foreignObject
@@ -26,7 +29,7 @@
 					'text-heading-5': zoomLevel == 3,
 					'text-body-2': zoomLevel == 2,
 				}"
-				v-if="node && node.name != 'start'"
+				v-if="node"
 			>
 				{{ node?.name ?? '' }}
 			</h6>
@@ -49,9 +52,22 @@ export default defineComponent({
     zoomLevel: { type: Number, default: 2 },
     viewSubtree: { type: Boolean, default: false },
     viewSkill: { type: Boolean, default: false },
+    xp: { type: Object as PropType<any>, default: null },
   },
   emits: ['node', 'size', 'selected', 'move', 'ref'],
   setup(props, { emit }) {
+    const search_id = computed(() => props.viewSubtree ? props.node?.id : props.node?.parent_id)
+    const xp_list_root_skill = computed(() => props.xp?.skills?.find(
+      (skill: any) => skill.skill === search_id.value
+    ));
+    const xp_list_sub_skill = computed(() => xp_list_root_skill.value?.skills?.find(
+      (skill: any) => skill.skill === props.node?.id
+    ));
+    const root_skill_xp_value = computed(() => xp_list_root_skill.value?.xp);
+    const root_skill_level_value = computed(() => xp_list_root_skill.value?.level);
+    const sub_skill_xp_value = computed(() => xp_list_sub_skill.value?.xp);
+    const sub_skill_level_value = computed(() => xp_list_sub_skill.value?.level);
+
     let occupiedSpace = 3;
 
     const size = computed(() => {
@@ -135,6 +151,10 @@ export default defineComponent({
       ondblclick,
       isFilled,
       occupiedSpace,
+      root_skill_xp_value,
+      root_skill_level_value,
+      sub_skill_xp_value,
+      sub_skill_level_value,
     };
   },
 });

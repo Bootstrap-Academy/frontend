@@ -58,7 +58,7 @@
       <div class="bg-secondary style-box w-fit h-fit"></div>
 
       <aside
-        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll"
+        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-auto"
       >
         <ChallengesItemSubmission
           :data="challenge"

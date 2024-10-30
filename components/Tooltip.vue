@@ -82,7 +82,7 @@ function show() {
       @mouseleave="hide"
       ref="floatingRef"
       :class="[
-        ' absolute w-max max-w-[380px] text-sm top-0 left-0 z-50 bg-light text-subheading p-3  rounded-md cursor-default',
+        'absolute w-max max-w-[calc(100vw-50px)] sm:max-w-[380px] text-sm top-0 left-0 z-50 bg-light text-subheading p-3 rounded-md cursor-default',
         isHidden && 'hidden',
       ]"
     >

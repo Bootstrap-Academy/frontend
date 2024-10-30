@@ -15,7 +15,7 @@
 
     <section
       v-else-if="nodes && nodes.length"
-      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-scroll"
+      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-auto"
       ref="mainRef"
       @mousedown="startDrag"
       :class="{ 'cursor-grabbing': isDragging }"
@@ -49,6 +49,7 @@
               @move="setSelectedNode($event)"
               :active="selectedNode.row == i && selectedNode.column == j"
               :completed="getNode(i, j)?.completed ?? false"
+              :xp="xp"
             />
           </template>
         </template>
@@ -199,11 +200,17 @@ export default {
       { deep: true }
     );
 
+    const xp = useXP();
+
     onMounted(async () => {
       if (!!!subTreeId.value) {
         loading.value = false;
         return;
       }
+
+      await getXP();
+      
+      console.log("xp", xp.value);  
 
       const [success, error] = await getSubSkillTree(subTreeId.value);
 
@@ -436,6 +443,8 @@ export default {
 
       isDragging,
       startDrag,
+      
+      xp,
     };
   },
 };
