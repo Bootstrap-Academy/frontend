@@ -1,7 +1,10 @@
-
+type Author = {
+  name: string;
+  url: string;
+};
 
 export class Course{
-  author: string = "";
+  authors: Author[] = [];
   category: string = "";
   description: string = "";
   id: string = "";

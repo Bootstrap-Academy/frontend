@@ -12,7 +12,27 @@
 			<SectionTitle full size="xl" :subheading="category" :heading="title" />
 			<p>
 				{{ t('Body.CreatedBy') }}
-				<span class="text-accent">{{ author }}</span>
+        <span v-if="authors.length === 1">
+          <a class="text-accent" :href="authors[0].url">{{ authors[0].name }}</a>
+        </span>
+        <span v-else-if="authors.length === 2">
+          <a class="text-accent" :href="authors[0].url">{{ authors[0].name }}</a>
+          {{ t('Body.And') }}
+          <a class="text-accent" :href="authors[1].url">{{ authors[1].name }}</a>
+        </span>
+        <span v-else>
+          <template v-for="(author, index) in authors">
+            <template v-if="index !== authors.length - 1">
+              <span>
+                <a class="text-accent" :href="author.url">{{ author.name }}</a>,
+              </span>
+            </template>
+            <template v-else>
+              {{ t('Body.And') }}
+              <a class="text-accent" :href="author.url">{{ author.name }}</a>
+            </template>
+          </template>
+        </span>
 			</p>
 		</div>
 
@@ -47,8 +67,8 @@ export default defineComponent({
       return props.data?.title ?? '';
     });
 
-    const author = computed(() => {
-      return props.data?.author ?? '';
+    const authors = computed(() => {
+      return props.data?.authors ?? '';
     });
 
     const lastUpdated = computed(() => {
@@ -59,7 +79,7 @@ export default defineComponent({
       return `${t(month.string).substring(0, 3)}, ${year}`;
     });
 
-    return { image, title, category, author, lastUpdated, t };
+    return { image, title, category, authors, lastUpdated, t };
   },
 });
 </script>
