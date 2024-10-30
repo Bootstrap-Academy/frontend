@@ -17,7 +17,7 @@
         <template v-for="(row, i) in map" :key="i">
           <SkillTreeNode v-for="(column, j) in row" :key="`${i}${j}`" :row="i" :column="j"
             @ref="insertRefInMap($event, i, j)" :node="getNode(i, j)" :zoomLevel="zoomLevel" @size="nodeSize = $event"
-            @click="scrollToNode(i, j, true)" view-subtree :completed="getNode(i, j) && getNode(i, j).id == 'start'" />
+            @click="scrollToNode(i, j, true)" view-subtree :completed="getNode(i, j) && getNode(i, j).id == 'start'" :xp="xp" />
         </template>
       </svg>
     </section>
@@ -46,6 +46,7 @@ export default {
     });
     const { t } = useI18n();
     const user = useUser();
+    const xp = useXP();
 
     // ! ======================================================= Set Up
     function onclickUploadCertificates() {
@@ -84,6 +85,8 @@ export default {
 
     onMounted(async () => {
       const [success, error] = await getRootSkillTree();
+
+      await getXP();
 
       if (!!error || !!!success) {
         loading.value = false;
@@ -264,6 +267,8 @@ export default {
       onclickUploadCertificates,
       ArrowUpTrayIcon,
       breadcrumbs,
+      
+      xp,
     };
   },
 };

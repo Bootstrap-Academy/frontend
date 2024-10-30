@@ -50,7 +50,7 @@
     "UnsolvedQuizzes": "Unsolved Quizzes",
     "OwnQuizzes": "Own Quizzes",
     "AmountSolvedQuizzes": "{amount} of {total}",
-    "ViewQuizzesForLastViewCourse": "View Quizzes For Last View Course",
+    "ViewQuizzesForLastViewCourse": "Check out the {type} of your last course!",
     "NoQuizFoundForYouToSolve": "No Quiz Found For You To Solve",
     "NoMatchingFoundForYouToSolve": "No Matching Found For You To Solve",
     "BuyAdditionalSubscription": "Buying an additional subscription will extend the subscription duration.",
