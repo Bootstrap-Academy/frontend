@@ -7,33 +7,35 @@
 		<p class="text-body-2 col-span-2 hidden md:block">{{ t(body) }}</p>
 	</header>
 
-	<header :class="{ 'text-center': center, 'max-w-xl': !full }" v-else>
-		<h1 v-if="size == 'xl'" class="mb-4 md:mb-6 text-display-2 leading-tight">
-			<strong class="text-subheading-1 mb-2 md:mb-4 block">
-				{{ t(subheading) }}
-			</strong>
-			{{ t(heading) }}
-		</h1>
+	<div v-else class="flex justify-center">
+		<header :class="{ 'text-center': center, 'max-w-xl': !full }">
+			<h1 v-if="size == 'xl'" class="mb-4 md:mb-6 text-display-2 leading-tight">
+				<strong class="text-subheading-1 mb-2 md:mb-4 block">
+					{{ t(subheading) }}
+				</strong>
+				{{ t(heading) }}
+			</h1>
 
-		<h1 v-else-if="size == 'lg'" class="mb-5 text-heading-1">
-			<strong class="text-subheading-1 mb-2 block">{{ t(subheading) }}</strong>
-			{{ t(heading) }}
-		</h1>
-		
-		<h3 v-else-if="size == 'sm'" class="mb-2 text-heading-2">
-			<strong class="text-xs md:text-sm mb-2 text-accent block">
-				{{ t(subheading) }}
-			</strong>
-			{{ t(heading) }}
-		</h3>
-		<h2 v-else class="mb-box leading-normal text-heading-1">
-			<strong class="text-subheading-1 mb-1 xl:mb-2 block">
-				{{ t(subheading) }}
-			</strong>
-			{{ t(heading) }}
-		</h2>
-		<p>{{ t(body) }}</p>
-	</header>
+			<h1 v-else-if="size == 'lg'" class="mb-5 text-heading-1">
+				<strong class="text-subheading-1 mb-2 block">{{ t(subheading) }}</strong>
+				{{ t(heading) }}
+			</h1>
+			
+			<h3 v-else-if="size == 'sm'" class="mb-2 text-heading-2">
+				<strong class="text-xs md:text-sm mb-2 text-accent block">
+					{{ t(subheading) }}
+				</strong>
+				{{ t(heading) }}
+			</h3>
+			<h2 v-else class="mb-box leading-normal text-heading-1">
+				<strong class="text-subheading-1 mb-1 xl:mb-2 block">
+					{{ t(subheading) }}
+				</strong>
+				{{ t(heading) }}
+			</h2>
+			<p>{{ t(body) }}</p>
+		</header>
+	</div>
 </template>
 
 <script lang="ts">
