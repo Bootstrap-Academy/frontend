@@ -1,13 +1,11 @@
 <template>
-  <button :class="classes" @click="onclick" type="button">
+  <button :class="classes" @click="onclick" type="button" :disabled="disabled">
     <component v-if="icon" :is="icon" class="icon"></component>
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
 export default defineComponent({
   props: {
     full: { type: Boolean, default: false },
@@ -21,11 +19,12 @@ export default defineComponent({
     iconRight: { type: Boolean, default: false },
     bgColor: { type: String, default: "bg-accent" },
     borderColor: { type: String, default: "border-accent" },
+    disabled: { type: Boolean, default: false },
   },
   emits: ["click"],
   setup(props, { emit }) {
     function onclick() {
-      emit("click", true);
+      if (!props.disabled) emit("click", true);
     }
 
     const textColor = computed(() => {
@@ -39,6 +38,7 @@ export default defineComponent({
           sm: props.sm,
           "flex-row-reverse": props.iconRight,
           "text-center justify-center w-full": props.full,
+          "opacity-50 cursor-not-allowed": props.disabled,
         },
         props.primary && !props.secondary && !props.tertiary
           ? `primary ${props.bgColor} text-primary hover:${props.bgColor} border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
