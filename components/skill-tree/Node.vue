@@ -1,5 +1,5 @@
 <template>
-	<svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick">
+	<svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick" class="duration-300" :class="isNotInSearch ? 'opacity-35' : ''">
 		<SkillTreeNodeSvg
 			v-if="isFilled"
 			:size="nodeSize"
@@ -49,6 +49,7 @@ export default defineComponent({
     zoomLevel: { type: Number, default: 2 },
     viewSubtree: { type: Boolean, default: false },
     viewSkill: { type: Boolean, default: false },
+    isNotInSearch: { type: Boolean, default: false },
   },
   emits: ['node', 'size', 'selected', 'move', 'ref'],
   setup(props, { emit }) {
@@ -139,5 +140,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>
