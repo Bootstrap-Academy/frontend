@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-wrap gap-card-sm items-center">
       <label
-        v-if="!noLabel"
+        v-if="!noLabel && label != ''"
         class="text-body-2 text-body font-body block mb-2"
         :for="id ?? label"
       >
@@ -40,6 +40,7 @@
     />
 
     <p
+      v-if="error"
       class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
       :class="
         error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
@@ -51,8 +52,6 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
