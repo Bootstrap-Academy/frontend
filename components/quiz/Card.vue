@@ -20,11 +20,12 @@
     </h3>
 
     <div class="flex justify-between gap-box items-center">
-      <p class="text-body-2" v-if="data?.single_choice">
-        {{ t("Headings.SingleChoice") }}
+      <p class="text-body-2">
+        {{ data?.single_choice ? t("Headings.SingleChoice") : t("Headings.MultiChoice") }}
       </p>
-      <p class="text-body-2" v-else>{{ t("Headings.MultiChoice") }}</p>
+      <span class="info-icon" :title="`Diese Frage erlaubt ${data?.single_choice ? 'nur eine Antwort' : 'mehrere Antworten'}.`">ℹ️</span>
     </div>
+
   </article>
 </template>
 
