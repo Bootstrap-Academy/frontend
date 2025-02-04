@@ -33,7 +33,7 @@
     "highlight.js": "^11.9.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
-    "katex": "^0.16.10",
+    "katex": "^0.16.21",
     "markdown-it": "^14.1.0",
     "monaco-editor": "^0.49.0",
     "nanoid": "^5.0.7",
