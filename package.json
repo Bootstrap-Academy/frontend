@@ -19,7 +19,7 @@
     "eslint-plugin-vue": "^9.32.0",
     "nuxt": "3.15.4",
     "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.0.3",
     "vue-i18n": "^9.14.2"
   },
   "dependencies": {
