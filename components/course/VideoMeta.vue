@@ -4,7 +4,7 @@
   >
     <div class="flex flex-wrap items-center">
       <NuxtLink :to="path" class="flex">
-        <span class="max-w-[200px] clamp"> {{ course?.title ?? "" }} </span>
+        <span class="max-w-max clamp"> {{ course?.title ?? "" }} </span>
         <span>/</span>
       </NuxtLink>
 
@@ -33,7 +33,7 @@
           listOfCompletedCourses.find((lec) => lec == activeLecture.id)
         "
       >
-        <Btn i-if="user?.admin || canCreate" secondary sm @click="addTask">{{ t("Buttons.AddTask") }}</Btn>
+        <Btn i-if="user?.admin || canCreate" :icon="PlusCircleIcon" secondary sm @click="addTask">{{ t("Buttons.AddTask") }}</Btn>
       </template>
 
       <Btn
@@ -74,12 +74,13 @@
 <script lang="ts">
 import { useI18n } from "vue-i18n";
 import { defineComponent, ref, computed, onMounted } from "vue";
-import { CheckIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
+import { CheckIcon, CheckBadgeIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
   components: {
     CheckIcon,
     CheckBadgeIcon,
+    PlusCircleIcon,
   },
   props: {
     course: { type: Object as PropType<any>, default: null },
@@ -207,6 +208,7 @@ export default defineComponent({
       path,
       listOfCompletedCourses,
       CheckIcon,
+      PlusCircleIcon,
       markLectureAsComplete,
       activeLectureID,
       courseID,

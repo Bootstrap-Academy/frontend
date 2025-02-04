@@ -17,5 +17,3 @@ const props = defineProps({
 const matchings = useMatchings();
 
 </script>
-
-<style scoped></style>

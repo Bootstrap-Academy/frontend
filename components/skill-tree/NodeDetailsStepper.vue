@@ -1,27 +1,13 @@
 <template>
   <article class="flex flex-col gap-card w-full h-fit">
-    <div v-for="{ level, label, bgColor, borderColor } of steppers">
-      <Btn full v-if="level == 3" :key="3" @click="openQuiz(
-        quizzes[0].id,
-      )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
-        {{ t(label) }}
-      </Btn>
-      <Btn full v-else-if="level == 4" :key="5" @click="openMatchings(
-          matchings[0].id,
-          matchings[0].task_id,
-        )" :secondary="_activeStepper != level" :bgColor="bgColor" :borderColor="borderColor">
-        {{ t(label) }}
-      </Btn>
-      <Btn full v-else :key="level" @click="_activeStepper = level" :secondary="_activeStepper != level"
-        :bgColor="bgColor" :borderColor="borderColor">
-        {{ t(label) }}
-      </Btn>
-    </div>
+    <Btn v-for="{ level, label, bgColor, borderColor, disabled, handleSelectStepper } of steppers" full :key="level"
+      :bgColor="bgColor" :borderColor="borderColor" @click="handleSelectStepper" :secondary="_activeStepper !== level" :disabled="disabled">
+      {{ t(label) }}
+    </Btn>
   </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -30,6 +16,11 @@ export default defineComponent({
     activeStepper: { default: 0 },
     skillID: { default: "" },
     subSkillID: { default: "" },
+    courses: { type: Array, default: () => [] },
+    coachings: { type: Array, default: () => [] },
+    webinars: { type: Array, default: () => [] },
+    quizzes: { type: Array, default: () => [] },
+    matchings: { type: Array, default: () => [] },
   },
   emits: ["activeStepper"],
   setup(props, { emit }) {
@@ -39,36 +30,48 @@ export default defineComponent({
     const quizzes = useQuizzes();
     const matchings = useMatchings();
 
-    const steppers = reactive([
+    let _activeStepper = ref(0);
+
+    const steppers = computed(() => [
       {
         level: 0,
         label: "Headings.Courses",
         bgColor: "bg-accent",
         borderColor: "border-accent",
+        disabled: !props.courses || props.courses.length === 0,
+        handleSelectStepper: () => _activeStepper.value = 0,
       },
       {
         level: 1,
         label: "Headings.Coachings",
         bgColor: "bg-info",
         borderColor: "border-info",
+        disabled: !props.coachings || props.coachings.length === 0,
+        handleSelectStepper: () => _activeStepper.value = 1,
       },
       {
         level: 2,
         label: "Headings.Webinars",
         bgColor: "bg-warning",
         borderColor: "border-warning",
+        disabled: !props.webinars || props.webinars.length === 0,
+        handleSelectStepper: () => _activeStepper.value = 2,
       },
       {
         level: 3,
         label: "Headings.QuizQuestions",
         bgColor: "bg-error",
         borderColor: "border-error",
+        disabled: !props.quizzes || props.quizzes.length === 0,
+        handleSelectStepper: () => openQuiz(quizzes.value[0]?.id),
       },
       {
         level: 4,
         label: "Headings.Matchings",
         bgColor: "bg-success",
         borderColor: "border-success",
+        disabled: !props.matchings || props.matchings.length === 0,
+        handleSelectStepper: () => openMatchings(matchings.value[0]?.id, matchings.value[0]?.task_id),
       },
     ]);
 
@@ -84,11 +87,10 @@ export default defineComponent({
       );
     }
 
-    const _activeStepper = ref(props.activeStepper ?? 0);
-
     watch(
       () => _activeStepper.value,
-      (newValue, oldValue) => {
+      (newValue) => {
+        console.log("newValue", newValue);
         emit("activeStepper", newValue);
       },
       { deep: true }
@@ -98,5 +100,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>

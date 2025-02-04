@@ -22,31 +22,11 @@
   <main
     class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr] grid place-items-center"
   >
-    <!-- <p>{{ codingChallenges }}</p> -->
-    <section class="flex gap-3 items-center justify-end mb-3">
-      <article
-        class="text-white font-medium sm:text-xl sm:px-5 pb-1 cursor-pointer border-b-2"
-        :class="
-          selectedTab == 0
-            ? 'border-b-accent'
-            : ' border-black hover:border-tertiary'
-        "
-        @click="selectedTab = 0"
-      >
-        <PencilIcon class="h-5 w-5 text-accent inline-block mr-2" />
-        {{ $t("Headings.Challenge") }}
-      </article>
-      <article
-        class="text-white font-medium sm:text-xl sm:px-5 pb-1 cursor-pointer border-b-2"
-        :class="
-          selectedTab == 1
-            ? 'border-b-accent'
-            : ' border-black hover:border-tertiary'
-        "
-        @click="selectedTab = 1"
-      >
-        {{ $t("Headings.CodingChallenge") }}
-      </article>
+    <section class="flex justify-center">
+      <InputButtonToggle
+        :buttonOptions="buttonOptions"
+        v-model="selectedTab"
+      />
     </section>
 
     <section v-if="selectedTab == 0" class="container-form max-w-4xl">
@@ -57,7 +37,7 @@
         class="mb-card mx-auto"
       />
       <article></article>
-      <LazyFormChallenge :data="challengeData" />
+      <LazyFormChallenge v-if="challengeData" :data="challengeData" />
     </section>
 
     <section v-else-if="selectedTab == 1" class="container-form max-w-4xl">
@@ -109,6 +89,15 @@ export default {
       return route.query.category;
     });
 
+    const buttonOptions = [
+      {
+        name: "Headings.Challenge"
+      },
+      {
+        name: "Headings.CodingChallenge"
+      },
+    ];
+
     onMounted(async () => {
       const [success, error] = await getChallenge(
         categoryId.value,
@@ -132,9 +121,8 @@ export default {
       PencilIcon,
       codingChallenges,
       t,
+      buttonOptions
     };
   },
 };
 </script>
-
-<style scoped></style>
