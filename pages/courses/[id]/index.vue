@@ -58,6 +58,7 @@
       </div>
     </section>
     <div
+      v-if="allQuizzes.length !== 0 || matchings.length !== 0"
       class="content-container"
       :class="{
         'hide-scrollbar': !!!allQuizzes || allQuizzes.length <= 1,
@@ -68,28 +69,21 @@
         v-model="selectedbutton"
         class="my-10"
       />
-      <section v-if="allQuizzes && !!allQuizzes.length">
+      <section>
         <article v-show="selectedbutton == 0">
           <h2 class="mb-box text-heading-3">
             {{ t("Headings.QuizzesInCourse") }}
           </h2>
-
-            <QuizList :quizzes="allQuizzes" />
+          <QuizList :quizzes="allQuizzes" />
         </article>
 
         <article v-show="selectedbutton == 1">
           <h2 class="mb-box text-heading-3">
             {{ t("Headings.Matchings") }}
           </h2>
-
-          <div class="content" v-for="(quiz, i) of allQuizzes" :key="i">
-            <MatchingList :quizId="quiz?.id" />
-          </div>
+          <MatchingList :quizId="quiz?.id" />
         </article>
       </section>
-      <h3 v-else class="text-center text-heading-3">
-        {{ t("Headings.NoQuizQuestion") }}
-      </h3>
     </div>
   </main>
 
@@ -114,16 +108,17 @@ export default {
     const course = useCourse();
     const isCourseAccessible = ref(false);
 
-    let buttonOptions: any = [
-      // { name: "Buttons.SeasonalBased" },
-      { name: "Buttons.Quiz" },
-      { name: "Buttons.Matchings" },
-    ];
-    const selectedbutton = ref(0);
-
     const allQuizzes = useQuizzesInCourse();
+    const matchings = useMatchings();
     const route = useRoute();
     const router = useRouter();
+
+    let buttonOptions = computed(() => [
+      { name: "Buttons.Quiz", disabled: allQuizzes.value.length === 0 },
+      { name: "Buttons.Matchings", disabled: matchings.value.length === 0 },
+    ]);
+
+    const selectedbutton = ref(buttonOptions.value.findIndex(option => !option.disabled));
 
     const id = computed(() => {
       return <string>(route.params?.id ?? "");
@@ -177,6 +172,7 @@ export default {
       watchThisLecture,
       skillID,
       allQuizzes,
+      matchings,
       subSkillID,
       buttonOptions,
       selectedbutton,

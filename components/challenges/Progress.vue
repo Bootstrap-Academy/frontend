@@ -1,91 +1,73 @@
 <template>
-	<article class="grid gap-2">
-		<!--  box style-box bg-secondary -->
-		<h3 class="text-body-1">{{ data?.heading }}</h3>
-		<p class="text-right">{{ value }} / {{ max }}</p>
-		<progress
-			:id="data?.heading"
-			:value="value"
-			:max="max"
-			class="w-full col-span-2"
-			:class="{ 'loading transition-basic animate-pulse': loading }"
-		></progress>
-	</article>
+  <article class="grid gap-2">
+    <h3 v-if="heading" class="text-body-1">{{ heading }}</h3>
+    <p class="text-right">{{ totalValue }} / {{ max }}</p>
+    <div class="progress-container w-full col-span-2">
+      <div v-for="(subdivision, index) in subdivisions" :key="index" :class="[subdivision.color]"
+        :style="{ width: getSubdivisionWidth(subdivision) }" class="progress-segment" />
+      <div v-if="remainingPercentage > 0" class="progress-segment bg-dark" :style="{ width: remainingPercentage }" />
+    </div>
+  </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-interface PropData {
-	heading: string;
-	current: number;
-	total: number;
-}
-
 export default defineComponent({
   props: {
-    data: { type: Object as PropType<PropData | null>, default: null },
-    loading: { type: Boolean, default: true },
+    heading: { type: String, default: '' },
+    subdivisions: { type: Array as PropType<{ value: number; color: string }[]>, required: true },
+    total: { type: Number, required: true },
   },
   setup(props) {
     const { t } = useI18n();
 
-    const DEFAULT_MAX_VALUE = 10;
+    const subdivisions = computed(() => {
+      return props.subdivisions ?? [];
+    });
 
-    const value = computed(() => {
-      return props.data?.current ?? getRandomNumber(1, DEFAULT_MAX_VALUE - 1);
+    const totalValue = computed(() => {
+      return subdivisions.value.reduce((acc, subdivision) => acc + subdivision.value, 0);
     });
 
     const max = computed(() => {
-      return props.data?.total ?? DEFAULT_MAX_VALUE;
+      return props.total;
     });
 
-    return { t, value, max };
+    const getSubdivisionWidth = (subdivision: { value: number }) => {
+      const total = max.value;
+      return total > 0 ? `${(subdivision.value / total) * 100}%` : '0%';
+    };
+
+    const remainingPercentage = computed(() => {
+      const total = max.value;
+      const used = totalValue.value;
+      return total > 0 ? ((total - used) / total) * 100 : 0;
+    });
+
+    return { t, subdivisions, totalValue, max, getSubdivisionWidth, remainingPercentage };
   },
 });
 </script>
 
 <style scoped>
-progress {
-	background-color: var(--color-primary);
-	border-radius: 1rem;
-	-webkit-transition: all 0.5s ease-in-out;
-	-moz-transition: all 0.5s ease-in-out;
-	-o-transition: all 0.5s ease-in-out;
-	transition: all 0.5s ease-in-out;
+.progress-container {
+  display: flex;
+  height: 1rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--color-primary);
+  transition: all 0.5s ease-in-out;
 }
-progress::-webkit-progress-bar {
-	background-color: var(--color-primary);
-	border-radius: 1rem;
-	-webkit-transition: all 0.5s ease-in-out;
-	-moz-transition: all 0.5s ease-in-out;
-	-o-transition: all 0.5s ease-in-out;
-	transition: all 0.5s ease-in-out;
+
+.progress-segment {
+  height: 100%;
+  transition: width 0.5s ease-in-out;
 }
-progress::-webkit-progress-value {
-	background-color: var(--color-accent);
-	/* background-color: #546bed; */
-	border-radius: 1rem;
-	-webkit-transition: width 0.5s ease-in-out;
-	-moz-transition: width 0.5s ease-in-out;
-	-o-transition: width 0.5s ease-in-out;
-	transition: width 0.5s ease-in-out;
-}
-progress::-moz-progress-bar {
-	background-color: var(--color-accent);
-	/* background-color: #546bed; */
-	border-radius: 1rem;
-	-webkit-transition: width 0.5s ease-in-out;
-	-moz-transition: width 0.5s ease-in-out;
-	-o-transition: width 0.5s ease-in-out;
-	transition: width 0.5s ease-in-out;
-}
-progress.loading::-webkit-progress-value {
-	background-color: #2e405a;
-}
-progress.loading::-moz-progress-bar {
-	background-color: #2e405a;
+
+.bg-dark {
+  background-color: var(--bg-dark);
 }
 </style>

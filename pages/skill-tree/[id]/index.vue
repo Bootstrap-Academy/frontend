@@ -1,5 +1,5 @@
 <template>
-  <main class="relative h-screen-main grid place-items-center">
+  <main class="relative h-screen-main grid place-items-center select-none">
     <Head>
       <Title>Sub Skill Tree - {{ subTreeName }}</Title>
     </Head>
@@ -15,8 +15,10 @@
 
     <section
       v-else-if="nodes && nodes.length"
-      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-scroll"
+      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-auto"
       ref="mainRef"
+      @mousedown="startDrag"
+      :class="{ 'cursor-grabbing': isDragging }"
     >
       <svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete && selectedNode.id == ''">
@@ -47,6 +49,7 @@
               @move="setSelectedNode($event)"
               :active="selectedNode.row == i && selectedNode.column == j"
               :completed="getNode(i, j)?.completed ?? false"
+              :xp="xp"
             />
           </template>
         </template>
@@ -69,7 +72,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import type { Ref } from "vue";
+import { useSubSkillTree, getSubSkillTree, createPathwaysForTree } from "~/composables/skilltree";
 
 export default {
   head: {
@@ -197,11 +200,17 @@ export default {
       { deep: true }
     );
 
+    const xp = useXP();
+
     onMounted(async () => {
       if (!!!subTreeId.value) {
         loading.value = false;
         return;
       }
+
+      await getXP();
+      
+      console.log("xp", xp.value);  
 
       const [success, error] = await getSubSkillTree(subTreeId.value);
 
@@ -359,6 +368,50 @@ export default {
       { immediate: true, deep: true }
     );
 
+    // ! ======================================================= Dragging
+    const isDragging = ref(false);
+    const startX = ref(0);
+    const startY = ref(0);
+    const scrollLeft = ref(0);
+    const scrollTop = ref(0);
+
+    const startDrag = (event: MouseEvent) => {
+      if (event.button !== 0) return;
+
+      const target = event.target as HTMLElement;
+      if (target.tagName === "foreignObject" || target.tagName === "path") return;
+
+      isDragging.value = true;
+      startX.value = event.pageX - mainRef.value!.offsetLeft;
+      startY.value = event.pageY - mainRef.value!.offsetTop;
+      scrollLeft.value = mainRef.value!.scrollLeft;
+      scrollTop.value = mainRef.value!.scrollTop;
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("mouseup", stopDrag);
+    };
+
+    const drag = (event: MouseEvent) => {
+      if (!isDragging.value) return;
+      event.preventDefault();
+      const x = event.pageX - mainRef.value!.offsetLeft;
+      const y = event.pageY - mainRef.value!.offsetTop;
+      const walkX = x - startX.value;
+      const walkY = y - startY.value;
+
+      mainRef.value!.scrollLeft = scrollLeft.value - walkX;
+      mainRef.value!.scrollTop = scrollTop.value - walkY;
+
+      if (event.clientX <= 0 || event.clientX >= window.innerWidth || event.clientY <= 0 || event.clientY >= window.innerHeight) {
+        stopDrag();
+      }
+    };
+
+    const stopDrag = () => {
+      isDragging.value = false;
+      document.removeEventListener("mousemove", drag);
+      document.removeEventListener("mouseup", stopDrag);
+    };
+
     return {
       setupComplete,
       loading,
@@ -387,6 +440,11 @@ export default {
       t,
       subTreeName,
       breadcrumbs,
+
+      isDragging,
+      startDrag,
+      
+      xp,
     };
   },
 };

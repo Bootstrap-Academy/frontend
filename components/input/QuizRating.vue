@@ -1,10 +1,10 @@
 <template>
   <div>
     <article
-      v-if="data?.solved && !data?.rated && data?.creator != user?.id"
+      v-if="!data?.rated && data?.creator != user?.id"
       class="flex justify-between gap-card items-center sticky right-card bg-light rounded-md px-3 py-2"
     >
-      <div class="flex gap-4 items-center">
+      <div v-if="data?.solved" class="flex gap-4 items-center">
         <button
           @click="feedback = 'POSITIVE'"
           type="button"

@@ -15,7 +15,9 @@
       v-else-if="user?.id == data?.creator && !user.admin"
       class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
     />
-    <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
+    <h3 class="text-heading-4">
+      Q). <span v-html="$md.render(data?.question ?? '')"></span>
+    </h3>
 
     <div class="flex justify-between gap-box items-center">
       <p class="text-body-2" v-if="data?.single_choice">
@@ -59,35 +61,32 @@ export default defineComponent({
     }
 
     function gotoPage() {
-      if (route.fullPath.includes("/skill-tree/")) {
-        const id = route.params.skill;
-        router.push(
-          `/quizzes/solve-${id}?quizzesFrom=${"skill"}&querySubTaskId=${
-            props.data?.id
-          }&taskId=${props.data?.task_id}&rootSkillID=${
-            rootSkillID.value
-          }&subSkillID=${subSkillID.value}`
-        );
-      } else if (route.fullPath.includes("/watch?")) {
-        router.push(
-          `/quizzes/solve-${
-            props.data?.task_id
-          }?quizzesFrom=${"quiz"}&querySubTaskId=${props.data?.id}&taskId=${
-            props.data?.task_id
-          }`
-        );
-      } else if (route.fullPath.includes("/courses/")) {
-        const id = route.params.id;
-        let skillId = route.query?.skillID ?? "";
-        let subSkillID = route.query?.subSkillID ?? "";
-        router.push(
-          `/quizzes/solve-${id}?quizzesFrom=${"course"}&querySubTaskId=${
-            props.data?.id
-          }&taskId=${
-            props.data?.task_id
-          }&skillID=${skillId}&subSkillID=${subSkillID}`
-        );
-      }
+      const { fullPath, params, query } = route;
+      const { id, task_id } = props.data ?? {};
+
+      if (!id || !task_id) return;
+
+      const _skillID = query.skillID ?? rootSkillID.value ?? null;
+      const _subSkillID = query.subSkillID ?? subSkillID.value ?? null;
+
+      let isSkill = fullPath.includes("/skill-tree/");
+      let isCourse = fullPath.includes("/courses/");
+      let isWatch = fullPath.includes("/watch?");
+
+      let solveId = isSkill ? params.skill : isCourse ? params.id : isWatch ? params.id : null;
+      let quizzesFrom = isSkill
+        ? "skill"
+        : isCourse
+          ? "course"
+          : isWatch
+            ? "quiz"
+            : null;
+
+      if (!quizzesFrom || !solveId) return;
+
+      router.push(
+        `/quizzes/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`
+      );
     }
     return { t, solveThis, user };
   },

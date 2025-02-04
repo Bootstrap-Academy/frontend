@@ -1,6 +1,9 @@
 <template>
   <svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick">
     <SkillTreeNodeSvg v-if="isFilled" :size="nodeSize" :node="node" :active="active" :completed="completed"
+      :dottedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 25 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 42"
+      :segmentedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 42 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 50"
+      :flameEffect="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 50"
       :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
 
     <foreignObject v-if="zoomLevel != 1 && isFilled" x="0" :y="nodeSize - 10" :width="nodeSize"
@@ -37,9 +40,22 @@ export default defineComponent({
     zoomLevel: { type: Number, default: 2 },
     viewSubtree: { type: Boolean, default: false },
     viewSkill: { type: Boolean, default: false },
+    xp: { type: Object as PropType<any>, default: null },
   },
   emits: ['node', 'size', 'selected', 'move', 'ref'],
   setup(props, { emit }) {
+    const search_id = computed(() => props.viewSubtree ? props.node?.id : props.node?.parent_id)
+    const xp_list_root_skill = computed(() => props.xp?.skills?.find(
+      (skill: any) => skill.skill === search_id.value
+    ));
+    const xp_list_sub_skill = computed(() => xp_list_root_skill.value?.skills?.find(
+      (skill: any) => skill.skill === props.node?.id
+    ));
+    const root_skill_xp_value = computed(() => xp_list_root_skill.value?.xp);
+    const root_skill_level_value = computed(() => xp_list_root_skill.value?.level);
+    const sub_skill_xp_value = computed(() => xp_list_sub_skill.value?.xp);
+    const sub_skill_level_value = computed(() => xp_list_sub_skill.value?.level);
+
     let occupiedSpace = 3;
     let isNodeBookmarked = ref(false);
     const user = useUser();
@@ -47,16 +63,16 @@ export default defineComponent({
 
     const size = computed(() => {
       switch (props.zoomLevel) {
-      case 5:
-        return 125;
-      case 4:
-        return 100;
-      case 3:
-        return 75;
-      case 2:
-        return 50;
-      default:
-        return 25;
+        case 5:
+          return 125;
+        case 4:
+          return 100;
+        case 3:
+          return 75;
+        case 2:
+          return 50;
+        default:
+          return 25;
       }
     });
 
@@ -119,7 +135,7 @@ export default defineComponent({
     });
 
     async function toggleBookmark(isBookmarked: boolean) {
-      if(!user.value) return router.push('/auth/login');
+      if (!user.value) return router.push('/auth/login');
 
       isNodeBookmarked.value = isBookmarked;
 
@@ -157,6 +173,10 @@ export default defineComponent({
       ondblclick,
       isFilled,
       occupiedSpace,
+      root_skill_xp_value,
+      root_skill_level_value,
+      sub_skill_xp_value,
+      sub_skill_level_value,
       toggleBookmark,
       isNodeBookmarked
     };

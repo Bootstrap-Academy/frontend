@@ -8,8 +8,24 @@
         :class="dashed.scale" />
 
       <g id="icon-box" class="cursor-pointer">
+        <foreignObject v-if="flameEffect" x="43.8984" y="44.0664" :width="iconSize" :height="iconSize"
+          class="bg-[#451b80] rounded-full origin-center scale-[1.4] animate-pulse">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
+        </foreignObject>
+
         <foreignObject x="43.8984" y="44.0664" :width="iconSize" :height="iconSize" class="cursor-pointer">
-          <img :src="icon" class="cursor-pointer" v-if="node && node.icon" />
+          <img :src="icon" class="cursor-pointer" v-if="node && node.icon" :alt="t('AltAttributes.CourseIcon')"
+            draggable="false" />
+        </foreignObject>
+
+        <foreignObject v-if="dottedBorder" x="43.8984" y="44.0664" :width="iconSize" :height="iconSize"
+          class="border-8 border-[#f0a000] border-dotted rounded-full">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
+        </foreignObject>
+
+        <foreignObject v-if="segmentedBorder" x="43.8984" y="44.0664" :width="iconSize" :height="iconSize"
+          class="border-8 border-[#f0a000] rounded-full">
+          <div :style="{ width: iconSize + 'px', height: iconSize + 'px' }"></div>
         </foreignObject>
       </g>
 
@@ -32,12 +48,10 @@
       xmlns="http://www.w3.org/2000/svg">
       <g class="group/bookmark cursor-pointer origin-center bookmarker" @click.stop="onClickToggleBookmark">
         <circle cx="62.5" cy="62.5" r="57.6" class="fill-dark" />
-        <SvgStar
-          v-if="isAuth"
+        <SvgStar v-if="isAuth"
           class="group-hover/bookmark:scale-90 fill-secondary origin-center transition-all ease-in-out duration-300"
           :class="isBookmarked ? 'fill-star' : ''" />
-        <SvgStarOutline
-          v-else
+        <SvgStarOutline v-else
           class="group-hover/bookmark:scale-90 text-body origin-center transition-all ease-in-out duration-300" />
       </g>
     </svg>
@@ -46,6 +60,7 @@
 
 <script lang="ts">
 import { StarIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 
 export default {
   props: {
@@ -55,6 +70,9 @@ export default {
     active: { type: Boolean, default: false },
     completed: { type: Boolean, default: false },
     failed: { type: Boolean, default: false },
+    dottedBorder: { type: Boolean, default: false },
+    segmentedBorder: { type: Boolean, default: false },
+    flameEffect: { type: Boolean, default: false },
     isBookmarked: { type: Boolean, default: false },
     navigate: { type: Boolean, default: true },
   },
@@ -63,6 +81,7 @@ export default {
     StarIcon,
   },
   setup(props, { emit }) {
+    const { t } = useI18n();
     const user = useUser();
 
     function onclickToggleActive() {
@@ -136,6 +155,7 @@ export default {
     });
 
     return {
+      t,
       dashed,
       outline,
       half,
@@ -152,6 +172,10 @@ export default {
 </script>
 
 <style scoped>
+img {
+  pointer-events: none;
+}
+
 .transformation {
   @apply origin-center transition-all duration-500 ease-in-out;
 }

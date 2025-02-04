@@ -9,7 +9,7 @@
       ref="refForm"
     >
       <h4 class="text-heading-3 text-accent">
-        Q). {{ subtask?.question ?? "" }}
+        Q). <span v-html="$md.render(subtask?.question ?? '')"></span>
       </h4>
       <p
         class="text-heading2 text-sm"
@@ -27,7 +27,7 @@
       </p>
 
       <article
-        class="grid gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+        class="grid gap-card-sm overflow-auto max-h-[45vh] place-content-start"
         :class="
           doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
         "
@@ -54,9 +54,9 @@
         </button>
       </article>
 
-      <div>
+      <div class="mb-4">
         <p v-if="amountQuestionsLeft == 0" class="text-center mb-2">
-          {{ t("Headings.QuestionsAllSolved") }}
+          {{ t("Headings.AllSolved") }}
         </p>
 
         <p v-else-if="subtask?.solved && user?.id != subtask?.creator" class="text-center mb-2">
