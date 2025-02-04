@@ -15,7 +15,9 @@
       v-else-if="user?.id == data?.creator && !user.admin"
       class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
     />
-    <h3 class="text-heading-4 clamp line-2">Q). {{ data?.question ?? "" }}</h3>
+    <h3 class="text-heading-4">
+      Q). <span v-html="$md.render(data?.question ?? '')"></span>
+    </h3>
 
     <div class="flex justify-between gap-box items-center">
       <p class="text-body-2" v-if="data?.single_choice">

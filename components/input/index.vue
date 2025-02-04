@@ -82,19 +82,7 @@ export default defineComponent({
         return props.modelValue;
       },
       set(value: string) {
-        let finalValue: string | number;
-
-        if (
-          props.noTrim ||
-          props.type == "password" ||
-          props.type == "number"
-        ) {
-          finalValue = value;
-        } else {
-          finalValue = value.trim();
-        }
-
-        emit("update:modelValue", finalValue);
+        emit("update:modelValue", value);
       },
     });
 

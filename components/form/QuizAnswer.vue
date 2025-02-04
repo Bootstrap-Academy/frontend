@@ -9,7 +9,7 @@
       ref="refForm"
     >
       <h4 class="text-heading-3 text-accent">
-        Q). {{ subtask?.question ?? "" }}
+        Q). <span v-html="$md.render(subtask?.question ?? '')"></span>
       </h4>
       <p
         class="text-heading2 text-sm"
@@ -54,7 +54,7 @@
         </button>
       </article>
 
-      <div>
+      <div class="mb-4">
         <p v-if="amountQuestionsLeft == 0" class="text-center mb-2">
           {{ t("Headings.AllSolved") }}
         </p>
