@@ -9,7 +9,7 @@
       ref="refForm"
     >
       <h4 class="text-heading-3 text-accent">
-        Q). {{ subtask?.question ?? "" }}
+        Q). <span v-html="$md.render(subtask?.question ?? '')"></span>
       </h4>
       <p
         class="text-heading2 text-sm"
@@ -27,7 +27,7 @@
       </p>
 
       <article
-        class="grid gap-card-sm overflow-scroll max-h-[45vh] place-content-start"
+        class="grid gap-card-sm overflow-auto max-h-[45vh] place-content-start"
         :class="
           doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
         "

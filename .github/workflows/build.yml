@@ -38,3 +38,4 @@ jobs:
             dist/
             .pr
           retention-days: 1
+          include-hidden-files: true

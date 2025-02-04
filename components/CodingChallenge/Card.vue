@@ -6,9 +6,9 @@
       <article class="flex gap-3 justify-between">
         <p
           v-if="!!codingChallenge?.description"
-          class="sm:w-3/4 clamp tight line-1 text-accent"
+          class="sm:w-3/4 tight text-accent"
         >
-          {{ codingChallenge?.description ?? "" }}
+          <span v-html="$md.render(codingChallenge?.description ?? '')"></span>
         </p>
 
         <ArrowRightIcon

@@ -32,7 +32,7 @@
       </Head>
 
       <aside
-        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-scroll min-h-[85vh]"
+        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-auto min-h-[85vh]"
       >
         <ChallengesItemSubmission
           :data="challenge"

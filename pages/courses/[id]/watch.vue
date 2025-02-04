@@ -216,10 +216,10 @@ export default {
 
     const selectedButton = ref(0);
     const buttonOptions = computed(() => [
-      { name: "Buttons.Video" },
-      { name: `${t("Buttons.Quiz")} ${quizzesInLecture.value.length}` },
-      { name: `${t("Buttons.Challenge")} ${codingChallenges.value.length}` },
-      { name: `${t("Buttons.Matching")} ${currentMatches.value.length}` }
+      { name: "Buttons.Video", disabled: false },
+      { name: "Buttons.Quiz", disabled: !quizzesInLecture.value.length },
+      { name: "Buttons.Challenge", disabled: !codingChallenges.value.length },
+      { name: "Buttons.Matching", disabled: !currentMatches.value.length }
     ]);
 
     const activeSection = computed(() => {
