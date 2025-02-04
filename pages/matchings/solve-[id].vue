@@ -1,89 +1,94 @@
 <template>
   <div>
-    <main class="h-full overflow-hidden container pt-card pb-card mt-card-sm">
-      <div class="grid grid-cols-2">
-        <section>
-          <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary mb-8 style-box">
+    <main class="container pb-card mt-card-sm">
+      <div class="flex justify-center">
+        <div class="flex flex-col items-center max-w-max mb-8">
+          <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary mb-4 style-box w-full flex justify-center items-center">
             <template v-for="(path, i) of breadcrumbs" :key="i">
-              <NuxtLink
-                v-if="path.to"
-                :to="path.to"
-                class="inline-block text-body-2"
-              >
+              <NuxtLink v-if="path.to" :to="path.to" class="inline-block text-body-2">
                 {{ t(path.label) }}
               </NuxtLink>
               <h1 v-else class="text-heading-2 capitalize inline-block">
                 {{ t(path.label) }}
               </h1>
-
               <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
                 /
               </span>
             </template>
           </div>
 
-          <InputButtonToggle
-            :mobileResponsive="false"
-            v-model="selectedOption"
-            :buttonOptions="buttonOptions"
-          />
-        </section>
+          <div v-if="quizzesToShow.length > 0 || selectedOption != 0" class="flex justify-center w-full">
+            <InputButtonToggle :mobileResponsive="true" v-model="selectedOption" :buttonOptions="buttonOptions"
+              class="w-full" />
+          </div>
+        </div>
       </div>
 
-      <section
-        class="pt-card pb-card mt-card-sm grid md:grid-cols-2 gap-y-card gap-x-container items-start"
-      >
-        <div>
-          <p class="mb-3 text-xs pl-2" v-if="!!arrayOfSubtasks.length">
-            <span class="text-accent"> {{ t("Headings.Total") }} </span>:
+      <div class="flex max-md:flex-col max-md:items-center">
+        <div class="lg:w-2/5 md:w-3/5 w-full">
+          <p class="mb-2 text-xs flex justify-center md:pt-8"
+            v-if="!!arrayOfSubtasks.length && !!quizzesToShow?.length">
+          <p v-if="selectedOption === 0">
+            <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span>:
+            {{
+              t("Headings.AmountSolvedQuizzes", {
+                amount: arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length,
+                total: arrayOfSubtasks?.length
+              })
+            }}
+          </p>
+          <p v-else-if="selectedOption === 1">
+            <span class="text-accent">{{ t("Headings.UnsolvedQuizzes") }}</span>:
             {{ quizzesToShow?.length }}
           </p>
-          <aside
-            class="p-2 grid max-h-[600px] h-fit pb-44 overflow-auto gap-4"
-          >
+          <p v-else-if="selectedOption === 2">
+            <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span>:
+            {{ quizzesToShow?.length }}
+          </p>
+          <p v-else-if="selectedOption === 3">
+            <span class="text-accent">{{ t("Headings.OwnQuizzes") }}</span>:
+            {{ quizzesToShow?.length }}
+          </p>
+          </p>
+
+          <aside class="p-2 grid max-h-[600px] h-fit overflow-auto gap-4" v-if="quizzesToShow.length">
             <template v-if="loading">
               <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />
             </template>
 
             <template v-else-if="quizzesToShow && quizzesToShow.length">
               <div class="max-h-fit grid gap-card">
-                <MatchingCard
-                  :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'"
-                  class="max-h-fit"
-                  :class="
-                    quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
-                  "
-                  v-for="(quiz, i) of quizzesToShow"
-                  :key="i"
-                  full
-                  :data="quiz"
-                  @click="solveThis(quiz)"
-                />
+                <MatchingCard :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'" class="max-h-fit" :class="quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
+                  " v-for="(quiz, i) of sortMatchings()" :key="i" full :data="quiz" @click="solveThis(quiz)" />
               </div>
             </template>
           </aside>
         </div>
-        <div>
-          <FormSolveMatching
-            v-if="(quizzesToShow.length && !!selectedQuiz) || loading"
-            :data="selectedQuiz"
-            @rated="setRatedLocally($event)"
-            @solved="setSolvedLocally($event)"
-            @nextQuestion="nextQuestion($event)"
-          />
-        </div>
-      </section>
+        <FormSolveMatching v-if="(quizzesToShow.length && !!selectedQuiz) || loading" :data="selectedQuiz"
+          @rated="setRatedLocally($event)" @solved="setSolvedLocally($event)" @nextQuestion="nextQuestion($event)"
+          class="lg:w-3/5 md:w-2/5 w-full" />
+      </div>
     </main>
-    <p
-      v-if="!loading && !quizzesToShow.length"
-      class="text-center w-full mb-20 text-xl"
-    >
-      {{
-        t("Headings.EmptyQuizForThis", {
-          placeholder: t(notFoundFor),
-        })
-      }}
-    </p>
+    <div v-if="!loading && quizzesToShow.length > 0 && arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length == 0">
+      <CheckCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
+      <p class="text-center w-full mb-20 text-xl">
+        {{
+          t("Headings.AllSolved")
+        }}
+      </p>
+    </div>
+    <div v-else-if="!loading && quizzesToShow.length == 0">
+      <MagnifyingGlassCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
+      <p class="text-center w-full mb-20 text-xl">
+        {{
+          t(selectedOption == 0 ? "Headings.EmptyTasksForThis" : "Headings.EmptyTasksForThisFilter", {
+            placeholder: t(notFoundFor),
+            filter: t(buttonOptions[selectedOption].name),
+            type: t("Headings.Matchings"),
+          })
+        }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -95,6 +100,7 @@ import {
   getQuizzesInSkill,
 } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
+import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
 
 const route = useRoute();
 const router = useRouter();
@@ -106,27 +112,27 @@ const selectedOption = ref(0);
 const { t } = useI18n();
 const quizzesToShow: any = ref([]);
 let arrayOfSubtasks: any = ref([]);
-const buttonOptions = [{ name: "Buttons.All" }, { name: "Buttons.UnSolved" }];
-const id: any = computed(() => {
-  return route?.params?.id ?? "";
-});
+const buttonOptions = [
+  { name: "Buttons.All" },
+  { name: "Buttons.UnSolved" },
+  { name: "Buttons.Solved" },
+  { name: "Buttons.Own" }
+];
 
-const querySubTaskId: any = computed(() => {
-  return route.query?.querySubTaskId ?? "";
-});
-const taskId = computed(() => {
-  return route.query?.taskId ?? "";
-});
-
-const quizzesFrom = computed(() => {
-  return route?.query?.quizzesFrom ?? "no found";
-});
+const id: any = computed(() => route?.params?.id ?? "");
+const querySubTaskId: any = computed(() => route.query?.querySubTaskId ?? "");
+const taskId = computed(() => route.query?.taskId ?? "");
+const quizzesFrom = computed(() => route?.query?.quizzesFrom ?? "no found");
+const rootSkillID = computed(() => route?.query?.rootSkillID ?? "");
+const subSkillID = computed(() => route?.query?.subSkillID ?? "");
 
 const notFoundFor = computed(() => {
   if (quizzesFrom.value == "course") {
     return "Headings.Course";
   } else if (quizzesFrom.value == "skill") {
     return "Headings.Skill";
+  } else if (quizzesFrom.value == "quiz") {
+    return "Headings.Quiz";
   } else {
     return "Headings.Lecture";
   }
@@ -148,33 +154,31 @@ function setRatedLocally(id: any) {
   });
 }
 
-const rootSkillID = computed(() => {
-  return route?.query?.rootSkillID ?? "";
-});
+const breadcrumbs = computed<Array<{ label: string; to?: string }>>(() => {
+  let quizLabel = { label: "Headings.Matchings" };
+  let hasRootAndSubSkill = rootSkillID.value && subSkillID.value;
 
-const subSkillID = computed(() => {
-  return route?.query?.subSkillID ?? "";
-});
-
-const breadcrumbs: any = computed(() => {
-  if (quizzesFrom.value == "course") {
+  if (quizzesFrom.value === "course" && hasRootAndSubSkill) {
     return [
       {
         label: id.value,
         to: `/courses/${id.value}?skillID=${rootSkillID.value}&subSkillID=${subSkillID.value}`,
       },
-      { label: "Headings.Matchings" },
+      quizLabel,
     ];
-  } else if (quizzesFrom.value == "skill") {
+  }
+
+  if ((quizzesFrom.value === "skill" || quizzesFrom.value === "quiz") && hasRootAndSubSkill) {
     return [
       {
         label: subSkillID.value,
         to: `/skill-tree/${rootSkillID.value}/${subSkillID.value}`,
       },
-      { label: "Headings.Matchings" },
+      quizLabel,
     ];
-  } else if (quizzesFrom.value == "quiz") {
-  } else return [{ label: "Matchings" }];
+  }
+
+  return [quizLabel];
 });
 
 function nextQuestion(id: any) {
@@ -190,7 +194,7 @@ function nextQuestion(id: any) {
   for (let i = index; i < arrayOfSubtasks?.value?.length; i++) {
     if (
       !arrayOfSubtasks?.value[i]?.solved &&
-      arrayOfSubtasks?.value[i]?.creator != user?.value.id &&
+      !isQuizOwner(arrayOfSubtasks?.value[i]) &&
       i != index
     ) {
       console.log("next quiz id", arrayOfSubtasks.value[i].creator);
@@ -201,14 +205,6 @@ function nextQuestion(id: any) {
     }
     console.log("after");
   }
-}
-
-function updateQuestion(quiz: any) {
-  arrayOfSubtasks.value.forEach((element: any) => {
-    if (element?.id == quiz?.id) {
-      element.question = quiz?.question;
-    }
-  });
 }
 
 function solveThis(quiz: any) {
@@ -282,21 +278,50 @@ async function manageAllDataForQuizzes() {
   scroolToView();
 }
 
-watch(
-  () => selectedOption.value,
-  (newValue, oldValue) => {
-    if (newValue == 0) {
-      quizzesToShow.value = arrayOfSubtasks.value;
-    } else if (newValue == 1) {
-      quizzesToShow.value = [];
-      arrayOfSubtasks.value.forEach((element: any) => {
-        if (!element.solved && element.creator != user.value?.id) {
-          quizzesToShow.value.push(element);
-        }
-      });
-    }
+function isQuizOwner(quiz: { creator: string }) {
+  return quiz.creator === user.value?.id;
+}
+
+function sortMatchings() {
+  return quizzesToShow.value
+    .sort((prevItem: { solved: boolean; creator: string }, nextItem: { solved: boolean; creator: string }) => {
+      const prevSolved = prevItem.solved;
+      const nextSolved = nextItem.solved;
+      const prevOwn = isQuizOwner(prevItem);
+      const nextOwn = isQuizOwner(nextItem);
+
+      // Tasks not created by me come first
+      if (prevOwn !== nextOwn) return prevOwn ? 1 : -1;
+
+      // Then, unsolved tasks come first
+      if (prevSolved !== nextSolved) return prevSolved ? 1 : -1;
+
+      return 0;
+    });
+}
+
+watch(selectedOption, (selectedOptionValue) => {
+  switch (selectedOptionValue) {
+  case 0: // All
+    quizzesToShow.value = arrayOfSubtasks.value;
+    break;
+  case 1: // Unsolved
+    quizzesToShow.value = arrayOfSubtasks.value.filter(
+      (quiz: { solved: boolean; creator: string }) => !quiz.solved && !isQuizOwner(quiz)
+    );
+    break;
+  case 2: // Solved
+    quizzesToShow.value = arrayOfSubtasks.value.filter(
+      (quiz: { solved: boolean; creator: string }) => quiz.solved && !isQuizOwner(quiz)
+    );
+    break;
+  case 3: // Own
+    quizzesToShow.value = arrayOfSubtasks.value.filter(
+      (quiz: { solved: boolean; creator: string }) => isQuizOwner(quiz)
+    );
+    break;
   }
-);
+});
 
 function scroolToView() {
   setTimeout(() => {
@@ -312,5 +337,3 @@ onMounted(async () => {
   manageAllDataForQuizzes();
 });
 </script>
-
-<style scoped></style>
