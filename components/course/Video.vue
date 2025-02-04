@@ -21,7 +21,9 @@
       controlsList="nodownload"
       oncontextmenu="return false;"
       :key="`video-${videoSRC}`"
-    >
+      @timeupdate="onTimeUpdate(activeLecture.id, $event)"
+      @loadstart="onVideoLoad(activeLecture.id, $event)"
+    >    
       <track kind="captions" />
       <source ref="refSource" :src="videoSRC" type="video/mp4" />
       <p class="vjs-no-js">
@@ -53,8 +55,8 @@ export default defineComponent({
     const videoSRC = useVideoSRC();
 
     let videoInterval: any;
-    const refSource = ref<HTMLSourceElement | any>(null);
     const video = ref<HTMLVideoElement | null>(null); 
+    const refSource = ref<HTMLSourceElement | any>(null);
 
     watch(
       () => props.activeLecture,
@@ -81,14 +83,40 @@ export default defineComponent({
             };
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
-          },  28800000); //8 hours
+          }, 28800000); //8 hours
         }
       },
       { deep: true, immediate: true }
     );
 
 
-    return { videoSRC, refSource, video };
+    function onTimeUpdate(videoID: string, event: any) {
+      const videoCookie = useCookie("currentVideo");
+      const timeCookie = useCookie("currentVideoTime");
+    
+      const currentVideoTime = event.target.currentTime;
+      timeCookie.value = currentVideoTime;
+    
+      if (currentVideoTime < 1) videoCookie.value = videoID;
+    }
+    
+    function onVideoLoad(videoID: string, event: any) {
+      const videoCookie = useCookie("currentVideo");
+      const timeCookie = useCookie("currentVideoTime");
+    
+      if (!videoCookie || videoCookie.value === "" || !timeCookie || timeCookie.value === "") return;
+    
+      if (videoCookie.value !== videoID) {
+        // Reset the time cookie to start the new video from the beginning
+        timeCookie.value = "";
+        videoCookie.value = videoID;
+      } else {
+        // Set the current video time to the saved cookie value
+        event.target.currentTime = timeCookie.value;
+      }
+    }
+    
+    return { videoSRC, refSource, onTimeUpdate, onVideoLoad };
   },
 });
 </script>
