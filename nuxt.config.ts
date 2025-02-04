@@ -2,6 +2,7 @@
 
 export default defineNuxtConfig({
   ssr: false,
+
   app: {
     head: {
       title: "Bootstrap Academy",
@@ -31,13 +32,16 @@ export default defineNuxtConfig({
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "layout", mode: "out-in" },
   },
+
   css: ["~/assets/css/tailwind.css"],
+
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
+
   runtimeConfig: {
     public: {
       BASE_API_URL: "https://api.test.bootstrap.academy",
@@ -47,4 +51,6 @@ export default defineNuxtConfig({
       NODE_ENV: "production",
     },
   },
+
+  compatibilityDate: "2025-02-04",
 });
