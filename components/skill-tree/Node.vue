@@ -63,16 +63,16 @@ export default defineComponent({
 
     const size = computed(() => {
       switch (props.zoomLevel) {
-        case 5:
-          return 125;
-        case 4:
-          return 100;
-        case 3:
-          return 75;
-        case 2:
-          return 50;
-        default:
-          return 25;
+      case 5:
+        return 125;
+      case 4:
+        return 100;
+      case 3:
+        return 75;
+      case 2:
+        return 50;
+      default:
+        return 25;
       }
     });
 
