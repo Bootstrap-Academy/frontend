@@ -4,7 +4,8 @@
   "extends": ["config:recommended"],
 
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "schedule": ["* 0 1,15 * *"]
   },
 
   "nodenv": {
