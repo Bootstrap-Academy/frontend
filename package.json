@@ -20,7 +20,7 @@
     "nuxt": "3.15.4",
     "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
-    "vue-i18n": "^11.1.0"
+    "vue-i18n": "^11.1.1"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.6.13",
