@@ -1,57 +1,44 @@
 <template>
-  <div>
-    <body class="relative">
-      <main>
-        <!-- <img class="bgImg" src="https://media.tacdn.com/media/attractions-splice-spp-674x446/09/c3/33/97.jpg" alt="">     -->
-        <article>
-          <!--DEMO HTML -->
-          <canvas
-            class="confetti"
-            style="width: 100vw; height: 100vh"
-            id="canvas"
-          ></canvas>
-          <!--End DEMO HTML -->
-          <transition name="dontShowAnimationBox">
-            <section
-              v-if="boxInfo"
-              class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3"
-            >
-              <h6 class="my-4 text-accent font-bold">
-                {{ t("Headings.DontShowCongratsAnimationAgain") }}
-              </h6>
+  <div class="relative">
+    <main>
+      <!-- <img class="bgImg" src="https://media.tacdn.com/media/attractions-splice-spp-674x446/09/c3/33/97.jpg" alt="">     -->
+      <article>
+        <!--DEMO HTML -->
+        <canvas class="confetti" style="width: 100vw; height: 100vh" id="canvas"></canvas>
+        <!--End DEMO HTML -->
+        <transition name="dontShowAnimationBox">
+          <section v-if="boxInfo"
+            class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3">
+            <h6 class="my-4 text-accent font-bold">
+              {{ t("Headings.DontShowCongratsAnimationAgain") }}
+            </h6>
 
-              <input-switch v-model="hideAnimation" class="mt-2" />
-            </section>
-          </transition>
+            <input-switch v-model="hideAnimation" class="mt-2" />
+          </section>
+        </transition>
 
-          <transition name="infoBox">
-            <section
-              v-if="boxInfo"
-              class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3"
-            >
-              <h6 class="my-2 text-accent text-lg font-bold">
-                {{ t("Headings.CongratsAnimateText") }}
-              </h6>
-              <div class="flex justify-end w-full">
-                <NuxtLink @click="navigateToProfile()">
-                  <Btn sm> Go To profile </Btn>
-                </NuxtLink>
-              </div>
-            </section>
-          </transition>
+        <transition name="infoBox">
+          <section v-if="boxInfo"
+            class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3">
+            <h6 class="my-2 text-accent text-lg font-bold">
+              {{ t("Headings.CongratsAnimateText") }}
+            </h6>
+            <div class="flex justify-end w-full">
+              <NuxtLink @click="navigateToProfile()">
+                <Btn sm> Go To profile </Btn>
+              </NuxtLink>
+            </div>
+          </section>
+        </transition>
 
-          <transition name="closeAnimationBox">
-            <section
-              v-if="boxInfo"
-              class="absolute bg-white cursor-pointer top-[5%] rounded-lg right-[5%] p-4"
-              @click="fnHideAnimation()"
-            >
-              <XMarkIcon class="h-6 w-6" />
-            </section>
-          </transition>
-        </article>
-      </main>
-    </body>
+        <transition name="closeAnimationBox">
+          <section v-if="boxInfo" class="absolute bg-white cursor-pointer top-[5%] rounded-lg right-[5%] p-4"
+            @click="fnHideAnimation()">
+            <XMarkIcon class="h-6 w-6" />
+          </section>
+        </transition>
+      </article>
+    </main>
   </div>
 </template>
 
@@ -243,9 +230,11 @@ onMounted(() => {
   opacity: 1;
   top: 70%;
 }
+
 .infoBox-enter-active {
   transition: all 2s;
 }
+
 .dontShowAnimationBox-enter-from {
   scale: 0;
   opacity: 0;
@@ -259,9 +248,11 @@ onMounted(() => {
   top: 20%;
   left: 5%;
 }
+
 .closeAnimationBox-enter-active {
   transition: all 2s;
 }
+
 .closeAnimationBox-enter-from {
   scale: 0;
   opacity: 0;
@@ -275,9 +266,11 @@ onMounted(() => {
   top: 5%;
   right: 5%;
 }
+
 .dontShowAnimationBox-enter-active {
   transition: all 2s;
 }
+
 body {
   font-family: "Roboto", sans-serif;
   font-style: normal;
@@ -291,9 +284,11 @@ body {
   font-size: 15px;
   background: transparent;
 }
+
 main {
   @apply backdrop-blur-sm;
 }
+
 .intro {
   background: #fff;
   padding: 60px 30px;
@@ -302,10 +297,12 @@ main {
   line-height: 1.5;
   text-align: center;
 }
+
 .intro h1 {
   font-size: 18pt;
   padding-bottom: 15px;
 }
+
 .intro p {
   font-size: 14px;
 }
@@ -324,26 +321,32 @@ a.btn {
   display: inline-block;
   margin-left: 5px;
 }
+
 a.btn:hover {
   background: #666;
   color: #fff;
   transition: 0.3s;
   -webkit-transition: 0.3s;
 }
+
 .btn:before {
   font-family: FontAwesome;
   font-weight: normal;
   margin-right: 10px;
 }
+
 .github:before {
   content: "\f09b";
 }
+
 .down:before {
   content: "\f019";
 }
+
 .back:before {
   content: "\f112";
 }
+
 .credit {
   background: #fff;
   padding: 12px;
@@ -352,18 +355,22 @@ a.btn:hover {
   color: #333;
   margin-top: 40px;
 }
+
 .credit span:before {
   font-family: FontAwesome;
   color: #e41b17;
   content: "\f004";
 }
+
 .credit a {
   color: #333;
   text-decoration: none;
 }
+
 .credit a:hover {
   color: #1dbf73;
 }
+
 .credit a:hover:after {
   font-family: FontAwesome;
   content: "\f08e";
@@ -379,6 +386,7 @@ article li {
   line-height: 1.5;
   padding: 5px;
 }
+
 article h1,
 article h2,
 article h3,
@@ -387,6 +395,7 @@ article p {
   padding: 14px;
   color: #333;
 }
+
 article p {
   font-size: 15px;
   line-height: 1.5;
@@ -408,6 +417,7 @@ article p {
   color: #333;
   font-size: 16px;
 }
+
 .set-overlayer:after,
 .set-glass:after,
 .to-active:after,
@@ -417,6 +427,7 @@ article p {
   position: relative;
   float: right;
 }
+
 .set-overlayer:after,
 .set-glass:after,
 .set-sticky:after {
@@ -429,6 +440,7 @@ article p {
   color: #008080;
   transition: 0.6s;
 }
+
 .set-overlayer,
 .set-glass,
 .set-sticky,
@@ -440,6 +452,7 @@ article p {
   border: 2px solid #f1f1f1;
   box-sizing: border-box;
 }
+
 /* Syntax Highlighter*/
 
 pre.prettyprint {
@@ -455,6 +468,7 @@ pre.prettyprint {
   overflow: auto;
   max-height: 400px;
 }
+
 code {
   border: 1px solid #ddd;
   padding: 2px;
