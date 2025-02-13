@@ -23,13 +23,13 @@ import { useI18n } from 'vue-i18n';
 definePageMeta({ layout: 'inner' });
 
 export default {
-	head: { title: 'Login' },
-	setup() {
-		const { t } = useI18n();
+  head: { title: 'Login' },
+  setup() {
+    const { t } = useI18n();
 
-		onMounted(async () => await getOAuthProviders());
+    onMounted(async () => await getOAuthProviders());
 
-		return { t };
-	},
+    return { t };
+  },
 };
 </script>
