@@ -30,7 +30,6 @@
           />
           <Icon
               v-if="skill.level >= 15"
-              @click="onclickCreateWebinarForThisSubSkill(skill.skill)"
               class="cursor-pointer"
               bgColor="bg-warning-light"
               iconColor="text-warning"
@@ -40,7 +39,6 @@
           />
           <Icon
               v-if="skill.level >= 42"
-              @click="onclickHoldCoachingForThisSubSkill(skill.skill)"
               class="cursor-pointer"
               bgColor="bg-info-light"
               iconColor="fill-info"
@@ -85,7 +83,6 @@
           />
           <Icon
               v-if="skill.level >= 15"
-              @click="onclickCreateWebinarForThisSubSkill(skill.skill)"
               class="cursor-pointer"
               bgColor="bg-warning-light"
               iconColor="text-warning"
@@ -95,7 +92,6 @@
           />
           <Icon
               v-if="skill.level >= 42"
-              @click="onclickHoldCoachingForThisSubSkill(skill.skill)"
               class="cursor-pointer"
               bgColor="bg-info-light"
               iconColor="fill-info"
@@ -134,19 +130,11 @@ export default defineComponent({
       router.push(`/skill-tree/${props.rootSkillId}/${subSkillID}`);
     }
 
-    function onclickCreateWebinarForThisSubSkill(subSkillID: string) {
-    }
-
-    function onclickHoldCoachingForThisSubSkill(subSkillID: string) {
-    }
-
     const skills: any[] = reactive(props.data ?? []);
 
     return {
       t,
       onclickViewThisSubSkillPath,
-      onclickCreateWebinarForThisSubSkill,
-      onclickHoldCoachingForThisSubSkill,
       EyeIcon,
       IconCoaching,
       UserGroupIcon,

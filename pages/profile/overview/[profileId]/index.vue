@@ -127,7 +127,7 @@ export default defineComponent({
         return;
       }
       setLoading(true)
-      const [success, error] = await getPublicProfileOverview(profileId.value);
+      await getPublicProfileOverview(profileId.value);
       setLoading(false)
     });
 
