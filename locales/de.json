@@ -11,6 +11,8 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "PublicProfileShare": "Profil Teilen",
+    "MyProfileVisibility": "Meine Profil Sichtbarkeit",
     "DragAndDropToMatchMatchings": "Drag-and-Drop zum Zuordnen",
     "AnswersForMatchingsRespectively": "Antworten für Matchings",
     "LabelForMatchings": "Beschriftungen für Matchings",
@@ -371,6 +373,10 @@
     "SelectSkill": "Skill auswählen"
   },
   "Body": {
+    "MyProfileVisibility": "Veröffentliche deine Lernererfolge.",
+    "PublicProfileShareUrl": "QR-Code scannen oder die URL teilen.",
+    "PublicProfileCopyUrl": "QR-Code scannen oder die URL kopieren.",
+    "ProfileOverviewSkills": "Alle Skills, die {name} zur Zeit verbessert.",
     "SelectSkillDescription": "Wir müssen wissen, unter welchem Root-Skill du die Inhalte erstellen möchtest.",
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "WhyWeUseTests": "Die Zahlen, die du beim Erstellen oder Ändern einer Coding - Challenge eingibst, sind einfach die Anzahl der statischen/zufälligen Testfälle, anhand derer die Lösung des Benutzers getestet werden soll. Wenn ich beispielsweise static_tests=5 und random_tests=3 setze, werden für jede Übermittlung 5 statische Testfälle und 3 zufällige Testfälle generiert, anhand derer die Eingabe des Lösenden getestet wird",
@@ -750,6 +756,10 @@
     "AnswerOption": "Antwort-Möglichkeit"
   },
   "Buttons": {
+    "Public": "Öffentlich",
+    "Private": "Privat",
+    "CopyToClipboard": "Kopieren",
+    "Share": "Teilen",
     "Matching": "Matching",
     "Matchings": "Matchings",
     "UpdateMatching": "Matching bearbeiten",
@@ -957,6 +967,9 @@
     "GravatarImage": "Ändere dein Gravatar-Bild unter"
   },
   "Success": {
+    "UpdateToPrivateProfileStatus": "\uD83D\uDD12 Dein Profil ist jetzt privat. Nur du kannst deinen Fortschritt sehen.",
+    "UpdateToPublicProfileStatus": "\uD83C\uDF1F Dein Profil ist jetzt öffentlich! deine Skills sichtbar, deine Daten geschützt.",
+    "PublicProfileUrlCopied": "Perfekt! Die URL wurde kopiert. \uD83D\uDE80",
     "SolvedMatching": "Matching gelöst ✅",
     "DeleteMatching": "Matching erfolgreich gelöscht",
     "CreateMatching": "Matching erfolgreich erstellt",
@@ -1159,6 +1172,10 @@
     "Sunday": "Sonntag"
   },
   "EmptyStates": {
+    "ProfileOverview": {
+      "Heading": "Profil nicht gefunden",
+      "Body": "Dieses Profil existiert möglicherweise nicht oder wurde auf privat gesetzt."
+    },
     "SkillTree": {
       "Heading": "Skilltree in Bearbeitung",
       "Body": "Dieser Skilltree wird derzeit erstellt. Bitte versuche es später noch einmal!"

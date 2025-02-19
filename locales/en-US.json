@@ -12,6 +12,8 @@
   },
 
   "Headings": {
+    "PublicProfileShare": "Profile Share",
+    "MyProfileVisibility": "My Profile Visibility",
     "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
     "AnswersForMatchingsRespectively": "Answers for Matchings",
     "LabelForMatchings": "Labels for Matchings",
@@ -372,6 +374,10 @@
     "SelectSkill": "Select Skill"
   },
   "Body": {
+    "MyProfileVisibility": "Publish your learning outcome.",
+    "PublicProfileShareUrl": "Scan the QR code or share the URL.",
+    "PublicProfileCopyUrl": "Scan the QR code or copy the URL.",
+    "ProfileOverviewSkills": "All skills that {name} is currently improving.",
     "SelectSkillDescription": "We need to know under which root skill you want to create the content.",
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
@@ -751,6 +757,10 @@
     "AnswerOption": "Answer Option"
   },
   "Buttons": {
+    "Public": "Public",
+    "Private": "Private",
+    "CopyToClipboard": "Copy to Clipboard",
+    "Share": "Share",
     "Matching": "Matching",
     "Matchings": "Matchings",
     "CreateMatching": "create Matching",
@@ -958,6 +968,9 @@
     "GravatarImage": "Change your gravatar image at"
   },
   "Success": {
+    "UpdateToPrivateProfileStatus": "\uD83D\uDD12 Your profile is now private. Only you can see your progress.",
+    "UpdateToPublicProfileStatus": "\uD83C\uDF1F Your profile is now public! Your skills are visible, your data protected.",
+    "PublicProfileUrlCopied": "Perfect! The URL was copied. \uD83D\uDE80",
     "SolvedMatching": "Matching Solved ✅",
     "DeleteMatching": "Matching Delete Successfully",
     "CreateMatching": "Matching Created Successfully",
@@ -1160,6 +1173,10 @@
     "Sunday": "Sunday"
   },
   "EmptyStates": {
+    "ProfileOverview": {
+      "Heading": "Profile not found",
+      "Body": "This profile may not exist or may have been set to private."
+    },
     "SkillTree": {
       "Heading": "Skill Tree Under Progress",
       "Body": "This skill tree is currently being built. Please try again later!"

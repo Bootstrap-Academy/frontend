@@ -21,10 +21,15 @@
   <main
     class="container-fluid pb-container mt-main grid gap-container grid-cols-1 midXl:grid-cols-[275px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)]"
   >
-    <UserProfile
-      :data="user"
-      class="midXl:row-span-4 midXl:sticky midXl:top-container midXl:self-start"
-    />
+    <div class="midXl:row-span-4 midXl:sticky midXl:top-container midXl:self-start">
+      <UserProfile
+          :data="user"
+          class="mb-main"
+      />
+
+      <UserProfileStatus />
+    </div>
+
 
     <UserProgress />
 
