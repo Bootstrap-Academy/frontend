@@ -20,11 +20,26 @@
     </h3>
 
     <div class="flex justify-between gap-box items-center">
-      <p class="text-body-2" v-if="data?.single_choice">
-        {{ t("Headings.SingleChoice") }}
-      </p>
-      <p class="text-body-2" v-else>{{ t("Headings.MultiChoice") }}</p>
-    </div>
+    <!-- Single Choice mit Tooltip -->
+    <Tooltip
+      v-if="data?.single_choice"
+      heading="Headings.SingleChoice"
+      content="Nur eine Antwort kann ausgewählt werden."
+      placement="top"
+    >
+      <p class="text-body-2">{{ t("Headings.SingleChoice") }}</p>
+    </Tooltip>
+
+    <!-- Multi Choice mit Tooltip -->
+    <Tooltip
+      v-else
+      heading="Headings.MultiChoice"
+      content="Mehrere Antworten können ausgewählt werden."
+      placement="top"
+    >
+      <p class="text-body-2">{{ t("Headings.MultiChoice") }}</p>
+    </Tooltip>
+  </div>
   </article>
 </template>
 
@@ -38,6 +53,7 @@ import {
   PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 import { LockClosedIcon } from "@heroicons/vue/24/outline";
+import Tooltip from "@/components/Tooltip.vue";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
