@@ -5,7 +5,7 @@
 		<Transition>
 			<section
 				v-if="show"
-				class="w-screen h-screen fixed left-0 top-0 z-50"
+				class="w-screen h-screen fixed left-0 top-0 z-[10000]"
 				@click.self="closeMenu"
 			>
 				<aside class="h-full w-72 bg-tertiary p-[5vw] sm:p-9 shadow-2xl">

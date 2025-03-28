@@ -127,7 +127,7 @@ export default defineComponent({
         console.log("going back");
         pathname = `/courses/${route.query?.course ?? ""}/watch?section=${
           route.query?.section ?? ""
-        }/${route.query?.lecture ?? ""}&skillID=${
+        }&lecture=${route.query?.lecture ?? ""}&skillID=${
           route.query?.skillID ?? ""
         }&subSkillID=${route.query?.subSkillID ?? ""}`;
         label = "Links.GoToCourse";

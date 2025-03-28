@@ -53,9 +53,9 @@ jobs:
           size=$(du -sh dist | cut -f1)
           echo "**Preview deployed to ${url}** (total size: ${size})" > comment
       - name: Comment preview url
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
-          filePath: comment
-          pr_number: ${{ env.pr }}
-          comment_tag: preview
+          file-path: comment
+          pr-number: ${{ env.pr }}
+          comment-tag: preview
           mode: recreate

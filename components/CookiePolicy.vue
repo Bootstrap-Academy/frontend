@@ -1,9 +1,15 @@
 <template>
 	<div>
 		<Modal v-if="!agreed && route.name != 'docs-privacy'">
-			<Dialog :dialog="dialog">
+			<Dialog
+				:dialog="dialog"
+				role="dialog"
+				aria-labelledby="cookie-dialog-title"
+				aria-describedby="cookie-dialog-description"
+				aria-modal="true"
+			>
 				<template #content="{ t }">
-					<p class="text-body-1 text-body font-body m-0 mt-box">
+					<p id="cookie-dialog-description" class="text-body-1 text-body font-body m-0 mt-box">
 						{{ t('Body.CookiePolicy') }}
 
 						<NuxtLink
@@ -20,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import Gleap from 'gleap';
 
 export default defineComponent({
@@ -62,6 +68,14 @@ export default defineComponent({
       set(data: boolean) {
         cookie_agreedToCookiePolicy.value = data;
       },
+    });
+
+    onMounted(() => {
+      const dialogElement = document.querySelector('[role="dialog"]');
+      if (dialogElement && dialogElement instanceof HTMLElement) {
+        dialogElement.setAttribute('tabindex', '-1');
+        dialogElement.focus();
+      }
     });
 
     return { agreed, dialog, route };

@@ -20,11 +20,26 @@
     </h3>
 
     <div class="flex justify-between gap-box items-center">
-      <p class="text-body-2" v-if="data?.single_choice">
-        {{ t("Headings.SingleChoice") }}
-      </p>
-      <p class="text-body-2" v-else>{{ t("Headings.MultiChoice") }}</p>
-    </div>
+    <!-- Single Choice mit Tooltip -->
+    <Tooltip
+      v-if="data?.single_choice"
+      heading="Headings.SingleChoice"
+      content="Nur eine Antwort kann ausgewählt werden."
+      placement="top"
+    >
+      <p class="text-body-2">{{ t("Headings.SingleChoice") }}</p>
+    </Tooltip>
+
+    <!-- Multi Choice mit Tooltip -->
+    <Tooltip
+      v-else
+      heading="Headings.MultiChoice"
+      content="Mehrere Antworten können ausgewählt werden."
+      placement="top"
+    >
+      <p class="text-body-2">{{ t("Headings.MultiChoice") }}</p>
+    </Tooltip>
+  </div>
   </article>
 </template>
 
@@ -38,6 +53,7 @@ import {
   PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 import { LockClosedIcon } from "@heroicons/vue/24/outline";
+import Tooltip from "@/components/Tooltip.vue";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
@@ -61,35 +77,32 @@ export default defineComponent({
     }
 
     function gotoPage() {
-      if (route.fullPath.includes("/skill-tree/")) {
-        const id = route.params.skill;
-        router.push(
-          `/quizzes/solve-${id}?quizzesFrom=${"skill"}&querySubTaskId=${
-            props.data?.id
-          }&taskId=${props.data?.task_id}&rootSkillID=${
-            rootSkillID.value
-          }&subSkillID=${subSkillID.value}`
-        );
-      } else if (route.fullPath.includes("/watch?")) {
-        router.push(
-          `/quizzes/solve-${
-            props.data?.task_id
-          }?quizzesFrom=${"quiz"}&querySubTaskId=${props.data?.id}&taskId=${
-            props.data?.task_id
-          }`
-        );
-      } else if (route.fullPath.includes("/courses/")) {
-        const id = route.params.id;
-        let skillId = route.query?.skillID ?? "";
-        let subSkillID = route.query?.subSkillID ?? "";
-        router.push(
-          `/quizzes/solve-${id}?quizzesFrom=${"course"}&querySubTaskId=${
-            props.data?.id
-          }&taskId=${
-            props.data?.task_id
-          }&skillID=${skillId}&subSkillID=${subSkillID}`
-        );
-      }
+      const { fullPath, params, query } = route;
+      const { id, task_id } = props.data ?? {};
+
+      if (!id || !task_id) return;
+
+      const _skillID = query.skillID ?? rootSkillID.value ?? null;
+      const _subSkillID = query.subSkillID ?? subSkillID.value ?? null;
+
+      let isSkill = fullPath.includes("/skill-tree/");
+      let isCourse = fullPath.includes("/courses/");
+      let isWatch = fullPath.includes("/watch?");
+
+      let solveId = isSkill ? params.skill : isCourse ? params.id : isWatch ? params.id : null;
+      let quizzesFrom = isSkill
+        ? "skill"
+        : isCourse
+          ? "course"
+          : isWatch
+            ? "quiz"
+            : null;
+
+      if (!quizzesFrom || !solveId) return;
+
+      router.push(
+        `/quizzes/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`
+      );
     }
     return { t, solveThis, user };
   },

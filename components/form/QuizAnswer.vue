@@ -54,9 +54,9 @@
         </button>
       </article>
 
-      <div>
+      <div class="mb-4">
         <p v-if="amountQuestionsLeft == 0" class="text-center mb-2">
-          {{ t("Headings.QuestionsAllSolved") }}
+          {{ t("Headings.AllSolved") }}
         </p>
 
         <p v-else-if="subtask?.solved && user?.id != subtask?.creator" class="text-center mb-2">

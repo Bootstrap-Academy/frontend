@@ -1,13 +1,23 @@
 <template>
-  <main class="relative h-screen-main min grid place-items-center">
-    <SkillTreeHeader @zoomLevel="zoomLevel = $event" :breadcrumbs="breadcrumbs" :quizzesQuickStart="true" />
+  <main class="relative h-screen-main min grid place-items-center select-none">
+    <SkillTreeHeader
+      @zoomLevel="zoomLevel = $event"
+      :breadcrumbs="breadcrumbs"
+      :quizzesQuickStart="true"
+    />
 
     <LoadingDots v-if="loading">
       {{ t("Body.RootSkillTreeLoading") }}
     </LoadingDots>
 
-    <section v-else-if="nodes && nodes.length"
-      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-auto" ref="mainRef">
+    <section
+      v-else-if="nodes && nodes.length"
+      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-scroll"
+      ref="mainRef"
+      @wheel="handleWheelZoom"
+      @mousedown="startDrag"
+      :class="{ 'cursor-grabbing': isDragging }"
+    >
       <svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete">
           <SkillTreePathway v-for="(pathway, p) of pathways" :key="p" :pathway="pathway.path" :zoomLevel="zoomLevel"
@@ -238,6 +248,51 @@ export default {
       { immediate: true, deep: true }
     );
 
+    // ! ======================================================= Dragging
+    const isDragging = ref(false);
+    const startX = ref(0);
+    const startY = ref(0);
+    const scrollLeft = ref(0);
+    const scrollTop = ref(0);
+
+    const startDrag = (event: MouseEvent) => {
+      if (event.button !== 0) return;
+
+      const target = event.target as HTMLElement;
+      console.log(target.tagName);
+      if (target.tagName === "foreignObject" || target.tagName === "path") return;
+
+      isDragging.value = true;
+      startX.value = event.pageX - mainRef.value!.offsetLeft;
+      startY.value = event.pageY - mainRef.value!.offsetTop;
+      scrollLeft.value = mainRef.value!.scrollLeft;
+      scrollTop.value = mainRef.value!.scrollTop;
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("mouseup", stopDrag);
+    };
+
+    const drag = (event: MouseEvent) => {
+      if (!isDragging.value) return;
+      event.preventDefault();
+      const x = event.pageX - mainRef.value!.offsetLeft;
+      const y = event.pageY - mainRef.value!.offsetTop;
+      const walkX = x - startX.value;
+      const walkY = y - startY.value;
+      
+      mainRef.value!.scrollLeft = scrollLeft.value - walkX;
+      mainRef.value!.scrollTop = scrollTop.value - walkY;
+
+      if (event.clientX <= 0 || event.clientX >= window.innerWidth || event.clientY <= 0 || event.clientY >= window.innerHeight) {
+        stopDrag();
+      }
+    };
+
+    const stopDrag = () => {
+      isDragging.value = false;
+      document.removeEventListener("mousemove", drag);
+      document.removeEventListener("mouseup", stopDrag);
+    };
+
     return {
       user,
       setupComplete,
@@ -267,6 +322,9 @@ export default {
       onclickUploadCertificates,
       ArrowUpTrayIcon,
       breadcrumbs,
+      
+      isDragging,
+      startDrag,
       
       xp,
     };
@@ -301,5 +359,10 @@ export default {
 /* Handle on hover */
 .map::-webkit-scrollbar-thumb:hover {
   background: var(--color-accent);
+}
+
+/* Cursor styles */
+.cursor-grabbing {
+  cursor: grabbing;
 }
 </style>
