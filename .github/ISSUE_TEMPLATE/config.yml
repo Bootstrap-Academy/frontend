@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Open a new ticket
+    url: "https://github.com/Bootstrap-Academy/Bootstrap-Academy/issues/new/choose"
+    about: "Tickets are managed in the Bootstrap-Academy repository."
+  - name: Discord
+    url: "https://the-morpheus.de/discord.html"
+    about: "Join the Discord server of The Morpheus Tutorials."
+  - name: Bootstrap Academy
+    url: "https://bootstrap.academy/contact"
+    about: "Go to https://bootstrap.academy/contact for information on how to contact us."
