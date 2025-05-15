@@ -38,7 +38,7 @@
     "markdown-it": "^14.1.0",
     "monaco-editor": "^0.52.2",
     "nanoid": "^5.1.5",
-    "npm": "^11.3.0",
+    "npm": "^11.4.0",
     "qrcode.vue": "^3.6.0",
     "vue-recaptcha-v3": "^2.0.1",
     "vuedraggable": "^4.1.0"
