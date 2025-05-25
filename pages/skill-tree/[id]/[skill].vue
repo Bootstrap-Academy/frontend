@@ -1,56 +1,28 @@
 <template>
   <main
-    class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container"
-  >
+    class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container">
+
     <Head>
       <Title>Skill Details - {{ skillName }}</Title>
     </Head>
 
-    <SkillTreeHeader
-      class="pt-card lg:col-span-3 justify-self-start h-fit"
-      :absolute="false"
-      no-zoom-level
-      :breadcrumbs="breadcrumbs"
-    />
+    <SkillTreeHeader class="pt-card lg:col-span-3 justify-self-start h-fit" :absolute="false" no-zoom-level
+      :breadcrumbs="breadcrumbs" />
 
-    <SkillTreeNodeDetailsStepper
-      class="h-fit"
-      :subSkillID="subSkillID"
-      :skillID="rootSkillID"
-      :activeStepper="activeStepper"
-      @activeStepper="activeStepper = $event"
-      :courses="courses"
-      :coachings="coachings"
-      :webinars="webinars"
-      :quizzes="quizzes"
-      :matchings="matchings"
-    />
-    <div class="h-fit pointer-events-none">
-      <SkillTreeNodeSvg
-        :size="nodeSize"
-        :node="subSkill"
-        :active="true"
-        :completed="subSkill?.completed ?? false"
-        class="mx-auto"
-      />
-      <h6
-        class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm"
-      >
+    <SkillTreeNodeDetailsStepper class="h-fit" :subSkillID="subSkillID" :skillID="rootSkillID"
+      :activeStepper="activeStepper" @activeStepper="activeStepper = $event" :courses="courses" :coachings="coachings"
+      :webinars="webinars" :quizzes="quizzes" :matchings="matchings" />
+    <div class="h-fit">
+      <SkillTreeNodeSvg :size="nodeSize" :node="subSkill" :active="true" :completed="subSkill?.completed ?? false"
+        class="mx-auto" :navigate="false" :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
+      <h6 class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm">
         {{ subSkill?.name ?? "" }}
       </h6>
     </div>
 
-    <SkillTreeNodeDetailsStepperContent
-      class="h-fit"
-      :activeStepper="activeStepper"
-      :subSkillID="subSkillID"
-      :skillID="rootSkillID"
-      :courses="courses"
-      :coachings="coachings"
-      :webinars="webinars"
-      :quizzes="quizzes"
-      :matchings="matchings"
-    />
+    <SkillTreeNodeDetailsStepperContent class="h-fit" :activeStepper="activeStepper" :subSkillID="subSkillID"
+      :skillID="rootSkillID" :courses="courses" :coachings="coachings" :webinars="webinars" :quizzes="quizzes"
+      :matchings="matchings" />
   </main>
 </template>
 
@@ -73,6 +45,8 @@ export default defineComponent({
 
     const subSkillTree: Ref<any> = useSubSkillTree();
 
+    const isNodeBookmarked = ref(false);
+
     const courses = useCourses();
     const coachings = useCoachings();
     const webinars = useWebinars();
@@ -87,7 +61,9 @@ export default defineComponent({
 
     const subSkill = computed(() => {
       let skills: any[] = subSkillTree.value?.skills ?? [];
-      return skills.find((skill) => skill.id == subSkillID.value);
+      let sub_skill = skills.find((skill) => skill.id == subSkillID.value);
+      isNodeBookmarked.value = sub_skill?.is_bookmarked ?? false;
+      return sub_skill;
     });
 
     const courseIDs = computed(() => subSkill.value?.courses ?? []);
@@ -127,6 +103,23 @@ export default defineComponent({
     }
 
     const nodeSize = ref(150);
+
+    async function toggleBookmark(isBookmarked: boolean) {
+      isNodeBookmarked.value = isBookmarked;
+
+      try {
+        if (isBookmarked) {
+          await createBookmark(subSkill.value.parent_id, subSkill.value.id);
+        } else {
+          await deleteBookmark(subSkill.value.parent_id, subSkill.value.id);
+        }
+
+        isNodeBookmarked.value = isBookmarked;
+      } catch (error) {
+        isNodeBookmarked.value = !isBookmarked;
+        console.error(`Bookmark ${isBookmarked ? "creation" : "deletion"} failed!`);
+      }
+    }
 
     onMounted(async () => {
       if (window) {
@@ -173,6 +166,8 @@ export default defineComponent({
       breadcrumbs,
       quizzes,
       matchings,
+      toggleBookmark,
+      isNodeBookmarked
     };
   },
 });
