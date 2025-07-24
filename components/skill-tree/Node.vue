@@ -1,40 +1,28 @@
 <template>
-	<svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick">
-		<SkillTreeNodeSvg
-			v-if="isFilled"
-			:size="nodeSize"
-			:node="node"
-			:active="active"
-			:completed="completed"
+  <svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick">
+    <SkillTreeNodeSvg v-if="isFilled" :size="nodeSize" :node="node" :active="active" :completed="completed"
       :dottedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 25 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 42"
       :segmentedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 42 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 50"
       :flameEffect="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 50"
-		/>
+      :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
 
-		<foreignObject
-			v-if="zoomLevel != 1 && isFilled"
-			x="0"
-			:y="nodeSize - 10"
-			:width="nodeSize"
-			:height="active || completed ? 200 : 100"
-		>
-			<h6
-				class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize"
-				:class="{
-					'pt-6': active,
-					'pt-7': completed,
-					'pt-2': !active && !completed,
-					'text-heading-3': zoomLevel == 5,
-					'text-heading-4': zoomLevel == 4,
-					'text-heading-5': zoomLevel == 3,
-					'text-body-2': zoomLevel == 2,
-				}"
-				v-if="node"
-			>
-				{{ node?.name ?? '' }}
-			</h6>
-		</foreignObject>
-	</svg>
+    <foreignObject v-if="zoomLevel != 1 && isFilled" x="0" :y="nodeSize - 10" :width="nodeSize"
+      :height="active || completed ? 200 : 100">
+      <h6
+        class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize"
+        :class="{
+          'pt-6': active,
+          'pt-7': completed,
+          'pt-2': !active && !completed,
+          'text-heading-3': zoomLevel == 5,
+          'text-heading-4': zoomLevel == 4,
+          'text-heading-5': zoomLevel == 3,
+          'text-body-2': zoomLevel == 2,
+        }" v-if="node && node.name != 'start'">
+        {{ node?.name ?? '' }}
+      </h6>
+    </foreignObject>
+  </svg>
 </template>
 
 <script lang="ts">
@@ -69,6 +57,9 @@ export default defineComponent({
     const sub_skill_level_value = computed(() => xp_list_sub_skill.value?.level);
 
     let occupiedSpace = 3;
+    let isNodeBookmarked = ref(false);
+    const user = useUser();
+
 
     const size = computed(() => {
       switch (props.zoomLevel) {
@@ -100,6 +91,7 @@ export default defineComponent({
     const nodeRef = ref<SVGElement | null>(null);
 
     const current_node = computed(() => {
+      isNodeBookmarked.value = props.node?.is_bookmarked ?? false;
       return {
         id: props.node?.id ?? '',
         name: props.node?.name ?? '',
@@ -107,6 +99,7 @@ export default defineComponent({
         row: props.node?.row ?? props.row,
         column: props.node?.column ?? props.column,
         icon: props.node?.icon ?? '',
+        is_bookmarked: props.node?.is_bookmarked ?? false,
       };
     });
 
@@ -141,6 +134,35 @@ export default defineComponent({
       return !!current_node.value.id;
     });
 
+    async function toggleBookmark(isBookmarked: boolean) {
+      if (!user.value) return router.push('/auth/login');
+
+      isNodeBookmarked.value = isBookmarked;
+
+      try {
+        if (isBookmarked) {
+          await createBookmark(
+            props.node?.parent_id == null ? props.node?.id : props.node?.parent_id,
+            props.node?.parent_id == null ? "" : props.node?.id
+          );
+        } else {
+          await deleteBookmark(
+            props.node?.parent_id == null ? props.node?.id : props.node?.parent_id,
+            props.node?.parent_id == null ? "" : props.node?.id
+          );
+        }
+      } catch (error) {
+        isNodeBookmarked.value = !isBookmarked;
+        console.error(`Bookmark ${isBookmarked ? 'creation' : 'deletion'} failed!`);
+      }
+    }
+
+    onMounted(async () => {
+      await Promise.all([
+        getUser(),
+      ]);
+    });
+
     return {
       current_node,
       nodeRef,
@@ -155,9 +177,9 @@ export default defineComponent({
       root_skill_level_value,
       sub_skill_xp_value,
       sub_skill_level_value,
+      toggleBookmark,
+      isNodeBookmarked
     };
   },
 });
 </script>
-
-<style scoped></style>

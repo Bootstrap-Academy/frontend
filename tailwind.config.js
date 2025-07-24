@@ -26,6 +26,7 @@ module.exports = {
       secondary: 'var(--color-secondary)',
       tertiary: 'var(--color-tertiary)',
       accent: 'var(--color-accent)',
+      star: 'var(--color-star)',
 
       black: 'var(--color-black)',
       dark: 'var(--color-dark)',
