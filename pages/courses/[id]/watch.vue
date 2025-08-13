@@ -302,11 +302,20 @@ export default {
       }
       await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
 
+      // Start token monitoring for video sessions to prevent logout
+      const { startTokenMonitoring } = await import('~/composables/tokenManager');
+      startTokenMonitoring();
+
       loading.value = false;
     });
 
     onBeforeUnmount(() => {
       localStorage.removeItem("selectedButton");
+      
+      // Stop token monitoring when leaving the page
+      import('~/composables/tokenManager').then(({ stopTokenMonitoring }) => {
+        stopTokenMonitoring();
+      });
     });
 
 

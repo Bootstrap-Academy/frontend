@@ -98,6 +98,9 @@ export default defineComponent({
       timeCookie.value = currentVideoTime;
     
       if (currentVideoTime < 1) videoCookie.value = videoID;
+
+      const lastActivity = useCookie("lastVideoActivity");
+      lastActivity.value = Date.now();
     }
     
     function onVideoLoad(videoID: string, event: any) {

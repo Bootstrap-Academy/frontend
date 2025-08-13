@@ -110,6 +110,7 @@ async function goToPrevLecture() {
 }
 
 async function goToNextLecture() {
+  const { ensureTokenFresh } = await import('~/composables/tokenManager');
   if (lectures.value.length <= 0) return;
 
   let indexOfCurrentLecture = lectures.value.findIndex(
@@ -118,6 +119,9 @@ async function goToNextLecture() {
 
   // current lecture is last lecture
   if (indexOfCurrentLecture >= lectures.value.length - 1) {
+    // Ensure token is fresh before showing completion dialog
+    await ensureTokenFresh();
+    
     openDialog(
       "success",
       "Headings.CourseCompleted",
@@ -139,6 +143,13 @@ async function goToNextLecture() {
   // current lecture was not found
   else if (indexOfCurrentLecture < 0) {
     // handle error
+    return;
+  }
+
+  // Ensure token is fresh before navigating to next lecture
+  const tokenIsValid = await ensureTokenFresh();
+  if (!tokenIsValid) {
+    openSnackbar("error", "Session expired. Please login again.");
     return;
   }
 

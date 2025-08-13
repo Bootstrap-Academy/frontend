@@ -216,7 +216,12 @@ function isAccessTokenExpired() {
     let exp = jwtDecode(accessToken).exp;
     let time = parseInt(Math.round(new Date().getTime() / 1000));
     let difference = exp - time;
-    let isTokenExpired = difference <= 100 ? true : false;
+
+    const lastActivity = useCookie("lastVideoActivity");
+    const isWatchingVideo = lastActivity.value && (Date.now() - lastActivity.value) < 120000; // Active within last 2 minutes
+    
+    const threshold = isWatchingVideo ? 30 : 100;
+    let isTokenExpired = difference <= threshold ? true : false;
 
     return isTokenExpired;
   } catch (error) {
