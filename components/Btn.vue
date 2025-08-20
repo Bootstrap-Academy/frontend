@@ -1,11 +1,20 @@
 <template>
-  <button :class="classes" @click="onclick" :disabled="disabled" type="button">
+  <button
+    :class="classes"
+    :style="ringStyle"
+    @click="onclick"
+    :disabled="disabled"
+    type="button"
+    >
+
     <component v-if="icon" :is="icon" class="icon" />
     <slot></slot>
   </button>
 </template>
 
 <script lang="ts">
+import { defineComponent, computed } from "vue";
+
 export default defineComponent({
   props: {
     full: { type: Boolean, default: false },
@@ -30,6 +39,20 @@ export default defineComponent({
     const textColor = computed(() => {
       return props.bgColor.includes("warning") ? "text-primary" : "text-white";
     });
+    
+    //  Ring-Farbe = Border-Farbe (Theme-Variablen)
+    const ringCssVar = computed(() => {
+      const m = props.borderColor?.match(/^border-(.+)$/)
+      if (!m || m[1] === 'transparent') return 'transparent'
+      return `var(--color-${m[1]})`
+    })
+
+    // Style-Objekt für Button: setzt ringColor gobal
+    const ringStyle = computed (() => ({
+      '--tw-ring-color': ringCssVar.value,
+    } as Record<string,string>))
+
+    // ring-Breite auf :hover aktivieren, Farbe aus ringStyle
     const classes = computed(() => {
       return [
         {
@@ -40,20 +63,28 @@ export default defineComponent({
           "text-center justify-center w-full": props.full,
           disabled: props.disabled,
         },
+        // PRIMARY: gefüllt
         props.primary && !props.secondary && !props.tertiary
-          ? `primary ${props.bgColor} text-primary enabled:hover:${props.bgColor} border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
+          ? `primary ${props.bgColor} ${textColor.value} border ${props.borderColor}
+            enabled:hover:ring-4 md:enabled:hover:ring-8`
           : "",
+          // SECONDARY: transparent mit Rahmen
         props.secondary
-          ? `secondary bg-transparent text-heading enabled:hover:bg-transparent border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
+          ? `secondary bg-transparent text-heading border ${props.borderColor}
+            enabled:hover:ring-4 md:enabled:hover:ring-8`
           : "",
+          // TERTIARY: transparent, schlank
         props.tertiary
-          ? `tertiary bg-transparent text-heading enabled:hover:bg-transparent enabled:hover:scale-105 border border-transparent enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-transparent`
+          ? `tertiary bg-transparent text-heading enabled:hover:scale-105 border border-transparent
+            enabled:hover:ring-4 md:enabled:hover:ring-8`
           : "",
-      ];
-    });
-    return { classes, onclick };
+      ]
+    })
+
+    return { classes, onclick, ringStyle }
   },
-});
+})
+
 </script>
 
 <style scoped>
