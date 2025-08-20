@@ -68,12 +68,12 @@ export default defineComponent({
           ? `primary ${props.bgColor} ${textColor.value} border ${props.borderColor}
             enabled:hover:ring-4 md:enabled:hover:ring-8`
           : "",
-          // SECONDARY: transparent mit Rahmen
+        // SECONDARY: transparent mit Rahmen
         props.secondary
           ? `secondary bg-transparent text-heading border ${props.borderColor}
             enabled:hover:ring-4 md:enabled:hover:ring-8`
           : "",
-          // TERTIARY: transparent, schlank
+        // TERTIARY: transparent, schlank
         props.tertiary
           ? `tertiary bg-transparent text-heading enabled:hover:scale-105 border border-transparent
             enabled:hover:ring-4 md:enabled:hover:ring-8`
