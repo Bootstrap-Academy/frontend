@@ -1,123 +1,113 @@
 <template>
-	<form
-		class="flex flex-col gap-3"
-		@submit.prevent="onclickSubmitForm()"
-		ref="formRef"
-	>
-		<SectionTitle
-			subheading="Subheadings.WebShop"
-			heading="Headings.BuyMorphcoins"
-			body="Body.MorphcoinRate"
-			center
-			class="mb-card"
-		/>
+  <form class="flex flex-col gap-3" @submit.prevent="onclickSubmitForm()" ref="formRef">
+    <SectionTitle
+      subheading="Subheadings.WebShop"
+      heading="Headings.BuyMorphcoins"
+      body="Body.MorphcoinRate"
+      center
+      class="mb-card"
+    />
 
-		<article
-			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
-			:class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
-		>
-			<img src="/images/euro.png" :alt="t('AltAttributes.Euro')" class="w-8 h-8 object-contain" />
-			<h3 class="text-heading-3">{{ t('Headings.Euros') }}</h3>
-			<input
-				id="Euros"
-				name="Euros"
-				type="number"
-				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
-				@change="onchangeValidateEuros()"
-				@input="oninputValidateEuros($event)"
-				:value="form.euros.value"
-			/>
-		</article>
+    <article
+      class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+      :class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
+    >
+      <img src="/images/euro.png" :alt="t('AltAttributes.Euro')" class="w-8 h-8 object-contain" />
+      <h3 class="text-heading-3">{{ t('Headings.Euros') }}</h3>
+      <input
+        id="Euros"
+        name="Euros"
+        type="number"
+        class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
+        @change="onchangeValidateEuros()"
+        @input="oninputValidateEuros($event)"
+        :value="form.euros.value"
+      />
+    </article>
 
-		<ArrowDownCircleIcon
-			class="w-12 h-12 text-accent -my-6 relative z-20 mx-auto"
-		/>
+    <ArrowDownCircleIcon class="w-12 h-12 text-accent -my-6 relative z-20 mx-auto" />
 
-		<article
-			class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
-			:class="[!form.morphCoins.valid ? 'border-error' : 'border-transparent']"
-		>
-			<img
-				src="/images/coin.png"
-				:alt="t('AltAttributes.Morphcoin')"
-				class="w-8 h-8 object-contain"
-			/>
-			<h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>
-			<input
-				id="Morphcoins"
-				name="Morphcoins"
-				type="number"
-				class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
-				@change="onchangeValidateMorphcoins()"
-				@input="oninputValidateMorphcoins($event)"
-				:value="form.morphCoins.value"
-			/>
-		</article>
+    <article
+      class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+      :class="[!form.morphCoins.valid ? 'border-error' : 'border-transparent']"
+    >
+      <img
+        src="/images/coin.png"
+        :alt="t('AltAttributes.Morphcoin')"
+        class="w-8 h-8 object-contain"
+      />
+      <h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>
+      <input
+        id="Morphcoins"
+        name="Morphcoins"
+        type="number"
+        class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
+        @change="onchangeValidateMorphcoins()"
+        @input="oninputValidateMorphcoins($event)"
+        :value="form.morphCoins.value"
+      />
+    </article>
 
-		<hr class="mt-card mb-card" />
+    <hr class="mt-card mb-card" />
 
-		<article class="w-fit mb-card">
-			<h2 class="text-accent text-sm uppercase">
-				{{ t('Headings.TotalBill') }}
-			</h2>
-			<div class="flex items-center gap-box">
-				<h1 class="m-0 text-heading-1">{{ form.euros.value }}</h1>
-				<h3 class="m-0 text-heading-3 text-body">
-					{{ t('Headings.Euros').toLocaleLowerCase() }}
-				</h3>
-			</div>
-		</article>
+    <article class="w-fit mb-card">
+      <h2 class="text-accent text-sm uppercase">
+        {{ t('Headings.TotalBill') }}
+      </h2>
+      <div class="flex items-center gap-box">
+        <h1 class="m-0 text-heading-1">{{ form.euros.value }}</h1>
+        <h3 class="m-0 text-heading-3 text-body">
+          {{ t('Headings.Euros').toLocaleLowerCase() }}
+        </h3>
+      </div>
+    </article>
 
-		<InputCheckbox
-			class="mb-card"
-			label="Links.IAgreeTo"
-			id="TermsAndConditions"
-			:link="{
-				to: '/docs/terms-and-conditions',
-				label: 'Links.TermsAndConditions',
-			}"
-			target="_blank"
-			v-model="form.termsAndConditions.value"
-			@valid="form.termsAndConditions.valid = $event"
-		/>
+    <InputCheckbox
+      class="mb-card"
+      label="Links.IAgreeTo"
+      id="TermsAndConditions"
+      :link="{
+        to: '/docs/terms-and-conditions',
+        label: 'Links.TermsAndConditions',
+      }"
+      target="_blank"
+      v-model="form.termsAndConditions.value"
+      @valid="form.termsAndConditions.valid = $event"
+    />
 
-		<InputCheckbox
-			class="mb-card"
-			label="Links.RightToWithdrawal"
-			id="RightToWithdrawal"
-			:link="{
-				to: '/docs/right-of-withdrawal',
-				label: 'Links.RightToWithdrawalLink',
-			}"
-			target="_blank"
-			v-model="form.confirmRightToWithdrawal.value"
-			@valid="form.confirmRightToWithdrawal.valid = $event"
-		/>
-		<InputCheckbox
-			class="mb-card"
-			id="DontUseRightToWithdrawal"
-			label="Links.DontUseRightToWithdrawal"
-			v-model="form.confirmDontUseRightToWithdrawal.value"
-			@valid="form.confirmDontUseRightToWithdrawal.valid = $event"
-		/>
+    <InputCheckbox
+      class="mb-card"
+      label="Links.RightToWithdrawal"
+      id="RightToWithdrawal"
+      :link="{
+        to: '/docs/right-of-withdrawal',
+        label: 'Links.RightToWithdrawalLink',
+      }"
+      target="_blank"
+      v-model="form.confirmRightToWithdrawal.value"
+      @valid="form.confirmRightToWithdrawal.valid = $event"
+    />
+    <InputCheckbox
+      class="mb-card"
+      id="DontUseRightToWithdrawal"
+      label="Links.DontUseRightToWithdrawal"
+      v-model="form.confirmDontUseRightToWithdrawal.value"
+      @valid="form.confirmDontUseRightToWithdrawal.valid = $event"
+    />
 
-		<Btn
-			full
-			@click="onclickSubmitForm"
-			:class="
-				form.euros.valid && form.morphCoins.valid
-					? ''
-					: 'pointer-events-none opacity-60'
-			"
-		>
-			{{ t('Buttons.BuyCoins') }}
-		</Btn>
+    <Btn
+      full
+      @click="onclickSubmitForm"
+      :class="form.euros.valid && form.morphCoins.valid ? '' : 'pointer-events-none opacity-60'"
+    >
+      {{ t('Buttons.BuyCoins') }}
+    </Btn>
 
-		<NuxtLink to="/morphcoins" class="mx-auto mt-card">
-			<span class="text-accent">{{ t('Links.GetMorphCoins') }}</span>
-			{{ t('Links.OtherWays') }}
-		</NuxtLink>
-	</form>
+    <NuxtLink to="/morphcoins" class="mx-auto mt-card">
+      <span class="text-accent">{{ t('Links.GetMorphCoins') }}</span>
+      {{ t('Links.OtherWays') }}
+    </NuxtLink>
+  </form>
 </template>
 
 <script lang="ts">
@@ -160,12 +150,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
             console.log(key);
           }
@@ -198,10 +183,7 @@ export default defineComponent({
       if (form.validate()) {
         router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
       } else {
-        openSnackbar(
-          'error',
-          'Error.MustAgreeToBothPointsInOrderToMoveForward'
-        );
+        openSnackbar('error', 'Error.MustAgreeToBothPointsInOrderToMoveForward');
       }
     }
 

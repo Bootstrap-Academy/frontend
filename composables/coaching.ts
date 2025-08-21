@@ -8,9 +8,7 @@ export async function getCoachingsForThisSubSkill(subSkillID: string) {
       throw { data: { detail: 'Invalid sub skill ID' } };
     }
 
-    const response = await GET(
-      `/events/calendar?type=coaching&skill_id=${subSkillID}`
-    );
+    const response = await GET(`/events/calendar?type=coaching&skill_id=${subSkillID}`);
 
     const coachings = useCoachings();
     coachings.value = response?.events ?? [];
@@ -29,7 +27,7 @@ export async function getCoachingsForThisSubSkill(subSkillID: string) {
 
 export async function bookCoachingForThisSubSkillWithThisInstructor(
   subSkillID: string,
-  slot_id: string
+  slot_id: string,
 ) {
   try {
     if (!!!subSkillID) {

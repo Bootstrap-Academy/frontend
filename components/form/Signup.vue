@@ -1,88 +1,78 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Nickname')"
-			v-model="form.name.value"
-			@valid="form.name.valid = $event"
-			:rules="form.name.rules"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.Nickname')"
+      v-model="form.name.value"
+      @valid="form.name.valid = $event"
+      :rules="form.name.rules"
+    />
 
-		<Input
-			:label="t('Inputs.Name')"
-			v-model="form.display_name.value"
-			@valid="form.display_name.valid = $event"
-			:rules="form.display_name.rules"
-		/>
+    <Input
+      :label="t('Inputs.Name')"
+      v-model="form.display_name.value"
+      @valid="form.display_name.valid = $event"
+      :rules="form.display_name.rules"
+    />
 
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			type="email"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      type="email"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
 
-		<Input
-			v-if="!register_token"
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-			:rules="form.password.rules"
-		/>
+    <Input
+      v-if="!register_token"
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+      :rules="form.password.rules"
+    />
 
-		<InputCheckbox
-			label="Links.IAgreeTo"
-			id="TermsAndConditions"
-			:link="{
-				to: '/docs/terms-and-conditions',
-				label: 'Links.TermsAndConditions',
-			}"
-			target="_blank"
-			required
-			v-model="form.termsAndConditions.value"
-			@valid="form.termsAndConditions.valid = $event"
-		/>
+    <InputCheckbox
+      label="Links.IAgreeTo"
+      id="TermsAndConditions"
+      :link="{
+        to: '/docs/terms-and-conditions',
+        label: 'Links.TermsAndConditions',
+      }"
+      target="_blank"
+      required
+      v-model="form.termsAndConditions.value"
+      @valid="form.termsAndConditions.valid = $event"
+    />
 
-		<InputCheckbox
-			label="Links.IAgreeTo"
-			id="privacy"
-			:link="{
-				to: '/docs/privacy',
-				label: 'Links.Privacy',
-			}"
-			target="_blank"
-			required
-			v-model="form.privacy.value"
-			@valid="form.privacy.valid = $event"
-		/>
+    <InputCheckbox
+      label="Links.IAgreeTo"
+      id="privacy"
+      :link="{
+        to: '/docs/privacy',
+        label: 'Links.Privacy',
+      }"
+      target="_blank"
+      required
+      v-model="form.privacy.value"
+      @valid="form.privacy.valid = $event"
+    />
 
-		<InputCheckbox
-			id="Newsletter"
-			label="Links.Newsletter"
-			v-model="form.newsletter.value"
-		/>
+    <InputCheckbox id="Newsletter" label="Links.Newsletter" v-model="form.newsletter.value" />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mb
-			mt
-		>
-			{{ t('Buttons.CreateAccount') }}
-		</InputBtn>
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mb mt>
+      {{ t('Buttons.CreateAccount') }}
+    </InputBtn>
 
-		<NuxtLink to="/auth/login" class="self-center">
-			{{ t('Links.AlreadyHaveAccount') }}
-			<span class="text-accent">{{ t('Links.GoToLogin') }}</span>
-		</NuxtLink>
-	</form>
+    <NuxtLink to="/auth/login" class="self-center">
+      {{ t('Links.AlreadyHaveAccount') }}
+      <span class="text-accent">{{ t('Links.GoToLogin') }}</span>
+    </NuxtLink>
+  </form>
 </template>
 
 <script lang="ts">
@@ -107,8 +97,7 @@ export default defineComponent({
           (v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
           (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
           (v: string) => v.length <= 32 || 'Error.InputMinLength_32',
-          (v: string) =>
-            /^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
+          (v: string) => /^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
         ],
       },
       display_name: {
@@ -134,8 +123,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
           (v: string) =>
-            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
-						'Error.InputPasswordError',
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || 'Error.InputPasswordError',
         ],
       },
       termsAndConditions: {
@@ -161,10 +149,10 @@ export default defineComponent({
         for (const key in form) {
           if (
             key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'newsletter' &&
-						!form[key].valid
+            key != 'body' &&
+            key != 'submitting' &&
+            key != 'newsletter' &&
+            !form[key].valid
           ) {
             isValid = false;
           }
@@ -178,11 +166,11 @@ export default defineComponent({
         for (const key in form) {
           if (
             key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'termsAndConditions' &&
-						key != 'newsletter' &&
-						key != 'privacy'
+            key != 'body' &&
+            key != 'submitting' &&
+            key != 'termsAndConditions' &&
+            key != 'newsletter' &&
+            key != 'privacy'
           )
             obj[key] = form[key].value;
         }
@@ -218,7 +206,7 @@ export default defineComponent({
             label: 'Buttons.Okay',
             onclick: () => {},
           },
-          null
+          null,
         );
       }
     });
@@ -232,14 +220,14 @@ export default defineComponent({
 
         const updatedBody = !!register_token.value
           ? {
-            ...form.body(),
-            recaptcha_response: recaptcha_response,
-            oauth_register_token: register_token.value,
-					  }
+              ...form.body(),
+              recaptcha_response: recaptcha_response,
+              oauth_register_token: register_token.value,
+            }
           : {
-            ...form.body(),
-            recaptcha_response: recaptcha_response,
-					  };
+              ...form.body(),
+              recaptcha_response: recaptcha_response,
+            };
 
         const [success, error] = await signup(updatedBody);
 
@@ -265,9 +253,7 @@ export default defineComponent({
       openDialog(
         'success',
         'Success.SignupSuccessful',
-        `${t('Success.AccountCreated')} ${
-          isNewsletter ? t('Success.NewsletterSignup') : ''
-        }`,
+        `${t('Success.AccountCreated')} ${isNewsletter ? t('Success.NewsletterSignup') : ''}`,
         true,
         {
           label: 'Buttons.VerifyAccount',
@@ -275,7 +261,7 @@ export default defineComponent({
             router.push('/auth/verify-account');
           },
         },
-        null
+        null,
       );
     }
 

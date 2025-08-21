@@ -1,31 +1,24 @@
 <template>
   <section>
     <article class="flex justify-end">
-      <InputSelect
-        v-model="selectedLanguage"
-        :options="languages"
-        v-if="languages.length"
-      />
+      <InputSelect v-model="selectedLanguage" :options="languages" v-if="languages.length" />
     </article>
     <SkeletonLeaderboard v-if="loading" />
-    <LeaderboardListing
-      v-else-if="leaderBoardList.length"
-      :leaderBoardList="leaderBoardList"
-    />
+    <LeaderboardListing v-else-if="leaderBoardList.length" :leaderBoardList="leaderBoardList" />
     <section v-else-if="!leaderBoardList.length">
-      <p>{{ t("Headings.EmptyLeaderBoardList") }}</p>
+      <p>{{ t('Headings.EmptyLeaderBoardList') }}</p>
     </section>
   </section>
 </template>
 
 <script lang="ts">
-import { TrophyIcon } from "@heroicons/vue/24/outline";
-import { useLanguageLeaderboardList } from "~~/composables/leaderboard";
-import { useI18n } from "vue-i18n";
+import { TrophyIcon } from '@heroicons/vue/24/outline';
+import { useLanguageLeaderboardList } from '~~/composables/leaderboard';
+import { useI18n } from 'vue-i18n';
 export default {
   setup() {
     const { t } = useI18n();
-    const selectedLanguage: any = ref("python");
+    const selectedLanguage: any = ref('python');
     const leaderBoardList = useLanguageLeaderboardList();
     const loading = ref(true);
     const environments: any = useEnvironments();
@@ -58,7 +51,7 @@ export default {
         await getLanguageLeaderboard(newValue, offset.value);
         loading.value = false;
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     onMounted(async () => {

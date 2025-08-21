@@ -1,5 +1,5 @@
 <template>
-	<div class="rounded-3xl max-w-full" :class="classes"></div>
+  <div class="rounded-3xl max-w-full" :class="classes"></div>
 </template>
 
 <script lang="ts">
@@ -52,22 +52,22 @@ export default defineComponent({
 
 <style scoped>
 .heading-lg {
-	@apply p-3;
+  @apply p-3;
 }
 .heading-md {
-	@apply p-2;
+  @apply p-2;
 }
 .heading-sm {
-	@apply p-1.5;
+  @apply p-1.5;
 }
 
 .body-lg {
-	@apply p-2;
+  @apply p-2;
 }
 .body-md {
-	@apply p-1.5;
+  @apply p-1.5;
 }
 .body-sm {
-	@apply p-1;
+  @apply p-1;
 }
 </style>

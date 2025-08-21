@@ -1,29 +1,26 @@
 !
 <template>
-	<div class="p-2 rounded-md">
-		<div
-			class="bg-info text-primary p-4 font-bold rounded cursor-pointer text-center"
-			v-on:click="isOpen = !isOpen"
-		>
-			{{ t(title) }}
-		</div>
-		<Transition name="fade" mode="out-in">
-			<div
-				class="mt-4 px-2 py-3 border-2 border-primary flex justify-center w-full"
-				v-if="isOpen"
-			>
-				<slot />
-			</div>
-		</Transition>
-	</div>
+  <div class="p-2 rounded-md">
+    <div
+      class="bg-info text-primary p-4 font-bold rounded cursor-pointer text-center"
+      v-on:click="isOpen = !isOpen"
+    >
+      {{ t(title) }}
+    </div>
+    <Transition name="fade" mode="out-in">
+      <div class="mt-4 px-2 py-3 border-2 border-primary flex justify-center w-full" v-if="isOpen">
+        <slot />
+      </div>
+    </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-		title: string;
-	}>();
+  title: string;
+}>();
 
 const { t } = useI18n();
 

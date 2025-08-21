@@ -11,9 +11,7 @@
     <NavbarDrawer class="block lg:hidden" :links="links" />
 
     <!-- CENTER -->
-    <nav
-      class="w-fit hidden lg:flex flex-wrap justify-center place-self-center lg:gap-5 xl:gap-10"
-    >
+    <nav class="w-fit hidden lg:flex flex-wrap justify-center place-self-center lg:gap-5 xl:gap-10">
       <NuxtLink
         v-for="{ label, pathname } of links"
         :key="label"
@@ -28,13 +26,13 @@
     <!-- END -->
     <NavbarMenu v-if="authorized" class="justify-self-end" />
     <NuxtLink v-else to="/auth/login" class="justify-self-end">
-      <Btn>{{ t("Buttons.Login") }}</Btn>
+      <Btn>{{ t('Buttons.Login') }}</Btn>
     </NuxtLink>
   </section>
 </template>
 
 <script>
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 export default {
   props: {

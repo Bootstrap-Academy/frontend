@@ -28,30 +28,24 @@
       class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
     >
       <Head>
-        <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
+        <Title>Solve Challenge - {{ challenge?.title ?? '' }}</Title>
       </Head>
 
       <header class="w-fit flex items-items gap-card">
         <div>
           <template v-for="(path, i) of breadcrumbs" :key="i">
-            <NuxtLink
-              v-if="path.to"
-              :to="path.to"
-              class="inline-block text-body-2"
-            >
+            <NuxtLink v-if="path.to" :to="path.to" class="inline-block text-body-2">
               {{ t(path.label) }}
             </NuxtLink>
             <h1 v-else class="text-heading-2 capitalize inline-block">
               {{ t(path.label) }}
             </h1>
 
-            <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-              /
-            </span>
+            <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">/</span>
           </template>
         </div>
         <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
-          {{ t("Headings.Active") }}
+          {{ t('Headings.Active') }}
         </p>
       </header>
 
@@ -89,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 import {
   getSubmissions,
   getSubmission,
@@ -97,16 +91,16 @@ import {
   useCodingChallenge,
   getExamples,
   useCodingExamples,
-} from "~~/composables/codingChallenges";
+} from '~~/composables/codingChallenges';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Solve Challenge",
+    title: 'Solve Challenge',
   },
   setup() {
     const { t } = useI18n();
@@ -119,32 +113,32 @@ export default {
     const environment = ref();
     const allCodingChallenges = useAllCodingChallengesInATask();
     const route = useRoute();
-    const code = ref("// write your code here");
+    const code = ref('// write your code here');
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.Challenges",
-          to: "/challenges/all",
+          label: 'Headings.Challenges',
+          to: '/challenges/all',
         },
         {
-          label: category.value?.title ?? "",
-          to: `/challenges/all?category=${category.value?.id ?? ""}&challenge=${
-            challenge.value?.id ?? ""
+          label: category.value?.title ?? '',
+          to: `/challenges/all?category=${category.value?.id ?? ''}&challenge=${
+            challenge.value?.id ?? ''
           }`,
         },
         {
-          label: challenge.value?.title ?? "",
+          label: challenge.value?.title ?? '',
         },
       ];
     });
     const categoryID = computed((): string => {
-      return <string>route?.params?.category ?? "";
+      return <string>route?.params?.category ?? '';
     });
     const codingChallengeId: any = computed(() => {
-      return route.query?.codingChallenge ?? "";
+      return route.query?.codingChallenge ?? '';
     });
     const challengeID = computed((): string => {
-      return <string>route?.params?.challenge ?? "";
+      return <string>route?.params?.challenge ?? '';
     });
     const heartInfo: any = useHeartInfo();
     const hearts = computed(() => {

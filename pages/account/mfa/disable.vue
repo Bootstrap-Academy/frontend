@@ -20,24 +20,24 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="isSuccess" :dialog="dialog" />
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="isSuccess" :dialog="dialog" />
 
-			<section class="container-form" v-else>
-				<SectionTitle
-					center
-					heading="Headings.DisableMFA"
-					body="Body.EnableMFACode"
-					size="sm"
-					class="mb-card"
-				/>
-				<FormDisableMFA @isSuccess="isSuccess = $event" />
-			</section>
-		</Transition>
-	</section>
+      <section class="container-form" v-else>
+        <SectionTitle
+          center
+          heading="Headings.DisableMFA"
+          body="Body.EnableMFACode"
+          size="sm"
+          class="mb-card"
+        />
+        <FormDisableMFA @isSuccess="isSuccess = $event" />
+      </section>
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">

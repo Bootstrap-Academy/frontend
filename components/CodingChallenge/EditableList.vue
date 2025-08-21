@@ -1,8 +1,6 @@
 <template>
   <section>
-    <InputBtn class="my-7" full @click="openDialogAndAddNew()">{{
-      t("Buttons.AddNew")
-    }}</InputBtn>
+    <InputBtn class="my-7" full @click="openDialogAndAddNew()">{{ t('Buttons.AddNew') }}</InputBtn>
 
     <div v-if="codingChallenges.length">
       <section
@@ -34,12 +32,12 @@
 
         <section class="flex gap-10 mt-4">
           <div class="flex gap-2">
-            <p class="text-sm">{{ $t("Headings.Coins") }} :</p>
+            <p class="text-sm">{{ $t('Headings.Coins') }} :</p>
             <p class="text-accent text-sm">{{ codingChallenge?.coins }}</p>
           </div>
 
           <div class="flex gap-2">
-            <p class="text-sm">{{ $t("Headings.XP") }} :</p>
+            <p class="text-sm">{{ $t('Headings.XP') }} :</p>
             <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
           </div>
         </section>
@@ -48,7 +46,7 @@
 
     <div v-else-if="!codingChallenges.length">
       <p class="border border-accent rounded-md w-full p-5 text-xl text-center">
-        {{ t("Headings.EmptyCodingChallenge") }}
+        {{ t('Headings.EmptyCodingChallenge') }}
       </p>
     </div>
 
@@ -60,10 +58,7 @@
         :show="dialogSlot"
         @closeFunction="dialogCreateCodingChallenge = false"
       >
-        <LazyFormCodingChallenge
-          :propData="propData"
-          :challengeId="challengeId"
-        />
+        <LazyFormCodingChallenge :propData="propData" :challengeId="challengeId" />
       </DialogSlot>
     </div>
   </section>
@@ -77,11 +72,11 @@ import {
   LockOpenIcon,
   EyeIcon,
   PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
-import type { PropType } from "vue";
-import { useDialogSlot } from "../../composables/dialogSlot";
+} from '@heroicons/vue/24/outline';
+import type { PropType } from 'vue';
+import { useDialogSlot } from '../../composables/dialogSlot';
 
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 export default {
   props: {
@@ -96,36 +91,33 @@ export default {
     const dialogCreateCodingChallenge = useDialogCreateCodingChallenge();
     const propData: any = ref();
     function deleteItem(id: any) {
-      console.log("delete", id, props.challengeId);
+      console.log('delete', id, props.challengeId);
       openDialog(
-        "warning",
-        "Headings.DeleteCodingChallenge",
-        "Body.DeleteCodingChallenge",
+        'warning',
+        'Headings.DeleteCodingChallenge',
+        'Body.DeleteCodingChallenge',
         false,
         {
-          label: "Buttons.Delete",
+          label: 'Buttons.Delete',
           onclick: async () => {
-            const [success, error] = await deleteCodingChallenge(
-              props.challengeId,
-              id
-            );
+            const [success, error] = await deleteCodingChallenge(props.challengeId, id);
             success ? deleteSuccess(success) : deleteError(error);
           },
         },
         {
-          label: "Buttons.Cancel",
+          label: 'Buttons.Cancel',
           onclick: () => {},
-        }
+        },
       );
     }
 
     function deleteSuccess(res: any) {
-      openSnackbar("success", "Success.DeletedCodingChallenge");
-      console.log("success");
+      openSnackbar('success', 'Success.DeletedCodingChallenge');
+      console.log('success');
     }
 
     function deleteError(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar('error', res?.detail ?? '');
     }
     function openDialogCreate(codingChallenge: any) {
       propData.value = codingChallenge;

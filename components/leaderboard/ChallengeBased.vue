@@ -9,15 +9,13 @@
       :key="i"
     >
       <p class="text-white clamp tight">
-        {{ challenge?.description ?? "" }}
+        {{ challenge?.description ?? '' }}
       </p>
-      <ArrowRightIcon
-        class="h-7 w-7 scale-75 text-white group-hover:scale-100 transition-all"
-      />
+      <ArrowRightIcon class="h-7 w-7 scale-75 text-white group-hover:scale-100 transition-all" />
     </section>
 
     <section v-else-if="!allGlobalChallenges.length && !loading">
-      <p>{{ t("Headings.EmptyLeaderBoardList") }}</p>
+      <p>{{ t('Headings.EmptyLeaderBoardList') }}</p>
     </section>
 
     <DialogSlot
@@ -33,17 +31,16 @@
 </template>
 
 <script lang="ts">
-import { ArrowRightIcon } from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
+import { ArrowRightIcon } from '@heroicons/vue/24/outline';
+import { useI18n } from 'vue-i18n';
 
 export default {
   props: { leaderBoardList: { type: Array, default: [] } },
   setup() {
     const { t } = useI18n();
-    const dialogLeaderBoardChallengeBased =
-      useDialogLeaderBoardChallengeBased();
+    const dialogLeaderBoardChallengeBased = useDialogLeaderBoardChallengeBased();
     const loading = ref(true);
-    const challengeId = ref("");
+    const challengeId = ref('');
     const allGlobalChallenges: any = ref([]);
     const dialogSlot = useDialogSlot();
 
@@ -67,11 +64,11 @@ export default {
       loading.value = true;
       const [categories, error] = await getChallengesCategories();
       if (categories.length) {
-        console.log("in if 1");
+        console.log('in if 1');
         categories.forEach(async (category: any) => {
           const [array, error] = await getChallengesByCategory(category.id);
           if (array.length) {
-            console.log("in if 2");
+            console.log('in if 2');
             array.forEach((challenge: any) => {
               allGlobalChallenges.value.push(challenge);
             });

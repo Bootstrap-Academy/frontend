@@ -9,7 +9,7 @@
     <p class="text-body-1 text-center clamp line-1">{{ nickname }}</p>
 
     <NuxtLink to="/profile/edit" class="block mx-auto mt-box mb-card">
-      <Btn secondary sm class="mx-auto">{{ t("Buttons.EditProfile") }}</Btn>
+      <Btn secondary sm class="mx-auto">{{ t('Buttons.EditProfile') }}</Btn>
     </NuxtLink>
 
     <p class="text-body-1 text-heading text-justify mb-card mt-box">
@@ -21,26 +21,21 @@
     </IconText>
     <IconText :icon="registration.icon">{{ registration.text }}</IconText>
 
-    <article
-      class="flex gap-x-3 gap-y-3.5 flex-wrap mt-card"
-      v-if="tags && tags.length"
-    >
+    <article class="flex gap-x-3 gap-y-3.5 flex-wrap mt-card" v-if="tags && tags.length">
       <Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
     </article>
 
     <InputBtn class="mt-8 w-full" @click="navigateTo('/subscription')">
-      {{
-        !isPremium ? t("Buttons.BuySubscription") : t("Buttons.ManagePremium")
-      }}
+      {{ !isPremium ? t('Buttons.BuySubscription') : t('Buttons.ManagePremium') }}
     </InputBtn>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { EnvelopeIcon, CalendarIcon } from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { EnvelopeIcon, CalendarIcon } from '@heroicons/vue/24/outline';
+import { useI18n } from 'vue-i18n';
 
 export default {
   props: {
@@ -51,25 +46,25 @@ export default {
     const { t } = useI18n();
 
     const image = computed(() => {
-      return props.data?.avatar_url ?? "/images/about-2.webp";
+      return props.data?.avatar_url ?? '/images/about-2.webp';
     });
 
     const username = computed(() => {
-      return props.data?.name ?? "";
+      return props.data?.name ?? '';
     });
 
     const nickname = computed(() => {
-      return props.data?.display_name ?? "";
+      return props.data?.display_name ?? '';
     });
 
     const description = computed(() => {
-      return props.data?.description ?? "";
+      return props.data?.description ?? '';
     });
 
     const email = computed(() => {
       return {
         icon: EnvelopeIcon,
-        text: props.data?.email ?? "",
+        text: props.data?.email ?? '',
       };
     });
 
@@ -80,12 +75,12 @@ export default {
 
       return {
         icon: CalendarIcon,
-        text: !!timestamp ? `${t(month.string)}, ${year}` : "",
+        text: !!timestamp ? `${t(month.string)}, ${year}` : '',
       };
     });
 
     const tags = computed(() => {
-      return props.data?.tags ?? ["	Web Developer", "	UI UX", "Computer"];
+      return props.data?.tags ?? ['	Web Developer', '	UI UX', 'Computer'];
     });
 
     const premiumInfo: any = usePremiumInfo();
@@ -97,7 +92,7 @@ export default {
       await getPremiumStatus();
     });
 
-    const showFreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
+    const showFreeQuizzesOnly = useCookie('showFreeQuizzesOnly');
     return {
       image,
       username,

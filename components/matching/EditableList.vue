@@ -1,7 +1,7 @@
 <template>
   <div>
     <InputBtn class="my-7" full @click="openDialogAndAddNew()">
-      {{ t("Buttons.AddNew") }}
+      {{ t('Buttons.AddNew') }}
     </InputBtn>
     <section v-if="matchings?.length">
       <div
@@ -11,8 +11,8 @@
       >
         <article class="flex justify-between gap-4">
           <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
-            {{ t("Headings.Matching") }} {{ subtask?.left.length ?? "" }} x
-            {{ subtask?.left.length ?? "" }}
+            {{ t('Headings.Matching') }} {{ subtask?.left.length ?? '' }} x
+            {{ subtask?.left.length ?? '' }}
           </p>
 
           <div class="flex gap-3 items-center">
@@ -28,11 +28,8 @@
         </article>
       </div>
     </section>
-    <p
-      class="border border-accent rounded-md w-full p-5 text-xl text-center"
-      v-else
-    >
-      {{ t("Headings.EmptyMatchings") }}
+    <p class="border border-accent rounded-md w-full p-5 text-xl text-center" v-else>
+      {{ t('Headings.EmptyMatchings') }}
     </p>
     <div>
       <DialogSlot
@@ -40,7 +37,7 @@
         :label="'Headings.Matching'"
         :propClass="'modal-width-lg '"
         :show="dialog"
-        @closeFunction="(dialogCreateMatching = false), (matching = null)"
+        @closeFunction="((dialogCreateMatching = false), (matching = null))"
       >
         <LazyFormMatching :data="propData" :taskId="taskId" />
       </DialogSlot>
@@ -49,14 +46,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useDialogSlot } from "~~/composables/dialogSlot";
-import { useI18n } from "vue-i18n";
-import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
-import type { matching } from "~/types/matching";
+import { useDialogSlot } from '~~/composables/dialogSlot';
+import { useI18n } from 'vue-i18n';
+import { TrashIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import type { matching } from '~/types/matching';
 
 const props = defineProps({
   matchings: { type: Array as PropType<any>, default: [] },
-  taskId: { type: String, default: "" },
+  taskId: { type: String, default: '' },
 });
 
 const { t } = useI18n();
@@ -79,28 +76,28 @@ function openDialogAndAddNew() {
 
 function fnDeleteSubtask(id: string) {
   openDialog(
-    "info",
-    "Headings.DeleteMatching",
-    "Body.DeleteMatching",
+    'info',
+    'Headings.DeleteMatching',
+    'Body.DeleteMatching',
     false,
     {
-      label: "Buttons.DeleteMatching",
+      label: 'Buttons.DeleteMatching',
       onclick: async () => {
         const [success, error] = await deleteMatching(props.taskId, id);
 
         if (success) {
           setTimeout(() => {
-            openSnackbar("success", "Success.DeleteMatching");
+            openSnackbar('success', 'Success.DeleteMatching');
           }, 1000);
         } else {
-          openSnackbar("error", error?.detail ?? "");
+          openSnackbar('error', error?.detail ?? '');
         }
       },
     },
     {
-      label: "Buttons.Cancel",
+      label: 'Buttons.Cancel',
       onclick: () => {},
-    }
+    },
   );
 }
 </script>

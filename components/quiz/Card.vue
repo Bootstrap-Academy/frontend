@@ -16,44 +16,41 @@
       class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
     />
     <h3 class="text-heading-4">
-      Q). <span v-html="$md.render(data?.question ?? '')"></span>
+      Q).
+      <span v-html="$md.render(data?.question ?? '')"></span>
     </h3>
 
     <div class="flex justify-between gap-box items-center">
-    <!-- Single Choice mit Tooltip -->
-    <Tooltip
-      v-if="data?.single_choice"
-      heading="Headings.SingleChoice"
-      content="Nur eine Antwort kann ausgewählt werden."
-      placement="top"
-    >
-      <p class="text-body-2">{{ t("Headings.SingleChoice") }}</p>
-    </Tooltip>
+      <!-- Single Choice mit Tooltip -->
+      <Tooltip
+        v-if="data?.single_choice"
+        heading="Headings.SingleChoice"
+        content="Nur eine Antwort kann ausgewählt werden."
+        placement="top"
+      >
+        <p class="text-body-2">{{ t('Headings.SingleChoice') }}</p>
+      </Tooltip>
 
-    <!-- Multi Choice mit Tooltip -->
-    <Tooltip
-      v-else
-      heading="Headings.MultiChoice"
-      content="Mehrere Antworten können ausgewählt werden."
-      placement="top"
-    >
-      <p class="text-body-2">{{ t("Headings.MultiChoice") }}</p>
-    </Tooltip>
-  </div>
+      <!-- Multi Choice mit Tooltip -->
+      <Tooltip
+        v-else
+        heading="Headings.MultiChoice"
+        content="Mehrere Antworten können ausgewählt werden."
+        placement="top"
+      >
+        <p class="text-body-2">{{ t('Headings.MultiChoice') }}</p>
+      </Tooltip>
+    </div>
   </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
-import {
-  CheckIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
-import { LockClosedIcon } from "@heroicons/vue/24/outline";
-import Tooltip from "@/components/Tooltip.vue";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CheckIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { LockClosedIcon } from '@heroicons/vue/24/outline';
+import Tooltip from '@/components/Tooltip.vue';
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
@@ -65,11 +62,11 @@ export default defineComponent({
     const user: any = useUser();
 
     const rootSkillID = computed(() => {
-      return <string>(route?.params?.id ?? "");
+      return <string>(route?.params?.id ?? '');
     });
 
     const subSkillID = computed(() => {
-      return <string>(route?.params?.skill ?? "");
+      return <string>(route?.params?.skill ?? '');
     });
 
     function solveThis(id: any) {
@@ -85,23 +82,17 @@ export default defineComponent({
       const _skillID = query.skillID ?? rootSkillID.value ?? null;
       const _subSkillID = query.subSkillID ?? subSkillID.value ?? null;
 
-      let isSkill = fullPath.includes("/skill-tree/");
-      let isCourse = fullPath.includes("/courses/");
-      let isWatch = fullPath.includes("/watch?");
+      let isSkill = fullPath.includes('/skill-tree/');
+      let isCourse = fullPath.includes('/courses/');
+      let isWatch = fullPath.includes('/watch?');
 
       let solveId = isSkill ? params.skill : isCourse ? params.id : isWatch ? params.id : null;
-      let quizzesFrom = isSkill
-        ? "skill"
-        : isCourse
-          ? "course"
-          : isWatch
-            ? "quiz"
-            : null;
+      let quizzesFrom = isSkill ? 'skill' : isCourse ? 'course' : isWatch ? 'quiz' : null;
 
       if (!quizzesFrom || !solveId) return;
 
       router.push(
-        `/quizzes/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`
+        `/quizzes/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`,
       );
     }
     return { t, solveThis, user };

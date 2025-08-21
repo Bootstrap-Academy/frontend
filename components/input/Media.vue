@@ -1,65 +1,54 @@
 <template>
-	<div class="relative">
-		<div class="flex flex-wrap gap-card-sm items-center">
-			<label v-if="!noLabel" class="text-body-1 text-body font-body block mb-3">
-				{{ t(label) }}
-			</label>
-			<p v-if="label" class="pb-3 text-xs text-body relative z-50 text-center">
-				<span v-if="hint">{{ t(hint) }}</span>
-				<slot v-else name="hint" :t="t" />
-			</p>
-		</div>
-		<label
-			:for="id"
-			class="relative z-10 bg-secondary overflow-hidden flex justify-center items-center shadow-lg mx-auto"
-			:class="[
-				{
-					'cursor-pointer': !noInput,
-					'w-40 h-40': !video,
-					'w-60 h-40': video,
-				},
-				rounded ? 'rounded-full' : 'rounded-md',
-			]"
-		>
-			<img
-				class="object-cover w-full h-full"
-				v-if="url && !video"
-				:src="url"
-				:alt="alt"
-			/>
-			<video
-				v-else-if="url && video"
-				controls
-				class="object-cover w-full h-full"
-			>
-				<source :src="url" type="video/mp4" />
-				Browser not supported
-			</video>
-			<PlusIcon v-else class="w-10 h-10 fill-accent" />
+  <div class="relative">
+    <div class="flex flex-wrap gap-card-sm items-center">
+      <label v-if="!noLabel" class="text-body-1 text-body font-body block mb-3">
+        {{ t(label) }}
+      </label>
+      <p v-if="label" class="pb-3 text-xs text-body relative z-50 text-center">
+        <span v-if="hint">{{ t(hint) }}</span>
+        <slot v-else name="hint" :t="t" />
+      </p>
+    </div>
+    <label
+      :for="id"
+      class="relative z-10 bg-secondary overflow-hidden flex justify-center items-center shadow-lg mx-auto"
+      :class="[
+        {
+          'cursor-pointer': !noInput,
+          'w-40 h-40': !video,
+          'w-60 h-40': video,
+        },
+        rounded ? 'rounded-full' : 'rounded-md',
+      ]"
+    >
+      <img class="object-cover w-full h-full" v-if="url && !video" :src="url" :alt="alt" />
+      <video v-else-if="url && video" controls class="object-cover w-full h-full">
+        <source :src="url" type="video/mp4" />
+        Browser not supported
+      </video>
+      <PlusIcon v-else class="w-10 h-10 fill-accent" />
 
-			<input
-				v-if="!noInput"
-				class="hidden"
-				:id="id"
-				ref="DOM_INPUT"
-				type="file"
-				@change="onchangeSetMedia"
-				:accept="accept"
-			/>
-		</label>
-		<p v-if="!label" class="py-3 text-xs text-body relative z-50 text-center">
-			<span v-if="hint">{{ t(hint) }}</span>
-			<slot v-else name="hint" :t="t" />
-		</p>
-		<p
-			class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
-			:class="
-				error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-			"
-		>
-			{{ error }}.
-		</p>
-	</div>
+      <input
+        v-if="!noInput"
+        class="hidden"
+        :id="id"
+        ref="DOM_INPUT"
+        type="file"
+        @change="onchangeSetMedia"
+        :accept="accept"
+      />
+    </label>
+    <p v-if="!label" class="py-3 text-xs text-body relative z-50 text-center">
+      <span v-if="hint">{{ t(hint) }}</span>
+      <slot v-else name="hint" :t="t" />
+    </p>
+    <p
+      class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
+      :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
+    >
+      {{ error }}.
+    </p>
+  </div>
 </template>
 
 <script lang="ts">

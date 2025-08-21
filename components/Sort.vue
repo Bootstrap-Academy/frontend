@@ -1,22 +1,14 @@
 <template>
-	<article
-		class="flex items-center justify-between flex-wrap-reverse gap-2 h-fit"
-	>
-		<p class="text-sm flex-shrink-0">
-			{{ t('Headings.Result', { n: quantity }, quantity) }}
-		</p>
+  <article class="flex items-center justify-between flex-wrap-reverse gap-2 h-fit">
+    <p class="text-sm flex-shrink-0">
+      {{ t('Headings.Result', { n: quantity }, quantity) }}
+    </p>
 
-		<div class="flex items-center justify-center gap-5 w-fit h-fit">
-			<p class="text-sm flex-shrink-0">{{ t(text) }}</p>
-			<InputSelect
-				id="sort"
-				sm
-				:options="options"
-				btn-type
-				v-model="selected"
-			/>
-		</div>
-	</article>
+    <div class="flex items-center justify-center gap-5 w-fit h-fit">
+      <p class="text-sm flex-shrink-0">{{ t(text) }}</p>
+      <InputSelect id="sort" sm :options="options" btn-type v-model="selected" />
+    </div>
+  </article>
 </template>
 
 <script lang="ts">
@@ -50,7 +42,7 @@ export default defineComponent({
       () => selected.value,
       (newValue, oldValue) => {
         emit('selected', newValue);
-      }
+      },
     );
 
     return { t, selected };

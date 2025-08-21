@@ -1,35 +1,27 @@
 <template>
-	<div class="card-sm style-card bg-secondary grid gap-card-sm xl:gap-box">
-		<h2 class="text-heading-2">{{ t('Headings.EventTypes') }}</h2>
+  <div class="card-sm style-card bg-secondary grid gap-card-sm xl:gap-box">
+    <h2 class="text-heading-2">{{ t('Headings.EventTypes') }}</h2>
 
-		<article
-			v-for="type of types"
-			:key="type.label"
-			class="py-3 px-4 rounded shadow-lg flex gap-3 items-center"
-			:class="type.bgLight"
-		>
-			<span
-				class="h-2 w-2 md:h-3 md:w-3 rounded-xl flex-shrink-0 block"
-				:class="type.bg"
-			></span>
-			<h3 class="text-heading-5 capitalize" :class="type.text">
-				{{ t(type.label) }}
-			</h3>
-		</article>
+    <article
+      v-for="type of types"
+      :key="type.label"
+      class="py-3 px-4 rounded shadow-lg flex gap-3 items-center"
+      :class="type.bgLight"
+    >
+      <span class="h-2 w-2 md:h-3 md:w-3 rounded-xl flex-shrink-0 block" :class="type.bg"></span>
+      <h3 class="text-heading-5 capitalize" :class="type.text">
+        {{ t(type.label) }}
+      </h3>
+    </article>
 
-		<a :href="ics" download type="text/calendar">
-			<Btn full class="mt-box">{{ t('Buttons.LinkCalendar') }}</Btn>
-		</a>
+    <a :href="ics" download type="text/calendar">
+      <Btn full class="mt-box">{{ t('Buttons.LinkCalendar') }}</Btn>
+    </a>
 
-		<h2 class="text-heading-2 mt-card">{{ t('Headings.FilterBy') }}</h2>
+    <h2 class="text-heading-2 mt-card">{{ t('Headings.FilterBy') }}</h2>
 
-		<InputRadioGroup
-			sm
-			name="eventFilter"
-			v-model="eventFilter"
-			:options="eventFilterOptions"
-		/>
-	</div>
+    <InputRadioGroup sm name="eventFilter" v-model="eventFilter" :options="eventFilterOptions" />
+  </div>
 </template>
 
 <script lang="ts">

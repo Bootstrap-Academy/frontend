@@ -13,30 +13,24 @@
       :rules="form.code.rules"
     />
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-center"
-      @click="onclickSubmitForm()"
-      mt
-      mb
-    >
-      {{ t("Buttons.EnableMFA") }}
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t('Buttons.EnableMFA') }}
     </InputBtn>
 
     <NuxtLink to="/account/mfa/initialize" class="self-center">
-      {{ t("Links.DontHaveSecretCode") }}
-      <span class="text-accent">{{ t("Links.InitializeSecretCode") }}</span>
+      {{ t('Links.DontHaveSecretCode') }}
+      <span class="text-accent">{{ t('Links.InitializeSecretCode') }}</span>
     </NuxtLink>
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import type { IForm } from "~/types/form";
+import { defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { IForm } from '~/types/form';
 
 export default defineComponent({
-  emits: ["recovery_code"],
+  emits: ['recovery_code'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -47,10 +41,10 @@ export default defineComponent({
     const form = reactive<IForm>({
       code: {
         valid: false,
-        value: "",
+        value: '',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.MFACode",
-          (v: string) => v.length >= 6 || "Error.InputMinLength_6",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.MFACode',
+          (v: string) => v.length >= 6 || 'Error.InputMinLength_6',
         ],
       },
       submitting: false,
@@ -58,12 +52,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -74,8 +63,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -94,17 +82,17 @@ export default defineComponent({
           errorHandler(error);
         }
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
     function successHandler(res: any) {
-      emit("recovery_code", res);
+      emit('recovery_code', res);
       form.submitting = false;
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar('error', res?.detail ?? '');
       form.submitting = false;
     }
 

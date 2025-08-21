@@ -1,26 +1,24 @@
 <template>
-	<article
-		class="card md:card-sm style-card bg-secondary w-full h-fit flex flex-col gap-box"
-	>
-		<div class="flex justify-between items-center">
-			<p class="text-body-2 text-accent">{{ companyName }}</p>
-			<p class="text-body-2 text-subheading">{{ lastUpdated }}</p>
-		</div>
-		<h3 class="text-heading-2">{{ jobTitle }}</h3>
+  <article class="card md:card-sm style-card bg-secondary w-full h-fit flex flex-col gap-box">
+    <div class="flex justify-between items-center">
+      <p class="text-body-2 text-accent">{{ companyName }}</p>
+      <p class="text-body-2 text-subheading">{{ lastUpdated }}</p>
+    </div>
+    <h3 class="text-heading-2">{{ jobTitle }}</h3>
 
-		<article class="flex items-center flex-wrap gap-x-card gap-y-2">
-			<IconText v-for="(stat, i) of stats" :key="i" :icon="stat.icon" sm>
-				<span :class="{ capitalize: stat.capitalize }">{{ stat.value }}</span>
-			</IconText>
-		</article>
-		<!-- <p class="clamp line-2 w-full text-body-2 h-full">
+    <article class="flex items-center flex-wrap gap-x-card gap-y-2">
+      <IconText v-for="(stat, i) of stats" :key="i" :icon="stat.icon" sm>
+        <span :class="{ capitalize: stat.capitalize }">{{ stat.value }}</span>
+      </IconText>
+    </article>
+    <!-- <p class="clamp line-2 w-full text-body-2 h-full">
 			{{ jobDescription }}
 		</p> -->
 
-		<NuxtLink :to="link" class="self-end mt-box">
-			<Btn sm>{{ t('Buttons.ViewDetails') }}</Btn>
-		</NuxtLink>
-	</article>
+    <NuxtLink :to="link" class="self-end mt-box">
+      <Btn sm>{{ t('Buttons.ViewDetails') }}</Btn>
+    </NuxtLink>
+  </article>
 </template>
 
 <script lang="ts">
@@ -28,11 +26,7 @@ import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import {
-  BriefcaseIcon,
-  CurrencyDollarIcon,
-  MapPinIcon,
-} from '@heroicons/vue/24/solid';
+import { BriefcaseIcon, CurrencyDollarIcon, MapPinIcon } from '@heroicons/vue/24/solid';
 import IconMorphcoin from '~/components/icon/Morphcoin.vue';
 
 export default defineComponent({

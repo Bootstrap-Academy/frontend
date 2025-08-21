@@ -1,103 +1,96 @@
 <template>
-	<section class="pb-4">
-		<header class="flex gap-card justify-between">
-			<h2 class="text-heading-3">{{ t(label) }}</h2>
-			<Btn
-				:icon="PlusIcon"
-				sm
-				secondary
-				@click="onclickAddTask"
-				:class="{
-					'opacity-60 pointer-events-none':
-						(!!nameErrorMsg && tasks.length > 0) ||
-						(!!pointsErrorMsg && tasks.length > 0),
-				}"
-			>
-				{{ t('Buttons.AddTask') }}
-			</Btn>
-		</header>
+  <section class="pb-4">
+    <header class="flex gap-card justify-between">
+      <h2 class="text-heading-3">{{ t(label) }}</h2>
+      <Btn
+        :icon="PlusIcon"
+        sm
+        secondary
+        @click="onclickAddTask"
+        :class="{
+          'opacity-60 pointer-events-none':
+            (!!nameErrorMsg && tasks.length > 0) || (!!pointsErrorMsg && tasks.length > 0),
+        }"
+      >
+        {{ t('Buttons.AddTask') }}
+      </Btn>
+    </header>
 
-		<div v-for="(task, i) of tasks" :key="`task-${i}`" class="flex gap-card">
-			<article
-				class="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-x-card-sm gap-y-2 border-2 py-2 px-4 style-box mt-box"
-				:class="
-					(!!nameErrorMsg && i == tasks.length - 1) ||
-					(!!pointsErrorMsg && i == tasks.length - 1)
-						? 'border-error'
-						: 'border-secondary'
-				"
-			>
-				<Input
-					name="Inputs.TaskName"
-					id="Inputs.TaskName"
-					placeholder="Inputs.TaskName"
-					v-model="task.name"
-					class="w-full"
-					:rules="!!nameErrorMsg && i == tasks.length - 1 ? [(v:string)=>nameErrorMsg]:[]"
-				/>
+    <div v-for="(task, i) of tasks" :key="`task-${i}`" class="flex gap-card">
+      <article
+        class="w-full grid grid-cols-[minmax(0,1fr)_auto] gap-x-card-sm gap-y-2 border-2 py-2 px-4 style-box mt-box"
+        :class="
+          (!!nameErrorMsg && i == tasks.length - 1) || (!!pointsErrorMsg && i == tasks.length - 1)
+            ? 'border-error'
+            : 'border-secondary'
+        "
+      >
+        <Input
+          name="Inputs.TaskName"
+          id="Inputs.TaskName"
+          placeholder="Inputs.TaskName"
+          v-model="task.name"
+          class="w-full"
+          :rules="!!nameErrorMsg && i == tasks.length - 1 ? [(v: string) => nameErrorMsg] : []"
+        />
 
-				<Input
-					name="Inputs.TaskTotalPoints"
-					id="Inputs.TaskTotalPoints"
-					placeholder="Inputs.TaskTotalPoints"
-					v-model="task.totalPoints"
-					class="w-32"
-					type="number"
-					:rules="!!pointsErrorMsg && i == tasks.length - 1 ? [(v:string)=>pointsErrorMsg]:[]"
-				/>
+        <Input
+          name="Inputs.TaskTotalPoints"
+          id="Inputs.TaskTotalPoints"
+          placeholder="Inputs.TaskTotalPoints"
+          v-model="task.totalPoints"
+          class="w-32"
+          type="number"
+          :rules="!!pointsErrorMsg && i == tasks.length - 1 ? [(v: string) => pointsErrorMsg] : []"
+        />
 
-				<div
-					v-if="!!task.description"
-					class="markdown clamp line-1 col-span-2"
-					v-html="$md.render(task.description)"
-				></div>
-				<Btn
-					tertiary
-					class="!pt-0 !pb-1 w-fit"
-					@click="
-						taskIndex = i;
-						description = task.description;
-					"
-				>
-					{{ t('Buttons.ManageDescription') }}
-				</Btn>
-			</article>
+        <div
+          v-if="!!task.description"
+          class="markdown clamp line-1 col-span-2"
+          v-html="$md.render(task.description)"
+        ></div>
+        <Btn
+          tertiary
+          class="!pt-0 !pb-1 w-fit"
+          @click="
+            taskIndex = i;
+            description = task.description;
+          "
+        >
+          {{ t('Buttons.ManageDescription') }}
+        </Btn>
+      </article>
 
-			<XMarkIcon
-				@click="onclickRemoveTask(i)"
-				class="mt-10 w-8 h-8 text-subheading hover:text-error cursor-pointer flex-shrink-0"
-			/>
-		</div>
+      <XMarkIcon
+        @click="onclickRemoveTask(i)"
+        class="mt-10 w-8 h-8 text-subheading hover:text-error cursor-pointer flex-shrink-0"
+      />
+    </div>
 
-		<Modal v-if="taskIndex > -1">
-			<div class="card style-card bg-secondary max-w-screen-lg w-full">
-				<MarkdownEditor v-model="description" />
-				<div class="flex gap-card flex-wrap">
-					<Btn @click="onclickSaveDescription">
-						{{ t('Buttons.SaveDescription') }}
-					</Btn>
-					<Btn secondary @click="taskIndex = -1">
-						{{ t('Buttons.Cancel') }}
-					</Btn>
+    <Modal v-if="taskIndex > -1">
+      <div class="card style-card bg-secondary max-w-screen-lg w-full">
+        <MarkdownEditor v-model="description" />
+        <div class="flex gap-card flex-wrap">
+          <Btn @click="onclickSaveDescription">
+            {{ t('Buttons.SaveDescription') }}
+          </Btn>
+          <Btn secondary @click="taskIndex = -1">
+            {{ t('Buttons.Cancel') }}
+          </Btn>
 
-					<div class="flex-1"></div>
+          <div class="flex-1"></div>
 
-					<Btn tertiary @click="onclickDeleteDescription">
-						{{ t('Buttons.DeleteDescription') }}
-					</Btn>
-				</div>
-			</div>
-		</Modal>
-	</section>
+          <Btn tertiary @click="onclickDeleteDescription">
+            {{ t('Buttons.DeleteDescription') }}
+          </Btn>
+        </div>
+      </div>
+    </Modal>
+  </section>
 </template>
 
 <script lang="ts">
-import {
-  PencilIcon,
-  PlusCircleIcon,
-  PlusIcon,
-  XMarkIcon,
-} from '@heroicons/vue/24/solid';
+import { PencilIcon, PlusCircleIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 import { defineComponent } from 'vue';
 import type { PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -137,7 +130,7 @@ export default defineComponent({
     function onclickAddTask() {
       if (
         (!!nameErrorMsg.value && tasks.value.length > 0) ||
-				(!!pointsErrorMsg.value && tasks.value.length > 0)
+        (!!pointsErrorMsg.value && tasks.value.length > 0)
       )
         return;
 
@@ -203,8 +196,7 @@ export default defineComponent({
       let arr = tasks.value.map((t, index) => {
         return {
           ...t,
-          description:
-						index == taskIndex.value ? description.value : t.description,
+          description: index == taskIndex.value ? description.value : t.description,
         };
       });
 
@@ -246,6 +238,6 @@ export default defineComponent({
 
 <style scoped>
 .w-list {
-	width: calc(100% - 2.25rem);
+  width: calc(100% - 2.25rem);
 }
 </style>

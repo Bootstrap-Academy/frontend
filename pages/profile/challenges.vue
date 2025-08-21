@@ -19,27 +19,27 @@
 ✅ Api implemented
 -->
 <template>
-	<main
-		class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
-	>
-		<FormSearch
-			class="justify-self-end col-span-full"
-			placeholder="Body.SearchCourses"
-			v-model="filters.search_term"
-		/>
+  <main
+    class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
+  >
+    <FormSearch
+      class="justify-self-end col-span-full"
+      placeholder="Body.SearchCourses"
+      v-model="filters.search_term"
+    />
 
-		<Sort
-			class="mb-card-sm col-span-full"
-			:quantity="challengesCategories.length"
-			:options="options"
-			@selected="onSelectedOption($event)"
-		/>
+    <Sort
+      class="mb-card-sm col-span-full"
+      :quantity="challengesCategories.length"
+      :options="options"
+      @selected="onSelectedOption($event)"
+    />
 
-		<template v-for="(category, i) of challengesCategories" :key="category.id">
-			<ChallengesCategory :data="category" mine />
-			<hr class="mt-box" v-if="i < challengesCategories.length - 1" />
-		</template>
-	</main>
+    <template v-for="(category, i) of challengesCategories" :key="category.id">
+      <ChallengesCategory :data="category" mine />
+      <hr class="mt-box" v-if="i < challengesCategories.length - 1" />
+    </template>
+  </main>
 </template>
 
 <script lang="ts">
@@ -74,7 +74,7 @@ export default {
         await getChallengesCategories();
         loading.value = false;
       },
-      { deep: true }
+      { deep: true },
     );
 
     const options = reactive([
@@ -101,12 +101,12 @@ export default {
 
 <style scoped>
 .grid-auto {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 @media (min-width: 425px) {
-	.grid-auto {
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	}
+  .grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
 }
 </style>

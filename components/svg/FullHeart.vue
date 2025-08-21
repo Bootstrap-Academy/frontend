@@ -16,7 +16,7 @@
 <script lang="ts">
 export default {
   props: {
-    color: { type: String, default: "" },
+    color: { type: String, default: '' },
   },
   setup() {
     return {};

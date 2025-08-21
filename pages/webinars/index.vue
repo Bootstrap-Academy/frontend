@@ -24,23 +24,19 @@
 ❌ Form Post Api Success Handling + ❌ Translation
 -->
 <template>
-	<main
-		class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
-	>
-		<template v-if="loading">
-			<CourseCardSkeleton v-for="n in 5" :key="n" />
-		</template>
+  <main
+    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr]"
+  >
+    <template v-if="loading">
+      <CourseCardSkeleton v-for="n in 5" :key="n" />
+    </template>
 
-		<template v-else-if="myWebinars && myWebinars.length > 0">
-			<CalendarEvent
-				v-for="(webinar, i) of myWebinars"
-				:key="i"
-				:data="webinar"
-			/>
-		</template>
+    <template v-else-if="myWebinars && myWebinars.length > 0">
+      <CalendarEvent v-for="(webinar, i) of myWebinars" :key="i" :data="webinar" />
+    </template>
 
-		<CourseCardEmptyState class="col-span-full" v-else />
-	</main>
+    <CourseCardEmptyState class="col-span-full" v-else />
+  </main>
 </template>
 
 <script lang="ts">
@@ -70,12 +66,12 @@ export default {
 
 <style scoped>
 .grid-auto {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 @media (min-width: 425px) {
-	.grid-auto {
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	}
+  .grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
 }
 </style>

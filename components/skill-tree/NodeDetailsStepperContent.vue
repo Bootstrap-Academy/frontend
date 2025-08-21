@@ -18,7 +18,7 @@
       </template>
 
       <h3 v-else class="text-center text-heading-3">
-        {{ t("Headings.CoursesComingSoon") }}
+        {{ t('Headings.CoursesComingSoon') }}
       </h3>
     </div>
 
@@ -38,7 +38,7 @@
         />
       </template>
       <h3 v-else class="text-center text-heading-3">
-        {{ t("Headings.CoachingComingSoon") }}
+        {{ t('Headings.CoachingComingSoon') }}
       </h3>
     </div>
 
@@ -58,7 +58,7 @@
         />
       </template>
       <h3 v-else class="text-center text-heading-3">
-        {{ t("Headings.WebinarsComingSoon") }}
+        {{ t('Headings.WebinarsComingSoon') }}
       </h3>
     </div>
 
@@ -70,7 +70,7 @@
           </div>
         </template>
         <h3 v-else class="text-center text-heading-3">
-          {{ t("Headings.NoQuizQuestion") }}
+          {{ t('Headings.NoQuizQuestion') }}
         </h3>
       </div>
     </article>
@@ -79,15 +79,11 @@
       <div class="flex p-2 content-container flex-col items-center mt-card">
         <template v-if="quizzes && quizzes.length > 0">
           <div class="content">
-            <MatchingList
-              v-for="(quiz, i) of quizzes"
-              :key="i"
-              :quizId="quiz?.id"
-            />
+            <MatchingList v-for="(quiz, i) of quizzes" :key="i" :quizId="quiz?.id" />
           </div>
         </template>
         <h3 v-else class="text-center text-heading-3">
-          {{ t("Headings.NoMatchings") }}
+          {{ t('Headings.NoMatchings') }}
         </h3>
       </div>
     </article>
@@ -95,14 +91,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
-    skillID: { default: "" },
-    subSkillID: { default: "" },
+    skillID: { default: '' },
+    subSkillID: { default: '' },
     activeStepper: { default: 0 },
     courses: { type: Array as PropType<any[]>, default: [] },
     coachings: { type: Array as PropType<any[]>, default: [] },
@@ -113,7 +109,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     function saveLastVisitedCourse(courseId: any) {
-      const lastViewCourse: any = useCookie("lastViewCourse");
+      const lastViewCourse: any = useCookie('lastViewCourse');
       lastViewCourse.value = {
         courseId: courseId,
         skillID: props.skillID,

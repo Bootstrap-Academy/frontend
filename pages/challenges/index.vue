@@ -25,9 +25,9 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	></section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  ></section>
 </template>
 
 <script lang="ts">

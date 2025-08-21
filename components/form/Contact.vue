@@ -1,46 +1,41 @@
 <template>
-	<form
-		:key="keyForm"
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Name')"
-			v-model="form.name.value"
-			@valid="form.name.valid = $event"
-			:rules="form.name.rules"
-		/>
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			type="email"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
-		<Input
-			:label="t('Inputs.Subject')"
-			v-model="form.subject.value"
-			@valid="form.subject.valid = $event"
-			:rules="form.subject.rules"
-		/>
-		<InputTextarea
-			label="Inputs.Message"
-			v-model="form.message.value"
-			@valid="form.message.valid = $event"
-			:rules="form.message.rules"
-		/>
+  <form
+    :key="keyForm"
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.Name')"
+      v-model="form.name.value"
+      @valid="form.name.valid = $event"
+      :rules="form.name.rules"
+    />
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      type="email"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
+    <Input
+      :label="t('Inputs.Subject')"
+      v-model="form.subject.value"
+      @valid="form.subject.valid = $event"
+      :rules="form.subject.rules"
+    />
+    <InputTextarea
+      label="Inputs.Message"
+      v-model="form.message.value"
+      @valid="form.message.valid = $event"
+      :rules="form.message.rules"
+    />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-end"
-			@click="onclickSubmitForm()"
-			mt
-		>
-			{{ t('Buttons.SendMessage') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-end" @click="onclickSubmitForm()" mt>
+      {{ t('Buttons.SendMessage') }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
@@ -99,12 +94,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -115,8 +105,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },

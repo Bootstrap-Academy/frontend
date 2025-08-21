@@ -38,12 +38,12 @@
 
 <script>
 definePageMeta({
-  layout: "inner",
+  layout: 'inner',
 });
 
 export default {
   head: {
-    title: "Forgot Password",
+    title: 'Forgot Password',
   },
   setup() {
     return {};

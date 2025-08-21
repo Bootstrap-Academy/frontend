@@ -1,56 +1,50 @@
 <template>
-	<Modal class="z-100">
-		<section
-			class="style-card bg-secondary max-w-full w-fit md:min-w-[400px] relative"
-		>
-			<div class="card grid justify-items-center w-full">
-				<h6 class="text-heading-2 text-heading font-heading">
-					{{ t('Headings.WebinarRating') }}
-				</h6>
+  <Modal class="z-100">
+    <section class="style-card bg-secondary max-w-full w-fit md:min-w-[400px] relative">
+      <div class="card grid justify-items-center w-full">
+        <h6 class="text-heading-2 text-heading font-heading">
+          {{ t('Headings.WebinarRating') }}
+        </h6>
 
-				<img
-					class="w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-full object-cover mt-card"
-					:src="instructor.avatar_url"
-					:alt="t('AltAttributes.EventInstructorAvatar')"
-				/>
-				<h3 class="text-heading-3 mt-2 text-center">
-					{{ webinar_name }}
-				</h3>
-				<h4 class="text-heading-4 text-center mb-card">
-					{{ instructor.display_name }}
-				</h4>
+        <img
+          class="w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-full object-cover mt-card"
+          :src="instructor.avatar_url"
+          :alt="t('AltAttributes.EventInstructorAvatar')"
+        />
+        <h3 class="text-heading-3 mt-2 text-center">
+          {{ webinar_name }}
+        </h3>
+        <h4 class="text-heading-4 text-center mb-card">
+          {{ instructor.display_name }}
+        </h4>
 
-				<InputRating v-model="rating.value" @valid="rating.valid = $event" />
+        <InputRating v-model="rating.value" @valid="rating.valid = $event" />
 
-				<Btn
-					:bgColor="theme.bg"
-					:borderColor="theme.border"
-					tertiary
-					@click="onclickCancelWebinarRating"
-				>
-					{{ t('Body.WebinarNotParticipated') }}
-				</Btn>
-			</div>
+        <Btn
+          :bgColor="theme.bg"
+          :borderColor="theme.border"
+          tertiary
+          @click="onclickCancelWebinarRating"
+        >
+          {{ t('Body.WebinarNotParticipated') }}
+        </Btn>
+      </div>
 
-			<div class="card flex gap-card justify-center bg-[#1c3250]">
-				<Btn
-					:bgColor="theme.bg"
-					:borderColor="theme.border"
-					secondary
-					@click="onclickCancelWebinarRating"
-				>
-					{{ t('Buttons.Cancel') }}
-				</Btn>
-				<Btn
-					:bgColor="theme.bg"
-					:borderColor="theme.border"
-					@click="onclickSubmitWebinarRating"
-				>
-					{{ t('Buttons.SubmitWebinarRating') }}
-				</Btn>
-			</div>
-		</section>
-	</Modal>
+      <div class="card flex gap-card justify-center bg-[#1c3250]">
+        <Btn
+          :bgColor="theme.bg"
+          :borderColor="theme.border"
+          secondary
+          @click="onclickCancelWebinarRating"
+        >
+          {{ t('Buttons.Cancel') }}
+        </Btn>
+        <Btn :bgColor="theme.bg" :borderColor="theme.border" @click="onclickSubmitWebinarRating">
+          {{ t('Buttons.SubmitWebinarRating') }}
+        </Btn>
+      </div>
+    </section>
+  </Modal>
 </template>
 
 <script lang="ts">
@@ -102,15 +96,10 @@ export default defineComponent({
       }
 
       setLoading(true);
-      const [success, error] = await submitWebinarRating(
-        rating_id.value,
-        rating.value
-      );
+      const [success, error] = await submitWebinarRating(rating_id.value, rating.value);
       setLoading(false);
 
-      success
-        ? successHandler('Success.SubmitWebinarRating')
-        : errorHandler(error);
+      success ? successHandler('Success.SubmitWebinarRating') : errorHandler(error);
     }
 
     async function onclickCancelWebinarRating() {
@@ -118,9 +107,7 @@ export default defineComponent({
       const [success, error] = await cancelWebinarRating(rating_id.value);
       setLoading(false);
 
-      success
-        ? successHandler('Success.CancelWebinarRating')
-        : errorHandler(error);
+      success ? successHandler('Success.CancelWebinarRating') : errorHandler(error);
     }
 
     function successHandler(res: any) {

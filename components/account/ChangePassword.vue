@@ -53,7 +53,7 @@ export default defineComponent({
           {
             label: 'Buttons.Cancel',
             onclick: () => {},
-          }
+          },
         );
         return;
       }
@@ -79,7 +79,7 @@ export default defineComponent({
               router.push('/auth/reset-password');
             },
           },
-          null
+          null,
         );
       } else {
         openSnackbar('error', error?.detail ?? '');

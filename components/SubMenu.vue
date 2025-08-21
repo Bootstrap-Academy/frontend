@@ -29,10 +29,10 @@ hear
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { EllipsisVerticalIcon } from "@heroicons/vue/24/outline";
+import { useI18n } from 'vue-i18n';
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
   components: { EllipsisVerticalIcon },

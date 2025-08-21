@@ -11,14 +11,10 @@
     <section class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full mt-10">
       <article>
         <p class="text-accent">
-          {{ t("Headings.LabelForMatchings") }}
+          {{ t('Headings.LabelForMatchings') }}
         </p>
         <div class="py-5">
-          <div
-            v-for="i of matchingsLength"
-            :key="i"
-            class="md:flex gap-10 items-center"
-          >
+          <div v-for="i of matchingsLength" :key="i" class="md:flex gap-10 items-center">
             <p class="md:hidden">{{ alphabetIs(i) }}:</p>
             <Input :rules="rules" v-model="left[i - 1]" class="w-full" />
             <ArrowRightIcon class="h-8 w-8 -mt-4 text-accent hidden md:block" />
@@ -28,7 +24,7 @@
 
       <article>
         <p class="text-accent">
-          {{ t("Headings.AnswersForMatchingsRespectively") }}
+          {{ t('Headings.AnswersForMatchingsRespectively') }}
         </p>
         <div class="py-5">
           <div v-for="i of matchingsLength" :key="i">
@@ -46,10 +42,7 @@
       </article>
     </section>
     <div v-if="!!!data">
-      <PlusCircleIcon
-        class="h-7 w-7 text-accent cursor-pointer"
-        @click="addNewMatching()"
-      />
+      <PlusCircleIcon class="h-7 w-7 text-accent cursor-pointer" @click="addNewMatching()" />
     </div>
     <!-- <p>
       {{ left }}
@@ -61,32 +54,26 @@
     <p>{{ solution }}</p>
     <p>{{ matchingsLength }}</p> -->
 
-    <InputBtn
-      :loading="loading"
-      @click="fnCreateMatching()"
-      class="self-center"
-      mt
-      v-if="!data"
-    >
-      <span v-if="!!!data">{{ t("Buttons.CreateMatching") }} </span>
-      <span v-else-if="user.admin">{{ t("Buttons.UpdateMatching") }} </span>
+    <InputBtn :loading="loading" @click="fnCreateMatching()" class="self-center" mt v-if="!data">
+      <span v-if="!!!data">{{ t('Buttons.CreateMatching') }}</span>
+      <span v-else-if="user.admin">{{ t('Buttons.UpdateMatching') }}</span>
     </InputBtn>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PlusCircleIcon, TrashIcon } from "@heroicons/vue/24/outline";
-import { ArrowRightIcon } from "@heroicons/vue/24/solid";
-import type { PropType } from "nuxt/dist/app/compat/capi";
-import { useI18n } from "vue-i18n";
-import { useDialogSlot } from "~~/composables/dialogSlot";
+import { PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowRightIcon } from '@heroicons/vue/24/solid';
+import type { PropType } from 'nuxt/dist/app/compat/capi';
+import { useI18n } from 'vue-i18n';
+import { useDialogSlot } from '~~/composables/dialogSlot';
 import type {
   matching as matchingType,
   matchingOptionArray,
   matchingSolutionArray,
-} from "~~/types/matching";
+} from '~~/types/matching';
 const props = defineProps({
-  taskId: { type: String, default: "" },
+  taskId: { type: String, default: '' },
   data: { type: Object as PropType<matchingType>, default: null },
 });
 
@@ -103,8 +90,8 @@ const right = ref<matchingOptionArray>([]);
 const solution = ref<matchingSolutionArray>([]);
 
 const rules = ref([
-  (v: String) => v.length <= 256 || "Maximum 256 Characters are Allowed",
-  (v: String) => !!v || "Required!",
+  (v: String) => v.length <= 256 || 'Maximum 256 Characters are Allowed',
+  (v: String) => !!v || 'Required!',
 ]);
 
 function shuffleArrays(A: matchingOptionArray) {
@@ -137,7 +124,7 @@ function shuffleArrays(A: matchingOptionArray) {
 
 function restoreArraysPattern(
   stringArray: matchingOptionArray,
-  numberArray: matchingSolutionArray
+  numberArray: matchingSolutionArray,
 ) {
   // Combine the string and number arrays into an array of objects
   // const combinedArray = stringArray.map((str: string, index: number) => ({
@@ -188,33 +175,33 @@ const IsAnyEmptyIndex = (array: Array<string>) => {
 
 function alphabetIs(number: number) {
   switch (number) {
-  case 1: {
-    return "A";
-  }
-  case 2: {
-    return "B";
-  }
-  case 3: {
-    return "C";
-  }
-  case 4: {
-    return "D";
-  }
-  case 5: {
-    return "E";
-  }
-  case 6: {
-    return "F";
-  }
-  case 7: {
-    return "G";
-  }
-  case 8: {
-    return "H";
-  }
-  case 9: {
-    return "I";
-  }
+    case 1: {
+      return 'A';
+    }
+    case 2: {
+      return 'B';
+    }
+    case 3: {
+      return 'C';
+    }
+    case 4: {
+      return 'D';
+    }
+    case 5: {
+      return 'E';
+    }
+    case 6: {
+      return 'F';
+    }
+    case 7: {
+      return 'G';
+    }
+    case 8: {
+      return 'H';
+    }
+    case 9: {
+      return 'I';
+    }
   }
 }
 
@@ -224,7 +211,7 @@ function addNewMatching() {
 
 function removeMatching(i: number) {
   if (matchingsLength.value <= 2) {
-    return openSnackbar("info", "Error.MinimnumTwoFieldsRequired");
+    return openSnackbar('info', 'Error.MinimnumTwoFieldsRequired');
   }
 
   i -= 1;
@@ -236,17 +223,17 @@ function removeMatching(i: number) {
 
 async function fnCreateMatching() {
   if (IsAnyEmptyIndex(left.value) || IsAnyEmptyIndex(right.value)) {
-    return openSnackbar("error", "Fill Matchings Correctly");
+    return openSnackbar('error', 'Fill Matchings Correctly');
   }
 
   if (hasDuplicate(right.value) || hasDuplicate(left.value)) {
-    return openSnackbar("error", "Matchings cannot contain duplicates");
+    return openSnackbar('error', 'Matchings cannot contain duplicates');
   }
 
   const [rightArray, solutionArray] = shuffleArrays(right.value);
 
-  console.log("right value array", rightArray);
-  console.log("silution value", solutionArray);
+  console.log('right value array', rightArray);
+  console.log('silution value', solutionArray);
 
   const body = {
     solution: solutionArray,
@@ -259,10 +246,10 @@ async function fnCreateMatching() {
   if (success) {
     dialog.value = false;
     dialogCreateMatching.value = false;
-    openSnackbar("success", "Success.CreateMatching");
+    openSnackbar('success', 'Success.CreateMatching');
   } else if (!!error) {
-    console.log("in errorrrrrrr", error);
-    openSnackbar("error", error);
+    console.log('in errorrrrrrr', error);
+    openSnackbar('error', error);
   }
 }
 
@@ -273,12 +260,12 @@ watch(
     if (!!!props.data) {
       for (let index = 0; index < newValue; index++) {
         solution.value.push(index);
-        left.value[index] = left.value[index] ?? "";
-        right.value[index] = right.value[index] ?? "";
+        left.value[index] = left.value[index] ?? '';
+        right.value[index] = right.value[index] ?? '';
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -288,14 +275,14 @@ watch(
       left.value = matching.value.left;
       const [restoredStringArray, restoredNumberArray] = restoreArraysPattern(
         matching.value.right,
-        matching.value.solution
+        matching.value.solution,
       );
 
       right.value = restoredStringArray;
       solution.value = restoredNumberArray;
     }
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 watch(
@@ -305,7 +292,7 @@ watch(
     matchingsLength.value = newValue.left.length;
     await getMatchingAndSolution(newValue.id, newValue.task_id);
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 </script>
 

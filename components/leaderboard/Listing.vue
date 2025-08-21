@@ -4,19 +4,13 @@
       <article
         class="flex gap-6 flex-col sm:flex-row items-center justify-center my-10 pt-10 flex-wrap"
       >
-        <LeaderboardTopUserCard
-          :user="leaderBoardList[1]"
-          v-if="!!leaderBoardList[1]"
-        />
+        <LeaderboardTopUserCard :user="leaderBoardList[1]" v-if="!!leaderBoardList[1]" />
         <LeaderboardTopUserCard
           :user="leaderBoardList[0]"
           class="sm:-mt-20"
           v-if="!!leaderBoardList[0]"
         />
-        <LeaderboardTopUserCard
-          :user="leaderBoardList[2]"
-          v-if="!!leaderBoardList[2]"
-        />
+        <LeaderboardTopUserCard :user="leaderBoardList[2]" v-if="!!leaderBoardList[2]" />
       </article>
       <article class="px-3 pb-24 sm:px-10">
         <div v-for="(user, i) of leaderBoardList" :key="i">
@@ -27,7 +21,7 @@
 
     <div class="flex justify-center mt-6">
       <InputBtn
-      v-if="leaderBoardList.length < totalLeaderboardUsers"
+        v-if="leaderBoardList.length < totalLeaderboardUsers"
         :loading="btnLoading"
         @click="loadMore()"
         :icon="TrophyIcon"
@@ -38,21 +32,24 @@
         }"
       >
         <div>
-          {{ t("Headings.More") }}
+          {{ t('Headings.More') }}
         </div>
       </InputBtn>
     </div>
-    <p v-if="leaderBoardList.length == totalLeaderboardUsers" class="flex flex-col items-center text-accent">      
-      <component v-if="TrophyIcon" :is="TrophyIcon" class="w-10 h-10 bg-primary mb-4"/>
-      {{ t("Headings.NoMoreUser") }}
+    <p
+      v-if="leaderBoardList.length == totalLeaderboardUsers"
+      class="flex flex-col items-center text-accent"
+    >
+      <component v-if="TrophyIcon" :is="TrophyIcon" class="w-10 h-10 bg-primary mb-4" />
+      {{ t('Headings.NoMoreUser') }}
     </p>
   </div>
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
-import { TrophyIcon } from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
+import type { PropType } from 'vue';
+import { TrophyIcon } from '@heroicons/vue/24/outline';
+import { useI18n } from 'vue-i18n';
 export default {
   props: {
     leaderBoardList: { type: Array as PropType<any>, default: [] },
@@ -66,15 +63,15 @@ export default {
     const totalLeaderboardUsers = useTotalLeaderboardUsers();
 
     const selectedButton = computed(() => {
-      return route?.query?.selectedButton ?? "";
+      return route?.query?.selectedButton ?? '';
     });
 
     const selectedLanguage = computed(() => {
-      return route?.query?.selectedLanguage ?? "";
+      return route?.query?.selectedLanguage ?? '';
     });
 
     const selectedChallengeId = computed(() => {
-      return route?.query?.challengeId ?? "";
+      return route?.query?.challengeId ?? '';
     });
 
     async function loadMore() {
@@ -83,10 +80,7 @@ export default {
       if (selectedButton.value == 0) {
         await getLanguageLeaderboard(selectedLanguage.value, offset.value);
       } else if (selectedButton.value == 1) {
-        await getCodingChallengeLeaderboard(
-          selectedChallengeId.value,
-          offset.value
-        );
+        await getCodingChallengeLeaderboard(selectedChallengeId.value, offset.value);
       } else if (selectedButton.value == 2) {
         await getOverAllLeaderBoard(offset.value);
         // await getLanguageLeaderboard();
@@ -128,7 +122,7 @@ h1 {
   margin: 0px 40px;
 }
 .fireworks .firework:before {
-  content: "";
+  content: '';
   display: block;
   border-radius: 5px;
   background-color: #daa520;

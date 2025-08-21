@@ -23,19 +23,11 @@
     class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr] grid place-items-center"
   >
     <section class="flex justify-center">
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedTab"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedTab" />
     </section>
 
     <section v-if="selectedTab == 0" class="container-form max-w-4xl">
-      <SectionTitle
-        center
-        heading="Headings.EditChallenge"
-        size="sm"
-        class="mb-card mx-auto"
-      />
+      <SectionTitle center heading="Headings.EditChallenge" size="sm" class="mb-card mx-auto" />
       <article></article>
       <LazyFormChallenge v-if="challengeData" :data="challengeData" />
     </section>
@@ -56,22 +48,22 @@
 </template>
 
 <script lang="ts">
-import { getChallenge } from "~~/composables/challenges";
-import { PencilIcon } from "@heroicons/vue/24/outline";
+import { getChallenge } from '~~/composables/challenges';
+import { PencilIcon } from '@heroicons/vue/24/outline';
 import {
   getAllCodingChallengesInATask,
   useAllCodingChallengesInATask,
-} from "~~/composables/codingChallenges";
-import { useI18n } from "vue-i18n";
+} from '~~/composables/codingChallenges';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Edit Challenge",
+    title: 'Edit Challenge',
   },
 
   components: { PencilIcon },
@@ -91,26 +83,21 @@ export default {
 
     const buttonOptions = [
       {
-        name: "Headings.Challenge"
+        name: 'Headings.Challenge',
       },
       {
-        name: "Headings.CodingChallenge"
+        name: 'Headings.CodingChallenge',
       },
     ];
 
     onMounted(async () => {
-      const [success, error] = await getChallenge(
-        categoryId.value,
-        challengeId.value
-      );
-      const [codingSuccess, codingError] = await getAllCodingChallengesInATask(
-        challengeId.value
-      );
+      const [success, error] = await getChallenge(categoryId.value, challengeId.value);
+      const [codingSuccess, codingError] = await getAllCodingChallengesInATask(challengeId.value);
 
       if (!!success) challengeData.value = success;
       else {
-        openSnackbar("error", error?.detail);
-        router.push(`/challenges/all?category=${route.query.category ?? ""}`);
+        openSnackbar('error', error?.detail);
+        router.push(`/challenges/all?category=${route.query.category ?? ''}`);
       }
     });
     return {
@@ -121,7 +108,7 @@ export default {
       PencilIcon,
       codingChallenges,
       t,
-      buttonOptions
+      buttonOptions,
     };
   },
 };

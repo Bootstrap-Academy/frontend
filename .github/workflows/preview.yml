@@ -2,8 +2,8 @@ name: PR Preview on Cloudflare Pages
 
 on:
   workflow_run:
-    workflows: ["Build"]
-    types: ["completed"]
+    workflows: ['Build']
+    types: ['completed']
 
 permissions:
   actions: read

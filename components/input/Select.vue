@@ -1,10 +1,7 @@
 <template>
   <article class="pb-5">
     <div class="flex flex-wrap gap-card-sm items-center" v-if="!!label">
-      <label
-        class="text-body-2 text-body font-body block mb-2"
-        :for="id ?? label"
-      >
+      <label class="text-body-2 text-body font-body block mb-2" :for="id ?? label">
         {{ t(label) }}
       </label>
       <p v-if="hint" class="pb-2 text-xs text-body relative z-0 text-right">
@@ -42,32 +39,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { ChevronDownIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import { ChevronDownIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
-    hint: { type: String, default: "" },
-    label: { type: String, default: "" },
-    id: { type: String, default: "select" },
+    hint: { type: String, default: '' },
+    label: { type: String, default: '' },
+    id: { type: String, default: 'select' },
     sm: { type: Boolean, default: false },
     btnType: { type: Boolean, default: false },
     options: {
       default: [
         {
-          label: "Headings.BestMatch",
-          value: "bestMatch",
+          label: 'Headings.BestMatch',
+          value: 'bestMatch',
         },
         {
-          label: "Headings.Latest",
-          value: "latest",
+          label: 'Headings.Latest',
+          value: 'latest',
         },
       ],
     },
-    modelValue: { type: String, default: "" },
+    modelValue: { type: String, default: '' },
   },
-  emits: ["update:modelValue", "valid"],
+  emits: ['update:modelValue', 'valid'],
   components: { ChevronDownIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
@@ -77,16 +74,14 @@ export default defineComponent({
         return props.modelValue;
       },
       set(value: string) {
-        emit("update:modelValue", value);
+        emit('update:modelValue', value);
       },
     });
 
     input.value = !!input.value ? input.value : props.options[1].value;
 
     const selectedOptionLabel = computed(() => {
-      return (
-        props.options.find((option) => option.value == input.value)?.label ?? ""
-      ).toString();
+      return (props.options.find((option) => option.value == input.value)?.label ?? '').toString();
     });
 
     return { input, t, selectedOptionLabel };

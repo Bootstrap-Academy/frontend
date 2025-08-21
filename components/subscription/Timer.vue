@@ -1,18 +1,18 @@
 <template>
-  <p class="text-xl mb-2">{{ t("Headings.RefillIn") }}</p>
+  <p class="text-xl mb-2">{{ t('Headings.RefillIn') }}</p>
   <p class="text-3xl text-accent font-bold">{{ formatTime(remainingTime) }}</p>
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 import { ref, onMounted } from 'vue';
 
 export default {
   props: {
     targetTime: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { t } = useI18n();
@@ -42,8 +42,8 @@ export default {
     return {
       t,
       remainingTime,
-      formatTime
+      formatTime,
     };
-  }
+  },
 };
 </script>

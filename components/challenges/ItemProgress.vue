@@ -41,18 +41,12 @@
       {{ solvedTasks }} / {{ tasks.length }}
     </p> -->
 
-    <article
-      class="flex gap-2 items-center flex-shrink-0"
-      v-if="correctTasks > 0"
-    >
+    <article class="flex gap-2 items-center flex-shrink-0" v-if="correctTasks > 0">
       <CheckIcon class="w-5 h-5 text-success" />
       <p class="text-heading">{{ correctTasks }}</p>
     </article>
 
-    <article
-      class="flex gap-2 items-center flex-shrink-0"
-      v-if="incorrectTasks > 0"
-    >
+    <article class="flex gap-2 items-center flex-shrink-0" v-if="incorrectTasks > 0">
       <XMarkIcon class="w-5 h-5 text-error" />
       <p class="text-heading">{{ incorrectTasks }}</p>
     </article>
@@ -61,17 +55,17 @@
       class="py-1.5 px-3 border border-dashed border-warning text-warning text-sm flex-shrink-0 bg-warning-light rounded-sm"
       v-if="solvedOnFirstTryTasks > 0"
     >
-      {{ t("Headings.SolvedFirst") }}: {{ solvedOnFirstTryTasks }}
+      {{ t('Headings.SolvedFirst') }}: {{ solvedOnFirstTryTasks }}
     </p>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
-import { CheckIcon, XMarkIcon, TrophyIcon } from "@heroicons/vue/24/outline";
-import type { PropType } from "vue";
-import type { ComputedRef } from "vue";
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CheckIcon, XMarkIcon, TrophyIcon } from '@heroicons/vue/24/outline';
+import type { PropType } from 'vue';
+import type { ComputedRef } from 'vue';
 
 export default defineComponent({
   props: {

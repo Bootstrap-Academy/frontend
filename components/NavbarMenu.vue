@@ -38,22 +38,18 @@
           {{ t(label) }}
         </NuxtLink>
 
-        <Btn @click="onclickLogout" full>{{ t("Buttons.Logout") }}</Btn>
+        <Btn @click="onclickLogout" full>{{ t('Buttons.Logout') }}</Btn>
       </nav>
     </Transition>
   </button>
 </template>
 
 <script>
-import {
-  ChevronDownIcon,
-  SparklesIcon,
-  CheckBadgeIcon,
-} from "@heroicons/vue/24/solid";
-import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import { useNow, useDateFormat } from "@vueuse/core";
-import { usePremiumInfo } from "~~/composables/premiumFeature";
+import { ChevronDownIcon, SparklesIcon, CheckBadgeIcon } from '@heroicons/vue/24/solid';
+import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { useNow, useDateFormat } from '@vueuse/core';
+import { usePremiumInfo } from '~~/composables/premiumFeature';
 
 export default {
   components: { ChevronDownIcon, SparklesIcon, CheckBadgeIcon },
@@ -67,39 +63,31 @@ export default {
     const router = useRouter();
     let links = [
       {
-        label: "Links.MyProfile",
-        pathname: "/profile",
+        label: 'Links.MyProfile',
+        pathname: '/profile',
       },
       {
-        label: "Links.MyAccount",
-        pathname: "/account",
+        label: 'Links.MyAccount',
+        pathname: '/account',
       },
       {
-        label: "Links.Subscription",
-        pathname: "/subscription",
+        label: 'Links.Subscription',
+        pathname: '/subscription',
       },
       {
-        label: "Links.LeaderBoard",
-        pathname: "/challenges/leader-board",
+        label: 'Links.LeaderBoard',
+        pathname: '/challenges/leader-board',
       },
       {
-        label: "Links.GetMorphcoins",
-        pathname: "/morphcoins",
+        label: 'Links.GetMorphcoins',
+        pathname: '/morphcoins',
       },
     ];
 
     const validTill = computed(() => {
-      const from = useDateFormat(
-        premiumInfo.value?.since * 1000,
-        "MMMM DD, YYYY"
-      );
-      const to = useDateFormat(
-        premiumInfo.value?.until * 1000,
-        "MMMM DD, YYYY"
-      );
-      return ` ${t("Headings.Since")}  ${from.value} ${t("Headings.Until")} ${
-        to.value
-      }`;
+      const from = useDateFormat(premiumInfo.value?.since * 1000, 'MMMM DD, YYYY');
+      const to = useDateFormat(premiumInfo.value?.until * 1000, 'MMMM DD, YYYY');
+      return ` ${t('Headings.Since')}  ${from.value} ${t('Headings.Until')} ${to.value}`;
     });
 
     function closeMenu() {
@@ -120,7 +108,7 @@ export default {
 
     const user = useUser();
     const image = computed(() => {
-      return user?.value?.avatar_url ?? "/images/about-2.webp";
+      return user?.value?.avatar_url ?? '/images/about-2.webp';
     });
     return {
       links,

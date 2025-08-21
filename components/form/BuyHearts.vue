@@ -1,9 +1,5 @@
 <template>
-  <form
-    class="flex flex-col gap-3"
-    @submit.prevent="onclickSubmitForm()"
-    ref="formRef"
-  >
+  <form class="flex flex-col gap-3" @submit.prevent="onclickSubmitForm()" ref="formRef">
     <SectionTitle
       subheading="Subheadings.WebShop"
       heading="Headings.BuyHearts"
@@ -21,7 +17,7 @@
         :alt="t('AltAttributes.Morphcoin')"
         class="w-8 h-8 object-contain"
       />
-      <h3 class="text-heading-3">{{ t("Headings.Morphcoins") }}</h3>
+      <h3 class="text-heading-3">{{ t('Headings.Morphcoins') }}</h3>
       <input
         id="Morphcoins"
         name="Morphcoins"
@@ -32,16 +28,14 @@
         :value="form.morphCoins.value"
       />
     </article>
-    <ArrowDownCircleIcon
-      class="w-12 h-12 text-accent -my-6 relative z-20 mx-auto"
-    />
+    <ArrowDownCircleIcon class="w-12 h-12 text-accent -my-6 relative z-20 mx-auto" />
 
     <article
       class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
       :class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
     >
       <HeartIcon class="w-8 h-8 text-accent" />
-      <h3 class="text-heading-3">{{ t("Headings.Hearts") }}</h3>
+      <h3 class="text-heading-3">{{ t('Headings.Hearts') }}</h3>
       <input
         id="Euros"
         name="Euros"
@@ -57,12 +51,12 @@
 
     <article class="w-fit mb-card">
       <h2 class="text-accent text-sm uppercase">
-        {{ t("Headings.TotalBill") }}
+        {{ t('Headings.TotalBill') }}
       </h2>
       <div class="flex items-center gap-box">
         <h1 class="m-0 text-heading-1">{{ form.euros.value }}</h1>
         <h3 class="m-0 text-heading-3 text-body">
-          {{ t("Headings.Euros").toLocaleLowerCase() }}
+          {{ t('Headings.Euros').toLocaleLowerCase() }}
         </h3>
       </div>
     </article>
@@ -70,27 +64,23 @@
     <Btn
       full
       @click="onclickSubmitForm"
-      :class="
-        form.euros.valid && form.morphCoins.valid
-          ? ''
-          : 'pointer-events-none opacity-60'
-      "
+      :class="form.euros.valid && form.morphCoins.valid ? '' : 'pointer-events-none opacity-60'"
     >
-      {{ t("Buttons.BuyCoins") }}
+      {{ t('Buttons.BuyCoins') }}
     </Btn>
 
     <NuxtLink to="/morphcoins" class="mx-auto mt-card">
-      <span class="text-accent">{{ t("Links.GetMorphCoins") }}</span>
-      {{ t("Links.OtherWays") }}
+      <span class="text-accent">{{ t('Links.GetMorphCoins') }}</span>
+      {{ t('Links.OtherWays') }}
     </NuxtLink>
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { ArrowDownCircleIcon, HeartIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
-import type { IForm } from "~~/types/form";
+import { defineComponent, ref } from 'vue';
+import { ArrowDownCircleIcon, HeartIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
+import type { IForm } from '~~/types/form';
 
 export default defineComponent({
   components: { ArrowDownCircleIcon, HeartIcon },
@@ -126,12 +116,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
             console.log(key);
           }
@@ -142,7 +127,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting") {
+          if (key != 'validate' && key != 'body' && key != 'submitting') {
             obj[key] = form[key].value;
           }
         }
@@ -157,38 +142,35 @@ export default defineComponent({
     async function onclickSubmitForm() {
       let email_verified = user?.value?.email_verified ?? false;
       if (!email_verified) {
-        openSnackbar("error", "Error.AccountNotVerified");
+        openSnackbar('error', 'Error.AccountNotVerified');
         return;
       }
 
       if (form.validate()) {
         router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
       } else {
-        openSnackbar(
-          "error",
-          "Error.MustAgreeToBothPointsInOrderToMoveForward"
-        );
+        openSnackbar('error', 'Error.MustAgreeToBothPointsInOrderToMoveForward');
       }
     }
 
     // ============================================================= Handling Euros
     const MAX_EUROS = 10_000;
     const MIN_EUROS = 5;
-    let euroErrorMsg = "";
+    let euroErrorMsg = '';
     function oninputValidateEuros(event: any) {
       let currentVal = event?.target?.value ?? form.euros.value;
       currentVal = roundOffTo(currentVal, 2);
 
       if (currentVal > MAX_EUROS) {
         currentVal = form.euros.value;
-        openSnackbar("error", "Error.MaxEuros");
-        euroErrorMsg = "";
+        openSnackbar('error', 'Error.MaxEuros');
+        euroErrorMsg = '';
       } else if (currentVal < MIN_EUROS) {
         form.euros.valid = false;
-        euroErrorMsg = "Error.MinEuros";
+        euroErrorMsg = 'Error.MinEuros';
       } else {
         form.euros.valid = true;
-        euroErrorMsg = "";
+        euroErrorMsg = '';
       }
 
       event.target.value = currentVal;
@@ -198,24 +180,24 @@ export default defineComponent({
     }
 
     function onchangeValidateEuros() {
-      if (!!euroErrorMsg) openSnackbar("error", euroErrorMsg);
+      if (!!euroErrorMsg) openSnackbar('error', euroErrorMsg);
     }
 
     // ============================================================= Handling Morphcoins
     const MAX_MORPHCOINS = 1000_000;
     const MIN_MORPHCOINS = 500;
-    let morphcoinsErrorMsg = "";
+    let morphcoinsErrorMsg = '';
     function oninputValidateMorphcoins(event: any) {
       let currentVal = event?.target?.value ?? form.morphCoins.value;
       currentVal = roundOffTo(currentVal, 2);
 
       if (currentVal > MAX_MORPHCOINS) {
         currentVal = form.morphCoins.value;
-        openSnackbar("error", "Error.MaxMorphcoins");
-        morphcoinsErrorMsg = "";
+        openSnackbar('error', 'Error.MaxMorphcoins');
+        morphcoinsErrorMsg = '';
       } else if (currentVal < MIN_MORPHCOINS) {
         form.morphCoins.valid = false;
-        morphcoinsErrorMsg = "Error.MinMorphcoins";
+        morphcoinsErrorMsg = 'Error.MinMorphcoins';
       } else {
         form.morphCoins.valid = true;
       }
@@ -227,7 +209,7 @@ export default defineComponent({
     }
 
     function onchangeValidateMorphcoins() {
-      if (!!morphcoinsErrorMsg) openSnackbar("error", morphcoinsErrorMsg);
+      if (!!morphcoinsErrorMsg) openSnackbar('error', morphcoinsErrorMsg);
     }
 
     return {

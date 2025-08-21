@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts">
-import type { Ref } from "vue";
-import "highlight.js/styles/github-dark.css";
+import type { Ref } from 'vue';
+import 'highlight.js/styles/github-dark.css';
 // <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
 
 export default {
@@ -41,24 +41,24 @@ export default {
     }
 
     const user: Ref<any> = useUser();
-    const cookie_user = useCookie("user");
+    const cookie_user = useCookie('user');
     user.value = cookie_user.value ?? null;
 
     const session: Ref<any> = useSession();
-    const cookie_session = useCookie("session");
+    const cookie_session = useCookie('session');
     session.value = cookie_session.value ?? null;
 
     const accessToken = useAccessToken();
-    const cookie_accessToken = useCookie("accessToken");
-    accessToken.value = cookie_accessToken.value ?? "";
+    const cookie_accessToken = useCookie('accessToken');
+    accessToken.value = cookie_accessToken.value ?? '';
 
     const refreshToken = useRefreshToken();
-    const cookie_refreshToken = useCookie("refreshToken");
-    refreshToken.value = cookie_refreshToken.value ?? "";
+    const cookie_refreshToken = useCookie('refreshToken');
+    refreshToken.value = cookie_refreshToken.value ?? '';
 
     const nuxtApp = useNuxtApp();
 
-    nuxtApp.hook("page:finish", async () => {
+    nuxtApp.hook('page:finish', async () => {
       if (!!accessToken.value) {
         await getUnratedWebinars();
       }

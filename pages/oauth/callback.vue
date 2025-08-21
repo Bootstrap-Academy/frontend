@@ -18,13 +18,13 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="dialog && dialog.type" :dialog="dialog" />
-		</Transition>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="dialog && dialog.type" :dialog="dialog" />
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">

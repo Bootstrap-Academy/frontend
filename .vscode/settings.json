@@ -1,4 +1,8 @@
 {
-	"cSpell.words": ["coachings", "Morphcoin", "morphcoins", "Recaptcha", "TOTP"],
-	"vue.codeActions.enabled": false
+  "cSpell.words": ["coachings", "Morphcoin", "morphcoins", "Recaptcha", "TOTP"],
+  "vue.codeActions.enabled": false,
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "prettier.requireConfig": true
 }

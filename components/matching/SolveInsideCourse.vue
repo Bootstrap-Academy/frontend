@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="pr-7 text-end mt-2">
-      {{ t("Headings.Solved") }}
+      {{ t('Headings.Solved') }}
       {{ solvedQuizzes }}
       /
       {{ matchings?.length - userCreatedQuizzes }}
@@ -14,19 +14,19 @@
       @nextQuestion="nextQuestion($event)"
     />
     <p v-else-if="!!!selectedQuiz" class="text-center">
-      {{ t("Headings.NoMatchingFoundForYouToSolve") }}
+      {{ t('Headings.NoMatchingFoundForYouToSolve') }}
     </p>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { Matching, MatchingForSections } from "~/types/matching";
+import { useI18n } from 'vue-i18n';
+import type { Matching, MatchingForSections } from '~/types/matching';
 const props = defineProps<{
-  matchings: MatchingForSections[]
-}>()
+  matchings: MatchingForSections[];
+}>();
 
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(['update:modelValue']);
 const { t } = useI18n();
 const selectedQuiz = ref();
 const user: any = useUser();
@@ -58,9 +58,9 @@ function nextQuestion(id: number) {
     selectedQuiz.value = null;
     return;
   }
-  console.log("index is ", index);
+  console.log('index is ', index);
   for (let i = index; i < props.matchings?.length; i++) {
-    console.log("inside loop");
+    console.log('inside loop');
     if (
       !props.matchings[i]?.matching.solved &&
       props.matchings[i]?.matching.creator != user?.value.id
@@ -93,7 +93,7 @@ watch(
   (newValue, oldValue) => {
     nextQuestion(0);
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 

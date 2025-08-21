@@ -1,62 +1,52 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="confirmation()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.EmailOrUsername')"
-			v-model="form.name_or_email.value"
-			@valid="form.name_or_email.valid = $event"
-			:rules="form.name_or_email.rules"
-		/>
-		<Input
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="confirmation()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.EmailOrUsername')"
+      v-model="form.name_or_email.value"
+      @valid="form.name_or_email.valid = $event"
+      :rules="form.name_or_email.rules"
+    />
+    <Input
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+    />
 
-		<InputOTP
-			v-if="!needRecoveryCode"
-			label="Inputs.MFACode"
-			v-model="form.mfa_code.value"
-			@valid="form.mfa_code.valid = $event"
-			:rules="form.mfa_code.rules"
-		/>
+    <InputOTP
+      v-if="!needRecoveryCode"
+      label="Inputs.MFACode"
+      v-model="form.mfa_code.value"
+      @valid="form.mfa_code.valid = $event"
+      :rules="form.mfa_code.rules"
+    />
 
-		<Input
-			v-else
-			label="Inputs.RecoveryCode"
-			v-model="form.recovery_code.value"
-			@valid="form.recovery_code.valid = needRecoveryCode ? $event : true"
-			:rules="form.recovery_code.rules"
-		/>
+    <Input
+      v-else
+      label="Inputs.RecoveryCode"
+      v-model="form.recovery_code.value"
+      @valid="form.recovery_code.valid = needRecoveryCode ? $event : true"
+      :rules="form.recovery_code.rules"
+    />
 
-		<div class="self-end cursor-pointer">
-			<NuxtLink
-				tertiary
-				v-if="needRecoveryCode"
-				@click="needRecoveryCode = false"
-			>
-				{{ t('Links.HaveMFA') }}
-			</NuxtLink>
-			<NuxtLink tertiary v-else @click="needRecoveryCode = true">
-				{{ t('Links.UseRecoveryCode') }}
-			</NuxtLink>
-		</div>
+    <div class="self-end cursor-pointer">
+      <NuxtLink tertiary v-if="needRecoveryCode" @click="needRecoveryCode = false">
+        {{ t('Links.HaveMFA') }}
+      </NuxtLink>
+      <NuxtLink tertiary v-else @click="needRecoveryCode = true">
+        {{ t('Links.UseRecoveryCode') }}
+      </NuxtLink>
+    </div>
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="confirmation"
-			mt
-			mb
-		>
-			{{ t('Buttons.DisableMFA') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-center" @click="confirmation" mt mb>
+      {{ t('Buttons.DisableMFA') }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
@@ -78,9 +68,7 @@ export default defineComponent({
       name_or_email: {
         valid: false,
         value: '',
-        rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailOrUsername',
-        ],
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.EmailOrUsername'],
       },
       password: {
         valid: false,
@@ -105,12 +93,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -121,8 +104,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -160,7 +142,7 @@ export default defineComponent({
           onclick: () => {
             router.push('/account');
           },
-        }
+        },
       );
     }
 

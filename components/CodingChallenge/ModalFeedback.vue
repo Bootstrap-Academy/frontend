@@ -1,7 +1,5 @@
 <template>
-  <section
-    class="bg-light p-3 sm:px-6 lg:px-8 rounded-lg flex justify-between items-center"
-  >
+  <section class="bg-light p-3 sm:px-6 lg:px-8 rounded-lg flex justify-between items-center">
     <!-- <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p> -->
     <div class="flex items-center gap-3">
       <button
@@ -31,10 +29,7 @@
         👎
       </button>
     </div>
-    <FlagIcon
-      class="h-5 w-5 text-error cursor-pointer"
-      @click="openReportDialog()"
-    />
+    <FlagIcon class="h-5 w-5 text-error cursor-pointer" @click="openReportDialog()" />
 
     <DialogSlot
       v-if="dialogReportTask"
@@ -55,23 +50,20 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import {
-  useDialogCodingChallengeFeedback,
-  useDialogSlot,
-} from "~~/composables/dialogSlot";
-import { FlagIcon } from "@heroicons/vue/24/outline";
+import { useI18n } from 'vue-i18n';
+import { useDialogCodingChallengeFeedback, useDialogSlot } from '~~/composables/dialogSlot';
+import { FlagIcon } from '@heroicons/vue/24/outline';
 export default {
   props: {
-    codingChallengeId: { type: String, default: "" },
-    challengeId: { type: String, default: "" },
+    codingChallengeId: { type: String, default: '' },
+    challengeId: { type: String, default: '' },
   },
-  emits: ["submitted"],
+  emits: ['submitted'],
   components: { FlagIcon },
 
   setup(props, { emit }) {
     const { t } = useI18n();
-    const feedback = ref("");
+    const feedback = ref('');
     const dialogReportTask = useDialogReportTask();
     const dialogSlot = useDialogSlot();
     const router = useRouter();
@@ -89,27 +81,25 @@ export default {
         if (!!newValue) {
           submitFeedBack();
         }
-      }
+      },
     );
 
     async function submitFeedBack() {
-      if (feedback.value.trim() == "") {
-        return openSnackbar("error", "Error.SelectRatingFirst");
+      if (feedback.value.trim() == '') {
+        return openSnackbar('error', 'Error.SelectRatingFirst');
       }
       setLoading(true);
-      const [success, error] = await rateQuiz(
-        props.challengeId,
-        props.codingChallengeId,
-        { rating: feedback.value }
-      );
+      const [success, error] = await rateQuiz(props.challengeId, props.codingChallengeId, {
+        rating: feedback.value,
+      });
       setLoading(false);
 
-      feedback.value = "";
+      feedback.value = '';
       if (success !== null) {
-        openSnackbar("success", "Success.SubmittedRating");
+        openSnackbar('success', 'Success.SubmittedRating');
         goBack();
       } else {
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
 
@@ -117,7 +107,7 @@ export default {
       dialogSlot.value = false;
       dialogReportTask.value = false;
       dialogCodingChallengeFeedback.value = false;
-      emit("submitted", true);
+      emit('submitted', true);
     }
 
     return {

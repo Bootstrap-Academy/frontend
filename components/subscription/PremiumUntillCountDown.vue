@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="text-xl text-center text-accent mb-3">
-      {{ t("Headings.PremiumEndsIn") }}
+      {{ t('Headings.PremiumEndsIn') }}
     </p>
     <P class="text-6xl text-white text-center">
       {{ countdown }}
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 // Set the date we're counting down to
 // var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
@@ -33,9 +33,7 @@ var x = setInterval(function () {
 
   // Time calculations for days, hours, minutes and seconds
   days.value = Math.floor(distance / (1000 * 60 * 60 * 24));
-  hours.value = Math.floor(
-    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
+  hours.value = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   minutes.value = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   seconds.value = Math.floor((distance % (1000 * 60)) / 1000);
 

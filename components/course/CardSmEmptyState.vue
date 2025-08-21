@@ -1,11 +1,9 @@
 <template>
-	<div
-		class="flex gap-card-sm overflow-x-scroll snap-x snap-mandatory hide-scrollbar"
-	>
-		<CourseCardSmSkeleton class="child opacity-60" no-animate />
-		<CourseCardSmSkeleton class="child opacity-40" no-animate />
-		<CourseCardSmSkeleton class="child opacity-20" no-animate />
-	</div>
+  <div class="flex gap-card-sm overflow-x-scroll snap-x snap-mandatory hide-scrollbar">
+    <CourseCardSmSkeleton class="child opacity-60" no-animate />
+    <CourseCardSmSkeleton class="child opacity-40" no-animate />
+    <CourseCardSmSkeleton class="child opacity-20" no-animate />
+  </div>
 </template>
 
 <script lang="ts">
@@ -20,6 +18,6 @@ export default defineComponent({
 
 <style scoped>
 .child {
-	@apply flex-shrink-0 snap-center h-[175px] w-[250px];
+  @apply flex-shrink-0 snap-center h-[175px] w-[250px];
 }
 </style>

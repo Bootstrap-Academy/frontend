@@ -1,8 +1,8 @@
 <template>
-	<button :class="classes" @click.self="onclick" type="button">
-		<component v-if="icon" :is="icon" class="icon"></component>
-		<slot></slot>
-	</button>
+  <button :class="classes" @click.self="onclick" type="button">
+    <component v-if="icon" :is="icon" class="icon"></component>
+    <slot></slot>
+  </button>
 </template>
 
 <script lang="ts">
@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 <style scoped>
 button {
-	@apply h-fit rounded flex items-center text-center
+  @apply h-fit rounded flex items-center text-center
 			 uppercase tracking-widest transition-basic font-body;
 }
 
@@ -74,38 +74,38 @@ button {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
-	@apply text-xs px-3.5 py-2 gap-2 font-medium;
+  @apply text-xs px-3.5 py-2 gap-2 font-medium;
 }
 .md {
-	@apply text-sm px-5 py-3 gap-3 font-bold;
+  @apply text-sm px-5 py-3 gap-3 font-bold;
 }
 .lg {
-	@apply text-base px-6 py-4 gap-4;
+  @apply text-base px-6 py-4 gap-4;
 }
 :is(.sm, .md, .lg).tertiary {
-	@apply px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0;
+  @apply px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-	@apply w-4 h-4;
+  @apply w-4 h-4;
 }
 .md .icon {
-	@apply w-5 h-5;
+  @apply w-5 h-5;
 }
 .lg .icon {
-	@apply w-6 h-6;
+  @apply w-6 h-6;
 }
 .primary .icon {
-	@apply fill-primary;
+  @apply fill-primary;
 }
 .secondary .icon {
-	@apply fill-accent;
+  @apply fill-accent;
 }
 .tertiary .icon {
-	@apply fill-accent;
+  @apply fill-accent;
 }
 .bg-info {
-	color: var(--color-white) !important;
+  color: var(--color-white) !important;
 }
 </style>

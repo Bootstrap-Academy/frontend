@@ -7,7 +7,7 @@
     />
 
     <LoadingDots v-if="loading">
-      {{ t("Body.RootSkillTreeLoading") }}
+      {{ t('Body.RootSkillTreeLoading') }}
     </LoadingDots>
 
     <section
@@ -20,14 +20,30 @@
     >
       <svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete">
-          <SkillTreePathway v-for="(pathway, p) of pathways" :key="p" :pathway="pathway.path" :zoomLevel="zoomLevel"
-            @click="scrollViaPathway(pathway.node, pathway.parent)" />
+          <SkillTreePathway
+            v-for="(pathway, p) of pathways"
+            :key="p"
+            :pathway="pathway.path"
+            :zoomLevel="zoomLevel"
+            @click="scrollViaPathway(pathway.node, pathway.parent)"
+          />
         </g>
 
         <template v-for="(row, i) in map" :key="i">
-          <SkillTreeNode v-for="(column, j) in row" :key="`${i}${j}`" :row="i" :column="j"
-            @ref="insertRefInMap($event, i, j)" :node="getNode(i, j)" :zoomLevel="zoomLevel" @size="nodeSize = $event"
-            @click="scrollToNode(i, j, true)" view-subtree :completed="getNode(i, j) && getNode(i, j).id == 'start'" :xp="xp" />
+          <SkillTreeNode
+            v-for="(column, j) in row"
+            :key="`${i}${j}`"
+            :row="i"
+            :column="j"
+            @ref="insertRefInMap($event, i, j)"
+            :node="getNode(i, j)"
+            :zoomLevel="zoomLevel"
+            @size="nodeSize = $event"
+            @click="scrollToNode(i, j, true)"
+            view-subtree
+            :completed="getNode(i, j) && getNode(i, j).id == 'start'"
+            :xp="xp"
+          />
         </template>
       </svg>
     </section>
@@ -37,20 +53,20 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import { PlusCircleIcon, ArrowUpTrayIcon } from "@heroicons/vue/24/solid";
-import type { Ref } from "vue";
+import { useI18n } from 'vue-i18n';
+import { PlusCircleIcon, ArrowUpTrayIcon } from '@heroicons/vue/24/solid';
+import type { Ref } from 'vue';
 
 export default {
   head: {
-    title: "Root Skill Tree",
+    title: 'Root Skill Tree',
   },
   components: { PlusCircleIcon, ArrowUpTrayIcon },
   setup() {
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
+          label: 'Headings.RootSkillTree',
         },
       ];
     });
@@ -61,24 +77,22 @@ export default {
     // ! ======================================================= Set Up
     function onclickUploadCertificates() {
       openDialog(
-        "info",
-        "Headings.UploadCertificates",
-        `${t("Body.UploadCertificates")} hallo@bootstrap.academy`,
+        'info',
+        'Headings.UploadCertificates',
+        `${t('Body.UploadCertificates')} hallo@bootstrap.academy`,
         false,
         {
-          label: "Buttons.Okay",
-          onclick: () => { },
+          label: 'Buttons.Okay',
+          onclick: () => {},
         },
-        null
+        null,
       );
     }
 
     const setupComplete = ref(false);
     const loading = ref(true);
 
-    const cookie_nextNode = useCookie<{ row: number; column: number }>(
-      "rootTree_nextNode"
-    );
+    const cookie_nextNode = useCookie<{ row: number; column: number }>('rootTree_nextNode');
     const nextNode = computed({
       get() {
         return cookie_nextNode.value || { row: 10, column: 10 };
@@ -116,15 +130,7 @@ export default {
     function scrollToNode(row: number, column: number, smooth: boolean) {
       nextNode.value = { row: row, column: column };
 
-      scrollMapToNode(
-        map,
-        mainRef.value,
-        nodeSize.value,
-        zoomLevel.value,
-        row,
-        column,
-        smooth
-      );
+      scrollMapToNode(map, mainRef.value, nodeSize.value, zoomLevel.value, row, column, smooth);
     }
 
     // ! ======================================================= Pathways
@@ -149,10 +155,7 @@ export default {
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
-      if (
-        nextNode.value.row == node.row &&
-        nextNode.value.column == node.column
-      ) {
+      if (nextNode.value.row == node.row && nextNode.value.column == node.column) {
         nextNode.value = { ...previous };
       } else if (!!previous) {
         nextNode.value = { row: node.row, column: node.column };
@@ -227,7 +230,7 @@ export default {
             setupComplete.value = true;
           });
         }
-      }
+      },
     );
 
     watch(
@@ -245,7 +248,7 @@ export default {
           });
         }
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     // ! ======================================================= Dragging
@@ -260,15 +263,15 @@ export default {
 
       const target = event.target as HTMLElement;
       console.log(target.tagName);
-      if (target.tagName === "foreignObject" || target.tagName === "path") return;
+      if (target.tagName === 'foreignObject' || target.tagName === 'path') return;
 
       isDragging.value = true;
       startX.value = event.pageX - mainRef.value!.offsetLeft;
       startY.value = event.pageY - mainRef.value!.offsetTop;
       scrollLeft.value = mainRef.value!.scrollLeft;
       scrollTop.value = mainRef.value!.scrollTop;
-      document.addEventListener("mousemove", drag);
-      document.addEventListener("mouseup", stopDrag);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', stopDrag);
     };
 
     const drag = (event: MouseEvent) => {
@@ -278,19 +281,24 @@ export default {
       const y = event.pageY - mainRef.value!.offsetTop;
       const walkX = x - startX.value;
       const walkY = y - startY.value;
-      
+
       mainRef.value!.scrollLeft = scrollLeft.value - walkX;
       mainRef.value!.scrollTop = scrollTop.value - walkY;
 
-      if (event.clientX <= 0 || event.clientX >= window.innerWidth || event.clientY <= 0 || event.clientY >= window.innerHeight) {
+      if (
+        event.clientX <= 0 ||
+        event.clientX >= window.innerWidth ||
+        event.clientY <= 0 ||
+        event.clientY >= window.innerHeight
+      ) {
         stopDrag();
       }
     };
 
     const stopDrag = () => {
       isDragging.value = false;
-      document.removeEventListener("mousemove", drag);
-      document.removeEventListener("mouseup", stopDrag);
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('mouseup', stopDrag);
     };
 
     return {
@@ -322,10 +330,10 @@ export default {
       onclickUploadCertificates,
       ArrowUpTrayIcon,
       breadcrumbs,
-      
+
       isDragging,
       startDrag,
-      
+
       xp,
     };
   },

@@ -39,35 +39,25 @@
     />
 
     <NuxtLink v-if="!needMFA" to="/auth/forgot-password" class="self-end">
-      {{ t("Links.ForgotPassword") }}
+      {{ t('Links.ForgotPassword') }}
     </NuxtLink>
 
     <div v-else class="self-end cursor-pointer">
-      <NuxtLink
-        tertiary
-        v-if="needRecoveryCode"
-        @click="needRecoveryCode = false"
-      >
-        {{ t("Links.HaveMFA") }}
+      <NuxtLink tertiary v-if="needRecoveryCode" @click="needRecoveryCode = false">
+        {{ t('Links.HaveMFA') }}
       </NuxtLink>
       <NuxtLink tertiary v-else @click="needRecoveryCode = true">
-        {{ t("Links.LostMFAUseRecoveryCode") }}
+        {{ t('Links.LostMFAUseRecoveryCode') }}
       </NuxtLink>
     </div>
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-center"
-      @click="onclickSubmitForm()"
-      mt
-      mb
-    >
-      {{ t("Buttons.Login") }}
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t('Buttons.Login') }}
     </InputBtn>
 
     <NuxtLink to="/auth/signup" class="self-center">
-      {{ t("Links.DontHaveAccount") }}
-      <span class="text-accent">{{ t("Links.CreateOne") }}</span>
+      {{ t('Links.DontHaveAccount') }}
+      <span class="text-accent">{{ t('Links.CreateOne') }}</span>
     </NuxtLink>
 
     <article
@@ -75,7 +65,7 @@
       class="grid grid-cols-[1fr_auto_1fr] items-center gap-card-sm mt-card mb-card"
     >
       <hr />
-      <p>{{ t("Body.OrLoginWith") }}</p>
+      <p>{{ t('Body.OrLoginWith') }}</p>
       <hr />
     </article>
 
@@ -86,24 +76,20 @@
         :href="authorize_url"
         class="cursor-pointer"
       >
-        <component
-          :is="icon"
-          lg
-          :color="id == 'github' ? 'fill-heading' : ''"
-        ></component>
+        <component :is="icon" lg :color="id == 'github' ? 'fill-heading' : ''"></component>
       </a>
     </article>
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
-import type { IForm } from "~/types/form";
-import IconGithub from "~/components/icon/Github.vue";
-import IconGoogle from "~/components/icon/Google.vue";
-import IconDiscord from "~/components/icon/Discord.vue";
+import { defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useReCaptcha } from 'vue-recaptcha-v3';
+import type { IForm } from '~/types/form';
+import IconGithub from '~/components/icon/Github.vue';
+import IconGoogle from '~/components/icon/Google.vue';
+import IconDiscord from '~/components/icon/Discord.vue';
 
 export default defineComponent({
   components: { IconGithub, IconGoogle, IconDiscord },
@@ -117,40 +103,33 @@ export default defineComponent({
     const form = reactive<IForm>({
       name_or_email: {
         valid: false,
-        value: "",
-        rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailOrUsername",
-        ],
+        value: '',
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.EmailOrUsername'],
       },
       password: {
         valid: false,
-        value: "",
-        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Password"],
+        value: '',
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Password'],
       },
       mfa_code: {
         valid: true,
-        value: "",
+        value: '',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.MFACode",
-          (v: string) => v.length >= 6 || "Error.InputMinLength_6",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.MFACode',
+          (v: string) => v.length >= 6 || 'Error.InputMinLength_6',
         ],
       },
       recovery_code: {
         valid: true,
-        value: "",
-        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.RecoveryCode"],
+        value: '',
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.RecoveryCode'],
       },
       submitting: false,
       validate: () => {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -161,8 +140,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -173,23 +151,21 @@ export default defineComponent({
     const config = useRuntimeConfig().public;
 
     const providers = computed(() => {
-      if (!!!oauthProviders.value || oauthProviders.value.length <= 0)
-        return [];
+      if (!!!oauthProviders.value || oauthProviders.value.length <= 0) return [];
 
       const redirect_uri = `${config.BASE_WEB_URL}/oauth/callback`;
 
       return oauthProviders.value.map((item: any) => {
         if (!!item && !!item.id && !!item.authorize_url) {
           let updated_authorize_url =
-            item.authorize_url +
-            `&state=${item.id}&redirect_uri=${redirect_uri}`;
+            item.authorize_url + `&state=${item.id}&redirect_uri=${redirect_uri}`;
 
           let icon = null;
-          if (item.id == "google") {
+          if (item.id == 'google') {
             icon = IconGoogle;
-          } else if (item.id == "discord") {
+          } else if (item.id == 'discord') {
             icon = IconDiscord;
-          } else if (item.id == "github") {
+          } else if (item.id == 'github') {
             icon = IconGithub;
           }
 
@@ -203,7 +179,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
+        const token = await executeRecaptcha('login');
         return token;
       } catch (error) {
         return null;
@@ -215,7 +191,7 @@ export default defineComponent({
     const route = useRoute();
 
     const redirect = computed(() => {
-      return (route?.query?.redirect ?? "").toString();
+      return (route?.query?.redirect ?? '').toString();
     });
 
     // ============================================================= functions
@@ -234,7 +210,7 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
@@ -244,7 +220,7 @@ export default defineComponent({
       } else if (redirect.value) {
         router.push(redirect.value);
       } else if (!hasEmail.value) {
-        router.push("/profile/edit");
+        router.push('/profile/edit');
       } else {
         router.push(`/profile`);
       }
@@ -254,20 +230,20 @@ export default defineComponent({
     const needRecoveryCode = ref(false);
 
     function errorHandler(res: any) {
-      let msg = res?.detail ?? "";
+      let msg = res?.detail ?? '';
 
-      let isMFA = msg == "Error.InvalidCode";
-      if (res.detail == "Error.InvalidCredentials") {
-        openSnackbar("error", msg);
+      let isMFA = msg == 'Error.InvalidCode';
+      if (res.detail == 'Error.InvalidCredentials') {
+        openSnackbar('error', msg);
       }
       if (!!isMFA && !!needMFA.value) {
-        openSnackbar("error", msg);
+        openSnackbar('error', msg);
       }
 
       if (isMFA) {
         needMFA.value = true;
       } else {
-        openSnackbar("error", msg);
+        openSnackbar('error', msg);
       }
     }
 

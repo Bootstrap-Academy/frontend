@@ -1,42 +1,36 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.ResetPasswordCode')"
-			v-model="form.code.value"
-			@valid="form.code.valid = $event"
-			:rules="form.code.rules"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.ResetPasswordCode')"
+      v-model="form.code.value"
+      @valid="form.code.valid = $event"
+      :rules="form.code.rules"
+    />
 
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
 
-		<Input
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-			:rules="form.password.rules"
-		/>
+    <Input
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+      :rules="form.password.rules"
+    />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mt
-			mb
-		>
-			{{ t('Buttons.ResetPassword') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t('Buttons.ResetPassword') }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
@@ -58,9 +52,7 @@ export default defineComponent({
         value: '',
         rules: [
           (v: string) => !!v || 'Error.InputEmpty_Inputs.ResetPasswordCode',
-          (v: string) =>
-            /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) ||
-						'Error.InputCodeFormat',
+          (v: string) => /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) || 'Error.InputCodeFormat',
         ],
       },
       email: {
@@ -77,8 +69,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
           (v: string) =>
-            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
-						'Error.InputPasswordError',
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || 'Error.InputPasswordError',
         ],
       },
       submitting: false,
@@ -86,12 +77,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -102,8 +88,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -136,7 +121,7 @@ export default defineComponent({
             router.push('/auth/login');
           },
         },
-        null
+        null,
       );
     }
 

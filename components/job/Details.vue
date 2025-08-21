@@ -1,31 +1,31 @@
 <template>
-	<section
-		class="card style-card bg-secondary grid gap-card"
-		v-if="description || responsibilities.length || skillRequirements.length"
-	>
-		<article v-if="description">
-			<h2 class="mb-box text-heading-3 truncate">
-				{{ t('Headings.Description') }}
-			</h2>
-			<div class="markdown" v-html="$md.render(description)"></div>
-		</article>
+  <section
+    class="card style-card bg-secondary grid gap-card"
+    v-if="description || responsibilities.length || skillRequirements.length"
+  >
+    <article v-if="description">
+      <h2 class="mb-box text-heading-3 truncate">
+        {{ t('Headings.Description') }}
+      </h2>
+      <div class="markdown" v-html="$md.render(description)"></div>
+    </article>
 
-		<article v-if="responsibilities.length">
-			<h2 class="mb-box text-heading-3">
-				{{ t('Headings.Responsibilities') }}
-			</h2>
-			<List :items="responsibilities" id="responsibilities" />
-		</article>
+    <article v-if="responsibilities.length">
+      <h2 class="mb-box text-heading-3">
+        {{ t('Headings.Responsibilities') }}
+      </h2>
+      <List :items="responsibilities" id="responsibilities" />
+    </article>
 
-		<article v-if="skillRequirements.length">
-			<h2 class="mb-box text-heading-3">
-				{{ t('Headings.SkillRequirements') }}
-			</h2>
-			<List :items="skillRequirements" id="skillRequirements" points />
-		</article>
-	</section>
+    <article v-if="skillRequirements.length">
+      <h2 class="mb-box text-heading-3">
+        {{ t('Headings.SkillRequirements') }}
+      </h2>
+      <List :items="skillRequirements" id="skillRequirements" points />
+    </article>
+  </section>
 
-	<div v-else></div>
+  <div v-else></div>
 </template>
 
 <script lang="ts">

@@ -1,15 +1,12 @@
-import { useState } from "#app";
-import { Course } from "~/types/courseTypes";
-import type { GetUnseenLectureResponse } from "~/types/courseTypes";
+import { useState } from '#app';
+import { Course } from '~/types/courseTypes';
+import type { GetUnseenLectureResponse } from '~/types/courseTypes';
 
-export const useListOfCompletedCourses = () =>
-  useState("listOfCompletedCourses", (): any[] => []);
-export const useMyCourses = () => useState("myCourses", (): any[] => []);
-export const useCourses = () =>
-  useState<Course[]>("courses", (): Course[] => []);
-export const useCourse = () =>
-  useState<Course>("course", (): Course => new Course());
-export const useVideoSRC = () => useState("videoSRC", (): string => "");
+export const useListOfCompletedCourses = () => useState('listOfCompletedCourses', (): any[] => []);
+export const useMyCourses = () => useState('myCourses', (): any[] => []);
+export const useCourses = () => useState<Course[]>('courses', (): Course[] => []);
+export const useCourse = () => useState<Course>('course', (): Course => new Course());
+export const useVideoSRC = () => useState('videoSRC', (): string => '');
 
 export async function getTheseCourses(arrOfCourseIDs: string[]) {
   // console.log("in get theses courses")
@@ -17,7 +14,7 @@ export async function getTheseCourses(arrOfCourseIDs: string[]) {
 
   try {
     if (!!!arrOfCourseIDs || arrOfCourseIDs.length <= 0) {
-      throw { data: { detail: "Empty Course IDs array" } };
+      throw { data: { detail: 'Empty Course IDs array' } };
     }
 
     arrOfCourseIDs.forEach((id) => {
@@ -42,9 +39,7 @@ export async function getTheseCourses(arrOfCourseIDs: string[]) {
 
 export async function getMyCourses() {
   try {
-    const response: Course[] = await GET(
-      `/skills/courses?owned=true&recent_first=true`
-    );
+    const response: Course[] = await GET(`/skills/courses?owned=true&recent_first=true`);
 
     const myCourses = useMyCourses();
     myCourses.value = response ?? [];
@@ -81,7 +76,7 @@ export async function watchCourse(id: string) {
 export async function getCourseByID(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: "Invalid course ID" } };
+      throw { data: { detail: 'Invalid course ID' } };
     }
 
     const response: Course = await GET(`/skills/courses/${id}`);
@@ -98,7 +93,7 @@ export async function getCourseByID(id: string) {
 export async function getCourseSummaryByID(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: "Invalid course ID" } };
+      throw { data: { detail: 'Invalid course ID' } };
     }
 
     const response: Course = await GET(`/skills/courses/${id}/summary`);
@@ -115,7 +110,7 @@ export async function getCourseSummaryByID(id: string) {
 export async function enrollIntoCourse(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: "Invalid course ID" } };
+      throw { data: { detail: 'Invalid course ID' } };
     }
 
     const response = await POST(`/skills/course_access/${id}`);
@@ -126,26 +121,23 @@ export async function enrollIntoCourse(id: string) {
   }
 }
 
-export async function getLectureVideoSRC(
-  courseID: string,
-  { id, video_id, type }: any
-) {
+export async function getLectureVideoSRC(courseID: string, { id, video_id, type }: any) {
   try {
     if (!!!courseID) {
-      throw { data: { detail: "Invalid course ID" } };
+      throw { data: { detail: 'Invalid course ID' } };
     }
     if (!!!id) {
-      throw { data: { detail: "Invalid lecture ID" } };
+      throw { data: { detail: 'Invalid lecture ID' } };
     }
     if (!!!type) {
-      throw { data: { detail: "Invalid lecture type" } };
+      throw { data: { detail: 'Invalid lecture type' } };
     }
 
     const videoSRC = useVideoSRC();
 
-    if (type == "youtube") {
+    if (type == 'youtube') {
       if (!!!video_id) {
-        throw { data: { detail: "Invalid lecture video id" } };
+        throw { data: { detail: 'Invalid lecture video id' } };
       }
 
       videoSRC.value = `https://www.youtube.com/embed/${video_id}?rel=0`;
@@ -165,15 +157,13 @@ export async function getLectureVideoSRC(
 export async function completeLecture(courseID: string, lectureID: string) {
   try {
     if (!!!courseID) {
-      throw { data: { detail: "Invalid course ID" } };
+      throw { data: { detail: 'Invalid course ID' } };
     }
     if (!!!lectureID) {
-      throw { data: { detail: "Invalid lecture ID" } };
+      throw { data: { detail: 'Invalid lecture ID' } };
     }
 
-    const response = await PUT(
-      `/skills/courses/${courseID}/lectures/${lectureID}/complete`
-    );
+    const response = await PUT(`/skills/courses/${courseID}/lectures/${lectureID}/complete`);
 
     return [response, null];
   } catch (error: any) {
@@ -193,22 +183,18 @@ export async function verifyCertificate(body: any) {
 
 export async function getFilteredMyCourses(filters: any[]) {
   try {
-    let query = "";
+    let query = '';
 
     for (let key in filters) {
-      if (typeof filters[key] == "object" && filters[key].length > 0) {
+      if (typeof filters[key] == 'object' && filters[key].length > 0) {
         filters[key].forEach((item: any) => {
           query = query + `${key}=${item}&`;
         });
-      } else if (typeof filters[key] == "boolean" && filters[key] == true) {
+      } else if (typeof filters[key] == 'boolean' && filters[key] == true) {
         query = query + `${key}=${filters[key]}&`;
-      } else if (
-        typeof filters[key] == "string" &&
-				!!filters[key] &&
-				filters[key] != "---"
-      ) {
+      } else if (typeof filters[key] == 'string' && !!filters[key] && filters[key] != '---') {
         query = query + `${key}=${filters[key]}&`;
-      } else if (typeof filters[key] == "number" && filters[key] != -1) {
+      } else if (typeof filters[key] == 'number' && filters[key] != -1) {
         query = query + `${key}=${filters[key]}&`;
       }
     }
@@ -217,16 +203,14 @@ export async function getFilteredMyCourses(filters: any[]) {
 
     const myCourses = useMyCourses();
 
-    if (query.includes("search_term")) {
+    if (query.includes('search_term')) {
       myCourses.value = response ?? [];
     } else {
       const allCoursesResponse = await GET(`/skills/courses`);
 
       let arr = [...response, ...allCoursesResponse];
 
-      myCourses.value = [
-        ...new Map(arr.map((item) => [item["id"], item])).values(),
-      ];
+      myCourses.value = [...new Map(arr.map((item) => [item['id'], item])).values()];
     }
 
     return [response, null];
@@ -236,12 +220,12 @@ export async function getFilteredMyCourses(filters: any[]) {
 }
 
 export async function getUnseenLecture(
-  courseId: string
+  courseId: string,
 ): Promise<GetUnseenLectureResponse | undefined> {
   const response: GetUnseenLectureResponse = await GET(
-    `skills/courses/${courseId}/next_unseen`
+    `skills/courses/${courseId}/next_unseen`,
   ).catch((err) => {
-    throw new Error("Error in getting unseen lecture + " + err.message);
+    throw new Error('Error in getting unseen lecture + ' + err.message);
   });
   if (response) {
     return response;

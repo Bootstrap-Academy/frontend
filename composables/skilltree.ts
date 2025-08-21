@@ -1,20 +1,14 @@
-import { ref } from "vue";
-import { SkillTree, RootSkill, SubSkill } from "~/types/skillTreeTypes";
+import { ref } from 'vue';
+import { SkillTree, RootSkill, SubSkill } from '~/types/skillTreeTypes';
 
 export const useSubSkillTree = () =>
-  useState<SkillTree<SubSkill>>(
-    "subSkillTree",
-    () => new SkillTree<SubSkill>()
-  );
+  useState<SkillTree<SubSkill>>('subSkillTree', () => new SkillTree<SubSkill>());
 export const useRootSkillTree = () =>
-  useState<SkillTree<RootSkill>>(
-    "rootSkillTree",
-    () => new SkillTree<RootSkill>()
-  );
+  useState<SkillTree<RootSkill>>('rootSkillTree', () => new SkillTree<RootSkill>());
 
 export async function getRootSkillTree() {
   try {
-    const response = await GET("/skills/skilltree");
+    const response = await GET('/skills/skilltree');
 
     const rootSkillTree = useRootSkillTree();
     rootSkillTree.value = response;
@@ -28,7 +22,7 @@ export async function getRootSkillTree() {
 export async function getSubSkillTree(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: "Missing sub skill id" } };
+      throw { data: { detail: 'Missing sub skill id' } };
     }
 
     const response = await GET(`/skills/skilltree/${id}`);
@@ -58,10 +52,10 @@ export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
 
       let parentNodeRef = map[parentNode.row][parentNode.column];
 
-      let x1 = startNodeRef?.getAttribute("x") ?? 0;
-      let y1 = startNodeRef?.getAttribute("y") ?? 0;
-      let x2 = parentNodeRef?.getAttribute("x") ?? 0;
-      let y2 = parentNodeRef?.getAttribute("y") ?? 0;
+      let x1 = startNodeRef?.getAttribute('x') ?? 0;
+      let y1 = startNodeRef?.getAttribute('y') ?? 0;
+      let x2 = parentNodeRef?.getAttribute('x') ?? 0;
+      let y2 = parentNodeRef?.getAttribute('y') ?? 0;
 
       let space = nodeSize * 0.5;
 
@@ -87,7 +81,7 @@ export function scrollMapToNode(
   zoomLevel: number,
   row: number,
   column: number,
-  smooth: boolean
+  smooth: boolean,
 ) {
   if (!!!map[row] || !!!map[row][column]) return;
 
@@ -108,8 +102,8 @@ export function scrollMapToNode(
     shiftBy = nodeSize * 0.5;
   }
 
-  let cx = parseInt(ref.getAttribute("x") ?? 0) + shiftBy;
-  let cy = parseInt(ref.getAttribute("y") ?? 0) + shiftBy;
+  let cx = parseInt(ref.getAttribute('x') ?? 0) + shiftBy;
+  let cy = parseInt(ref.getAttribute('y') ?? 0) + shiftBy;
   let screenCenterLeft = mapRef.clientWidth * 0.5;
   let screenCenterTop = mapRef.clientHeight * 0.5;
   let centerTop = cy - screenCenterTop;
@@ -118,6 +112,6 @@ export function scrollMapToNode(
   mapRef.scroll({
     top: centerTop,
     left: centerLeft,
-    behavior: smooth ? "smooth" : "auto",
+    behavior: smooth ? 'smooth' : 'auto',
   });
 }

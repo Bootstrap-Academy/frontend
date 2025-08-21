@@ -3,14 +3,14 @@
     @click="fnRefillHearts()"
     class="text-sm px-6 bg-light cursor-pointer rounded-full flex justify-between items-center text-white scale-90"
   >
-    {{ t("Headings.RefillHearts") }}
+    {{ t('Headings.RefillHearts') }}
     <SvgHeart class="-mb-3" />
   </section>
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import Coins from "./Coins.vue";
+import { useI18n } from 'vue-i18n';
+import Coins from './Coins.vue';
 
 export default {
   setup() {
@@ -23,14 +23,14 @@ export default {
 
     async function fnRefillHearts() {
       if (hearts.value >= 6) {
-        return openSnackbar("info", "Error.AlreadyHaveHearts");
+        return openSnackbar('info', 'Error.AlreadyHaveHearts');
       } else if (coins.value < 50) {
-        openSnackbar("error", "Error.Need50CoinsForRefill");
+        openSnackbar('error', 'Error.Need50CoinsForRefill');
       }
       setLoading(true);
       const [success, error] = await refillHearts();
       setLoading(false);
-      if (success) openSnackbar("success", "Success.RefilledHearts");
+      if (success) openSnackbar('success', 'Success.RefilledHearts');
       else {
       }
     }

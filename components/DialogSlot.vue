@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { useDialogSlot } from "../composables/dialogSlot";
-import { XMarkIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { useDialogSlot } from '../composables/dialogSlot';
+import { XMarkIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-  label: { type: String, defalt: "" },
+  label: { type: String, defalt: '' },
   showCross: { type: Boolean, default: true },
-  propClass: { type: String, default: "" },
+  propClass: { type: String, default: '' },
 });
-const emits = defineEmits(["closeFunction"]);
+const emits = defineEmits(['closeFunction']);
 
 const { t }: any = useI18n();
 const open: any = useDialogSlot();
 function close() {
   open.value = false;
-  emits("closeFunction");
+  emits('closeFunction');
 }
 </script>
 
@@ -41,9 +35,7 @@ function close() {
       </TransitionChild>
 
       <div class="fixed bg-lightGray inset-0 z-10 overflow-y-auto">
-        <div
-          class="flex min-h-full justify-center text-center items-center sm:p-0"
-        >
+        <div class="flex min-h-full justify-center text-center items-center sm:p-0">
           <TransitionChild
             as="template"
             enter="ease-out duration-300"

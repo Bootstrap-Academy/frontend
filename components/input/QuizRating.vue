@@ -54,29 +54,23 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
-import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { FlagIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { useDialogReportTask, useDialogSlot } from '~~/composables/dialogSlot';
 
 export default {
   props: {
     data: { type: Object as PropType<any>, default: null },
     subtask: { type: Object as PropType<any>, default: null },
   },
-  emits: [
-    "solved",
-    "updateQuestion",
-    "rated",
-    "nextQuestion",
-    "reportSubmitted",
-  ],
+  emits: ['solved', 'updateQuestion', 'rated', 'nextQuestion', 'reportSubmitted'],
   components: { FlagIcon },
 
   setup(props, { emit }) {
     const { t } = useI18n();
     const user: any = useUser();
-    const feedback = ref("");
+    const feedback = ref('');
     const dialogReportTask = useDialogReportTask();
     const dialogSlotReportTask = useDialogSlot();
 
@@ -88,30 +82,26 @@ export default {
     }
 
     async function submitFeedBack() {
-      if (feedback.value.trim() == "") {
-        return openSnackbar("error", "Error.SelectRatingFirst");
+      if (feedback.value.trim() == '') {
+        return openSnackbar('error', 'Error.SelectRatingFirst');
       }
 
       setLoading(true);
-      const [success, error] = await rateQuiz(
-        props.subtask.task_id,
-        props.subtask.id,
-        {
-          rating: feedback.value,
-        }
-      );
+      const [success, error] = await rateQuiz(props.subtask.task_id, props.subtask.id, {
+        rating: feedback.value,
+      });
       setLoading(false);
-      feedback.value = "";
+      feedback.value = '';
       if (success !== null) {
-        emit("rated", props.data.id);
-        openSnackbar("success", "Success.SubmittedRating");
+        emit('rated', props.data.id);
+        openSnackbar('success', 'Success.SubmittedRating');
       } else {
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
 
     function reportSubmitted() {
-      emit("rated", props.data.id);
+      emit('rated', props.data.id);
     }
 
     // ============================================== watches ==============================================================
@@ -121,7 +111,7 @@ export default {
         if (!!newValue) {
           submitFeedBack();
         }
-      }
+      },
     );
 
     return {

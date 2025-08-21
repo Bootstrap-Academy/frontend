@@ -4,13 +4,10 @@
       <Title>Sub Skill Tree - {{ subTreeName }}</Title>
     </Head>
 
-    <SkillTreeHeader
-      @zoomLevel="zoomLevel = $event"
-      :breadcrumbs="breadcrumbs"
-    />
+    <SkillTreeHeader @zoomLevel="zoomLevel = $event" :breadcrumbs="breadcrumbs" />
 
     <LoadingDots v-if="loading">
-      {{ t("Body.SubSkillTreeLoading", { placeholder: subTreeName }) }}
+      {{ t('Body.SubSkillTreeLoading', { placeholder: subTreeName }) }}
     </LoadingDots>
 
     <section
@@ -35,10 +32,7 @@
           <template v-for="(column, j) in row" :key="`${i}${j}`">
             <SkillTreeNode
               class="relative z-30"
-              v-if="
-                selectedNode.id == '' ||
-                (selectedNode.row == i && selectedNode.column == j)
-              "
+              v-if="selectedNode.id == '' || (selectedNode.row == i && selectedNode.column == j)"
               :row="i"
               :column="j"
               @ref="insertRefInMap($event, i, j)"
@@ -56,10 +50,7 @@
       </svg>
     </section>
 
-    <article
-      v-else
-      class="w-full h-full flex flex-col gap-container justify-center items-center"
-    >
+    <article v-else class="w-full h-full flex flex-col gap-container justify-center items-center">
       <SvgSkillTree class="max-w-sm" />
       <SectionTitle
         center
@@ -71,27 +62,27 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import { useSubSkillTree, getSubSkillTree, createPathwaysForTree } from "~/composables/skilltree";
+import { useI18n } from 'vue-i18n';
+import { useSubSkillTree, getSubSkillTree, createPathwaysForTree } from '~/composables/skilltree';
 
 export default {
   head: {
-    title: "Sub Skill Tree",
+    title: 'Sub Skill Tree',
   },
   setup() {
     const subTreeId = computed(() => {
-      return <string>(route.params?.id ?? "");
+      return <string>(route.params?.id ?? '');
     });
 
     const subTreeName = computed(() => {
-      return subTreeId.value.replace(/_/g, " ");
+      return subTreeId.value.replace(/_/g, ' ');
     });
 
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
-          to: "/skill-tree",
+          label: 'Headings.RootSkillTree',
+          to: '/skill-tree',
         },
         {
           label: subTreeName.value,
@@ -105,9 +96,7 @@ export default {
     const setupComplete = ref(false);
     const loading = ref(true);
 
-    const cookie_nextNode = useCookie<{ row: number; column: number }>(
-      "subTree_nextNode"
-    );
+    const cookie_nextNode = useCookie<{ row: number; column: number }>('subTree_nextNode');
     const nextNode = computed({
       get() {
         return cookie_nextNode.value || { row: 10, column: 10 };
@@ -123,13 +112,13 @@ export default {
     // ! ======================================================= Node
     const getInitialNode = () => {
       return {
-        id: "",
-        name: "",
+        id: '',
+        name: '',
         dependencies: [],
         courses: [],
         row: null,
         column: null,
-        icon: "",
+        icon: '',
       };
     };
 
@@ -140,7 +129,7 @@ export default {
     const route = useRoute();
 
     function setSelectedNode(node: any) {
-      if (node.id == "") {
+      if (node.id == '') {
         Object.assign(selectedNode, { ...node });
       } else {
         let n = nodes.find((_n) => _n.id == node.id);
@@ -148,31 +137,29 @@ export default {
 
         if (!!!getAccessToken()) {
           openDialog(
-            "warning",
-            "Headings.NotLoggedIn",
-            "Body.NotLoggedIn",
+            'warning',
+            'Headings.NotLoggedIn',
+            'Body.NotLoggedIn',
             false,
             {
-              label: "Buttons.Okay",
+              label: 'Buttons.Okay',
               onclick: () => {
-                router.push(
-                  `/auth/login?redirect=${route.path}/${selectedNode.id}`
-                );
+                router.push(`/auth/login?redirect=${route.path}/${selectedNode.id}`);
               },
             },
             {
-              label: "Buttons.Cancel",
+              label: 'Buttons.Cancel',
               onclick: () => {
                 Object.assign(selectedNode, {
-                  id: "",
-                  name: "",
+                  id: '',
+                  name: '',
                   dependencies: [],
                   row: null,
                   column: null,
-                  icon: "",
+                  icon: '',
                 });
               },
-            }
+            },
           );
         } else if (selectedNode && selectedNode.id) {
           router.push(`${route.path}/${selectedNode.id}`);
@@ -183,7 +170,7 @@ export default {
     watch(
       () => selectedNode,
       (newValue, oldValue) => {
-        if (newValue.id == "" && oldValue.id != "") {
+        if (newValue.id == '' && oldValue.id != '') {
           setupComplete.value = false;
         }
 
@@ -197,7 +184,7 @@ export default {
           setupComplete.value = true;
         });
       },
-      { deep: true }
+      { deep: true },
     );
 
     const xp = useXP();
@@ -209,8 +196,8 @@ export default {
       }
 
       await getXP();
-      
-      console.log("xp", xp.value);  
+
+      console.log('xp', xp.value);
 
       const [success, error] = await getSubSkillTree(subTreeId.value);
 
@@ -234,15 +221,7 @@ export default {
     function scrollToNode(row: number, column: number, smooth: boolean) {
       nextNode.value = { row: row, column: column };
 
-      scrollMapToNode(
-        map,
-        mainRef.value,
-        nodeSize.value,
-        zoomLevel.value,
-        row,
-        column,
-        smooth
-      );
+      scrollMapToNode(map, mainRef.value, nodeSize.value, zoomLevel.value, row, column, smooth);
     }
 
     // ! ======================================================= Pathways
@@ -267,10 +246,7 @@ export default {
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
-      if (
-        nextNode.value.row == node.row &&
-        nextNode.value.column == node.column
-      ) {
+      if (nextNode.value.row == node.row && nextNode.value.column == node.column) {
         nextNode.value = { ...previous };
       } else if (!!previous) {
         nextNode.value = { row: node.row, column: node.column };
@@ -347,7 +323,7 @@ export default {
           scrollToNode(row, column, false);
           setupComplete.value = true;
         });
-      }
+      },
     );
 
     watch(
@@ -365,7 +341,7 @@ export default {
           });
         }
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     // ! ======================================================= Dragging
@@ -379,15 +355,15 @@ export default {
       if (event.button !== 0) return;
 
       const target = event.target as HTMLElement;
-      if (target.tagName === "foreignObject" || target.tagName === "path") return;
+      if (target.tagName === 'foreignObject' || target.tagName === 'path') return;
 
       isDragging.value = true;
       startX.value = event.pageX - mainRef.value!.offsetLeft;
       startY.value = event.pageY - mainRef.value!.offsetTop;
       scrollLeft.value = mainRef.value!.scrollLeft;
       scrollTop.value = mainRef.value!.scrollTop;
-      document.addEventListener("mousemove", drag);
-      document.addEventListener("mouseup", stopDrag);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', stopDrag);
     };
 
     const drag = (event: MouseEvent) => {
@@ -401,15 +377,20 @@ export default {
       mainRef.value!.scrollLeft = scrollLeft.value - walkX;
       mainRef.value!.scrollTop = scrollTop.value - walkY;
 
-      if (event.clientX <= 0 || event.clientX >= window.innerWidth || event.clientY <= 0 || event.clientY >= window.innerHeight) {
+      if (
+        event.clientX <= 0 ||
+        event.clientX >= window.innerWidth ||
+        event.clientY <= 0 ||
+        event.clientY >= window.innerHeight
+      ) {
         stopDrag();
       }
     };
 
     const stopDrag = () => {
       isDragging.value = false;
-      document.removeEventListener("mousemove", drag);
-      document.removeEventListener("mouseup", stopDrag);
+      document.removeEventListener('mousemove', drag);
+      document.removeEventListener('mouseup', stopDrag);
     };
 
     return {
@@ -443,7 +424,7 @@ export default {
 
       isDragging,
       startDrag,
-      
+
       xp,
     };
   },

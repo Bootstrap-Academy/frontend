@@ -1,24 +1,17 @@
 <template>
   <div>
     <InputBtn class="my-7" full @click="openDialogAndAddNew()">
-      {{ t("Buttons.AddNew") }}
+      {{ t('Buttons.AddNew') }}
     </InputBtn>
     <section v-if="quizzes?.length">
-      <div
-        v-for="(quiz, i) of quizzes"
-        :key="i"
-        class="p-4 xl:p-5 bg-secondary mb-4 rounded-md"
-      >
+      <div v-for="(quiz, i) of quizzes" :key="i" class="p-4 xl:p-5 bg-secondary mb-4 rounded-md">
         <article class="flex justify-between gap-4">
           <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
-            {{ quiz?.question ?? "" }}
+            {{ quiz?.question ?? '' }}
           </p>
 
           <div class="flex gap-3 items-center">
-            <TrashIcon
-              @click="fnDeleteQuiz(quiz?.id)"
-              class="h-5 w-5 cursor-pointer text-accent"
-            />
+            <TrashIcon @click="fnDeleteQuiz(quiz?.id)" class="h-5 w-5 cursor-pointer text-accent" />
             <PencilSquareIcon
               v-if="!!user?.admin"
               @click="openDialogCreate(quiz)"
@@ -33,11 +26,8 @@
         </article>
       </div>
     </section>
-    <p
-      class="border border-accent rounded-md w-full p-5 text-xl text-center"
-      v-else
-    >
-      {{ t("Headings.EmptyQuizzes") }}
+    <p class="border border-accent rounded-md w-full p-5 text-xl text-center" v-else>
+      {{ t('Headings.EmptyQuizzes') }}
     </p>
     <div>
       <DialogSlot
@@ -54,17 +44,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useDialogSlot } from "@/composables/dialogSlot";
-import { useI18n } from "vue-i18n";
-import {
-  TrashIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+import { useDialogSlot } from '@/composables/dialogSlot';
+import { useI18n } from 'vue-i18n';
+import { TrashIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
   quizzes: { type: Array as PropType<any>, default: [] },
-  taskId: { type: String, default: "" },
+  taskId: { type: String, default: '' },
 });
 const { t } = useI18n();
 const dialog = useDialogSlot();
@@ -85,28 +71,28 @@ function openDialogAndAddNew() {
 }
 function fnDeleteQuiz(id: any) {
   openDialog(
-    "info",
-    "Headings.DeleteQuiz",
-    "Body.DeleteQuiz",
+    'info',
+    'Headings.DeleteQuiz',
+    'Body.DeleteQuiz',
     false,
     {
-      label: "Buttons.DeleteQuiz",
+      label: 'Buttons.DeleteQuiz',
       onclick: async () => {
         const [success, error] = await deleteSubTaskInQuiz(props.taskId, id);
 
         if (success) {
           setTimeout(() => {
-            openSnackbar("success", "Success.DeleteQuiz");
+            openSnackbar('success', 'Success.DeleteQuiz');
           }, 1000);
         } else {
-          openSnackbar("error", error?.detail ?? "");
+          openSnackbar('error', error?.detail ?? '');
         }
       },
     },
     {
-      label: "Buttons.Cancel",
+      label: 'Buttons.Cancel',
       onclick: () => {},
-    }
+    },
   );
 }
 </script>

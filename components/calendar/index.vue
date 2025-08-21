@@ -2,32 +2,20 @@
   <div>
     <header class="flex gap-card justify-between items-center mb-card">
       <Btn sm secondary :icon="ArrowLeftIcon" @click="prevMonth">
-        <span class="hidden md:block">{{
-          t("Buttons.CalendarPrevMonth")
-        }}</span>
+        <span class="hidden md:block">{{ t('Buttons.CalendarPrevMonth') }}</span>
       </Btn>
 
-      <h1 class="text-heading-3">
-        {{ activeDate }} {{ t(month) }}, {{ activeYear }}
-      </h1>
+      <h1 class="text-heading-3">{{ activeDate }} {{ t(month) }}, {{ activeYear }}</h1>
 
       <Btn sm :icon="ArrowRightIcon" @click="nextMonth" icon-right>
-        <span class="hidden md:block">{{
-          t("Buttons.CalendarNextMonth")
-        }}</span>
+        <span class="hidden md:block">{{ t('Buttons.CalendarNextMonth') }}</span>
       </Btn>
     </header>
 
     <section class="grid grid-cols-7">
-      <h2
-        v-for="day of days"
-        :key="day"
-        class="place-self-center capitalize mb-5 text-heading-4"
-      >
+      <h2 v-for="day of days" :key="day" class="place-self-center capitalize mb-5 text-heading-4">
         <span class="hidden lg:block">{{ t(day) }}</span>
-        <span class="hidden md:block lg:hidden">
-          {{ t(day)[0] }}{{ t(day)[1] }}{{ t(day)[2] }}
-        </span>
+        <span class="hidden md:block lg:hidden">{{ t(day)[0] }}{{ t(day)[1] }}{{ t(day)[2] }}</span>
         <span class="block md:hidden">{{ t(day)[0] }}{{ t(day)[1] }}</span>
       </h2>
 
@@ -38,14 +26,10 @@
         @click="setActiveDate(date.date)"
         :class="[
           date.date == '' ? 'pointer-events-none' : 'cursor-pointer',
-          activeDate == date.date
-            ? 'border border-accent'
-            : 'border border-secondary',
+          activeDate == date.date ? 'border border-accent' : 'border border-secondary',
         ]"
       >
-        <p
-          class="capitalize text-heading font-heading text-xs md:text-sm lg:text-base w-full"
-        >
+        <p class="capitalize text-heading font-heading text-xs md:text-sm lg:text-base w-full">
           {{ date.date }}
         </p>
 
@@ -58,43 +42,43 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { Ref } from "vue";
-import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { Ref } from 'vue';
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
     events: { default: [] },
   },
   components: { ArrowLeftIcon, ArrowRightIcon },
-  emits: ["selected"],
+  emits: ['selected'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
     let days = [
-      "Days.Sunday",
-      "Days.Monday",
-      "Days.Tuesday",
-      "Days.Wednesday",
-      "Days.Thursday",
-      "Days.Friday",
-      "Days.Saturday",
+      'Days.Sunday',
+      'Days.Monday',
+      'Days.Tuesday',
+      'Days.Wednesday',
+      'Days.Thursday',
+      'Days.Friday',
+      'Days.Saturday',
     ];
 
     let months = [
-      "Months.January",
-      "Months.February",
-      "Months.March",
-      "Months.April",
-      "Months.May",
-      "Months.June",
-      "Months.July",
-      "Months.August",
-      "Months.September",
-      "Months.October",
-      "Months.November",
-      "Months.December",
+      'Months.January',
+      'Months.February',
+      'Months.March',
+      'Months.April',
+      'Months.May',
+      'Months.June',
+      'Months.July',
+      'Months.August',
+      'Months.September',
+      'Months.October',
+      'Months.November',
+      'Months.December',
     ];
     const activeDate = ref(new Date().getDate());
     const activeMonth = ref(new Date().getMonth());
@@ -135,7 +119,7 @@ export default defineComponent({
     }
 
     function setActiveDate(date: any) {
-      if (date == "") {
+      if (date == '') {
         activeYear.value--;
         activeMonth.value = 11;
         activeDate.value = 1;
@@ -143,7 +127,7 @@ export default defineComponent({
         activeDate.value = date;
       }
 
-      emit("selected", {
+      emit('selected', {
         date: activeDate.value,
         month: activeMonth.value,
         year: activeYear.value,
@@ -152,16 +136,16 @@ export default defineComponent({
 
     const route = useRoute();
     onMounted(() => {
-      let startQuery = <string>(route?.query?.start ?? "0");
+      let startQuery = <string>(route?.query?.start ?? '0');
       let start = parseInt(startQuery);
-      if (start > 0 && typeof start == "number") {
+      if (start > 0 && typeof start == 'number') {
         const { date, month, year } = convertTimestampToDate(start);
         activeDate.value = date;
         activeMonth.value = month.number;
         activeYear.value = year;
       }
 
-      emit("selected", {
+      emit('selected', {
         date: activeDate.value,
         month: activeMonth.value,
         year: activeYear.value,
@@ -172,11 +156,7 @@ export default defineComponent({
       let arr = [];
 
       const start = 1;
-      const end = new Date(
-        activeYear.value,
-        activeMonth.value + 1,
-        0
-      ).getDate();
+      const end = new Date(activeYear.value, activeMonth.value + 1, 0).getDate();
 
       for (let i = start; i <= end; i++) {
         let date = new Date(activeYear.value, activeMonth.value, i);
@@ -185,10 +165,10 @@ export default defineComponent({
           let dayNumber = date.getDay();
           for (let i = dayNumber; i > 0; i--) {
             arr.push({
-              year: "",
-              month: "",
-              day: "",
-              date: "",
+              year: '',
+              month: '',
+              day: '',
+              date: '',
             });
           }
         }
@@ -210,17 +190,16 @@ export default defineComponent({
       return props.events
         .map((event: any) => {
           let start = event?.start ?? -1;
-          let date = start != 1 ? convertTimestampToDate(start).date : "";
-          let month =
-            start != 1 ? convertTimestampToDate(start).month.number : 0;
-          let year = start != 1 ? convertTimestampToDate(start).year : "";
+          let date = start != 1 ? convertTimestampToDate(start).date : '';
+          let month = start != 1 ? convertTimestampToDate(start).month.number : 0;
+          let year = start != 1 ? convertTimestampToDate(start).year : '';
           return { ...event, date, month, year };
         })
         .filter((event) => {
-          if (eventFilter.value == "booked") {
+          if (eventFilter.value == 'booked') {
             return event.booked == true;
-          } else if (eventFilter.value == "mine") {
-            return (event?.instructor?.id ?? "-") == (user.value?.id ?? "");
+          } else if (eventFilter.value == 'mine') {
+            return (event?.instructor?.id ?? '-') == (user.value?.id ?? '');
           } else {
             return true;
           }
@@ -229,11 +208,7 @@ export default defineComponent({
 
     function isEvent(event: any, date: any) {
       if (!!!event) return false;
-      return (
-        event.date == date.date &&
-        event.month == date.month &&
-        event.year == date.year
-      );
+      return event.date == date.date && event.month == date.month && event.year == date.year;
     }
 
     return {

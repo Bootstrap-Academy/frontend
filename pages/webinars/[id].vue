@@ -25,19 +25,14 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form max-w-3xl">
-			<SectionTitle
-				center
-				heading="Headings.CreateWebinar"
-				size="sm"
-				class="mb-card mx-auto"
-			/>
-			<FormWebinar :data="webinar" :skillID="skillID" :rating="rating" />
-		</section>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <section class="container-form max-w-3xl">
+      <SectionTitle center heading="Headings.CreateWebinar" size="sm" class="mb-card mx-auto" />
+      <FormWebinar :data="webinar" :skillID="skillID" :rating="rating" />
+    </section>
+  </section>
 </template>
 
 <script lang="ts">

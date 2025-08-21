@@ -1,19 +1,17 @@
 <template>
-	<form
-		class="rounded shadow-xl flex items-center overflow-clip h-fit bg-accent w-full max-w-sm"
-	>
-		<input
-			type="text"
-			:placeholder="translatedPlaceholder"
-			@change="onchange"
-			v-model.trim="search"
-			class="py-2 px-4 text-primary text-body-1 font-body placeholder:text-secondary placeholder:text-body-1 placeholder:font-body outline-none w-full"
-		/>
+  <form class="rounded shadow-xl flex items-center overflow-clip h-fit bg-accent w-full max-w-sm">
+    <input
+      type="text"
+      :placeholder="translatedPlaceholder"
+      @change="onchange"
+      v-model.trim="search"
+      class="py-2 px-4 text-primary text-body-1 font-body placeholder:text-secondary placeholder:text-body-1 placeholder:font-body outline-none w-full"
+    />
 
-		<button @click.prevent="onclickForceSearch" class="px-4 bg-accent">
-			<MagnifyingGlassIcon class="h-5 w-5 fill-white" />
-		</button>
-	</form>
+    <button @click.prevent="onclickForceSearch" class="px-4 bg-accent">
+      <MagnifyingGlassIcon class="h-5 w-5 fill-white" />
+    </button>
+  </form>
 </template>
 
 <script>

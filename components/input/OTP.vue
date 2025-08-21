@@ -1,32 +1,30 @@
 <template>
-	<article>
-		<label for="" class="text-subheading text-body-2 font-body mb-4 block">
-			{{ t(label) }}
-		</label>
-		<div class="flex gap-3">
-			<template v-for="i in numberOfFields" :key="i">
-				<input
-					:maxlength="numberOfCharsPerField"
-					ref="DOM_INPUTS"
-					type="number"
-					class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
-					:style="{ width: width }"
-					@input="oninput(i - 1)"
-					@keydown.delete="onkeydownDelete(i - 1)"
-				/>
+  <article>
+    <label for="" class="text-subheading text-body-2 font-body mb-4 block">
+      {{ t(label) }}
+    </label>
+    <div class="flex gap-3">
+      <template v-for="i in numberOfFields" :key="i">
+        <input
+          :maxlength="numberOfCharsPerField"
+          ref="DOM_INPUTS"
+          type="number"
+          class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
+          :style="{ width: width }"
+          @input="oninput(i - 1)"
+          @keydown.delete="onkeydownDelete(i - 1)"
+        />
 
-				<div v-if="i % breakAfterHowManyFields == 0" class="w-2"></div>
-			</template>
-		</div>
-		<p
-			class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
-			:class="
-				error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-			"
-		>
-			{{ error }}.
-		</p>
-	</article>
+        <div v-if="i % breakAfterHowManyFields == 0" class="w-2"></div>
+      </template>
+    </div>
+    <p
+      class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
+      :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
+    >
+      {{ error }}.
+    </p>
+  </article>
 </template>
 
 <script lang="ts">
@@ -74,7 +72,7 @@ export default defineComponent({
 
       if (
         value.length >= props.numberOfCharsPerField * props.numberOfFields &&
-				index >= props.numberOfFields
+        index >= props.numberOfFields
       ) {
         DOM_INPUTS.value[index].value = value[0];
       }

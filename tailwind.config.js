@@ -46,8 +46,8 @@ module.exports = {
   },
   extend: {
     zIndex: {
-		  '100': '100',
-    }
+      100: '100',
+    },
   },
   plugins: [
     plugin(function ({ addBase, addComponents, addUtilities, theme }) {
@@ -287,7 +287,8 @@ module.exports = {
         },
         // transition duration-300 ease-out
         '.transition-basic': {
-          transitionProperty: 'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+          transitionProperty:
+            'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
           transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
           transitionDuration: '300ms',
         },

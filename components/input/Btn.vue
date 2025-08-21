@@ -24,11 +24,7 @@
         />
       </svg>
 
-      <div
-        v-else
-        class="flex gap-2 items-center"
-        :class="iconRight ? 'flex-row-reverse' : ''"
-      >
+      <div v-else class="flex gap-2 items-center" :class="iconRight ? 'flex-row-reverse' : ''">
         <component
           v-if="icon"
           :is="icon"
@@ -42,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -53,19 +49,19 @@ export default defineComponent({
     sm: { type: Boolean, default: false },
     md: { type: Boolean, default: true },
     lg: { type: Boolean, default: false },
-    bgColor: { type: String, default: "bg-accent" },
-    borderColor: { type: String, default: "border-accent" },
+    bgColor: { type: String, default: 'bg-accent' },
+    borderColor: { type: String, default: 'border-accent' },
     primary: { type: Boolean, default: true },
     secondary: { type: Boolean, default: false },
     tertiary: { type: Boolean, default: false },
     icon: { type: Object, default: null },
     iconRight: { type: Boolean, default: false },
-    iconColor: { type: String, default: "" },
+    iconColor: { type: String, default: '' },
   },
-  emits: ["click"],
+  emits: ['click'],
   setup(props, { emit }) {
     function onclick() {
-      emit("click", true);
+      emit('click', true);
     }
 
     const classes = computed(() => {
@@ -74,20 +70,20 @@ export default defineComponent({
           lg: props.lg,
           md: props.md && !props.lg && !props.sm,
           sm: props.sm,
-          "flex-row-reverse": props.iconRight,
-          "w-full": props.full,
-          "mt-2 md:mt-4 xl:mt-6": props.mt,
-          "mb-2 md:mb-4 xl:mb-6": props.mb,
+          'flex-row-reverse': props.iconRight,
+          'w-full': props.full,
+          'mt-2 md:mt-4 xl:mt-6': props.mt,
+          'mb-2 md:mb-4 xl:mb-6': props.mb,
         },
         props.primary && !props.secondary && !props.tertiary
           ? `${props.bgColor} text-primary font-semibold hover:${props.bgColor} border ${props.borderColor} hover:ring-8 hover:ring-tertiary`
-          : "",
+          : '',
         props.secondary
           ? `bg-transparent text-heading font-medium hover:bg-transparent border ${props.borderColor} hover:ring-8 hover:ring-tertiary`
-          : "",
+          : '',
         props.tertiary
           ? `bg-transparent text-heading font-medium hover:bg-transparent hover:scale-105 border border-transparent hover:ring-8 hover:ring-transparent`
-          : "",
+          : '',
       ];
     });
 

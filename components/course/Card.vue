@@ -10,38 +10,27 @@
       class="flex justify-between card-sm h-fit"
       :class="{ 'items-center card-sm lg:pt-box lg:pb-box ': price.value <= 0 }"
     >
-      <IconText
-        v-if="price.value > 0"
-        :highlightIcon="false"
-        sm
-        :icon="price.icon"
-      >
-        {{
-          t(
-            "Headings.Morphcoins",
-            { n: abbreviateNumber(price.value) },
-            price.value
-          )
-        }}
+      <IconText v-if="price.value > 0" :highlightIcon="false" sm :icon="price.icon">
+        {{ t('Headings.Morphcoins', { n: abbreviateNumber(price.value) }, price.value) }}
       </IconText>
       <Chip v-else-if="completed" xs color="bg-success">
-        {{ t("Headings.Completed") }}
+        {{ t('Headings.Completed') }}
       </Chip>
-      <Chip v-else xs color="bg-info">{{ t("Headings.Free") }}</Chip>
+      <Chip v-else xs color="bg-info">{{ t('Headings.Free') }}</Chip>
 
       <IconText :highlightIcon="false" sm :icon="lectures.icon">
-        {{ t("Headings.Lectures", { n: lectures.value }, lectures.value) }}
+        {{ t('Headings.Lectures', { n: lectures.value }, lectures.value) }}
       </IconText>
     </div>
   </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { PlayIcon } from "@heroicons/vue/24/outline";
-import IconMorphcoin from "~/components/icon/Morphcoin.vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { PlayIcon } from '@heroicons/vue/24/outline';
+import IconMorphcoin from '~/components/icon/Morphcoin.vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   components: { PlayIcon, IconMorphcoin },
@@ -56,11 +45,11 @@ export default defineComponent({
     });
 
     const title = computed(() => {
-      return props.data?.title ?? "";
+      return props.data?.title ?? '';
     });
 
     const description = computed(() => {
-      return props.data?.description ?? "";
+      return props.data?.description ?? '';
     });
 
     const price = computed(() => {
@@ -73,7 +62,7 @@ export default defineComponent({
     const totalLectures = computed(() => {
       let lectures = props.data?.lectures ?? null;
 
-      if (typeof lectures != "number") {
+      if (typeof lectures != 'number') {
         let sections: any[] = props.data?.sections ?? [];
 
         let allLectures: any[] = [];

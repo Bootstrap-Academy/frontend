@@ -28,16 +28,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Verify Account",
+    title: 'Verify Account',
   },
   setup() {
     const { t } = useI18n();
@@ -46,7 +46,7 @@ export default {
     const route = useRoute();
 
     const code = computed(() => {
-      return route?.query?.code ?? "";
+      return route?.query?.code ?? '';
     });
 
     const dialog = <any>reactive({});
@@ -59,19 +59,17 @@ export default {
       setLoading(false);
 
       Object.assign(dialog, {
-        type: !!success ? "success" : "error",
+        type: !!success ? 'success' : 'error',
         heading: !!success
-          ? "Headings.SubscribedToNewsLetter"
-          : "Headings.UnableSubscribedToNewsLetter",
+          ? 'Headings.SubscribedToNewsLetter'
+          : 'Headings.UnableSubscribedToNewsLetter',
         body: !!success
-          ? "Body.SubscribedToNewsLetter"
-          : `${t("Body.UnableSubscribedToNewsLetter")}: ${t(
-            error?.detail ?? ""
-          )}`,
+          ? 'Body.SubscribedToNewsLetter'
+          : `${t('Body.UnableSubscribedToNewsLetter')}: ${t(error?.detail ?? '')}`,
         primaryBtn: {
-          label: !!success ? "Buttons.Okay" : "Links.BackToAccount",
+          label: !!success ? 'Buttons.Okay' : 'Links.BackToAccount',
           onclick: () => {
-            router.push("/account");
+            router.push('/account');
           },
         },
         secondaryBtn: null,

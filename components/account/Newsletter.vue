@@ -14,7 +14,10 @@
       </p>
     </div>
 
-    <InputBtn :loading="loading" @click="show ? onClickUnregisterNewsletter() : onClickRegisterNewsletter()">
+    <InputBtn
+      :loading="loading"
+      @click="show ? onClickUnregisterNewsletter() : onClickRegisterNewsletter()"
+    >
       {{ show ? t('Buttons.UnregisterNewsletter') : t('Buttons.RegisterForNewsletter') }}
     </InputBtn>
   </article>
@@ -30,7 +33,7 @@ export default defineComponent({
   components: {
     EnvelopeOpenIcon,
     CheckCircleIcon,
-    NoSymbolIcon
+    NoSymbolIcon,
   },
   setup() {
     const { t } = useI18n();
@@ -76,8 +79,8 @@ export default defineComponent({
         },
         {
           label: 'Buttons.Cancel',
-          onclick: () => { },
-        }
+          onclick: () => {},
+        },
       );
     }
 

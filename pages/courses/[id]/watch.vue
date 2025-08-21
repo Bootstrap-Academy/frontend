@@ -22,7 +22,7 @@
 <template>
   <div class="relative">
     <Head>
-      <Title>Watch Course - {{ course?.title ?? "" }}</Title>
+      <Title>Watch Course - {{ course?.title ?? '' }}</Title>
     </Head>
     <section>
       <main
@@ -54,10 +54,7 @@
             :activeLecture="activeLecture"
             v-if="!!activeSection && !!activeLecture && selectedButton == 0"
           />
-          <section
-            v-if="selectedButton == 1"
-            class="w-full h-[71vh] overflow-scroll"
-          >
+          <section v-if="selectedButton == 1" class="w-full h-[71vh] overflow-scroll">
             <CourseSolveMcqInsideLectureView
               :total-quizzes="allQuizzes"
               :quizzes-in-this-lecture="quizzesInLecture"
@@ -69,24 +66,17 @@
               class="w-full text-xl text-center"
               v-if="!quizzesInLecture.length && !allQuizzes.length"
             >
-              {{ t("Headings.EmptySubtasks") }}
+              {{ t('Headings.EmptySubtasks') }}
             </p>
-            <div
-              v-if="allQuizzes.length"
-              class="mt-10"
-            >
-            </div>
+            <div v-if="allQuizzes.length" class="mt-10"></div>
 
             <div v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length">
               <p class="w-full text-xl text-center">
-                {{ t("Headings.NoMoreSubTasksInThisCourse") }}
+                {{ t('Headings.NoMoreSubTasksInThisCourse') }}
               </p>
             </div>
           </section>
-          <section
-            class="px-6 h-[71vh] overflow-scroll w-full"
-            v-else-if="selectedButton == 2"
-          >
+          <section class="px-6 h-[71vh] overflow-scroll w-full" v-else-if="selectedButton == 2">
             <div v-if="codingChallenges.length">
               <CodingChallengeCard
                 @click="solveCodingChallenge(codingChallenge)"
@@ -95,25 +85,16 @@
                 :key="i"
               />
             </div>
-            <p
-              v-if="!codingChallenges.length"
-              class="w-full text-xl text-center"
-            >
-              {{ t("Headings.EmptyCodingChallenge") }}
+            <p v-if="!codingChallenges.length" class="w-full text-xl text-center">
+              {{ t('Headings.EmptyCodingChallenge') }}
             </p>
           </section>
-          <section
-            class="md:px-6 h-[71vh] overflow-scroll w-full"
-            v-else-if="selectedButton == 3"
-          >
+          <section class="md:px-6 h-[71vh] overflow-scroll w-full" v-else-if="selectedButton == 3">
             <div v-if="currentMatches.length">
               <MatchingSolveInsideCourse :matchings="currentMatches" />
             </div>
-            <p
-              v-if="!currentMatches.length"
-              class="w-full text-xl text-center"
-            >
-              {{ t("Headings.EmptyMatchings") }}
+            <p v-if="!currentMatches.length" class="w-full text-xl text-center">
+              {{ t('Headings.EmptyMatchings') }}
             </p>
           </section>
         </div>
@@ -139,11 +120,7 @@
       </main>
     </section>
 
-    <Transition
-      class="block midXl:hidden"
-      name="fade-in"
-      mode="in-out"
-    >
+    <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
       <section
         v-if="showCurriculum"
         @click.self="showCurriculum = false"
@@ -165,21 +142,21 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import { XCircleIcon } from "@heroicons/vue/24/solid";
-import { QuizInUnseenLecture } from "~/types/courseTypes";
-import { useMatchingsForLectures, useMatchingsInLecture } from "~/composables/matching";
+import { useI18n } from 'vue-i18n';
+import { XCircleIcon } from '@heroicons/vue/24/solid';
+import { QuizInUnseenLecture } from '~/types/courseTypes';
+import { useMatchingsForLectures, useMatchingsInLecture } from '~/composables/matching';
 
 definePageMeta({
-  middleware: ["auth"]
+  middleware: ['auth'],
 });
 
 export default {
   components: {
-    XCircleIcon
+    XCircleIcon,
   },
   head: {
-    title: "Watch Course"
+    title: 'Watch Course',
   },
   setup() {
     const { t } = useI18n();
@@ -198,9 +175,11 @@ export default {
     const allQuizzes = useQuizzesInCourse();
     const quizzesInLecture = useQuizzesInLecture();
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
-    const matches = useMatchingsForLectures()
+    const matches = useMatchingsForLectures();
 
-    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture?.value?.id))
+    const currentMatches = computed(() =>
+      matches.value.filter((match) => match.lectureId === activeLecture?.value?.id),
+    );
 
     const showCurriculum = ref(false);
 
@@ -216,21 +195,21 @@ export default {
 
     const selectedButton = ref(0);
     const buttonOptions = computed(() => [
-      { name: "Buttons.Video", disabled: false },
-      { name: "Buttons.Quiz", disabled: !quizzesInLecture.value.length },
-      { name: "Buttons.Challenge", disabled: !codingChallenges.value.length },
-      { name: "Buttons.Matching", disabled: !currentMatches.value.length }
+      { name: 'Buttons.Video', disabled: false },
+      { name: 'Buttons.Quiz', disabled: !quizzesInLecture.value.length },
+      { name: 'Buttons.Challenge', disabled: !codingChallenges.value.length },
+      { name: 'Buttons.Matching', disabled: !currentMatches.value.length },
     ]);
 
     const activeSection = computed(() => {
-      const sectionID = <string>(route.query?.section ?? "");
+      const sectionID = <string>(route.query?.section ?? '');
       let sections: any[] = course.value?.sections ?? [];
       if (!!!sections || sections.length <= 0) return null;
       let section = sections.find((sec) => sec.id == sectionID);
       return !!section ? section : null;
     });
     const activeLecture = computed(() => {
-      const lectureID = <string>(route.query?.lecture ?? "");
+      const lectureID = <string>(route.query?.lecture ?? '');
       let lectures: any[] = activeSection.value?.lectures ?? [];
       if (!!!lectures || lectures.length <= 0) return null;
 
@@ -242,18 +221,20 @@ export default {
       return route.params.id;
     });
     const skillID = computed(() => {
-      return <string>(route.query?.skillID ?? "");
+      return <string>(route.query?.skillID ?? '');
     });
     const subSkillID = computed(() => {
-      return <string>(route.query?.subSkillID ?? "");
+      return <string>(route.query?.subSkillID ?? '');
     });
 
     function solveCodingChallenge(codingChallenge: any) {
       if (!isPremium.value && hearts.value < 2) {
-        return openSnackbar("info", "Error.NotEnoughHearts");
+        return openSnackbar('info', 'Error.NotEnoughHearts');
       } else if (isPremium.value || hearts.value >= 2) {
-        router.push(`/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`);
-        if (!isPremium.value) return openSnackbar("info", "Body.BuyCodingChallnge");
+        router.push(
+          `/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${'course'}`,
+        );
+        if (!isPremium.value) return openSnackbar('info', 'Body.BuyCodingChallnge');
       }
     }
 
@@ -261,7 +242,7 @@ export default {
       const [success, error] = await getAllCodingChallengesInATask(quizId);
       if (error) {
         setLoading(false);
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
 
@@ -269,7 +250,7 @@ export default {
       const [success, error] = await getSubTasksInQuiz(quizId);
       if (error) {
         setLoading(false);
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
 
@@ -277,23 +258,22 @@ export default {
       const [success, error] = await getMatchingsInTask(quizId);
       if (error) {
         setLoading(false);
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
-
 
     watch(
       () => selectedButton.value,
       (newValue) => {
-        localStorage.setItem("selectedButton", newValue.toString());
-      }
+        localStorage.setItem('selectedButton', newValue.toString());
+      },
     );
 
     onMounted(async () => {
       loading.value = true;
-      const courseID = <string>(route.params?.id ?? "");
+      const courseID = <string>(route.params?.id ?? '');
 
-      let a = localStorage.getItem("selectedButton");
+      let a = localStorage.getItem('selectedButton');
       selectedButton.value = Number(a);
 
       if (!!!courseID) {
@@ -306,9 +286,8 @@ export default {
     });
 
     onBeforeUnmount(() => {
-      localStorage.removeItem("selectedButton");
+      localStorage.removeItem('selectedButton');
     });
-
 
     function watchThisLecture({ sectionID, lectureID }: any) {
       router.replace({
@@ -317,8 +296,8 @@ export default {
           section: sectionID,
           lecture: lectureID,
           skillID: skillID.value,
-          subSkillID: subSkillID.value
-        }
+          subSkillID: subSkillID.value,
+        },
       });
 
       showCurriculum.value = false;
@@ -329,18 +308,13 @@ export default {
         loading.value = true;
         if (!callActive.value) {
           callActive.value = true;
-          await getQuizzes(
-            course.value.id,
-            activeSection.value.id,
-            activeLecture.value.id
-          );
+          await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id);
           await getQuizzesInUnfinishedLectures();
-            
         }
 
         callActive.value = false;
         loading.value = false;
-      }
+      },
     );
 
     const getQuizzesInUnfinishedLectures = async () => {
@@ -350,7 +324,7 @@ export default {
           section.lectures.forEach((lecture) => {
             if (lecture.id == info.lecture_id) {
               testSections.push({
-                section: section.id ?? "",
+                section: section.id ?? '',
                 sectionTitle: section.title,
                 lectureId: lecture.id,
                 lecture: lecture.title,
@@ -360,13 +334,11 @@ export default {
           });
         });
       });
-      unseenLectureQuizzes.value = testSections.filter(
-        (section) => !section.lectureFinished
-      );
+      unseenLectureQuizzes.value = testSections.filter((section) => !section.lectureFinished);
     };
 
     function getSectionNumber(sectionString: string): number {
-      if (sectionString === "section") {
+      if (sectionString === 'section') {
         return 1; // Return 1 for "section"
       }
 
@@ -379,7 +351,6 @@ export default {
         throw new Error(`Invalid section string: ${sectionString}`);
       }
     }
-
 
     return {
       t,
@@ -401,25 +372,25 @@ export default {
       quizzesInLecture,
       unseenLectureQuizzes,
       getSectionNumber,
-      currentMatches
+      currentMatches,
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
-  .slide-right {
-    animation: slideRight 0.25s ease-out forwards;
-  }
+.slide-right {
+  animation: slideRight 0.25s ease-out forwards;
+}
 
-  @keyframes slideRight {
-    0% {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
+@keyframes slideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
   }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 </style>

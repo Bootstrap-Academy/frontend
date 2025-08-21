@@ -2,7 +2,7 @@
   <div>
     <SkeletonSolveMatching v-if="!!!data" />
     <section v-else-if="!!data">
-      <p class="mb-4 mt-8">{{ t("Headings.DragAndDropToMatchMatchings") }}</p>
+      <p class="mb-4 mt-8">{{ t('Headings.DragAndDropToMatchMatchings') }}</p>
 
       <section class="grid grid-cols-2 gap-x-1 sm:gap-x-3">
         <div>
@@ -33,7 +33,7 @@
                 <p
                   class="text-xs sm:text-base px-2 sm:px-4 py-2 rounded-md my-2 border-4 border-tertiary text-white w-full max-h-20 overflow-y-scroll items-center"
                 >
-                  {{ element?.title ?? "" }}
+                  {{ element?.title ?? '' }}
                 </p>
                 <Bars3Icon class="h-7 w-7 text-accent cursor-pointer handler" />
               </article>
@@ -50,7 +50,7 @@
           iconRight
           :icon="ChevronDoubleRightIcon"
         >
-          {{ t("Buttons.Next") }}
+          {{ t('Buttons.Next') }}
         </InputBtn>
 
         <InputBtnWithHeart
@@ -62,7 +62,7 @@
           mt
           :icon="HalfHeart"
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{ t('Buttons.SubmitAnswer') }}
         </InputBtnWithHeart>
 
         <InputBtn
@@ -72,40 +72,25 @@
           @click="onclickSubmitForm()"
           mt
         >
-          {{ t("Buttons.SubmitAnswer") }}
+          {{ t('Buttons.SubmitAnswer') }}
         </InputBtn>
       </div>
-      <InputQuizRating
-        class="my-3"
-        :data="data"
-        :subtask="data"
-        @rated="fnRated($event)"
-      />
+      <InputQuizRating class="my-3" :data="data" :subtask="data" @rated="fnRated($event)" />
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import draggable from "vuedraggable";
-import {
-  FlagIcon,
-  PencilSquareIcon,
-  ArrowRightIcon,
-  Bars3Icon,
-} from "@heroicons/vue/24/outline";
-import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
-import HalfHeart from "../svg/HalfHeart.vue";
+import { useI18n } from 'vue-i18n';
+import draggable from 'vuedraggable';
+import { FlagIcon, PencilSquareIcon, ArrowRightIcon, Bars3Icon } from '@heroicons/vue/24/outline';
+import { ChevronDoubleRightIcon } from '@heroicons/vue/24/solid';
+import HalfHeart from '../svg/HalfHeart.vue';
 
 const props = defineProps({
   data: { type: Object as PropType<any>, default: null },
 });
-const emits = defineEmits([
-  "solved",
-  "updateQuestion",
-  "rated",
-  "nextQuestion",
-]);
+const emits = defineEmits(['solved', 'updateQuestion', 'rated', 'nextQuestion']);
 
 const { t } = useI18n();
 const formSubmitting = ref(false);
@@ -126,18 +111,13 @@ function setSolution() {
 
 async function onclickSubmitForm() {
   setSolution();
-  console.log("solutiuon", solution.value);
+  console.log('solutiuon', solution.value);
 
-  if (props.data.solved == true || props.data?.creator == user.value?.id)
-    return;
+  if (props.data.solved == true || props.data?.creator == user.value?.id) return;
   formSubmitting.value = true;
-  const [success, error] = await solveMatching(
-    props.data.task_id,
-    props.data.id,
-    {
-      answer: solution.value,
-    }
-  );
+  const [success, error] = await solveMatching(props.data.task_id, props.data.id, {
+    answer: solution.value,
+  });
   formSubmitting.value = false;
   await getHearts();
   if (success == true || success == false) successHandler(success);
@@ -146,25 +126,25 @@ async function onclickSubmitForm() {
 
 function successHandler(res: any) {
   if (!!res) {
-    emits("solved", props.data.id);
-    openSnackbar("success", "Success.SolvedMatching");
-    console.log("res", res);
+    emits('solved', props.data.id);
+    openSnackbar('success', 'Success.SolvedMatching');
+    console.log('res', res);
   } else {
-    openSnackbar("error", "Error.WrongMatchingAttempt");
+    openSnackbar('error', 'Error.WrongMatchingAttempt');
   }
 }
 
 function errorHandler(error: any) {
-  console.log("error", error);
-  openSnackbar("error", error);
+  console.log('error', error);
+  openSnackbar('error', error);
 }
 
 function nextQuestion() {
-  emits("nextQuestion", props.data.id);
+  emits('nextQuestion', props.data.id);
 }
 
 function fnRated(id: any) {
-  emits("rated", id);
+  emits('rated', id);
 }
 
 function setData() {
@@ -184,7 +164,7 @@ watch(
   () => {
     if (!!props.data) setData();
   },
-  { deep: true }
+  { deep: true },
 );
 
 onMounted(() => {

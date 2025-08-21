@@ -1,23 +1,19 @@
 <template>
-	<article class="bg-secondary style-card overflow-hidden">
-		<SkeletonMedia class="w-full h-32" />
+  <article class="bg-secondary style-card overflow-hidden">
+    <SkeletonMedia class="w-full h-32" />
 
-		<div class="card-sm">
-			<SkeletonText />
-			<SkeletonText body sm class="mt-box" />
-			<SkeletonText body sm class="mt-2" />
-		</div>
-		<hr />
-		<div class="flex justify-between card-sm">
-			<IconText :highlightIcon="false" sm :icon="price.icon">
-				morphcoins
-			</IconText>
+    <div class="card-sm">
+      <SkeletonText />
+      <SkeletonText body sm class="mt-box" />
+      <SkeletonText body sm class="mt-2" />
+    </div>
+    <hr />
+    <div class="flex justify-between card-sm">
+      <IconText :highlightIcon="false" sm :icon="price.icon">morphcoins</IconText>
 
-			<IconText :highlightIcon="false" sm :icon="lectures.icon">
-				lectures
-			</IconText>
-		</div>
-	</article>
+      <IconText :highlightIcon="false" sm :icon="lectures.icon">lectures</IconText>
+    </div>
+  </article>
 </template>
 
 <script lang="ts">

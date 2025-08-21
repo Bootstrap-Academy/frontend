@@ -8,35 +8,31 @@
       class="text-center h-full flex items-center justify-center"
       v-else-if="!codingChallenges.length"
     >
-      {{ t("Headings.NoCodingChallengeCreated") }}
+      {{ t('Headings.NoCodingChallengeCreated') }}
     </p>
 
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-4"
-      v-else-if="codingChallenges.length"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" v-else-if="codingChallenges.length">
       <CodingChallengeCard
         @click="solveCodingChallenge(codingChallenge)"
         v-for="(codingChallenge, i) of codingChallenges"
         :codingChallenge="codingChallenge"
         :key="i"
         class="border border-light rounded-md"
-      >
-      </CodingChallengeCard>
+      ></CodingChallengeCard>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ArrowRightIcon, CheckIcon } from "@heroicons/vue/24/outline";
-import { useAllCodingChallengesInATask } from "~~/composables/codingChallenges";
-import { useI18n } from "vue-i18n";
+import { ArrowRightIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import { useAllCodingChallengesInATask } from '~~/composables/codingChallenges';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
-    id: { type: String, id: "" },
+    id: { type: String, id: '' },
     showInnerBorder: { type: Boolean, id: false },
-    taskId: { type: String, default: "" },
+    taskId: { type: String, default: '' },
   },
 
   setup(props) {
@@ -54,7 +50,7 @@ export default defineComponent({
     });
     const baseQuery: any = computed(() => {
       return {
-        category: route.query?.category ?? "",
+        category: route.query?.category ?? '',
       };
     });
 
@@ -66,10 +62,10 @@ export default defineComponent({
 
     function solveCodingChallenge(codingChallenge: any) {
       if (!isPremium.value && hearts.value < 2) {
-        return openSnackbar("info", "Error.NotEnoughHearts");
+        return openSnackbar('info', 'Error.NotEnoughHearts');
       } else if (isPremium.value || hearts.value >= 2) {
         navigateTo(
-          `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
+          `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`,
         );
         // if (!isPremium.value)
         //   return openSnackbar("info", "Body.BuyCodingChallnge");
@@ -81,7 +77,7 @@ export default defineComponent({
       async () => {
         if (!!props?.id) await getcodingChallenges();
       },
-      { immediate: true }
+      { immediate: true },
     );
     onMounted(() => {
       if (!!props?.id) {

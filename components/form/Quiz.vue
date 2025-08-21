@@ -26,8 +26,9 @@
         :class="canEdit ? '' : 'pointer-events-none opacity-60'"
         @click="onclickAddOption"
         class="w-fit self-end"
-        >Add Option</Btn
       >
+        Add Option
+      </Btn>
 
       <article
         :class="canEdit ? '' : 'pointer-events-none opacity-60'"
@@ -45,7 +46,7 @@
         />
         <div>
           <label class="text-body-2 text-body font-body block mb-2">
-            {{ t("Inputs.Correct") }}
+            {{ t('Inputs.Correct') }}
           </label>
           <InputSwitch
             :model-value="option.correct"
@@ -53,11 +54,7 @@
           />
         </div>
 
-        <Icon
-          :icon="XMarkIcon"
-          class="cursor-pointer"
-          @click="onclickRemoveOption(i)"
-        />
+        <Icon :icon="XMarkIcon" class="cursor-pointer" @click="onclickRemoveOption(i)" />
       </article>
     </form>
     <InputBtn
@@ -67,23 +64,23 @@
       mt
       v-if="!!user?.admin || !!!data"
     >
-      <span v-if="!!!data">{{ t("Buttons.CreateQuiz") }} </span>
-      <span v-else-if="user.admin">{{ t("Buttons.UpdateQuiz") }} </span>
+      <span v-if="!!!data">{{ t('Buttons.CreateQuiz') }}</span>
+      <span v-else-if="user.admin">{{ t('Buttons.UpdateQuiz') }}</span>
     </InputBtn>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
-import type { IForm } from "~/types/form";
-import { XMarkIcon } from "@heroicons/vue/24/solid";
+import { defineComponent, ref } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { IForm } from '~/types/form';
+import { XMarkIcon } from '@heroicons/vue/24/solid';
 import {
   updateSubTaskInQuizForUser,
   updateSubTaskInQuizForAdmin,
   getSubTaskAndSolutionInQuiz,
-} from "~~/composables/quizzes";
+} from '~~/composables/quizzes';
 
 export default defineComponent({
   components: { XMarkIcon },
@@ -114,8 +111,8 @@ export default defineComponent({
     const form = reactive<IForm>({
       question: {
         valid: false,
-        value: "",
-        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Question"],
+        value: '',
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Question'],
       },
       single_choice: { value: false, valid: true },
 
@@ -124,12 +121,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -144,8 +136,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
 
         let mappedOptions = options.value.map((option: any) => {
@@ -162,26 +153,26 @@ export default defineComponent({
     // ============================================================= options
     const options: any = ref([
       {
-        answer: "",
-        placeholder: "Headings.HTML",
+        answer: '',
+        placeholder: 'Headings.HTML',
         valid: false,
         correct: false,
       },
       {
-        answer: "",
-        placeholder: "Headings.Python",
+        answer: '',
+        placeholder: 'Headings.Python',
         valid: false,
         correct: true,
       },
       {
-        answer: "",
-        placeholder: "Headings.PowerPoint",
+        answer: '',
+        placeholder: 'Headings.PowerPoint',
         valid: false,
         correct: false,
       },
       {
-        answer: "",
-        placeholder: "Headings.Excel",
+        answer: '',
+        placeholder: 'Headings.Excel',
         valid: false,
         correct: false,
       },
@@ -195,17 +186,14 @@ export default defineComponent({
       }
 
       if (!isAllowed) {
-        openSnackbar(
-          "error",
-          "Please fill current option first before adding new option."
-        );
+        openSnackbar('error', 'Please fill current option first before adding new option.');
         return;
       }
 
       options.value.push({
-        answer: "",
+        answer: '',
         valid: false,
-        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Option"],
+        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Option'],
         correct: false,
       });
     }
@@ -215,7 +203,7 @@ export default defineComponent({
     }
 
     function setOptionCorrect(status: boolean, index: number) {
-      if (selectedQuestionType.value == "Multi Choice" || status == false) {
+      if (selectedQuestionType.value == 'Multi Choice' || status == false) {
         options.value.splice(index, 1, {
           ...options.value[index],
           correct: status,
@@ -238,19 +226,19 @@ export default defineComponent({
       });
     }
 
-    const selectedQuestionType = ref("Multi Choice");
+    const selectedQuestionType = ref('Multi Choice');
 
     function setFormData(data: any) {
-      console.log("set form data");
+      console.log('set form data');
       if (!!!data) return;
-      form.question.value = data.question ?? "";
+      form.question.value = data.question ?? '';
       form.question.valid = !!form.question.value;
 
       if (data?.single_choice) {
-        selectedQuestionType.value = "Single Choice";
+        selectedQuestionType.value = 'Single Choice';
         form.single_choice.value = true;
       } else {
-        selectedQuestionType.value = "Multi Choice";
+        selectedQuestionType.value = 'Multi Choice';
         form.single_choice.value = false;
       }
 
@@ -261,7 +249,7 @@ export default defineComponent({
           return {
             answer: option.answer,
             valid: !!option.answer,
-            rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Option"],
+            rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Option'],
             correct: option.correct,
           };
         });
@@ -313,7 +301,7 @@ export default defineComponent({
       for (let i = 0; i < arr.length; i++) {
         if (arr[i].correct === true) {
           ++trueAre;
-          console.log("true");
+          console.log('true');
         }
       }
 
@@ -327,22 +315,27 @@ export default defineComponent({
     async function onclickSubmitForm() {
       if (form.validate()) {
         if (options.value.length <= 1) {
-          console.log("options", options.value);
-          openSnackbar("error", "Error.MinimumTwoOptionsForQuiz");
+          console.log('options', options.value);
+          openSnackbar('error', 'Error.MinimumTwoOptionsForQuiz');
           return;
         }
         if (!hasTrueOption(options.value)) {
-          return openSnackbar("error", "Error.OneCorrectOptionIsMust");
+          return openSnackbar('error', 'Error.OneCorrectOptionIsMust');
         }
-        if (hasDuplicates(options.value))
-          return openSnackbar("error", "Error.OptionsCannotBeSame");
+        if (hasDuplicates(options.value)) return openSnackbar('error', 'Error.OptionsCannotBeSame');
         for (let i = 0; i < options.value.length; i++) {
           if (options.value[i].answer.length > 256) {
-            return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.AnswerOption"), max: 256 }));
+            return openSnackbar(
+              'error',
+              t('Error.CannotHaveMoreCharacters', { input: t('Inputs.AnswerOption'), max: 256 }),
+            );
           }
         }
         if (form.question.value.length > 4096) {
-          return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.Question"), max: 4096 }));
+          return openSnackbar(
+            'error',
+            t('Error.CannotHaveMoreCharacters', { input: t('Inputs.Question'), max: 4096 }),
+          );
         }
         if (checkIsSingleChoice(options.value)) {
           form.single_choice.value = true;
@@ -357,7 +350,7 @@ export default defineComponent({
           else fnEditSubTaskForAdmin();
         }
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
@@ -379,49 +372,41 @@ export default defineComponent({
       form.submitting = true;
       if (!user.value.admin) {
       }
-      const [success, error] = await updateSubTaskInQuizForUser(
-        props.taskId,
-        props.data?.id,
-        {
-          // answers: form.body().answers,
-          // question: form.body().question,
-          // single_choice: form.body().single_choice,
-        }
-      );
+      const [success, error] = await updateSubTaskInQuizForUser(props.taskId, props.data?.id, {
+        // answers: form.body().answers,
+        // question: form.body().question,
+        // single_choice: form.body().single_choice,
+      });
       form.submitting = false;
       !!success
-        ? openSnackbar("success", "Success.UpdatedQuiz")
-        : openSnackbar("error", "error.UpdatedQuiz");
+        ? openSnackbar('success', 'Success.UpdatedQuiz')
+        : openSnackbar('error', 'error.UpdatedQuiz');
     }
 
     async function fnEditSubTaskForAdmin() {
       form.submitting = true;
       if (!user.value.admin) {
       }
-      const [success, error] = await updateSubTaskInQuizForAdmin(
-        props.taskId,
-        props.data?.id,
-        {
-          answers: form.body().answers,
-          question: form.body().question,
-          single_choice: form.body().single_choice,
-        }
-      );
+      const [success, error] = await updateSubTaskInQuizForAdmin(props.taskId, props.data?.id, {
+        answers: form.body().answers,
+        question: form.body().question,
+        single_choice: form.body().single_choice,
+      });
       form.submitting = false;
       !!success
-        ? openSnackbar("success", "Success.UpdatedQuiz")
-        : openSnackbar("error", "error.UpdatedQuiz");
+        ? openSnackbar('success', 'Success.UpdatedQuiz')
+        : openSnackbar('error', 'error.UpdatedQuiz');
     }
 
     function successHandler(res: any) {
-      openSnackbar("success", "Success.CreatedQuiz");
+      openSnackbar('success', 'Success.CreatedQuiz');
       dialogCreateSubtask.value = false;
       dialogSlot.value = false;
     }
 
     function errorHandler(res: any) {
-      console.log("error isssssssss", res);
-      openSnackbar("error", res ?? "");
+      console.log('error isssssssss', res);
+      openSnackbar('error', res ?? '');
     }
 
     watch(
@@ -429,15 +414,12 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (!!!props.data) return;
         setLoading(true);
-        const [success, error] = await getSubTaskAndSolutionInQuiz(
-          props.taskId,
-          newValue?.id
-        );
+        const [success, error] = await getSubTaskAndSolutionInQuiz(props.taskId, newValue?.id);
         setLoading(false);
         if (success) setFormData(success);
-        else openSnackbar("error", error);
+        else openSnackbar('error', error);
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     return {

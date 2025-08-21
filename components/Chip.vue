@@ -1,17 +1,12 @@
 <template>
   <div :class="classes" @click.self="onclick">
-    <component
-      v-if="icon"
-      :is="icon"
-      class="icon cursor-pointer"
-      @click="onclickIcon"
-    ></component>
+    <component v-if="icon" :is="icon" class="icon cursor-pointer" @click="onclickIcon"></component>
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -21,33 +16,31 @@ export default defineComponent({
     lg: { type: Boolean, default: false },
     icon: { type: Object, default: null },
     iconRight: { type: Boolean, default: false },
-    color: { type: String, default: "" },
+    color: { type: String, default: '' },
   },
-  emits: ["click", "iconClick"],
+  emits: ['click', 'iconClick'],
   setup(props, { emit }) {
     function onclick() {
-      emit("click", true);
+      emit('click', true);
     }
 
     const chipColor = computed(() => {
       let colors = [
-        "chip-color-1",
-        "chip-color-2",
-        "chip-color-3",
-        "chip-color-4",
-        "chip-color-5",
-        "chip-color-6",
-        "chip-color-7",
-        "chip-color-8",
-        "chip-color-9",
-        "chip-color-10",
-        "chip-color-11",
-        "chip-color-12",
+        'chip-color-1',
+        'chip-color-2',
+        'chip-color-3',
+        'chip-color-4',
+        'chip-color-5',
+        'chip-color-6',
+        'chip-color-7',
+        'chip-color-8',
+        'chip-color-9',
+        'chip-color-10',
+        'chip-color-11',
+        'chip-color-12',
       ];
 
-      return !!props.color
-        ? props.color
-        : colors[getRandomNumber(0, colors.length - 1)];
+      return !!props.color ? props.color : colors[getRandomNumber(0, colors.length - 1)];
     });
 
     const classes = computed(() => {
@@ -57,14 +50,14 @@ export default defineComponent({
           md: props.md,
           sm: props.sm && !props.lg && !props.md && !props.xs,
           xs: props.xs,
-          "flex-row-reverse": props.iconRight,
+          'flex-row-reverse': props.iconRight,
         },
         chipColor.value,
       ];
     });
 
     function onclickIcon() {
-      emit("iconClick", true);
+      emit('iconClick', true);
     }
     return { classes, onclick, onclickIcon };
   },

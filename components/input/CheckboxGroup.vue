@@ -1,15 +1,15 @@
 <template>
-	<article class="flex" :class="[gap, horizontal ? 'flex-wrap' : 'flex-col']">
-		<InputCheckbox
-			v-for="({ label, value }, i) of mappedOptions"
-			:key="i"
-			:name="name"
-			:label="label"
-			:value="value"
-			v-model="mappedOptions[i].selected"
-			:sm="sm"
-		/>
-	</article>
+  <article class="flex" :class="[gap, horizontal ? 'flex-wrap' : 'flex-col']">
+    <InputCheckbox
+      v-for="({ label, value }, i) of mappedOptions"
+      :key="i"
+      :name="name"
+      :label="label"
+      :value="value"
+      v-model="mappedOptions[i].selected"
+      :sm="sm"
+    />
+  </article>
 </template>
 
 <script lang="ts">
@@ -37,7 +37,7 @@ export default defineComponent({
       (newValue, oldValue) => {
         setMappedOptions(newValue);
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     watch(
@@ -47,14 +47,12 @@ export default defineComponent({
         arr = arr.map((option) => option.value);
         emit('update:modelValue', arr);
       },
-      { deep: true }
+      { deep: true },
     );
 
     function setMappedOptions(newValue: any[], falseOnly = false) {
       let arr = newValue.map((option) => {
-        let currentOption = props.modelValue.find(
-          (value) => option.value == value
-        );
+        let currentOption = props.modelValue.find((value) => option.value == value);
         return { ...option, selected: falseOnly ? false : !!currentOption };
       });
       Object.assign(mappedOptions, [...arr]);

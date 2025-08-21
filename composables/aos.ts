@@ -4,7 +4,7 @@ export function setAOSViaParent(
   parentRef: any,
   baseClass: string,
   showClass: string,
-  skips: number[] = []
+  skips: number[] = [],
 ) {
   const callback = (entries: any, observer: any) => {
     entries.forEach((entry: any) => {
@@ -36,7 +36,7 @@ export function setStaggeringAOSViaParent(
   baseClass: string,
   showClass: string,
   skips: number[] = [],
-  delayBy: number = 0.25
+  delayBy: number = 0.25,
 ) {
   const callback = (entries: any, observer: any) => {
     entries.forEach((entry: any) => {

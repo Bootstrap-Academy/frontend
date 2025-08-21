@@ -1,40 +1,36 @@
 <template>
-	<main
-		class="grid-auto place-content-start gap-card container h-screen-inner min pb-container pt-container"
-	>
-		<FormSearch
-			class="justify-self-end col-span-full"
-			placeholder="Body.SearchQuizzes"
-			v-model="filters.search_term"
-		/>
+  <main
+    class="grid-auto place-content-start gap-card container h-screen-inner min pb-container pt-container"
+  >
+    <FormSearch
+      class="justify-self-end col-span-full"
+      placeholder="Body.SearchQuizzes"
+      v-model="filters.search_term"
+    />
 
-		<Sort
-			class="mb-card-sm col-span-full"
-			:quantity="quizzes.length"
-			:options="options"
-			@selected="onSelectedOption($event)"
-		/>
+    <Sort
+      class="mb-card-sm col-span-full"
+      :quantity="quizzes.length"
+      :options="options"
+      @selected="onSelectedOption($event)"
+    />
 
-		<template v-if="loading">
-			<QuizCardSkeleton v-for="n in 3" :key="n" class="h-fit" />
-		</template>
+    <template v-if="loading">
+      <QuizCardSkeleton v-for="n in 3" :key="n" class="h-fit" />
+    </template>
 
-		<template v-else-if="quizzes && quizzes.length > 0">
-			<NuxtLink
-				v-for="(quiz, i) of quizzes"
-				:key="i"
-				:to="`/quizzes/edit-${quiz.id}`"
-			>
-				<QuizCard :data="quiz" />
-			</NuxtLink>
-		</template>
+    <template v-else-if="quizzes && quizzes.length > 0">
+      <NuxtLink v-for="(quiz, i) of quizzes" :key="i" :to="`/quizzes/edit-${quiz.id}`">
+        <QuizCard :data="quiz" />
+      </NuxtLink>
+    </template>
 
-		<template v-else>
-			<QuizCardSkeleton class="child opacity-60" no-animate />
-			<QuizCardSkeleton class="child opacity-40" no-animate />
-			<QuizCardSkeleton class="child opacity-20" no-animate />
-		</template>
-	</main>
+    <template v-else>
+      <QuizCardSkeleton class="child opacity-60" no-animate />
+      <QuizCardSkeleton class="child opacity-40" no-animate />
+      <QuizCardSkeleton class="child opacity-20" no-animate />
+    </template>
+  </main>
 </template>
 
 <script lang="ts">
@@ -70,7 +66,7 @@ export default {
         await getFilteredQuizzes(newValue);
         loading.value = false;
       },
-      { deep: true }
+      { deep: true },
     );
 
     const options = reactive([
@@ -91,12 +87,12 @@ export default {
 
 <style scoped>
 .grid-auto {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 @media (min-width: 425px) {
-	.grid-auto {
-		grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-	}
+  .grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
 }
 </style>

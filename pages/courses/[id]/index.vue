@@ -20,32 +20,29 @@
 -->
 
 <template>
-	<CourseSkeleton v-if="loading" />
+  <CourseSkeleton v-if="loading" />
 
-	<main
-		v-else-if="course"
-		class="relative container-fluid h-screen-main min mt-main mb-main"
-	>
-		<Head>
-			<Title>Course Details - {{ course?.title ?? "" }}</Title>
-		</Head>
+  <main v-else-if="course" class="relative container-fluid h-screen-main min mt-main mb-main">
+    <Head>
+      <Title>Course Details - {{ course?.title ?? '' }}</Title>
+    </Head>
 
-		<CourseHeader :data="course" />
+    <CourseHeader :data="course" />
 
-		<CourseDetails :data="course" />
+    <CourseDetails :data="course" />
 
-		<CourseOverview
-			:skillID="skillID"
-			:subSkillID="subSkillID"
-			:data="course"
-			:isCourseAccessible="isCourseAccessible"
-			class="md:sticky md:top-container md:self-start"
-		/>
+    <CourseOverview
+      :skillID="skillID"
+      :subSkillID="subSkillID"
+      :data="course"
+      :isCourseAccessible="isCourseAccessible"
+      class="md:sticky md:top-container md:self-start"
+    />
 
-		<section>
-			<h2 class="mb-box text-heading-3">
-				{{ t("Headings.CourseCurriculum") }}
-			</h2>
+    <section>
+      <h2 class="mb-box text-heading-3">
+        {{ t('Headings.CourseCurriculum') }}
+      </h2>
 
       <div class="card style-card bg-secondary">
         <CourseCurriculum
@@ -64,22 +61,18 @@
         'hide-scrollbar': !!!allQuizzes || allQuizzes.length <= 1,
       }"
     >
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedbutton"
-        class="my-10"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" class="my-10" />
       <section>
         <article v-show="selectedbutton == 0">
           <h2 class="mb-box text-heading-3">
-            {{ t("Headings.QuizzesInCourse") }}
+            {{ t('Headings.QuizzesInCourse') }}
           </h2>
           <QuizList :quizzes="allQuizzes" />
         </article>
 
         <article v-show="selectedbutton == 1">
           <h2 class="mb-box text-heading-3">
-            {{ t("Headings.Matchings") }}
+            {{ t('Headings.Matchings') }}
           </h2>
           <MatchingList :quizId="quiz?.id" />
         </article>
@@ -87,19 +80,19 @@
     </div>
   </main>
 
-	<CourseEmptyState v-else />
+  <CourseEmptyState v-else />
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import type { Quiz } from "~/types/courseTypes";
+import { useI18n } from 'vue-i18n';
+import type { Quiz } from '~/types/courseTypes';
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Course Details",
+    title: 'Course Details',
   },
   setup() {
     const { t } = useI18n();
@@ -114,22 +107,22 @@ export default {
     const router = useRouter();
 
     let buttonOptions = computed(() => [
-      { name: "Buttons.Quiz", disabled: allQuizzes.value.length === 0 },
-      { name: "Buttons.Matchings", disabled: matchings.value.length === 0 },
+      { name: 'Buttons.Quiz', disabled: allQuizzes.value.length === 0 },
+      { name: 'Buttons.Matchings', disabled: matchings.value.length === 0 },
     ]);
 
-    const selectedbutton = ref(buttonOptions.value.findIndex(option => !option.disabled));
+    const selectedbutton = ref(buttonOptions.value.findIndex((option) => !option.disabled));
 
     const id = computed(() => {
-      return <string>(route.params?.id ?? "");
+      return <string>(route.params?.id ?? '');
     });
 
     const skillID = computed(() => {
-      return <string>(route.query?.skillID ?? "");
+      return <string>(route.query?.skillID ?? '');
     });
 
     const subSkillID = computed(() => {
-      return <string>(route.query?.subSkillID ?? "");
+      return <string>(route.query?.subSkillID ?? '');
     });
 
     onMounted(async () => {
@@ -140,14 +133,14 @@ export default {
       const [success, error] = await getCourseByID(id.value);
 
       if (error) {
-        console.log("error in");
-        openSnackbar("error", error.detail);
+        console.log('error in');
+        openSnackbar('error', error.detail);
         await getCourseSummaryByID(id.value);
       } else {
         isCourseAccessible.value = true;
       }
       // await getQuizInfos();
-      await getQuizzes(course.value.id)
+      await getQuizzes(course.value.id);
 
       loading.value = false;
     });
@@ -182,38 +175,38 @@ export default {
 </script>
 
 <style scoped>
-	main {
-		@apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
+main {
+  @apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
 
-		grid-template-areas:
-			"header"
-			"overview"
-			"details"
-			"curriculum";
-	}
+  grid-template-areas:
+    'header'
+    'overview'
+    'details'
+    'curriculum';
+}
 
-	main > *:nth-child(1) {
-		grid-area: header;
-	}
+main > *:nth-child(1) {
+  grid-area: header;
+}
 
-	main > *:nth-child(2) {
-		grid-area: details;
-	}
+main > *:nth-child(2) {
+  grid-area: details;
+}
 
-	main > *:nth-child(3) {
-		grid-area: overview;
-	}
+main > *:nth-child(3) {
+  grid-area: overview;
+}
 
-	main > *:nth-child(4) {
-		grid-area: curriculum;
-	}
+main > *:nth-child(4) {
+  grid-area: curriculum;
+}
 
-	@media screen and (min-width: 768px) {
-		main {
-			grid-template-areas:
-				"header header"
-				"details overview"
-				"curriculum overview";
-		}
-	}
+@media screen and (min-width: 768px) {
+  main {
+    grid-template-areas:
+      'header header'
+      'details overview'
+      'curriculum overview';
+  }
+}
 </style>

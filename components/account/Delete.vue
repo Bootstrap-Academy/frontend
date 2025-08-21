@@ -11,8 +11,9 @@
     <div class="flex items-center space-x-4 mb-8 mt-2">
       <NoSymbolIcon class="h-8 w-8 text-accent max-w-xl" />
       <p class="text-center">
-        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[0] }} <br />
-        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[1] }}
+        {{ t('Body.LooseProgressMorphCoinsAndCourses').split('%%%')[0] }}
+        <br />
+        {{ t('Body.LooseProgressMorphCoinsAndCourses').split('%%%')[1] }}
       </p>
     </div>
 
@@ -65,7 +66,7 @@ export default defineComponent({
         {
           label: 'Buttons.Cancel',
           onclick: () => {},
-        }
+        },
       );
     }
 

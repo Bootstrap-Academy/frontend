@@ -3,13 +3,14 @@ module.exports = {
     // 'eslint:recommended',
     // 'plugin:vue/vue3-recommended',
     // 'plugin:vue/recommended' // Use this if you are using Vue.js 2.x.
+    'prettier',
   ],
   rules: {
-    'indent': ['error', 2]
+    //'indent': ['error', 2]
   },
-  parser: "vue-eslint-parser",
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    "parser": "@typescript-eslint/parser",
-    "sourceType": "module"
-  }
-}
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+  },
+};

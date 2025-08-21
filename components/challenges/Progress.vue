@@ -3,9 +3,18 @@
     <h3 v-if="heading" class="text-body-1">{{ heading }}</h3>
     <p class="text-right">{{ totalValue }} / {{ max }}</p>
     <div class="progress-container w-full col-span-2">
-      <div v-for="(subdivision, index) in subdivisions" :key="index" :class="[subdivision.color]"
-        :style="{ width: getSubdivisionWidth(subdivision) }" class="progress-segment" />
-      <div v-if="remainingPercentage > 0" class="progress-segment bg-dark" :style="{ width: remainingPercentage }" />
+      <div
+        v-for="(subdivision, index) in subdivisions"
+        :key="index"
+        :class="[subdivision.color]"
+        :style="{ width: getSubdivisionWidth(subdivision) }"
+        class="progress-segment"
+      />
+      <div
+        v-if="remainingPercentage > 0"
+        class="progress-segment bg-dark"
+        :style="{ width: remainingPercentage }"
+      />
     </div>
   </article>
 </template>

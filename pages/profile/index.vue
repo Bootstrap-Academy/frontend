@@ -38,12 +38,12 @@
 
 <script lang="ts">
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "My Profile",
+    title: 'My Profile',
   },
   setup() {
     const user = useUser();

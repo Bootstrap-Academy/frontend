@@ -25,21 +25,22 @@
           },
         ]"
       >
-        {{ item?.user?.display_name ?? "" }}
+        {{ item?.user?.display_name ?? '' }}
       </p>
     </article>
 
     <article class="flex gap-4 sm:gap-7 items-center">
       <p class="text-sm">
-        <span class="font-medium text-base">{{ t("Headings.Score") }}</span
-        >{{ item.score }}
+        <span class="font-medium text-base">{{ t('Headings.Score') }}</span>
+        {{ item.score }}
       </p>
       <p>
-        <span>{{ t("Headings.Rank") }}:</span>
-        {{ item?.rank }}<span v-if="item?.rank == 1">st </span>
-        <span v-if="item?.rank == 2">nd </span>
-        <span v-if="item?.rank == 3">rd </span>
-        <span v-else>th </span>
+        <span>{{ t('Headings.Rank') }}:</span>
+        {{ item?.rank }}
+        <span v-if="item?.rank == 1">st</span>
+        <span v-if="item?.rank == 2">nd</span>
+        <span v-if="item?.rank == 3">rd</span>
+        <span v-else>th</span>
       </p>
       <!-- <p class="text-sm">
         <span class="font-medium text-base"> {{ t("Headings.Level") }}: </span
@@ -50,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 export default {
   props: { item: { type: Object, default: {} } },
   setup() {

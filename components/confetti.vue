@@ -7,10 +7,12 @@
         <canvas class="confetti" style="width: 100vw; height: 100vh" id="canvas"></canvas>
         <!--End DEMO HTML -->
         <transition name="dontShowAnimationBox">
-          <section v-if="boxInfo"
-            class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3">
+          <section
+            v-if="boxInfo"
+            class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3"
+          >
             <h6 class="my-4 text-accent font-bold">
-              {{ t("Headings.DontShowCongratsAnimationAgain") }}
+              {{ t('Headings.DontShowCongratsAnimationAgain') }}
             </h6>
 
             <input-switch v-model="hideAnimation" class="mt-2" />
@@ -18,22 +20,27 @@
         </transition>
 
         <transition name="infoBox">
-          <section v-if="boxInfo"
-            class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3">
+          <section
+            v-if="boxInfo"
+            class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3"
+          >
             <h6 class="my-2 text-accent text-lg font-bold">
-              {{ t("Headings.CongratsAnimateText") }}
+              {{ t('Headings.CongratsAnimateText') }}
             </h6>
             <div class="flex justify-end w-full">
               <NuxtLink @click="navigateToProfile()">
-                <Btn sm> Go To profile </Btn>
+                <Btn sm>Go To profile</Btn>
               </NuxtLink>
             </div>
           </section>
         </transition>
 
         <transition name="closeAnimationBox">
-          <section v-if="boxInfo" class="absolute bg-white cursor-pointer top-[5%] rounded-lg right-[5%] p-4"
-            @click="fnHideAnimation()">
+          <section
+            v-if="boxInfo"
+            class="absolute bg-white cursor-pointer top-[5%] rounded-lg right-[5%] p-4"
+            @click="fnHideAnimation()"
+          >
             <XMarkIcon class="h-6 w-6" />
           </section>
         </transition>
@@ -43,11 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { XMarkIcon } from "@heroicons/vue/24/outline";
-import { useShowConfetti } from "~~/composables/user";
+import { useI18n } from 'vue-i18n';
+import { XMarkIcon } from '@heroicons/vue/24/outline';
+import { useShowConfetti } from '~~/composables/user';
 let showConfetti = useShowConfetti();
-const hideAnimation: any = useCookie("hideAnimationNextTime");
+const hideAnimation: any = useCookie('hideAnimationNextTime');
 const boxInfo = ref(false);
 const { t } = useI18n();
 
@@ -57,7 +64,7 @@ function fnHideAnimation() {
 }
 
 function navigateToProfile() {
-  navigateTo("/profile");
+  navigateTo('/profile');
   fnHideAnimation();
 }
 
@@ -73,7 +80,7 @@ watch(
       }, 10000);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -82,15 +89,15 @@ watch(
     if (hideAnimation.value) {
       setTimeout(() => {
         fnHideAnimation();
-        openSnackbar("success", "Headings.SuccessHideConfettiForever");
+        openSnackbar('success', 'Headings.SuccessHideConfettiForever');
       }, 1000);
     }
-  }
+  },
 );
 
 onMounted(() => {
-  var canvas: any = document.getElementById("canvas");
-  let ctx = canvas?.getContext("2d");
+  var canvas: any = document.getElementById('canvas');
+  let ctx = canvas?.getContext('2d');
   // canvas.width = window.innerWidth;
   // canvas.height = window.innerHeight;
   let cx = ctx?.canvas.width / 2;
@@ -102,14 +109,14 @@ onMounted(() => {
   const terminalVelocity = 5;
   const drag = 0.075;
   const colors = [
-    { front: "red", back: "darkred" },
-    { front: "green", back: "darkgreen" },
-    { front: "blue", back: "darkblue" },
-    { front: "yellow", back: "darkyellow" },
-    { front: "orange", back: "darkorange" },
-    { front: "pink", back: "darkpink" },
-    { front: "purple", back: "darkpurple" },
-    { front: "turquoise", back: "darkturquoise" },
+    { front: 'red', back: 'darkred' },
+    { front: 'green', back: 'darkgreen' },
+    { front: 'blue', back: 'darkblue' },
+    { front: 'yellow', back: 'darkyellow' },
+    { front: 'orange', back: 'darkorange' },
+    { front: 'pink', back: 'darkpink' },
+    { front: 'purple', back: 'darkpurple' },
+    { front: 'turquoise', back: 'darkturquoise' },
   ];
 
   //-----------Functions--------------
@@ -164,12 +171,8 @@ onMounted(() => {
 
       // Apply forces to velocity
       confetto.velocity.x -= confetto.velocity.x * drag;
-      confetto.velocity.y = Math.min(
-        confetto.velocity.y + gravity,
-        terminalVelocity
-      );
-      confetto.velocity.x +=
-        Math.random() > 0.5 ? Math.random() : -Math.random();
+      confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+      confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
 
       // Set position
       confetto.position.x += confetto.velocity.x;
@@ -184,8 +187,7 @@ onMounted(() => {
 
       // Spin confetto by scaling y
       confetto.scale.y = Math.cos(confetto.position.y * 0.1);
-      ctx.fillStyle =
-        confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+      ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
 
       // Draw confetto
       ctx?.fillRect(-width / 2, -height / 2, width, height);
@@ -205,12 +207,12 @@ onMounted(() => {
   render();
 
   //----------Resize----------
-  window.addEventListener("resize", function () {
+  window.addEventListener('resize', function () {
     resizeCanvas();
   });
 
   //------------Click------------
-  window.addEventListener("click", function () {
+  window.addEventListener('click', function () {
     initConfetti();
   });
 });
@@ -272,7 +274,7 @@ onMounted(() => {
 }
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: 300;
   position: fixed;
@@ -336,15 +338,15 @@ a.btn:hover {
 }
 
 .github:before {
-  content: "\f09b";
+  content: '\f09b';
 }
 
 .down:before {
-  content: "\f019";
+  content: '\f019';
 }
 
 .back:before {
-  content: "\f112";
+  content: '\f112';
 }
 
 .credit {
@@ -359,7 +361,7 @@ a.btn:hover {
 .credit span:before {
   font-family: FontAwesome;
   color: #e41b17;
-  content: "\f004";
+  content: '\f004';
 }
 
 .credit a {
@@ -373,7 +375,7 @@ a.btn:hover {
 
 .credit a:hover:after {
   font-family: FontAwesome;
-  content: "\f08e";
+  content: '\f08e';
   font-size: 9pt;
   position: absolute;
   margin: 3px;
@@ -431,12 +433,12 @@ article p {
 .set-overlayer:after,
 .set-glass:after,
 .set-sticky:after {
-  content: "\f204";
+  content: '\f204';
   transition: 0.6s;
 }
 
 .to-active:after {
-  content: "\f205";
+  content: '\f205';
   color: #008080;
   transition: 0.6s;
 }

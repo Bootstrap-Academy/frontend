@@ -6,7 +6,7 @@
       <header class="cursor-pointer" @click="activeSection = section.id">
         <div>
           <p class="text-xs mb-1 uppercase tracking-[2px]">
-            {{ t("Headings.Section", { n: " " }, 1) }} {{ i + 1 }}
+            {{ t('Headings.Section', { n: ' ' }, 1) }} {{ i + 1 }}
           </p>
           <h3 class="text-heading-4">{{ section.title }}</h3>
         </div>
@@ -21,9 +21,7 @@
         <ChevronDownIcon
           class="w-5 h-5"
           :class="
-            activeSection == section.id
-              ? 'rotate-0 text-accent'
-              : 'rotate-180 text-subheading'
+            activeSection == section.id ? 'rotate-0 text-accent' : 'rotate-180 text-subheading'
           "
         />
       </header>
@@ -43,12 +41,9 @@
         />
       </article>
 
-      <article
-        class="pt-box"
-        v-if="getLecturesOfThisSection(section.id).length <= 0"
-      >
+      <article class="pt-box" v-if="getLecturesOfThisSection(section.id).length <= 0">
         <p class="text-sm text-subheading">
-          {{ t("Error.NoLecturesAvailable") }}
+          {{ t('Error.NoLecturesAvailable') }}
         </p>
       </article>
     </section>
@@ -56,10 +51,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType, Ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { ChevronDownIcon } from "@heroicons/vue/24/outline";
+import { defineComponent } from 'vue';
+import type { PropType, Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 
 export default defineComponent({
   components: { ChevronDownIcon },
@@ -67,16 +62,16 @@ export default defineComponent({
     isCourseAccessible: { type: Boolean, default: true },
     data: { type: Object as PropType<any>, default: null },
   },
-  emits: ["watch"],
+  emits: ['watch'],
   setup(props, { emit }) {
     const { t } = useI18n();
 
     const skillID = computed(() => {
-      return <string>(route.query?.skillID ?? "");
+      return <string>(route.query?.skillID ?? '');
     });
 
     const subSkillID = computed(() => {
-      return <string>(route.query?.subSkillID ?? "");
+      return <string>(route.query?.subSkillID ?? '');
     });
 
     const sections: Ref<any[]> = computed(() => {
@@ -85,18 +80,16 @@ export default defineComponent({
 
         return !!!section.id && !!section.title
           ? {
-            ...section,
-            id: `${section.title.replace(/ /g, "_")}-${i}`,
-            duration: getTotalDurationOfThisSection(section),
-          }
+              ...section,
+              id: `${section.title.replace(/ /g, '_')}-${i}`,
+              duration: getTotalDurationOfThisSection(section),
+            }
           : { ...section, duration: getTotalDurationOfThisSection(section) };
       });
     });
 
     function getLecturesOfThisSection(sectionID: string): any[] {
-      const thisSection = sections.value.find(
-        (section) => section.id == sectionID
-      );
+      const thisSection = sections.value.find((section) => section.id == sectionID);
       if (!!!thisSection) return [];
 
       let lectures: any[] = thisSection.lectures ?? [];
@@ -105,7 +98,7 @@ export default defineComponent({
       return lectures.map((lecture, i) => {
         // if lecture has no id, then a custom id is made using title and index
         return !!!lecture.id && !!lecture.title
-          ? { ...lecture, id: `${lecture.title.replace(/ /g, "_")}-${i}` }
+          ? { ...lecture, id: `${lecture.title.replace(/ /g, '_')}-${i}` }
           : { ...lecture };
       });
     }
@@ -115,7 +108,7 @@ export default defineComponent({
 
     const activeSection = computed({
       get(): string {
-        return <string>(route?.query?.section ?? "");
+        return <string>(route?.query?.section ?? '');
       },
       set(id: string) {
         if (!id) {
@@ -128,8 +121,8 @@ export default defineComponent({
             query: {
               section: id,
               lecture: getActiveLectureForThisSection(id),
-              skillID: skillID?.value ?? "a",
-              subSkillID: subSkillID?.value ?? "a",
+              skillID: skillID?.value ?? 'a',
+              subSkillID: subSkillID?.value ?? 'a',
             },
           });
         }
@@ -138,7 +131,7 @@ export default defineComponent({
 
     const activeLecture = computed({
       get(): string {
-        return <string>(route?.query?.lecture ?? "");
+        return <string>(route?.query?.lecture ?? '');
       },
       set(id: string) {
         if (!id) {
@@ -151,8 +144,8 @@ export default defineComponent({
             query: {
               section: activeSection.value,
               lecture: id,
-              skillID: skillID?.value ?? "a",
-              subSkillID: subSkillID?.value ?? "a",
+              skillID: skillID?.value ?? 'a',
+              subSkillID: subSkillID?.value ?? 'a',
             },
           });
         }
@@ -160,15 +153,14 @@ export default defineComponent({
     });
 
     function getTotalDurationOfThisSection(section: any) {
-      if (!!!section) return "";
+      if (!!!section) return '';
 
       const lectures = section.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return "";
+      if (!!!lectures || lectures.length <= 0) return '';
 
       const totalDuration = lectures.reduce(
-        (previousValue: number, currentValue: any) =>
-          previousValue + currentValue.duration ?? 0,
-        0
+        (previousValue: number, currentValue: any) => previousValue + currentValue.duration ?? 0,
+        0,
       );
 
       const { minutes, hours } = convertTimestampToDate(totalDuration);
@@ -179,36 +171,24 @@ export default defineComponent({
 
       let hoursString =
         roundedHours > 0
-          ? t(
-            "Headings.Hours",
-            { n: roundedHours },
-            roundedHours
-          ).toLocaleLowerCase()
-          : "";
+          ? t('Headings.Hours', { n: roundedHours }, roundedHours).toLocaleLowerCase()
+          : '';
       let minsString =
         minutesLeftInHours > 0
-          ? t(
-            "Headings.Mins",
-            { n: minutesLeftInHours },
-            minutesLeftInHours
-          ).toLocaleLowerCase()
-          : "";
+          ? t('Headings.Mins', { n: minutesLeftInHours }, minutesLeftInHours).toLocaleLowerCase()
+          : '';
 
       return `${hoursString} ${
-        !!hoursString && !!minsString
-          ? t("Headings.And").toLocaleLowerCase()
-          : ""
+        !!hoursString && !!minsString ? t('Headings.And').toLocaleLowerCase() : ''
       } ${minsString}`;
     }
 
     function getActiveLectureForThisSection(sectionID: string) {
       let lectures: any[] = getLecturesOfThisSection(sectionID);
-      if (!!!lectures || lectures.length <= 0) return "";
+      if (!!!lectures || lectures.length <= 0) return '';
 
-      let firstLectureID = lectures[0]?.id ?? "";
-      let lastCompletedLecture = lectures
-        .reverse()
-        .find((lecture) => lecture.completed == true);
+      let firstLectureID = lectures[0]?.id ?? '';
+      let lastCompletedLecture = lectures.reverse().find((lecture) => lecture.completed == true);
 
       return lastCompletedLecture?.id ?? firstLectureID;
     }
@@ -216,7 +196,7 @@ export default defineComponent({
     function onclickWatchThisLecture(lectureID: string) {
       activeLecture.value = lectureID;
 
-      emit("watch", {
+      emit('watch', {
         sectionID: activeSection.value,
         lectureID: lectureID,
       });
@@ -224,7 +204,7 @@ export default defineComponent({
 
     onMounted(() => {
       if (!!!activeSection.value || !!!activeLecture.value) {
-        activeSection.value = sections.value[0]?.id ?? "";
+        activeSection.value = sections.value[0]?.id ?? '';
       }
     });
     return {
@@ -244,8 +224,8 @@ export default defineComponent({
 header {
   @apply grid grid-cols-[1fr_auto] gap-2;
   grid-template-areas:
-    "duration arrow"
-    "title arrow";
+    'duration arrow'
+    'title arrow';
 }
 header > *:nth-child(1) {
   grid-area: title;
@@ -261,8 +241,8 @@ header > *:nth-child(3) {
 @media screen and (min-width: 768px) {
   header {
     grid-template-areas:
-      "title duration"
-      "title arrow";
+      'title duration'
+      'title arrow';
   }
 }
 </style>

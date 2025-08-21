@@ -9,16 +9,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Error - Buy Coins",
+    title: 'Error - Buy Coins',
   },
   setup() {
     const { t } = useI18n();
@@ -27,17 +27,17 @@ export default {
     const route = useRoute();
 
     const errorMsg = computed(() => {
-      return route?.query?.msg ?? "";
+      return route?.query?.msg ?? '';
     });
 
     const dialog = <any>reactive({
-      type: "error",
-      heading: "Error.Error",
-      body: `${t("Error.BuyCoins")}: ${errorMsg.value}`,
+      type: 'error',
+      heading: 'Error.Error',
+      body: `${t('Error.BuyCoins')}: ${errorMsg.value}`,
       primaryBtn: {
-        label: "Buttons.TryAgain",
+        label: 'Buttons.TryAgain',
         onclick: () => {
-          router.push("/morphcoins/buy");
+          router.push('/morphcoins/buy');
         },
       },
       secondaryBtn: null,

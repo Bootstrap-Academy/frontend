@@ -56,11 +56,11 @@ import {
   InformationCircleIcon,
   XCircleIcon,
   CheckCircleIcon,
-} from "@heroicons/vue/24/solid";
+} from '@heroicons/vue/24/solid';
 
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -76,70 +76,70 @@ export default defineComponent({
     const { t } = useI18n();
 
     const type = computed(() => {
-      return props.dialog?.type ?? "info";
+      return props.dialog?.type ?? 'info';
     });
 
     const theme = computed(() => {
-      if (type.value == "success") {
+      if (type.value == 'success') {
         return {
-          bg: "bg-success",
-          bgLight: "bg-success-light",
-          fill: "fill-success",
-          stroke: "stroke-success",
-          border: "border-success",
-          text: "text-success",
+          bg: 'bg-success',
+          bgLight: 'bg-success-light',
+          fill: 'fill-success',
+          stroke: 'stroke-success',
+          border: 'border-success',
+          text: 'text-success',
           icon: CheckCircleIcon,
         };
-      } else if (type.value == "error") {
+      } else if (type.value == 'error') {
         return {
-          bg: "bg-error",
-          bgLight: "bg-error-light",
-          fill: "fill-error",
-          stroke: "stroke-error",
-          border: "border-error",
-          text: "text-error",
+          bg: 'bg-error',
+          bgLight: 'bg-error-light',
+          fill: 'fill-error',
+          stroke: 'stroke-error',
+          border: 'border-error',
+          text: 'text-error',
           icon: XCircleIcon,
         };
-      } else if (type.value == "warning") {
+      } else if (type.value == 'warning') {
         return {
-          bg: "bg-warning",
-          bgLight: "bg-warning-light",
-          fill: "fill-warning",
-          stroke: "stroke-warning",
-          border: "border-warning",
-          text: "text-warning",
+          bg: 'bg-warning',
+          bgLight: 'bg-warning-light',
+          fill: 'fill-warning',
+          stroke: 'stroke-warning',
+          border: 'border-warning',
+          text: 'text-warning',
           icon: ExclamationCircleIcon,
         };
       } else {
         return {
-          bg: "bg-info",
-          bgLight: "bg-info-light",
-          fill: "fill-info",
-          stroke: "stroke-info",
-          border: "border-info",
-          text: "text-info",
+          bg: 'bg-info',
+          bgLight: 'bg-info-light',
+          fill: 'fill-info',
+          stroke: 'stroke-info',
+          border: 'border-info',
+          text: 'text-info',
           icon: InformationCircleIcon,
         };
       }
     });
 
     const heading = computed(() => {
-      return props.dialog?.heading ?? "";
+      return props.dialog?.heading ?? '';
     });
 
     const body = computed(() => {
-      return props.dialog?.body ?? "";
+      return props.dialog?.body ?? '';
     });
 
     const primaryBtn = computed(() => {
       return {
-        label: props.dialog?.primaryBtn?.label ?? "",
+        label: props.dialog?.primaryBtn?.label ?? '',
         onclick: props.dialog?.primaryBtn?.onclick ?? null,
       };
     });
 
     const secondaryBtn = computed(() => {
-      let label = props.dialog?.secondaryBtn?.label ?? "";
+      let label = props.dialog?.secondaryBtn?.label ?? '';
 
       return {
         label: label,

@@ -8,12 +8,12 @@
 
 <script lang="ts">
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Buy Morphcoins",
+    title: 'Buy Morphcoins',
   },
   setup() {
     return {};

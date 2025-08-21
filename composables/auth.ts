@@ -1,10 +1,10 @@
-import { GET, POST } from "./fetch";
+import { GET, POST } from './fetch';
 
-export const useOauthProviders = () => useState("oauthProviders", () => []);
+export const useOauthProviders = () => useState('oauthProviders', () => []);
 
 export async function getOAuthProviders() {
   try {
-    const response = await GET("/auth/oauth/providers");
+    const response = await GET('/auth/oauth/providers');
 
     const oauthProviders = useOauthProviders();
     oauthProviders.value = response ?? [];
@@ -33,7 +33,7 @@ export async function refresh() {
 
   try {
     const response = await $fetch(`${config.BASE_API_URL}/auth/session`, {
-      method: "PUT",
+      method: 'PUT',
       body: body,
     });
 
@@ -50,7 +50,7 @@ export async function logout() {
 
   try {
     if (!!!user.value || !!!user.value.id) {
-      throw { data: "Invalid User Id" };
+      throw { data: 'Invalid User Id' };
     }
 
     const response = await DELETE(`/auth/sessions/${user.value.id}`);
@@ -61,11 +61,11 @@ export async function logout() {
     const calendar = useCalendar();
     calendar.value = null;
     const ics = useICS();
-    ics.value = "";
+    ics.value = '';
     const events = useEvents();
     events.value = [];
     const eventFilter = useEventFilter();
-    eventFilter.value = "all";
+    eventFilter.value = 'all';
 
     // Coaching Composable
     const coachings = useCoachings();
@@ -75,7 +75,7 @@ export async function logout() {
     const coins = useCoins();
     coins.value = 0;
     const paypalClientID = usePaypalClientID();
-    paypalClientID.value = "";
+    paypalClientID.value = '';
 
     // Course Composable
     const myCourses = useMyCourses();
@@ -85,7 +85,7 @@ export async function logout() {
     const course = useCourse();
     course.value = null;
     const videoSRC = useVideoSRC();
-    videoSRC.value = "";
+    videoSRC.value = '';
 
     // Jobs Composable
     const job = useJob();
@@ -117,7 +117,7 @@ export async function logout() {
 
 export async function login(body: any) {
   try {
-    const response = await POST("/auth/sessions", body);
+    const response = await POST('/auth/sessions', body);
     setStates(response);
     // await getPremiumStatus()
     return [response, null];
@@ -128,7 +128,7 @@ export async function login(body: any) {
 
 export async function signup(body: any) {
   try {
-    const response = await POST("/auth/users", body);
+    const response = await POST('/auth/users', body);
 
     setStates(response);
 
@@ -148,10 +148,10 @@ export async function requestEmailVerification() {
 
   try {
     if (!!!user_id) {
-      throw { data: { detail: "Invalid User Id" } };
+      throw { data: { detail: 'Invalid User Id' } };
     }
     if (!!!user_email) {
-      throw { data: { detail: "User does not have email" } };
+      throw { data: { detail: 'User does not have email' } };
     }
 
     const response = await POST(`/auth/users/${user_id}/email`);
@@ -174,7 +174,7 @@ export async function verifyAccount(body: any) {
 
 export async function forgotPassword(body: any) {
   try {
-    const response = await POST("/auth/password_reset", body);
+    const response = await POST('/auth/password_reset', body);
 
     return [response, null];
   } catch (error: any) {
@@ -184,7 +184,7 @@ export async function forgotPassword(body: any) {
 
 export async function resetPassword(body: any) {
   try {
-    const response = await PUT("/auth/password_reset", body);
+    const response = await PUT('/auth/password_reset', body);
 
     return [response, null];
   } catch (error: any) {

@@ -9,16 +9,14 @@
       ref="refForm"
     >
       <h4 class="text-heading-3 text-accent">
-        Q). <span v-html="$md.render(subtask?.question ?? '')"></span>
+        Q).
+        <span v-html="$md.render(subtask?.question ?? '')"></span>
       </h4>
-      <p
-        class="text-heading2 text-sm"
-        v-if="!subtask?.solved && user?.id != subtask?.creator"
-      >
+      <p class="text-heading2 text-sm" v-if="!subtask?.solved && user?.id != subtask?.creator">
         {{
           subtask?.single_choice
-            ? t("Headings.ChooseSingleCorrectOption")
-            : t("Headings.ChooseMultipleCorrectOption")
+            ? t('Headings.ChooseSingleCorrectOption')
+            : t('Headings.ChooseMultipleCorrectOption')
         }}
       </p>
 
@@ -28,26 +26,21 @@
 
       <article
         class="grid gap-card-sm overflow-auto max-h-[45vh] place-content-start"
-        :class="
-          doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
-        "
+        :class="doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'"
       >
         <button
           v-for="(option, i) of subtask?.answers ?? []"
           :key="option"
-          @click="setArrayOfAnswers(i), setSelected(option)"
+          @click="(setArrayOfAnswers(i), setSelected(option))"
           type="button"
           class="box style-box border-4 border-tertiary text-heading h-fit"
           :class="{
-            'bg-success text-primary':
-              selected.includes(option) && wasOptionsCorrect == 'yes',
+            'bg-success text-primary': selected.includes(option) && wasOptionsCorrect == 'yes',
 
             'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
 
-            'bg-warning':
-              selected.includes(option) && wasOptionsCorrect == 'waiting',
-            'pointer-events-none':
-              !!subtask?.solved || subtask?.creator == user?.id,
+            'bg-warning': selected.includes(option) && wasOptionsCorrect == 'waiting',
+            'pointer-events-none': !!subtask?.solved || subtask?.creator == user?.id,
           }"
         >
           {{ option }}
@@ -56,15 +49,21 @@
 
       <div class="mb-4">
         <p v-if="amountQuestionsLeft == 0" class="text-center mb-2">
-          {{ t("Headings.AllSolved") }}
+          {{ t('Headings.AllSolved') }}
         </p>
 
         <p v-else-if="subtask?.solved && user?.id != subtask?.creator" class="text-center mb-2">
-          {{ t("Headings.QuestionAlreadySolved") }}
+          {{ t('Headings.QuestionAlreadySolved') }}
         </p>
 
-        <InputBtn v-else-if="data?.solved || user?.id == subtask?.creator" full @click="nextQuestion()" iconRight :icon="ChevronDoubleRightIcon">
-          {{ t("Buttons.Next") }}
+        <InputBtn
+          v-else-if="data?.solved || user?.id == subtask?.creator"
+          full
+          @click="nextQuestion()"
+          iconRight
+          :icon="ChevronDoubleRightIcon"
+        >
+          {{ t('Buttons.Next') }}
         </InputBtn>
 
         <InputBtnWithHeart
@@ -76,11 +75,7 @@
           mt
           :icon="HalfHeart"
         >
-          {{
-            subtask?.single_choice
-              ? t("Buttons.SubmitAnswer")
-              : t("Buttons.SubmitAnswers")
-          }}
+          {{ subtask?.single_choice ? t('Buttons.SubmitAnswer') : t('Buttons.SubmitAnswers') }}
         </InputBtnWithHeart>
 
         <InputBtn
@@ -90,11 +85,7 @@
           @click="onclickSubmitForm()"
           mt
         >
-          {{
-            subtask?.single_choice
-              ? t("Buttons.SubmitAnswer")
-              : t("Buttons.SubmitAnswers")
-          }}
+          {{ subtask?.single_choice ? t('Buttons.SubmitAnswer') : t('Buttons.SubmitAnswers') }}
         </InputBtn>
 
         <InputBtn
@@ -106,14 +97,10 @@
           v-else-if="user?.id == subtask?.creator && !!user?.admin"
           @click="openDialogEditTask(subtask)"
         >
-          {{ t("Buttons.Edit") }}
+          {{ t('Buttons.Edit') }}
         </InputBtn>
       </div>
-      <InputQuizRating
-        :data="data"
-        :subtask="subtask"
-        @rated="fnRated($event)"
-      />
+      <InputQuizRating :data="data" :subtask="subtask" @rated="fnRated($event)" />
 
       <DialogSlot
         v-if="dialogCreateSubtask"
@@ -129,14 +116,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
-import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
-import { useI18n } from "vue-i18n";
-import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
-import HalfHeart from "../svg/HalfHeart.vue";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { attempQuiz, rateQuiz } from '~~/composables/quizzes';
+import { useDialogReportTask, useDialogSlot } from '~~/composables/dialogSlot';
+import { useI18n } from 'vue-i18n';
+import { FlagIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { ChevronDoubleRightIcon } from '@heroicons/vue/24/solid';
+import HalfHeart from '../svg/HalfHeart.vue';
 
 export default defineComponent({
   props: {
@@ -144,7 +131,7 @@ export default defineComponent({
     doubleColumnOptions: { type: Boolean, default: false },
     amountQuestionsLeft: { type: Number, default: 0 },
   },
-  emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
+  emits: ['solved', 'updateQuestion', 'rated', 'nextQuestion'],
   components: { FlagIcon, ChevronDoubleRightIcon, HalfHeart, PencilSquareIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
@@ -156,7 +143,7 @@ export default defineComponent({
     const selected: any = ref([]);
     const subtask = useSubTaskInQuiz();
     let arrayOfAnswers: any = ref([]);
-    const feedback = ref("");
+    const feedback = ref('');
     const showMaxAttemptsError = ref(false);
     const secondsForTryAgain = ref(0);
     const interval: any = ref();
@@ -165,7 +152,7 @@ export default defineComponent({
     const dialogEditTask = useDialogSlot();
     const dialogCreateSubtask = useDialogCreateSubtask();
     const propData = ref();
-    const wasOptionsCorrect = ref("waiting");
+    const wasOptionsCorrect = ref('waiting');
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
@@ -191,8 +178,8 @@ export default defineComponent({
     }
 
     function setSelected(answer: any) {
-      if (wasOptionsCorrect.value != "waiting") {
-        wasOptionsCorrect.value = "waiting";
+      if (wasOptionsCorrect.value != 'waiting') {
+        wasOptionsCorrect.value = 'waiting';
         selected.value = [];
       }
       if (subtask.value?.single_choice) {
@@ -216,22 +203,16 @@ export default defineComponent({
     }
 
     async function onclickSubmitForm() {
-      if (
-        subtask.value.solved == true ||
-        subtask.value?.creator == user.value?.id
-      )
-        return;
+      if (subtask.value.solved == true || subtask.value?.creator == user.value?.id) return;
 
       if (!selected.value.length) {
-        return openSnackbar("error", "Error.SelectAtLeastOneOption");
+        return openSnackbar('error', 'Error.SelectAtLeastOneOption');
       }
 
       formSubmitting.value = true;
-      const [success, error] = await attempQuiz(
-        subtask.value.task_id,
-        subtask.value.id,
-        { answers: arrayOfAnswers.value }
-      );
+      const [success, error] = await attempQuiz(subtask.value.task_id, subtask.value.id, {
+        answers: arrayOfAnswers.value,
+      });
       formSubmitting.value = false;
       await getHearts();
       if (success == true || success == false) successHandler(success);
@@ -240,31 +221,31 @@ export default defineComponent({
 
     function successHandler(res: any) {
       showMaxAttemptsError.value = false;
-      console.log("res", res);
+      console.log('res', res);
       clearInterval(interval.value);
       if (!!res) {
         // openSnackbar("success", "Success.QuizAttempt");
         selected.value = [];
-        wasOptionsCorrect.value = "yes";
-        emit("solved", props.data.id);
+        wasOptionsCorrect.value = 'yes';
+        emit('solved', props.data.id);
       } else if (!res) {
-        wasOptionsCorrect.value = "no";
+        wasOptionsCorrect.value = 'no';
         // openSnackbar("error", "Error.QuizAttempt");
         setInitialArrayOfAnswers();
       }
     }
 
     function errorHandler(error: any) {
-      if (error == "Error.TooManyAttemptsForQuiz") {
+      if (error == 'Error.TooManyAttemptsForQuiz') {
         showMaxAttemptsError.value = true;
-        secondsForTryAgain.value = error.details ?? "";
+        secondsForTryAgain.value = error.details ?? '';
       } else {
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
 
     function nextQuestion() {
-      emit("nextQuestion", props.data.id);
+      emit('nextQuestion', props.data.id);
     }
 
     function openDialogEditTask(data: any) {
@@ -287,12 +268,12 @@ export default defineComponent({
       loading.value = true;
 
       const [success, error] = await getSubTaskInQuiz(
-        props?.data?.task_id ?? "",
-        props?.data?.id ?? ""
+        props?.data?.task_id ?? '',
+        props?.data?.id ?? '',
       );
 
       if (success) {
-        emit("updateQuestion", success);
+        emit('updateQuestion', success);
       }
       if (!!subtask.value && subtask.value?.answers.length) {
         setInitialArrayOfAnswers();
@@ -311,7 +292,7 @@ export default defineComponent({
     }
 
     function fnRated(id: any) {
-      emit("rated", id);
+      emit('rated', id);
     }
 
     watch(
@@ -322,7 +303,7 @@ export default defineComponent({
         }
         await setData();
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     watch(
@@ -337,7 +318,7 @@ export default defineComponent({
             --secondsForTryAgain.value;
           }, 1000);
         }
-      }
+      },
     );
 
     return {

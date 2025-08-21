@@ -14,7 +14,7 @@
 
       <div class="flex flex-col items-center">
         <p class="text-center">
-          {{ show ? t("Body.NoMoreIncreaseSecurity") : t("Body.IncreasedSecurity") }}
+          {{ show ? t('Body.NoMoreIncreaseSecurity') : t('Body.IncreasedSecurity') }}
         </p>
         <Tooltip heading="Body.MFATooltipTitle" content="Body.MFATooltipBody">
           <span class="text-accent font-mono">{{ t('Buttons.LearnMore') }}</span>
@@ -38,7 +38,7 @@ export default defineComponent({
   components: {
     ShieldCheckIcon,
     ShieldExclamationIcon,
-    CheckCircleIcon
+    CheckCircleIcon,
   },
   setup() {
     const { t } = useI18n();
@@ -48,7 +48,7 @@ export default defineComponent({
       return user.value?.mfa_enabled ?? false;
     });
 
-    return { t, show, };
+    return { t, show };
   },
 });
 </script>

@@ -25,13 +25,10 @@
     <div class="flex flex-col items-center mb-8">
       <div class="flex space-x-4 items-center mb-4">
         <TrophyIcon class="w-8 h-8 text-accent" />
-        <p class="text-heading-1 text-accent">{{ t("Headings.LeaderBoard") }}</p>
+        <p class="text-heading-1 text-accent">{{ t('Headings.LeaderBoard') }}</p>
       </div>
 
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedbutton"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" />
     </div>
 
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />
@@ -54,40 +51,38 @@
 </template>
 
 <script lang="ts">
-import { TrophyIcon } from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
-import { useLeaderBoardList } from "~~/composables/leaderboard";
+import { TrophyIcon } from '@heroicons/vue/24/outline';
+import { useI18n } from 'vue-i18n';
+import { useLeaderBoardList } from '~~/composables/leaderboard';
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Leader board",
+    title: 'Leader board',
   },
   components: {
-    TrophyIcon
+    TrophyIcon,
   },
   setup() {
     const { t } = useI18n();
     const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
-    const selectedbutton: any = ref(
-      localStorage.getItem("selectedButtonLeaderBoard") ?? 0
-    );
+    const selectedbutton: any = ref(localStorage.getItem('selectedButtonLeaderBoard') ?? 0);
     const router = useRouter();
     const route = useRoute();
     let buttonOptions: any = [
       // { name: "Buttons.SeasonalBased" },
-      { name: "Buttons.LanguageBased" },
-      { name: "Buttons.ChallengeBased" },
-      { name: "Buttons.Overall" },
+      { name: 'Buttons.LanguageBased' },
+      { name: 'Buttons.ChallengeBased' },
+      { name: 'Buttons.Overall' },
     ];
 
     watch(
       () => selectedbutton.value,
       (newValue: any, oldValue) => {
-        localStorage.setItem("selectedButtonLeaderBoard", newValue);
+        localStorage.setItem('selectedButtonLeaderBoard', newValue);
         router.replace({
           path: route.path,
           query: {
@@ -95,10 +90,10 @@ export default {
           },
         });
       },
-      { immediate: true }
+      { immediate: true },
     );
     onUnmounted(() => {
-      localStorage.removeItem("selectedButtonLeaderBoard");
+      localStorage.removeItem('selectedButtonLeaderBoard');
     });
 
     return { buttonOptions, selectedbutton, t, leaderBoardList, loading, TrophyIcon };

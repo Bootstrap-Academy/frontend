@@ -28,7 +28,7 @@
       class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
     >
       <Head>
-        <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
+        <Title>Solve Challenge - {{ challenge?.title ?? '' }}</Title>
       </Head>
 
       <aside
@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 import {
   getSubmissions,
   getSubmission,
@@ -70,20 +70,17 @@ import {
   useCodingChallenge,
   getExamples,
   useCodingExamples,
-} from "~~/composables/codingChallenges";
-import {
-  useDialogCodingChallengeFeedback,
-  useDialogSlot,
-} from "~~/composables/dialogSlot";
+} from '~~/composables/codingChallenges';
+import { useDialogCodingChallengeFeedback, useDialogSlot } from '~~/composables/dialogSlot';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Solve Challenge",
+    title: 'Solve Challenge',
   },
   setup() {
     const { t } = useI18n();
@@ -94,12 +91,12 @@ export default {
     const environment = ref();
     const allCodingChallenges = useAllCodingChallengesInATask();
     const route = useRoute();
-    const code = ref("// write your code here");
+    const code = ref('// write your code here');
     const challengeID = computed((): string => {
-      return <string>route?.params?.challenge ?? "";
+      return <string>route?.params?.challenge ?? '';
     });
     const codingChallengeId: any = computed(() => {
-      return route.query?.codingChallenge ?? "";
+      return route.query?.codingChallenge ?? '';
     });
     const heartInfo: any = useHeartInfo();
     const hearts = computed(() => {

@@ -19,9 +19,7 @@
 ✅ Api implemented
 -->
 <template>
-  <main
-    class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container"
-  >
+  <main class="grid grid-cols-1 gap-card container h-screen-inner min pb-container pt-container">
     <!-- <p
       class="mb-card box bg-info-light text-info h-fit w-fit style-box flex gap-3 text-body-1"
     >
@@ -36,16 +34,16 @@
 </template>
 
 <script lang="ts">
-import { InformationCircleIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
+import { InformationCircleIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "All Challenges",
+    title: 'All Challenges',
   },
   components: { InformationCircleIcon },
   setup() {

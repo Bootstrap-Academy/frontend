@@ -1,54 +1,45 @@
 <template>
-	<main class="container mt-main mb-main">
-		<SectionTitle
-			subheading="Subheadings.GetMorphcoins"
-			heading="Headings.GetMorphcoins"
-			body="Body.GetMorphcoins"
-			center
-			full
-		/>
+  <main class="container mt-main mb-main">
+    <SectionTitle
+      subheading="Subheadings.GetMorphcoins"
+      heading="Headings.GetMorphcoins"
+      body="Body.GetMorphcoins"
+      center
+      full
+    />
 
-		<section
-			class="bg-secondary card style-card w-full grid gap-card mt-card mb-card"
-		>
-			<article
-				v-for="(option, i) of options"
-				:key="option.type"
-				class="bg-primary card style-card grid gap-1 gap-x-4 md:gap-x-5 grid-cols-[auto_1fr]"
-			>
-				<div class="bg-tertiary box style-box flex-shrink-0 row-span-2 h-fit">
-					<component
-						class="text-accent"
-						:class="
-							option.lg ? 'w-6 h-6 xl:w-7 xl:h-7' : 'w-5 h-5 xl:w-6 xl:h-6'
-						"
-						:is="option.icon"
-					></component>
-				</div>
+    <section class="bg-secondary card style-card w-full grid gap-card mt-card mb-card">
+      <article
+        v-for="(option, i) of options"
+        :key="option.type"
+        class="bg-primary card style-card grid gap-1 gap-x-4 md:gap-x-5 grid-cols-[auto_1fr]"
+      >
+        <div class="bg-tertiary box style-box flex-shrink-0 row-span-2 h-fit">
+          <component
+            class="text-accent"
+            :class="option.lg ? 'w-6 h-6 xl:w-7 xl:h-7' : 'w-5 h-5 xl:w-6 xl:h-6'"
+            :is="option.icon"
+          ></component>
+        </div>
 
-				<h3
-					class="text-heading-3 flex gap-card self-center justify-between items-center"
-				>
-					{{ t(`List.GetMorphcoins.${i + 1}.Heading`) }}
-				</h3>
+        <h3 class="text-heading-3 flex gap-card self-center justify-between items-center">
+          {{ t(`List.GetMorphcoins.${i + 1}.Heading`) }}
+        </h3>
 
-				<p class="text-body-2 text-body col-span-2 sm:col-span-1">
-					{{ t(`List.GetMorphcoins.${i + 1}.Body`) }}
-				</p>
+        <p class="text-body-2 text-body col-span-2 sm:col-span-1">
+          {{ t(`List.GetMorphcoins.${i + 1}.Body`) }}
+        </p>
 
-				<NuxtLink
-					:to="option.pathname"
-					class="col-span-2 justify-self-end mt-box"
-				>
-					<Btn sm>{{ t(option.button) }}</Btn>
-				</NuxtLink>
-			</article>
-		</section>
+        <NuxtLink :to="option.pathname" class="col-span-2 justify-self-end mt-box">
+          <Btn sm>{{ t(option.button) }}</Btn>
+        </NuxtLink>
+      </article>
+    </section>
 
-		<div class="text-center">
-			<a secondary>{{ t('Body.MoreComingSoon') }}</a>
-		</div>
-	</main>
+    <div class="text-center">
+      <a secondary>{{ t('Body.MoreComingSoon') }}</a>
+    </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -130,5 +121,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -7,13 +7,12 @@ export const useAccessToken = () => useState('accessToken', () => '');
 export const useRefreshToken = () => useState('refreshToken', () => '');
 export const useShowConfetti = () => useState('showConfetti', () => false);
 
-
 export function getAccessToken() {
   const accessToken: any = useAccessToken();
 
   if (!!!accessToken.value) return null;
 
-  const cookie_accessToken = useCookie("accessToken");
+  const cookie_accessToken = useCookie('accessToken');
   if (cookie_accessToken.value != accessToken.value) {
     accessToken.value = cookie_accessToken.value;
   }
@@ -26,7 +25,7 @@ export function getRefreshToken() {
 
   if (!!!refreshToken.value) return null;
 
-  const cookie_refreshToken = useCookie("refreshToken");
+  const cookie_refreshToken = useCookie('refreshToken');
   if (cookie_refreshToken.value != refreshToken.value) {
     refreshToken.value = cookie_refreshToken.value;
   }
@@ -36,37 +35,37 @@ export function getRefreshToken() {
 
 export function setStates(response: any) {
   const user = useUser();
-  const cookie_user = <any>useCookie("user");
+  const cookie_user = <any>useCookie('user');
   user.value = response?.user ?? null;
   cookie_user.value = user.value;
 
   const session = useSession();
-  const cookie_session = <any>useCookie("session");
+  const cookie_session = <any>useCookie('session');
   session.value = response?.session ?? null;
   cookie_session.value = session.value;
 
   const accessToken = useAccessToken();
-  const cookie_accessToken = useCookie("accessToken");
+  const cookie_accessToken = useCookie('accessToken');
   accessToken.value = response?.access_token ?? null;
   cookie_accessToken.value = accessToken.value;
 
   const refreshToken = useRefreshToken();
-  const cookie_refreshToken = useCookie("refreshToken");
+  const cookie_refreshToken = useCookie('refreshToken');
   refreshToken.value = response?.refresh_token ?? null;
   cookie_refreshToken.value = refreshToken.value;
 
-  const hideAnimation: any = useCookie("hideAnimationNextTime");
+  const hideAnimation: any = useCookie('hideAnimationNextTime');
   if (hideAnimation.value == undefined) hideAnimation.value = false;
 
   // const showFreeQuizzesOnly: any = useCookie("showFreeQuizzesOnly");
   // if (showFreeQuizzesOnly.value == undefined) showFreeQuizzesOnly.value = false
 
-  const lastViewCourse: any = useCookie("lastViewCourse");
+  const lastViewCourse: any = useCookie('lastViewCourse');
   if (lastViewCourse.value == undefined) lastViewCourse.value = null;
 
   if (response == null) {
     const router = useRouter();
-    router.push("/auth/login");
+    router.push('/auth/login');
   }
 }
 
@@ -77,7 +76,7 @@ export const isAuth = computed((): boolean => {
 
 export const hasEmail = computed((): boolean => {
   const user = <any>useUser();
-  return !!(user.value?.email ?? "");
+  return !!(user.value?.email ?? '');
 });
 
 export async function getUser() {
@@ -86,12 +85,12 @@ export async function getUser() {
 
   try {
     if (!!!user_id) {
-      throw { data: "Invalid User Id" };
+      throw { data: 'Invalid User Id' };
     }
     const response = await GET(`/auth/users/${user_id}`);
 
     const user = useUser();
-    const cookie_user = <any>useCookie("user");
+    const cookie_user = <any>useCookie('user');
     user.value = response ?? null;
     cookie_user.value = user.value;
 
@@ -107,13 +106,13 @@ export async function editUser(body: any) {
 
   try {
     if (!!!user_id) {
-      throw { data: "Invalid User Id" };
+      throw { data: 'Invalid User Id' };
     }
 
     const response = await PATCH(`/auth/users/${user_id}`, body);
 
     const user = useUser();
-    const cookie_user = <any>useCookie("user");
+    const cookie_user = <any>useCookie('user');
     user.value = response ?? null;
     cookie_user.value = user.value;
 
@@ -129,7 +128,7 @@ export async function deleteUser() {
 
   try {
     if (!!!user_id) {
-      throw { data: "Invalid User Id" };
+      throw { data: 'Invalid User Id' };
     }
 
     const response = await DELETE(`/auth/users/${user_id}`);

@@ -1,14 +1,14 @@
 <script setup>
-import { arrow, computePosition, flip, offset, shift } from "@floating-ui/dom";
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
+import { arrow, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
 const { t } = useI18n();
 const props = defineProps({
   heading: String,
   content: String,
   placement: {
     type: String,
-    default: "bottom",
+    default: 'bottom',
   },
 });
 
@@ -23,13 +23,8 @@ async function calculatePosition() {
     floatingRef.value,
     {
       placement: props.placement,
-      middleware: [
-        offset(8),
-        flip(),
-        shift({ padding: 5 }),
-        arrow({ element: arrowRef.value }),
-      ],
-    }
+      middleware: [offset(8), flip(), shift({ padding: 5 }), arrow({ element: arrowRef.value })],
+    },
   );
 
   Object.assign(floatingRef.value.style, {
@@ -40,18 +35,18 @@ async function calculatePosition() {
   const { x: arrowX, y: arrowY } = middlewareData.arrow;
 
   const opposedSide = {
-    left: "right",
-    right: "left",
-    bottom: "top",
-    top: "bottom",
-  }[placement.split("-")[0]];
+    left: 'right',
+    right: 'left',
+    bottom: 'top',
+    top: 'bottom',
+  }[placement.split('-')[0]];
 
   Object.assign(arrowRef.value.style, {
-    left: arrowX ? `${arrowX}px` : "",
-    top: arrowY ? `${arrowY}px` : "",
-    bottom: "",
-    right: "",
-    [opposedSide]: "-5px",
+    left: arrowX ? `${arrowX}px` : '',
+    top: arrowY ? `${arrowY}px` : '',
+    bottom: '',
+    right: '',
+    [opposedSide]: '-5px',
   });
 }
 
@@ -90,10 +85,7 @@ function show() {
       <p class="mt-3" v-if="!!props.content">
         {{ t(props.content) }}
       </p>
-      <div
-        ref="arrowRef"
-        class="absolute bg-light h-[10px] w-[10px] rotate-45"
-      ></div>
+      <div ref="arrowRef" class="absolute bg-light h-[10px] w-[10px] rotate-45"></div>
     </div>
   </div>
 </template>

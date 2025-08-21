@@ -12,9 +12,7 @@
           {{ t(path.label) }}
         </h1>
 
-        <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-          /
-        </span>
+        <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">/</span>
       </template>
     </div>
 
@@ -23,23 +21,22 @@
       :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&rootSkillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
     >
       <Btn>
-        {{ t("Headings.ViewQuizzesForLastViewCourse", {
-          type: t(lastViewCourseInfo.type)
-        }) }}
+        {{
+          t('Headings.ViewQuizzesForLastViewCourse', {
+            type: t(lastViewCourseInfo.type),
+          })
+        }}
       </Btn>
     </NuxtLink>
 
-    <SkillTreeZoomLevel
-      v-if="!noZoomLevel"
-      @zoomLevel="emit('zoomLevel', $event)"
-    />
+    <SkillTreeZoomLevel v-if="!noZoomLevel" @zoomLevel="emit('zoomLevel', $event)" />
   </header>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
@@ -48,21 +45,19 @@ export default defineComponent({
     absolute: { type: Boolean, default: true },
     quizzesQuickStart: { type: Boolean, default: false },
   },
-  emits: ["zoomLevel"],
+  emits: ['zoomLevel'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const lastViewCourse: any = useCookie("lastViewCourse");
+    const lastViewCourse: any = useCookie('lastViewCourse');
 
     const lastViewCourseInfo = computed(() => {
       let quizzes = useQuizzesInCourse();
       let matchings = useMatchingsInCourse();
 
       return {
-        existing: (
-          quizzes.value.length > 0 || matchings.value.length > 0
-        ),
-        type: quizzes.value.length > 0 ? "Headings.Quizzes" : "Headings.Matchings", 
-      }
+        existing: quizzes.value.length > 0 || matchings.value.length > 0,
+        type: quizzes.value.length > 0 ? 'Headings.Quizzes' : 'Headings.Matchings',
+      };
     });
 
     return { emit, t, lastViewCourse, lastViewCourseInfo };

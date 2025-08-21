@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import Calendar from "~~/components/calendar/index.vue";
+import Calendar from '~~/components/calendar/index.vue';
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Calendar",
+    title: 'Calendar',
   },
   components: { Calendar },
   setup() {

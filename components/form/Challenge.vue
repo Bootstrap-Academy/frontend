@@ -29,11 +29,7 @@
       :rules="form.description.rules"
     />
 
-    <InputSelect
-      v-if="sortedSubskill?.length"
-      v-model="selectedSkill"
-      :options="sortedSubskill"
-    />
+    <InputSelect v-if="sortedSubskill?.length" v-model="selectedSkill" :options="sortedSubskill" />
 
     <div
       class="flex justify-between gap-3 items-center my-1"
@@ -41,7 +37,7 @@
       :key="i"
     >
       <li class="font-semibold text-subheading">
-        {{ skill.replace(/_/g, " ") }}
+        {{ skill.replace(/_/g, ' ') }}
       </li>
       <XMarkIcon
         @click="form.skills.value.splice(i, 1)"
@@ -55,16 +51,16 @@
         @click="fnDeleteChallenge()"
         v-if="(!!data && user.id == data?.creator) || (!!user.admin && !!data)"
       >
-        {{ t("Buttons.DeleteChallenge") }}
+        {{ t('Buttons.DeleteChallenge') }}
       </InputBtn>
 
       <InputBtn :loading="form.submitting" @click="onclickSubmitForm()">
         <span v-if="!!data">
-          {{ t("Buttons.UpdateChallenge") }}
+          {{ t('Buttons.UpdateChallenge') }}
         </span>
 
         <span v-else>
-          {{ t("Buttons.CreateChallenge") }}
+          {{ t('Buttons.CreateChallenge') }}
         </span>
       </InputBtn>
     </article>
@@ -72,12 +68,12 @@
 </template>
 
 <script lang="ts">
-import { TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { ref } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
-import type { IForm } from "~/types/form";
-import { useUser } from "~~/composables/user";
+import { TrashIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ref } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { IForm } from '~/types/form';
+import { useUser } from '~~/composables/user';
 
 export default {
   props: {
@@ -90,7 +86,7 @@ export default {
     const router = useRouter();
     const user: any = useUser();
     const rootSkillTree: any = useRootSkillTree();
-    const selectedSkill = ref("");
+    const selectedSkill = ref('');
     const subskillsArray: any = ref([]);
     // ============================================================= Handling Categories
     const challengesCategories = useChallengesCategories();
@@ -104,12 +100,12 @@ export default {
         rootSkillTree.value?.skills.forEach(async (skill: any) => {
           await fnGetSubSkillTree(skill.id);
         });
-      }
+      },
     );
 
     async function fnGetSubSkillTree(id: any) {
       const [success, error] = await getSubSkillTree(id);
-      console.log("successsss", success.skills);
+      console.log('successsss', success.skills);
       if (!success.skills.length) return;
       success.skills.forEach((subSkill: any) => {
         subskillsArray.value.push({
@@ -135,7 +131,7 @@ export default {
     });
 
     function setCategory(categoryID: string) {
-      console.log("setting", props?.data);
+      console.log('setting', props?.data);
       form.category.value = categoryID;
     }
 
@@ -145,16 +141,16 @@ export default {
     // ============================================================= reactive
     const form = reactive<IForm>({
       title: {
-        value: "",
+        value: '',
         valid: false,
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.Title",
-          (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 32 || "Error.InputMinLength_32",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Title',
+          (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
+          (v: string) => v.length <= 32 || 'Error.InputMinLength_32',
         ],
       },
       category: {
-        value: route?.params?.category ?? "",
+        value: route?.params?.category ?? '',
         valid: true,
         options: [],
       },
@@ -166,11 +162,11 @@ export default {
 
       description: {
         valid: false,
-        value: "",
+        value: '',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.Description",
-          (v: string) => v.length >= 10 || "Error.InputMinLength_10",
-          (v: string) => v.length <= 4096 || "Error.InputMaxLength_4096",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Description',
+          (v: string) => v.length >= 10 || 'Error.InputMinLength_10',
+          (v: string) => v.length <= 4096 || 'Error.InputMaxLength_4096',
         ],
       },
       submitting: false,
@@ -178,12 +174,7 @@ export default {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             console.log(key);
 
             isValid = false;
@@ -196,8 +187,7 @@ export default {
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -209,7 +199,7 @@ export default {
         if (!!props?.data) fnEditChallenge();
         else fnCreateChallenge();
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
@@ -226,15 +216,11 @@ export default {
 
     async function fnEditChallenge() {
       form.submitting = true;
-      const [success, error] = await updateChallenge(
-        props?.data.category,
-        props.data.id,
-        {
-          title: form.title.value,
-          description: form.description.value,
-          skills: form.skills.value,
-        }
-      );
+      const [success, error] = await updateChallenge(props?.data.category, props.data.id, {
+        title: form.title.value,
+        description: form.description.value,
+        skills: form.skills.value,
+      });
       form.submitting = false;
       success ? editSuccessHandler(success) : errorHandler(error);
     }
@@ -242,52 +228,48 @@ export default {
     function createSuccessHandler(res: any) {
       router.push(`/challenges/edit-${res.id}?category=${form.category.value}`);
       setTimeout(() => {
-        openSnackbar("success", "Success.CreatedChallenge");
+        openSnackbar('success', 'Success.CreatedChallenge');
       }, 1000);
     }
 
     function editSuccessHandler(res: any) {
-      openSnackbar("success", "Success.EditedChallenge");
+      openSnackbar('success', 'Success.EditedChallenge');
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar('error', res?.detail ?? '');
     }
 
     function fnDeleteChallenge() {
       openDialog(
-        "warning",
-        "Headings.DeleteChallenge",
-        "Body.DeleteChallenge",
+        'warning',
+        'Headings.DeleteChallenge',
+        'Body.DeleteChallenge',
         false,
         {
-          label: "Buttons.DeleteChallenge",
+          label: 'Buttons.DeleteChallenge',
           onclick: async () => {
-            const [success, error] = await deleteChallenge(
-              props.data?.category,
-              props.data?.id
-            );
-            if (!!success) openSnackbar("success", "Success.DeletedChallenge");
+            const [success, error] = await deleteChallenge(props.data?.category, props.data?.id);
+            if (!!success) openSnackbar('success', 'Success.DeletedChallenge');
             router.push(`/challenges/all?category=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
           },
         },
         {
-          label: "Buttons.Cancel",
+          label: 'Buttons.Cancel',
           onclick: () => {},
-        }
+        },
       );
-      console.log("delete");
+      console.log('delete');
     }
     function setFormData() {
-      console.log("set form data");
+      console.log('set form data');
       if (props.data != null) {
-        form.title.value = props?.data?.title ?? "";
-        form.description.value = props?.data?.description ?? "";
-        form.skills.value = props?.data?.skills ?? "";
+        form.title.value = props?.data?.title ?? '';
+        form.description.value = props?.data?.description ?? '';
+        form.skills.value = props?.data?.skills ?? '';
 
-        form.title.valid = props?.data.title.trim() != "" ? true : false;
-        form.description.valid =
-          props?.data.description.trim() != "" ? true : false;
+        form.title.valid = props?.data.title.trim() != '' ? true : false;
+        form.description.valid = props?.data.description.trim() != '' ? true : false;
         form.skills.valid = props?.data.skills.length > 0 ? true : false;
         form.category.valid = true;
       }
@@ -318,7 +300,7 @@ export default {
       () => {
         setFormData();
       },
-      { immediate: true }
+      { immediate: true },
     );
     // =============================================================  Handling Skill List
     watch(
@@ -327,7 +309,7 @@ export default {
         if (!form.skills.value.includes(newValue)) {
           form.skills.value.push(newValue);
         }
-      }
+      },
     );
 
     watch(
@@ -336,7 +318,7 @@ export default {
         if (!newValue) form.skills.valid = false;
         else form.skills.valid = true;
       },
-      { deep: true }
+      { deep: true },
     );
 
     onMounted(async () => {

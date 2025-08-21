@@ -14,13 +14,13 @@
 -->
 
 <template>
-	<main ref="aos" class="grid gap-container allow-scroll h-auto">
-		<HeroLanding class="pt-container" />
-		<HeroSponsors />
-		<HeroAbout class="pt-container" />
-		<HeroFeatures class="pt-container" />
-		<HeroFAQS class="pt-container mb-main pb-container" />
-	</main>
+  <main ref="aos" class="grid gap-container allow-scroll h-auto">
+    <HeroLanding class="pt-container" />
+    <HeroSponsors />
+    <HeroAbout class="pt-container" />
+    <HeroFeatures class="pt-container" />
+    <HeroFAQS class="pt-container mb-main pb-container" />
+  </main>
 </template>
 
 <script lang="ts">

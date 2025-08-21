@@ -1,28 +1,25 @@
 <template>
-	<article>
-		<label
-			v-if="label"
-			class="text-body text-body-2 font-body mb-2 md:mb-1 block"
-		>
-			{{ t(label) }}
-		</label>
-		<article class="flex gap-2 relative z-3">
-			<StarIcon
-				v-for="n in 5"
-				:key="n"
-				class="flex-shrink-0 w-6 h-6 md:w-10 md:h-10 cursor-pointer"
-				:class="[n <= input ? theme.text : 'text-subheading']"
-				@click="input = n"
-			/>
-		</article>
+  <article>
+    <label v-if="label" class="text-body text-body-2 font-body mb-2 md:mb-1 block">
+      {{ t(label) }}
+    </label>
+    <article class="flex gap-2 relative z-3">
+      <StarIcon
+        v-for="n in 5"
+        :key="n"
+        class="flex-shrink-0 w-6 h-6 md:w-10 md:h-10 cursor-pointer"
+        :class="[n <= input ? theme.text : 'text-subheading']"
+        @click="input = n"
+      />
+    </article>
 
-		<p
-			class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
-			:class="error ? 'opacity-100' : 'opacity-0'"
-		>
-			{{ error }}.
-		</p>
-	</article>
+    <p
+      class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
+      :class="error ? 'opacity-100' : 'opacity-0'"
+    >
+      {{ error }}.
+    </p>
+  </article>
 </template>
 
 <script lang="ts">

@@ -21,42 +21,39 @@
 -->
 
 <template>
-	<main
-		class="container-fluid flex flex-col midXl:flex-row items-center justify-center midXl:justify-between gap-container mt-container mb-container"
-	>
-		<section class="grid gap-card midXl:min-w-[350px]" ref="staggeringAOS">
-			<SectionTitle
-				size="lg"
-				:subheading="title.subheading"
-				:heading="title.heading"
-				:body="title.body"
-				class="mb-card"
-			/>
+  <main
+    class="container-fluid flex flex-col midXl:flex-row items-center justify-center midXl:justify-between gap-container mt-container mb-container"
+  >
+    <section class="grid gap-card midXl:min-w-[350px]" ref="staggeringAOS">
+      <SectionTitle
+        size="lg"
+        :subheading="title.subheading"
+        :heading="title.heading"
+        :body="title.body"
+        class="mb-card"
+      />
 
-			<article
-				v-for="({ icon, body }, i) of contactInfo"
-				:key="i"
-				class="grid grid-cols-[auto_1fr] gap-x-6"
-			>
-				<div class="bg-tertiary p-3 lg:p-4 rounded-lg h-fit w-fit row-span-2">
-					<component
-						class="w-5 h-5 xl:w-6 xl:h-6 text-accent"
-						:is="icon"
-					></component>
-				</div>
-				<p class="font-body text-subheading text-heading-5">
-					{{ t(`List.Contact.${i + 1}.Heading`) }}
-				</p>
-				<h6 class="font-heading text-heading-4">
-					{{ body }}
-				</h6>
-			</article>
-		</section>
+      <article
+        v-for="({ icon, body }, i) of contactInfo"
+        :key="i"
+        class="grid grid-cols-[auto_1fr] gap-x-6"
+      >
+        <div class="bg-tertiary p-3 lg:p-4 rounded-lg h-fit w-fit row-span-2">
+          <component class="w-5 h-5 xl:w-6 xl:h-6 text-accent" :is="icon"></component>
+        </div>
+        <p class="font-body text-subheading text-heading-5">
+          {{ t(`List.Contact.${i + 1}.Heading`) }}
+        </p>
+        <h6 class="font-heading text-heading-4">
+          {{ body }}
+        </h6>
+      </article>
+    </section>
 
-		<section class="container-form h-fit">
-			<FormContact />
-		</section>
-	</main>
+    <section class="container-form h-fit">
+      <FormContact />
+    </section>
+  </main>
 </template>
 
 <script lang="ts">

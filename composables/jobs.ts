@@ -58,11 +58,7 @@ export async function getFilteredJobs(filters: any[]) {
         });
       } else if (typeof filters[key] == 'boolean' && filters[key] == true) {
         query = query + `${key}=${filters[key]}&`;
-      } else if (
-        typeof filters[key] == 'string' &&
-				!!filters[key] &&
-				filters[key] != '---'
-      ) {
+      } else if (typeof filters[key] == 'string' && !!filters[key] && filters[key] != '---') {
         query = query + `${key}=${filters[key]}&`;
       } else if (typeof filters[key] == 'number' && filters[key] != -1) {
         query = query + `${key}=${filters[key]}&`;

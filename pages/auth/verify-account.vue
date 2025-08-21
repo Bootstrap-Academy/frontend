@@ -38,7 +38,7 @@
         />
 
         <NuxtLink to="/profile">
-          <Btn>{{ $t("Links.GoToProfile") }}</Btn>
+          <Btn>{{ $t('Links.GoToProfile') }}</Btn>
         </NuxtLink>
       </article>
 
@@ -58,15 +58,15 @@
 
 <script>
 definePageMeta({
-  layout: "inner",
+  layout: 'inner',
 });
 
 export default {
   head: {
-    title: "Verify Account",
+    title: 'Verify Account',
   },
   setup() {
-    const status = ref("");
+    const status = ref('');
 
     return { status };
   },

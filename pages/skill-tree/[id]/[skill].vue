@@ -1,42 +1,71 @@
 <template>
   <main
-    class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container">
-
+    class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container"
+  >
     <Head>
       <Title>Skill Details - {{ skillName }}</Title>
     </Head>
 
-    <SkillTreeHeader class="pt-card lg:col-span-3 justify-self-start h-fit" :absolute="false" no-zoom-level
-      :breadcrumbs="breadcrumbs" />
+    <SkillTreeHeader
+      class="pt-card lg:col-span-3 justify-self-start h-fit"
+      :absolute="false"
+      no-zoom-level
+      :breadcrumbs="breadcrumbs"
+    />
 
-    <SkillTreeNodeDetailsStepper class="h-fit" :subSkillID="subSkillID" :skillID="rootSkillID"
-      :activeStepper="activeStepper" @activeStepper="activeStepper = $event" :courses="courses" :coachings="coachings"
-      :webinars="webinars" :quizzes="quizzes" :matchings="matchings" />
+    <SkillTreeNodeDetailsStepper
+      class="h-fit"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
+      :activeStepper="activeStepper"
+      @activeStepper="activeStepper = $event"
+      :courses="courses"
+      :coachings="coachings"
+      :webinars="webinars"
+      :quizzes="quizzes"
+      :matchings="matchings"
+    />
     <div class="h-fit">
-      <SkillTreeNodeSvg :size="nodeSize" :node="subSkill" :active="true" :completed="subSkill?.completed ?? false"
-        class="mx-auto" :navigate="false" :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
+      <SkillTreeNodeSvg
+        :size="nodeSize"
+        :node="subSkill"
+        :active="true"
+        :completed="subSkill?.completed ?? false"
+        class="mx-auto"
+        :navigate="false"
+        :isBookmarked="isNodeBookmarked"
+        @bookmarked="toggleBookmark"
+      />
       <h6 class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm">
-        {{ subSkill?.name ?? "" }}
+        {{ subSkill?.name ?? '' }}
       </h6>
     </div>
 
-    <SkillTreeNodeDetailsStepperContent class="h-fit" :activeStepper="activeStepper" :subSkillID="subSkillID"
-      :skillID="rootSkillID" :courses="courses" :coachings="coachings" :webinars="webinars" :quizzes="quizzes"
-      :matchings="matchings" />
+    <SkillTreeNodeDetailsStepperContent
+      class="h-fit"
+      :activeStepper="activeStepper"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
+      :courses="courses"
+      :coachings="coachings"
+      :webinars="webinars"
+      :quizzes="quizzes"
+      :matchings="matchings"
+    />
   </main>
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
-import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
+import { useI18n } from 'vue-i18n';
+import { getQuizzesInSkill, useQuizzes } from '~~/composables/quizzes';
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 export default defineComponent({
   head: {
-    title: "Sub Skill Details",
+    title: 'Sub Skill Details',
   },
   setup() {
     const { t } = useI18n();
@@ -54,10 +83,10 @@ export default defineComponent({
     const matchings = useMatchings();
     const route = useRoute();
 
-    const rootSkillID = computed(() => <string>(route?.params?.id ?? ""));
-    const subTreeName = computed(() => rootSkillID.value.replace(/_/g, " "));
-    const subSkillID = computed(() => <string>(route?.params?.skill ?? ""));
-    const skillName = computed(() => subSkillID.value.replace(/_/g, " "));
+    const rootSkillID = computed(() => <string>(route?.params?.id ?? ''));
+    const subTreeName = computed(() => rootSkillID.value.replace(/_/g, ' '));
+    const subSkillID = computed(() => <string>(route?.params?.skill ?? ''));
+    const skillName = computed(() => subSkillID.value.replace(/_/g, ' '));
 
     const subSkill = computed(() => {
       let skills: any[] = subSkillTree.value?.skills ?? [];
@@ -71,8 +100,8 @@ export default defineComponent({
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
-          to: "/skill-tree",
+          label: 'Headings.RootSkillTree',
+          to: '/skill-tree',
         },
         {
           label: subTreeName.value,
@@ -117,14 +146,14 @@ export default defineComponent({
         isNodeBookmarked.value = isBookmarked;
       } catch (error) {
         isNodeBookmarked.value = !isBookmarked;
-        console.error(`Bookmark ${isBookmarked ? "creation" : "deletion"} failed!`);
+        console.error(`Bookmark ${isBookmarked ? 'creation' : 'deletion'} failed!`);
       }
     }
 
     onMounted(async () => {
       if (window) {
         updateWindowWidth();
-        window.addEventListener("resize", updateWindowWidth);
+        window.addEventListener('resize', updateWindowWidth);
       }
 
       courses.value = [];
@@ -146,7 +175,7 @@ export default defineComponent({
 
     onUnmounted(() => {
       if (window) {
-        window.removeEventListener("resize", updateWindowWidth);
+        window.removeEventListener('resize', updateWindowWidth);
       }
     });
 
@@ -167,7 +196,7 @@ export default defineComponent({
       quizzes,
       matchings,
       toggleBookmark,
-      isNodeBookmarked
+      isNodeBookmarked,
     };
   },
 });

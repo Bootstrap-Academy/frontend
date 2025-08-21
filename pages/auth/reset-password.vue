@@ -18,21 +18,21 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form">
-			<SectionTitle
-				center
-				subheading="Buttons.ResetPassword"
-				heading="Forms.ResetPassword"
-				body="Body.ResetPassword"
-				size="sm"
-				class="mb-card"
-			/>
-			<FormResetPassword />
-		</section>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <section class="container-form">
+      <SectionTitle
+        center
+        subheading="Buttons.ResetPassword"
+        heading="Forms.ResetPassword"
+        body="Body.ResetPassword"
+        size="sm"
+        class="mb-card"
+      />
+      <FormResetPassword />
+    </section>
+  </section>
 </template>
 
 <script>

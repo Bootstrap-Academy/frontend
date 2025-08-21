@@ -1,28 +1,25 @@
 <template>
-	<div>
-		<Modal v-if="!agreed && route.name != 'docs-privacy'">
-			<Dialog
-				:dialog="dialog"
-				role="dialog"
-				aria-labelledby="cookie-dialog-title"
-				aria-describedby="cookie-dialog-description"
-				aria-modal="true"
-			>
-				<template #content="{ t }">
-					<p id="cookie-dialog-description" class="text-body-1 text-body font-body m-0 mt-box">
-						{{ t('Body.CookiePolicy') }}
+  <div>
+    <Modal v-if="!agreed && route.name != 'docs-privacy'">
+      <Dialog
+        :dialog="dialog"
+        role="dialog"
+        aria-labelledby="cookie-dialog-title"
+        aria-describedby="cookie-dialog-description"
+        aria-modal="true"
+      >
+        <template #content="{ t }">
+          <p id="cookie-dialog-description" class="text-body-1 text-body font-body m-0 mt-box">
+            {{ t('Body.CookiePolicy') }}
 
-						<NuxtLink
-							to="/docs/privacy"
-							class="underline-link w-fit inline-block"
-						>
-							{{ t('Body.CookiePolicyLink') }}
-						</NuxtLink>
-					</p>
-				</template>
-			</Dialog>
-		</Modal>
-	</div>
+            <NuxtLink to="/docs/privacy" class="underline-link w-fit inline-block">
+              {{ t('Body.CookiePolicyLink') }}
+            </NuxtLink>
+          </p>
+        </template>
+      </Dialog>
+    </Modal>
+  </div>
 </template>
 
 <script lang="ts">
@@ -54,9 +51,7 @@ export default defineComponent({
       };
     });
 
-    const cookie_agreedToCookiePolicy = useCookie<boolean>(
-      'agreedToCookiePolicy'
-    );
+    const cookie_agreedToCookiePolicy = useCookie<boolean>('agreedToCookiePolicy');
 
     const router = useRouter();
     const route = useRoute();

@@ -789,8 +789,7 @@ export default {};
 }
 
 .svg-elem-1 {
-  -webkit-animation: animate-svg-stroke-1 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0s both;
+  -webkit-animation: animate-svg-stroke-1 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0s both;
   animation: animate-svg-stroke-1 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0s both;
 }
 
@@ -819,10 +818,8 @@ export default {};
 }
 
 .svg-elem-2 {
-  -webkit-animation: animate-svg-stroke-2 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.12s both;
-  animation: animate-svg-stroke-2 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.12s
-    both;
+  -webkit-animation: animate-svg-stroke-2 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.12s both;
+  animation: animate-svg-stroke-2 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.12s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-3 {
@@ -850,10 +847,8 @@ export default {};
 }
 
 .svg-elem-3 {
-  -webkit-animation: animate-svg-stroke-3 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.24s both;
-  animation: animate-svg-stroke-3 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.24s
-    both;
+  -webkit-animation: animate-svg-stroke-3 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.24s both;
+  animation: animate-svg-stroke-3 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.24s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-4 {
@@ -881,10 +876,8 @@ export default {};
 }
 
 .svg-elem-4 {
-  -webkit-animation: animate-svg-stroke-4 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.36s both;
-  animation: animate-svg-stroke-4 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.36s
-    both;
+  -webkit-animation: animate-svg-stroke-4 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.36s both;
+  animation: animate-svg-stroke-4 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.36s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-5 {
@@ -912,10 +905,8 @@ export default {};
 }
 
 .svg-elem-5 {
-  -webkit-animation: animate-svg-stroke-5 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.48s both;
-  animation: animate-svg-stroke-5 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.48s
-    both;
+  -webkit-animation: animate-svg-stroke-5 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.48s both;
+  animation: animate-svg-stroke-5 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.48s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-6 {
@@ -943,10 +934,8 @@ export default {};
 }
 
 .svg-elem-6 {
-  -webkit-animation: animate-svg-stroke-6 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.6s both;
-  animation: animate-svg-stroke-6 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.6s
-    both;
+  -webkit-animation: animate-svg-stroke-6 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.6s both;
+  animation: animate-svg-stroke-6 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.6s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-7 {
@@ -974,10 +963,8 @@ export default {};
 }
 
 .svg-elem-7 {
-  -webkit-animation: animate-svg-stroke-7 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.72s both;
-  animation: animate-svg-stroke-7 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.72s
-    both;
+  -webkit-animation: animate-svg-stroke-7 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.72s both;
+  animation: animate-svg-stroke-7 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.72s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-8 {
@@ -1005,10 +992,8 @@ export default {};
 }
 
 .svg-elem-8 {
-  -webkit-animation: animate-svg-stroke-8 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.84s both;
-  animation: animate-svg-stroke-8 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.84s
-    both;
+  -webkit-animation: animate-svg-stroke-8 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.84s both;
+  animation: animate-svg-stroke-8 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.84s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-9 {
@@ -1036,10 +1021,8 @@ export default {};
 }
 
 .svg-elem-9 {
-  -webkit-animation: animate-svg-stroke-9 1s cubic-bezier(0.47, 0, 0.745, 0.715)
-    0.96s both;
-  animation: animate-svg-stroke-9 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.96s
-    both;
+  -webkit-animation: animate-svg-stroke-9 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.96s both;
+  animation: animate-svg-stroke-9 1s cubic-bezier(0.47, 0, 0.745, 0.715) 0.96s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-10 {
@@ -1067,10 +1050,8 @@ export default {};
 }
 
 .svg-elem-10 {
-  -webkit-animation: animate-svg-stroke-10 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.08s both;
-  animation: animate-svg-stroke-10 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.08s
-    both;
+  -webkit-animation: animate-svg-stroke-10 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.08s both;
+  animation: animate-svg-stroke-10 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.08s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-11 {
@@ -1098,10 +1079,8 @@ export default {};
 }
 
 .svg-elem-11 {
-  -webkit-animation: animate-svg-stroke-11 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.2s both;
-  animation: animate-svg-stroke-11 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.2s
-    both;
+  -webkit-animation: animate-svg-stroke-11 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.2s both;
+  animation: animate-svg-stroke-11 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.2s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-12 {
@@ -1129,10 +1108,9 @@ export default {};
 }
 
 .svg-elem-12 {
-  -webkit-animation: animate-svg-stroke-12 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.3199999999999998s both;
-  animation: animate-svg-stroke-12 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-12 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     1.3199999999999998s both;
+  animation: animate-svg-stroke-12 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.3199999999999998s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-13 {
@@ -1160,10 +1138,8 @@ export default {};
 }
 
 .svg-elem-13 {
-  -webkit-animation: animate-svg-stroke-13 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.44s both;
-  animation: animate-svg-stroke-13 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.44s
-    both;
+  -webkit-animation: animate-svg-stroke-13 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.44s both;
+  animation: animate-svg-stroke-13 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.44s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-14 {
@@ -1191,10 +1167,8 @@ export default {};
 }
 
 .svg-elem-14 {
-  -webkit-animation: animate-svg-stroke-14 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.56s both;
-  animation: animate-svg-stroke-14 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.56s
-    both;
+  -webkit-animation: animate-svg-stroke-14 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.56s both;
+  animation: animate-svg-stroke-14 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.56s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-15 {
@@ -1222,10 +1196,8 @@ export default {};
 }
 
 .svg-elem-15 {
-  -webkit-animation: animate-svg-stroke-15 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.68s both;
-  animation: animate-svg-stroke-15 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.68s
-    both;
+  -webkit-animation: animate-svg-stroke-15 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.68s both;
+  animation: animate-svg-stroke-15 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.68s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-16 {
@@ -1253,10 +1225,9 @@ export default {};
 }
 
 .svg-elem-16 {
-  -webkit-animation: animate-svg-stroke-16 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.7999999999999998s both;
-  animation: animate-svg-stroke-16 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-16 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     1.7999999999999998s both;
+  animation: animate-svg-stroke-16 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.7999999999999998s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-17 {
@@ -1284,10 +1255,8 @@ export default {};
 }
 
 .svg-elem-17 {
-  -webkit-animation: animate-svg-stroke-17 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 1.92s both;
-  animation: animate-svg-stroke-17 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.92s
-    both;
+  -webkit-animation: animate-svg-stroke-17 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.92s both;
+  animation: animate-svg-stroke-17 1s cubic-bezier(0.47, 0, 0.745, 0.715) 1.92s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-18 {
@@ -1315,10 +1284,8 @@ export default {};
 }
 
 .svg-elem-18 {
-  -webkit-animation: animate-svg-stroke-18 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.04s both;
-  animation: animate-svg-stroke-18 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.04s
-    both;
+  -webkit-animation: animate-svg-stroke-18 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.04s both;
+  animation: animate-svg-stroke-18 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.04s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-19 {
@@ -1346,10 +1313,8 @@ export default {};
 }
 
 .svg-elem-19 {
-  -webkit-animation: animate-svg-stroke-19 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.16s both;
-  animation: animate-svg-stroke-19 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.16s
-    both;
+  -webkit-animation: animate-svg-stroke-19 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.16s both;
+  animation: animate-svg-stroke-19 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.16s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-20 {
@@ -1377,10 +1342,8 @@ export default {};
 }
 
 .svg-elem-20 {
-  -webkit-animation: animate-svg-stroke-20 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.28s both;
-  animation: animate-svg-stroke-20 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.28s
-    both;
+  -webkit-animation: animate-svg-stroke-20 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.28s both;
+  animation: animate-svg-stroke-20 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.28s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-21 {
@@ -1408,10 +1371,8 @@ export default {};
 }
 
 .svg-elem-21 {
-  -webkit-animation: animate-svg-stroke-21 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.4s both;
-  animation: animate-svg-stroke-21 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.4s
-    both;
+  -webkit-animation: animate-svg-stroke-21 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.4s both;
+  animation: animate-svg-stroke-21 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.4s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-22 {
@@ -1439,10 +1400,8 @@ export default {};
 }
 
 .svg-elem-22 {
-  -webkit-animation: animate-svg-stroke-22 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.52s both;
-  animation: animate-svg-stroke-22 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.52s
-    both;
+  -webkit-animation: animate-svg-stroke-22 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.52s both;
+  animation: animate-svg-stroke-22 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.52s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-23 {
@@ -1470,10 +1429,9 @@ export default {};
 }
 
 .svg-elem-23 {
-  -webkit-animation: animate-svg-stroke-23 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.6399999999999997s both;
-  animation: animate-svg-stroke-23 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-23 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     2.6399999999999997s both;
+  animation: animate-svg-stroke-23 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.6399999999999997s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-24 {
@@ -1501,10 +1459,8 @@ export default {};
 }
 
 .svg-elem-24 {
-  -webkit-animation: animate-svg-stroke-24 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.76s both;
-  animation: animate-svg-stroke-24 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.76s
-    both;
+  -webkit-animation: animate-svg-stroke-24 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.76s both;
+  animation: animate-svg-stroke-24 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.76s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-25 {
@@ -1532,10 +1488,8 @@ export default {};
 }
 
 .svg-elem-25 {
-  -webkit-animation: animate-svg-stroke-25 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 2.88s both;
-  animation: animate-svg-stroke-25 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.88s
-    both;
+  -webkit-animation: animate-svg-stroke-25 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.88s both;
+  animation: animate-svg-stroke-25 1s cubic-bezier(0.47, 0, 0.745, 0.715) 2.88s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-26 {
@@ -1563,10 +1517,8 @@ export default {};
 }
 
 .svg-elem-26 {
-  -webkit-animation: animate-svg-stroke-26 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3s both;
-  animation: animate-svg-stroke-26 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3s
-    both;
+  -webkit-animation: animate-svg-stroke-26 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3s both;
+  animation: animate-svg-stroke-26 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-27 {
@@ -1594,10 +1546,8 @@ export default {};
 }
 
 .svg-elem-27 {
-  -webkit-animation: animate-svg-stroke-27 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.12s both;
-  animation: animate-svg-stroke-27 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.12s
-    both;
+  -webkit-animation: animate-svg-stroke-27 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.12s both;
+  animation: animate-svg-stroke-27 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.12s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-28 {
@@ -1625,10 +1575,9 @@ export default {};
 }
 
 .svg-elem-28 {
-  -webkit-animation: animate-svg-stroke-28 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.2399999999999998s both;
-  animation: animate-svg-stroke-28 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-28 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     3.2399999999999998s both;
+  animation: animate-svg-stroke-28 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.2399999999999998s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-29 {
@@ -1656,10 +1605,8 @@ export default {};
 }
 
 .svg-elem-29 {
-  -webkit-animation: animate-svg-stroke-29 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.36s both;
-  animation: animate-svg-stroke-29 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.36s
-    both;
+  -webkit-animation: animate-svg-stroke-29 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.36s both;
+  animation: animate-svg-stroke-29 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.36s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-30 {
@@ -1687,10 +1634,8 @@ export default {};
 }
 
 .svg-elem-30 {
-  -webkit-animation: animate-svg-stroke-30 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.48s both;
-  animation: animate-svg-stroke-30 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.48s
-    both;
+  -webkit-animation: animate-svg-stroke-30 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.48s both;
+  animation: animate-svg-stroke-30 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.48s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-31 {
@@ -1718,10 +1663,9 @@ export default {};
 }
 
 .svg-elem-31 {
-  -webkit-animation: animate-svg-stroke-31 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.5999999999999996s both;
-  animation: animate-svg-stroke-31 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-31 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     3.5999999999999996s both;
+  animation: animate-svg-stroke-31 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.5999999999999996s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-32 {
@@ -1749,10 +1693,9 @@ export default {};
 }
 
 .svg-elem-32 {
-  -webkit-animation: animate-svg-stroke-32 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.7199999999999998s both;
-  animation: animate-svg-stroke-32 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-32 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     3.7199999999999998s both;
+  animation: animate-svg-stroke-32 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.7199999999999998s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-33 {
@@ -1780,10 +1723,8 @@ export default {};
 }
 
 .svg-elem-33 {
-  -webkit-animation: animate-svg-stroke-33 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.84s both;
-  animation: animate-svg-stroke-33 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.84s
-    both;
+  -webkit-animation: animate-svg-stroke-33 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.84s both;
+  animation: animate-svg-stroke-33 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.84s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-34 {
@@ -1811,10 +1752,8 @@ export default {};
 }
 
 .svg-elem-34 {
-  -webkit-animation: animate-svg-stroke-34 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 3.96s both;
-  animation: animate-svg-stroke-34 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.96s
-    both;
+  -webkit-animation: animate-svg-stroke-34 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.96s both;
+  animation: animate-svg-stroke-34 1s cubic-bezier(0.47, 0, 0.745, 0.715) 3.96s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-35 {
@@ -1842,10 +1781,8 @@ export default {};
 }
 
 .svg-elem-35 {
-  -webkit-animation: animate-svg-stroke-35 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.08s both;
-  animation: animate-svg-stroke-35 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.08s
-    both;
+  -webkit-animation: animate-svg-stroke-35 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.08s both;
+  animation: animate-svg-stroke-35 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.08s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-36 {
@@ -1873,10 +1810,8 @@ export default {};
 }
 
 .svg-elem-36 {
-  -webkit-animation: animate-svg-stroke-36 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.2s both;
-  animation: animate-svg-stroke-36 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.2s
-    both;
+  -webkit-animation: animate-svg-stroke-36 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.2s both;
+  animation: animate-svg-stroke-36 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.2s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-37 {
@@ -1904,10 +1839,8 @@ export default {};
 }
 
 .svg-elem-37 {
-  -webkit-animation: animate-svg-stroke-37 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.32s both;
-  animation: animate-svg-stroke-37 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.32s
-    both;
+  -webkit-animation: animate-svg-stroke-37 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.32s both;
+  animation: animate-svg-stroke-37 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.32s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-38 {
@@ -1935,10 +1868,9 @@ export default {};
 }
 
 .svg-elem-38 {
-  -webkit-animation: animate-svg-stroke-38 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.4399999999999995s both;
-  animation: animate-svg-stroke-38 1s cubic-bezier(0.47, 0, 0.745, 0.715)
+  -webkit-animation: animate-svg-stroke-38 1s cubic-bezier(0.47, 0, 0.745, 0.715)
     4.4399999999999995s both;
+  animation: animate-svg-stroke-38 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.4399999999999995s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-39 {
@@ -1966,10 +1898,8 @@ export default {};
 }
 
 .svg-elem-39 {
-  -webkit-animation: animate-svg-stroke-39 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.56s both;
-  animation: animate-svg-stroke-39 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.56s
-    both;
+  -webkit-animation: animate-svg-stroke-39 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.56s both;
+  animation: animate-svg-stroke-39 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.56s both;
 }
 
 @-webkit-keyframes animate-svg-stroke-40 {
@@ -1997,9 +1927,7 @@ export default {};
 }
 
 .svg-elem-40 {
-  -webkit-animation: animate-svg-stroke-40 1s
-    cubic-bezier(0.47, 0, 0.745, 0.715) 4.68s both;
-  animation: animate-svg-stroke-40 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.68s
-    both;
+  -webkit-animation: animate-svg-stroke-40 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.68s both;
+  animation: animate-svg-stroke-40 1s cubic-bezier(0.47, 0, 0.745, 0.715) 4.68s both;
 }
 </style>

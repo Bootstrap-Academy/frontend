@@ -16,29 +16,25 @@
 -->
 
 <template>
-	<main class="container mt-main mb-main grid gap-container">
-		<section
-			v-for="{ heading, body, skills } of rootSkillsProgress"
-			:key="heading"
-			class="card style-card bg-secondary grid gap-card-sm"
-		>
-			<SectionTitle sub :heading="heading" :body="body" class="mb-0" />
+  <main class="container mt-main mb-main grid gap-container">
+    <section
+      v-for="{ heading, body, skills } of rootSkillsProgress"
+      :key="heading"
+      class="card style-card bg-secondary grid gap-card-sm"
+    >
+      <SectionTitle sub :heading="heading" :body="body" class="mb-0" />
 
-			<template v-if="loading">
-				<SkillTreeProgressSkeleton v-for="n in 3" :key="n" />
-			</template>
+      <template v-if="loading">
+        <SkillTreeProgressSkeleton v-for="n in 3" :key="n" />
+      </template>
 
-			<template v-else-if="skills && skills.length > 0">
-				<SkillTreeProgress
-					v-for="(skill, i) of skills"
-					:key="`${heading}-${i}`"
-					:data="skill"
-				/>
-			</template>
+      <template v-else-if="skills && skills.length > 0">
+        <SkillTreeProgress v-for="(skill, i) of skills" :key="`${heading}-${i}`" :data="skill" />
+      </template>
 
-			<SkillTreeProgressEmptyState v-else />
-		</section>
-	</main>
+      <SkillTreeProgressEmptyState v-else />
+    </section>
+  </main>
 </template>
 
 <script lang="ts">
@@ -81,14 +77,12 @@ export default {
     });
 
     function getRootSkillInformation(rootSkillID: string) {
-      let rootSkill = rootSkills.value.find(
-        (item) => item.skill == rootSkillID
-      );
+      let rootSkill = rootSkills.value.find((item) => item.skill == rootSkillID);
 
       return !!rootSkill
         ? {
-          ...rootSkill,
-				  }
+            ...rootSkill,
+          }
         : null;
     }
 
@@ -97,14 +91,12 @@ export default {
 
       if (!!!rootSkill) return null;
 
-      let subSkill = (rootSkill?.skills ?? []).find(
-        (item: any) => item.skill == subSkillID
-      );
+      let subSkill = (rootSkill?.skills ?? []).find((item: any) => item.skill == subSkillID);
 
       return !!subSkill
         ? {
-          ...subSkill,
-				  }
+            ...subSkill,
+          }
         : null;
     }
 
@@ -118,9 +110,7 @@ export default {
         {
           heading: 'Headings.CompletedSkills',
           body: 'Body.CompletedSkills',
-          skills: rootSkills.value.filter(
-            (skill: any) => skill.progress == 100
-          ),
+          skills: rootSkills.value.filter((skill: any) => skill.progress == 100),
         },
         {
           heading: 'Headings.OtherSkills',

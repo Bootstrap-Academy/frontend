@@ -1,17 +1,12 @@
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form max-w-3xl">
-			<SectionTitle
-				center
-				heading="Headings.CreateQuiz"
-				size="sm"
-				class="mb-card mx-auto"
-			/>
-			<FormQuiz :data="quiz" />
-		</section>
-	</section>
+  <section
+    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+  >
+    <section class="container-form max-w-3xl">
+      <SectionTitle center heading="Headings.CreateQuiz" size="sm" class="mb-card mx-auto" />
+      <FormQuiz :data="quiz" />
+    </section>
+  </section>
 </template>
 
 <script lang="ts">

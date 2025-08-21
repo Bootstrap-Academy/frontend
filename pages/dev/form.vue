@@ -1,156 +1,141 @@
 <template>
-	<main class="container pt-container pb-container flex justify-center">
-		<div class="container-form max-w-4xl">
-			<form
-				class="flex flex-col gap-box"
-				:class="{ 'form-submitting': form.submitting }"
-				@submit.prevent="onclickSubmitForm"
-				ref="refForm"
-			>
-				<InputTime />
-				
-				<InputMedia
-					class="mx-auto"
-					id="image"
-					rounded
-					v-model="form.image.url"
-					@file="form.image.value = $event"
-					@valid="form.image.valid = $event"
-				>
-					<template #hint="{ t }">
-						{{ t('Links.GravatarImage') }}
-						<a
-							href="https://de.gravatar.com/"
-							target="_blank"
-							class="cursor-pointer"
-						>
-							gravatar.com
-						</a>
-					</template>
-				</InputMedia>
+  <main class="container pt-container pb-container flex justify-center">
+    <div class="container-form max-w-4xl">
+      <form
+        class="flex flex-col gap-box"
+        :class="{ 'form-submitting': form.submitting }"
+        @submit.prevent="onclickSubmitForm"
+        ref="refForm"
+      >
+        <InputTime />
 
-				<InputMedia
-					label="Inputs.CourseVideo"
-					class="mx-auto"
-					id="video"
-					video
-					v-model="form.video.url"
-					@file="form.video.value = $event"
-					@valid="form.video.valid = $event"
-				/>
+        <InputMedia
+          class="mx-auto"
+          id="image"
+          rounded
+          v-model="form.image.url"
+          @file="form.image.value = $event"
+          @valid="form.image.valid = $event"
+        >
+          <template #hint="{ t }">
+            {{ t('Links.GravatarImage') }}
+            <a href="https://de.gravatar.com/" target="_blank" class="cursor-pointer">
+              gravatar.com
+            </a>
+          </template>
+        </InputMedia>
 
-				<Input
-					label="Inputs.Name"
-					v-model="form.name.value"
-					@valid="form.name.valid = $event"
-					:rules="form.name.rules"
-				/>
-				<Input
-					label="Inputs.EmailAddress"
-					type="email"
-					v-model="form.email.value"
-					@valid="form.email.valid = $event"
-					:rules="form.email.rules"
-				/>
-				<Input
-					label="Inputs.Password"
-					type="password"
-					v-model="form.password.value"
-					@valid="form.password.valid = $event"
-					:rules="form.password.rules"
-				/>
-				<InputTextarea
-					label="Inputs.About"
-					v-model="form.about.value"
-					@valid="form.about.valid = $event"
-					:rules="form.about.rules"
-					:max="100"
-				/>
+        <InputMedia
+          label="Inputs.CourseVideo"
+          class="mx-auto"
+          id="video"
+          video
+          v-model="form.video.url"
+          @file="form.video.value = $event"
+          @valid="form.video.valid = $event"
+        />
 
-				<InputTags
-					label="Inputs.Tags"
-					v-model="form.tags.value"
-					@valid="form.tags.valid = $event"
-					:rules="form.tags.rules"
-				/>
+        <Input
+          label="Inputs.Name"
+          v-model="form.name.value"
+          @valid="form.name.valid = $event"
+          :rules="form.name.rules"
+        />
+        <Input
+          label="Inputs.EmailAddress"
+          type="email"
+          v-model="form.email.value"
+          @valid="form.email.valid = $event"
+          :rules="form.email.rules"
+        />
+        <Input
+          label="Inputs.Password"
+          type="password"
+          v-model="form.password.value"
+          @valid="form.password.valid = $event"
+          :rules="form.password.rules"
+        />
+        <InputTextarea
+          label="Inputs.About"
+          v-model="form.about.value"
+          @valid="form.about.valid = $event"
+          :rules="form.about.rules"
+          :max="100"
+        />
 
-				<InputRange
-					:min="form.salary.min"
-					:max="form.salary.max"
-					:reduce="0"
-					sm
-					v-model="form.salary.value"
-				/>
+        <InputTags
+          label="Inputs.Tags"
+          v-model="form.tags.value"
+          @valid="form.tags.valid = $event"
+          :rules="form.tags.rules"
+        />
 
-				<InputSwitch label="Inputs.Remote" v-model="form.remote.value" />
+        <InputRange
+          :min="form.salary.min"
+          :max="form.salary.max"
+          :reduce="0"
+          sm
+          v-model="form.salary.value"
+        />
 
-				<InputSelect
-					id="select_1"
-					:options="form.sort.options"
-					btn-type
-					v-model="form.sort.value"
-				/>
+        <InputSwitch label="Inputs.Remote" v-model="form.remote.value" />
 
-				<InputSelect
-					id="select_2"
-					:options="form.sort.options"
-					v-model="form.sort.value"
-				/>
-				<InputSelect
-					id="select_3"
-					sm
-					:options="form.sort.options"
-					btn-type
-					v-model="form.sort.value"
-				/>
+        <InputSelect
+          id="select_1"
+          :options="form.sort.options"
+          btn-type
+          v-model="form.sort.value"
+        />
 
-				<InputSelect
-					id="select_4"
-					sm
-					:options="form.sort.options"
-					v-model="form.sort.value"
-				/>
+        <InputSelect id="select_2" :options="form.sort.options" v-model="form.sort.value" />
+        <InputSelect
+          id="select_3"
+          sm
+          :options="form.sort.options"
+          btn-type
+          v-model="form.sort.value"
+        />
 
-				<InputOTP
-					label="Inputs.MFACode"
-					v-model="form.mfa_code.value"
-					@valid="form.mfa_code.valid = $event"
-					:rules="form.mfa_code.rules"
-				/>
+        <InputSelect id="select_4" sm :options="form.sort.options" v-model="form.sort.value" />
 
-				<InputRadioGroup
-					classesForCheckbox="mt-card"
-					name="professionalLevel"
-					v-model="form.salaryUnit.value"
-					:options="form.salaryUnit.options"
-				/>
+        <InputOTP
+          label="Inputs.MFACode"
+          v-model="form.mfa_code.value"
+          @valid="form.mfa_code.valid = $event"
+          :rules="form.mfa_code.rules"
+        />
 
-				<InputCheckboxGroup
-					sm
-					classesForCheckbox="mt-card"
-					name="professionalLevel"
-					v-model="form.jobType.value"
-					:options="form.jobType.options"
-				/>
+        <InputRadioGroup
+          classesForCheckbox="mt-card"
+          name="professionalLevel"
+          v-model="form.salaryUnit.value"
+          :options="form.salaryUnit.options"
+        />
 
-				<InputCheckbox
-					label="Links.IAgreeTo"
-					id="TermsAndConditions"
-					:link="{
-						to: '/docs/terms-and-conditions',
-						label: 'Links.TermsAndConditions',
-					}"
-					target="_blank"
-					required
-					v-model="form.termsAndConditions.value"
-					@valid="form.termsAndConditions.valid = $event"
-				/>
-				<InputBtn @click="onclickSubmitForm" :loading="form.submitting">
-					Submit Form
-				</InputBtn>
-			</form>
-		</div>
-	</main>
+        <InputCheckboxGroup
+          sm
+          classesForCheckbox="mt-card"
+          name="professionalLevel"
+          v-model="form.jobType.value"
+          :options="form.jobType.options"
+        />
+
+        <InputCheckbox
+          label="Links.IAgreeTo"
+          id="TermsAndConditions"
+          :link="{
+            to: '/docs/terms-and-conditions',
+            label: 'Links.TermsAndConditions',
+          }"
+          target="_blank"
+          required
+          v-model="form.termsAndConditions.value"
+          @valid="form.termsAndConditions.valid = $event"
+        />
+        <InputBtn @click="onclickSubmitForm" :loading="form.submitting">Submit Form</InputBtn>
+      </form>
+    </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -213,10 +198,7 @@ export default {
       tags: {
         value: [],
         valid: true,
-        rules: [
-          (v: string) =>
-            !v || form.tags.value.length < 5 || 'Error.InputMaxTags_5',
-        ],
+        rules: [(v: string) => !v || form.tags.value.length < 5 || 'Error.InputMaxTags_5'],
       },
       remote: {
         value: false,
@@ -305,10 +287,10 @@ export default {
         for (const key in form) {
           if (
             key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'termsAndConditions' &&
-						form[key].valid == false
+            key != 'body' &&
+            key != 'submitting' &&
+            key != 'termsAndConditions' &&
+            form[key].valid == false
           ) {
             isValid = false;
           }
@@ -323,9 +305,9 @@ export default {
         for (const key in form) {
           if (
             key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'termsAndConditions'
+            key != 'body' &&
+            key != 'submitting' &&
+            key != 'termsAndConditions'
           )
             obj[key] = form[key].value;
         }

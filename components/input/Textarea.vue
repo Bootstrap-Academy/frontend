@@ -1,55 +1,48 @@
 <template>
-	<div class="relative">
-		<div class="flex flex-wrap gap-card-sm items-center">
-			<label
-				v-if="!noLabel"
-				class="text-body-1 text-body font-body block mb-3"
-				:for="id ?? label"
-			>
-				{{ t(label) }}
-			</label>
-			<p v-if="hint" class="pb-2 text-xs text-body relative z-0 text-right">
-				{{ t(hint) }}
-			</p>
-		</div>
-		<textarea
-			class="resize-none block w-full px-4 pt-3 pb-8 text-base text-white bg-secondary rounded-md relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent"
-			:class="{
-				'invalid:ring-error valid:ring-accent': (touched && input) || error,
-			}"
-			ref="DOM_INPUT"
-			:placeholder="noLabel ? t(label) : t(placeholder)"
-			:type="type"
-			:name="name != '' ? name : label"
-			:id="id != '' ? id : label"
-			v-model.trim="input"
-			@blur="touched = true"
-			:rows="rows"
-		></textarea>
-		<p class="flex justify-between gap-y-card-sm pt-2 text-xs">
-			<span
-				class="inline-block w-full transition ease-out duration-500 text-error relative z-0"
-				:class="
-					error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-				"
-			>
-				{{ error }}.
-			</span>
+  <div class="relative">
+    <div class="flex flex-wrap gap-card-sm items-center">
+      <label v-if="!noLabel" class="text-body-1 text-body font-body block mb-3" :for="id ?? label">
+        {{ t(label) }}
+      </label>
+      <p v-if="hint" class="pb-2 text-xs text-body relative z-0 text-right">
+        {{ t(hint) }}
+      </p>
+    </div>
+    <textarea
+      class="resize-none block w-full px-4 pt-3 pb-8 text-base text-white bg-secondary rounded-md relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent"
+      :class="{
+        'invalid:ring-error valid:ring-accent': (touched && input) || error,
+      }"
+      ref="DOM_INPUT"
+      :placeholder="noLabel ? t(label) : t(placeholder)"
+      :type="type"
+      :name="name != '' ? name : label"
+      :id="id != '' ? id : label"
+      v-model.trim="input"
+      @blur="touched = true"
+      :rows="rows"
+    ></textarea>
+    <p class="flex justify-between gap-y-card-sm pt-2 text-xs">
+      <span
+        class="inline-block w-full transition ease-out duration-500 text-error relative z-0"
+        :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
+      >
+        {{ error }}.
+      </span>
 
-			<span
-				v-if="max != -1"
-				class="inline-block w-full text-right"
-				:class="{
-					'text-body': !touched,
-					'text-error': input.length < min || input.length > max,
-					'text-success':
-						touched && input && input.length >= min && input.length <= max,
-				}"
-			>
-				{{ input.length }} / {{ max }}
-			</span>
-		</p>
-	</div>
+      <span
+        v-if="max != -1"
+        class="inline-block w-full text-right"
+        :class="{
+          'text-body': !touched,
+          'text-error': input.length < min || input.length > max,
+          'text-success': touched && input && input.length >= min && input.length <= max,
+        }"
+      >
+        {{ input.length }} / {{ max }}
+      </span>
+    </p>
+  </div>
 </template>
 
 <script lang="ts">

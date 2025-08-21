@@ -1,18 +1,15 @@
 <template>
-	<article class="flex" :class="classes">
-		<component
-			:is="icon"
-			class="icon"
-			:color="highlightIcon ? 'fill-accent' : fill"
-			:class="highlightIcon ? 'text-accent' : iconColor"
-		></component>
-		<div
-			class="label font-body"
-			:class="highlightLabel ? 'text-heading' : labelColor"
-		>
-			<slot></slot>
-		</div>
-	</article>
+  <article class="flex" :class="classes">
+    <component
+      :is="icon"
+      class="icon"
+      :color="highlightIcon ? 'fill-accent' : fill"
+      :class="highlightIcon ? 'text-accent' : iconColor"
+    ></component>
+    <div class="label font-body" :class="highlightLabel ? 'text-heading' : labelColor">
+      <slot></slot>
+    </div>
+  </article>
 </template>
 
 <script lang="ts">
@@ -47,34 +44,34 @@ export default defineComponent({
 
 <style scoped>
 .lg {
-	@apply gap-3.5 md:gap-4;
+  @apply gap-3.5 md:gap-4;
 }
 .md {
-	@apply gap-3 sm:gap-3.5;
+  @apply gap-3 sm:gap-3.5;
 }
 .sm {
-	@apply gap-3;
+  @apply gap-3;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LABEL */
 .lg .label {
-	@apply text-base;
+  @apply text-base;
 }
 .md .label {
-	@apply text-sm;
+  @apply text-sm;
 }
 .sm .label {
-	@apply text-xs;
+  @apply text-xs;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .lg .icon {
-	@apply w-5 h-5 md:w-6 md:h-6 flex-shrink-0;
+  @apply w-5 h-5 md:w-6 md:h-6 flex-shrink-0;
 }
 .md .icon {
-	@apply w-5 h-5 flex-shrink-0;
+  @apply w-5 h-5 flex-shrink-0;
 }
 .sm .icon {
-	@apply w-4 h-4 flex-shrink-0;
+  @apply w-4 h-4 flex-shrink-0;
 }
 </style>

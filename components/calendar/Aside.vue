@@ -4,28 +4,23 @@
 
     <article class="grid gap-card-sm xl:gap-box z-[100]">
       <h2 class="text-heading-2">
-        {{ t("Headings.UpcomingEvents") }}
+        {{ t('Headings.UpcomingEvents') }}
       </h2>
       <p class="text-body-1" v-if="events.length == 0">
-        {{ t("Body.NoUpcomingEvents") }}
+        {{ t('Body.NoUpcomingEvents') }}
       </p>
 
-      <CalendarEvent
-        v-for="(event, i) of events"
-        :key="i"
-        no-booking
-        :data="event"
-      />
+      <CalendarEvent v-for="(event, i) of events" :key="i" no-booking :data="event" />
     </article>
   </aside>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { Ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { CoachingEvent, WebinarEvent } from "~/types/calenderTypes";
-import { User } from "~/types/userTypes";
+import { defineComponent } from 'vue';
+import type { Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CoachingEvent, WebinarEvent } from '~/types/calenderTypes';
+import { User } from '~/types/userTypes';
 export default defineComponent({
   props: {
     events: { default: [], type: Array<CoachingEvent | WebinarEvent> },
@@ -55,10 +50,10 @@ export default defineComponent({
           );
         })
         .filter((event) => {
-          if (eventFilter.value === "booked") {
+          if (eventFilter.value === 'booked') {
             return event.booked == true;
-          } else if (eventFilter.value === "mine") {
-            return (event.instructor.id ?? "-") === (user.value.id ?? "");
+          } else if (eventFilter.value === 'mine') {
+            return (event.instructor.id ?? '-') === (user.value.id ?? '');
           } else {
             return true;
           }

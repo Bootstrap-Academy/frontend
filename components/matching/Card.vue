@@ -16,8 +16,8 @@ const props = defineProps({
         class="flex justify-between gap-4 bg-secondary mb-4 rounded-md cursor-pointer py-5 px-3"
       >
         <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
-          {{ t("Headings.Matching") }} {{ data?.left?.length ?? "" }} x
-          {{ data?.left?.length ?? "" }}
+          {{ t('Headings.Matching') }} {{ data?.left?.length ?? '' }} x
+          {{ data?.left?.length ?? '' }}
           <span class="clamp inline">
             {{ data?.left[0] }}
           </span>
@@ -40,15 +40,11 @@ const props = defineProps({
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-import { useI18n } from "vue-i18n";
-import {
-  CheckIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
-import { LockClosedIcon } from "@heroicons/vue/24/outline";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CheckIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { LockClosedIcon } from '@heroicons/vue/24/outline';
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
@@ -60,11 +56,11 @@ export default defineComponent({
     const user: any = useUser();
 
     const rootSkillID = computed(() => {
-      return <string>(route?.params?.id ?? "");
+      return <string>(route?.params?.id ?? '');
     });
 
     const subSkillID = computed(() => {
-      return <string>(route?.params?.skill ?? "");
+      return <string>(route?.params?.skill ?? '');
     });
 
     function solveThis(id: any) {
@@ -80,23 +76,17 @@ export default defineComponent({
       const _skillID = query.skillID ?? rootSkillID.value ?? null;
       const _subSkillID = query.subSkillID ?? subSkillID.value ?? null;
 
-      let isSkill = fullPath.includes("/skill-tree/");
-      let isCourse = fullPath.includes("/courses/");
-      let isWatch = fullPath.includes("/watch?");
+      let isSkill = fullPath.includes('/skill-tree/');
+      let isCourse = fullPath.includes('/courses/');
+      let isWatch = fullPath.includes('/watch?');
 
       let solveId = isSkill ? params.skill : isCourse ? params.id : isWatch ? params.id : null;
-      let quizzesFrom = isSkill
-        ? "skill"
-        : isCourse
-          ? "course"
-          : isWatch
-            ? "quiz"
-            : null;
+      let quizzesFrom = isSkill ? 'skill' : isCourse ? 'course' : isWatch ? 'quiz' : null;
 
       if (!quizzesFrom || !solveId) return;
 
       router.push(
-        `/matchings/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`
+        `/matchings/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`,
       );
     }
 

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 export default {
   props: {
     leaderBoardList: { type: Array, default: [] },

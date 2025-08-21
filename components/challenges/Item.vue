@@ -8,7 +8,7 @@
       class="grid gap-card grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
       @click="toggleShowChallengeContent"
     >
-      <h2 class="!m-0 text-heading-3">{{ t(data?.title ?? "") }}</h2>
+      <h2 class="!m-0 text-heading-3">{{ t(data?.title ?? '') }}</h2>
 
       <ChallengesItemProgress :data="data" />
 
@@ -17,19 +17,16 @@
       </p> -->
     </header>
 
-    <div
-      v-show="showChallengeContent"
-      class="grid gap-card grid-cols-1 pt-card-sm"
-    >
+    <div v-show="showChallengeContent" class="grid gap-card grid-cols-1 pt-card-sm">
       <div class="flex flex-wrap gap-card">
         <Btn @click="propId = challenge" class="w-fit" :icon="CodeBracketIcon">
-          {{ t("Buttons.Solve") }}
+          {{ t('Buttons.Solve') }}
         </Btn>
 
         <!-- <NuxtLink :to="editTo" v-if="data?.creator == user.id || !!user.admin"> -->
         <NuxtLink :to="editTo" v-if="!!user.admin">
           <Btn secondary class="w-fit" :icon="PencilIcon">
-            {{ t("Buttons.EditChallenge") }}
+            {{ t('Buttons.EditChallenge') }}
           </Btn>
         </NuxtLink>
       </div>
@@ -48,15 +45,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
-import {
-  CodeBracketIcon,
-  TrophyIcon,
-  TrashIcon,
-} from "@heroicons/vue/24/outline";
-import type { PropType } from "vue";
-import { PencilIcon } from "@heroicons/vue/24/solid";
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { CodeBracketIcon, TrophyIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import type { PropType } from 'vue';
+import { PencilIcon } from '@heroicons/vue/24/solid';
 
 export default defineComponent({
   props: {
@@ -67,18 +60,18 @@ export default defineComponent({
     const user: any = useUser();
     const { t } = useI18n();
 
-    const propId: any = ref("");
+    const propId: any = ref('');
     const item = ref();
 
     const router = useRouter();
     const route = useRoute();
 
     const challenge = computed(() => {
-      return props.data?.id ?? "";
+      return props.data?.id ?? '';
     });
 
     const activeChallenge: any = computed(() => {
-      return route.query?.challenge ?? "";
+      return route.query?.challenge ?? '';
     });
 
     const showChallengeContent = computed(() => {
@@ -87,7 +80,7 @@ export default defineComponent({
 
     const baseQuery: any = computed(() => {
       return {
-        category: route.query?.category ?? "",
+        category: route.query?.category ?? '',
       };
     });
 
@@ -100,28 +93,28 @@ export default defineComponent({
         path: route.path,
         query: showChallengeContent.value
           ? {
-            ...baseQuery.value,
-          }
+              ...baseQuery.value,
+            }
           : {
-            ...baseQuery.value,
-            challenge: challenge.value,
-          },
+              ...baseQuery.value,
+              challenge: challenge.value,
+            },
       });
     }
 
     watch(
       () => activeChallenge.value,
       () => {
-        propId.value = "";
+        propId.value = '';
 
         const eleme = document.getElementById(activeChallenge.value);
-        console.log("elelele", eleme);
-        console.log("tiem.value", item.value?.id);
+        console.log('elelele', eleme);
+        console.log('tiem.value', item.value?.id);
         eleme?.scrollIntoView({
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
     return {

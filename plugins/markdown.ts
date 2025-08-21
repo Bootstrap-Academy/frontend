@@ -13,18 +13,12 @@ export default defineNuxtPlugin((app) => {
       if (lang && hljs.getLanguage(lang)) {
         try {
           return (
-            '<pre class="hljs"><code>' +
-						hljs.highlight(lang, str, true).value +
-						'</code></pre>'
+            '<pre class="hljs"><code>' + hljs.highlight(lang, str, true).value + '</code></pre>'
           );
         } catch (__) {}
       }
 
-      return (
-        '<pre class="hljs"><code>' +
-				hljs.highlightAuto(str).value +
-				'</code></pre>'
-      );
+      return '<pre class="hljs"><code>' + hljs.highlightAuto(str).value + '</code></pre>';
     },
   });
 
@@ -43,8 +37,7 @@ export default defineNuxtPlugin((app) => {
         state.pos += 2;
 
         while (state.pos < end - 2) {
-          if (state.src[state.pos] === '$' && state.src[state.pos + 1] === '$')
-            break;
+          if (state.src[state.pos] === '$' && state.src[state.pos + 1] === '$') break;
           tex += state.src[state.pos++];
         }
       } else {
@@ -52,8 +45,7 @@ export default defineNuxtPlugin((app) => {
         state.pos++;
 
         while (state.pos < end - 1) {
-          if (state.src[state.pos] === '$')
-            break;
+          if (state.src[state.pos] === '$') break;
           tex += state.src[state.pos++];
         }
       }

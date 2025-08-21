@@ -6,20 +6,18 @@
       <Dialog v-if="dialog && dialog.type" :dialog="dialog">
         <template #content>
           <p>
-            {{ t("Headings.Purchased") }}:
+            {{ t('Headings.Purchased') }}:
             <span class="text-heading">
               {{ coinsToBuy }}
-              {{ t("Headings.Morphcoins").toLocaleLowerCase() }}
-              {{ t("Headings.For").toLocaleLowerCase() }}
+              {{ t('Headings.Morphcoins').toLocaleLowerCase() }}
+              {{ t('Headings.For').toLocaleLowerCase() }}
               {{ coinsToBuy / 100 }}
-              {{ t("Headings.Euros").toLocaleLowerCase() }}
+              {{ t('Headings.Euros').toLocaleLowerCase() }}
             </span>
           </p>
           <p>
-            {{ t("Headings.TotalMorphcoins") }}:
-            <span class="font-bold text-accent">
-              {{ coins }} {{ t("Headings.Morphcoins") }}
-            </span>
+            {{ t('Headings.TotalMorphcoins') }}:
+            <span class="font-bold text-accent">{{ coins }} {{ t('Headings.Morphcoins') }}</span>
           </p>
         </template>
       </Dialog>
@@ -28,16 +26,16 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  layout: 'inner',
+  middleware: ['auth'],
 });
 
 export default {
   head: {
-    title: "Success - Buy Coins",
+    title: 'Success - Buy Coins',
   },
   setup() {
     const { t } = useI18n();
@@ -48,17 +46,17 @@ export default {
     const coins = useCoins();
 
     const coinsToBuy = computed(() => {
-      return parseInt(<string>(route?.query?.coins ?? "0"));
+      return parseInt(<string>(route?.query?.coins ?? '0'));
     });
 
     const dialog = <any>reactive({
-      type: "success",
-      heading: "Success.Success",
-      body: "Success.BuyCoins",
+      type: 'success',
+      heading: 'Success.Success',
+      body: 'Success.BuyCoins',
       primaryBtn: {
-        label: "Buttons.Okay",
+        label: 'Buttons.Okay',
         onclick: () => {
-          router.push("/morphcoins/buy");
+          router.push('/morphcoins/buy');
         },
       },
       secondaryBtn: null,

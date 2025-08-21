@@ -19,69 +19,69 @@
 -->
 
 <template>
-	<main class="container-fluid mt-main mb-main grid-layout-aside">
-		<JobFilter
-			class="hidden lg:block aside sticky self-start bg-transparent w-full h-fit top-container"
-			:filters="filters"
-			@filters="setFilters($event)"
-		/>
+  <main class="container-fluid mt-main mb-main grid-layout-aside">
+    <JobFilter
+      class="hidden lg:block aside sticky self-start bg-transparent w-full h-fit top-container"
+      :filters="filters"
+      @filters="setFilters($event)"
+    />
 
-		<Transition class="block lg:hidden" name="fade-in" mode="in-out">
-			<section
-				v-if="show"
-				@click.self="show = false"
-				class="h-screen w-screen bg-[#0b192edd] fixed left-0 top-0 z-[99999] overflow-scroll"
-			>
-				<XCircleIcon
-					@click="show = false"
-					class="slide-left w-10 h-10 text-accent fixed left-[82.5vw] sm:left-[370px] top-card cursor-pointer"
-				/>
+    <Transition class="block lg:hidden" name="fade-in" mode="in-out">
+      <section
+        v-if="show"
+        @click.self="show = false"
+        class="h-screen w-screen bg-[#0b192edd] fixed left-0 top-0 z-[99999] overflow-scroll"
+      >
+        <XCircleIcon
+          @click="show = false"
+          class="slide-left w-10 h-10 text-accent fixed left-[82.5vw] sm:left-[370px] top-card cursor-pointer"
+        />
 
-				<JobFilter
-					class="bg-secondary w-full max-w-[80vw] sm:max-w-[350px] slide-left min-h-screen"
-					:filters="filters"
-					@filters="setFilters($event)"
-				/>
-			</section>
-		</Transition>
+        <JobFilter
+          class="bg-secondary w-full max-w-[80vw] sm:max-w-[350px] slide-left min-h-screen"
+          :filters="filters"
+          @filters="setFilters($event)"
+        />
+      </section>
+    </Transition>
 
-		<article class="flex items-center justify-between lg:justify-end gap-card">
-			<FormSearch
-				class="justify-self-end"
-				placeholder="Body.SearchJobs"
-				:modelValue="filters.search_term"
-				@update:modelValue="setFilters({ search_term: $event })"
-			/>
+    <article class="flex items-center justify-between lg:justify-end gap-card">
+      <FormSearch
+        class="justify-self-end"
+        placeholder="Body.SearchJobs"
+        :modelValue="filters.search_term"
+        @update:modelValue="setFilters({ search_term: $event })"
+      />
 
-			<div
-				class="block lg:hidden bg-tertiary p-1.5 rotate-90 rounded-lg h-fit w-fit cursor-pointer"
-				@click="show = true"
-			>
-				<AdjustmentsVerticalIcon class="w-5 h-5 text-accent" />
-			</div>
-		</article>
+      <div
+        class="block lg:hidden bg-tertiary p-1.5 rotate-90 rounded-lg h-fit w-fit cursor-pointer"
+        @click="show = true"
+      >
+        <AdjustmentsVerticalIcon class="w-5 h-5 text-accent" />
+      </div>
+    </article>
 
-		<Sort :quantity="jobs.length" @selected="onSelectedOption($event)" />
+    <Sort :quantity="jobs.length" @selected="onSelectedOption($event)" />
 
-		<section class="grid grid-auto gap-card place-content-start">
-			<template v-if="loading">
-				<JobCardSkeleton v-for="n in 5" :key="n" :index="n" />
-			</template>
+    <section class="grid grid-auto gap-card place-content-start">
+      <template v-if="loading">
+        <JobCardSkeleton v-for="n in 5" :key="n" :index="n" />
+      </template>
 
-			<template v-else-if="jobs && jobs.length > 0">
-				<NuxtLink
-					v-for="job of jobs"
-					:key="job.id"
-					:to="`/jobs/${job.id}`"
-					class="cursor-pointer w-full block h-fit"
-				>
-					<JobCard :data="job" />
-				</NuxtLink>
-			</template>
+      <template v-else-if="jobs && jobs.length > 0">
+        <NuxtLink
+          v-for="job of jobs"
+          :key="job.id"
+          :to="`/jobs/${job.id}`"
+          class="cursor-pointer w-full block h-fit"
+        >
+          <JobCard :data="job" />
+        </NuxtLink>
+      </template>
 
-			<JobCardEmptyState class="col-span-full" v-else />
-		</section>
-	</main>
+      <JobCardEmptyState class="col-span-full" v-else />
+    </section>
+  </main>
 </template>
 
 <script lang="ts">
@@ -112,7 +112,7 @@ export default {
         professional_level: [],
         salary_min: 0,
         salary_unit: '---',
-      }
+      },
     );
 
     async function setFilters(paramFilters: any) {
@@ -154,35 +154,35 @@ export default {
 
 <style scoped>
 .grid-layout-aside {
-	@apply grid gap-x-container gap-y-card grid-rows-[auto_auto_1fr] lg:grid-cols-[275px_1fr];
+  @apply grid gap-x-container gap-y-card grid-rows-[auto_auto_1fr] lg:grid-cols-[275px_1fr];
 }
 
 .grid-layout-aside .aside {
-	@apply lg:row-span-3;
+  @apply lg:row-span-3;
 }
 
 .grid-auto {
-	grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
 }
 
 @media screen and (min-width: 1024px) {
-	.grid-auto {
-		grid-template-columns: repeat(auto-fit, minmax(325px, 1fr));
-	}
+  .grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(325px, 1fr));
+  }
 }
 
 .slide-left {
-	animation: slideLeft 0.25s ease-out forwards;
+  animation: slideLeft 0.25s ease-out forwards;
 }
 
 @keyframes slideLeft {
-	0% {
-		opacity: 0;
-		transform: translateX(-30px);
-	}
-	100% {
-		opacity: 1;
-		transform: translateX(0);
-	}
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 </style>

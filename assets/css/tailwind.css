@@ -31,25 +31,25 @@
 
 /* ======================================================= Fonts */
 @font-face {
-  font-family: "Ubuntu Mono";
+  font-family: 'Ubuntu Mono';
   font-style: normal;
   font-weight: 200;
   font-display: swap;
-  src: url(/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf) format("truetype");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  src: url(/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf) format('truetype');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Space Mono";
+  font-family: 'Space Mono';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(/fonts/Space_Mono/SpaceMono-Regular.ttf) format("truetype");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  src: url(/fonts/Space_Mono/SpaceMono-Regular.ttf) format('truetype');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ======================================================= Transitions */
@@ -105,17 +105,17 @@
 @media screen and (device-aspect-ratio: 2/3) {
   select,
   textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="url"] {
+  input[type='text'],
+  input[type='password'],
+  input[type='datetime'],
+  input[type='datetime-local'],
+  input[type='date'],
+  input[type='month'],
+  input[type='time'],
+  input[type='week'],
+  input[type='number'],
+  input[type='email'],
+  input[type='url'] {
     font-size: 16px;
   }
 }
@@ -124,17 +124,17 @@
 @media screen and (device-aspect-ratio: 40/71) {
   select,
   textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="url"] {
+  input[type='text'],
+  input[type='password'],
+  input[type='datetime'],
+  input[type='datetime-local'],
+  input[type='date'],
+  input[type='month'],
+  input[type='time'],
+  input[type='week'],
+  input[type='number'],
+  input[type='email'],
+  input[type='url'] {
     font-size: 16px;
   }
 }
@@ -143,18 +143,18 @@
 @media screen and (device-aspect-ratio: 375/667) {
   select,
   textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="url"] {
+  input[type='text'],
+  input[type='password'],
+  input[type='datetime'],
+  input[type='datetime-local'],
+  input[type='date'],
+  input[type='month'],
+  input[type='time'],
+  input[type='week'],
+  input[type='number'],
+  input[type='email'],
+  input[type='tel'],
+  input[type='url'] {
     font-size: 16px;
   }
 }
@@ -163,18 +163,18 @@
 @media screen and (device-aspect-ratio: 9/16) {
   select,
   textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="url"] {
+  input[type='text'],
+  input[type='password'],
+  input[type='datetime'],
+  input[type='datetime-local'],
+  input[type='date'],
+  input[type='month'],
+  input[type='time'],
+  input[type='week'],
+  input[type='number'],
+  input[type='email'],
+  input[type='tel'],
+  input[type='url'] {
     font-size: 16px;
   }
 }
@@ -246,8 +246,8 @@
     color: var(--color-secondary);
   }
 
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
@@ -257,7 +257,7 @@
     margin: 0;
   }
 
-  input[type="number"] {
+  input[type='number'] {
     -moz-appearance: textfield;
   }
 
@@ -342,7 +342,7 @@
     @apply pb-2 relative cursor-pointer;
   }
   .underline-link::after {
-    content: "";
+    content: '';
     position: absolute;
     width: max(50%, 25px);
     height: 1px;
@@ -447,7 +447,7 @@
 
   [data-tooltip]::before {
     @apply absolute text-sm;
-    content: "?";
+    content: '?';
     left: calc(100% + var(--spacing));
     top: 2.5px;
     z-index: 99;
@@ -465,9 +465,7 @@
   [data-tooltip]:hover::after {
     @apply box style-box bg-info text-white font-body absolute text-xs leading-[1.6];
     content: attr(data-tooltip); /* magic! */
-    left: calc(
-      100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
-    );
+    left: calc(100% + var(--spacing) + var(--triangle-width) + var(--triangle-width));
     top: -50%;
     z-index: 98;
     width: var(--tooltip-width);
@@ -490,8 +488,8 @@
 		border-right: var(--triangle-width) solid var(--color-info); */
   }
 
-  [data-tooltip=""]::before,
-  [data-tooltip=""]::after {
+  [data-tooltip='']::before,
+  [data-tooltip='']::after {
     display: none !important;
   }
 }

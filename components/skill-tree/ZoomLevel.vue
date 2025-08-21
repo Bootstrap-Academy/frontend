@@ -9,7 +9,7 @@
       +
     </button>
 
-    <h5 class="full">{{ t("Headings.ZoomLevel") }} {{ zoomLevel }}</h5>
+    <h5 class="full">{{ t('Headings.ZoomLevel') }} {{ zoomLevel }}</h5>
 
     <button
       @click="zoomOut"
@@ -21,17 +21,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
-  emits: ["zoomLevel"],
+  emits: ['zoomLevel'],
   setup(props, { emit }) {
     const MIN_ZOOM_LEVEL = 1;
     const MAX_ZOOM_LEVEL = 5;
     const { t } = useI18n();
 
-    const cookie_zoomLevel = useCookie<number>("zoomLevel");
+    const cookie_zoomLevel = useCookie<number>('zoomLevel');
 
     const zoomLevel = computed({
       get() {
@@ -39,7 +39,7 @@ export default defineComponent({
       },
       set(data: number) {
         cookie_zoomLevel.value = data;
-        emit("zoomLevel", cookie_zoomLevel.value);
+        emit('zoomLevel', cookie_zoomLevel.value);
       },
     });
 
@@ -53,7 +53,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      emit("zoomLevel", cookie_zoomLevel.value);
+      emit('zoomLevel', cookie_zoomLevel.value);
     });
 
     return { zoomIn, zoomOut, zoomLevel, t };

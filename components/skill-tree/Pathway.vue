@@ -1,34 +1,34 @@
 <template>
-	<g>
-		<path
-			:d="pathway"
-			:stroke-width="strokeWidth"
-			class="cursor-pointer transition-all duration-200 ease-out origin-bottom stroke-secondary hover:stroke-accent"
-		/>
+  <g>
+    <path
+      :d="pathway"
+      :stroke-width="strokeWidth"
+      class="cursor-pointer transition-all duration-200 ease-out origin-bottom stroke-secondary hover:stroke-accent"
+    />
 
-		<defs>
-			<marker
-				id="arrowhead"
-				:markerWidth="triangle.markerWidth"
-				:markerHeight="triangle.markerHeight"
-				:refX="triangle.refX"
-				:refY="triangle.refY"
-				orient="auto"
-			>
-				<polygon :points="triangle.points" class="fill-secondary" />
-			</marker>
-			<marker
-				id="hover-arrowhead"
-				:markerWidth="triangle.markerWidth"
-				:markerHeight="triangle.markerHeight"
-				:refX="triangle.refX"
-				:refY="triangle.refY"
-				orient="auto"
-			>
-				<polygon :points="triangle.points" class="fill-accent" />
-			</marker>
-		</defs>
-	</g>
+    <defs>
+      <marker
+        id="arrowhead"
+        :markerWidth="triangle.markerWidth"
+        :markerHeight="triangle.markerHeight"
+        :refX="triangle.refX"
+        :refY="triangle.refY"
+        orient="auto"
+      >
+        <polygon :points="triangle.points" class="fill-secondary" />
+      </marker>
+      <marker
+        id="hover-arrowhead"
+        :markerWidth="triangle.markerWidth"
+        :markerHeight="triangle.markerHeight"
+        :refX="triangle.refX"
+        :refY="triangle.refY"
+        orient="auto"
+      >
+        <polygon :points="triangle.points" class="fill-accent" />
+      </marker>
+    </defs>
+  </g>
 </template>
 
 <script lang="ts">
@@ -50,26 +50,26 @@ export default defineComponent({
 
     const strokeWidth = computed(() => {
       switch (props.zoomLevel) {
-      case 5:
-        triangle.refY = 1.5;
-        triangle.refX = -25;
-        return 10;
-      case 4:
-        triangle.refY = 1.5;
-        triangle.refX = -20;
-        return 8;
-      case 3:
-        triangle.refY = 1.5;
-        triangle.refX = -15;
-        return 8;
-      case 2:
-        triangle.refY = 1.5;
-        triangle.refX = -10;
-        return 8;
-      default:
-        triangle.refY = 1.5;
-        triangle.refX = -3.5;
-        return 8;
+        case 5:
+          triangle.refY = 1.5;
+          triangle.refX = -25;
+          return 10;
+        case 4:
+          triangle.refY = 1.5;
+          triangle.refX = -20;
+          return 8;
+        case 3:
+          triangle.refY = 1.5;
+          triangle.refX = -15;
+          return 8;
+        case 2:
+          triangle.refY = 1.5;
+          triangle.refX = -10;
+          return 8;
+        default:
+          triangle.refY = 1.5;
+          triangle.refX = -3.5;
+          return 8;
       }
     });
 
@@ -80,9 +80,9 @@ export default defineComponent({
 
 <style scoped>
 path {
-	marker-start: url('#arrowhead');
+  marker-start: url('#arrowhead');
 }
 path:hover {
-	marker-start: url('#hover-arrowhead');
+  marker-start: url('#hover-arrowhead');
 }
 </style>

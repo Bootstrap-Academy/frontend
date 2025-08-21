@@ -50,10 +50,7 @@
         ]"
       ></div>
       <div
-        :class="[
-          textSize ? `${textSize}` : 'text-xs',
-          textColor ? `${textColor}` : '',
-        ]"
+        :class="[textSize ? `${textSize}` : 'text-xs', textColor ? `${textColor}` : '']"
         id="h3 "
       >
         {{ text }}
@@ -65,9 +62,9 @@
 <script>
 export default {
   props: {
-    text: { type: String, default: "Default" },
-    textSize: { type: String, default: "text-2xl" },
-    textColor: { type: String, default: "text-white" },
+    text: { type: String, default: 'Default' },
+    textSize: { type: String, default: 'text-2xl' },
+    textColor: { type: String, default: 'text-white' },
     xxl: { type: String, default: false },
     xl: { type: String, default: false },
     lg: { type: String, default: true },

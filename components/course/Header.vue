@@ -1,17 +1,17 @@
 <template>
-	<header
-		class="grid gap-5 md:gap-x-10 grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[300px_1fr_auto] h-fit"
-	>
-		<img
-			:src="image"
-			:alt="t('AltAttributes.CourseCover')"
-			class="object-cover h-[200px] sm:h-[250px] w-full rounded-md shadow-xl md:row-span-2 lg:row-span-1"
-		/>
+  <header
+    class="grid gap-5 md:gap-x-10 grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[300px_1fr_auto] h-fit"
+  >
+    <img
+      :src="image"
+      :alt="t('AltAttributes.CourseCover')"
+      class="object-cover h-[200px] sm:h-[250px] w-full rounded-md shadow-xl md:row-span-2 lg:row-span-1"
+    />
 
-		<div>
-			<SectionTitle full size="xl" :subheading="category" :heading="title" />
-			<p>
-				{{ t('Body.CreatedBy') }}
+    <div>
+      <SectionTitle full size="xl" :subheading="category" :heading="title" />
+      <p>
+        {{ t('Body.CreatedBy') }}
         <span v-if="authors.length === 1">
           <a class="text-accent" :href="authors[0].url">{{ authors[0].name }}</a>
         </span>
@@ -24,7 +24,8 @@
           <template v-for="(author, index) in authors">
             <template v-if="index !== authors.length - 1">
               <span>
-                <a class="text-accent" :href="author.url">{{ author.name }}</a>,
+                <a class="text-accent" :href="author.url">{{ author.name }}</a>
+                ,
               </span>
             </template>
             <template v-else>
@@ -33,14 +34,14 @@
             </template>
           </template>
         </span>
-			</p>
-		</div>
+      </p>
+    </div>
 
-		<p class="text-sm text-subheading -mt-2 md:mt-2">
-			{{ t('Body.LastUpdated') }}
-			<span class="text-body">{{ lastUpdated }}</span>
-		</p>
-	</header>
+    <p class="text-sm text-subheading -mt-2 md:mt-2">
+      {{ t('Body.LastUpdated') }}
+      <span class="text-body">{{ lastUpdated }}</span>
+    </p>
+  </header>
 </template>
 
 <script lang="ts">

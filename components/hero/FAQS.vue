@@ -1,24 +1,24 @@
 <template>
-	<section class="container">
-		<SectionTitle
-			full
-			center
-			subheading="Subheadings.HeroFAQS"
-			heading="Headings.HeroFAQS"
-			body="Body.HeroFAQS"
-			class="max-w-2xl mx-auto mb-card"
-		/>
+  <section class="container">
+    <SectionTitle
+      full
+      center
+      subheading="Subheadings.HeroFAQS"
+      heading="Headings.HeroFAQS"
+      body="Body.HeroFAQS"
+      class="max-w-2xl mx-auto mb-card"
+    />
 
-		<FAQ
-			v-for="({ expand }, i) of faqs"
-			:key="i"
-			:heading="`List.HeroFAQS.${i + 1}.Heading`"
-			:body="`List.HeroFAQS.${i + 1}.Body`"
-			:link="i + 1 == 1 ? { to: '/morphcoins', text: 'Links.Here' } : null"
-			:expand="expand"
-			@expand="setExpand(i)"
-		/>
-	</section>
+    <FAQ
+      v-for="({ expand }, i) of faqs"
+      :key="i"
+      :heading="`List.HeroFAQS.${i + 1}.Heading`"
+      :body="`List.HeroFAQS.${i + 1}.Body`"
+      :link="i + 1 == 1 ? { to: '/morphcoins', text: 'Links.Here' } : null"
+      :expand="expand"
+      @expand="setExpand(i)"
+    />
+  </section>
 </template>
 
 <script>

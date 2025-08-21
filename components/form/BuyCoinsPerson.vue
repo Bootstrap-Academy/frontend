@@ -1,27 +1,27 @@
 <template>
-	<form class="flex flex-col gap-box" ref="refForm">
-		<Input
-			:class="{
-				'pointer-events-none': user && user.country,
-			}"
-			:label="t('Inputs.Country')"
-			v-model="form.country.value"
-			@valid="form.country.valid = $event"
-			:rules="form.country.rules"
-			light
-		/>
+  <form class="flex flex-col gap-box" ref="refForm">
+    <Input
+      :class="{
+        'pointer-events-none': user && user.country,
+      }"
+      :label="t('Inputs.Country')"
+      v-model="form.country.value"
+      @valid="form.country.valid = $event"
+      :rules="form.country.rules"
+      light
+    />
 
-		<Input
-			:class="{
-				'pointer-events-none': user && user.email,
-			}"
-			:label="t('Inputs.EmailAddress')"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-			light
-		/>
-	</form>
+    <Input
+      :class="{
+        'pointer-events-none': user && user.email,
+      }"
+      :label="t('Inputs.EmailAddress')"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+      light
+    />
+  </form>
 </template>
 
 <script lang="ts">
@@ -60,12 +60,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -76,8 +71,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -93,7 +87,7 @@ export default defineComponent({
           emit('data', null);
         }
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     watch(
@@ -101,13 +95,11 @@ export default defineComponent({
       (newValue, oldValue) => {
         if (!!!newValue) return;
 
-        form.country.value = newValue.country
-          ? newValue.country
-          : form.country.value;
+        form.country.value = newValue.country ? newValue.country : form.country.value;
 
         form.email.value = newValue.email ? newValue.email : form.email.value;
       },
-      { immediate: true, deep: true }
+      { immediate: true, deep: true },
     );
 
     return {

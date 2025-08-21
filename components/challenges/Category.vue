@@ -5,8 +5,8 @@
       @click="toggleShowChallenges()"
     >
       <div>
-        <h2 class="text-heading-2">{{ data?.title ?? "" }}</h2>
-        <p>{{ data?.description ?? "" }}</p>
+        <h2 class="text-heading-2">{{ data?.title ?? '' }}</h2>
+        <p>{{ data?.description ?? '' }}</p>
       </div>
 
       <!-- <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p> -->
@@ -15,20 +15,20 @@
         class="rounded-full text-sm py-1 px-3.5 text-[#dfdede] flex-shrink-0 min-w-[200px] h-7"
         :style="{ background: progressBar }"
       >
-        {{ t(progress >= 100 ? "Headings.Completed" : "Headings.Untried") }}
+        {{ t(progress >= 100 ? 'Headings.Completed' : 'Headings.Untried') }}
 
         <span v-if="progress < 100">
-          : {{ categoryStats?.unattempted }} / {{ categoryStats?.total }}</span
-        >
+          : {{ categoryStats?.unattempted }} / {{ categoryStats?.total }}
+        </span>
       </p>
       <p v-else>
-        {{ t("Headings.Empty") }}
+        {{ t('Headings.Empty') }}
       </p>
     </header>
 
     <NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="user?.admin">
       <Btn :icon="PlusIcon" class="mt-box" sm>
-        {{ t("Buttons.AddChallenge") }}
+        {{ t('Buttons.AddChallenge') }}
       </Btn>
     </NuxtLink>
 
@@ -41,14 +41,9 @@
             <SkeletonText />
           </h2>
 
-          <SkeletonText
-            class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5"
-            body
-          />
+          <SkeletonText class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5" body />
 
-          <p
-            class="!m-0 text-right flex items-center gap-2 w-fit place-self-end"
-          >
+          <p class="!m-0 text-right flex items-center gap-2 w-fit place-self-end">
             <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" />
             /
             <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" body />
@@ -57,25 +52,21 @@
       </div>
 
       <template v-else-if="challenges && challenges.length > 0">
-        <ChallengesItem
-          v-for="challenge of challenges"
-          :key="challenge.id"
-          :data="challenge"
-        />
+        <ChallengesItem v-for="challenge of challenges" :key="challenge.id" :data="challenge" />
       </template>
 
       <p v-else class="py-2 px-4 text-warning style-box bg-warning-light w-fit">
-        {{ t("Error.NoChallengesAvailable") }}
+        {{ t('Error.NoChallengesAvailable') }}
       </p>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
-import { PlusIcon, TrophyIcon } from "@heroicons/vue/24/outline";
-import type { PropType } from "vue";
+import { defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { PlusIcon, TrophyIcon } from '@heroicons/vue/24/outline';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -92,21 +83,18 @@ export default defineComponent({
     const loading = ref(challenges.length <= 0);
 
     onMounted(async () => {
-      const [success, error] = await getChallengesByCategory(
-        props.data?.id ?? ""
+      const [success, error] = await getChallengesByCategory(props.data?.id ?? '');
+      console.log('error', error);
+      const [statsSuccess, statsError] = await getStatsCategoryWiseForCodingChallenges(
+        props.data?.id ?? '',
       );
-      console.log("error", error);
-      const [statsSuccess, statsError] =
-        await getStatsCategoryWiseForCodingChallenges(props.data?.id ?? "");
       loading.value = false;
       Object.assign(challenges, success ? success : []);
       categoryStats.value = statsSuccess ? statsSuccess : null;
     });
 
     const progress = computed(() => {
-      return (
-        (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100
-      );
+      return (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100;
     });
 
     const progressBar = computed(() => {
@@ -117,11 +105,11 @@ export default defineComponent({
     const route = useRoute();
 
     const category = computed(() => {
-      return props.data?.id ?? "";
+      return props.data?.id ?? '';
     });
 
     const activeCategory = computed(() => {
-      return (route.query?.category ?? "").toString();
+      return (route.query?.category ?? '').toString();
     });
 
     const showChallenges = computed(() => {
@@ -138,8 +126,8 @@ export default defineComponent({
         query: showChallenges.value
           ? {}
           : {
-            category: category.value,
-          },
+              category: category.value,
+            },
       });
     }
 

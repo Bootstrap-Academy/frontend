@@ -1,34 +1,34 @@
 <template>
-	<div>
-		<Input
-			:label="label"
-			v-model="input"
-			@valid="emitValid($event)"
-			:rules="rules"
-			:noLabel="noLabel"
-			:placeholder="placeholder"
-			:type="type"
-			:name="name"
-			:id="id"
-			no-trim
-			hint="Body.AddTags"
-		/>
-		<div class="mt-2 min-h-[35px] relative z-30">
-			<div class="flex flex-wrap gap-3" v-if="tags && tags.length > 0">
-				<TransitionGroup mode="out-in" name="slide-up">
-					<Chip
-						v-for="tag of tags"
-						:key="tag"
-						:icon="XMarkIcon"
-						icon-right
-						@iconClick="onclickRemoveTag(tag)"
-					>
-						{{ tag }}
-					</Chip>
-				</TransitionGroup>
-			</div>
-		</div>
-	</div>
+  <div>
+    <Input
+      :label="label"
+      v-model="input"
+      @valid="emitValid($event)"
+      :rules="rules"
+      :noLabel="noLabel"
+      :placeholder="placeholder"
+      :type="type"
+      :name="name"
+      :id="id"
+      no-trim
+      hint="Body.AddTags"
+    />
+    <div class="mt-2 min-h-[35px] relative z-30">
+      <div class="flex flex-wrap gap-3" v-if="tags && tags.length > 0">
+        <TransitionGroup mode="out-in" name="slide-up">
+          <Chip
+            v-for="tag of tags"
+            :key="tag"
+            :icon="XMarkIcon"
+            icon-right
+            @iconClick="onclickRemoveTag(tag)"
+          >
+            {{ tag }}
+          </Chip>
+        </TransitionGroup>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

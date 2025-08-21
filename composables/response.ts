@@ -21,7 +21,7 @@ export function openSnackbar(
   type: string,
   heading: string,
   body: string = '',
-  noTimeout?: boolean
+  noTimeout?: boolean,
 ) {
   const snackbar = useSnackbar();
   snackbar.value = {
@@ -59,7 +59,7 @@ export function openDialog(
   body: string,
   triggerPrimaryActionOnBackdropClick: boolean,
   primaryBtn: any,
-  secondaryBtn: any
+  secondaryBtn: any,
 ) {
   const dialog = useDialog();
   dialog.value = {

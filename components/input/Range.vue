@@ -1,24 +1,24 @@
 <template>
-	<div class="width">
-		<article class="flex justify-between items-center gap-card">
-			<label for="" class="text-heading-4 text-body font-heading">
-				{{ label }}
-			</label>
+  <div class="width">
+    <article class="flex justify-between items-center gap-card">
+      <label for="" class="text-heading-4 text-body font-heading">
+        {{ label }}
+      </label>
 
-			<div class="text-heading-4 text-heading font-heading">
-				{{ prefix }}{{ abbreviateNumber(value) }}
-			</div>
-		</article>
-		<input
-			ref="DOM_INPUT"
-			type="range"
-			class="w-full"
-			:min="min"
-			:max="max"
-			v-model="value"
-			@change="emitRange"
-		/>
-	</div>
+      <div class="text-heading-4 text-heading font-heading">
+        {{ prefix }}{{ abbreviateNumber(value) }}
+      </div>
+    </article>
+    <input
+      ref="DOM_INPUT"
+      type="range"
+      class="w-full"
+      :min="min"
+      :max="max"
+      v-model="value"
+      @change="emitRange"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -48,7 +48,7 @@ export default defineComponent({
       () => props.modelValue,
       (newValue, oldValue) => {
         value.value = newValue;
-      }
+      },
     );
 
     function setRange(val: string | number) {
@@ -75,7 +75,7 @@ export default defineComponent({
       () => value.value,
       (newValue, oldValue) => {
         setRange(newValue);
-      }
+      },
     );
 
     return { DOM_INPUT, setRange, emitRange, value };
@@ -85,35 +85,35 @@ export default defineComponent({
 
 <style scoped>
 .width {
-	--margin-left: 1.5rem;
-	width: calc(100% - var(--margin-left));
+  --margin-left: 1.5rem;
+  width: calc(100% - var(--margin-left));
 }
 input[type='range'] {
-	border-radius: 8px;
-	height: 7px;
-	outline: none;
-	transition: background 450ms ease-in;
-	-webkit-appearance: none;
-	border: none;
+  border-radius: 8px;
+  height: 7px;
+  outline: none;
+  transition: background 450ms ease-in;
+  -webkit-appearance: none;
+  border: none;
 }
 input[type='range']::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	background-color: var(--color-accent);
-	width: 20px;
-	height: 20px;
-	border-radius: 20px;
-	border: none;
-	outline: none;
-	cursor: pointer;
+  -webkit-appearance: none;
+  background-color: var(--color-accent);
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 input[type='range']::-moz-range-thumb {
-	-webkit-appearance: none;
-	background-color: var(--color-accent);
-	width: 20px;
-	height: 20px;
-	border-radius: 20px;
-	border: none;
-	outline: none;
-	cursor: pointer;
+  -webkit-appearance: none;
+  background-color: var(--color-accent);
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 </style>

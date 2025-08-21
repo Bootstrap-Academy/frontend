@@ -13,31 +13,25 @@
     />
 
     <NuxtLink to="/auth/reset-password" class="self-end">
-      {{ t("Links.GotResetCode") }}
+      {{ t('Links.GotResetCode') }}
     </NuxtLink>
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-center"
-      @click="onclickSubmitForm()"
-      mt
-      mb
-    >
-      {{ t("Buttons.GetInstructions") }}
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t('Buttons.GetInstructions') }}
     </InputBtn>
 
     <NuxtLink to="/auth/signup" class="self-center">
-      {{ t("Links.DontHaveAccount") }}
-      <span class="text-accent">{{ t("Links.CreateOne") }}</span>
+      {{ t('Links.DontHaveAccount') }}
+      <span class="text-accent">{{ t('Links.CreateOne') }}</span>
     </NuxtLink>
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
-import type { IForm } from "~/types/form";
+import { defineComponent, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useReCaptcha } from 'vue-recaptcha-v3';
+import type { IForm } from '~/types/form';
 
 export default defineComponent({
   setup() {
@@ -49,11 +43,11 @@ export default defineComponent({
     // ============================================================= reactive
     const form = reactive<IForm>({
       email: {
-        value: "",
+        value: '',
         valid: false,
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailAddress",
-          (v: string) => /.+@.+\..+/.test(v) || "Error.InputEmailForm",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
+          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
         ],
       },
       submitting: false,
@@ -61,12 +55,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             isValid = false;
           }
         }
@@ -77,8 +66,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -89,7 +77,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
+        const token = await executeRecaptcha('login');
         return token;
       } catch (error) {
         return null;
@@ -112,7 +100,7 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
@@ -120,22 +108,22 @@ export default defineComponent({
 
     function successHandler(res: any) {
       openDialog(
-        "success",
-        "Success.RequestSubmitted",
-        "Success.ResetPasswordRequestSent",
+        'success',
+        'Success.RequestSubmitted',
+        'Success.ResetPasswordRequestSent',
         true,
         {
-          label: "Buttons.GoToResetPassword",
+          label: 'Buttons.GoToResetPassword',
           onclick: () => {
-            router.push("/auth/reset-password");
+            router.push('/auth/reset-password');
           },
         },
-        null
+        null,
       );
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      openSnackbar('error', res?.detail ?? '');
     }
 
     return {

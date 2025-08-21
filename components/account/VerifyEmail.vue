@@ -1,5 +1,8 @@
 <template>
-  <article class="bg-secondary card style-card flex flex-col items-center justify-center" v-if="!show">
+  <article
+    class="bg-secondary card style-card flex flex-col items-center justify-center"
+    v-if="!show"
+  >
     <CheckBadgeIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
 
     <h2 class="text-heading-2">{{ t('Headings.VerifyAccount') }}</h2>
@@ -50,8 +53,8 @@ export default defineComponent({
           },
           {
             label: 'Buttons.Cancel',
-            onclick: () => { },
-          }
+            onclick: () => {},
+          },
         );
       } else {
         router.push('/auth/verify-account');

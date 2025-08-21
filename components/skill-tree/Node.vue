@@ -1,13 +1,31 @@
 <template>
   <svg :x="cx" :y="cy" ref="nodeRef" @click="ondblclick">
-    <SkillTreeNodeSvg v-if="isFilled" :size="nodeSize" :node="node" :active="active" :completed="completed"
-      :dottedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 25 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 42"
-      :segmentedBorder="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 42 && (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 50"
+    <SkillTreeNodeSvg
+      v-if="isFilled"
+      :size="nodeSize"
+      :node="node"
+      :active="active"
+      :completed="completed"
+      :dottedBorder="
+        (viewSubtree ? root_skill_level_value : sub_skill_level_value) > 25 &&
+        (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 42
+      "
+      :segmentedBorder="
+        (viewSubtree ? root_skill_level_value : sub_skill_level_value) > 42 &&
+        (viewSubtree ? root_skill_level_value : sub_skill_level_value) <= 50
+      "
       :flameEffect="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 50"
-      :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
+      :isBookmarked="isNodeBookmarked"
+      @bookmarked="toggleBookmark"
+    />
 
-    <foreignObject v-if="zoomLevel != 1 && isFilled" x="0" :y="nodeSize - 10" :width="nodeSize"
-      :height="active || completed ? 200 : 100">
+    <foreignObject
+      v-if="zoomLevel != 1 && isFilled"
+      x="0"
+      :y="nodeSize - 10"
+      :width="nodeSize"
+      :height="active || completed ? 200 : 100"
+    >
       <h6
         class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize"
         :class="{
@@ -18,7 +36,9 @@
           'text-heading-4': zoomLevel == 4,
           'text-heading-5': zoomLevel == 3,
           'text-body-2': zoomLevel == 2,
-        }" v-if="node && node.name != 'start'">
+        }"
+        v-if="node && node.name != 'start'"
+      >
         {{ node?.name ?? '' }}
       </h6>
     </foreignObject>
@@ -44,13 +64,13 @@ export default defineComponent({
   },
   emits: ['node', 'size', 'selected', 'move', 'ref'],
   setup(props, { emit }) {
-    const search_id = computed(() => props.viewSubtree ? props.node?.id : props.node?.parent_id)
-    const xp_list_root_skill = computed(() => props.xp?.skills?.find(
-      (skill: any) => skill.skill === search_id.value
-    ));
-    const xp_list_sub_skill = computed(() => xp_list_root_skill.value?.skills?.find(
-      (skill: any) => skill.skill === props.node?.id
-    ));
+    const search_id = computed(() => (props.viewSubtree ? props.node?.id : props.node?.parent_id));
+    const xp_list_root_skill = computed(() =>
+      props.xp?.skills?.find((skill: any) => skill.skill === search_id.value),
+    );
+    const xp_list_sub_skill = computed(() =>
+      xp_list_root_skill.value?.skills?.find((skill: any) => skill.skill === props.node?.id),
+    );
     const root_skill_xp_value = computed(() => xp_list_root_skill.value?.xp);
     const root_skill_level_value = computed(() => xp_list_root_skill.value?.level);
     const sub_skill_xp_value = computed(() => xp_list_sub_skill.value?.xp);
@@ -60,19 +80,18 @@ export default defineComponent({
     let isNodeBookmarked = ref(false);
     const user = useUser();
 
-
     const size = computed(() => {
       switch (props.zoomLevel) {
-      case 5:
-        return 125;
-      case 4:
-        return 100;
-      case 3:
-        return 75;
-      case 2:
-        return 50;
-      default:
-        return 25;
+        case 5:
+          return 125;
+        case 4:
+          return 100;
+        case 3:
+          return 75;
+        case 2:
+          return 50;
+        default:
+          return 25;
       }
     });
 
@@ -143,12 +162,12 @@ export default defineComponent({
         if (isBookmarked) {
           await createBookmark(
             props.node?.parent_id == null ? props.node?.id : props.node?.parent_id,
-            props.node?.parent_id == null ? "" : props.node?.id
+            props.node?.parent_id == null ? '' : props.node?.id,
           );
         } else {
           await deleteBookmark(
             props.node?.parent_id == null ? props.node?.id : props.node?.parent_id,
-            props.node?.parent_id == null ? "" : props.node?.id
+            props.node?.parent_id == null ? '' : props.node?.id,
           );
         }
       } catch (error) {
@@ -158,9 +177,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await Promise.all([
-        getUser(),
-      ]);
+      await Promise.all([getUser()]);
     });
 
     return {
@@ -178,7 +195,7 @@ export default defineComponent({
       sub_skill_xp_value,
       sub_skill_level_value,
       toggleBookmark,
-      isNodeBookmarked
+      isNodeBookmarked,
     };
   },
 });

@@ -16,24 +16,24 @@
     <!-- pr-[70px] -->
     <article class="hidden midXl:flex gap-box items-center">
       <Btn v-if="!isFirstLecture" sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
-        {{ t("Buttons.Prev") }}
+        {{ t('Buttons.Prev') }}
       </Btn>
       <Btn sm @click="goToNextLecture" :icon="ArrowRightIcon" icon-right>
-        {{ t("Buttons.Next") }}
+        {{ t('Buttons.Next') }}
       </Btn>
     </article>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import type { PropType, Ref } from "vue";
+import { useI18n } from 'vue-i18n';
+import type { PropType, Ref } from 'vue';
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
-} from "@heroicons/vue/24/solid";
+} from '@heroicons/vue/24/solid';
 
 const props = defineProps({
   course: { type: Object as PropType<any>, default: null },
@@ -45,12 +45,12 @@ const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
-const isFirstLecture = computed(() => lectures.value.findIndex(
-  (lecture) => lecture.id == activeLectureID.value
-) <= 0);
+const isFirstLecture = computed(
+  () => lectures.value.findIndex((lecture) => lecture.id == activeLectureID.value) <= 0,
+);
 
 const activeLectureID = computed(() => {
-  return props.activeLecture?.id ?? "";
+  return props.activeLecture?.id ?? '';
 });
 
 const lectures: Ref<any[]> = computed(() => {
@@ -76,13 +76,11 @@ const lectures: Ref<any[]> = computed(() => {
 async function goToPrevLecture() {
   if (lectures.value.length <= 0) return;
 
-  let indexOfCurrentLecture = lectures.value.findIndex(
-    (lec) => lec.id == activeLectureID.value
-  );
+  let indexOfCurrentLecture = lectures.value.findIndex((lec) => lec.id == activeLectureID.value);
 
   // current lecture is first lecture
   if (indexOfCurrentLecture <= 0) {
-    openSnackbar("warning", "Body.ThisIsFirstLecture");
+    openSnackbar('warning', 'Body.ThisIsFirstLecture');
     return;
   }
   // current lecture was not found
@@ -101,10 +99,10 @@ async function goToPrevLecture() {
   router.replace({
     path: route.path,
     query: {
-      section: preLecture.sectionID ?? "",
-      lecture: preLecture.id ?? "",
-      skillID: props?.skillID ?? "",
-      subSkillID: props?.subSkillID ?? "",
+      section: preLecture.sectionID ?? '',
+      lecture: preLecture.id ?? '',
+      skillID: props?.skillID ?? '',
+      subSkillID: props?.subSkillID ?? '',
     },
   });
 }
@@ -112,27 +110,25 @@ async function goToPrevLecture() {
 async function goToNextLecture() {
   if (lectures.value.length <= 0) return;
 
-  let indexOfCurrentLecture = lectures.value.findIndex(
-    (lec) => lec.id == activeLectureID.value
-  );
+  let indexOfCurrentLecture = lectures.value.findIndex((lec) => lec.id == activeLectureID.value);
 
   // current lecture is last lecture
   if (indexOfCurrentLecture >= lectures.value.length - 1) {
     openDialog(
-      "success",
-      "Headings.CourseCompleted",
-      "Body.CourseCompleted",
+      'success',
+      'Headings.CourseCompleted',
+      'Body.CourseCompleted',
       false,
       {
-        label: "Buttons.ViewMoreCourses",
+        label: 'Buttons.ViewMoreCourses',
         onclick: () => {
           router.push(`/profile/courses`);
         },
       },
       {
-        label: "Buttons.Okay",
+        label: 'Buttons.Okay',
         onclick: () => {},
-      }
+      },
     );
     return;
   }
@@ -152,10 +148,10 @@ async function goToNextLecture() {
   router.replace({
     path: route.path,
     query: {
-      section: nextLecture.sectionID ?? "",
-      lecture: nextLecture.id ?? "",
-      skillID: props?.skillID ?? "",
-      subSkillID: props?.subSkillID ?? "",
+      section: nextLecture.sectionID ?? '',
+      lecture: nextLecture.id ?? '',
+      skillID: props?.skillID ?? '',
+      subSkillID: props?.subSkillID ?? '',
     },
   });
 }

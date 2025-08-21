@@ -1,14 +1,7 @@
 <template>
   <section>
-    <div
-      class="flex gap-6 flex-col sm:flex-row items-center justify-center m-10 mt-20 flex-wrap"
-    >
-      <section
-        :class="[{ 'sm:-mt-10': i == 2 }]"
-        v-for="i of 3"
-        :key="i"
-        class="topUserCard"
-      >
+    <div class="flex gap-6 flex-col sm:flex-row items-center justify-center m-10 mt-20 flex-wrap">
+      <section :class="[{ 'sm:-mt-10': i == 2 }]" v-for="i of 3" :key="i" class="topUserCard">
         <div class="w-20 h-20">
           <SkeletonText class="w-full h-full rounded-full" />
         </div>
@@ -18,7 +11,7 @@
         </div>
 
         <div class="flex gap-1 items-center">
-          <p class="text-sm">{{ t("Headings.Score") }}:</p>
+          <p class="text-sm">{{ t('Headings.Score') }}:</p>
           <div class="w-12">
             <SkeletonText class="max-w-[50px] my-2" />
           </div>
@@ -53,13 +46,13 @@
 
         <section class="flex gap-3 items-center px-7 sm:px-10">
           <div class="flex gap-1 items-center">
-            <p class="text-sm">{{ t("Headings.Score") }}:</p>
+            <p class="text-sm">{{ t('Headings.Score') }}:</p>
             <div class="w-12">
               <SkeletonText class="max-w-[50px] my-2" />
             </div>
           </div>
           <div class="flex gap-1 items-center">
-            <p class="text-sm">{{ t("Headings.Rank") }}:</p>
+            <p class="text-sm">{{ t('Headings.Rank') }}:</p>
             <div class="w-12">
               <SkeletonText class="max-w-[50px] my-2" />
             </div>
@@ -71,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 export default {
   setup() {
     const { t } = useI18n();

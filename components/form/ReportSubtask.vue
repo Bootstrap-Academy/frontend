@@ -15,68 +15,66 @@
     </article>
     <article class="flex justify-end gap-4 flex-wrap mt-12">
       <InputBtn @click="closeReportDialog()" secondary>
-        {{ t("Buttons.Cancel") }}</InputBtn
-      >
-      <InputBtn :loading="loading" @click="submitForm()">{{
-        t("Buttons.Report")
-      }}</InputBtn>
+        {{ t('Buttons.Cancel') }}
+      </InputBtn>
+      <InputBtn :loading="loading" @click="submitForm()">{{ t('Buttons.Report') }}</InputBtn>
     </article>
   </div>
 </template>
 
 <script lang="ts">
-import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
-import { reportSubtask } from "~~/composables/codingChallenges";
-import { useI18n } from "vue-i18n";
+import { useDialogReportTask, useDialogSlot } from '~~/composables/dialogSlot';
+import { reportSubtask } from '~~/composables/codingChallenges';
+import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
   props: {
-    task_id: { type: String, default: "" },
-    subtask_id: { type: String, default: "" },
+    task_id: { type: String, default: '' },
+    subtask_id: { type: String, default: '' },
     stopDialogSlotFromBeingFalse: { type: Boolean, default: false },
   },
-  emits: ["reportSubmitted"],
+  emits: ['reportSubmitted'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const dialogReportTask = useDialogReportTask();
     const dialogSlot = useDialogSlot();
-    const reason = ref("");
-    const comment = ref("");
+    const reason = ref('');
+    const comment = ref('');
     const loading = ref(false);
     function closeReportDialog() {
-      console.log("closed");
+      console.log('closed');
       if (!props.stopDialogSlotFromBeingFalse) {
         dialogSlot.value = false;
       }
       dialogReportTask.value = false;
     }
     const reportValueArray = [
-      { key: "Abuse", value: "ABUSE" },
-      { key: "Wrong", value: "WRONG" },
-      { key: "UnrelatedSkill", value: "UNRELATED_SKILL" },
-      { key: "Other", value: "OTHER" },
-      { key: "Dislike", value: "DISLIKE" },
+      { key: 'Abuse', value: 'ABUSE' },
+      { key: 'Wrong', value: 'WRONG' },
+      { key: 'UnrelatedSkill', value: 'UNRELATED_SKILL' },
+      { key: 'Other', value: 'OTHER' },
+      { key: 'Dislike', value: 'DISLIKE' },
     ];
     async function submitForm() {
-      console.log("submit");
+      console.log('submit');
       if (!!!reason.value || !!!comment.value) {
-        return openSnackbar("error", "Error.InvalidForm");
+        return openSnackbar('error', 'Error.InvalidForm');
       }
       loading.value = true;
       const [success, error] = await reportSubtask({
-        task_id: props.task_id ?? "",
-        subtask_id: props.subtask_id ?? "",
+        task_id: props.task_id ?? '',
+        subtask_id: props.subtask_id ?? '',
         comment: comment.value,
         reason: reason.value,
       });
       loading.value = false;
 
       if (success) {
-        emit("reportSubmitted", true);
-        openSnackbar("success", "Success.ReportedSubtask");
+        emit('reportSubmitted', true);
+        openSnackbar('success', 'Success.ReportedSubtask');
         closeReportDialog();
       } else {
-        openSnackbar("error", error);
+        openSnackbar('error', error);
       }
     }
     return {

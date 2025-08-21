@@ -1,16 +1,16 @@
 <template>
-	<article class="flex" :class="[gap, horizontal ? 'flex-wrap' : 'flex-col']">
-		<InputRadio
-			v-for="(option, i) of options"
-			:key="i"
-			:name="name"
-			:label="option.label"
-			:value="option.value"
-			v-model="input"
-			:sm="sm"
-			:data-tooltip="t(option.tooltip ?? '')"
-		/>
-	</article>
+  <article class="flex" :class="[gap, horizontal ? 'flex-wrap' : 'flex-col']">
+    <InputRadio
+      v-for="(option, i) of options"
+      :key="i"
+      :name="name"
+      :label="option.label"
+      :value="option.value"
+      v-model="input"
+      :sm="sm"
+      :data-tooltip="t(option.tooltip ?? '')"
+    />
+  </article>
 </template>
 
 <script lang="ts">

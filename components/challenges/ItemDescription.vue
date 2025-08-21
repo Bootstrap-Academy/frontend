@@ -1,12 +1,12 @@
 <template>
-	<article>
-		<h4 class="text-heading-3">{{ t('Headings.Description') }}</h4>
-		<div
-			class="markdown"
-			v-if="typeof description == 'string'"
-			v-html="$md.render(description)"
-		></div>
-	</article>
+  <article>
+    <h4 class="text-heading-3">{{ t('Headings.Description') }}</h4>
+    <div
+      class="markdown"
+      v-if="typeof description == 'string'"
+      v-html="$md.render(description)"
+    ></div>
+  </article>
 </template>
 
 <script lang="ts">

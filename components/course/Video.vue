@@ -23,17 +23,12 @@
       :key="`video-${videoSRC}`"
       @timeupdate="onTimeUpdate(activeLecture.id, $event)"
       @loadstart="onVideoLoad(activeLecture.id, $event)"
-    >    
+    >
       <track kind="captions" />
       <source ref="refSource" :src="videoSRC" type="video/mp4" />
       <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a
-        web browser that
-        <a
-          sveltekit:prefetch
-          href="https://videojs.com/html5-video-support/"
-          target="_blank"
-        >
+        To view this video please enable JavaScript, and consider upgrading to a web browser that
+        <a sveltekit:prefetch href="https://videojs.com/html5-video-support/" target="_blank">
           supports HTML5 video
         </a>
       </p>
@@ -42,8 +37,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
+import { defineComponent } from 'vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -55,7 +50,7 @@ export default defineComponent({
     const videoSRC = useVideoSRC();
 
     let videoInterval: any;
-    const video = ref<HTMLVideoElement | null>(null); 
+    const video = ref<HTMLVideoElement | null>(null);
     const refSource = ref<HTMLSourceElement | any>(null);
 
     watch(
@@ -63,16 +58,16 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (!!!newValue) return;
 
-        const courseID = props.course?.id ?? "";
+        const courseID = props.course?.id ?? '';
 
         if (!!!courseID) return;
 
         await getLectureVideoSRC(courseID, newValue);
 
-        if ((props.activeLecture?.type ?? "") == "mp4") {
+        if ((props.activeLecture?.type ?? '') == 'mp4') {
           clearInterval(videoInterval);
 
-          refSource.value.setAttribute("src", videoSRC.value);
+          refSource.value.setAttribute('src', videoSRC.value);
           videoInterval = setInterval(async () => {
             await getLectureVideoSRC(courseID, newValue);
             if (video.value) {
@@ -80,42 +75,42 @@ export default defineComponent({
               refSource.value.src = videoSRC.value;
               video.value.load();
               video.value.play();
-            };
+            }
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
           }, 28800000); //8 hours
         }
       },
-      { deep: true, immediate: true }
+      { deep: true, immediate: true },
     );
 
-
     function onTimeUpdate(videoID: string, event: any) {
-      const videoCookie = useCookie("currentVideo");
-      const timeCookie = useCookie("currentVideoTime");
-    
+      const videoCookie = useCookie('currentVideo');
+      const timeCookie = useCookie('currentVideoTime');
+
       const currentVideoTime = event.target.currentTime;
       timeCookie.value = currentVideoTime;
-    
+
       if (currentVideoTime < 1) videoCookie.value = videoID;
     }
-    
+
     function onVideoLoad(videoID: string, event: any) {
-      const videoCookie = useCookie("currentVideo");
-      const timeCookie = useCookie("currentVideoTime");
-    
-      if (!videoCookie || videoCookie.value === "" || !timeCookie || timeCookie.value === "") return;
-    
+      const videoCookie = useCookie('currentVideo');
+      const timeCookie = useCookie('currentVideoTime');
+
+      if (!videoCookie || videoCookie.value === '' || !timeCookie || timeCookie.value === '')
+        return;
+
       if (videoCookie.value !== videoID) {
         // Reset the time cookie to start the new video from the beginning
-        timeCookie.value = "";
+        timeCookie.value = '';
         videoCookie.value = videoID;
       } else {
         // Set the current video time to the saved cookie value
         event.target.currentTime = timeCookie.value;
       }
     }
-    
+
     return { videoSRC, refSource, onTimeUpdate, onVideoLoad };
   },
 });
