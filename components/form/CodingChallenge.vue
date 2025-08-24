@@ -46,18 +46,22 @@
 
         <article>
           <div class="flex gap-x-2 items-center">
-            <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
+            <p class="mb-2 ml-1">{{ t('Headings.EvaluatorCode') }}</p>
           </div>
-          <ChallengesCodeEditor :selectedLanguage="'python'" class="h-full" v-model="form.evaluator.value" />
+          <ChallengesCodeEditor
+            :selectedLanguage="'python'"
+            class="h-full"
+            v-model="form.evaluator.value"
+          />
           <!-- error if there is any during evaluator code creation-->
 
           <div v-if="!!evaluatorCodeErrorDetails.stderr">
-            <p class="text-error">{{ t("Headings.Error") }}</p>
+            <p class="text-error">{{ t('Headings.Error') }}</p>
 
             <p class="whitespace-pre text-error">{{ evaluatorCodeErrorDetails.stderr }}</p>
           </div>
           <div v-if="!!evaluatorCodeErrorDetails.stdout">
-            <p class="text-accent">{{ t("Headings.Output") }}</p>
+            <p class="text-accent">{{ t('Headings.Output') }}</p>
             <p class="whitespace-pre">{{ evaluatorCodeErrorDetails.stdout }}</p>
           </div>
         </article>
@@ -74,7 +78,7 @@
             />
           </div>
           <div class="flex gap-2 items-center">
-            <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
+            <p class="mb-2 ml-1">{{ t('Headings.SolutionCode') }}</p>
           </div>
           <ChallengesCodeEditor
             class="h-full"
@@ -86,7 +90,7 @@
             @click="enterExampleCode()"
             class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
           >
-            {{ t("Headings.ClickForExampleCode") }}
+            {{ t('Headings.ClickForExampleCode') }}
             <CodeBracketIcon class="h-5 w-5" />
           </div>
           <!-- error if there is any during create solution code -->
@@ -94,12 +98,12 @@
             {{ t(SolutionCodeErrorDetails.verdict) }}
           </p>
           <p v-if="!!SolutionCodeErrorDetails.stderr" class="mt-4">
-            <span class="block">{{ t("Headings.Error") }} </span>
-            <p class="whitespace-pre text-error">{{ SolutionCodeErrorDetails.stderr }}</p>
+            <span class="block">{{ t('Headings.Error') }}</span>
+            <span class="whitespace-pre text-error">{{ SolutionCodeErrorDetails.stderr }}</span>
           </p>
           <p v-if="!!SolutionCodeErrorDetails.stdout" class="mt-4">
-            <span class="block text-accent">{{ t("Headings.Output") }}</span>
-            <p class="whitespace-pre">{{ SolutionCodeErrorDetails.stdout }}</p>
+            <span class="block text-accent">{{ t('Headings.Output') }}</span>
+            <span class="whitespace-pre">{{ SolutionCodeErrorDetails.stdout }}</span>
           </p>
         </article>
 
@@ -107,7 +111,7 @@
           <Transition name="popIn">
             <div v-if="advanceSettings">
               <article class="flex items-center gap-2">
-                <p class="mb-3 text-lg">{{ t("Headings.Why") }}</p>
+                <p class="mb-3 text-lg">{{ t('Headings.Why') }}</p>
                 <Tooltip
                   :placement="'right'"
                   :heading="'Headings.WhyWeUseThem'"
@@ -142,35 +146,25 @@
               @click="advanceSettings = !advanceSettings"
               class="flex items-center gap-2 group cursor-pointer px-3 py-1 rounded-full w-fit bg-[#6448e433] hover:bg-[#5e41de4d]"
             >
-              <Cog6ToothIcon
-                class="text-white h-7 w-7 group-hover:animate-spin"
-              />
+              <Cog6ToothIcon class="text-white h-7 w-7 group-hover:animate-spin" />
               <p class="text-[#afa7dd]">
-                {{ advanceSettings ? "Hide Settings" : "Advance Settings" }}
+                {{ advanceSettings ? 'Hide Settings' : 'Advance Settings' }}
               </p>
             </div>
           </article>
         </section>
 
-        <section
-          v-if="!!!propData || user?.admin"
-          class="flex gap-3 flex-wrap justify-end"
-        >
+        <section v-if="!!!propData || user?.admin" class="flex gap-3 flex-wrap justify-end">
           <InputBtn @click="closeDialog()" class="self-end" secondary mt>
-            {{ t("Buttons.Close") }}
+            {{ t('Buttons.Close') }}
           </InputBtn>
-          <InputBtn
-            :loading="loading"
-            class="self-end"
-            @click="onclickSubmitForm()"
-            mt
-          >
+          <InputBtn :loading="loading" class="self-end" @click="onclickSubmitForm()" mt>
             <span v-if="!!propData">
-              {{ t("Buttons.UpdateCodingChallenge") }}
+              {{ t('Buttons.UpdateCodingChallenge') }}
             </span>
 
             <span v-else>
-              {{ t("Buttons.CreateCodingChallenge") }}
+              {{ t('Buttons.CreateCodingChallenge') }}
             </span>
           </InputBtn>
         </section>
@@ -185,10 +179,10 @@ import {
   CodeBracketIcon,
   Cog6ToothIcon,
   Cog8ToothIcon,
-} from "@heroicons/vue/24/outline";
-import { useI18n } from "vue-i18n";
-import { ref } from "vue";
-import type { PropType } from "vue";
+} from '@heroicons/vue/24/outline';
+import { useI18n } from 'vue-i18n';
+import { ref } from 'vue';
+import type { PropType } from 'vue';
 import {
   updateCodingChallenge,
   createCodingChallenge,
@@ -200,13 +194,13 @@ import {
   useEnvironments,
   useEvaluatorTemplate,
   getEvaluatorTemplate,
-} from "~~/composables/codingChallenges";
-import type { IForm } from "~/types/form";
+} from '~~/composables/codingChallenges';
+import type { IForm } from '~/types/form';
 
 export default {
   props: {
     propData: { type: Object as PropType<any>, default: null },
-    challengeId: { type: String, default: "" },
+    challengeId: { type: String, default: '' },
   },
   components: {
     InformationCircleIcon,
@@ -226,13 +220,13 @@ export default {
     const loadingData = ref(true);
     const advanceSettings = ref(false);
     const SolutionCodeErrorDetails = ref({
-      stdout: "",
-      stderr: "",
-      verdict: "",
+      stdout: '',
+      stderr: '',
+      verdict: '',
     });
     const evaluatorCodeErrorDetails = ref({
-      stdout: "",
-      stderr: "",
+      stdout: '',
+      stderr: '',
     });
     const languages: any = computed(() => {
       const items = [];
@@ -245,12 +239,12 @@ export default {
     const form = reactive<IForm>({
       description: {
         valid: false,
-        value: "",
-        placeholder: "Describe here what user have to solve?",
+        value: '',
+        placeholder: 'Describe here what user have to solve?',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.Description",
-          (v: string) => v.length >= 10 || "Error.InputMinLength_10",
-          (v: string) => v.length <= 4096 || "Error.InputMaxLength_4096",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Description',
+          (v: string) => v.length >= 10 || 'Error.InputMinLength_10',
+          (v: string) => v.length <= 4096 || 'Error.InputMaxLength_4096',
         ],
       },
       // xp: {
@@ -267,39 +261,39 @@ export default {
       static_tests: {
         valid: true,
         value: 5,
-        placeholder: "",
+        placeholder: '',
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.StaticTests",
-          (v: number) => v <= 20 || "Error.InputMaxNumber_20",
+          (v: number) => !!v || 'Error.InputEmpty_Inputs.StaticTests',
+          (v: number) => v <= 20 || 'Error.InputMaxNumber_20',
         ],
       },
       random_tests: {
         valid: true,
         value: 5,
-        placeholder: "",
+        placeholder: '',
         rules: [
-          (v: number) => !!v || "Error.InputEmpty_Inputs.RandomTests",
-          (v: number) => v <= 20 || "Error.InputMaxNumber_20",
+          (v: number) => !!v || 'Error.InputEmpty_Inputs.RandomTests',
+          (v: number) => v <= 20 || 'Error.InputMaxNumber_20',
         ],
       },
       solution_environment: {
         valid: true,
-        value: "",
+        value: '',
       },
       evaluator: {
         valid: true,
-        value: "",
+        value: '',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.Evaluator",
-          (v: string) => v.length <= 65536 || "Error.InputMaxNumber_65536",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.Evaluator',
+          (v: string) => v.length <= 65536 || 'Error.InputMaxNumber_65536',
         ],
       },
       solution_code: {
         valid: true,
-        value: "",
+        value: '',
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.SolutionCode",
-          (v: string) => v.length <= 65536 || "Error.InputMaxNumber_65536",
+          (v: string) => !!v || 'Error.InputEmpty_Inputs.SolutionCode',
+          (v: string) => v.length <= 65536 || 'Error.InputMaxNumber_65536',
         ],
       },
 
@@ -309,12 +303,7 @@ export default {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != 'validate' && key != 'body' && key != 'submitting' && !form[key].valid) {
             console.log(key);
 
             isValid = false;
@@ -328,8 +317,7 @@ export default {
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != 'validate' && key != 'body' && key != 'submitting') obj[key] = form[key].value;
         }
         return obj;
       },
@@ -344,7 +332,7 @@ export default {
 
         form.submitting = false;
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        openSnackbar('error', 'Error.InvalidForm');
       }
     }
 
@@ -370,42 +358,35 @@ export default {
 
     async function fnEditCodingChallenge() {
       loading.value = true;
-      const [success, error] = await updateCodingChallenge(
-        props?.challengeId,
-        props.propData.id,
-        {
-          description: form.description.value,
-          // coins: !!form.coins.value ? form.coins.value : 0,
-          // xp: !!form.xp.value ? form.xp.value : 0,
-          time_limit: configs.value.time_limit,
-          memory_limit: configs.value.memory_limit,
-          static_tests: form.static_tests.value,
-          random_tests: form.random_tests.value,
-          solution_environment: form.solution_environment.value,
-          solution_code: form.solution_code.value,
-          evaluator: form.evaluator.value,
-        }
-      );
+      const [success, error] = await updateCodingChallenge(props?.challengeId, props.propData.id, {
+        description: form.description.value,
+        // coins: !!form.coins.value ? form.coins.value : 0,
+        // xp: !!form.xp.value ? form.xp.value : 0,
+        time_limit: configs.value.time_limit,
+        memory_limit: configs.value.memory_limit,
+        static_tests: form.static_tests.value,
+        random_tests: form.random_tests.value,
+        solution_environment: form.solution_environment.value,
+        solution_code: form.solution_code.value,
+        evaluator: form.evaluator.value,
+      });
       loading.value = false;
       success ? editSuccessHandler(success) : errorHandler(error);
     }
 
     function createSuccessHandler(res: any) {
-      openSnackbar("success", "Success.CreatedCodingChallenge");
+      openSnackbar('success', 'Success.CreatedCodingChallenge');
       closeDialog();
     }
 
     function editSuccessHandler(res: any) {
-      openSnackbar("success", "Success.EditedCodingChallenge");
+      openSnackbar('success', 'Success.EditedCodingChallenge');
     }
 
     function errorHandler(res: any) {
-      console.log("in handler", res.error);
-      if (
-        res?.error == "Error.EvaluatorFailed" ||
-        res?.error == "Error.EvaluatorInvalidOutput"
-      ) {
-        console.log("evaluator code failed", res.details);
+      console.log('in handler', res.error);
+      if (res?.error == 'Error.EvaluatorFailed' || res?.error == 'Error.EvaluatorInvalidOutput') {
+        console.log('evaluator code failed', res.details);
         evaluatorCodeErrorDetails.value = {
           stderr: res.details.run.stderr,
           stdout: res.details.run.stdout,
@@ -417,18 +398,18 @@ export default {
             stdout: res.details.result.compile.stdout,
             verdict: res.error,
           };
-          console.log("solution code compile error ", res);
+          console.log('solution code compile error ', res);
         } else if (!!res.details?.result?.run) {
           SolutionCodeErrorDetails.value = {
             stderr: res.details.result.run.stderr,
             stdout: res.details.result.run.stdout,
             verdict: res.error,
           };
-          console.log("solution code run error ", res);
+          console.log('solution code run error ', res);
         }
       }
 
-      openSnackbar("error", res?.error ?? "");
+      openSnackbar('error', res?.error ?? '');
     }
 
     function closeDialog() {
@@ -441,60 +422,56 @@ export default {
     async function getEvaulatorAndSolution() {
       const [evaluatorSuccess, evaluatorError] = await getEvaluator(
         props.challengeId,
-        props.propData.id
+        props.propData.id,
       );
       const [solutionSuccess, solutionError] = await getSolution(
         props.challengeId,
-        props.propData.id
+        props.propData.id,
       );
       if (!!solutionSuccess) {
-        form.solution_code.value = solutionSuccess?.code ?? "";
-        form.solution_environment.value = solutionSuccess?.environment ?? "";
+        form.solution_code.value = solutionSuccess?.code ?? '';
+        form.solution_environment.value = solutionSuccess?.environment ?? '';
       } else {
-        openSnackbar("error", "Errors.CannotGetSolution");
+        openSnackbar('error', 'Errors.CannotGetSolution');
       }
 
       if (!!evaluatorSuccess) {
         form.evaluator.value = evaluatorSuccess;
       } else {
-        openSnackbar("error", "Errors.CannotGetEvaluator");
+        openSnackbar('error', 'Errors.CannotGetEvaluator');
       }
     }
 
     async function setFormData() {
       if (props.propData != null) {
         await getEvaulatorAndSolution();
-        form.description.value = props?.propData?.description ?? "";
+        form.description.value = props?.propData?.description ?? '';
         // form.xp.value = props?.propData?.xp ?? "";
         // form.coins.value = props?.propData?.coins ?? "";
-        form.static_tests.value = props?.propData?.static_tests ?? "";
-        form.random_tests.value = props?.propData?.random_tests ?? "";
+        form.static_tests.value = props?.propData?.static_tests ?? '';
+        form.random_tests.value = props?.propData?.random_tests ?? '';
 
-        form.description.valid =
-          props?.propData.description.trim() != "" ? true : false;
+        form.description.valid = props?.propData.description.trim() != '' ? true : false;
         // form.xp.valid = props?.propData.xp >= 0 ? true : false;
         // form.coins.valid = props?.propData.coins >= 0 ? true : false;
-        form.random_tests.valid =
-          props?.propData.random_tests >= 1 ? true : false;
-        form.static_tests.valid =
-          props?.propData.static_tests >= 1 ? true : false;
+        form.random_tests.valid = props?.propData.random_tests >= 1 ? true : false;
+        form.static_tests.valid = props?.propData.static_tests >= 1 ? true : false;
       }
     }
 
     function enterExampleCode() {
-      form.solution_code.value =
-        environments.value[form.solution_environment.value].example;
+      form.solution_code.value = environments.value[form.solution_environment.value].example;
     }
 
     function clearErrorsForCode() {
       evaluatorCodeErrorDetails.value = {
-        stdout: "",
-        stderr: "",
+        stdout: '',
+        stderr: '',
       };
       SolutionCodeErrorDetails.value = {
-        stdout: "",
-        stderr: "",
-        verdict: "",
+        stdout: '',
+        stderr: '',
+        verdict: '',
       };
     }
 
@@ -503,7 +480,7 @@ export default {
       (newValue, oldValue) => {
         form.evaluator.value = newValue;
       },
-      { immediate: true }
+      { immediate: true },
     );
 
     watch(
@@ -511,7 +488,7 @@ export default {
       () => {
         setFormData();
       },
-      { deep: true }
+      { deep: true },
     );
 
     onMounted(async () => {
