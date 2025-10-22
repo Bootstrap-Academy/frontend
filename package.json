@@ -36,7 +36,7 @@
     "jwt-decode": "^4.0.0",
     "katex": "^0.16.22",
     "markdown-it": "^14.1.0",
-    "monaco-editor": "^0.52.2",
+    "monaco-editor": "^0.54.0",
     "nanoid": "^5.1.5",
     "npm": "^11.6.2",
     "qrcode.vue": "^3.6.0",
