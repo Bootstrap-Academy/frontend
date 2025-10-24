@@ -32,7 +32,7 @@ jobs:
           echo ${{ github.event.number }} > .pr
       - name: Upload dist
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dist
           path: |
