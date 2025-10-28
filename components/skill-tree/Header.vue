@@ -1,7 +1,11 @@
 <template>
   <header
-    class="flex gap-card items-center justify-between flex-wrap capitalize"
-    :class="{ 'absolute left-0 top-card w-screen container-fluid': absolute }"
+    class="flex gap-card items-center justify-between flex-wrap capitalize pointer-events-auto z-20"
+    :class="
+      absolute
+        ? 'absolute left-0 top-card w-screen container-fluid'
+        : 'relative'
+    "
   >
     <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary style-box">
       <template v-for="(path, i) of breadcrumbs" :key="i">
@@ -29,10 +33,6 @@
       </Btn>
     </NuxtLink>
 
-    <SkillTreeZoomLevel
-      v-if="!noZoomLevel"
-      @zoomLevel="emit('zoomLevel', $event)"
-    />
   </header>
 </template>
 
@@ -48,8 +48,7 @@ export default defineComponent({
     absolute: { type: Boolean, default: true },
     quizzesQuickStart: { type: Boolean, default: false },
   },
-  emits: ["zoomLevel"],
-  setup(props, { emit }) {
+  setup() {
     const { t } = useI18n();
     const lastViewCourse: any = useCookie("lastViewCourse");
 
@@ -65,7 +64,7 @@ export default defineComponent({
       }
     });
 
-    return { emit, t, lastViewCourse, lastViewCourseInfo };
+    return { t, lastViewCourse, lastViewCourseInfo };
   },
 });
 </script>

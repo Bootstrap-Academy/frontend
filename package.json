@@ -41,6 +41,7 @@
     "npm": "^11.6.2",
     "qrcode.vue": "^3.6.0",
     "vue-recaptcha-v3": "^2.0.1",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "^4.1.0",
+    "@panzoom/panzoom": "^4.5.1"
   }
 }
