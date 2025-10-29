@@ -26,11 +26,7 @@
       class="midXl:row-span-4 midXl:sticky midXl:top-container midXl:self-start"
     />
 
-    <UserProgress />
-
-    <UserCourses />
-
-    <UserChallenges />
+    <UserSkillTreeOverview />
 
     <!-- <UserQuizzes /> -->
   </main>

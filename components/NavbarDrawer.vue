@@ -9,7 +9,7 @@
 				@click.self="closeMenu"
 			>
 				<aside class="h-full w-72 bg-tertiary p-[5vw] sm:p-9 shadow-2xl">
-					<NuxtLink to="/" class="flex gap-card-sm items-center">
+					<NuxtLink :to="authorized ? '/dashboard' : '/'" class="flex gap-card-sm items-center">
 						<img
 							src="/images/logo-text.png"
 							:alt="t('AltAttributes.BootstrapAcademyLogo')"
@@ -43,6 +43,7 @@ export default {
   components: { Bars3Icon },
   props: {
     links: { default: [] },
+    authorized: { type: Boolean, default: false },
   },
   setup() {
     const { t } = useI18n();

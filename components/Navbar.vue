@@ -1,14 +1,14 @@
 <template>
   <section class="container-fluid py-4 flex items-center justify-between">
     <!-- START -->
-    <NuxtLink to="/" class="hidden lg:flex gap-card-sm items-center">
+    <NuxtLink :to="authorized ? '/dashboard' : '/'" class="hidden lg:flex gap-card-sm items-center">
       <img
         src="/images/logo-text.png"
         :alt="t('AltAttributes.BootstrapAcademyLogo')"
         class="object-contain lg:w-28 xl:w-36 cursor-pointer"
       />
     </NuxtLink>
-    <NavbarDrawer class="block lg:hidden" :links="links" />
+    <NavbarDrawer class="block lg:hidden" :links="links" :authorized="authorized" />
 
     <!-- CENTER -->
     <nav

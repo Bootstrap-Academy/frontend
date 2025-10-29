@@ -21,6 +21,10 @@ export default {
       return authorized.value
         ? [
           {
+            label: "Links.Dashboard",
+            pathname: "/dashboard",
+          },
+          {
             label: "Links.Calendar",
             pathname: "/calendar",
           },
