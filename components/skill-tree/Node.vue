@@ -6,18 +6,14 @@
       :flameEffect="(viewSubtree ? root_skill_level_value : sub_skill_level_value) > 50"
       :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
 
-    <foreignObject v-if="zoomLevel != 1 && isFilled" x="0" :y="nodeSize - 10" :width="nodeSize"
+    <foreignObject v-if="isFilled" x="0" :y="nodeSize - 10" :width="nodeSize"
       :height="active || completed ? 200 : 100">
       <h6
-        class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize"
+        class="origin-center select-none transition-all duration-500 ease-in-out text-center w-full h-auto pointer-events-none capitalize text-body-2"
         :class="{
           'pt-6': active,
           'pt-7': completed,
           'pt-2': !active && !completed,
-          'text-heading-3': zoomLevel == 5,
-          'text-heading-4': zoomLevel == 4,
-          'text-heading-5': zoomLevel == 3,
-          'text-body-2': zoomLevel == 2,
         }" v-if="node && node.name != 'start'">
         {{ node?.name ?? '' }}
       </h6>
@@ -37,7 +33,6 @@ export default defineComponent({
     selectedNode: { default: null },
     row: { type: Number, default: 0 },
     column: { type: Number, default: 0 },
-    zoomLevel: { type: Number, default: 2 },
     viewSubtree: { type: Boolean, default: false },
     viewSkill: { type: Boolean, default: false },
     xp: { type: Object as PropType<any>, default: null },
@@ -61,20 +56,8 @@ export default defineComponent({
     const user = useUser();
 
 
-    const size = computed(() => {
-      switch (props.zoomLevel) {
-      case 5:
-        return 125;
-      case 4:
-        return 100;
-      case 3:
-        return 75;
-      case 2:
-        return 50;
-      default:
-        return 25;
-      }
-    });
+    const DEFAULT_NODE_SIZE = 50;
+    const size = computed(() => DEFAULT_NODE_SIZE);
 
     const nodeSize = computed(() => {
       emit('size', size.value * occupiedSpace);
