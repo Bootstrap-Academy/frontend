@@ -11,6 +11,8 @@
     "WebShop": "Webshop"
   },
   "Headings": {
+    "Dashboard": "Dashboard",
+    "SkillTreeOverview": "Skilltree-Übersicht",
     "DragAndDropToMatchMatchings": "Drag-and-Drop zum Zuordnen",
     "AnswersForMatchingsRespectively": "Antworten für Matchings",
     "LabelForMatchings": "Beschriftungen für Matchings",
@@ -371,6 +373,8 @@
     "SelectSkill": "Skill auswählen"
   },
   "Body": {
+    "DashboardIntro": "Steig direkt wieder in deine Kurse oder Challenges ein.",
+    "SkillTreeOverview": "Behalte deine Root-Skills im Blick und öffne die Details, wenn du tiefer einsteigen möchtest.",
     "SelectSkillDescription": "Wir müssen wissen, unter welchem Root-Skill du die Inhalte erstellen möchtest.",
     "DeleteMatching": "Sind Sie sicher, dass Sie dieses Matching löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "WhyWeUseTests": "Die Zahlen, die du beim Erstellen oder Ändern einer Coding - Challenge eingibst, sind einfach die Anzahl der statischen/zufälligen Testfälle, anhand derer die Lösung des Benutzers getestet werden soll. Wenn ich beispielsweise static_tests=5 und random_tests=3 setze, werden für jede Übermittlung 5 statische Testfälle und 3 zufällige Testfälle generiert, anhand derer die Eingabe des Lösenden getestet wird",
@@ -908,6 +912,7 @@
     "BackToAccount": "Zurück zum Konto",
     "GoToLogin": "Log dich ein",
     "Home": "Startseite",
+    "Dashboard": "Dashboard",
     "SkillTree": "Skilltree",
     "Contact": "Kontakt",
     "Privacy": "Datenschutzerklärung",

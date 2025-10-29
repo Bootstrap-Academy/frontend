@@ -24,6 +24,10 @@
 </template>
 
 <script lang="ts">
+definePageMeta({
+  middleware: ["redirect-authenticated"],
+});
+
 export default {
   head: {
     title: 'Bootstrap Academy',
