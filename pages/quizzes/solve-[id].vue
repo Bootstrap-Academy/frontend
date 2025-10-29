@@ -42,8 +42,8 @@
               >:
               {{
                 t("Headings.AmountSolvedQuizzes", {
-                  amount: arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length,
-                  total: arrayOfSubtasks?.length,
+                  amount: solvedSubtaskCount,
+                  total: totalSubtaskCount,
                 })
               }}
             </p>
@@ -99,13 +99,7 @@
         />
       </div>
     </main>
-    <div
-      v-if="
-        !loading &&
-        quizzesToShow.length > 0 &&
-        arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length == 0
-      "
-    >
+    <div v-if="!loading && quizzesToShow.length > 0 && unsolvedSubtaskCount === 0">
       <CheckCircleIcon class="mx-auto mb-8 h-20 w-20 text-accent" />
       <p class="mb-20 w-full text-center text-xl">
         {{ t("Headings.AllSolved") }}
@@ -329,6 +323,12 @@ export default defineComponent({
       return quiz.creator === user.value?.id;
     }
 
+    const totalSubtaskCount = computed(() => arrayOfSubtasks.value.length);
+    const solvedSubtaskCount = computed(
+      () => arrayOfSubtasks.value.filter((quiz: any) => quiz.solved).length
+    );
+    const unsolvedSubtaskCount = computed(() => totalSubtaskCount.value - solvedSubtaskCount.value);
+
     function sortQuizzes() {
       return quizzesToShow.value.sort(
         (
@@ -406,6 +406,9 @@ export default defineComponent({
       breadcrumbs,
       querySubTaskId,
       sortQuizzes,
+      totalSubtaskCount,
+      solvedSubtaskCount,
+      unsolvedSubtaskCount,
     };
   },
 });
