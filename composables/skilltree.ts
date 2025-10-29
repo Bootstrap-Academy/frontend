@@ -85,7 +85,6 @@ export function scrollMapToNode(
   map: any,
   mapRef: any,
   nodeSize: number,
-  zoomLevel: number,
   row: number,
   column: number,
   smooth: boolean,
@@ -98,18 +97,7 @@ export function scrollMapToNode(
   if (!!!ref) return;
   if (!mapRef) return;
 
-  let shiftBy;
-  if (zoomLevel == 5) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 4) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 3) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 2) {
-    shiftBy = nodeSize * 0.5;
-  } else {
-    shiftBy = nodeSize * 0.5;
-  }
+  const shiftBy = nodeSize * 0.5;
 
   let cx = parseInt(ref.getAttribute("x") ?? 0) + shiftBy;
   let cy = parseInt(ref.getAttribute("y") ?? 0) + shiftBy;

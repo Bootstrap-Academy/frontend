@@ -13,14 +13,28 @@
     >
       <svg ref="svgRef" :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete">
-          <SkillTreePathway v-for="(pathway, p) of pathways" :key="p" :pathway="pathway.path" :zoomLevel="zoomLevel"
-            @click="scrollViaPathway(pathway.node, pathway.parent)" />
+          <SkillTreePathway
+            v-for="(pathway, p) of pathways"
+            :key="p"
+            :pathway="pathway.path"
+            @click="scrollViaPathway(pathway.node, pathway.parent)"
+          />
         </g>
 
         <template v-for="(row, i) in map" :key="i">
-          <SkillTreeNode v-for="(column, j) in row" :key="`${i}${j}`" :row="i" :column="j"
-            @ref="insertRefInMap($event, i, j)" :node="getNode(i, j)" :zoomLevel="zoomLevel" @size="nodeSize = $event"
-            @click="scrollToNode(i, j, true)" view-subtree :completed="getNode(i, j) && getNode(i, j).id == 'start'" :xp="xp" />
+          <SkillTreeNode
+            v-for="(column, j) in row"
+            :key="`${i}${j}`"
+            :row="i"
+            :column="j"
+            @ref="insertRefInMap($event, i, j)"
+            :node="getNode(i, j)"
+            @size="nodeSize = $event"
+            @click="scrollToNode(i, j, true)"
+            view-subtree
+            :completed="getNode(i, j) && getNode(i, j).id == 'start'"
+            :xp="xp"
+          />
         </template>
       </svg>
     </section>
@@ -130,7 +144,6 @@ export default {
         map,
         mainRef.value,
         nodeSize.value,
-        zoomLevel.value,
         row,
         column,
         smooth,
@@ -222,9 +235,6 @@ export default {
     }
 
     // ! ======================================================= Controls
-    const zoomLevel = ref(2);
-    const showMap = ref(false);
-
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       const instance = panzoomInstance.value;
@@ -323,8 +333,6 @@ export default {
       pathways,
       scrollViaPathway,
 
-      zoomLevel,
-      showMap,
       t,
       onclickUploadCertificates,
       ArrowUpTrayIcon,

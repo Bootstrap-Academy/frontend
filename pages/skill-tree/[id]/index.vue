@@ -21,7 +21,6 @@
             v-for="(pathway, p) of pathways"
             :key="p"
             :pathway="pathway.path"
-            :zoomLevel="zoomLevel"
             @click="scrollViaPathway(pathway.node, pathway.parent)"
           />
         </g>
@@ -38,7 +37,6 @@
               :column="j"
               @ref="insertRefInMap($event, i, j)"
               :node="getNode(i, j)"
-              :zoomLevel="zoomLevel"
               @size="nodeSize = $event"
               @click="scrollToNode(i, j, true)"
               @move="setSelectedNode($event)"
@@ -251,7 +249,6 @@ export default {
         map,
         mainRef.value,
         nodeSize.value,
-        zoomLevel.value,
         row,
         column,
         smooth,
@@ -343,8 +340,6 @@ export default {
     }
 
     // ! ======================================================= Controls
-    const zoomLevel = ref(2);
-
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       const instance = panzoomInstance.value;
@@ -444,7 +439,6 @@ export default {
       pathways,
       scrollViaPathway,
 
-      zoomLevel,
       t,
       subTreeName,
       breadcrumbs,
