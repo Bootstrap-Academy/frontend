@@ -7,15 +7,15 @@
       <div
         v-for="(subtask, i) of matchings"
         :key="i"
-        class="p-4 xl:p-5 bg-secondary mb-4 rounded-md"
+        class="mb-4 rounded-md bg-secondary p-4 xl:p-5"
       >
         <article class="flex justify-between gap-4">
-          <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
+          <p class="clamp line-1 tight sm:pr-3 md:w-4/5 md:pr-5 lg:w-2/3">
             {{ t("Headings.Matching") }} {{ subtask?.left.length ?? "" }} x
             {{ subtask?.left.length ?? "" }}
           </p>
 
-          <div class="flex gap-3 items-center">
+          <div class="flex items-center gap-3">
             <TrashIcon
               @click="fnDeleteSubtask(subtask?.id)"
               class="h-5 w-5 cursor-pointer text-accent"
@@ -28,10 +28,7 @@
         </article>
       </div>
     </section>
-    <p
-      class="border border-accent rounded-md w-full p-5 text-xl text-center"
-      v-else
-    >
+    <p class="w-full rounded-md border border-accent p-5 text-center text-xl" v-else>
       {{ t("Headings.EmptyMatchings") }}
     </p>
     <div>
@@ -40,7 +37,7 @@
         :label="'Headings.Matching'"
         :propClass="'modal-width-lg '"
         :show="dialog"
-        @closeFunction="(dialogCreateMatching = false), (matching = null)"
+        @closeFunction="((dialogCreateMatching = false), (matching = null))"
       >
         <LazyFormMatching :data="propData" :taskId="taskId" />
       </DialogSlot>

@@ -1,9 +1,11 @@
 <template>
-  <section
-    class="container-fluid bg-secondary flex gap-4 items-center justify-between"
-  >
+  <section class="container-fluid flex items-center justify-between gap-4 bg-secondary">
     <Btn tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
-      <img src="/images/logo.png" class="w-6 h-auto object-contain" :alt="t('AltAttributes.BootstrapAcademyLogo')" />
+      <img
+        src="/images/logo.png"
+        class="h-auto w-6 object-contain"
+        :alt="t('AltAttributes.BootstrapAcademyLogo')"
+      />
 
       {{ t(backRoute.label) }}
     </Btn>

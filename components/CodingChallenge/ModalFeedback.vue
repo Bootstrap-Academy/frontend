@@ -1,14 +1,12 @@
 <template>
-  <section
-    class="bg-light p-3 sm:px-6 lg:px-8 rounded-lg flex justify-between items-center"
-  >
+  <section class="flex items-center justify-between rounded-lg bg-light p-3 sm:px-6 lg:px-8">
     <!-- <p class="font-semibold text-lg">{{ t("Headings.Feedback") }}</p> -->
     <div class="flex items-center gap-3">
       <button
         @click="feedback = 'POSITIVE'"
         type="button"
-        :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
-        class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+        :class="feedback == 'POSITIVE' ? 'scale-125' : ''"
+        class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-all"
       >
         👍
       </button>
@@ -16,8 +14,8 @@
       <button
         @click="feedback = 'NEUTRAL'"
         type="button"
-        :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
-        class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+        :class="feedback == 'NEUTRAL' ? 'scale-125' : ''"
+        class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-all"
       >
         😐
       </button>
@@ -25,16 +23,13 @@
       <button
         @click="feedback = 'NEGATIVE'"
         type="button"
-        :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
-        class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all"
+        :class="feedback == 'NEGATIVE' ? 'scale-125' : ''"
+        class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary pt-1 transition-all"
       >
         👎
       </button>
     </div>
-    <FlagIcon
-      class="h-5 w-5 text-error cursor-pointer"
-      @click="openReportDialog()"
-    />
+    <FlagIcon class="h-5 w-5 cursor-pointer text-error" @click="openReportDialog()" />
 
     <DialogSlot
       v-if="dialogReportTask"
@@ -56,10 +51,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import {
-  useDialogCodingChallengeFeedback,
-  useDialogSlot,
-} from "~~/composables/dialogSlot";
+import { useDialogCodingChallengeFeedback, useDialogSlot } from "~~/composables/dialogSlot";
 import { FlagIcon } from "@heroicons/vue/24/outline";
 export default {
   props: {
@@ -97,11 +89,9 @@ export default {
         return openSnackbar("error", "Error.SelectRatingFirst");
       }
       setLoading(true);
-      const [success, error] = await rateQuiz(
-        props.challengeId,
-        props.codingChallengeId,
-        { rating: feedback.value }
-      );
+      const [success, error] = await rateQuiz(props.challengeId, props.codingChallengeId, {
+        rating: feedback.value,
+      });
       setLoading(false);
 
       feedback.value = "";

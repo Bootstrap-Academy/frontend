@@ -190,35 +190,35 @@ export const useAllGlobalChallenges = () =>
   useState("allGlobalChallenges", () => [
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description:
-                "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
+        "This challenge number From arslan sameer   from  usman number From arslan sameer   from  usman",
     },
     {
       description: "This challenge number From arslan sameer usman",
@@ -228,43 +228,38 @@ export const useAllGlobalChallenges = () =>
     },
   ]);
 
-export const useLanguageLeaderboardList = () =>
-  useState("languageLeaderboardList", () => []);
+export const useLanguageLeaderboardList = () => useState("languageLeaderboardList", () => []);
 
 export const useCodingChallengeLeaderboardList = () =>
   useState("codingChallengeLeaderboardList", () => []);
 
-export const useOverAllLeaderboardList = () =>
-  useState("overAllLeaderboardList", () => []);
+export const useOverAllLeaderboardList = () => useState("overAllLeaderboardList", () => []);
 
-export const useTotalLeaderboardUsers = () =>
-  useState("totalLeaderboardUsers", () => 0);
-
+export const useTotalLeaderboardUsers = () => useState("totalLeaderboardUsers", () => 0);
 
 export const useLeaderboardLimit = () => useState("leaderboardLimit", () => 10);
-export const useLeaderboardOffset = () =>
-  useState("leaderboardOffset", () => 0);
+export const useLeaderboardOffset = () => useState("leaderboardOffset", () => 0);
 
 export async function getLanguageLeaderboard(language: string, offset: any) {
   try {
     const limit = useLeaderboardLimit();
     const languageLeaderboardList = useLanguageLeaderboardList();
 
-    console.log("limit", limit.value)
+    console.log("limit", limit.value);
     const response = await GET(
       `/challenges/leaderboard/by-language/${language}?limit=${limit.value}&offset=${offset}`
     );
 
-    const totalLeaderboardUsers = useTotalLeaderboardUsers()
-    totalLeaderboardUsers.value = response?.total ?? 0
-    let arr: any = response?.leaderboard ?? []
-    arr = [...languageLeaderboardList.value, ...arr]
-    languageLeaderboardList.value = arr
+    const totalLeaderboardUsers = useTotalLeaderboardUsers();
+    totalLeaderboardUsers.value = response?.total ?? 0;
+    let arr: any = response?.leaderboard ?? [];
+    arr = [...languageLeaderboardList.value, ...arr];
+    languageLeaderboardList.value = arr;
     return [response, null];
   } catch (error: any) {
-    let msg = error?.data?.error
+    let msg = error?.data?.error;
     if (msg == "unverified") {
-      return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+      return openSnackbar("error", "Error.VerifyToGetLeaderboard");
     }
     console.log("error in languageLeaderboard", error);
     return [null, error];
@@ -275,23 +270,22 @@ export async function getCodingChallengeLeaderboard(codingChallengeId: string, o
   try {
     const limit = useLeaderboardLimit();
     const codingChallengeLeaderboardList = useCodingChallengeLeaderboardList();
-    const totalLeaderboardUsers = useTotalLeaderboardUsers()
-
+    const totalLeaderboardUsers = useTotalLeaderboardUsers();
 
     const response = await GET(
       `/challenges/leaderboard/by-task/${codingChallengeId}?limit=${limit.value}&offset=${offset}`
     );
 
-    totalLeaderboardUsers.value = response?.total ?? 0
+    totalLeaderboardUsers.value = response?.total ?? 0;
     console.log("response leaderboard", response);
-    let arr: any = response?.leaderboard ?? []
-    arr = [...codingChallengeLeaderboardList.value, ...arr]
-    codingChallengeLeaderboardList.value = arr
+    let arr: any = response?.leaderboard ?? [];
+    arr = [...codingChallengeLeaderboardList.value, ...arr];
+    codingChallengeLeaderboardList.value = arr;
     return [response, null];
   } catch (error: any) {
-    let msg = error?.data?.error
+    let msg = error?.data?.error;
     if (msg == "unverified") {
-      return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+      return openSnackbar("error", "Error.VerifyToGetLeaderboard");
     }
     console.log("error in languageLeaderboard", error);
     return [null, error];
@@ -302,19 +296,19 @@ export async function getOverAllLeaderBoard(offset: any) {
   try {
     const limit = useLeaderboardLimit();
     const overAllLeaderboardList = useOverAllLeaderboardList();
-    const totalLeaderboardUsers = useTotalLeaderboardUsers()
+    const totalLeaderboardUsers = useTotalLeaderboardUsers();
 
     const response = await GET(`/challenges/leaderboard?limit=${limit.value}&offset=${offset}`);
-    let arr: any = response?.leaderboard ?? []
+    let arr: any = response?.leaderboard ?? [];
     console.log("response leaderboard oveall", response);
-    totalLeaderboardUsers.value = response?.total ?? 0
-    arr = [...overAllLeaderboardList.value, ...arr]
+    totalLeaderboardUsers.value = response?.total ?? 0;
+    arr = [...overAllLeaderboardList.value, ...arr];
     overAllLeaderboardList.value = arr;
     return [response, null];
   } catch (error: any) {
-    let msg = error?.data?.error
+    let msg = error?.data?.error;
     if (msg == "unverified") {
-      return openSnackbar("error", "Error.VerifyToGetLeaderboard")
+      return openSnackbar("error", "Error.VerifyToGetLeaderboard");
     }
     console.log("error in languageLeaderboard", error);
     return [null, error];

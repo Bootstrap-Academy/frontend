@@ -31,7 +31,7 @@
 
       <article
         :class="canEdit ? '' : 'pointer-events-none opacity-60'"
-        class="flex gap-card items-center"
+        class="flex items-center gap-card"
         v-for="(option, i) of options"
         :key="option?.id ?? i"
       >
@@ -44,7 +44,7 @@
           class="w-full"
         />
         <div>
-          <label class="text-body-2 text-body font-body block mb-2">
+          <label class="text-body-2 mb-2 block text-body font-body">
             {{ t("Inputs.Correct") }}
           </label>
           <InputSwitch
@@ -53,11 +53,7 @@
           />
         </div>
 
-        <Icon
-          :icon="XMarkIcon"
-          class="cursor-pointer"
-          @click="onclickRemoveOption(i)"
-        />
+        <Icon :icon="XMarkIcon" class="cursor-pointer" @click="onclickRemoveOption(i)" />
       </article>
     </form>
     <InputBtn
@@ -124,12 +120,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -144,8 +135,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
 
         let mappedOptions = options.value.map((option: any) => {
@@ -195,10 +185,7 @@ export default defineComponent({
       }
 
       if (!isAllowed) {
-        openSnackbar(
-          "error",
-          "Please fill current option first before adding new option."
-        );
+        openSnackbar("error", "Please fill current option first before adding new option.");
         return;
       }
 
@@ -334,15 +321,20 @@ export default defineComponent({
         if (!hasTrueOption(options.value)) {
           return openSnackbar("error", "Error.OneCorrectOptionIsMust");
         }
-        if (hasDuplicates(options.value))
-          return openSnackbar("error", "Error.OptionsCannotBeSame");
+        if (hasDuplicates(options.value)) return openSnackbar("error", "Error.OptionsCannotBeSame");
         for (let i = 0; i < options.value.length; i++) {
           if (options.value[i].answer.length > 256) {
-            return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.AnswerOption"), max: 256 }));
+            return openSnackbar(
+              "error",
+              t("Error.CannotHaveMoreCharacters", { input: t("Inputs.AnswerOption"), max: 256 })
+            );
           }
         }
         if (form.question.value.length > 4096) {
-          return openSnackbar("error", t("Error.CannotHaveMoreCharacters", { input: t("Inputs.Question"), max: 4096 }));
+          return openSnackbar(
+            "error",
+            t("Error.CannotHaveMoreCharacters", { input: t("Inputs.Question"), max: 4096 })
+          );
         }
         if (checkIsSingleChoice(options.value)) {
           form.single_choice.value = true;
@@ -379,15 +371,11 @@ export default defineComponent({
       form.submitting = true;
       if (!user.value.admin) {
       }
-      const [success, error] = await updateSubTaskInQuizForUser(
-        props.taskId,
-        props.data?.id,
-        {
-          // answers: form.body().answers,
-          // question: form.body().question,
-          // single_choice: form.body().single_choice,
-        }
-      );
+      const [success, error] = await updateSubTaskInQuizForUser(props.taskId, props.data?.id, {
+        // answers: form.body().answers,
+        // question: form.body().question,
+        // single_choice: form.body().single_choice,
+      });
       form.submitting = false;
       !!success
         ? openSnackbar("success", "Success.UpdatedQuiz")
@@ -398,15 +386,11 @@ export default defineComponent({
       form.submitting = true;
       if (!user.value.admin) {
       }
-      const [success, error] = await updateSubTaskInQuizForAdmin(
-        props.taskId,
-        props.data?.id,
-        {
-          answers: form.body().answers,
-          question: form.body().question,
-          single_choice: form.body().single_choice,
-        }
-      );
+      const [success, error] = await updateSubTaskInQuizForAdmin(props.taskId, props.data?.id, {
+        answers: form.body().answers,
+        question: form.body().question,
+        single_choice: form.body().single_choice,
+      });
       form.submitting = false;
       !!success
         ? openSnackbar("success", "Success.UpdatedQuiz")
@@ -429,10 +413,7 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (!!!props.data) return;
         setLoading(true);
-        const [success, error] = await getSubTaskAndSolutionInQuiz(
-          props.taskId,
-          newValue?.id
-        );
+        const [success, error] = await getSubTaskAndSolutionInQuiz(props.taskId, newValue?.id);
         setLoading(false);
         if (success) setFormData(success);
         else openSnackbar("error", error);

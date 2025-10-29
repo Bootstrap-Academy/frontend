@@ -20,22 +20,14 @@
 -->
 <template>
   <main
-    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr] grid place-items-center"
+    class="grid-auto h-screen-inner min container grid grid-rows-[auto_auto_1fr] place-items-center gap-card pt-container pb-container"
   >
     <section class="flex justify-center">
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedTab"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedTab" />
     </section>
 
     <section v-if="selectedTab == 0" class="container-form max-w-4xl">
-      <SectionTitle
-        center
-        heading="Headings.EditChallenge"
-        size="sm"
-        class="mb-card mx-auto"
-      />
+      <SectionTitle center heading="Headings.EditChallenge" size="sm" class="mx-auto mb-card" />
       <article></article>
       <LazyFormChallenge v-if="challengeData" :data="challengeData" />
     </section>
@@ -45,7 +37,7 @@
         center
         heading="Headings.EditCodingChallenge"
         size="sm"
-        class="mb-card mx-auto"
+        class="mx-auto mb-card"
       />
       <LazyCodingChallengeEditableList
         :challengeId="challengeId"
@@ -91,21 +83,16 @@ export default {
 
     const buttonOptions = [
       {
-        name: "Headings.Challenge"
+        name: "Headings.Challenge",
       },
       {
-        name: "Headings.CodingChallenge"
+        name: "Headings.CodingChallenge",
       },
     ];
 
     onMounted(async () => {
-      const [success, error] = await getChallenge(
-        categoryId.value,
-        challengeId.value
-      );
-      const [codingSuccess, codingError] = await getAllCodingChallengesInATask(
-        challengeId.value
-      );
+      const [success, error] = await getChallenge(categoryId.value, challengeId.value);
+      const [codingSuccess, codingError] = await getAllCodingChallengesInATask(challengeId.value);
 
       if (!!success) challengeData.value = success;
       else {
@@ -121,7 +108,7 @@ export default {
       PencilIcon,
       codingChallenges,
       t,
-      buttonOptions
+      buttonOptions,
     };
   },
 };

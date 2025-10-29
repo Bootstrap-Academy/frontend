@@ -27,7 +27,7 @@
     <section>
       <main
         v-if="course"
-        class="container-fluid relative h-fit grid gap-card midXl:grid-cols-[1fr_350px] pt-card pb-container mb-20"
+        class="container-fluid relative mb-20 grid h-fit gap-card pt-card pb-container midXl:grid-cols-[1fr_350px]"
       >
         <CourseVideoMeta
           :skillID="skillID"
@@ -54,10 +54,7 @@
             :activeLecture="activeLecture"
             v-if="!!activeSection && !!activeLecture && selectedButton == 0"
           />
-          <section
-            v-if="selectedButton == 1"
-            class="w-full h-[71vh] overflow-scroll"
-          >
+          <section v-if="selectedButton == 1" class="h-[71vh] w-full overflow-scroll">
             <CourseSolveMcqInsideLectureView
               :total-quizzes="allQuizzes"
               :quizzes-in-this-lecture="quizzesInLecture"
@@ -66,27 +63,20 @@
               <QuizList :quizzes="quizzesInLecture" />
             </div>
             <p
-              class="w-full text-xl text-center"
+              class="w-full text-center text-xl"
               v-if="!quizzesInLecture.length && !allQuizzes.length"
             >
               {{ t("Headings.EmptySubtasks") }}
             </p>
-            <div
-              v-if="allQuizzes.length"
-              class="mt-10"
-            >
-            </div>
+            <div v-if="allQuizzes.length" class="mt-10"></div>
 
             <div v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length">
-              <p class="w-full text-xl text-center">
+              <p class="w-full text-center text-xl">
                 {{ t("Headings.NoMoreSubTasksInThisCourse") }}
               </p>
             </div>
           </section>
-          <section
-            class="px-6 h-[71vh] overflow-scroll w-full"
-            v-else-if="selectedButton == 2"
-          >
+          <section class="h-[71vh] w-full overflow-scroll px-6" v-else-if="selectedButton == 2">
             <div v-if="codingChallenges.length">
               <CodingChallengeCard
                 @click="solveCodingChallenge(codingChallenge)"
@@ -95,33 +85,24 @@
                 :key="i"
               />
             </div>
-            <p
-              v-if="!codingChallenges.length"
-              class="w-full text-xl text-center"
-            >
+            <p v-if="!codingChallenges.length" class="w-full text-center text-xl">
               {{ t("Headings.EmptyCodingChallenge") }}
             </p>
           </section>
-          <section
-            class="md:px-6 h-[71vh] overflow-scroll w-full"
-            v-else-if="selectedButton == 3"
-          >
+          <section class="h-[71vh] w-full overflow-scroll md:px-6" v-else-if="selectedButton == 3">
             <div v-if="currentMatches.length">
               <MatchingSolveInsideCourse :matchings="currentMatches" />
             </div>
-            <p
-              v-if="!currentMatches.length"
-              class="w-full text-xl text-center"
-            >
+            <p v-if="!currentMatches.length" class="w-full text-center text-xl">
               {{ t("Headings.EmptyMatchings") }}
             </p>
           </section>
         </div>
 
-        <div class="hidden midXl:block aside sticky self-start top-container mt-16">
+        <div class="aside sticky mt-16 hidden self-start top-container midXl:block">
           <article class="flex justify-end">
             <CourseVideoControls
-              class="hidden midXl:block mb-7 -mt-3"
+              class="-mt-3 mb-7 hidden midXl:block"
               :skillID="skillID"
               :subSkillID="subSkillID"
               :course="course"
@@ -133,29 +114,25 @@
           <CourseCurriculum
             :data="course"
             @watch="watchThisLecture($event)"
-            class="h-[60vh] overflow-y-scroll bg-secondary card style-card"
+            class="card h-[60vh] overflow-y-scroll bg-secondary style-card"
           />
         </div>
       </main>
     </section>
 
-    <Transition
-      class="block midXl:hidden"
-      name="fade-in"
-      mode="in-out"
-    >
+    <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
       <section
         v-if="showCurriculum"
         @click.self="showCurriculum = false"
-        class="h-screen w-screen bg-[#0b192edd] fixed left-0 top-0 z-[99999] overflow-y-scroll flex justify-end"
+        class="fixed left-0 top-0 z-[99999] flex h-screen w-screen justify-end overflow-y-scroll bg-[#0b192edd]"
       >
         <XCircleIcon
           @click="showCurriculum = false"
-          class="slide-right w-10 h-10 text-accent fixed right-[285px] top-card cursor-pointer"
+          class="slide-right fixed right-[285px] h-10 w-10 cursor-pointer text-accent top-card"
         />
 
         <CourseCurriculum
-          class="card style-card bg-secondary max-w-[300px] sm:max-w-[350px] slide-right m-0 h-fit"
+          class="slide-right card m-0 h-fit max-w-[300px] bg-secondary style-card sm:max-w-[350px]"
           :data="course"
           @watch="watchThisLecture($event)"
         />
@@ -171,15 +148,15 @@ import { QuizInUnseenLecture } from "~/types/courseTypes";
 import { useMatchingsForLectures, useMatchingsInLecture } from "~/composables/matching";
 
 definePageMeta({
-  middleware: ["auth"]
+  middleware: ["auth"],
 });
 
 export default {
   components: {
-    XCircleIcon
+    XCircleIcon,
   },
   head: {
-    title: "Watch Course"
+    title: "Watch Course",
   },
   setup() {
     const { t } = useI18n();
@@ -198,9 +175,11 @@ export default {
     const allQuizzes = useQuizzesInCourse();
     const quizzesInLecture = useQuizzesInLecture();
     const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
-    const matches = useMatchingsForLectures()
+    const matches = useMatchingsForLectures();
 
-    const currentMatches = computed(() => matches.value.filter((match) => match.lectureId === activeLecture?.value?.id))
+    const currentMatches = computed(() =>
+      matches.value.filter((match) => match.lectureId === activeLecture?.value?.id)
+    );
 
     const showCurriculum = ref(false);
 
@@ -219,7 +198,7 @@ export default {
       { name: "Buttons.Video", disabled: false },
       { name: "Buttons.Quiz", disabled: !quizzesInLecture.value.length },
       { name: "Buttons.Challenge", disabled: !codingChallenges.value.length },
-      { name: "Buttons.Matching", disabled: !currentMatches.value.length }
+      { name: "Buttons.Matching", disabled: !currentMatches.value.length },
     ]);
 
     const activeSection = computed(() => {
@@ -252,7 +231,9 @@ export default {
       if (!isPremium.value && hearts.value < 2) {
         return openSnackbar("info", "Error.NotEnoughHearts");
       } else if (isPremium.value || hearts.value >= 2) {
-        router.push(`/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`);
+        router.push(
+          `/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`
+        );
         if (!isPremium.value) return openSnackbar("info", "Body.BuyCodingChallnge");
       }
     }
@@ -281,7 +262,6 @@ export default {
       }
     }
 
-
     watch(
       () => selectedButton.value,
       (newValue) => {
@@ -309,7 +289,6 @@ export default {
       localStorage.removeItem("selectedButton");
     });
 
-
     function watchThisLecture({ sectionID, lectureID }: any) {
       router.replace({
         path: route.path,
@@ -317,8 +296,8 @@ export default {
           section: sectionID,
           lecture: lectureID,
           skillID: skillID.value,
-          subSkillID: subSkillID.value
-        }
+          subSkillID: subSkillID.value,
+        },
       });
 
       showCurriculum.value = false;
@@ -329,13 +308,8 @@ export default {
         loading.value = true;
         if (!callActive.value) {
           callActive.value = true;
-          await getQuizzes(
-            course.value.id,
-            activeSection.value.id,
-            activeLecture.value.id
-          );
+          await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id);
           await getQuizzesInUnfinishedLectures();
-            
         }
 
         callActive.value = false;
@@ -360,9 +334,7 @@ export default {
           });
         });
       });
-      unseenLectureQuizzes.value = testSections.filter(
-        (section) => !section.lectureFinished
-      );
+      unseenLectureQuizzes.value = testSections.filter((section) => !section.lectureFinished);
     };
 
     function getSectionNumber(sectionString: string): number {
@@ -379,7 +351,6 @@ export default {
         throw new Error(`Invalid section string: ${sectionString}`);
       }
     }
-
 
     return {
       t,
@@ -401,25 +372,25 @@ export default {
       quizzesInLecture,
       unseenLectureQuizzes,
       getSectionNumber,
-      currentMatches
+      currentMatches,
     };
-  }
+  },
 };
 </script>
 
 <style scoped>
-  .slide-right {
-    animation: slideRight 0.25s ease-out forwards;
-  }
+.slide-right {
+  animation: slideRight 0.25s ease-out forwards;
+}
 
-  @keyframes slideRight {
-    0% {
-      opacity: 0;
-      transform: translateX(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
+@keyframes slideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
   }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 </style>

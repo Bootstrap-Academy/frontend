@@ -1,7 +1,7 @@
 <template>
   <section
     @click="fnRefillHearts()"
-    class="text-sm px-6 bg-light cursor-pointer rounded-full flex justify-between items-center text-white scale-90"
+    class="flex scale-90 cursor-pointer items-center justify-between rounded-full bg-light px-6 text-sm text-white"
   >
     {{ t("Headings.RefillHearts") }}
     <SvgHeart class="-mb-3" />

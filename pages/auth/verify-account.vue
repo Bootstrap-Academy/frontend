@@ -19,12 +19,12 @@
 
 <template>
   <section
-    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
     <Transition mode="out-in" name="slide-up-down">
       <article
         v-if="status == 'success'"
-        class="card style-card bg-secondary grid place-items-center max-w-lg"
+        class="card grid max-w-lg place-items-center bg-secondary style-card"
       >
         <SvgVerifyAccount class="max-h-[30vh]" />
 
@@ -34,7 +34,7 @@
           subheading="Headings.WelcomeTo"
           heading="Headings.BootstrapAcademy"
           body="Success.VerifyAccount"
-          class="mt-10 md:mt-14 mb-7 md:mb-10"
+          class="mb-7 mt-10 md:mb-10 md:mt-14"
         />
 
         <NuxtLink to="/profile">

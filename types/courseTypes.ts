@@ -3,7 +3,7 @@ type Author = {
   url: string;
 };
 
-export class Course{
+export class Course {
   authors: Author[] = [];
   category: string = "";
   description: string = "";
@@ -18,7 +18,7 @@ export class Course{
   title: string = "";
 }
 
-export class Section{
+export class Section {
   description: string = "";
   id?: string = ""; // ? Only in Detailed Course-response
   completed?: boolean = false; // ? Only in Course-summary
@@ -26,7 +26,7 @@ export class Section{
   lectures: Lecture[] = [];
 }
 
-export class Lecture{
+export class Lecture {
   completed: boolean = false;
   description: string = "";
   duration: number = 0;
@@ -37,17 +37,17 @@ export class Lecture{
 }
 
 export interface GetUnseenLectureResponse {
-    lecture: Omit<Lecture, "completed">;
-    section: Omit<Section, "completed">;
+  lecture: Omit<Lecture, "completed">;
+  section: Omit<Section, "completed">;
 }
-export class LecturesWithQuiz{
-  course_id: string = ""
-  id: string = ""
-  lecture_id: string = ""
-  section_id: string = ""
+export class LecturesWithQuiz {
+  course_id: string = "";
+  id: string = "";
+  lecture_id: string = "";
+  section_id: string = "";
 }
 
-export class Quiz{
+export class Quiz {
   coins: number = 0;
   creation_timestamp: string = "";
   creator: string = "";
@@ -61,7 +61,7 @@ export class Quiz{
   task_id: string = "";
   type: string = ""; // ? 'MULTIPLE_CHOICE_QUESTION
   xp: number = 0;
-  answers: string [] = [];
+  answers: string[] = [];
 }
 
 export class QuizInUnseenLecture {

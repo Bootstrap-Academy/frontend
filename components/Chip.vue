@@ -1,11 +1,6 @@
 <template>
   <div :class="classes" @click.self="onclick">
-    <component
-      v-if="icon"
-      :is="icon"
-      class="icon cursor-pointer"
-      @click="onclickIcon"
-    ></component>
+    <component v-if="icon" :is="icon" class="icon cursor-pointer" @click="onclickIcon"></component>
     <slot></slot>
   </div>
 </template>
@@ -45,9 +40,7 @@ export default defineComponent({
         "chip-color-12",
       ];
 
-      return !!props.color
-        ? props.color
-        : colors[getRandomNumber(0, colors.length - 1)];
+      return !!props.color ? props.color : colors[getRandomNumber(0, colors.length - 1)];
     });
 
     const classes = computed(() => {
@@ -72,7 +65,7 @@ export default defineComponent({
 </script>
 <style scoped>
 div {
-  @apply h-fit rounded-[100px] flex items-center text-center text-primary font-heading uppercase tracking-widest transition-basic font-bold;
+  @apply flex h-fit items-center rounded-[100px] text-center font-bold uppercase tracking-widest text-primary font-heading transition-basic;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -133,16 +126,16 @@ div {
 }
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .xs {
-  @apply text-xs px-2.5 py-1 gap-2;
+  @apply gap-2 px-2.5 py-1 text-xs;
 }
 .sm {
-  @apply text-xs px-3.5 py-2 gap-2;
+  @apply gap-2 px-3.5 py-2 text-xs;
 }
 .md {
-  @apply text-sm px-5 py-3 gap-2.5;
+  @apply gap-2.5 px-5 py-3 text-sm;
 }
 .lg {
-  @apply text-base px-6 py-4 gap-3;
+  @apply gap-3 px-6 py-4 text-base;
 }
 :is(.sm, .md, .lg).tertiary {
   @apply px-0;
@@ -150,13 +143,13 @@ div {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-  @apply w-4 h-4;
+  @apply h-4 w-4;
 }
 .md .icon {
-  @apply w-5 h-5;
+  @apply h-5 w-5;
 }
 .lg .icon {
-  @apply w-6 h-6;
+  @apply h-6 w-6;
 }
 .primary .icon {
   @apply fill-white;

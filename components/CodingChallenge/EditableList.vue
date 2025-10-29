@@ -1,20 +1,18 @@
 <template>
   <section>
-    <InputBtn class="my-7" full @click="openDialogAndAddNew()">{{
-      t("Buttons.AddNew")
-    }}</InputBtn>
+    <InputBtn class="my-7" full @click="openDialogAndAddNew()">{{ t("Buttons.AddNew") }}</InputBtn>
 
     <div v-if="codingChallenges.length">
       <section
         v-for="(codingChallenge, i) of codingChallenges"
         :key="i"
-        class="p-4 xl:p-5 bg-secondary mb-4 rounded-md"
+        class="mb-4 rounded-md bg-secondary p-4 xl:p-5"
       >
         <article class="flex justify-between gap-4">
-          <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
+          <p class="clamp line-1 tight sm:pr-3 md:w-4/5 md:pr-5 lg:w-2/3">
             {{ codingChallenge.description }}
           </p>
-          <article class="flex gap-3 items-center">
+          <article class="flex items-center gap-3">
             <TrashIcon
               @click="deleteItem(codingChallenge?.id)"
               class="h-5 w-5 cursor-pointer text-accent"
@@ -32,22 +30,22 @@
           </article>
         </article>
 
-        <section class="flex gap-10 mt-4">
+        <section class="mt-4 flex gap-10">
           <div class="flex gap-2">
             <p class="text-sm">{{ $t("Headings.Coins") }} :</p>
-            <p class="text-accent text-sm">{{ codingChallenge?.coins }}</p>
+            <p class="text-sm text-accent">{{ codingChallenge?.coins }}</p>
           </div>
 
           <div class="flex gap-2">
             <p class="text-sm">{{ $t("Headings.XP") }} :</p>
-            <p class="text-accent text-sm">{{ codingChallenge?.xp }}</p>
+            <p class="text-sm text-accent">{{ codingChallenge?.xp }}</p>
           </div>
         </section>
       </section>
     </div>
 
     <div v-else-if="!codingChallenges.length">
-      <p class="border border-accent rounded-md w-full p-5 text-xl text-center">
+      <p class="w-full rounded-md border border-accent p-5 text-center text-xl">
         {{ t("Headings.EmptyCodingChallenge") }}
       </p>
     </div>
@@ -60,10 +58,7 @@
         :show="dialogSlot"
         @closeFunction="dialogCreateCodingChallenge = false"
       >
-        <LazyFormCodingChallenge
-          :propData="propData"
-          :challengeId="challengeId"
-        />
+        <LazyFormCodingChallenge :propData="propData" :challengeId="challengeId" />
       </DialogSlot>
     </div>
   </section>
@@ -105,10 +100,7 @@ export default {
         {
           label: "Buttons.Delete",
           onclick: async () => {
-            const [success, error] = await deleteCodingChallenge(
-              props.challengeId,
-              id
-            );
+            const [success, error] = await deleteCodingChallenge(props.challengeId, id);
             success ? deleteSuccess(success) : deleteError(error);
           },
         },

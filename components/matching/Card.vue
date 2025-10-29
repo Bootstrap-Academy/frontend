@@ -9,13 +9,13 @@ const props = defineProps({
 <template>
   <article
     @click="solveThis(data?.id ?? '')"
-    class="relative box style-box bg-secondary w-full cursor-pointer max-h-fit"
+    class="box relative max-h-fit w-full cursor-pointer bg-secondary style-box"
   >
     <div>
       <article
-        class="flex justify-between gap-4 bg-secondary mb-4 rounded-md cursor-pointer py-5 px-3"
+        class="mb-4 flex cursor-pointer justify-between gap-4 rounded-md bg-secondary px-3 py-5"
       >
-        <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
+        <p class="clamp line-1 tight sm:pr-3 md:w-4/5 md:pr-5 lg:w-2/3">
           {{ t("Headings.Matching") }} {{ data?.left?.length ?? "" }} x
           {{ data?.left?.length ?? "" }}
           <span class="clamp inline">
@@ -26,15 +26,15 @@ const props = defineProps({
     </div>
     <CheckIcon
       v-if="data?.solved"
-      class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
+      class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
     />
     <PencilSquareIcon
       v-else-if="user?.id == data?.creator && user.admin"
-      class="bg-light rounded-full h-8 w-8 p-1 text-accent absolute -right-1 -top-1.5"
+      class="absolute -right-1 -top-1.5 h-8 w-8 rounded-full bg-light p-1 text-accent"
     />
     <EyeIcon
       v-else-if="user?.id == data?.creator && !user.admin"
-      class="bg-accent rounded-full p-0.5 h-6 w-6 text-white absolute -right-1 -top-1.5"
+      class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
     />
   </article>
 </template>
@@ -43,11 +43,7 @@ const props = defineProps({
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  CheckIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+import { CheckIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { LockClosedIcon } from "@heroicons/vue/24/outline";
 export default defineComponent({
   props: {
@@ -85,13 +81,7 @@ export default defineComponent({
       let isWatch = fullPath.includes("/watch?");
 
       let solveId = isSkill ? params.skill : isCourse ? params.id : isWatch ? params.id : null;
-      let quizzesFrom = isSkill
-        ? "skill"
-        : isCourse
-          ? "course"
-          : isWatch
-            ? "quiz"
-            : null;
+      let quizzesFrom = isSkill ? "skill" : isCourse ? "course" : isWatch ? "quiz" : null;
 
       if (!quizzesFrom || !solveId) return;
 

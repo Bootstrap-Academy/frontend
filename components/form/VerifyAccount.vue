@@ -1,44 +1,38 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.VerificationCode')"
-			v-model="form.code.value"
-			@valid="form.code.valid = $event"
-			:rules="form.code.rules"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.VerificationCode')"
+      v-model="form.code.value"
+      @valid="form.code.valid = $event"
+      :rules="form.code.rules"
+    />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mt
-			mb
-		>
-			{{ t('Buttons.VerifyAccount') }}
-		</InputBtn>
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t("Buttons.VerifyAccount") }}
+    </InputBtn>
 
-		<a
-			v-if="user"
-			@click.prevent="resendAccountVerificationCode"
-			class="self-center cursor-pointer"
-		>
-			{{ t('Buttons.ResendAccountVerificationCode') }}
-		</a>
-	</form>
+    <a
+      v-if="user"
+      @click.prevent="resendAccountVerificationCode"
+      class="cursor-pointer self-center"
+    >
+      {{ t("Buttons.ResendAccountVerificationCode") }}
+    </a>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { IForm } from '~/types/form';
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import type { IForm } from "~/types/form";
 
 export default defineComponent({
-  emits: ['status'],
+  emits: ["status"],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -49,12 +43,10 @@ export default defineComponent({
     const form = reactive<IForm>({
       code: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.VerificationCode',
-          (v: string) =>
-            /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) ||
-						'Error.InputCodeFormat',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.VerificationCode",
+          (v: string) => /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) || "Error.InputCodeFormat",
         ],
       },
       submitting: false,
@@ -62,12 +54,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -78,8 +65,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -92,7 +78,7 @@ export default defineComponent({
       form.submitting = false;
 
       if (success) {
-        openSnackbar('success', 'Success.ResendAccountVerificationCode');
+        openSnackbar("success", "Success.ResendAccountVerificationCode");
       } else errorHandler(error);
     }
 
@@ -102,17 +88,17 @@ export default defineComponent({
 
     async function onclickSubmitForm() {
       if (user.value) {
-        let email = user?.value?.email ?? '';
+        let email = user?.value?.email ?? "";
         if (!!!email) {
           openDialog(
-            'warning',
-            'Headings.MissingEmail',
-            'Body.MissingEmail',
+            "warning",
+            "Headings.MissingEmail",
+            "Body.MissingEmail",
             true,
             {
-              label: 'Buttons.AddEmail',
+              label: "Buttons.AddEmail",
               onclick: () => {
-                router.push('/profile/edit');
+                router.push("/profile/edit");
               },
             },
             null
@@ -129,10 +115,10 @@ export default defineComponent({
         success
           ? await successHandler(success)
           : errorHandler({
-            detail: 'Error.VerifyEmail',
-					  });
+              detail: "Error.VerifyEmail",
+            });
       } else {
-        openSnackbar('error', 'Error.InvalidForm');
+        openSnackbar("error", "Error.InvalidForm");
       }
     }
 
@@ -140,12 +126,12 @@ export default defineComponent({
       const [success, error] = await refresh();
 
       if (!!success) {
-        emit('status', 'success');
+        emit("status", "success");
       }
     }
 
     function errorHandler(res: any) {
-      openSnackbar('error', res?.detail ?? '');
+      openSnackbar("error", res?.detail ?? "");
     }
 
     return {

@@ -2,14 +2,14 @@
   <button
     type="submit"
     :class="classes"
-    class="min-w-[150px] text-center justify-center"
+    class="min-w-[150px] justify-center text-center"
     @click.prevent="onclick"
   >
     <Transition mode="out-in">
       <svg
         v-if="loading"
         aria-hidden="true"
-        class="icon text-tertiary rotating fill-white"
+        class="icon rotating fill-white text-tertiary"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -24,11 +24,7 @@
         />
       </svg>
 
-      <div
-        v-else
-        class="flex gap-2 items-center"
-        :class="iconRight ? 'flex-row-reverse' : ''"
-      >
+      <div v-else class="flex items-center gap-2" :class="iconRight ? 'flex-row-reverse' : ''">
         <component
           v-if="icon"
           :is="icon"
@@ -113,19 +109,18 @@ export default defineComponent({
 
 button {
   font-family: Arial, Helvetica, sans-serif;
-  @apply h-fit rounded flex items-center text-center 
-			 uppercase tracking-widest transition-basic;
+  @apply flex h-fit items-center rounded text-center uppercase tracking-widest transition-basic;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
-  @apply text-xs px-3.5 py-2 gap-2;
+  @apply gap-2 px-3.5 py-2 text-xs;
 }
 .md {
-  @apply text-base px-5 py-3 gap-3;
+  @apply gap-3 px-5 py-3 text-base;
 }
 .lg {
-  @apply text-base px-6 py-4 gap-4;
+  @apply gap-4 px-6 py-4 text-base;
 }
 :is(.sm, .md, .lg).tertiary {
   @apply px-0;
@@ -133,13 +128,13 @@ button {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-  @apply w-4 h-4;
+  @apply h-4 w-4;
 }
 .md .icon {
-  @apply w-6 h-6;
+  @apply h-6 w-6;
 }
 .lg .icon {
-  @apply w-8 h-8;
+  @apply h-8 w-8;
 }
 .primary .icon {
   @apply fill-primary;

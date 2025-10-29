@@ -4,32 +4,21 @@
 
     <section class="grid grid-cols-2 gap-x-1 sm:gap-x-3">
       <div>
-        <article
-          class="flex items-center w-full gap-1 sm:gap-3"
-          v-for="i of 4"
-          :key="i"
-        >
-          <div
-            class="px-2 sm:px-4 py-4 rounded-md my-2 border-4 border-tertiary w-full"
-          >
+        <article class="flex w-full items-center gap-1 sm:gap-3" v-for="i of 4" :key="i">
+          <div class="my-2 w-full rounded-md border-4 border-tertiary px-2 py-4 sm:px-4">
             <SkeletonText class="max-w-[80%]" />
           </div>
-          <ArrowRightIcon class="w-8 h-8 text-accent" />
+          <ArrowRightIcon class="h-8 w-8 text-accent" />
         </article>
       </div>
 
       <div>
         <div>
-          <article
-            class="flex items-center w-full gap-1 sm:gap-3"
-            v-for="i of 4"
-          >
-            <div
-              class="px-2 sm:px-4 py-4 rounded-md my-2 border-4 border-tertiary w-full"
-            >
+          <article class="flex w-full items-center gap-1 sm:gap-3" v-for="i of 4">
+            <div class="my-2 w-full rounded-md border-4 border-tertiary px-2 py-4 sm:px-4">
               <SkeletonText class="max-w-[80%]" />
             </div>
-            <Bars3Icon class="h-7 w-7 text-accent cursor-pointer handler" />
+            <Bars3Icon class="handler h-7 w-7 cursor-pointer text-accent" />
           </article>
         </div>
       </div>

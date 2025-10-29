@@ -1,20 +1,22 @@
 <template>
   <div>
     <SkeletonSolveMatching v-if="!!!data" />
-    <section v-else-if="!!data" class="flex flex-col items-center w-full">
+    <section v-else-if="!!data" class="flex w-full flex-col items-center">
       <!-- Header with instructions -->
-      <div class="text-center mb-8 mt-4">
-        <h2 class="text-xl sm:text-2xl font-semibold mb-2">{{ t("Headings.DragAndDropToMatchMatchings") }}</h2>
-        <p class="text-sm text-gray-400">{{ t("Headings.MatchingInstructions") }}</p>
+      <div class="mb-8 mt-4 text-center">
+        <h2 class="mb-2 text-xl font-semibold sm:text-2xl">
+          {{ t("Headings.DragAndDropToMatchMatchings") }}
+        </h2>
+        <p class="text-gray-400 text-sm">{{ t("Headings.MatchingInstructions") }}</p>
       </div>
 
       <!-- Centered matching container with max width -->
-      <section class="w-full max-w-5xl mx-auto px-4">
+      <section class="mx-auto w-full max-w-5xl px-4">
         <div class="relative" ref="containerRef">
           <!-- SVG for drawing connection lines -->
           <svg
-            class="absolute inset-0 w-full h-full pointer-events-none"
-            style="overflow: visible; z-index: 0;"
+            class="pointer-events-none absolute inset-0 h-full w-full"
+            style="overflow: visible; z-index: 0"
           >
             <!-- Draw existing connections -->
             <line
@@ -45,17 +47,17 @@
           </svg>
 
           <!-- Grid layout where each row contains left item + spacer + right item -->
-          <div class="flex flex-col gap-4 relative" style="z-index: 1;">
+          <div class="relative flex flex-col gap-4" style="z-index: 1">
             <div
               v-for="i in data.left.length"
               :key="`row-${i}`"
-              class="grid grid-cols-[1fr_auto_1fr] gap-8 items-center"
+              class="grid grid-cols-[1fr_auto_1fr] items-center gap-8"
             >
               <!-- Left item -->
               <article
-                :ref="el => setLeftRef(el, i - 1)"
-                class="matching-card-left group cursor-pointer relative"
-                :class="{ 'selected': selectedLeft === i - 1, 'connected': hasLeftConnection(i - 1) }"
+                :ref="(el) => setLeftRef(el, i - 1)"
+                class="matching-card-left group relative cursor-pointer"
+                :class="{ selected: selectedLeft === i - 1, connected: hasLeftConnection(i - 1) }"
                 @click="onLeftClick(i - 1)"
                 @mousedown="onLeftMouseDown(i - 1, $event)"
               >
@@ -65,7 +67,9 @@
                   </p>
                 </div>
                 <!-- Connection indicator -->
-                <div class="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                <div
+                  class="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-accent opacity-0 transition-opacity group-hover:opacity-100"
+                ></div>
               </article>
 
               <!-- Center spacer -->
@@ -73,9 +77,9 @@
 
               <!-- Right item -->
               <article
-                :ref="el => setRightRef(el, i - 1)"
-                class="matching-card-right group cursor-pointer relative"
-                :class="{ 'selected': selectedRight === i - 1, 'connected': hasRightConnection(i - 1) }"
+                :ref="(el) => setRightRef(el, i - 1)"
+                class="matching-card-right group relative cursor-pointer"
+                :class="{ selected: selectedRight === i - 1, connected: hasRightConnection(i - 1) }"
                 @click="onRightClick(i - 1)"
                 @mouseenter="onRightMouseEnter(i - 1)"
               >
@@ -85,7 +89,9 @@
                   </p>
                 </div>
                 <!-- Connection indicator -->
-                <div class="absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-accent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                <div
+                  class="pointer-events-none absolute left-0 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-accent opacity-0 transition-opacity group-hover:opacity-100"
+                ></div>
               </article>
             </div>
           </div>
@@ -93,9 +99,9 @@
       </section>
 
       <!-- Centered button container -->
-      <div class="w-full max-w-4xl mx-auto px-4 mt-8">
+      <div class="mx-auto mt-8 w-full max-w-4xl px-4">
         <InputBtn
-          class="w-full max-w-md mx-auto block"
+          class="mx-auto block w-full max-w-md"
           v-if="data?.solved || user?.id == data?.creator"
           @click="nextQuestion()"
           iconRight
@@ -105,7 +111,7 @@
         </InputBtn>
 
         <InputBtnWithHeart
-          class="w-full max-w-md mx-auto block"
+          class="mx-auto block w-full max-w-md"
           v-if="!data?.solved && user?.id != data?.creator && !isPremium"
           :loading="formSubmitting"
           @click="onclickSubmitForm()"
@@ -116,7 +122,7 @@
         </InputBtnWithHeart>
 
         <InputBtn
-          class="w-full max-w-md mx-auto block"
+          class="mx-auto block w-full max-w-md"
           v-if="!data?.solved && user?.id != data?.creator && isPremium"
           :loading="formSubmitting"
           @click="onclickSubmitForm()"
@@ -126,7 +132,7 @@
       </div>
 
       <InputQuizRating
-        class="my-6 w-full max-w-4xl mx-auto px-4"
+        class="mx-auto my-6 w-full max-w-4xl px-4"
         :data="data"
         :subtask="data"
         @rated="fnRated($event)"
@@ -143,12 +149,7 @@ import HalfHeart from "../svg/HalfHeart.vue";
 const props = defineProps({
   data: { type: Object as PropType<any>, default: null },
 });
-const emits = defineEmits([
-  "solved",
-  "updateQuestion",
-  "rated",
-  "nextQuestion",
-]);
+const emits = defineEmits(["solved", "updateQuestion", "rated", "nextQuestion"]);
 
 const { t } = useI18n();
 const formSubmitting = ref(false);
@@ -292,12 +293,12 @@ function onLeftMouseDown(index: number, event: MouseEvent) {
     dragLine.value = null;
     selectedLeft.value = null;
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
   }
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
 }
 
 function onRightMouseEnter(index: number) {
@@ -329,16 +330,11 @@ async function onclickSubmitForm() {
   const answer = setSolution();
   console.log("solution", answer);
 
-  if (props.data.solved == true || props.data?.creator == user.value?.id)
-    return;
+  if (props.data.solved == true || props.data?.creator == user.value?.id) return;
   formSubmitting.value = true;
-  const [success, error] = await solveMatching(
-    props.data.task_id,
-    props.data.id,
-    {
-      answer: answer,
-    }
-  );
+  const [success, error] = await solveMatching(props.data.task_id, props.data.id, {
+    answer: answer,
+  });
   formSubmitting.value = false;
   await getHearts();
   if (success == true || success == false) successHandler(success);
@@ -388,8 +384,12 @@ onMounted(() => {
 /* Shared card styling */
 .matching-card-left,
 .matching-card-right {
-  @apply relative rounded-xl overflow-hidden transition-all duration-300;
-  background: linear-gradient(135deg, rgba(var(--color-secondary-rgb, 30, 41, 59), 0.95) 0%, rgba(var(--color-secondary-rgb, 30, 41, 59), 0.85) 100%);
+  @apply relative overflow-hidden rounded-xl transition-all duration-300;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-secondary-rgb, 30, 41, 59), 0.95) 0%,
+    rgba(var(--color-secondary-rgb, 30, 41, 59), 0.85) 100%
+  );
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.2),
     0 2px 4px -1px rgba(0, 0, 0, 0.1),
@@ -426,12 +426,12 @@ onMounted(() => {
 
 /* Card content */
 .matching-card-content {
-  @apply px-6 py-4 min-h-[5rem] flex items-center justify-center;
+  @apply flex min-h-[5rem] items-center justify-center px-6 py-4;
 }
 
 /* Text styling */
 .matching-card-text {
-  @apply text-sm sm:text-base md:text-lg text-white leading-relaxed text-center;
+  @apply text-center text-sm leading-relaxed text-white sm:text-base md:text-lg;
   word-break: break-word;
   hyphens: auto;
 }
@@ -439,9 +439,13 @@ onMounted(() => {
 /* Accent glow effect on cards */
 .matching-card-left::before,
 .matching-card-right::before {
-  content: '';
-  @apply absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none;
-  background: radial-gradient(circle at center, rgba(var(--color-accent-rgb, 59, 130, 246), 0.1) 0%, transparent 70%);
+  content: "";
+  @apply pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--color-accent-rgb, 59, 130, 246), 0.1) 0%,
+    transparent 70%
+  );
 }
 
 .matching-card-left:hover::before,
@@ -452,7 +456,7 @@ onMounted(() => {
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .matching-card-content {
-    @apply px-4 py-3 min-h-[4rem];
+    @apply min-h-[4rem] px-4 py-3;
   }
 
   .matching-card-text {
@@ -478,13 +482,23 @@ onMounted(() => {
 }
 
 .matching-card-left:nth-child(1),
-.matching-card-right:nth-child(1) { animation-delay: 0.05s; }
+.matching-card-right:nth-child(1) {
+  animation-delay: 0.05s;
+}
 .matching-card-left:nth-child(2),
-.matching-card-right:nth-child(2) { animation-delay: 0.1s; }
+.matching-card-right:nth-child(2) {
+  animation-delay: 0.1s;
+}
 .matching-card-left:nth-child(3),
-.matching-card-right:nth-child(3) { animation-delay: 0.15s; }
+.matching-card-right:nth-child(3) {
+  animation-delay: 0.15s;
+}
 .matching-card-left:nth-child(4),
-.matching-card-right:nth-child(4) { animation-delay: 0.2s; }
+.matching-card-right:nth-child(4) {
+  animation-delay: 0.2s;
+}
 .matching-card-left:nth-child(5),
-.matching-card-right:nth-child(5) { animation-delay: 0.25s; }
+.matching-card-right:nth-child(5) {
+  animation-delay: 0.25s;
+}
 </style>

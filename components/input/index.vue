@@ -1,16 +1,12 @@
 <template>
   <div>
-    <div class="flex flex-wrap gap-card-sm items-center">
-      <label
-        v-if="!noLabel"
-        class="text-body-2 text-body font-body block mb-2"
-        :for="id ?? label"
-      >
+    <div class="flex flex-wrap items-center gap-card-sm">
+      <label v-if="!noLabel" class="text-body-2 mb-2 block text-body font-body" :for="id ?? label">
         {{ t(label) }}
       </label>
       <p
         v-if="hint"
-        class="pb-2 text-xs text-body relative z-0"
+        class="relative z-0 pb-2 text-xs text-body"
         :class="noLabel ? 'text-left' : 'text-right'"
       >
         {{ t(hint) }}
@@ -18,15 +14,15 @@
     </div>
     <input
       :disabled="disabled"
-      class="block w-full px-4 py-3 text-base rounded-md relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 focus:ring-offset-2"
+      class="relative z-10 block w-full appearance-none rounded-md px-4 py-3 text-base ring-2 transition duration-500 ease-out focus:outline-none focus:ring-offset-2"
       :class="[
         {
-          'invalid:ring-error valid:ring-accent': (touched && input) || error,
+          'valid:ring-accent invalid:ring-error': (touched && input) || error,
           'cursor-not-allowed': disabled,
         },
         light
-          ? 'text-subheading bg-white ring-subheading focus:ring-offset-subheading focus:ring-subheading'
-          : 'text-white bg-secondary ring-tertiary focus:ring-offset-tertiary focus:ring-accent',
+          ? 'bg-white text-subheading ring-subheading focus:ring-subheading focus:ring-offset-subheading'
+          : 'bg-secondary text-white ring-tertiary focus:ring-accent focus:ring-offset-tertiary',
       ]"
       ref="DOM_INPUT"
       :placeholder="noLabel ? t(label) : t(placeholder)"
@@ -40,10 +36,8 @@
     />
 
     <p
-      class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
-      :class="
-        error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-      "
+      class="relative z-0 pt-2 text-xs text-error transition duration-500 ease-out"
+      :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
       {{ error }}.
     </p>

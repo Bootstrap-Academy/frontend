@@ -1,6 +1,4 @@
-
-
-export class User{
+export class User {
   admin: boolean = false;
   avatar_url: string = "";
   business: boolean = false;
@@ -24,6 +22,6 @@ export class User{
   registration: number = 0;
   street: string = "";
   tags: unknown[] = [];
-  vat_id: null |unknown = null;
+  vat_id: null | unknown = null;
   zip_code: string = "";
 }

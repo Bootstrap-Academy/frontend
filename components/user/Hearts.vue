@@ -1,28 +1,14 @@
 <template>
-  <div class="flex items-center gap-2 group" @click="gotoSubscription()">
+  <div class="group flex items-center gap-2" @click="gotoSubscription()">
     <div v-if="!isPremmium" class="text-heading hover:text-white">
-      <article
-        class="flex items-center gap-1 bg-tertiary px-5 py-2 h-10 rounded-full"
-      >
+      <article class="flex h-10 items-center gap-1 rounded-full bg-tertiary px-5 py-2">
         <!-- <HeartIcon
           class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
         />{{ hearts / 2 ?? "" }} -->
 
-        <SvgFullHeart
-          :color="'accent'"
-          class="h-3 w-3 sm:h-5 sm:w-5"
-          v-if="hearts >= 2"
-        />
-        <SvgFullHeart
-          :color="'accent'"
-          class="h-3 w-3 sm:h-5 sm:w-5"
-          v-if="hearts >= 4"
-        />
-        <SvgFullHeart
-          :color="'accent'"
-          class="h-3 w-3 sm:h-5 sm:w-5"
-          v-if="hearts >= 6"
-        />
+        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 2" />
+        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 4" />
+        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 6" />
         <SvgHalfHeart
           :color="'accent'"
           class="h-3 w-3 sm:h-5 sm:w-5"
@@ -31,17 +17,15 @@
 
         <OutlineHeartIcon v-if="hearts == 0" class="h-6 w-6 text-accent" />
 
-        <PlusIcon
-          class="flex-shrink-0 text-headiacang block h-3 w-3 sm:w-3.5 sm:h-3.5 ml-1"
-        />
+        <PlusIcon class="text-headiacang ml-1 block h-3 w-3 flex-shrink-0 sm:h-3.5 sm:w-3.5" />
       </article>
     </div>
     <div
       v-else-if="isPremmium"
-      class="bg-light rounded-full px-3 py-1 flex justify-between items-center gap-1"
+      class="flex items-center justify-between gap-1 rounded-full bg-light px-3 py-1"
     >
       <SolidHeartIcon class="h-7 w-7 text-[#FFD700]" />
-      <span class="text-[#FFD700] -mt-1 text-lg"> ∞ </span>
+      <span class="-mt-1 text-lg text-[#FFD700]"> ∞ </span>
     </div>
   </div>
 </template>

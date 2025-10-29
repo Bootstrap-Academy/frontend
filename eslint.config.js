@@ -1,33 +1,42 @@
-const {
-  defineConfig,
-} = require("eslint/config");
+const { defineConfig } = require("eslint/config");
+const vueParser = require("vue-eslint-parser");
+const tsParser = require("@typescript-eslint/parser");
+const prettierConfig = require("eslint-config-prettier/flat");
+const vuePlugin = require("eslint-plugin-vue");
 
-const parser = require("vue-eslint-parser");
-const js = require("@eslint/js");
-
-const {
-  FlatCompat,
-} = require("@eslint/eslintrc");
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-});
-
-module.exports = defineConfig([{
-  extends: compat.extends(),
-
-  rules: {
-    "indent": ["error", 2],
+module.exports = defineConfig([
+  {
+    ignores: ["**/node_modules/**", "**/.nuxt/**", "**/.output/**", "dist/**"],
   },
-
-  languageOptions: {
-    parser: parser,
-    "sourceType": "module",
-
-    parserOptions: {
-      "parser": "@typescript-eslint/parser",
+  {
+    files: ["**/*.vue"],
+    plugins: {
+      vue: vuePlugin,
+    },
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: require.resolve("@typescript-eslint/parser"),
+        sourceType: "module",
+        ecmaVersion: "latest",
+      },
+    },
+    rules: {},
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      parser: tsParser,
+      sourceType: "module",
+      ecmaVersion: "latest",
     },
   },
-}]);
+  {
+    files: ["**/*.{js,jsx}"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+  },
+  prettierConfig,
+]);

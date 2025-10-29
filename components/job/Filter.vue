@@ -1,92 +1,92 @@
 <template>
-	<aside class="card lg:p-0">
-		<!--  max-h-[87.5vh] overflow-y-scroll -->
-		<header
-			class="flex gap-box justify-between items-center h-fit border-b border-[#a1a1a122] pb-box mr-[25px] mb-card"
-		>
-			<h2 class="text-heading-3">{{ t('Headings.FilterBy') }}</h2>
-			<Btn tertiary sm @click="reset" class="mr-0 pr-0">
-				<span class="text-accent">{{ t('Buttons.Reset') }}</span>
-			</Btn>
-		</header>
+  <aside class="card lg:p-0">
+    <!--  max-h-[87.5vh] overflow-y-scroll -->
+    <header
+      class="mr-[25px] flex h-fit items-center justify-between border-b border-[#a1a1a122] gap-box pb-box mb-card"
+    >
+      <h2 class="text-heading-3">{{ t("Headings.FilterBy") }}</h2>
+      <Btn tertiary sm @click="reset" class="mr-0 pr-0">
+        <span class="text-accent">{{ t("Buttons.Reset") }}</span>
+      </Btn>
+    </header>
 
-		<form class="grid gap-container mr-5 h-fit" ref="refForm">
-			<article>
-				<h3 class="filter-heading">
-					{{ t('Headings.JobType') }}
-				</h3>
-				<InputCheckboxGroup
-					ref="refType"
-					sm
-					class="ml-6"
-					name="type"
-					v-model="form.type.value"
-					:options="form.type.options"
-				/>
-			</article>
+    <form class="mr-5 grid h-fit gap-container" ref="refForm">
+      <article>
+        <h3 class="filter-heading">
+          {{ t("Headings.JobType") }}
+        </h3>
+        <InputCheckboxGroup
+          ref="refType"
+          sm
+          class="ml-6"
+          name="type"
+          v-model="form.type.value"
+          :options="form.type.options"
+        />
+      </article>
 
-			<article>
-				<h3 class="filter-heading">
-					{{ t('Headings.Salary') }}
-				</h3>
-				<InputRange
-					class="-mt-6 ml-6"
-					:min="form.salary_min.min"
-					:max="jobMaxSalary"
-					:reduce="0"
-					sm
-					v-model="form.salary_min.value"
-				/>
-			</article>
+      <article>
+        <h3 class="filter-heading">
+          {{ t("Headings.Salary") }}
+        </h3>
+        <InputRange
+          class="-mt-6 ml-6"
+          :min="form.salary_min.min"
+          :max="jobMaxSalary"
+          :reduce="0"
+          sm
+          v-model="form.salary_min.value"
+        />
+      </article>
 
-			<article>
-				<h3 class="filter-heading">
-					{{ t('Headings.SalaryUnit') }}
-				</h3>
+      <article>
+        <h3 class="filter-heading">
+          {{ t("Headings.SalaryUnit") }}
+        </h3>
 
-				<InputRadioGroup
-					class="ml-6"
-					sm
-					name="salary_unit"
-					v-model="form.salary_unit.value"
-					:options="form.salary_unit.options"
-				/>
-			</article>
+        <InputRadioGroup
+          class="ml-6"
+          sm
+          name="salary_unit"
+          v-model="form.salary_unit.value"
+          :options="form.salary_unit.options"
+        />
+      </article>
 
-			<article>
-				<h3 class="filter-heading mb-box">
-					{{ t('Headings.RemoteOnly') }}
-				</h3>
-				<InputSwitch class="ml-6" v-model="form.remote.value" />
-			</article>
+      <article>
+        <h3 class="filter-heading mb-box">
+          {{ t("Headings.RemoteOnly") }}
+        </h3>
+        <InputSwitch class="ml-6" v-model="form.remote.value" />
+      </article>
 
-			<article>
-				<h3 class="filter-heading">
-					{{ t('Headings.ProfessionalLevel') }}
-				</h3>
-				<InputCheckboxGroup
-					class="ml-6"
-					sm
-					ref="refProfessionalLevel"
-					name="professional_level"
-					v-model="form.professional_level.value"
-					:options="form.professional_level.options"
-				/>
-			</article>
-		</form>
-	</aside>
+      <article>
+        <h3 class="filter-heading">
+          {{ t("Headings.ProfessionalLevel") }}
+        </h3>
+        <InputCheckboxGroup
+          class="ml-6"
+          sm
+          ref="refProfessionalLevel"
+          name="professional_level"
+          v-model="form.professional_level.value"
+          :options="form.professional_level.options"
+        />
+      </article>
+    </form>
+  </aside>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import type { PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   props: {
     filters: { type: Object as PropType<any>, default: null },
   },
-  emits: ['filters'],
+  emits: ["filters"],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -101,49 +101,49 @@ export default defineComponent({
         value: props.filters?.salary_min ?? 0,
       },
       salary_unit: {
-        value: props.filters?.salary_unit ?? '---',
+        value: props.filters?.salary_unit ?? "---",
         options: [
           {
-            label: 'List.Filter.Any',
-            value: '---',
+            label: "List.Filter.Any",
+            value: "---",
           },
           {
-            label: 'List.Filter.Morphcoins',
-            value: 'MC',
-            tooltip: 'Body.MorphcoinsToolTip',
+            label: "List.Filter.Morphcoins",
+            value: "MC",
+            tooltip: "Body.MorphcoinsToolTip",
           },
           {
-            label: 'List.Filter.Euros',
-            value: 'EUR',
+            label: "List.Filter.Euros",
+            value: "EUR",
           },
         ],
       },
       remote: {
         value: props.filters?.remote ?? false,
-        rules: [(v: boolean) => !!v || 'Error.InputEmpty_Inputs.Remote'],
+        rules: [(v: boolean) => !!v || "Error.InputEmpty_Inputs.Remote"],
       },
       type: {
         value: props.filters?.type ?? [],
         options: [
           {
-            value: 'full_time',
-            label: 'List.Filter.FullTime',
+            value: "full_time",
+            label: "List.Filter.FullTime",
           },
           {
-            value: 'internship',
-            label: 'List.Filter.Internship',
+            value: "internship",
+            label: "List.Filter.Internship",
           },
           {
-            value: 'part_time',
-            label: 'List.Filter.PartTime',
+            value: "part_time",
+            label: "List.Filter.PartTime",
           },
           {
-            value: 'temporary',
-            label: 'List.Filter.Temporary',
+            value: "temporary",
+            label: "List.Filter.Temporary",
           },
           {
-            value: 'mini_job',
-            label: 'List.Filter.MiniJob',
+            value: "mini_job",
+            label: "List.Filter.MiniJob",
           },
         ],
       },
@@ -151,20 +151,20 @@ export default defineComponent({
         value: props.filters?.professional_level ?? [],
         options: [
           {
-            value: 'entry',
-            label: 'List.Filter.Entry',
+            value: "entry",
+            label: "List.Filter.Entry",
           },
           {
-            value: 'junior',
-            label: 'List.Filter.Junior',
+            value: "junior",
+            label: "List.Filter.Junior",
           },
           {
-            value: 'senior',
-            label: 'List.Filter.Senior',
+            value: "senior",
+            label: "List.Filter.Senior",
           },
           {
-            value: 'manager',
-            label: 'List.Filter.Manager',
+            value: "manager",
+            label: "List.Filter.Manager",
           },
         ],
       },
@@ -174,10 +174,10 @@ export default defineComponent({
 
         for (const key in form) {
           if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						form[key].valid == false
+            key != "validate" &&
+            key != "body" &&
+            key != "submitting" &&
+            form[key].valid == false
           ) {
             isValid = false;
           }
@@ -190,8 +190,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -200,7 +199,7 @@ export default defineComponent({
     watch(
       () => form,
       async (newValue, oldValue) => {
-        emit('filters', form.body());
+        emit("filters", form.body());
       },
       { deep: true }
     );
@@ -209,7 +208,7 @@ export default defineComponent({
     const refProfessionalLevel = ref();
     function reset() {
       form.salary_min.value = 0;
-      form.salary_unit.value = '---';
+      form.salary_unit.value = "---";
       form.remote.value = false;
 
       form.type.value = [];
@@ -226,23 +225,23 @@ export default defineComponent({
 
 <style scoped>
 .filter-heading {
-	@apply text-subheading text-body-2 font-body mb-card-sm;
+  @apply text-body-2 text-subheading font-body mb-card-sm;
 }
 
 aside::-webkit-scrollbar {
-	width: 5px;
+  width: 5px;
 }
 aside::-webkit-scrollbar-thumb {
-	background: var(--color-transparent);
+  background: var(--color-transparent);
 }
 aside:hover::-webkit-scrollbar-thumb {
-	background: var(--color-tertiary);
-	opacity: 0.6;
-	border-radius: 20px;
+  background: var(--color-tertiary);
+  opacity: 0.6;
+  border-radius: 20px;
 }
 aside:hover {
-	-ms-overflow-style: var(--color-tertiary) !important;
-	scrollbar-width: 5px !important;
-	scrollbar-color: var(--color-tertiary);
+  -ms-overflow-style: var(--color-tertiary) !important;
+  scrollbar-width: 5px !important;
+  scrollbar-color: var(--color-tertiary);
 }
 </style>

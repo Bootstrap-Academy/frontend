@@ -25,38 +25,33 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form max-w-3xl">
-			<SectionTitle
-				center
-				heading="Headings.CreateWebinar"
-				size="sm"
-				class="mb-card mx-auto"
-			/>
-			<FormWebinar :data="webinar" :skillID="skillID" :rating="rating" />
-		</section>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <section class="container-form max-w-3xl">
+      <SectionTitle center heading="Headings.CreateWebinar" size="sm" class="mx-auto mb-card" />
+      <FormWebinar :data="webinar" :skillID="skillID" :rating="rating" />
+    </section>
+  </section>
 </template>
 
 <script lang="ts">
-import type { Ref } from 'vue';
+import type { Ref } from "vue";
 
 definePageMeta({
-  layout: 'inner',
-  middleware: ['auth'],
+  layout: "inner",
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Manage Webinar',
+    title: "Manage Webinar",
   },
   setup() {
     const route = useRoute();
 
     const webinarID = computed(() => {
-      return <string>(route.params?.id ?? '');
+      return <string>(route.params?.id ?? "");
     });
 
     const webinar: Ref<any> = useWebinar();
@@ -66,7 +61,7 @@ export default {
     });
 
     const skillID = computed(() => {
-      return webinar.value?.skillID ?? '';
+      return webinar.value?.skillID ?? "";
     });
 
     onMounted(async () => {

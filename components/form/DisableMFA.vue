@@ -1,72 +1,62 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="confirmation()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.EmailOrUsername')"
-			v-model="form.name_or_email.value"
-			@valid="form.name_or_email.valid = $event"
-			:rules="form.name_or_email.rules"
-		/>
-		<Input
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="confirmation()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.EmailOrUsername')"
+      v-model="form.name_or_email.value"
+      @valid="form.name_or_email.valid = $event"
+      :rules="form.name_or_email.rules"
+    />
+    <Input
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+    />
 
-		<InputOTP
-			v-if="!needRecoveryCode"
-			label="Inputs.MFACode"
-			v-model="form.mfa_code.value"
-			@valid="form.mfa_code.valid = $event"
-			:rules="form.mfa_code.rules"
-		/>
+    <InputOTP
+      v-if="!needRecoveryCode"
+      label="Inputs.MFACode"
+      v-model="form.mfa_code.value"
+      @valid="form.mfa_code.valid = $event"
+      :rules="form.mfa_code.rules"
+    />
 
-		<Input
-			v-else
-			label="Inputs.RecoveryCode"
-			v-model="form.recovery_code.value"
-			@valid="form.recovery_code.valid = needRecoveryCode ? $event : true"
-			:rules="form.recovery_code.rules"
-		/>
+    <Input
+      v-else
+      label="Inputs.RecoveryCode"
+      v-model="form.recovery_code.value"
+      @valid="form.recovery_code.valid = needRecoveryCode ? $event : true"
+      :rules="form.recovery_code.rules"
+    />
 
-		<div class="self-end cursor-pointer">
-			<NuxtLink
-				tertiary
-				v-if="needRecoveryCode"
-				@click="needRecoveryCode = false"
-			>
-				{{ t('Links.HaveMFA') }}
-			</NuxtLink>
-			<NuxtLink tertiary v-else @click="needRecoveryCode = true">
-				{{ t('Links.UseRecoveryCode') }}
-			</NuxtLink>
-		</div>
+    <div class="cursor-pointer self-end">
+      <NuxtLink tertiary v-if="needRecoveryCode" @click="needRecoveryCode = false">
+        {{ t("Links.HaveMFA") }}
+      </NuxtLink>
+      <NuxtLink tertiary v-else @click="needRecoveryCode = true">
+        {{ t("Links.UseRecoveryCode") }}
+      </NuxtLink>
+    </div>
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="confirmation"
-			mt
-			mb
-		>
-			{{ t('Buttons.DisableMFA') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-center" @click="confirmation" mt mb>
+      {{ t("Buttons.DisableMFA") }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useReCaptcha } from 'vue-recaptcha-v3';
-import type { IForm } from '~/types/form';
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useReCaptcha } from "vue-recaptcha-v3";
+import type { IForm } from "~/types/form";
 
 export default defineComponent({
-  emits: ['isSuccess'],
+  emits: ["isSuccess"],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -77,40 +67,33 @@ export default defineComponent({
     const form = reactive<IForm>({
       name_or_email: {
         valid: false,
-        value: '',
-        rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailOrUsername',
-        ],
+        value: "",
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.EmailOrUsername"],
       },
       password: {
         valid: false,
-        value: '',
-        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.Password'],
+        value: "",
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.Password"],
       },
       mfa_code: {
         valid: true,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.MFACode',
-          (v: string) => v.length >= 6 || 'Error.InputMinLength_6',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.MFACode",
+          (v: string) => v.length >= 6 || "Error.InputMinLength_6",
         ],
       },
       recovery_code: {
         valid: true,
-        value: '',
-        rules: [(v: string) => !!v || 'Error.InputEmpty_Inputs.RecoveryCode'],
+        value: "",
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.RecoveryCode"],
       },
       submitting: false,
       validate: () => {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -121,8 +104,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -133,7 +115,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha('login');
+        const token = await executeRecaptcha("login");
         return token;
       } catch (error) {
         return null;
@@ -145,20 +127,20 @@ export default defineComponent({
 
     function confirmation() {
       openDialog(
-        'warning',
-        'Headings.DisableMFA',
-        'Body.AreYouSureDisableMFA',
+        "warning",
+        "Headings.DisableMFA",
+        "Body.AreYouSureDisableMFA",
         false,
         {
-          label: 'Buttons.AreYouSureDisableMFA',
+          label: "Buttons.AreYouSureDisableMFA",
           onclick: async () => {
             await onclickSubmitForm();
           },
         },
         {
-          label: 'Buttons.Cancel',
+          label: "Buttons.Cancel",
           onclick: () => {
-            router.push('/account');
+            router.push("/account");
           },
         }
       );
@@ -177,7 +159,7 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar('error', 'Error.InvalidForm');
+        openSnackbar("error", "Error.InvalidForm");
       }
     }
 
@@ -185,7 +167,7 @@ export default defineComponent({
       const [success, error] = await disableMFA();
       if (success) {
         await refresh();
-        emit('isSuccess', true);
+        emit("isSuccess", true);
         form.submitting = false;
       } else {
         errorHandler(error);
@@ -195,8 +177,8 @@ export default defineComponent({
     const needRecoveryCode = ref(false);
 
     function errorHandler(res: any) {
-      openSnackbar('error', res?.detail ?? '');
-      emit('isSuccess', false);
+      openSnackbar("error", res?.detail ?? "");
+      emit("isSuccess", false);
       form.submitting = false;
     }
 

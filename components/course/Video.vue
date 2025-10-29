@@ -23,17 +23,12 @@
       :key="`video-${videoSRC}`"
       @timeupdate="onTimeUpdate(activeLecture.id, $event)"
       @loadstart="onVideoLoad(activeLecture.id, $event)"
-    >    
+    >
       <track kind="captions" />
       <source ref="refSource" :src="videoSRC" type="video/mp4" />
       <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a
-        web browser that
-        <a
-          sveltekit:prefetch
-          href="https://videojs.com/html5-video-support/"
-          target="_blank"
-        >
+        To view this video please enable JavaScript, and consider upgrading to a web browser that
+        <a sveltekit:prefetch href="https://videojs.com/html5-video-support/" target="_blank">
           supports HTML5 video
         </a>
       </p>
@@ -55,7 +50,7 @@ export default defineComponent({
     const videoSRC = useVideoSRC();
 
     let videoInterval: any;
-    const video = ref<HTMLVideoElement | null>(null); 
+    const video = ref<HTMLVideoElement | null>(null);
     const refSource = ref<HTMLSourceElement | any>(null);
 
     watch(
@@ -80,7 +75,7 @@ export default defineComponent({
               refSource.value.src = videoSRC.value;
               video.value.load();
               video.value.play();
-            };
+            }
             // refSource.value.setAttribute('src', videoSRC.value);
             refSource.value.src = videoSRC.value;
           }, 28800000); //8 hours
@@ -89,23 +84,23 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
-
     function onTimeUpdate(videoID: string, event: any) {
       const videoCookie = useCookie("currentVideo");
       const timeCookie = useCookie("currentVideoTime");
-    
+
       const currentVideoTime = event.target.currentTime;
       timeCookie.value = currentVideoTime;
-    
+
       if (currentVideoTime < 1) videoCookie.value = videoID;
     }
-    
+
     function onVideoLoad(videoID: string, event: any) {
       const videoCookie = useCookie("currentVideo");
       const timeCookie = useCookie("currentVideoTime");
-    
-      if (!videoCookie || videoCookie.value === "" || !timeCookie || timeCookie.value === "") return;
-    
+
+      if (!videoCookie || videoCookie.value === "" || !timeCookie || timeCookie.value === "")
+        return;
+
       if (videoCookie.value !== videoID) {
         // Reset the time cookie to start the new video from the beginning
         timeCookie.value = "";
@@ -115,7 +110,7 @@ export default defineComponent({
         event.target.currentTime = timeCookie.value;
       }
     }
-    
+
     return { videoSRC, refSource, onTimeUpdate, onVideoLoad };
   },
 });
@@ -124,7 +119,7 @@ export default defineComponent({
 <style scoped>
 video,
 iframe {
-  @apply w-full min-w-[50vw] max-w-full  h-fit lg:h-auto md:min-h-[60vh] style-card;
+  @apply h-fit w-full min-w-[50vw] max-w-full style-card md:min-h-[60vh] lg:h-auto;
 }
 /* portrait */
 @media only screen and (max-width: 768px) and (max-aspect-ratio: 1/1) {
@@ -139,7 +134,7 @@ iframe {
 @media only screen and (max-width: 768px) and (min-aspect-ratio: 1/1) {
   video,
   iframe {
-    @apply w-full h-[90vh] max-w-full;
+    @apply h-[90vh] w-full max-w-full;
   }
 }
 </style>

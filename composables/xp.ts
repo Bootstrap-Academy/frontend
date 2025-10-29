@@ -1,11 +1,11 @@
-export const useXP = () => useState('xp', (): any => null);
+export const useXP = () => useState("xp", (): any => null);
 import { useUser } from "./user";
 export async function getXP() {
   const user = <any>useUser();
 
   try {
     if (!!!user.value || !!!user.value.id) {
-      throw { data: { detail: 'Missing user id' } };
+      throw { data: { detail: "Missing user id" } };
     }
 
     const response = await GET(`/skills/xp/${user.value.id}`);

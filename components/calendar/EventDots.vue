@@ -1,14 +1,11 @@
 <template>
   <article
-    class="max-w-full p-0 lg:py-1 lg:px-2 rounded shadow-lg flex lg:gap-2 justify-between items-center h-fit"
+    class="flex h-fit max-w-full items-center justify-between rounded p-0 shadow-lg lg:gap-2 lg:px-2 lg:py-1"
     :class="theme.bgLight"
   >
-    <span
-      class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-xl flex-shrink-0 block"
-      :class="theme.bg"
-    ></span>
+    <span class="block h-1.5 w-1.5 flex-shrink-0 rounded-xl sm:h-2 sm:w-2" :class="theme.bg"></span>
 
-    <h3 class="text-xs capitalize hidden lg:clamp line-1" :class="theme.text">
+    <h3 class="lg:clamp line-1 hidden text-xs capitalize" :class="theme.text">
       {{ heading }}
     </h3>
   </article>
@@ -16,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import type {  PropType } from "vue";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -39,24 +36,24 @@ export default defineComponent({
 
     const theme = computed(() => {
       switch (type.value) {
-      case "coaching":
-        return {
-          bg: "bg-info",
-          bgLight: "bg-info-light",
-          fill: "fill-info",
-          stroke: "stroke-info",
-          border: "border-info",
-          text: "text-info",
-        };
-      default:
-        return {
-          bg: "bg-warning",
-          bgLight: "bg-warning-light",
-          fill: "fill-warning",
-          stroke: "stroke-warning",
-          border: "border-warning",
-          text: "text-warning",
-        };
+        case "coaching":
+          return {
+            bg: "bg-info",
+            bgLight: "bg-info-light",
+            fill: "fill-info",
+            stroke: "stroke-info",
+            border: "border-info",
+            text: "text-info",
+          };
+        default:
+          return {
+            bg: "bg-warning",
+            bgLight: "bg-warning-light",
+            fill: "fill-warning",
+            stroke: "stroke-warning",
+            border: "border-warning",
+            text: "text-warning",
+          };
       }
     });
 

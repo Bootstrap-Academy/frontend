@@ -1,27 +1,23 @@
-import type { Ref } from 'vue';
-import { description } from '~~/description';
+import type { Ref } from "vue";
+import { description } from "~~/description";
 
-export const useMyChallengesStats: () => Ref<any> = () =>
-  useState('myChallengesStats', () => null);
+export const useMyChallengesStats: () => Ref<any> = () => useState("myChallengesStats", () => null);
 
 export const useChallengesCategories: () => Ref<any[]> = () =>
-  useState('challengesCategories', () => []);
+  useState("challengesCategories", () => []);
 
-export const useChallengeCategory: () => Ref<any> = () =>
-  useState('challengeCategory', () => null);
+export const useChallengeCategory: () => Ref<any> = () => useState("challengeCategory", () => null);
 
-export const useChallenges: () => Ref<any[]> = () =>
-  useState('challenges', () => []);
+export const useChallenges: () => Ref<any[]> = () => useState("challenges", () => []);
 
-export const useChallenge: () => Ref<any> = () =>
-  useState('challenge', () => null);
+export const useChallenge: () => Ref<any> = () => useState("challenge", () => null);
 
 // export const useCategoryStats: () => Ref<any> = () =>
 // 	useState("useCategoryStats", () => null)
 
 export async function getMyChallengesStats() {
   try {
-    const response = await GET('/auth/sessions/challenges/login_url');
+    const response = await GET("/auth/sessions/challenges/login_url");
     // const response = await GET('/challenges/categories');
 
     const myChallengesStats = useMyChallengesStats();
@@ -54,17 +50,16 @@ export async function getMyChallengesStats() {
 
 export async function getChallengesCategories() {
   try {
-    const response = await GET('/challenges/categories');
+    const response = await GET("/challenges/categories");
 
     const challengesCategories = useChallengesCategories();
     challengesCategories.value = response ?? [];
 
-
     return [response, null];
   } catch (error: any) {
-    let msg = error?.data?.error
+    let msg = error?.data?.error;
     if (msg == "unverified") {
-      openSnackbar("error", "Error.VerifyToGetChallenges")
+      openSnackbar("error", "Error.VerifyToGetChallenges");
       return [null, error.data];
     }
     return [null, error.data];
@@ -86,28 +81,25 @@ export async function getChallengeCategory(categoryID: string) {
 
 export async function getChallengesByCategory(categoryID: string) {
   try {
-    const response = await GET(
-      `/challenges/categories/${categoryID}/challenges`
-    );
+    const response = await GET(`/challenges/categories/${categoryID}/challenges`);
 
     const challenges = useChallenges();
     challenges.value = response ?? [];
 
     return [response, null];
   } catch (error: any) {
-    let msg = error?.data?.error
+    let msg = error?.data?.error;
     if (msg == "unverified") {
-      openSnackbar("error", "Error.VerifyToGetChallenges")
-      return [null, error.data]
-    } return [null, error.data];
+      openSnackbar("error", "Error.VerifyToGetChallenges");
+      return [null, error.data];
+    }
+    return [null, error.data];
   }
 }
 
 export async function getChallenge(categoryID: string, challengeID: string) {
   try {
-    const response = await GET(
-      `/challenges/categories/${categoryID}/challenges/${challengeID}`
-    );
+    const response = await GET(`/challenges/categories/${categoryID}/challenges/${challengeID}`);
 
     const challenge = useChallenge();
     challenge.value = response ?? null;
@@ -133,9 +125,7 @@ export async function updateChallenge(categoryID: string, challengeID: string, b
 
 export async function deleteChallenge(categoryID: string, challengeID: string) {
   try {
-    const response = await DELETE(
-      `/challenges/categories/${categoryID}/challenges/${challengeID}`,
-    );
+    const response = await DELETE(`/challenges/categories/${categoryID}/challenges/${challengeID}`);
     // getChallengesByCategory(categoryID)
     return [response, null];
   } catch (error: any) {
@@ -145,10 +135,7 @@ export async function deleteChallenge(categoryID: string, challengeID: string) {
 
 export async function createChallenge(categoryID: string, body: any) {
   try {
-    const response = await POST(
-      `/challenges/categories/${categoryID}/challenges`,
-      body
-    );
+    const response = await POST(`/challenges/categories/${categoryID}/challenges`, body);
 
     return [response, null];
   } catch (error: any) {
@@ -158,15 +145,12 @@ export async function createChallenge(categoryID: string, body: any) {
 
 export async function getStatsCategoryWiseForCodingChallenges(categoryId: any) {
   try {
-    const res = await GET(`/challenges/categories/${categoryId}/stats?category_id=${categoryId}`)
+    const res = await GET(`/challenges/categories/${categoryId}/stats?category_id=${categoryId}`);
     // const categoryStats = useCategoryStats()
     // categoryStats.value = res
-    return [res, null]
-  }
-  catch (error: any) {
-    console.log("inside error block for  stats", error)
+    return [res, null];
+  } catch (error: any) {
+    console.log("inside error block for  stats", error);
     return [null, error.data];
-
   }
-
 }

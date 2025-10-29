@@ -1,5 +1,5 @@
 <template>
-  <main class="relative h-screen-main grid place-items-center select-none">
+  <main class="h-screen-main relative grid select-none place-items-center">
     <Head>
       <Title>Sub Skill Tree - {{ subTreeName }}</Title>
     </Head>
@@ -12,7 +12,7 @@
 
     <section
       v-else-if="nodes && nodes.length"
-      class="map relative z-0 w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-hidden"
+      class="map h-screen-main relative z-0 m-auto h-fit w-screen max-w-[100vw] overflow-hidden"
       ref="mainRef"
     >
       <svg ref="svgRef" :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
@@ -29,10 +29,7 @@
           <template v-for="(column, j) in row" :key="`${i}${j}`">
             <SkillTreeNode
               class="relative z-30"
-              v-if="
-                selectedNode.id == '' ||
-                (selectedNode.row == i && selectedNode.column == j)
-              "
+              v-if="selectedNode.id == '' || (selectedNode.row == i && selectedNode.column == j)"
               :row="i"
               :column="j"
               @ref="insertRefInMap($event, i, j)"
@@ -49,10 +46,7 @@
       </svg>
     </section>
 
-    <article
-      v-else
-      class="w-full h-full flex flex-col gap-container justify-center items-center"
-    >
+    <article v-else class="flex h-full w-full flex-col items-center justify-center gap-container">
       <SvgSkillTree class="max-w-sm" />
       <SectionTitle
         center
@@ -102,16 +96,13 @@ export default {
     const MIN_WHEEL_STEP = 0.015;
     const MAX_WHEEL_STEP = 0.35;
 
-    const clamp = (value: number, min: number, max: number) =>
-      Math.min(Math.max(value, min), max);
+    const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
     // ! ======================================================= Set Up
     const setupComplete = ref(false);
     const loading = ref(true);
 
-    const cookie_nextNode = useCookie<{ row: number; column: number }>(
-      "subTree_nextNode"
-    );
+    const cookie_nextNode = useCookie<{ row: number; column: number }>("subTree_nextNode");
     const nextNode = computed({
       get() {
         return cookie_nextNode.value || { row: 10, column: 10 };
@@ -162,9 +153,7 @@ export default {
             {
               label: "Buttons.Okay",
               onclick: () => {
-                router.push(
-                  `/auth/login?redirect=${route.path}/${selectedNode.id}`
-                );
+                router.push(`/auth/login?redirect=${route.path}/${selectedNode.id}`);
               },
             },
             {
@@ -216,8 +205,8 @@ export default {
       }
 
       await getXP();
-      
-      console.log("xp", xp.value);  
+
+      console.log("xp", xp.value);
 
       const [success, error] = await getSubSkillTree(subTreeId.value);
 
@@ -278,10 +267,7 @@ export default {
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
-      if (
-        nextNode.value.row == node.row &&
-        nextNode.value.column == node.column
-      ) {
+      if (nextNode.value.row == node.row && nextNode.value.column == node.column) {
         nextNode.value = { ...previous };
       } else if (!!previous) {
         nextNode.value = { row: node.row, column: node.column };
@@ -345,16 +331,11 @@ export default {
       const instance = panzoomInstance.value;
       if (!instance) return;
 
-      const delta =
-        event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
+      const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
       if (!delta) return;
 
       const intensity = clamp(Math.abs(delta) / 120, 0.2, 4);
-      const step = clamp(
-        intensity * ZOOM_BASE_STEP,
-        MIN_WHEEL_STEP,
-        MAX_WHEEL_STEP
-      );
+      const step = clamp(intensity * ZOOM_BASE_STEP, MIN_WHEEL_STEP, MAX_WHEEL_STEP);
 
       instance.zoomWithWheel(event, { step, animate: false });
     };

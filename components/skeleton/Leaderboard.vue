@@ -1,39 +1,32 @@
 <template>
   <section>
-    <div
-      class="flex gap-6 flex-col sm:flex-row items-center justify-center m-10 mt-20 flex-wrap"
-    >
-      <section
-        :class="[{ 'sm:-mt-10': i == 2 }]"
-        v-for="i of 3"
-        :key="i"
-        class="topUserCard"
-      >
-        <div class="w-20 h-20">
-          <SkeletonText class="w-full h-full rounded-full" />
+    <div class="m-10 mt-20 flex flex-col flex-wrap items-center justify-center gap-6 sm:flex-row">
+      <section :class="[{ 'sm:-mt-10': i == 2 }]" v-for="i of 3" :key="i" class="topUserCard">
+        <div class="h-20 w-20">
+          <SkeletonText class="h-full w-full rounded-full" />
         </div>
 
         <div class="w-28">
-          <SkeletonText class="max-w-[120px] my-2" />
+          <SkeletonText class="my-2 max-w-[120px]" />
         </div>
 
-        <div class="flex gap-1 items-center">
+        <div class="flex items-center gap-1">
           <p class="text-sm">{{ t("Headings.Score") }}:</p>
           <div class="w-12">
-            <SkeletonText class="max-w-[50px] my-2" />
+            <SkeletonText class="my-2 max-w-[50px]" />
           </div>
         </div>
 
-        <SvgLevel1Icon v-if="i == 1" class="absolute top-1 right-0 h-8 w-8" />
-        <SvgLevel2Icon v-if="i == 2" class="absolute top-1 right-0 h-8 w-8" />
-        <SvgLevel3Icon v-if="i == 3" class="absolute top-1 right-0 h-8 w-8" />
+        <SvgLevel1Icon v-if="i == 1" class="absolute right-0 top-1 h-8 w-8" />
+        <SvgLevel2Icon v-if="i == 2" class="absolute right-0 top-1 h-8 w-8" />
+        <SvgLevel3Icon v-if="i == 3" class="absolute right-0 top-1 h-8 w-8" />
       </section>
     </div>
     <div v-for="i of 12" :key="i">
       <section
-        class="border-b border-accent border-t border-t-transparent border-x border-x-transparent hover:border hover:border-accent hover:shadow-sm hover:shadow-accent hover:scale-105 duration-300 transition-all my-5 p-3 sm:p-5 rounded-md flex flex-col sm:flex-row items-start justify-between gap-4 sm:items-center"
+        class="my-5 flex flex-col items-start justify-between gap-4 rounded-md border-x border-b border-t border-accent border-x-transparent border-t-transparent p-3 transition-all duration-300 hover:scale-105 hover:border hover:border-accent hover:shadow-sm hover:shadow-accent sm:flex-row sm:items-center sm:p-5"
       >
-        <article class="flex gap-2 items-center">
+        <article class="flex items-center gap-2">
           <p>{{ i }})</p>
           <SvgLevel1Icon v-if="i == 1" />
           <SvgLevel2Icon v-else-if="i == 2" />
@@ -44,24 +37,24 @@
           <SvgLevel7Icon v-else-if="i == 7" />
           <SvgLevel8Icon v-else-if="i == 8" />
           <SvgLevel9Icon v-else />
-          <div class="w-20 h-20">
-            <SkeletonText class="w-full h-full rounded-full" />
+          <div class="h-20 w-20">
+            <SkeletonText class="h-full w-full rounded-full" />
           </div>
 
           <SkeletonText class="max-w[200px]" />
         </article>
 
-        <section class="flex gap-3 items-center px-7 sm:px-10">
-          <div class="flex gap-1 items-center">
+        <section class="flex items-center gap-3 px-7 sm:px-10">
+          <div class="flex items-center gap-1">
             <p class="text-sm">{{ t("Headings.Score") }}:</p>
             <div class="w-12">
-              <SkeletonText class="max-w-[50px] my-2" />
+              <SkeletonText class="my-2 max-w-[50px]" />
             </div>
           </div>
-          <div class="flex gap-1 items-center">
+          <div class="flex items-center gap-1">
             <p class="text-sm">{{ t("Headings.Rank") }}:</p>
             <div class="w-12">
-              <SkeletonText class="max-w-[50px] my-2" />
+              <SkeletonText class="my-2 max-w-[50px]" />
             </div>
           </div>
         </section>
@@ -82,6 +75,6 @@ export default {
 
 <style scoped>
 .topUserCard {
-  @apply border border-light rounded-md min-w-[180px] flex flex-col items-center px-6 py-10 relative hover:-translate-y-2 transition-all duration-300;
+  @apply relative flex min-w-[180px] flex-col items-center rounded-md border border-light px-6 py-10 transition-all duration-300 hover:-translate-y-2;
 }
 </style>

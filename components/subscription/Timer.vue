@@ -1,18 +1,18 @@
 <template>
-  <p class="text-xl mb-2">{{ t("Headings.RefillIn") }}</p>
-  <p class="text-3xl text-accent font-bold">{{ formatTime(remainingTime) }}</p>
+  <p class="mb-2 text-xl">{{ t("Headings.RefillIn") }}</p>
+  <p class="text-3xl font-bold text-accent">{{ formatTime(remainingTime) }}</p>
 </template>
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
 export default {
   props: {
     targetTime: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props) {
     const { t } = useI18n();
@@ -31,7 +31,7 @@ export default {
     };
 
     const pad = (number) => {
-      return (number < 10 ? '0' : '') + number;
+      return (number < 10 ? "0" : "") + number;
     };
 
     onMounted(() => {
@@ -42,8 +42,8 @@ export default {
     return {
       t,
       remainingTime,
-      formatTime
+      formatTime,
     };
-  }
+  },
 };
 </script>

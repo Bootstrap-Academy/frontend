@@ -18,31 +18,31 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form">
-			<SectionTitle
-				center
-				subheading="Buttons.ResetPassword"
-				heading="Forms.ResetPassword"
-				body="Body.ResetPassword"
-				size="sm"
-				class="mb-card"
-			/>
-			<FormResetPassword />
-		</section>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <section class="container-form">
+      <SectionTitle
+        center
+        subheading="Buttons.ResetPassword"
+        heading="Forms.ResetPassword"
+        body="Body.ResetPassword"
+        size="sm"
+        class="mb-card"
+      />
+      <FormResetPassword />
+    </section>
+  </section>
 </template>
 
 <script>
 definePageMeta({
-  layout: 'inner',
+  layout: "inner",
 });
 
 export default {
   head: {
-    title: 'Reset Password',
+    title: "Reset Password",
   },
   setup() {
     return {};

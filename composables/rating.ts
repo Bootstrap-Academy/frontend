@@ -1,4 +1,4 @@
-export const useUnratedWebinars = () => useState('unratedWebinars', () => []);
+export const useUnratedWebinars = () => useState("unratedWebinars", () => []);
 
 export async function getUnratedWebinars() {
   try {

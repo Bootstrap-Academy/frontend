@@ -2,14 +2,14 @@
   <div>
     <article
       v-if="!data?.rated && data?.creator != user?.id"
-      class="flex justify-between gap-card items-center sticky right-card bg-light rounded-md px-3 py-2"
+      class="sticky flex items-center justify-between rounded-md bg-light px-3 py-2 gap-card right-card"
     >
-      <div v-if="data?.solved" class="flex gap-4 items-center">
+      <div v-if="data?.solved" class="flex items-center gap-4">
         <button
           @click="feedback = 'POSITIVE'"
           type="button"
-          :class="feedback == 'POSITIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
+          :class="feedback == 'POSITIVE' ? 'scale-125' : ''"
+          class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-all hover:scale-110"
         >
           👍
         </button>
@@ -17,8 +17,8 @@
         <button
           @click="feedback = 'NEUTRAL'"
           type="button"
-          :class="feedback == 'NEUTRAL' ? 'scale-125 ' : ''"
-          class="w-10 h-10 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
+          :class="feedback == 'NEUTRAL' ? 'scale-125' : ''"
+          class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary transition-all hover:scale-110"
         >
           😐
         </button>
@@ -26,14 +26,14 @@
         <button
           @click="feedback = 'NEGATIVE'"
           type="button"
-          :class="feedback == 'NEGATIVE' ? 'scale-125 ' : ''"
-          class="w-10 h-10 pt-1 text-heading-3 flex justify-center items-center bg-secondary rounded-full transition-all hover:scale-110"
+          :class="feedback == 'NEGATIVE' ? 'scale-125' : ''"
+          class="text-heading-3 flex h-10 w-10 items-center justify-center rounded-full bg-secondary pt-1 transition-all hover:scale-110"
         >
           👎
         </button>
       </div>
       <FlagIcon
-        class="h-5 w-5 text-error cursor-pointer hover:scale-110"
+        class="h-5 w-5 cursor-pointer text-error hover:scale-110"
         @click="openReportDialog()"
       />
     </article>
@@ -64,13 +64,7 @@ export default {
     data: { type: Object as PropType<any>, default: null },
     subtask: { type: Object as PropType<any>, default: null },
   },
-  emits: [
-    "solved",
-    "updateQuestion",
-    "rated",
-    "nextQuestion",
-    "reportSubmitted",
-  ],
+  emits: ["solved", "updateQuestion", "rated", "nextQuestion", "reportSubmitted"],
   components: { FlagIcon },
 
   setup(props, { emit }) {
@@ -93,13 +87,9 @@ export default {
       }
 
       setLoading(true);
-      const [success, error] = await rateQuiz(
-        props.subtask.task_id,
-        props.subtask.id,
-        {
-          rating: feedback.value,
-        }
-      );
+      const [success, error] = await rateQuiz(props.subtask.task_id, props.subtask.id, {
+        rating: feedback.value,
+      });
       setLoading(false);
       feedback.value = "";
       if (success !== null) {

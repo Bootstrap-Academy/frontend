@@ -1,20 +1,18 @@
 <template>
   <NuxtLink to="/morphcoins/buy">
     <article
-      class="flex items-center w-fit min-w-fit cursor-pointer h-10 py-2 px-5"
-      :class="sm ? 'p-1' : 'p-2 bg-tertiary rounded-3xl'"
+      class="flex h-10 w-fit min-w-fit cursor-pointer items-center px-5 py-2"
+      :class="sm ? 'p-1' : 'rounded-3xl bg-tertiary p-2'"
     >
       <img
         src="/images/coin.png"
         :alt="t('AltAttributes.Morphcoin')"
-        class="object-contain h-4 w-4 sm:w-5 sm:h-5"
+        class="h-4 w-4 object-contain sm:h-5 sm:w-5"
       />
-      <p class="font-heading text-heading ml-2.5 mr-2 text-body-1">
+      <p class="text-body-1 ml-2.5 mr-2 text-heading font-heading">
         {{ loading ? "" : abbreviateNumber(coins) }}
       </p>
-      <PlusIcon
-        class="flex-shrink-0 text-heading block h-3 w-3 sm:w-4 sm:h-4"
-      />
+      <PlusIcon class="block h-3 w-3 flex-shrink-0 text-heading sm:h-4 sm:w-4" />
     </article>
   </NuxtLink>
 </template>
@@ -31,7 +29,7 @@ export default defineComponent({
   components: { PlusIcon },
   setup() {
     const { t } = useI18n();
-    
+
     const coins = useCoins();
     const loading = ref(true);
 

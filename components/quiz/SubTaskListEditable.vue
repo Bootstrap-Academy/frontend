@@ -4,21 +4,14 @@
       {{ t("Buttons.AddNew") }}
     </InputBtn>
     <section v-if="quizzes?.length">
-      <div
-        v-for="(quiz, i) of quizzes"
-        :key="i"
-        class="p-4 xl:p-5 bg-secondary mb-4 rounded-md"
-      >
+      <div v-for="(quiz, i) of quizzes" :key="i" class="mb-4 rounded-md bg-secondary p-4 xl:p-5">
         <article class="flex justify-between gap-4">
-          <p class="clamp line-1 tight sm:pr-3 md:pr-5 md:w-4/5 lg:w-2/3">
+          <p class="clamp line-1 tight sm:pr-3 md:w-4/5 md:pr-5 lg:w-2/3">
             {{ quiz?.question ?? "" }}
           </p>
 
-          <div class="flex gap-3 items-center">
-            <TrashIcon
-              @click="fnDeleteQuiz(quiz?.id)"
-              class="h-5 w-5 cursor-pointer text-accent"
-            />
+          <div class="flex items-center gap-3">
+            <TrashIcon @click="fnDeleteQuiz(quiz?.id)" class="h-5 w-5 cursor-pointer text-accent" />
             <PencilSquareIcon
               v-if="!!user?.admin"
               @click="openDialogCreate(quiz)"
@@ -33,10 +26,7 @@
         </article>
       </div>
     </section>
-    <p
-      class="border border-accent rounded-md w-full p-5 text-xl text-center"
-      v-else
-    >
+    <p class="w-full rounded-md border border-accent p-5 text-center text-xl" v-else>
       {{ t("Headings.EmptyQuizzes") }}
     </p>
     <div>
@@ -56,11 +46,7 @@
 <script lang="ts" setup>
 import { useDialogSlot } from "@/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
-import {
-  TrashIcon,
-  EyeIcon,
-  PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+import { TrashIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
   quizzes: { type: Array as PropType<any>, default: [] },

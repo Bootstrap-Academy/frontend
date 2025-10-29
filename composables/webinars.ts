@@ -1,8 +1,8 @@
-import { useState } from '#app';
+import { useState } from "#app";
 
-export const useMyWebinars = () => useState('myWebinars', () => []);
-export const useWebinars = () => useState('webinars', () => []);
-export const useWebinar = () => useState('webinar', () => null);
+export const useMyWebinars = () => useState("myWebinars", () => []);
+export const useWebinars = () => useState("webinars", () => []);
+export const useWebinar = () => useState("webinar", () => null);
 
 export async function getRating(skill_id: string) {
   const user = <any>useUser();
@@ -10,10 +10,10 @@ export async function getRating(skill_id: string) {
 
   try {
     if (!!!user_id) {
-      throw { data: { detail: 'Invalid User Id' } };
+      throw { data: { detail: "Invalid User Id" } };
     }
     if (!!!skill_id) {
-      throw { data: { detail: 'Invalid Skill Id' } };
+      throw { data: { detail: "Invalid Skill Id" } };
     }
     const response = await GET(`/events/ratings/${user_id}/${skill_id}`);
 
@@ -26,7 +26,7 @@ export async function getRating(skill_id: string) {
 export async function deleteWebinar(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: 'Invalid webinar Id' } };
+      throw { data: { detail: "Invalid webinar Id" } };
     }
 
     const response = await DELETE(`/events/calendar/${id}`);
@@ -40,7 +40,7 @@ export async function deleteWebinar(id: string) {
 export async function getWebinar(id: string) {
   try {
     if (!!!id) {
-      throw { data: { detail: 'Invalid webinar Id' } };
+      throw { data: { detail: "Invalid webinar Id" } };
     }
 
     const response = await GET(`/events/webinars/${id}`);
@@ -67,7 +67,7 @@ export async function createWebinar(body: any) {
 export async function editWebinar(id: string, body: any) {
   try {
     if (!!!id) {
-      throw { data: { detail: 'Invalid webinar Id' } };
+      throw { data: { detail: "Invalid webinar Id" } };
     }
 
     const response = await PATCH(`/events/webinars/${id}`, body);
@@ -84,7 +84,7 @@ export async function getMyWebinars() {
 
   try {
     if (!!!user_id) {
-      throw { data: { detail: 'Invalid User Id' } };
+      throw { data: { detail: "Invalid User Id" } };
     }
 
     const response = await GET(`/events/calendar?type=webinar&instructor_id=${user_id}`);
@@ -101,12 +101,10 @@ export async function getMyWebinars() {
 export async function getWebinarsForThisSubSkill(subSkillID: string) {
   try {
     if (!!!subSkillID) {
-      throw { data: { detail: 'Invalid sub skill ID' } };
+      throw { data: { detail: "Invalid sub skill ID" } };
     }
 
-    const response = await GET(
-      `/events/calendar?type=webinar&skill_id=${subSkillID}`
-    );
+    const response = await GET(`/events/calendar?type=webinar&skill_id=${subSkillID}`);
     const webinars = useWebinars();
     webinars.value = response?.events ?? [];
 
@@ -132,7 +130,7 @@ export async function getAllWebinars() {
 export async function registerForWebinarByID(webinarID: string) {
   try {
     if (!!!webinarID) {
-      throw { data: 'Invalid webinar ID' };
+      throw { data: "Invalid webinar ID" };
     }
 
     const response = await POST(`/events/webinars/${webinarID}/participants`);

@@ -12,7 +12,7 @@
     <article
       v-for="{ heading, body, skills } in rootSkillsProgress"
       :key="heading"
-      class="card style-card bg-secondary grid gap-card-sm"
+      class="card grid bg-secondary gap-card-sm style-card"
     >
       <SectionTitle sub :heading="heading" :body="body" class="mb-0" />
 
@@ -59,23 +59,17 @@ export default {
         {
           heading: "Headings.ActiveSkills",
           body: "Body.ActiveSkills",
-          skills: rootSkills.value.filter(
-            (skill: any) => skill.progress < 100 && skill.xp > 0
-          ),
+          skills: rootSkills.value.filter((skill: any) => skill.progress < 100 && skill.xp > 0),
         },
         {
           heading: "Headings.CompletedSkills",
           body: "Body.CompletedSkills",
-          skills: rootSkills.value.filter(
-            (skill: any) => skill.progress === 100
-          ),
+          skills: rootSkills.value.filter((skill: any) => skill.progress === 100),
         },
         {
           heading: "Headings.OtherSkills",
           body: "Body.OtherSkills",
-          skills: rootSkills.value.filter(
-            (skill: any) => skill.progress < 100 && skill.xp === 0
-          ),
+          skills: rootSkills.value.filter((skill: any) => skill.progress < 100 && skill.xp === 0),
         },
       ];
     });

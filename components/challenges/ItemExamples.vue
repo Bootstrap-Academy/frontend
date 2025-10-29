@@ -1,10 +1,12 @@
 <template>
   <div>
-    <div class="flex max-sm:flex-col max-sm:space-y-2 justify-between items-center mb-10">
+    <div class="mb-10 flex items-center justify-between max-sm:flex-col max-sm:space-y-2">
       <div class="flex items-center gap-2">
         <p>{{ t("Headings.Examples") }}:</p>
         <Tooltip :heading="'Headings.ResetExamples'" :placement="'right'" @click="resetExamples()">
-          <ArrowPathIcon class="h-5 w-5 text-accent cursor-pointer hover:rotate-180 transition-all duration-700" />
+          <ArrowPathIcon
+            class="h-5 w-5 cursor-pointer text-accent transition-all duration-700 hover:rotate-180"
+          />
         </Tooltip>
       </div>
       <Btn @click="testAllExamples()" sm :icon="BeakerIcon"> {{ t("Buttons.TestAgainstAll") }}</Btn>
@@ -12,59 +14,65 @@
 
     <section v-for="(example, i) of exampleElements" :key="i" class="relative">
       <div
-        class="bg-light my-3 card-sm rounded-md border-2 duration-700"
+        class="card-sm my-3 rounded-md border-2 bg-light duration-700"
         :class="{
           'border-light': example.state === 'pending' || example.loading,
           'border-success': example.state === 'solved',
           'border-error': example.state === 'error',
         }"
       >
-        <div class="flex justify-between mb-4">
+        <div class="mb-4 flex justify-between">
           <p class="text-heading">{{ t("Headings.Example") }} {{ i + 1 }}</p>
-          <div v-if="example.state === 'solved' && !example.loading"
-            class="flex items-center bg-primary py-1.5 px-2 rounded-md shadow-md">
-            <CheckCircleIcon class="h-5 w-5 text-accent mr-2" />
+          <div
+            v-if="example.state === 'solved' && !example.loading"
+            class="flex items-center rounded-md bg-primary px-2 py-1.5 shadow-md"
+          >
+            <CheckCircleIcon class="mr-2 h-5 w-5 text-accent" />
             <p class="text-sm text-success">
               {{ t("Headings.Solved") }}
             </p>
           </div>
-          <InputBtn v-else secondary :icon="PlayIcon" :loading="example.loading" @click="testExample(example.id)" sm
-            class="text-white">
+          <InputBtn
+            v-else
+            secondary
+            :icon="PlayIcon"
+            :loading="example.loading"
+            @click="testExample(example.id)"
+            sm
+            class="text-white"
+          >
             {{ t("Buttons.Test") }}
           </InputBtn>
         </div>
-        <div class="sm:flex max-sm:space-y-2 sm:space-x-4">
-          <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
+        <div class="max-sm:space-y-2 sm:flex sm:space-x-4">
+          <div class="w-full rounded-md bg-secondary px-4 py-2 text-sm">
             <p class="text-white">
               {{ t("Headings.Input") }}
             </p>
-            <p class="whitespace-pre-wrap">{{ example?.input ?? '' }}</p>
+            <p class="whitespace-pre-wrap">{{ example?.input ?? "" }}</p>
           </div>
 
-          <div class="w-full text-sm bg-secondary py-2 px-4 rounded-md">
+          <div class="w-full rounded-md bg-secondary px-4 py-2 text-sm">
             <p class="text-white">
               {{ t("Headings.ExpectedOutput") }}
             </p>
-            <p class="whitespace-pre-wrap">{{ example?.output ?? '' }}</p>
+            <p class="whitespace-pre-wrap">{{ example?.output ?? "" }}</p>
           </div>
         </div>
 
         <div
-          class="text-sm bg-primary py-2 px-4 rounded-md my-4 space-y-3"
+          class="my-4 space-y-3 rounded-md bg-primary px-4 py-2 text-sm"
           v-if="example.state !== 'pending' && !example.loading"
         >
           <div class="flex items-start space-x-3">
-            <div class="min-w-max mt-0.5">
+            <div class="mt-0.5 min-w-max">
               <component :is="verdictIcons(example.verdict)" class="h-5 w-5" />
             </div>
             <div class="space-y-1">
               <p class="font-semibold">
                 {{ exampleVerdictTitle(example) }}
               </p>
-              <p
-                v-if="exampleVerdictBody(example)"
-                class="text-xs text-body-2 whitespace-pre-wrap"
-              >
+              <p v-if="exampleVerdictBody(example)" class="text-body-2 whitespace-pre-wrap text-xs">
                 {{ exampleVerdictBody(example) }}
               </p>
             </div>
@@ -82,38 +90,39 @@
                   : t("Buttons.ShowDetails")
               }}
             </button>
-            <div v-if="isExampleDetailsOpen(example.id)" class="mt-2 space-y-3 text-body-2">
+            <div v-if="isExampleDetailsOpen(example.id)" class="text-body-2 mt-2 space-y-3">
               <p v-if="exampleDetailSummary(example)" class="whitespace-pre-wrap">
                 {{ exampleDetailSummary(example) }}
               </p>
               <div v-if="example.compile?.stderr">
-                <p class="font-semibold mb-1">{{ t("Headings.CompilerOutput") }}</p>
-                <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
-{{ example.compile.stderr }}
+                <p class="mb-1 font-semibold">{{ t("Headings.CompilerOutput") }}</p>
+                <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                  >{{ example.compile.stderr }}
                 </pre>
               </div>
               <div v-if="example.run?.stderr">
-                <p class="font-semibold mb-1">{{ t("Headings.RuntimeStdErr") }}</p>
-                <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
-{{ example.run.stderr }}
+                <p class="mb-1 font-semibold">{{ t("Headings.RuntimeStdErr") }}</p>
+                <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                  >{{ example.run.stderr }}
                 </pre>
               </div>
               <div v-if="example.run?.stdout">
-                <p class="font-semibold mb-1">{{ t("Headings.RuntimeStdOut") }}</p>
-                <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
-{{ example.run.stdout }}
+                <p class="mb-1 font-semibold">{{ t("Headings.RuntimeStdOut") }}</p>
+                <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                  >{{ example.run.stdout }}
                 </pre>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="text-sm bg-primary py-2 px-4 rounded-md my-4" v-if="!!example?.explanation && !example.loading">
-          <p class="text-success mb-2">{{ t("Headings.Explanation") }}:</p>
-          <p class="whitespace-pre-wrap"> {{ example?.explanation ?? '' }} </p>
+        <div
+          class="my-4 rounded-md bg-primary px-4 py-2 text-sm"
+          v-if="!!example?.explanation && !example.loading"
+        >
+          <p class="mb-2 text-success">{{ t("Headings.Explanation") }}:</p>
+          <p class="whitespace-pre-wrap">{{ example?.explanation ?? "" }}</p>
         </div>
-
-
       </div>
     </section>
   </div>
@@ -166,8 +175,7 @@ function getExampleIndexById(id: any) {
 }
 
 async function testExample(id: any) {
-  if (id == undefined || !!!id)
-    return openSnackbar("info", "Headings.CannotTestForThisExample");
+  if (id == undefined || !!!id) return openSnackbar("info", "Headings.CannotTestForThisExample");
   exampleElements.value.forEach((example: any) => {
     if (example.id == id) example.loading = true;
   });

@@ -1,28 +1,17 @@
 <template>
-  <article class="bg-secondary style-card overflow-hidden">
-    <img :src="image" :alt="t('AltAttributes.CourseCover')" class="w-full h-32 object-cover" />
+  <article class="overflow-hidden bg-secondary style-card">
+    <img :src="image" :alt="t('AltAttributes.CourseCover')" class="h-32 w-full object-cover" />
     <div class="card-sm">
-      <h3 class="text-heading-3 clamp tight line-2">{{ title }}</h3>
-      <p class="text-body-2 mt-2 clamp line-2">{{ description }}</p>
+      <h3 class="clamp tight line-2 text-heading-3">{{ title }}</h3>
+      <p class="clamp line-2 text-body-2 mt-2">{{ description }}</p>
     </div>
     <hr />
     <div
-      class="flex justify-between card-sm h-fit"
-      :class="{ 'items-center card-sm lg:pt-box lg:pb-box ': price.value <= 0 }"
+      class="card-sm flex h-fit justify-between"
+      :class="{ 'card-sm items-center lg:pt-box lg:pb-box': price.value <= 0 }"
     >
-      <IconText
-        v-if="price.value > 0"
-        :highlightIcon="false"
-        sm
-        :icon="price.icon"
-      >
-        {{
-          t(
-            "Headings.Morphcoins",
-            { n: abbreviateNumber(price.value) },
-            price.value
-          )
-        }}
+      <IconText v-if="price.value > 0" :highlightIcon="false" sm :icon="price.icon">
+        {{ t("Headings.Morphcoins", { n: abbreviateNumber(price.value) }, price.value) }}
       </IconText>
       <Chip v-else-if="completed" xs color="bg-success">
         {{ t("Headings.Completed") }}

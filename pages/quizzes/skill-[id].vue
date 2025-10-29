@@ -1,15 +1,12 @@
 <template>
   <main
-    class="h-screen-inner overflow-hidden container pt-card pb-card mt-card-sm grid grid-cols-[400px_minmax(0,1fr)] gap-y-card gap-x-container"
+    class="h-screen-inner container grid grid-cols-[400px_minmax(0,1fr)] overflow-hidden mt-card-sm gap-y-card pt-card pb-card gap-x-container"
   >
-    <SectionTitle
-      subheading="Web Development / Angular Skill"
-      heading="Quizzes"
-    />
+    <SectionTitle subheading="Web Development / Angular Skill" heading="Quizzes" />
 
     <FormQuizAnswer :data="selectedQuiz ?? quizzes[0]" class="row-span-2" />
 
-    <aside class="grid gap-card max-h-full pb-44 overflow-scroll">
+    <aside class="grid max-h-full overflow-scroll pb-44 gap-card">
       <template v-if="loading">
         <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
         <QuizCardSkeleton v-for="n in 3" :key="n" class="w-full" />
