@@ -108,23 +108,23 @@
 			<p>Wir verarbeiten personenbezogene Daten insbesondere auf Basis der folgenden Rechtsgrundlagen:</p>
 			<ul>
 				<li>
-					<strong>Art. 6 Abs. 1 lit. b DSGVO</strong> ÔÇô zur Erfüllung vertraglicher Pflichten, z.&nbsp;B.
+					<strong>Art. 6 Abs. 1 lit. b DSGVO</strong> – zur Erfüllung vertraglicher Pflichten, z.&nbsp;B.
 					Bereitstellung der Lernplattform, Kurs- und Eventteilnahme, Jobvermittlung.
 				</li>
 				<li>
-					<strong>Art. 6 Abs. 1 lit. c DSGVO</strong> ÔÇô zur Erfüllung rechtlicher Verpflichtungen, etwa steuer-
+					<strong>Art. 6 Abs. 1 lit. c DSGVO</strong> – zur Erfüllung rechtlicher Verpflichtungen, etwa steuer-
 					und handelsrechtliche Aufbewahrungspflichten.
 				</li>
 				<li>
-					<strong>Art. 6 Abs. 1 lit. a DSGVO</strong> ÔÇô auf Basis einer Einwilligung, z.&nbsp;B. für Newsletter,
+					<strong>Art. 6 Abs. 1 lit. a DSGVO</strong> – auf Basis einer Einwilligung, z.&nbsp;B. für Newsletter,
 					OAuth-Verknüpfungen oder optionale Komfortfunktionen.
 				</li>
 				<li>
-					<strong>Art. 6 Abs. 1 lit. f DSGVO</strong> ÔÇô zur Wahrung berechtigter Interessen wie Plattformsicherheit,
+					<strong>Art. 6 Abs. 1 lit. f DSGVO</strong> – zur Wahrung berechtigter Interessen wie Plattformsicherheit,
 					Missbrauchserkennung, Fehleranalyse und Produktoptimierung, sofern Ihre Interessen nicht entgegenstehen.
 				</li>
 			</ul>
-			<p>Für Bewerbungen gilt ergänzend º 26 Abs. 1 BDSG. Auf zusätzliche Rechtsgrundlagen weisen wir in den jeweiligen Abschnitten hin.</p>
+			<p>Für Bewerbungen gilt ergänzend § 26 Abs. 1 BDSG. Auf zusätzliche Rechtsgrundlagen weisen wir in den jeweiligen Abschnitten hin.</p>
 		</section>
 
 		<section id="ueberblick">
@@ -149,8 +149,8 @@
 						<td>Webseitenbesuch &amp; Server-Logs</td>
 						<td>Technischer Betrieb, Sicherheit, Fehlerdiagnose</td>
 						<td>IP-Adresse, Zeitstempel, URL, HTTP-Status, Referrer, User-Agent</td>
-						<td>Art. 6 Abs. 1 lit. f DSGVO; º 25 Abs. 2 TTDSG</td>
-						<td>14ÔÇô30 Tage, längere Aufbewahrung bei Sicherheitsvorfällen</td>
+						<td>Art. 6 Abs. 1 lit. f DSGVO; § 25 Abs. 2 TTDSG</td>
+						<td>14–30 Tage, längere Aufbewahrung bei Sicherheitsvorfällen</td>
 						<td>Interne IT, Hosting-Provider, Sicherheitsdienstleister</td>
 					</tr>
 					<tr>
@@ -158,7 +158,7 @@
 						<td>Dokumentation von Einwilligungen, Cookie-Präferenzen</td>
 						<td>Pseudonyme ID, Einwilligungsstatus, Zeitstempel, Gerätetyp</td>
 						<td>Art. 6 Abs. 1 lit. c DSGVO, Art. 6 Abs. 1 lit. f DSGVO; optional Art. 6 Abs. 1 lit. a DSGVO</td>
-						<td>6ÔÇô12 Monate bzw. bis Widerruf/Nachweisablauf</td>
+						<td>6–12 Monate bzw. bis Widerruf/Nachweisablauf</td>
 						<td>Interne Systeme (kein externer CMP-Dienst)</td>
 					</tr>
 					<tr>
@@ -197,7 +197,7 @@
 						<td>Jobs &amp; Karriereangebote</td>
 						<td>Veröffentlichung von Stellen, Weiterleitung von Bewerbungen</td>
 						<td>Stammdaten, Lebenslauf, Kontaktdaten, Bewerbungsunterlagen, Kommunikationsverlauf</td>
-						<td>º 26 Abs. 1 BDSG; Art. 6 Abs. 1 lit. b DSGVO; Art. 6 Abs. 1 lit. a DSGVO (Talentpool)</td>
+						<td>§ 26 Abs. 1 BDSG; Art. 6 Abs. 1 lit. b DSGVO; Art. 6 Abs. 1 lit. a DSGVO (Talentpool)</td>
 						<td>6 Monate nach Abschluss des Verfahrens, Verlängerung mit Einwilligung</td>
 						<td>Bootstrap Academy HR, ggf. einstellende Unternehmen, Auftragsverarbeiter</td>
 					</tr>
@@ -221,7 +221,7 @@
 						<td>Newsletter &amp; Produktkommunikation</td>
 						<td>Informationen zu Kursen, Events, Angeboten</td>
 						<td>E-Mail-Adresse, Opt-In-Status, Präferenzen, Versand- und Öffnungsstatistiken (pseudonym)</td>
-						<td>Art. 6 Abs. 1 lit. a DSGVO; º 7 UWG</td>
+						<td>Art. 6 Abs. 1 lit. a DSGVO; § 7 UWG</td>
 						<td>Bis Widerruf + 3 Jahre Nachweisfrist</td>
 						<td>E-Mail/Newsletter-Dienstleister, interne Marketingteams</td>
 					</tr>
@@ -261,7 +261,7 @@
 				Bei jedem Zugriff auf unsere Dienste verarbeiten wir technisch bedingte Server-Logfiles (IP-Adresse,
 				Zeitpunkt, aufgerufene Ressourcen, User-Agent, Referrer, HTTP-Status). Die Verarbeitung dient der
 				Fehlerdiagnose, Systemsicherheit, Missbrauchsabwehr und Nachvollziehbarkeit von Supportfällen. Die
-				Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO i.&nbsp;V.&nbsp;m. º 25 Abs. 2 TTDSG. Logdaten werden in der
+				Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO i.&nbsp;V.&nbsp;m. § 25 Abs. 2 TTDSG. Logdaten werden in der
 				Regel nach 30 Tagen gelöscht; längere Aufbewahrung erfolgt nur anlassbezogen für die Aufklärung von
 				Sicherheitsvorfällen.
 			</p>
@@ -302,7 +302,7 @@
 					<tr>
 						<td>Einwilligungsnachweis (<code>agreedToCookiePolicy</code>)</td>
 						<td>Dokumentation Ihrer Cookie-Präferenz</td>
-						<td>Unbedingt erforderlich (º 25 Abs. 2 TTDSG)</td>
+						<td>Unbedingt erforderlich (§ 25 Abs. 2 TTDSG)</td>
 						<td>6 Monate bzw. bis Widerruf</td>
 					</tr>
 				</tbody>
@@ -356,10 +356,10 @@
 			<h2>13 Jobs und Karriereangebote</h2>
 			<p>
 				Über den Jobs-Microservice können Unternehmen Stellen veröffentlichen und Bewerbende sich informieren oder
-				bewerben. Wir verarbeiten dabei Kontaktdaten der Unternehmensansprechpartner, Stelleninhalte sowie ÔÇô bei
-				Bewerbungen ÔÇô die von Ihnen bereitgestellten Unterlagen (Lebenslauf, Motivationsschreiben, Referenzen).
+				bewerben. Wir verarbeiten dabei Kontaktdaten der Unternehmensansprechpartner, Stelleninhalte sowie – bei
+				Bewerbungen – die von Ihnen bereitgestellten Unterlagen (Lebenslauf, Motivationsschreiben, Referenzen).
 				Bewerbungsdaten speichern wir nach Abschluss des Prozesses sechs Monate zur Rechtsverteidigung (Art. 6 Abs. 1
-				lit. b DSGVO, º 26 Abs. 1 BDSG). Mit Ihrer Einwilligung speichern wir Unterlagen länger für einen Talentpool.
+				lit. b DSGVO, § 26 Abs. 1 BDSG). Mit Ihrer Einwilligung speichern wir Unterlagen länger für einen Talentpool.
 				Eine Weitergabe an die ausschreibenden Unternehmen erfolgt nur zur Bearbeitung Ihrer Bewerbung.
 			</p>
 		</section>
@@ -379,7 +379,7 @@
 			<h2>15 Zahlungsabwicklung</h2>
 			<p>
 				Premium-Mitgliedschaften und kostenpflichtige Events werden über PayPal abgewickelt. Wir erhalten von PayPal
-				Transaktionskennungen, Zahlstatus und ÔÇô sofern übermittelt ÔÇô die Rechnungsadresse. Die Verarbeitung ist zur
+				Transaktionskennungen, Zahlstatus und – sofern übermittelt – die Rechnungsadresse. Die Verarbeitung ist zur
 				Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO) und zur Erfüllung steuerrechtlicher Pflichten
 				(Art. 6 Abs. 1 lit. c DSGVO) erforderlich. Nach Handels- und Steuerrecht bewahren wir Rechnungsunterlagen
 				zehn Jahre auf. Zahlungen werden über PayPal (Europe) S.à r.l. et Cie S.C.A. mit Sitz in Luxemburg abgewickelt.
@@ -391,7 +391,7 @@
 			<p>
 				Mit Ihrer Einwilligung senden wir Newsletter, Produkt- und Eventupdates. Wir verwenden das
 				Double-Opt-In-Verfahren und protokollieren Anmeldung, Bestätigung, Zeitstempel und IP-Adresse zum Nachweis
-				(Art. 6 Abs. 1 lit. a DSGVO, º 7 UWG). Sie können Ihre Einwilligung jederzeit über den Abmeldelink oder per
+				(Art. 6 Abs. 1 lit. a DSGVO, § 7 UWG). Sie können Ihre Einwilligung jederzeit über den Abmeldelink oder per
 				E-Mail an hallo@bootstrap.academy widerrufen. Nach Abmeldung speichern wir Ihre E-Mail-Adresse bis zu drei
 				Jahre in einer Sperrliste, um den Widerruf nachweisen zu können.
 			</p>
@@ -447,10 +447,10 @@
 			</p>
 			<ul>
 				<li>Konto- und Vertragsdaten: bis drei Jahre nach Vertragsende.</li>
-				<li>Abrechnungs- und Steuerunterlagen: zehn Jahre (ºº 147 AO, 257 HGB).</li>
+				<li>Abrechnungs- und Steuerunterlagen: zehn Jahre (§§ 147 AO, 257 HGB).</li>
 				<li>Bewerbungsunterlagen: sechs Monate nach Abschluss (längere Aufbewahrung nur mit Einwilligung).</li>
 				<li>Support-Kommunikation: bis zu drei Jahre.</li>
-				<li>Server-Logs und Telemetrie: 14ÔÇô30 Tage.</li>
+				<li>Server-Logs und Telemetrie: 14–30 Tage.</li>
 			</ul>
 		</section>
 
@@ -466,7 +466,7 @@
 
 		<section id="rechte">
 			<h2>23 Ihre Datenschutzrechte</h2>
-			<p>Ihnen stehen die folgenden Rechte gemäß Art. 15ÔÇô22 DSGVO zu:</p>
+			<p>Ihnen stehen die folgenden Rechte gemäß Art. 15–22 DSGVO zu:</p>
 			<ul>
 				<li>Auskunft über die Verarbeitung Ihrer personenbezogenen Daten,</li>
 				<li>Berichtigung unrichtiger oder Vervollständigung unvollständiger Daten,</li>
