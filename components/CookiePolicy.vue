@@ -86,7 +86,7 @@ export default defineComponent({
         cookie_agreedToCookiePolicy.value = v
         if (v && import.meta.client) {
           if (!(window as any).__gleapInited) {
-            Gleap.initialize(config.Gleap_API_KEY)
+            Gleap.initialize(config.Gleap_API_KEY as string)
             ;(window as any).__gleapInited = true
           }
         }
