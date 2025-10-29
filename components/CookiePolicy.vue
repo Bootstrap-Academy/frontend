@@ -110,6 +110,6 @@ export default defineComponent({
 
 section[aria-labelledby="cookie-dialog-title"] {
 
-  --color-primary: #0e1b2b; /* <- is this the correct bg-primary? */
+  --color-primary: #0e1b2b; 
 }
 </style>

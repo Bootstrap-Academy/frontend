@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import type { PanzoomObject } from "@panzoom/panzoom";
 import { SkillTree, RootSkill, SubSkill } from "~/types/skillTreeTypes";
 
 export const useSubSkillTree = () =>
@@ -84,29 +85,19 @@ export function scrollMapToNode(
   map: any,
   mapRef: any,
   nodeSize: number,
-  zoomLevel: number,
   row: number,
   column: number,
-  smooth: boolean
+  smooth: boolean,
+  panzoomInstance?: PanzoomObject
 ) {
   if (!!!map[row] || !!!map[row][column]) return;
 
   let ref = map[row][column];
 
   if (!!!ref) return;
+  if (!mapRef) return;
 
-  let shiftBy;
-  if (zoomLevel == 5) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 4) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 3) {
-    shiftBy = nodeSize * 0.5;
-  } else if (zoomLevel == 2) {
-    shiftBy = nodeSize * 0.5;
-  } else {
-    shiftBy = nodeSize * 0.5;
-  }
+  const shiftBy = nodeSize * 0.5;
 
   let cx = parseInt(ref.getAttribute("x") ?? 0) + shiftBy;
   let cy = parseInt(ref.getAttribute("y") ?? 0) + shiftBy;
@@ -115,7 +106,22 @@ export function scrollMapToNode(
   let centerTop = cy - screenCenterTop;
   let centerLeft = cx - screenCenterLeft;
 
-  mapRef.scroll({
+  if (panzoomInstance && mapRef) {
+    const rect =
+      typeof mapRef.getBoundingClientRect === "function"
+        ? mapRef.getBoundingClientRect()
+        : null;
+
+    if (rect) {
+      const { scale } = panzoomInstance.getTransform();
+      const targetX = rect.width * 0.5 - cx * scale;
+      const targetY = rect.height * 0.5 - cy * scale;
+      panzoomInstance.pan(targetX, targetY, { animate: smooth });
+      return;
+    }
+  }
+
+  mapRef?.scroll?.({
     top: centerTop,
     left: centerLeft,
     behavior: smooth ? "smooth" : "auto",

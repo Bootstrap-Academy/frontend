@@ -4,10 +4,7 @@
       <Title>Sub Skill Tree - {{ subTreeName }}</Title>
     </Head>
 
-    <SkillTreeHeader
-      @zoomLevel="zoomLevel = $event"
-      :breadcrumbs="breadcrumbs"
-    />
+    <SkillTreeHeader :breadcrumbs="breadcrumbs" />
 
     <LoadingDots v-if="loading">
       {{ t("Body.SubSkillTreeLoading", { placeholder: subTreeName }) }}
@@ -15,18 +12,15 @@
 
     <section
       v-else-if="nodes && nodes.length"
-      class="map w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-auto"
+      class="map relative z-0 w-screen h-fit m-auto max-w-[100vw] h-screen-main overflow-hidden"
       ref="mainRef"
-      @mousedown="startDrag"
-      :class="{ 'cursor-grabbing': isDragging }"
     >
-      <svg :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
+      <svg ref="svgRef" :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
         <g v-if="setupComplete && selectedNode.id == ''">
           <SkillTreePathway
             v-for="(pathway, p) of pathways"
             :key="p"
             :pathway="pathway.path"
-            :zoomLevel="zoomLevel"
             @click="scrollViaPathway(pathway.node, pathway.parent)"
           />
         </g>
@@ -43,7 +37,6 @@
               :column="j"
               @ref="insertRefInMap($event, i, j)"
               :node="getNode(i, j)"
-              :zoomLevel="zoomLevel"
               @size="nodeSize = $event"
               @click="scrollToNode(i, j, true)"
               @move="setSelectedNode($event)"
@@ -72,6 +65,8 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
+import type { Ref } from "vue";
+import Panzoom, { type PanzoomObject } from "@panzoom/panzoom";
 import { useSubSkillTree, getSubSkillTree, createPathwaysForTree } from "~/composables/skilltree";
 
 export default {
@@ -100,6 +95,15 @@ export default {
     });
 
     const { t } = useI18n();
+
+    const MAX_SCALE = 3;
+    const MIN_SCALE = 0.4;
+    const ZOOM_BASE_STEP = 0.06;
+    const MIN_WHEEL_STEP = 0.015;
+    const MAX_WHEEL_STEP = 0.35;
+
+    const clamp = (value: number, min: number, max: number) =>
+      Math.min(Math.max(value, min), max);
 
     // ! ======================================================= Set Up
     const setupComplete = ref(false);
@@ -134,6 +138,9 @@ export default {
     };
 
     const nodeSize = ref(0);
+    const svgRef = ref<SVGSVGElement | null>(null);
+    const panzoomInstance = ref<PanzoomObject | null>(null);
+    const pendingTarget = ref<{ row: number; column: number } | null>(null);
 
     let selectedNode = reactive(getInitialNode());
     const router = useRouter();
@@ -232,16 +239,20 @@ export default {
     }
 
     function scrollToNode(row: number, column: number, smooth: boolean) {
-      nextNode.value = { row: row, column: column };
+      nextNode.value = { row, column };
+
+      if (!panzoomInstance.value) {
+        pendingTarget.value = { row, column };
+      }
 
       scrollMapToNode(
         map,
         mainRef.value,
         nodeSize.value,
-        zoomLevel.value,
         row,
         column,
-        smooth
+        smooth,
+        panzoomInstance.value ?? undefined
       );
     }
 
@@ -329,26 +340,45 @@ export default {
     }
 
     // ! ======================================================= Controls
-    const zoomLevel = ref(-1);
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const instance = panzoomInstance.value;
+      if (!instance) return;
 
-    watch(
-      () => zoomLevel.value,
-      (newValue, oldValue) => {
-        if (newValue != oldValue) {
-          setupComplete.value = false;
-        }
+      const delta =
+        event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
+      if (!delta) return;
 
-        nextTick(() => {
-          createPathways();
+      const intensity = clamp(Math.abs(delta) / 120, 0.2, 4);
+      const step = clamp(
+        intensity * ZOOM_BASE_STEP,
+        MIN_WHEEL_STEP,
+        MAX_WHEEL_STEP
+      );
 
-          let row = nextNode.value.row;
-          let column = nextNode.value.column;
+      instance.zoomWithWheel(event, { step, animate: false });
+    };
 
-          scrollToNode(row, column, false);
-          setupComplete.value = true;
-        });
+    function initializePanzoom() {
+      if (!svgRef.value || !mainRef.value || panzoomInstance.value) return;
+
+      const instance = Panzoom(svgRef.value, {
+        maxScale: MAX_SCALE,
+        minScale: MIN_SCALE,
+        step: 0.1,
+        cursor: "grab",
+      });
+
+      panzoomInstance.value = instance;
+      mainRef.value.addEventListener("wheel", handleWheel, { passive: false });
+      mainRef.value.style.touchAction = "none";
+
+      if (pendingTarget.value) {
+        const { row, column } = pendingTarget.value;
+        pendingTarget.value = null;
+        nextTick(() => scrollToNode(row, column, false));
       }
-    );
+    }
 
     watch(
       () => map,
@@ -368,49 +398,22 @@ export default {
       { immediate: true, deep: true }
     );
 
-    // ! ======================================================= Dragging
-    const isDragging = ref(false);
-    const startX = ref(0);
-    const startY = ref(0);
-    const scrollLeft = ref(0);
-    const scrollTop = ref(0);
-
-    const startDrag = (event: MouseEvent) => {
-      if (event.button !== 0) return;
-
-      const target = event.target as HTMLElement;
-      if (target.tagName === "foreignObject" || target.tagName === "path") return;
-
-      isDragging.value = true;
-      startX.value = event.pageX - mainRef.value!.offsetLeft;
-      startY.value = event.pageY - mainRef.value!.offsetTop;
-      scrollLeft.value = mainRef.value!.scrollLeft;
-      scrollTop.value = mainRef.value!.scrollTop;
-      document.addEventListener("mousemove", drag);
-      document.addEventListener("mouseup", stopDrag);
-    };
-
-    const drag = (event: MouseEvent) => {
-      if (!isDragging.value) return;
-      event.preventDefault();
-      const x = event.pageX - mainRef.value!.offsetLeft;
-      const y = event.pageY - mainRef.value!.offsetTop;
-      const walkX = x - startX.value;
-      const walkY = y - startY.value;
-
-      mainRef.value!.scrollLeft = scrollLeft.value - walkX;
-      mainRef.value!.scrollTop = scrollTop.value - walkY;
-
-      if (event.clientX <= 0 || event.clientX >= window.innerWidth || event.clientY <= 0 || event.clientY >= window.innerHeight) {
-        stopDrag();
+    watch(
+      () => setupComplete.value,
+      (complete) => {
+        if (complete) {
+          nextTick(() => initializePanzoom());
+        }
       }
-    };
+    );
 
-    const stopDrag = () => {
-      isDragging.value = false;
-      document.removeEventListener("mousemove", drag);
-      document.removeEventListener("mouseup", stopDrag);
-    };
+    onUnmounted(() => {
+      if (mainRef.value) {
+        mainRef.value.removeEventListener("wheel", handleWheel);
+      }
+      panzoomInstance.value?.destroy();
+      panzoomInstance.value = null;
+    });
 
     return {
       setupComplete,
@@ -436,14 +439,10 @@ export default {
       pathways,
       scrollViaPathway,
 
-      zoomLevel,
       t,
       subTreeName,
       breadcrumbs,
-
-      isDragging,
-      startDrag,
-      
+      svgRef,
       xp,
     };
   },
