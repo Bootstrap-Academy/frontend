@@ -47,20 +47,63 @@
           >
             {{ submission?.environment ?? "" }}
           </td>
-          <td class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[200px]">
-            <div class="text-sm bg-primary p-2 rounded-md flex items-center space-x-4">
-              <div class="w-full flex space-x-2 items-center">
-                <div class="min-w-max">
+          <td class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[220px] align-top">
+            <div class="text-sm bg-primary p-3 rounded-md space-y-3">
+              <div class="flex items-start space-x-3">
+                <div class="min-w-max mt-0.5">
                   <component :is="verdictIcons(submission.result?.verdict)" class="h-5 w-5" />
                 </div>
-                <span>
-                  {{ t(verdictIs(submission)) }}
-                </span>
+                <div class="space-y-1">
+                  <p class="font-semibold">
+                    {{ messageTitle(submission) }}
+                  </p>
+                  <p
+                    v-if="messageDescription(submission)"
+                    class="text-xs text-body-2 whitespace-pre-wrap"
+                  >
+                    {{ messageDescription(submission) }}
+                  </p>
+                </div>
               </div>
-              <Tooltip :heading="t('Headings.ShowErrorMessage')">
-                <ExclamationTriangleIcon v-if="submission.result.compile?.stderr || submission.result.run?.stderr"
-                  class="h-5 w-5 text-accent cursor-pointer" @click="openErrorMessageDialog(submission)" />
-              </Tooltip>
+              <div v-if="hasDetails(submission)" class="text-xs">
+                <button
+                  class="text-accent hover:underline"
+                  type="button"
+                  @click="toggleDetails(submission.id)"
+                >
+                  {{
+                    isDetailsOpen(submission.id)
+                      ? t("Buttons.HideDetails")
+                      : t("Buttons.ShowDetails")
+                  }}
+                </button>
+                <div
+                  v-if="isDetailsOpen(submission.id)"
+                  class="mt-2 space-y-3 text-body-2"
+                >
+                  <p v-if="detailSummary(submission)" class="whitespace-pre-wrap">
+                    {{ detailSummary(submission) }}
+                  </p>
+                  <div v-if="submission.result?.compile?.stderr">
+                    <p class="font-semibold mb-1">{{ t("Headings.CompilerOutput") }}</p>
+                    <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
+{{ submission.result.compile.stderr }}
+                    </pre>
+                  </div>
+                  <div v-if="submission.result?.run?.stderr">
+                    <p class="font-semibold mb-1">{{ t("Headings.RuntimeStdErr") }}</p>
+                    <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
+{{ submission.result.run.stderr }}
+                    </pre>
+                  </div>
+                  <div v-if="submission.result?.run?.stdout">
+                    <p class="font-semibold mb-1">{{ t("Headings.RuntimeStdOut") }}</p>
+                    <pre class="whitespace-pre-wrap bg-secondary rounded-md p-2 overflow-x-auto">
+{{ submission.result.run.stdout }}
+                    </pre>
+                  </div>
+                </div>
+              </div>
             </div>
           </td>
           <td
@@ -86,12 +129,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
 import { useDateFormat } from "@vueuse/core";
-import { CheckIcon, ExclamationTriangleIcon, NoSymbolIcon, FlagIcon, CircleStackIcon, DocumentIcon, CheckCircleIcon, ShieldExclamationIcon, PowerIcon, ClockIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { CheckIcon, NoSymbolIcon, FlagIcon, CircleStackIcon, DocumentIcon, CheckCircleIcon, ShieldExclamationIcon, PowerIcon, ClockIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   emits: ["id"],
@@ -100,10 +144,11 @@ export default defineComponent({
     challengeId: { type: String, default: "" },
     codingChallengeId: { type: String, default: "" },
   },
-  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon, ExclamationTriangleIcon },
+  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
+    const expandedRows = ref<Record<string, boolean>>({});
 
     const verdictIs: any = (submission: any) => {
       const verdictMapping: { [key: string]: string } = {
@@ -119,7 +164,6 @@ export default defineComponent({
       };
 
       const verdict = submission.result?.verdict ?? "";
-      console.log("verdict is ", verdict);
 
       if (!submission.result) {
         return "Headings.PendingResult";
@@ -150,21 +194,6 @@ export default defineComponent({
       if (!!error) openSnackbar("error", error);
     }
 
-    function openErrorMessageDialog(submission: any) {
-      const errorMessage = submission.result.compile?.stderr || submission.result.run?.stderr;
-      openDialog(
-        'error',
-        'Headings.ErrorMessage',
-        errorMessage,
-        false,
-        {
-          label: 'Buttons.Okay',
-          onclick: async () => { },
-        },
-        {},
-      );
-    }
-
     function verdictIcons(verdict: string){
       const verdictIconMapping: { [key: string]: any } = {
         "COMPILATION_ERROR": NoSymbolIcon,
@@ -180,6 +209,44 @@ export default defineComponent({
       return verdictIconMapping[verdict];
     }
 
+    function messageTitle(submission: any) {
+      const message = submission.result?.message;
+      if (!submission.result) return t("Headings.PendingResult");
+      if (message?.title_key) return t(message.title_key);
+      return t(verdictIs(submission));
+    }
+
+    function messageDescription(submission: any) {
+      const message = submission.result?.message;
+      if (!message?.body_key) return "";
+      const params = message.body_params ?? {};
+      return t(message.body_key, params);
+    }
+
+    function detailSummary(submission: any) {
+      const detail = submission.result?.message?.detail;
+      return detail ?? "";
+    }
+
+    function hasDetails(submission: any) {
+      return (
+        !!detailSummary(submission) ||
+        !!submission.result?.compile?.stderr ||
+        !!submission.result?.run?.stderr ||
+        !!submission.result?.run?.stdout
+      );
+    }
+
+    function toggleDetails(id: string) {
+      const key = String(id ?? "");
+      expandedRows.value[key] = !expandedRows.value[key];
+    }
+
+    function isDetailsOpen(id: string) {
+      const key = String(id ?? "");
+      return !!expandedRows.value[key];
+    }
+
     return {
       t,
       submissions,
@@ -187,8 +254,13 @@ export default defineComponent({
       loadSubmission,
       dateFormat,
       verdictIs,
-      openErrorMessageDialog,
       verdictIcons,
+      messageTitle,
+      messageDescription,
+      detailSummary,
+      hasDetails,
+      toggleDetails,
+      isDetailsOpen,
       CheckIcon,
       CodeBracketIcon,
       CheckBadgeIcon,
@@ -201,7 +273,6 @@ export default defineComponent({
       PowerIcon,
       ClockIcon,
       XMarkIcon,
-      ExclamationTriangleIcon,
     };
   },
 });
