@@ -64,7 +64,9 @@ import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   props: {
-    dialog: { type: Object as PropType<any>, default: null },
+  dialog: { type: Object as PropType<any>, default: null },  
+  labelId: { type: String, required: true },
+  descriptionId: { type: String, required: false, default: null },
   },
   components: {
     ExclamationCircleIcon,
