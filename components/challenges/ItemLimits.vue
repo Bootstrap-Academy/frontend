@@ -8,19 +8,19 @@
       <li class="list-item list-disc list-inside pl-4">
         {{ t("Inputs.MemoryLimit") }}:{{ data?.memory_limit ?? "" }}
       </li> -->
-      <li class="list-item list-disc list-inside pl-4">
+      <li class="list-item list-inside list-disc pl-4">
         {{ t("Headings.Fee") }}:{{ data?.fee ?? "" }}
       </li>
-      <li class="list-item list-disc list-inside pl-4">
+      <li class="list-item list-inside list-disc pl-4">
         {{ t("Inputs.Coins") }}:{{ data?.coins ?? "" }}
       </li>
-      <li class="list-item list-disc list-inside pl-4">
+      <li class="list-item list-inside list-disc pl-4">
         {{ t("Inputs.Xp") }}:{{ data?.xp ?? "" }}
       </li>
-      <li class="list-item list-disc list-inside pl-4">
+      <li class="list-item list-inside list-disc pl-4">
         {{ t("Inputs.StaticTests") }}:{{ data?.xp ?? "" }}
       </li>
-      <li class="list-item list-disc list-inside pl-4">
+      <li class="list-item list-inside list-disc pl-4">
         {{ t("Inputs.RandomTests") }}:{{ data?.xp ?? "" }}
       </li>
     </ul>

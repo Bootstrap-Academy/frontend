@@ -1,18 +1,18 @@
 <template>
-  <section class="card style-card bg-secondary">
+  <section class="card bg-secondary style-card">
     <img
       :src="image"
       :alt="t('AltAttributes.UserAvatar')"
-      class="w-32 h-32 rounded-full bg-tertiary mx-auto mb-box shadow-xl shadow-primary"
+      class="mx-auto h-32 w-32 rounded-full bg-tertiary shadow-xl shadow-primary mb-box"
     />
-    <h2 class="text-heading-2 text-center clamp line-1">{{ username }}</h2>
-    <p class="text-body-1 text-center clamp line-1">{{ nickname }}</p>
+    <h2 class="clamp line-1 text-heading-2 text-center">{{ username }}</h2>
+    <p class="clamp line-1 text-body-1 text-center">{{ nickname }}</p>
 
-    <NuxtLink to="/profile/edit" class="block mx-auto mt-box mb-card">
+    <NuxtLink to="/profile/edit" class="mx-auto block mt-box mb-card">
       <Btn secondary sm class="mx-auto">{{ t("Buttons.EditProfile") }}</Btn>
     </NuxtLink>
 
-    <p class="text-body-1 text-heading text-justify mb-card mt-box">
+    <p class="text-body-1 text-justify text-heading mt-box mb-card">
       {{ description }}
     </p>
 
@@ -21,17 +21,12 @@
     </IconText>
     <IconText :icon="registration.icon">{{ registration.text }}</IconText>
 
-    <article
-      class="flex gap-x-3 gap-y-3.5 flex-wrap mt-card"
-      v-if="tags && tags.length"
-    >
+    <article class="flex flex-wrap gap-x-3 gap-y-3.5 mt-card" v-if="tags && tags.length">
       <Chip v-for="tag of tags" :key="tag">{{ tag }}</Chip>
     </article>
 
     <InputBtn class="mt-8 w-full" @click="navigateTo('/subscription')">
-      {{
-        !isPremium ? t("Buttons.BuySubscription") : t("Buttons.ManagePremium")
-      }}
+      {{ !isPremium ? t("Buttons.BuySubscription") : t("Buttons.ManagePremium") }}
     </InputBtn>
   </section>
 </template>

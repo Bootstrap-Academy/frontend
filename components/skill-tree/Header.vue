@@ -1,24 +1,18 @@
 <template>
   <header
-    class="flex gap-card items-center justify-between flex-wrap capitalize pointer-events-auto z-20"
-    :class="
-      absolute
-        ? 'absolute left-0 top-card w-screen container-fluid'
-        : 'relative'
-    "
+    class="pointer-events-auto z-20 flex flex-wrap items-center justify-between capitalize gap-card"
+    :class="absolute ? 'container-fluid absolute left-0 w-screen top-card' : 'relative'"
   >
-    <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary style-box">
+    <div class="bg-secondary px-4 py-2 style-box md:px-6 md:py-3">
       <template v-for="(path, i) of breadcrumbs" :key="i">
-        <NuxtLink v-if="path.to" :to="path.to" class="inline-block text-body-2">
+        <NuxtLink v-if="path.to" :to="path.to" class="text-body-2 inline-block">
           {{ t(path.label) }}
         </NuxtLink>
-        <h1 v-else class="text-heading-2 capitalize inline-block">
+        <h1 v-else class="text-heading-2 inline-block capitalize">
           {{ t(path.label) }}
         </h1>
 
-        <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-          /
-        </span>
+        <span v-if="i < breadcrumbs.length - 1" class="mx-3 text-accent"> / </span>
       </template>
     </div>
 
@@ -27,12 +21,13 @@
       :to="`/quizzes/solve-${lastViewCourse.courseId}?quizzesFrom=course&rootSkillID=${lastViewCourse.skillID}&subSkillID=${lastViewCourse.subSkillID}`"
     >
       <Btn>
-        {{ t("Headings.ViewQuizzesForLastViewCourse", {
-          type: t(lastViewCourseInfo.type)
-        }) }}
+        {{
+          t("Headings.ViewQuizzesForLastViewCourse", {
+            type: t(lastViewCourseInfo.type),
+          })
+        }}
       </Btn>
     </NuxtLink>
-
   </header>
 </template>
 
@@ -57,11 +52,9 @@ export default defineComponent({
       let matchings = useMatchingsInCourse();
 
       return {
-        existing: (
-          quizzes.value.length > 0 || matchings.value.length > 0
-        ),
-        type: quizzes.value.length > 0 ? "Headings.Quizzes" : "Headings.Matchings", 
-      }
+        existing: quizzes.value.length > 0 || matchings.value.length > 0,
+        type: quizzes.value.length > 0 ? "Headings.Quizzes" : "Headings.Matchings",
+      };
     });
 
     return { t, lastViewCourse, lastViewCourseInfo };

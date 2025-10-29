@@ -3,7 +3,7 @@
     <SkeletonQuizAnswer v-if="loading" class="card" />
     <form
       v-else
-      class="flex flex-col gap-box relative card h-full"
+      class="card relative flex h-full flex-col gap-box"
       :class="{ 'form-submitting': formSubmitting }"
       @submit.prevent="onclickSubmitForm()"
       ref="refForm"
@@ -11,10 +11,7 @@
       <h4 class="text-heading-3 text-accent">
         Q). <span v-html="$md.render(subtask?.question ?? '')"></span>
       </h4>
-      <p
-        class="text-heading2 text-sm"
-        v-if="!subtask?.solved && user?.id != subtask?.creator"
-      >
+      <p class="text-heading2 text-sm" v-if="!subtask?.solved && user?.id != subtask?.creator">
         {{
           subtask?.single_choice
             ? t("Headings.ChooseSingleCorrectOption")
@@ -27,27 +24,22 @@
       </p>
 
       <article
-        class="grid gap-card-sm overflow-auto max-h-[45vh] place-content-start"
-        :class="
-          doubleColumnOptions ? ' grid-cols-1 sm:grid-cols-2' : ' grid-cols-1'
-        "
+        class="grid max-h-[45vh] place-content-start overflow-auto gap-card-sm"
+        :class="doubleColumnOptions ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'"
       >
         <button
           v-for="(option, i) of subtask?.answers ?? []"
           :key="option"
-          @click="setArrayOfAnswers(i), setSelected(option)"
+          @click="(setArrayOfAnswers(i), setSelected(option))"
           type="button"
-          class="box style-box border-4 border-tertiary text-heading h-fit"
+          class="box h-fit border-4 border-tertiary text-heading style-box"
           :class="{
-            'bg-success text-primary':
-              selected.includes(option) && wasOptionsCorrect == 'yes',
+            'bg-success text-primary': selected.includes(option) && wasOptionsCorrect == 'yes',
 
             'bg-error': selected.includes(option) && wasOptionsCorrect == 'no',
 
-            'bg-warning':
-              selected.includes(option) && wasOptionsCorrect == 'waiting',
-            'pointer-events-none':
-              !!subtask?.solved || subtask?.creator == user?.id,
+            'bg-warning': selected.includes(option) && wasOptionsCorrect == 'waiting',
+            'pointer-events-none': !!subtask?.solved || subtask?.creator == user?.id,
           }"
         >
           {{ option }}
@@ -55,15 +47,21 @@
       </article>
 
       <div class="mb-4">
-        <p v-if="amountQuestionsLeft == 0" class="text-center mb-2">
+        <p v-if="amountQuestionsLeft == 0" class="mb-2 text-center">
           {{ t("Headings.AllSolved") }}
         </p>
 
-        <p v-else-if="subtask?.solved && user?.id != subtask?.creator" class="text-center mb-2">
+        <p v-else-if="subtask?.solved && user?.id != subtask?.creator" class="mb-2 text-center">
           {{ t("Headings.QuestionAlreadySolved") }}
         </p>
 
-        <InputBtn v-else-if="data?.solved || user?.id == subtask?.creator" full @click="nextQuestion()" iconRight :icon="ChevronDoubleRightIcon">
+        <InputBtn
+          v-else-if="data?.solved || user?.id == subtask?.creator"
+          full
+          @click="nextQuestion()"
+          iconRight
+          :icon="ChevronDoubleRightIcon"
+        >
           {{ t("Buttons.Next") }}
         </InputBtn>
 
@@ -76,11 +74,7 @@
           mt
           :icon="HalfHeart"
         >
-          {{
-            subtask?.single_choice
-              ? t("Buttons.SubmitAnswer")
-              : t("Buttons.SubmitAnswers")
-          }}
+          {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
         </InputBtnWithHeart>
 
         <InputBtn
@@ -90,11 +84,7 @@
           @click="onclickSubmitForm()"
           mt
         >
-          {{
-            subtask?.single_choice
-              ? t("Buttons.SubmitAnswer")
-              : t("Buttons.SubmitAnswers")
-          }}
+          {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
         </InputBtn>
 
         <InputBtn
@@ -109,11 +99,7 @@
           {{ t("Buttons.Edit") }}
         </InputBtn>
       </div>
-      <InputQuizRating
-        :data="data"
-        :subtask="subtask"
-        @rated="fnRated($event)"
-      />
+      <InputQuizRating :data="data" :subtask="subtask" @rated="fnRated($event)" />
 
       <DialogSlot
         v-if="dialogCreateSubtask"
@@ -216,22 +202,16 @@ export default defineComponent({
     }
 
     async function onclickSubmitForm() {
-      if (
-        subtask.value.solved == true ||
-        subtask.value?.creator == user.value?.id
-      )
-        return;
+      if (subtask.value.solved == true || subtask.value?.creator == user.value?.id) return;
 
       if (!selected.value.length) {
         return openSnackbar("error", "Error.SelectAtLeastOneOption");
       }
 
       formSubmitting.value = true;
-      const [success, error] = await attempQuiz(
-        subtask.value.task_id,
-        subtask.value.id,
-        { answers: arrayOfAnswers.value }
-      );
+      const [success, error] = await attempQuiz(subtask.value.task_id, subtask.value.id, {
+        answers: arrayOfAnswers.value,
+      });
       formSubmitting.value = false;
       await getHearts();
       if (success == true || success == false) successHandler(success);

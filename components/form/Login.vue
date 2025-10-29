@@ -42,12 +42,8 @@
       {{ t("Links.ForgotPassword") }}
     </NuxtLink>
 
-    <div v-else class="self-end cursor-pointer">
-      <NuxtLink
-        tertiary
-        v-if="needRecoveryCode"
-        @click="needRecoveryCode = false"
-      >
+    <div v-else class="cursor-pointer self-end">
+      <NuxtLink tertiary v-if="needRecoveryCode" @click="needRecoveryCode = false">
         {{ t("Links.HaveMFA") }}
       </NuxtLink>
       <NuxtLink tertiary v-else @click="needRecoveryCode = true">
@@ -55,13 +51,7 @@
       </NuxtLink>
     </div>
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-center"
-      @click="onclickSubmitForm()"
-      mt
-      mb
-    >
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
       {{ t("Buttons.Login") }}
     </InputBtn>
 
@@ -79,18 +69,14 @@
       <hr />
     </article>
 
-    <article class="flex flex-wrap gap-container justify-center">
+    <article class="flex flex-wrap justify-center gap-container">
       <a
         v-for="{ id, icon, authorize_url } of providers"
         :key="id"
         :href="authorize_url"
         class="cursor-pointer"
       >
-        <component
-          :is="icon"
-          lg
-          :color="id == 'github' ? 'fill-heading' : ''"
-        ></component>
+        <component :is="icon" lg :color="id == 'github' ? 'fill-heading' : ''"></component>
       </a>
     </article>
   </form>
@@ -118,9 +104,7 @@ export default defineComponent({
       name_or_email: {
         valid: false,
         value: "",
-        rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailOrUsername",
-        ],
+        rules: [(v: string) => !!v || "Error.InputEmpty_Inputs.EmailOrUsername"],
       },
       password: {
         valid: false,
@@ -145,12 +129,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -161,8 +140,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -173,16 +151,14 @@ export default defineComponent({
     const config = useRuntimeConfig().public;
 
     const providers = computed(() => {
-      if (!!!oauthProviders.value || oauthProviders.value.length <= 0)
-        return [];
+      if (!!!oauthProviders.value || oauthProviders.value.length <= 0) return [];
 
       const redirect_uri = `${config.BASE_WEB_URL}/oauth/callback`;
 
       return oauthProviders.value.map((item: any) => {
         if (!!item && !!item.id && !!item.authorize_url) {
           let updated_authorize_url =
-            item.authorize_url +
-            `&state=${item.id}&redirect_uri=${redirect_uri}`;
+            item.authorize_url + `&state=${item.id}&redirect_uri=${redirect_uri}`;
 
           let icon = null;
           if (item.id == "google") {

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { useDialogSlot } from "../composables/dialogSlot";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
@@ -40,10 +34,8 @@ function close() {
         <div class="fixed inset-0 backdrop-blur-sm transition-opacity" />
       </TransitionChild>
 
-      <div class="fixed bg-lightGray inset-0 z-10 overflow-y-auto">
-        <div
-          class="flex min-h-full justify-center text-center items-center sm:p-0"
-        >
+      <div class="bg-lightGray fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center text-center sm:p-0">
           <TransitionChild
             as="template"
             enter="ease-out duration-300"
@@ -55,14 +47,14 @@ function close() {
           >
             <DialogPanel
               :class="propClass ? propClass : ''"
-              class="border border-accent relative transform overflow-hidden rounded-lg px-4 pt-5 pb-4 bg-primary text-left shadow-xl transition-all sm:my-8 sm:p-6"
+              class="relative transform overflow-hidden rounded-lg border border-accent bg-primary px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:p-6"
             >
-              <div class="flex justify-between items-center mb-5">
+              <div class="mb-5 flex items-center justify-between">
                 <p class="font-semibold">{{ t(label) }}</p>
                 <XMarkIcon
                   v-if="showCross"
                   @click="close()"
-                  class="h-5 w-5 relative cursor-pointer text-white"
+                  class="relative h-5 w-5 cursor-pointer text-white"
                 />
               </div>
               <slot />

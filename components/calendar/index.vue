@@ -1,29 +1,19 @@
 <template>
   <div>
-    <header class="flex gap-card justify-between items-center mb-card">
+    <header class="flex items-center justify-between gap-card mb-card">
       <Btn sm secondary :icon="ArrowLeftIcon" @click="prevMonth">
-        <span class="hidden md:block">{{
-          t("Buttons.CalendarPrevMonth")
-        }}</span>
+        <span class="hidden md:block">{{ t("Buttons.CalendarPrevMonth") }}</span>
       </Btn>
 
-      <h1 class="text-heading-3">
-        {{ activeDate }} {{ t(month) }}, {{ activeYear }}
-      </h1>
+      <h1 class="text-heading-3">{{ activeDate }} {{ t(month) }}, {{ activeYear }}</h1>
 
       <Btn sm :icon="ArrowRightIcon" @click="nextMonth" icon-right>
-        <span class="hidden md:block">{{
-          t("Buttons.CalendarNextMonth")
-        }}</span>
+        <span class="hidden md:block">{{ t("Buttons.CalendarNextMonth") }}</span>
       </Btn>
     </header>
 
     <section class="grid grid-cols-7">
-      <h2
-        v-for="day of days"
-        :key="day"
-        class="place-self-center capitalize mb-5 text-heading-4"
-      >
+      <h2 v-for="day of days" :key="day" class="text-heading-4 mb-5 place-self-center capitalize">
         <span class="hidden lg:block">{{ t(day) }}</span>
         <span class="hidden md:block lg:hidden">
           {{ t(day)[0] }}{{ t(day)[1] }}{{ t(day)[2] }}
@@ -32,20 +22,16 @@
       </h2>
 
       <article
-        class="pt-1 pb-1 px-1 md:pt-2 md:pb-4 md:px-3 h-12 md:h-20 lg:h-40 border flex flex-wrap gap-x-1 md:gap-2 overflow-hidden"
+        class="flex h-12 flex-wrap gap-x-1 overflow-hidden border px-1 pb-1 pt-1 md:h-20 md:gap-2 md:px-3 md:pb-4 md:pt-2 lg:h-40"
         v-for="(date, i) of dates"
         :key="i"
         @click="setActiveDate(date.date)"
         :class="[
           date.date == '' ? 'pointer-events-none' : 'cursor-pointer',
-          activeDate == date.date
-            ? 'border border-accent'
-            : 'border border-secondary',
+          activeDate == date.date ? 'border border-accent' : 'border border-secondary',
         ]"
       >
-        <p
-          class="capitalize text-heading font-heading text-xs md:text-sm lg:text-base w-full"
-        >
+        <p class="w-full text-xs capitalize text-heading font-heading md:text-sm lg:text-base">
           {{ date.date }}
         </p>
 
@@ -172,11 +158,7 @@ export default defineComponent({
       let arr = [];
 
       const start = 1;
-      const end = new Date(
-        activeYear.value,
-        activeMonth.value + 1,
-        0
-      ).getDate();
+      const end = new Date(activeYear.value, activeMonth.value + 1, 0).getDate();
 
       for (let i = start; i <= end; i++) {
         let date = new Date(activeYear.value, activeMonth.value, i);
@@ -211,8 +193,7 @@ export default defineComponent({
         .map((event: any) => {
           let start = event?.start ?? -1;
           let date = start != 1 ? convertTimestampToDate(start).date : "";
-          let month =
-            start != 1 ? convertTimestampToDate(start).month.number : 0;
+          let month = start != 1 ? convertTimestampToDate(start).month.number : 0;
           let year = start != 1 ? convertTimestampToDate(start).year : "";
           return { ...event, date, month, year };
         })
@@ -229,11 +210,7 @@ export default defineComponent({
 
     function isEvent(event: any, date: any) {
       if (!!!event) return false;
-      return (
-        event.date == date.date &&
-        event.month == date.month &&
-        event.year == date.year
-      );
+      return event.date == date.date && event.month == date.month && event.year == date.year;
     }
 
     return {

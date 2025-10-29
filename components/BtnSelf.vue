@@ -1,12 +1,12 @@
 <template>
-	<button :class="classes" @click.self="onclick" type="button">
-		<component v-if="icon" :is="icon" class="icon"></component>
-		<slot></slot>
-	</button>
+  <button :class="classes" @click.self="onclick" type="button">
+    <component v-if="icon" :is="icon" class="icon"></component>
+    <slot></slot>
+  </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
@@ -19,17 +19,17 @@ export default defineComponent({
     tertiary: { type: Boolean, default: false },
     icon: { default: null },
     iconRight: { type: Boolean, default: false },
-    bgColor: { type: String, default: 'bg-accent' },
-    borderColor: { type: String, default: 'border-accent' },
+    bgColor: { type: String, default: "bg-accent" },
+    borderColor: { type: String, default: "border-accent" },
   },
-  emits: ['click'],
+  emits: ["click"],
   setup(props, { emit }) {
     function onclick() {
-      emit('click', true);
+      emit("click", true);
     }
 
     const textColor = computed(() => {
-      return props.bgColor.includes('warning') ? 'text-primary' : 'text-white';
+      return props.bgColor.includes("warning") ? "text-primary" : "text-white";
     });
     const classes = computed(() => {
       return [
@@ -37,18 +37,18 @@ export default defineComponent({
           lg: props.lg,
           md: props.md && !props.lg && !props.sm,
           sm: props.sm,
-          'flex-row-reverse': props.iconRight,
-          'text-center justify-center w-full': props.full,
+          "flex-row-reverse": props.iconRight,
+          "text-center justify-center w-full": props.full,
         },
         props.primary && !props.secondary && !props.tertiary
           ? `primary ${props.bgColor} text-primary hover:${props.bgColor} border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
-          : '',
+          : "",
         props.secondary
           ? `secondary bg-transparent text-heading hover:bg-transparent border ${props.borderColor} hover:ring-4 md:hover:ring-8 hover:ring-tertiary`
-          : '',
+          : "",
         props.tertiary
           ? `tertiary bg-transparent text-heading hover:bg-transparent hover:scale-105 border border-transparent hover:ring-4 md:hover:ring-8 hover:ring-transparent`
-          : '',
+          : "",
       ];
     });
     return { classes, onclick };
@@ -57,8 +57,7 @@ export default defineComponent({
 </script>
 <style scoped>
 button {
-	@apply h-fit rounded flex items-center text-center
-			 uppercase tracking-widest transition-basic font-body;
+  @apply flex h-fit items-center rounded text-center uppercase tracking-widest font-body transition-basic;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STYLE */
@@ -74,38 +73,38 @@ button {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
-	@apply text-xs px-3.5 py-2 gap-2 font-medium;
+  @apply gap-2 px-3.5 py-2 text-xs font-medium;
 }
 .md {
-	@apply text-sm px-5 py-3 gap-3 font-bold;
+  @apply gap-3 px-5 py-3 text-sm font-bold;
 }
 .lg {
-	@apply text-base px-6 py-4 gap-4;
+  @apply gap-4 px-6 py-4 text-base;
 }
 :is(.sm, .md, .lg).tertiary {
-	@apply px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0;
+  @apply px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-	@apply w-4 h-4;
+  @apply h-4 w-4;
 }
 .md .icon {
-	@apply w-5 h-5;
+  @apply h-5 w-5;
 }
 .lg .icon {
-	@apply w-6 h-6;
+  @apply h-6 w-6;
 }
 .primary .icon {
-	@apply fill-primary;
+  @apply fill-primary;
 }
 .secondary .icon {
-	@apply fill-accent;
+  @apply fill-accent;
 }
 .tertiary .icon {
-	@apply fill-accent;
+  @apply fill-accent;
 }
 .bg-info {
-	color: var(--color-white) !important;
+  color: var(--color-white) !important;
 }
 </style>

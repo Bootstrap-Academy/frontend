@@ -21,5 +21,9 @@ export class Matching {
 }
 
 export class MatchingForSections {
-  constructor(public sectionId: string = '', public lectureId: string = '', public matching: Matching = new Matching()) {}
+  constructor(
+    public sectionId: string = "",
+    public lectureId: string = "",
+    public matching: Matching = new Matching()
+  ) {}
 }

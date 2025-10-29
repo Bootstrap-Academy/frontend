@@ -1,10 +1,10 @@
 <template>
   <article
-    class="style-card bg-secondary w-full max-w-3xl relative overflow-y-scroll max-h-full z-[9999]"
+    class="relative z-[9999] max-h-full w-full max-w-3xl overflow-y-scroll bg-secondary style-card"
   >
-    <div class="card grid gap-x-4 md:gap-x-6 grid-cols-[auto_1fr]">
+    <div class="card grid grid-cols-[auto_1fr] gap-x-4 md:gap-x-6">
       <component
-        class="h-10 w-10 row-span-2 md:row-span-3"
+        class="row-span-2 h-10 w-10 md:row-span-3"
         :class="[theme.fill]"
         :is="theme.icon"
       ></component>
@@ -13,7 +13,7 @@
         {{ t(heading) }}
       </h6>
 
-      <p class="text-body-1 text-body font-body m-0 mt-box">
+      <p class="text-body-1 m-0 text-body font-body mt-box">
         {{ t(body) }}
       </p>
 
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="card flex flex-wrap gap-card justify-end bg-[#1c3250]">
+    <div class="card flex flex-wrap justify-end bg-[#1c3250] gap-card">
       <Btn
         v-if="!!secondaryBtn.label"
         :bgColor="theme.bg"

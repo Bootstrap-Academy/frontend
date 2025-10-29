@@ -3,7 +3,8 @@ export const useMyMatchings = () => useState("myMatchings", () => []);
 export const useMatchings = () => useState<Matching[]>("matchings", () => []);
 export const useMatchingsInLecture = () => useState<Matching[]>("matchingsInLecture", () => []);
 export const useMatching = () => useState<Matching>("matching", (): Matching => new Matching());
-export const useMatchingsForLectures = () => useState<MatchingForSections[]>("matchingForLectures", (): MatchingForSections[] => [] )
+export const useMatchingsForLectures = () =>
+  useState<MatchingForSections[]>("matchingForLectures", (): MatchingForSections[] => []);
 export const useMatchingsInCourse = () => useState<Matching[]>("matchingsInCourse", () => []);
 
 export async function createMatching(body: any, task_id: any) {
@@ -147,16 +148,20 @@ export async function solveMatching(task_id: any, subTask_id: any, body: any) {
 export async function getMatchingsInLecture(lecture: string) {
   const matchings = useMatchings();
   const matchingsInLecture = useMatchingsInLecture();
-  matchingsInLecture.value.splice(0)
+  matchingsInLecture.value.splice(0);
   const response: Matching[] = await GET(`/challenges/tasks/${lecture}/matchings`);
   if (response.length) {
     matchings.value.push(...response);
-    matchingsInLecture.value = response
-    return response
+    matchingsInLecture.value = response;
+    return response;
   }
 }
 
-export async function getMatchingsInCourse(courseId: any, section_id: any = "", lecture_id: any = "") {
+export async function getMatchingsInCourse(
+  courseId: any,
+  section_id: any = "",
+  lecture_id: any = ""
+) {
   try {
     const matchingsInCourse = useMatchingsInCourse();
     if (!!!section_id && !!!lecture_id) {
@@ -164,7 +169,9 @@ export async function getMatchingsInCourse(courseId: any, section_id: any = "", 
       matchingsInCourse.value = res ?? [];
       return [res, null];
     } else {
-      const res = await GET(`/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`);
+      const res = await GET(
+        `/challenges/courses/${courseId}/tasks?lecture_id=${lecture_id}&section_id=${section_id}`
+      );
       matchingsInCourse.value = res ?? [];
       return [res, null];
     }

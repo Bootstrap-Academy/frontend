@@ -15,36 +15,36 @@
 ✅ Handle empty state
 -->
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="dialog && dialog.type" :dialog="dialog" />
-		</Transition>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="dialog && dialog.type" :dialog="dialog" />
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  layout: 'inner',
-  middleware: ['auth'],
+  layout: "inner",
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'MFA Disabled',
+    title: "MFA Disabled",
   },
   setup() {
     const router = useRouter();
 
     const dialog = <any>reactive({
-      type: 'warning',
-      heading: 'Headings.DisabledMFAViaRecoveryCode',
-      body: 'Body.DisabledMFAViaRecoveryCode',
+      type: "warning",
+      heading: "Headings.DisabledMFAViaRecoveryCode",
+      body: "Body.DisabledMFAViaRecoveryCode",
       primaryBtn: {
-        label: 'Buttons.Re-EnableMFA',
+        label: "Buttons.Re-EnableMFA",
         onclick: () => {
-          router.push('/account/mfa/initialize');
+          router.push("/account/mfa/initialize");
         },
       },
       secondaryBtn: null,

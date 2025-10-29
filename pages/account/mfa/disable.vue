@@ -20,47 +20,47 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="isSuccess" :dialog="dialog" />
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="isSuccess" :dialog="dialog" />
 
-			<section class="container-form" v-else>
-				<SectionTitle
-					center
-					heading="Headings.DisableMFA"
-					body="Body.EnableMFACode"
-					size="sm"
-					class="mb-card"
-				/>
-				<FormDisableMFA @isSuccess="isSuccess = $event" />
-			</section>
-		</Transition>
-	</section>
+      <section class="container-form" v-else>
+        <SectionTitle
+          center
+          heading="Headings.DisableMFA"
+          body="Body.EnableMFACode"
+          size="sm"
+          class="mb-card"
+        />
+        <FormDisableMFA @isSuccess="isSuccess = $event" />
+      </section>
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  layout: 'inner',
-  middleware: ['auth'],
+  layout: "inner",
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Disable MFA',
+    title: "Disable MFA",
   },
   setup() {
     const router = useRouter();
 
     const dialog = reactive({
-      type: 'success',
-      heading: 'Headings.DisableMFA',
-      body: 'Success.DisabledMFA',
+      type: "success",
+      heading: "Headings.DisableMFA",
+      body: "Success.DisabledMFA",
       primaryBtn: {
-        label: 'Buttons.Okay',
+        label: "Buttons.Okay",
         onclick: () => {
-          router.push('/auth/login');
+          router.push("/auth/login");
         },
       },
       secondaryBtn: null,

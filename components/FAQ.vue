@@ -1,49 +1,49 @@
 <template>
-	<section
-		@click="onclickToggleBoxBody"
-		class="border-b-2 border-tertiary overflow-hidden py-3 md:py-6 cursor-pointer"
-	>
-		<h3 class="flex justify-between text-heading-4">
-			{{ t(heading) }}
-			<ChevronDownIcon
-				class="transition duration-500 ease-out origin-center h-5 w-5 flex-shrink-0"
-				:class="{ 'rotate-180 text-accent': expand }"
-			/>
-		</h3>
+  <section
+    @click="onclickToggleBoxBody"
+    class="cursor-pointer overflow-hidden border-b-2 border-tertiary py-3 md:py-6"
+  >
+    <h3 class="text-heading-4 flex justify-between">
+      {{ t(heading) }}
+      <ChevronDownIcon
+        class="h-5 w-5 flex-shrink-0 origin-center transition duration-500 ease-out"
+        :class="{ 'rotate-180 text-accent': expand }"
+      />
+    </h3>
 
-		<article
-			ref="article"
-			:style="{ maxHeight: max_height }"
-			class="transition-all duration-500 ease-out overflow-hidden"
-		>
-			<p class="mt-2 text-body-1 font-body text-body">
-				{{ t(body) }}
-				<NuxtLink
-					v-if="link && link.to && link.text"
-					:to="link.to"
-					class="hover:text-white border-b-2 border-accent lowercase inline-block"
-				>
-					{{ t(link.text) }}
-				</NuxtLink>
-			</p>
-		</article>
-	</section>
+    <article
+      ref="article"
+      :style="{ maxHeight: max_height }"
+      class="overflow-hidden transition-all duration-500 ease-out"
+    >
+      <p class="text-body-1 mt-2 text-body font-body">
+        {{ t(body) }}
+        <NuxtLink
+          v-if="link && link.to && link.text"
+          :to="link.to"
+          class="inline-block border-b-2 border-accent lowercase hover:text-white"
+        >
+          {{ t(link.text) }}
+        </NuxtLink>
+      </p>
+    </article>
+  </section>
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import { ChevronDownIcon } from '@heroicons/vue/24/solid';
-import { useI18n } from 'vue-i18n';
+import { defineComponent, ref } from "vue";
+import { ChevronDownIcon } from "@heroicons/vue/24/solid";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   components: { ChevronDownIcon },
   props: {
     expand: { type: Boolean, default: false },
-    heading: { type: String, default: '' },
-    body: { type: String, default: '' },
+    heading: { type: String, default: "" },
+    body: { type: String, default: "" },
     link: { default: null },
   },
-  emits: ['expand'],
+  emits: ["expand"],
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -54,7 +54,7 @@ export default defineComponent({
     });
 
     function onclickToggleBoxBody() {
-      emit('expand', !props.expand);
+      emit("expand", !props.expand);
     }
     return { onclickToggleBoxBody, article, max_height, t };
   },

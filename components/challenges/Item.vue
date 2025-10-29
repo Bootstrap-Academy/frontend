@@ -2,13 +2,13 @@
   <section
     :id="activeChallenge == data.id ? activeChallenge : 'none'"
     ref="item"
-    class="box px-4 xl:px-5 style-box bg-secondary"
+    class="box bg-secondary px-4 style-box xl:px-5"
   >
     <header
-      class="grid gap-card grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
+      class="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-card"
       @click="toggleShowChallengeContent"
     >
-      <h2 class="!m-0 text-heading-3">{{ t(data?.title ?? "") }}</h2>
+      <h2 class="text-heading-3 !m-0">{{ t(data?.title ?? "") }}</h2>
 
       <ChallengesItemProgress :data="data" />
 
@@ -17,10 +17,7 @@
       </p> -->
     </header>
 
-    <div
-      v-show="showChallengeContent"
-      class="grid gap-card grid-cols-1 pt-card-sm"
-    >
+    <div v-show="showChallengeContent" class="grid grid-cols-1 pt-card-sm gap-card">
       <div class="flex flex-wrap gap-card">
         <Btn @click="propId = challenge" class="w-fit" :icon="CodeBracketIcon">
           {{ t("Buttons.Solve") }}
@@ -50,11 +47,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  CodeBracketIcon,
-  TrophyIcon,
-  TrashIcon,
-} from "@heroicons/vue/24/outline";
+import { CodeBracketIcon, TrophyIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import type { PropType } from "vue";
 import { PencilIcon } from "@heroicons/vue/24/solid";
 
@@ -100,12 +93,12 @@ export default defineComponent({
         path: route.path,
         query: showChallengeContent.value
           ? {
-            ...baseQuery.value,
-          }
+              ...baseQuery.value,
+            }
           : {
-            ...baseQuery.value,
-            challenge: challenge.value,
-          },
+              ...baseQuery.value,
+              challenge: challenge.value,
+            },
       });
     }
 

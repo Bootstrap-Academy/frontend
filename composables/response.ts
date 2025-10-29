@@ -1,6 +1,6 @@
-import { useState } from '#app';
+import { useState } from "#app";
 
-export const useLoading = () => useState('loading', () => false);
+export const useLoading = () => useState("loading", () => false);
 
 export function setLoading(status: boolean) {
   const loading = useLoading();
@@ -8,19 +8,19 @@ export function setLoading(status: boolean) {
 }
 
 export const useSnackbar = () =>
-  useState('snackbar', () => {
+  useState("snackbar", () => {
     return {
       show: false,
-      type: 'info',
-      heading: '',
-      body: '',
+      type: "info",
+      heading: "",
+      body: "",
     };
   });
 
 export function openSnackbar(
   type: string,
   heading: string,
-  body: string = '',
+  body: string = "",
   noTimeout?: boolean
 ) {
   const snackbar = useSnackbar();
@@ -42,14 +42,14 @@ export function closeSnackbar() {
   const snackbar = useSnackbar();
   snackbar.value = {
     show: false,
-    type: 'info',
-    heading: '',
-    body: '',
+    type: "info",
+    heading: "",
+    body: "",
   };
 }
 
 export const useDialog = () =>
-  useState('dialog', (): any => {
+  useState("dialog", (): any => {
     return null;
   });
 

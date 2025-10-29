@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="pr-7 text-end mt-2">
+    <p class="mt-2 pr-7 text-end">
       {{ t("Headings.Solved") }}
       {{ solvedQuizzes }}
       /
@@ -23,8 +23,8 @@
 import { useI18n } from "vue-i18n";
 import type { Matching, MatchingForSections } from "~/types/matching";
 const props = defineProps<{
-  matchings: MatchingForSections[]
-}>()
+  matchings: MatchingForSections[];
+}>();
 
 const emits = defineEmits(["update:modelValue"]);
 const { t } = useI18n();

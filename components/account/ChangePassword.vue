@@ -1,28 +1,28 @@
 <template>
-  <article class="bg-secondary card style-card flex flex-col items-center justify-center">
-    <KeyIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
+  <article class="card flex flex-col items-center justify-center bg-secondary style-card">
+    <KeyIcon class="mb-4 h-10 w-10 max-w-xl text-accent" />
 
-    <h2 class="text-heading-2">{{ t('Headings.ResetPassword') }}</h2>
+    <h2 class="text-heading-2">{{ t("Headings.ResetPassword") }}</h2>
 
-    <div class="flex items-center space-x-4 mb-8 mt-2">
-      <EnvelopeOpenIcon class="h-8 w-8 text-accent max-w-xl" />
+    <div class="mb-8 mt-2 flex items-center space-x-4">
+      <EnvelopeOpenIcon class="h-8 w-8 max-w-xl text-accent" />
       <p class="text-center">
-        {{ t('Body.GetCodeViaEmail') }}
+        {{ t("Body.GetCodeViaEmail") }}
       </p>
     </div>
 
     <InputBtn :loading="loading" @click="onclick">
-      {{ t('Buttons.ResetPassword') }}
+      {{ t("Buttons.ResetPassword") }}
     </InputBtn>
   </article>
 </template>
 
 <script lang="ts">
-import { EnvelopeOpenIcon } from '@heroicons/vue/24/outline';
-import { KeyIcon } from '@heroicons/vue/24/solid';
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useReCaptcha } from 'vue-recaptcha-v3';
+import { EnvelopeOpenIcon } from "@heroicons/vue/24/outline";
+import { KeyIcon } from "@heroicons/vue/24/solid";
+import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
+import { useReCaptcha } from "vue-recaptcha-v3";
 
 export default defineComponent({
   components: {
@@ -37,21 +37,21 @@ export default defineComponent({
     const loading = ref(false);
 
     async function onclick() {
-      let email = user?.value?.email ?? '';
+      let email = user?.value?.email ?? "";
       if (!!!email) {
         openDialog(
-          'warning',
-          'Headings.MissingEmail',
-          'Body.MissingEmail',
+          "warning",
+          "Headings.MissingEmail",
+          "Body.MissingEmail",
           false,
           {
-            label: 'Buttons.AddEmail',
+            label: "Buttons.AddEmail",
             onclick: () => {
-              router.push('/profile/edit');
+              router.push("/profile/edit");
             },
           },
           {
-            label: 'Buttons.Cancel',
+            label: "Buttons.Cancel",
             onclick: () => {},
           }
         );
@@ -69,20 +69,20 @@ export default defineComponent({
 
       if (success) {
         openDialog(
-          'success',
-          'Success.RequestSubmitted',
-          'Success.ResetPasswordRequestSent',
+          "success",
+          "Success.RequestSubmitted",
+          "Success.ResetPasswordRequestSent",
           true,
           {
-            label: 'Buttons.GoToResetPassword',
+            label: "Buttons.GoToResetPassword",
             onclick: () => {
-              router.push('/auth/reset-password');
+              router.push("/auth/reset-password");
             },
           },
           null
         );
       } else {
-        openSnackbar('error', error?.detail ?? '');
+        openSnackbar("error", error?.detail ?? "");
       }
     }
 
@@ -91,7 +91,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha('login');
+        const token = await executeRecaptcha("login");
         return token;
       } catch (error) {
         return null;

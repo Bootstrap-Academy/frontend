@@ -1,19 +1,17 @@
 <template>
-  <section class="container-fluid py-4 flex items-center justify-between">
+  <section class="container-fluid flex items-center justify-between py-4">
     <!-- START -->
-    <NuxtLink :to="authorized ? '/dashboard' : '/'" class="hidden lg:flex gap-card-sm items-center">
+    <NuxtLink :to="authorized ? '/dashboard' : '/'" class="hidden items-center gap-card-sm lg:flex">
       <img
         src="/images/logo-text.png"
         :alt="t('AltAttributes.BootstrapAcademyLogo')"
-        class="object-contain lg:w-28 xl:w-36 cursor-pointer"
+        class="cursor-pointer object-contain lg:w-28 xl:w-36"
       />
     </NuxtLink>
     <NavbarDrawer class="block lg:hidden" :links="links" :authorized="authorized" />
 
     <!-- CENTER -->
-    <nav
-      class="w-fit hidden lg:flex flex-wrap justify-center place-self-center lg:gap-5 xl:gap-10"
-    >
+    <nav class="hidden w-fit flex-wrap justify-center place-self-center lg:flex lg:gap-5 xl:gap-10">
       <NuxtLink
         v-for="{ label, pathname } of links"
         :key="label"
@@ -51,9 +49,9 @@ export default {
 
 <style scoped>
 .link {
-  @apply transition-basic h-fit px-2.5 py-1.5 rounded hover:bg-tertiary border-b-2 border-primary uppercase lg:text-xs xl:text-sm tracking-widest text-body hover:text-heading;
+  @apply h-fit rounded border-b-2 border-primary px-2.5 py-1.5 uppercase tracking-widest text-body transition-basic hover:bg-tertiary hover:text-heading lg:text-xs xl:text-sm;
 }
 .link.active {
-  @apply text-body border-accent rounded-b-none;
+  @apply rounded-b-none border-accent text-body;
 }
 </style>

@@ -1,7 +1,15 @@
 <template>
-  <article class="flex flex-col gap-card w-full h-fit">
-    <Btn v-for="{ level, label, bgColor, borderColor, disabled, handleSelectStepper } of steppers" full :key="level"
-      :bgColor="bgColor" :borderColor="borderColor" @click="handleSelectStepper" :secondary="_activeStepper !== level" :disabled="disabled">
+  <article class="flex h-fit w-full flex-col gap-card">
+    <Btn
+      v-for="{ level, label, bgColor, borderColor, disabled, handleSelectStepper } of steppers"
+      full
+      :key="level"
+      :bgColor="bgColor"
+      :borderColor="borderColor"
+      @click="handleSelectStepper"
+      :secondary="_activeStepper !== level"
+      :disabled="disabled"
+    >
       {{ t(label) }}
     </Btn>
   </article>
@@ -39,7 +47,7 @@ export default defineComponent({
         bgColor: "bg-accent",
         borderColor: "border-accent",
         disabled: !props.courses || props.courses.length === 0,
-        handleSelectStepper: () => _activeStepper.value = 0,
+        handleSelectStepper: () => (_activeStepper.value = 0),
       },
       {
         level: 1,
@@ -47,7 +55,7 @@ export default defineComponent({
         bgColor: "bg-info",
         borderColor: "border-info",
         disabled: !props.coachings || props.coachings.length === 0,
-        handleSelectStepper: () => _activeStepper.value = 1,
+        handleSelectStepper: () => (_activeStepper.value = 1),
       },
       {
         level: 2,
@@ -55,7 +63,7 @@ export default defineComponent({
         bgColor: "bg-warning",
         borderColor: "border-warning",
         disabled: !props.webinars || props.webinars.length === 0,
-        handleSelectStepper: () => _activeStepper.value = 2,
+        handleSelectStepper: () => (_activeStepper.value = 2),
       },
       {
         level: 3,
@@ -71,7 +79,8 @@ export default defineComponent({
         bgColor: "bg-success",
         borderColor: "border-success",
         disabled: !props.matchings || props.matchings.length === 0,
-        handleSelectStepper: () => openMatchings(matchings.value[0]?.id, matchings.value[0]?.task_id),
+        handleSelectStepper: () =>
+          openMatchings(matchings.value[0]?.id, matchings.value[0]?.task_id),
       },
     ]);
 

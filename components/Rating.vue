@@ -1,38 +1,31 @@
 <template>
-	<article v-if="stars" class="flex gap-2">
-		<StarIcon
-			v-for="n in 5"
-			:key="n"
-			class="flex-shrink-0"
-			:class="[
-				sm ? 'w-3 h-3 md:w-4 md:h-4' : 'w-5 h-5 md:w-6 md:h-6',
-				n <= rating ? theme.text : 'text-subheading',
-			]"
-		/>
-	</article>
-	<article
-		v-else
-		class="flex items-center w-fit h-fit"
-		:class="[
-			theme.bgLight,
-			theme.text,
-			sm ? 'px-1.5  rounded' : 'p-2.5 rounded-md',
-		]"
-	>
-		<StarIcon
-			class="flex-shrink-0"
-			:class="[
-				theme.text,
-				sm ? 'w-3 h-3 md:w-4 md:h-4' : 'w-5 h-5 md:w-6 md:h-6',
-			]"
-		/>
-		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-if="sm">
-			{{ roundOffTo(rating, 1) }}
-		</h6>
-		<h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-else>
-			{{ t("Headings.Stars", { n: rating }, rating) }}
-		</h6>
-	</article>
+  <article v-if="stars" class="flex gap-2">
+    <StarIcon
+      v-for="n in 5"
+      :key="n"
+      class="flex-shrink-0"
+      :class="[
+        sm ? 'h-3 w-3 md:h-4 md:w-4' : 'h-5 w-5 md:h-6 md:w-6',
+        n <= rating ? theme.text : 'text-subheading',
+      ]"
+    />
+  </article>
+  <article
+    v-else
+    class="flex h-fit w-fit items-center"
+    :class="[theme.bgLight, theme.text, sm ? 'rounded px-1.5' : 'rounded-md p-2.5']"
+  >
+    <StarIcon
+      class="flex-shrink-0"
+      :class="[theme.text, sm ? 'h-3 w-3 md:h-4 md:w-4' : 'h-5 w-5 md:h-6 md:w-6']"
+    />
+    <h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-if="sm">
+      {{ roundOffTo(rating, 1) }}
+    </h6>
+    <h6 class="text-heading-4 ml-2 pr-1 md:ml-2.5" v-else>
+      {{ t("Headings.Stars", { n: rating }, rating) }}
+    </h6>
+  </article>
 </template>
 
 <script lang="ts" setup>
@@ -49,11 +42,11 @@ const props = withDefaults(defineProps<ComponentProps>(), {
   sm: false,
   stars: false,
 });
-	interface ComponentProps {
-		rating?: number;
-		sm?: boolean;
-		stars?: boolean;
-	}
+interface ComponentProps {
+  rating?: number;
+  sm?: boolean;
+  stars?: boolean;
+}
 
 const { t } = useI18n();
 

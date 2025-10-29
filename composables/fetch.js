@@ -113,12 +113,9 @@ const onResponseError = async (context) => {
     // console.log("error", details);
   }
 
-  const detailsLower =
-    typeof details === "string" ? details.toLocaleLowerCase() : "";
+  const detailsLower = typeof details === "string" ? details.toLocaleLowerCase() : "";
   const errorLower =
-    typeof response?._data?.error === "string"
-      ? response._data.error.toLocaleLowerCase()
-      : "";
+    typeof response?._data?.error === "string" ? response._data.error.toLocaleLowerCase() : "";
 
   if (
     response?.status === 401 &&
@@ -131,10 +128,7 @@ const onResponseError = async (context) => {
     return;
   }
 
-  if (
-    detailsLower.includes("invalid token") ||
-    detailsLower.includes("invalid refresh token")
-  ) {
+  if (detailsLower.includes("invalid token") || detailsLower.includes("invalid refresh token")) {
     logoutAfterInvalidToken();
   }
 

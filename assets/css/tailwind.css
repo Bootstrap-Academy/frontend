@@ -36,9 +36,9 @@
   font-weight: 200;
   font-display: swap;
   src: url(/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf) format("truetype");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -47,9 +47,9 @@
   font-weight: 400;
   font-display: swap;
   src: url(/fonts/Space_Mono/SpaceMono-Regular.ttf) format("truetype");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-    U+FEFF, U+FFFD;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
+    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ======================================================= Transitions */
@@ -223,14 +223,14 @@
   h4,
   h5,
   h6 {
-    @apply text-heading font-heading font-medium;
+    @apply font-medium text-heading font-heading;
   }
 
   p,
   li,
   ul,
   ol {
-    @apply text-body font-body text-body-1 font-light leading-[1.8] sm:leading-[1.8] md:leading-[1.8] lg:leading-[1.8] xl:leading-[1.8];
+    @apply text-body-1 font-light leading-[1.8] text-body font-body sm:leading-[1.8] md:leading-[1.8] lg:leading-[1.8] xl:leading-[1.8];
   }
 
   hr {
@@ -238,7 +238,7 @@
   }
 
   a {
-    @apply transition-basic font-body text-base text-body hover:text-heading;
+    @apply text-base text-body font-body transition-basic hover:text-heading;
   }
 
   ::selection {
@@ -311,7 +311,7 @@
   }
 
   .markdown li {
-    @apply list-disc list-item list-inside pl-4;
+    @apply list-item list-inside list-disc pl-4;
   }
 
   .markdown th,
@@ -320,15 +320,15 @@
   }
 
   .markdown pre {
-    @apply py-1 px-2 rounded w-fit;
+    @apply w-fit rounded px-2 py-1;
   }
 
   .markdown code {
-    @apply py-1 px-2 rounded w-fit bg-[#0d1117] text-white;
+    @apply w-fit rounded bg-[#0d1117] px-2 py-1 text-white;
   }
 
   .markdown pre > code {
-    @apply py-0 px-0 rounded-none w-fit bg-transparent;
+    @apply w-fit rounded-none bg-transparent px-0 py-0;
   }
 
   .markdown strong {
@@ -336,10 +336,10 @@
   }
 
   .form-submitting * {
-    @apply opacity-70 pointer-events-none;
+    @apply pointer-events-none opacity-70;
   }
   .underline-link {
-    @apply pb-2 relative cursor-pointer;
+    @apply relative cursor-pointer pb-2;
   }
   .underline-link::after {
     content: "";
@@ -429,7 +429,7 @@
     @apply w-[99%] md:w-[60%];
   }
   .modal-width-lg {
-    @apply w-[99%]  md:w-[90%];
+    @apply w-[99%] md:w-[90%];
   }
   [data-tooltip] {
     --triangle-width: 15px;
@@ -463,11 +463,9 @@
   }
 
   [data-tooltip]:hover::after {
-    @apply box style-box bg-info text-white font-body absolute text-xs leading-[1.6];
+    @apply box absolute bg-info text-xs leading-[1.6] text-white font-body style-box;
     content: attr(data-tooltip); /* magic! */
-    left: calc(
-      100% + var(--spacing) + var(--triangle-width) + var(--triangle-width)
-    );
+    left: calc(100% + var(--spacing) + var(--triangle-width) + var(--triangle-width));
     top: -50%;
     z-index: 98;
     width: var(--tooltip-width);

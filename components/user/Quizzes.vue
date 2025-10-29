@@ -1,11 +1,6 @@
 <template>
   <section>
-    <SectionTitle
-      sub
-      :heading="header.heading"
-      :body="header.body"
-      :link="header.link"
-    />
+    <SectionTitle sub :heading="header.heading" :body="header.body" :link="header.link" />
 
     <div class="grid grid-cols-1 gap-card-sm">
       <template v-if="loading">
@@ -13,11 +8,7 @@
       </template>
 
       <template v-else-if="quizzes && quizzes.length > 0">
-        <NuxtLink
-          v-for="(quiz, i) of quizzes"
-          :key="i"
-          :to="`/quizzes/edit-${quiz.id}`"
-        >
+        <NuxtLink v-for="(quiz, i) of quizzes" :key="i" :to="`/quizzes/edit-${quiz.id}`">
           <QuizCard :data="quiz" />
         </NuxtLink>
       </template>

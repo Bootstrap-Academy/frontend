@@ -4,7 +4,7 @@ export async function requestNewsletterRegistration() {
 
   try {
     if (!!!user_id) {
-      throw { data: 'Invalid User Id' };
+      throw { data: "Invalid User Id" };
     }
 
     const response = await PATCH(`/auth/users/${user_id}`, <any>{
@@ -12,7 +12,7 @@ export async function requestNewsletterRegistration() {
     });
 
     const user = <any>useUser();
-    const cookie_user = useCookie('user');
+    const cookie_user = useCookie("user");
     user.value = response ?? null;
     cookie_user.value = user.value;
 
@@ -28,13 +28,13 @@ export async function registerForNewsletter(body: any) {
 
   try {
     if (!!!user_id) {
-      throw { data: 'Invalid User Id' };
+      throw { data: "Invalid User Id" };
     }
 
     const response = await PUT(`/auth/users/${user_id}/newsletter`, body);
 
     const user = <any>useUser();
-    const cookie_user = useCookie('user');
+    const cookie_user = useCookie("user");
     user.value = response ?? null;
     cookie_user.value = user.value;
 
@@ -50,7 +50,7 @@ export async function unregisterFromNewsletter() {
 
   try {
     if (!!!user_id) {
-      throw { data: 'Invalid User Id' };
+      throw { data: "Invalid User Id" };
     }
 
     const response = await PATCH(`/auth/users/${user_id}`, <any>{
@@ -58,7 +58,7 @@ export async function unregisterFromNewsletter() {
     });
 
     const user = <any>useUser();
-    const cookie_user = useCookie('user');
+    const cookie_user = useCookie("user");
     user.value = response ?? null;
     cookie_user.value = user.value;
 

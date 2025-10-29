@@ -3,9 +3,7 @@ export async function createBookmark(
   subSkillId: string | null = null
 ): Promise<void> {
   try {
-    var urlPath = `/skills/bookmark/${rootSkillId}/${
-      subSkillId != null ? subSkillId : ""
-    }`;
+    var urlPath = `/skills/bookmark/${rootSkillId}/${subSkillId != null ? subSkillId : ""}`;
 
     const response = await POST(urlPath);
 
@@ -23,9 +21,7 @@ export async function deleteBookmark(
   subSkillId: string | null = null
 ): Promise<void> {
   try {
-    var urlPath = `/skills/bookmark/${rootSkillId}/${
-      subSkillId != null ? subSkillId : ""
-    }`;
+    var urlPath = `/skills/bookmark/${rootSkillId}/${subSkillId != null ? subSkillId : ""}`;
 
     const response = await DELETE(urlPath);
 

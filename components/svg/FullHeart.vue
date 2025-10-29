@@ -1,7 +1,7 @@
 <template>
   <button>
     <svg
-      class="w-full h-full"
+      class="h-full w-full"
       :class="!!color ? `fill-${color}` : 'fill-[#FF0000]'"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"

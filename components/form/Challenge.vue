@@ -29,14 +29,10 @@
       :rules="form.description.rules"
     />
 
-    <InputSelect
-      v-if="sortedSubskill?.length"
-      v-model="selectedSkill"
-      :options="sortedSubskill"
-    />
+    <InputSelect v-if="sortedSubskill?.length" v-model="selectedSkill" :options="sortedSubskill" />
 
     <div
-      class="flex justify-between gap-3 items-center my-1"
+      class="my-1 flex items-center justify-between gap-3"
       v-for="(skill, i) of form.skills.value"
       :key="i"
     >
@@ -45,11 +41,11 @@
       </li>
       <XMarkIcon
         @click="form.skills.value.splice(i, 1)"
-        class="h-6 w-6 text-subheading hover:text-error cursor-pointer"
+        class="h-6 w-6 cursor-pointer text-subheading hover:text-error"
       />
     </div>
 
-    <article class="flex justify-end items-center gap-x-3 mt-5 flex-wrap">
+    <article class="mt-5 flex flex-wrap items-center justify-end gap-x-3">
       <InputBtn
         secondary
         @click="fnDeleteChallenge()"
@@ -178,12 +174,7 @@ export default {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             console.log(key);
 
             isValid = false;
@@ -196,8 +187,7 @@ export default {
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -226,15 +216,11 @@ export default {
 
     async function fnEditChallenge() {
       form.submitting = true;
-      const [success, error] = await updateChallenge(
-        props?.data.category,
-        props.data.id,
-        {
-          title: form.title.value,
-          description: form.description.value,
-          skills: form.skills.value,
-        }
-      );
+      const [success, error] = await updateChallenge(props?.data.category, props.data.id, {
+        title: form.title.value,
+        description: form.description.value,
+        skills: form.skills.value,
+      });
       form.submitting = false;
       success ? editSuccessHandler(success) : errorHandler(error);
     }
@@ -263,10 +249,7 @@ export default {
         {
           label: "Buttons.DeleteChallenge",
           onclick: async () => {
-            const [success, error] = await deleteChallenge(
-              props.data?.category,
-              props.data?.id
-            );
+            const [success, error] = await deleteChallenge(props.data?.category, props.data?.id);
             if (!!success) openSnackbar("success", "Success.DeletedChallenge");
             router.push(`/challenges/all?category=${form.category.value}`); // await getChallengesByCategory(baseQuery.value.category);
           },
@@ -286,8 +269,7 @@ export default {
         form.skills.value = props?.data?.skills ?? "";
 
         form.title.valid = props?.data.title.trim() != "" ? true : false;
-        form.description.valid =
-          props?.data.description.trim() != "" ? true : false;
+        form.description.valid = props?.data.description.trim() != "" ? true : false;
         form.skills.valid = props?.data.skills.length > 0 ? true : false;
         form.category.valid = true;
       }

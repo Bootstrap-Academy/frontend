@@ -7,9 +7,11 @@
         <canvas class="confetti" style="width: 100vw; height: 100vh" id="canvas"></canvas>
         <!--End DEMO HTML -->
         <transition name="dontShowAnimationBox">
-          <section v-if="boxInfo"
-            class="absolute bg-white top-[20%] rounded-lg sm:left-[5%] p-5 flex gap-4 items-center mx-3">
-            <h6 class="my-4 text-accent font-bold">
+          <section
+            v-if="boxInfo"
+            class="absolute top-[20%] mx-3 flex items-center gap-4 rounded-lg bg-white p-5 sm:left-[5%]"
+          >
+            <h6 class="my-4 font-bold text-accent">
               {{ t("Headings.DontShowCongratsAnimationAgain") }}
             </h6>
 
@@ -18,12 +20,14 @@
         </transition>
 
         <transition name="infoBox">
-          <section v-if="boxInfo"
-            class="absolute bg-white top-[70%] rounded-lg sm:left-1/2 transform sm:-translate-x-1/2 -translate-y-1/2 p-5 mx-3">
-            <h6 class="my-2 text-accent text-lg font-bold">
+          <section
+            v-if="boxInfo"
+            class="absolute top-[70%] mx-3 -translate-y-1/2 transform rounded-lg bg-white p-5 sm:left-1/2 sm:-translate-x-1/2"
+          >
+            <h6 class="my-2 text-lg font-bold text-accent">
               {{ t("Headings.CongratsAnimateText") }}
             </h6>
-            <div class="flex justify-end w-full">
+            <div class="flex w-full justify-end">
               <NuxtLink @click="navigateToProfile()">
                 <Btn sm> Go To profile </Btn>
               </NuxtLink>
@@ -32,8 +36,11 @@
         </transition>
 
         <transition name="closeAnimationBox">
-          <section v-if="boxInfo" class="absolute bg-white cursor-pointer top-[5%] rounded-lg right-[5%] p-4"
-            @click="fnHideAnimation()">
+          <section
+            v-if="boxInfo"
+            class="absolute right-[5%] top-[5%] cursor-pointer rounded-lg bg-white p-4"
+            @click="fnHideAnimation()"
+          >
             <XMarkIcon class="h-6 w-6" />
           </section>
         </transition>
@@ -164,12 +171,8 @@ onMounted(() => {
 
       // Apply forces to velocity
       confetto.velocity.x -= confetto.velocity.x * drag;
-      confetto.velocity.y = Math.min(
-        confetto.velocity.y + gravity,
-        terminalVelocity
-      );
-      confetto.velocity.x +=
-        Math.random() > 0.5 ? Math.random() : -Math.random();
+      confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+      confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
 
       // Set position
       confetto.position.x += confetto.velocity.x;
@@ -184,8 +187,7 @@ onMounted(() => {
 
       // Spin confetto by scaling y
       confetto.scale.y = Math.cos(confetto.position.y * 0.1);
-      ctx.fillStyle =
-        confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+      ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
 
       // Draw confetto
       ctx?.fillRect(-width / 2, -height / 2, width, height);

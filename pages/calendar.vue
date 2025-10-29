@@ -21,15 +21,15 @@
 
 <template>
   <main
-    class="relative container-fluid mt-main mb-main grid grid-cols-1fr xl:grid-cols-[1fr_300px] gap-container z-[1]"
+    class="mt-main mb-main grid-cols-1fr container-fluid relative z-[1] grid gap-container xl:grid-cols-[1fr_300px]"
   >
     <Calendar
-      class="xl:sticky xl:top-container xl:self-start"
+      class="xl:sticky xl:self-start xl:top-container"
       :events="events"
       @selected="setSelected($event)"
     />
     <CalendarAside
-      class="xl:sticky xl:top-container xl:self-start"
+      class="xl:sticky xl:self-start xl:top-container"
       :events="events"
       :selected="selected"
     />

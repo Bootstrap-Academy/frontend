@@ -1,23 +1,20 @@
 <template>
   <article>
-    <div class="flex gap-4 relative z-10">
+    <div class="relative z-10 flex gap-4">
       <div class="relative">
         <input
-          class="absolute z-10 opacity-0 cursor-pointer"
-          :class="sm ? ' h-4 w-4' : 'h-6 w-6'"
+          class="absolute z-10 cursor-pointer opacity-0"
+          :class="sm ? 'h-4 w-4' : 'h-6 w-6'"
           type="checkbox"
           v-model="input"
           :id="id ?? label"
         />
 
         <div
-          class="relative tick z-0"
-          :class="sm ? 'h-4 w-4 ring-transparent sm' : 'h-6 w-6 ring-secondary'"
+          class="tick relative z-0"
+          :class="sm ? 'sm h-4 w-4 ring-transparent' : 'h-6 w-6 ring-secondary'"
         >
-          <CheckIcon
-            class="icon"
-            :class="[sm ? ' h-4 w-4 stroke-[3]' : 'h-5 w-5 stroke-[3]']"
-          />
+          <CheckIcon class="icon" :class="[sm ? 'h-4 w-4 stroke-[3]' : 'h-5 w-5 stroke-[3]']" />
         </div>
       </div>
       <label class="flex gap-3 text-body font-body" :for="id ?? label">
@@ -29,7 +26,7 @@
             :to="link?.to ?? '/'"
             blank
             :target="target"
-            class="hover:underline text-accent inline-block h-fit w-fit"
+            class="inline-block h-fit w-fit text-accent hover:underline"
             :class="sm ? 'text-xs' : 'text-base'"
           >
             {{ $t(link?.label ?? "Home") }}.
@@ -39,10 +36,8 @@
     </div>
     <p
       v-if="required"
-      class="transition ease-out duration-500 pt-2 text-xs text-error relative z-0"
-      :class="
-        error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-      "
+      class="relative z-0 pt-2 text-xs text-error transition duration-500 ease-out"
+      :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
       {{ error }}.
     </p>
@@ -93,22 +88,22 @@ export default defineComponent({
 
 <style scoped>
 input[type="checkbox"] + .tick {
-  @apply rounded-sm bg-heading focus:outline-none transition duration-200 flex items-center justify-center ring-4;
+  @apply flex items-center justify-center rounded-sm bg-heading ring-4 transition duration-200 focus:outline-none;
 }
 input[type="checkbox"] + .tick.sm {
   @apply ring-2;
 }
 input[type="checkbox"]:checked + .tick {
-  @apply bg-accent ring-tertiary ring-8;
+  @apply bg-accent ring-8 ring-tertiary;
 }
 input[type="checkbox"]:checked + .tick.sm {
   @apply ring-0;
 }
 
 input[type="checkbox"] + .tick > .icon {
-  @apply text-transparent stroke-transparent;
+  @apply stroke-transparent text-transparent;
 }
 input[type="checkbox"]:checked + .tick > .icon {
-  @apply text-primary stroke-primary;
+  @apply stroke-primary text-primary;
 }
 </style>

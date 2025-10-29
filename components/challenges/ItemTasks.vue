@@ -1,65 +1,56 @@
 <template>
   <article>
     <h4 class="text-heading-3">{{ t("Headings.Tasks") }}</h4>
-    <div class="border border-primary rounded-md overflow-hidden mt-3">
+    <div class="mt-3 overflow-hidden rounded-md border border-primary">
       <table v-if="codingChallenges.length" class="min-w-full leading-normal">
         <tr>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             <!-- {{ t("Headings.Name") }} -->
             No.
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Description") }}
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             <!-- {{ t("Headings.Score") }} -->
             {{ t("Headings.XP") }}
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Submissions") }}
           </th>
         </tr>
 
         <tr v-for="(codingChallenge, i) of codingChallenges" :key="i">
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
-          >
+          <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             <!-- {{ task.name }} -->
             {{ i + 1 }}
           </td>
           <td
-            class="px-5 w-40 h-20 overflow-scroll py-3 border-b border-r border-primary text-body-1 text-body font-body"
+            class="text-body-1 h-20 w-40 overflow-scroll border-b border-r border-primary px-5 py-3 text-body font-body"
           >
-            <div
-              class=""
-              v-html="$md.render(codingChallenge?.description ?? '')"
-            ></div>
+            <div class="" v-html="$md.render(codingChallenge?.description ?? '')"></div>
             <!-- {{ codingChallenge?.description ?? "" }} -->
           </td>
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
-          >
+          <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             <!-- {{ task.score?.current ?? 0 }} / {{ task.score?.total ?? 0 }} -->
             {{ codingChallenge?.xp ?? "" }}
           </td>
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
-          >
+          <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             <!-- {{ task.attempts }} -->
           </td>
         </tr>
       </table>
       <p
         v-if="!codingChallenges.length"
-        class="py-3 text-center border border-accent rounded-lg px-3"
+        class="rounded-lg border border-accent px-3 py-3 text-center"
       >
         {{ t("Headings.NoCodingChallengeFound") }}
       </p>

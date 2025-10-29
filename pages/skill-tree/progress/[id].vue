@@ -16,17 +16,17 @@
 -->
 
 <template>
-	<div></div>
+  <div></div>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  middleware: ['auth'],
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Skill Progress Details - ',
+    title: "Skill Progress Details - ",
   },
   setup() {},
 };

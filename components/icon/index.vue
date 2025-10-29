@@ -1,12 +1,6 @@
 <template>
-  <div
-    class="p-1.5 h-fit w-fit"
-    :class="[rounded ? 'rounded-[50px]' : 'rounded-lg', bgColor]"
-  >
-    <component
-      :class="[sm ? 'w-4 h-4' : 'w-5 h-5', iconColor]"
-      :is="icon"
-    ></component>
+  <div class="h-fit w-fit p-1.5" :class="[rounded ? 'rounded-[50px]' : 'rounded-lg', bgColor]">
+    <component :class="[sm ? 'h-4 w-4' : 'h-5 w-5', iconColor]" :is="icon"></component>
   </div>
 </template>
 

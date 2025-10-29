@@ -32,7 +32,7 @@
 		</div>
 	</article> -->
 
-  <section class="w-full flex flex-wrap gap-card items-center justify-center">
+  <section class="flex w-full flex-wrap items-center justify-center gap-card">
     <!-- <p
       class="rounded-full text-sm py-1 px-3.5 font-bold text-primary flex-shrink-0"
       :style="{ background: progressBar }"
@@ -41,24 +41,18 @@
       {{ solvedTasks }} / {{ tasks.length }}
     </p> -->
 
-    <article
-      class="flex gap-2 items-center flex-shrink-0"
-      v-if="correctTasks > 0"
-    >
-      <CheckIcon class="w-5 h-5 text-success" />
+    <article class="flex flex-shrink-0 items-center gap-2" v-if="correctTasks > 0">
+      <CheckIcon class="h-5 w-5 text-success" />
       <p class="text-heading">{{ correctTasks }}</p>
     </article>
 
-    <article
-      class="flex gap-2 items-center flex-shrink-0"
-      v-if="incorrectTasks > 0"
-    >
-      <XMarkIcon class="w-5 h-5 text-error" />
+    <article class="flex flex-shrink-0 items-center gap-2" v-if="incorrectTasks > 0">
+      <XMarkIcon class="h-5 w-5 text-error" />
       <p class="text-heading">{{ incorrectTasks }}</p>
     </article>
 
     <p
-      class="py-1.5 px-3 border border-dashed border-warning text-warning text-sm flex-shrink-0 bg-warning-light rounded-sm"
+      class="flex-shrink-0 rounded-sm border border-dashed border-warning px-3 py-1.5 text-sm text-warning bg-warning-light"
       v-if="solvedOnFirstTryTasks > 0"
     >
       {{ t("Headings.SolvedFirst") }}: {{ solvedOnFirstTryTasks }}
@@ -125,6 +119,6 @@ export default defineComponent({
 
 <style scoped>
 .progress-circle {
-  @apply text-base font-heading w-8 h-8 grid place-items-center rounded-full;
+  @apply grid h-8 w-8 place-items-center rounded-full text-base font-heading;
 }
 </style>

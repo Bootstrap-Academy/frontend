@@ -1,9 +1,9 @@
 <template>
   <div>
-    <p class="text-xl text-center text-accent mb-3">
+    <p class="mb-3 text-center text-xl text-accent">
       {{ t("Headings.PremiumEndsIn") }}
     </p>
-    <P class="text-6xl text-white text-center">
+    <P class="text-center text-6xl text-white">
       {{ countdown }}
     </P>
   </div>
@@ -33,9 +33,7 @@ var x = setInterval(function () {
 
   // Time calculations for days, hours, minutes and seconds
   days.value = Math.floor(distance / (1000 * 60 * 60 * 24));
-  hours.value = Math.floor(
-    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
+  hours.value = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   minutes.value = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
   seconds.value = Math.floor((distance % (1000 * 60)) / 1000);
 

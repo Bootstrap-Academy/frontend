@@ -20,18 +20,15 @@
 -->
 <template>
   <main
-    class="grid-auto gap-card container min pb-container pt-container-sm grid-rows-[auto_auto_1fr]"
+    class="grid-auto min pt-container-sm container grid-rows-[auto_auto_1fr] gap-card pb-container"
   >
-    <div class="flex flex-col items-center mb-8">
-      <div class="flex space-x-4 items-center mb-4">
-        <TrophyIcon class="w-8 h-8 text-accent" />
+    <div class="mb-8 flex flex-col items-center">
+      <div class="mb-4 flex items-center space-x-4">
+        <TrophyIcon class="h-8 w-8 text-accent" />
         <p class="text-heading-1 text-accent">{{ t("Headings.LeaderBoard") }}</p>
       </div>
 
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedbutton"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" />
     </div>
 
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />
@@ -66,15 +63,13 @@ export default {
     title: "Leader board",
   },
   components: {
-    TrophyIcon
+    TrophyIcon,
   },
   setup() {
     const { t } = useI18n();
     const loading = ref(false);
     const leaderBoardList = useLeaderBoardList();
-    const selectedbutton: any = ref(
-      localStorage.getItem("selectedButtonLeaderBoard") ?? 0
-    );
+    const selectedbutton: any = ref(localStorage.getItem("selectedButtonLeaderBoard") ?? 0);
     const router = useRouter();
     const route = useRoute();
     let buttonOptions: any = [

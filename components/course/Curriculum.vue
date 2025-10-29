@@ -5,7 +5,7 @@
 
       <header class="cursor-pointer" @click="activeSection = section.id">
         <div>
-          <p class="text-xs mb-1 uppercase tracking-[2px]">
+          <p class="mb-1 text-xs uppercase tracking-[2px]">
             {{ t("Headings.Section", { n: " " }, 1) }} {{ i + 1 }}
           </p>
           <h3 class="text-heading-4">{{ section.title }}</h3>
@@ -13,23 +13,21 @@
 
         <p
           v-if="!!section.duration"
-          class="h-fit text-xs text-warning flex-shrink-0 w-fit mb-1 bg-warning-light rounded py-1 px-2"
+          class="mb-1 h-fit w-fit flex-shrink-0 rounded px-2 py-1 text-xs text-warning bg-warning-light"
         >
           {{ section.duration }}
         </p>
 
         <ChevronDownIcon
-          class="w-5 h-5"
+          class="h-5 w-5"
           :class="
-            activeSection == section.id
-              ? 'rotate-0 text-accent'
-              : 'rotate-180 text-subheading'
+            activeSection == section.id ? 'rotate-0 text-accent' : 'rotate-180 text-subheading'
           "
         />
       </header>
 
       <article
-        class="grid gap-card-sm xl:gap-box pt-box"
+        class="grid pt-box gap-card-sm xl:gap-box"
         v-if="activeSection == section.id"
         :class="{ 'pointer-events-none': !isCourseAccessible }"
       >
@@ -43,10 +41,7 @@
         />
       </article>
 
-      <article
-        class="pt-box"
-        v-if="getLecturesOfThisSection(section.id).length <= 0"
-      >
+      <article class="pt-box" v-if="getLecturesOfThisSection(section.id).length <= 0">
         <p class="text-sm text-subheading">
           {{ t("Error.NoLecturesAvailable") }}
         </p>
@@ -85,18 +80,16 @@ export default defineComponent({
 
         return !!!section.id && !!section.title
           ? {
-            ...section,
-            id: `${section.title.replace(/ /g, "_")}-${i}`,
-            duration: getTotalDurationOfThisSection(section),
-          }
+              ...section,
+              id: `${section.title.replace(/ /g, "_")}-${i}`,
+              duration: getTotalDurationOfThisSection(section),
+            }
           : { ...section, duration: getTotalDurationOfThisSection(section) };
       });
     });
 
     function getLecturesOfThisSection(sectionID: string): any[] {
-      const thisSection = sections.value.find(
-        (section) => section.id == sectionID
-      );
+      const thisSection = sections.value.find((section) => section.id == sectionID);
       if (!!!thisSection) return [];
 
       let lectures: any[] = thisSection.lectures ?? [];
@@ -166,8 +159,7 @@ export default defineComponent({
       if (!!!lectures || lectures.length <= 0) return "";
 
       const totalDuration = lectures.reduce(
-        (previousValue: number, currentValue: any) =>
-          previousValue + currentValue.duration ?? 0,
+        (previousValue: number, currentValue: any) => previousValue + currentValue.duration ?? 0,
         0
       );
 
@@ -179,25 +171,15 @@ export default defineComponent({
 
       let hoursString =
         roundedHours > 0
-          ? t(
-            "Headings.Hours",
-            { n: roundedHours },
-            roundedHours
-          ).toLocaleLowerCase()
+          ? t("Headings.Hours", { n: roundedHours }, roundedHours).toLocaleLowerCase()
           : "";
       let minsString =
         minutesLeftInHours > 0
-          ? t(
-            "Headings.Mins",
-            { n: minutesLeftInHours },
-            minutesLeftInHours
-          ).toLocaleLowerCase()
+          ? t("Headings.Mins", { n: minutesLeftInHours }, minutesLeftInHours).toLocaleLowerCase()
           : "";
 
       return `${hoursString} ${
-        !!hoursString && !!minsString
-          ? t("Headings.And").toLocaleLowerCase()
-          : ""
+        !!hoursString && !!minsString ? t("Headings.And").toLocaleLowerCase() : ""
       } ${minsString}`;
     }
 
@@ -206,9 +188,7 @@ export default defineComponent({
       if (!!!lectures || lectures.length <= 0) return "";
 
       let firstLectureID = lectures[0]?.id ?? "";
-      let lastCompletedLecture = lectures
-        .reverse()
-        .find((lecture) => lecture.completed == true);
+      let lastCompletedLecture = lectures.reverse().find((lecture) => lecture.completed == true);
 
       return lastCompletedLecture?.id ?? firstLectureID;
     }

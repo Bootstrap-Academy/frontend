@@ -1,13 +1,8 @@
 <template>
-  <div
-    class="p-4 xl:p-5 relative bg-secondary mb-4 rounded-md cursor-pointer group"
-  >
+  <div class="group relative mb-4 cursor-pointer rounded-md bg-secondary p-4 xl:p-5">
     <section>
-      <article class="flex gap-3 justify-between">
-        <p
-          v-if="!!codingChallenge?.description"
-          class="sm:w-3/4 tight text-accent"
-        >
+      <article class="flex justify-between gap-3">
+        <p v-if="!!codingChallenge?.description" class="tight text-accent sm:w-3/4">
           <span v-html="$md.render(codingChallenge?.description ?? '')"></span>
         </p>
 
@@ -18,7 +13,7 @@
 
         <p
           @click="feedback($event)"
-          class="text-success hover:scale-110 transition-all"
+          class="text-success transition-all hover:scale-110"
           v-if="
             codingChallenge?.solved &&
             !!!codingChallenge?.rated &&
@@ -30,16 +25,12 @@
       </article>
 
       <article class="flex gap-3">
-        <p class="text-sm">
-          {{ t("Headings.XP") }}:{{ codingChallenge?.xp ?? "" }}
-        </p>
-        <p class="text-sm">
-          {{ t("Headings.Coins") }}:{{ codingChallenge?.coins ?? "" }}
-        </p>
+        <p class="text-sm">{{ t("Headings.XP") }}:{{ codingChallenge?.xp ?? "" }}</p>
+        <p class="text-sm">{{ t("Headings.Coins") }}:{{ codingChallenge?.coins ?? "" }}</p>
       </article>
 
-      <section v-if="codingChallenge?.solved" class="absolute -top-1 -right-1">
-        <CheckIcon class="bg-accent rounded-full p-0.5 h-5 w-5 text-white" />
+      <section v-if="codingChallenge?.solved" class="absolute -right-1 -top-1">
+        <CheckIcon class="h-5 w-5 rounded-full bg-accent p-0.5 text-white" />
       </section>
     </section>
 
@@ -62,11 +53,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  LockClosedIcon,
-} from "@heroicons/vue/24/outline";
+import { ArrowRightIcon, CheckIcon, LockClosedIcon } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   props: {
@@ -76,8 +63,7 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
-    const dialogCodingChallengeFeedback: any =
-      useDialogCodingChallengeFeedback();
+    const dialogCodingChallengeFeedback: any = useDialogCodingChallengeFeedback();
     const dialogSlot = useDialogSlot();
     const user: any = useUser();
 

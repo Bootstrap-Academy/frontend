@@ -1,28 +1,57 @@
 <template>
   <main
-    class="relative h-screen-main min container-fluid grid grid-rows-[auto_auto_auto_1fr] grid-cols-1 lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] gap-container place-content-start lg:place-content-center place-items-center pb-container">
-
+    class="h-screen-main min container-fluid relative grid grid-cols-1 grid-rows-[auto_auto_auto_1fr] place-content-start place-items-center gap-container pb-container lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] lg:place-content-center"
+  >
     <Head>
       <Title>Skill Details - {{ skillName }}</Title>
     </Head>
 
-    <SkillTreeHeader class="pt-card lg:col-span-3 justify-self-start h-fit" :absolute="false" no-zoom-level
-      :breadcrumbs="breadcrumbs" />
+    <SkillTreeHeader
+      class="h-fit justify-self-start pt-card lg:col-span-3"
+      :absolute="false"
+      no-zoom-level
+      :breadcrumbs="breadcrumbs"
+    />
 
-    <SkillTreeNodeDetailsStepper class="h-fit" :subSkillID="subSkillID" :skillID="rootSkillID"
-      :activeStepper="activeStepper" @activeStepper="activeStepper = $event" :courses="courses" :coachings="coachings"
-      :webinars="webinars" :quizzes="quizzes" :matchings="matchings" />
+    <SkillTreeNodeDetailsStepper
+      class="h-fit"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
+      :activeStepper="activeStepper"
+      @activeStepper="activeStepper = $event"
+      :courses="courses"
+      :coachings="coachings"
+      :webinars="webinars"
+      :quizzes="quizzes"
+      :matchings="matchings"
+    />
     <div class="h-fit">
-      <SkillTreeNodeSvg :size="nodeSize" :node="subSkill" :active="true" :completed="subSkill?.completed ?? false"
-        class="mx-auto" :navigate="false" :isBookmarked="isNodeBookmarked" @bookmarked="toggleBookmark" />
-      <h6 class="text-heading-4 lg:text-heading-3 xl:text-heading-2 text-center mt-card-sm">
+      <SkillTreeNodeSvg
+        :size="nodeSize"
+        :node="subSkill"
+        :active="true"
+        :completed="subSkill?.completed ?? false"
+        class="mx-auto"
+        :navigate="false"
+        :isBookmarked="isNodeBookmarked"
+        @bookmarked="toggleBookmark"
+      />
+      <h6 class="text-heading-4 text-center mt-card-sm lg:text-heading-3 xl:text-heading-2">
         {{ subSkill?.name ?? "" }}
       </h6>
     </div>
 
-    <SkillTreeNodeDetailsStepperContent class="h-fit" :activeStepper="activeStepper" :subSkillID="subSkillID"
-      :skillID="rootSkillID" :courses="courses" :coachings="coachings" :webinars="webinars" :quizzes="quizzes"
-      :matchings="matchings" />
+    <SkillTreeNodeDetailsStepperContent
+      class="h-fit"
+      :activeStepper="activeStepper"
+      :subSkillID="subSkillID"
+      :skillID="rootSkillID"
+      :courses="courses"
+      :coachings="coachings"
+      :webinars="webinars"
+      :quizzes="quizzes"
+      :matchings="matchings"
+    />
   </main>
 </template>
 
@@ -167,7 +196,7 @@ export default defineComponent({
       quizzes,
       matchings,
       toggleBookmark,
-      isNodeBookmarked
+      isNodeBookmarked,
     };
   },
 });

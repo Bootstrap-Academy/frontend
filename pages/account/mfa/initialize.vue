@@ -19,18 +19,15 @@
 
 <template>
   <section
-    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
     <Transition mode="out-in" name="slide-up-down">
       <Dialog v-if="dialog && dialog.type" :dialog="dialog">
         <template #content>
-          <div
-            v-if="!!TOTP_secret"
-            class="text-body-1 text-body font-body m-0 mt-box"
-          >
+          <div v-if="!!TOTP_secret" class="text-body-1 m-0 text-body font-body mt-box">
             {{ t("Headings.TOTPSecret") }}:
             <span class="allow-selection">{{ TOTP_secret }}</span>
-            <div class="bg-white p-10 w-fit h-fit mt-card">
+            <div class="h-fit w-fit bg-white p-10 mt-card">
               <qrcode-vue :size="200" :value="QR_code"></qrcode-vue>
             </div>
           </div>
@@ -65,9 +62,7 @@ export default {
     function getQR_code(secret: any, username: any) {
       QR_code.value = `otpauth://totp/${encodeURIComponent(
         username
-      )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent(
-        "Bootstrap Academy"
-      )}`;
+      )}?secret=${encodeURIComponent(secret)}&issuer=${encodeURIComponent("Bootstrap Academy")}`;
     }
 
     const dialog = <any>reactive({});

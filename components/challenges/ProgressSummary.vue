@@ -1,7 +1,11 @@
 <template>
   <section class="flex flex-wrap gap-12">
-    <article v-for="({ label, value, border, text }, i) of summary" :key="i"
-      class="text-center flex gap-2 w-fit items-center" :class="[border]">
+    <article
+      v-for="({ label, value, border, text }, i) of summary"
+      :key="i"
+      class="flex w-fit items-center gap-2 text-center"
+      :class="[border]"
+    >
       <p class="text-body-1" :class="[text]">{{ value }}</p>
       <h3 class="text-body-1">{{ t(label) }}</h3>
     </article>

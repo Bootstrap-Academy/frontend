@@ -1,86 +1,84 @@
 <template>
-	<article class="pb-4">
-		<div class="flex gap-card-sm">
-			<Input
-				:min="min"
-				:autocomplete="autocomplete"
-				:hint="hint"
-				:name="name"
-				:id="id"
-				:type="type"
-				:label="label"
-				:noLabel="noLabel"
-				:noTrim="noTrim"
-				:light="light"
-				:placeholder="placeholder"
-				:rules="rules"
-				v-model="input"
-				class="w-full"
-			/>
-			<PlusCircleIcon
-				@click.prevent="onclickAddToList"
-				class="h-12 w-12 text-accent mt-7 cursor-pointer flex-shrink-0"
-			/>
-		</div>
+  <article class="pb-4">
+    <div class="flex gap-card-sm">
+      <Input
+        :min="min"
+        :autocomplete="autocomplete"
+        :hint="hint"
+        :name="name"
+        :id="id"
+        :type="type"
+        :label="label"
+        :noLabel="noLabel"
+        :noTrim="noTrim"
+        :light="light"
+        :placeholder="placeholder"
+        :rules="rules"
+        v-model="input"
+        class="w-full"
+      />
+      <PlusCircleIcon
+        @click.prevent="onclickAddToList"
+        class="mt-7 h-12 w-12 flex-shrink-0 cursor-pointer text-accent"
+      />
+    </div>
 
-		<ul>
-			<li v-for="item of list" :key="item" class="list-inside list-disc">
-				<div
-					class="inline-grid grid-cols-[minmax(0,1fr)_auto_auto] justify-between gap-4 w-list"
-				>
-					<span>{{ item }}</span>
-					<XMarkIcon
-						@click="onclickRemoveFromList(item)"
-						class="w-5 h-5 text-subheading hover:text-error inline-block cursor-pointer stoke-2 stroke-subheading hover:stroke-error"
-					/>
-					<PencilIcon
-						@click="onclickEditListItem(item)"
-						class="w-4 h-4 text-subheading hover:text-info inline-block cursor-pointer mt-0.5"
-					/>
-				</div>
-			</li>
-		</ul>
-	</article>
+    <ul>
+      <li v-for="item of list" :key="item" class="list-inside list-disc">
+        <div class="w-list inline-grid grid-cols-[minmax(0,1fr)_auto_auto] justify-between gap-4">
+          <span>{{ item }}</span>
+          <XMarkIcon
+            @click="onclickRemoveFromList(item)"
+            class="stoke-2 inline-block h-5 w-5 cursor-pointer stroke-subheading text-subheading hover:stroke-error hover:text-error"
+          />
+          <PencilIcon
+            @click="onclickEditListItem(item)"
+            class="mt-0.5 inline-block h-4 w-4 cursor-pointer text-subheading hover:text-info"
+          />
+        </div>
+      </li>
+    </ul>
+  </article>
 </template>
 
 <script lang="ts">
-import { PencilIcon, PlusCircleIcon, XMarkIcon } from '@heroicons/vue/24/solid';
-import { defineComponent } from 'vue';
-import type { PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { PencilIcon, PlusCircleIcon, XMarkIcon } from "@heroicons/vue/24/solid";
+import { defineComponent } from "vue";
+import type { PropType } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   props: {
-    min: { type: String || Number, default: '' },
-    autocomplete: { type: String, default: 'true' },
-    hint: { type: String, default: '' },
-    name: { type: String, default: '' },
-    id: { type: String, default: '' },
-    type: { type: String, default: 'text' },
-    label: { type: String, default: '' },
+    min: { type: String || Number, default: "" },
+    autocomplete: { type: String, default: "true" },
+    hint: { type: String, default: "" },
+    name: { type: String, default: "" },
+    id: { type: String, default: "" },
+    type: { type: String, default: "text" },
+    label: { type: String, default: "" },
     noLabel: { type: Boolean, default: false },
     noTrim: { type: Boolean, default: false },
     light: { type: Boolean, default: false },
-    placeholder: { type: String, default: '' },
+    placeholder: { type: String, default: "" },
     rules: { type: Array, default: [] },
     modelValue: { default: [] },
     max: { type: Number, default: 10 },
   },
-  emits: ['update:modelValue', 'valid'],
+  emits: ["update:modelValue", "valid"],
   components: { PlusCircleIcon, XMarkIcon, PencilIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const input = ref('');
-    const editItem = ref('');
+    const input = ref("");
+    const editItem = ref("");
 
     const list = computed({
       get() {
         return props.modelValue;
       },
       set(value: Array<string>) {
-        emit('update:modelValue', value);
-        emit('valid', value && value.length > 0 && value.length <= props.max);
+        emit("update:modelValue", value);
+        emit("valid", value && value.length > 0 && value.length <= props.max);
       },
     });
 
@@ -91,13 +89,13 @@ export default defineComponent({
 
       // input is empty
       if (!!!input.value) {
-        input.value = '';
+        input.value = "";
         return;
       }
 
       // if item already exists
       if (alreadyExistsIndex != -1) {
-        input.value = '';
+        input.value = "";
         return;
       }
 
@@ -110,13 +108,13 @@ export default defineComponent({
         arr = [input.value, ...arr];
         list.value = [...arr];
 
-        editItem.value = '';
+        editItem.value = "";
       } else {
         let arr = [input.value, ...list.value];
         list.value = [...arr];
       }
 
-      input.value = '';
+      input.value = "";
     }
 
     function onclickRemoveFromList(item: string) {
@@ -146,6 +144,6 @@ export default defineComponent({
 
 <style scoped>
 .w-list {
-	width: calc(100% - 2.25rem);
+  width: calc(100% - 2.25rem);
 }
 </style>

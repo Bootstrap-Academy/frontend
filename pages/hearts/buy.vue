@@ -1,5 +1,5 @@
 <template>
-  <main class="container mt-main mb-main">
+  <main class="mt-main mb-main container">
     <section class="container-form mx-auto max-w-3xl">
       <FormBuyHearts />
     </section>

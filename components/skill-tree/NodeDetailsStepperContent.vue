@@ -1,5 +1,5 @@
 <template>
-  <section class="max-h-[70vh] h-fit w-full flex justify-between items-center">
+  <section class="flex h-fit max-h-[70vh] w-full items-center justify-between">
     <div
       class="content-container"
       v-if="activeStepper == 0"
@@ -17,7 +17,7 @@
         </NuxtLink>
       </template>
 
-      <h3 v-else class="text-center text-heading-3">
+      <h3 v-else class="text-heading-3 text-center">
         {{ t("Headings.CoursesComingSoon") }}
       </h3>
     </div>
@@ -37,7 +37,7 @@
           :subSkillID="subSkillID"
         />
       </template>
-      <h3 v-else class="text-center text-heading-3">
+      <h3 v-else class="text-heading-3 text-center">
         {{ t("Headings.CoachingComingSoon") }}
       </h3>
     </div>
@@ -57,36 +57,32 @@
           :subSkillID="subSkillID"
         />
       </template>
-      <h3 v-else class="text-center text-heading-3">
+      <h3 v-else class="text-heading-3 text-center">
         {{ t("Headings.WebinarsComingSoon") }}
       </h3>
     </div>
 
     <article class="w-full" v-else-if="activeStepper == 3">
-      <div class="flex p-2 content-container flex-col items-center mt-card">
+      <div class="content-container flex flex-col items-center p-2 mt-card">
         <template v-if="quizzes && quizzes.length > 0">
           <div class="content">
             <QuizList :quizzes="quizzes" />
           </div>
         </template>
-        <h3 v-else class="text-center text-heading-3">
+        <h3 v-else class="text-heading-3 text-center">
           {{ t("Headings.NoQuizQuestion") }}
         </h3>
       </div>
     </article>
 
     <article class="w-full" v-else-if="activeStepper == 4">
-      <div class="flex p-2 content-container flex-col items-center mt-card">
+      <div class="content-container flex flex-col items-center p-2 mt-card">
         <template v-if="quizzes && quizzes.length > 0">
           <div class="content">
-            <MatchingList
-              v-for="(quiz, i) of quizzes"
-              :key="i"
-              :quizId="quiz?.id"
-            />
+            <MatchingList v-for="(quiz, i) of quizzes" :key="i" :quizId="quiz?.id" />
           </div>
         </template>
-        <h3 v-else class="text-center text-heading-3">
+        <h3 v-else class="text-heading-3 text-center">
           {{ t("Headings.NoMatchings") }}
         </h3>
       </div>
@@ -128,10 +124,10 @@ export default defineComponent({
 
 <style scoped>
 .content-container {
-  @apply flex lg:flex-col gap-card w-full max-w-full max-h-[70vh] overflow-x-scroll lg:overflow-x-auto snap-x lg:overflow-y-scroll lg:snap-y snap-mandatory;
+  @apply flex max-h-[70vh] w-full max-w-full snap-x snap-mandatory overflow-x-scroll gap-card lg:snap-y lg:flex-col lg:overflow-x-auto lg:overflow-y-scroll;
 }
 .content {
-  @apply flex-shrink-0 snap-center block w-fit lg:w-full max-w-[300px];
+  @apply block w-fit max-w-[300px] flex-shrink-0 snap-center lg:w-full;
 }
 .content.full {
   @apply w-full;

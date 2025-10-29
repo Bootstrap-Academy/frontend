@@ -18,25 +18,25 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<Transition mode="out-in" name="slide-up-down">
-			<Dialog v-if="dialog && dialog.type" :dialog="dialog" />
-		</Transition>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <Transition mode="out-in" name="slide-up-down">
+      <Dialog v-if="dialog && dialog.type" :dialog="dialog" />
+    </Transition>
+  </section>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 definePageMeta({
-  layout: 'inner',
+  layout: "inner",
 });
 
 export default {
   head: {
-    title: 'OAuth Login',
+    title: "OAuth Login",
   },
   setup() {
     const { t } = useI18n();
@@ -50,8 +50,8 @@ export default {
     onMounted(async () => {
       setLoading(true);
       const [success, error] = await loginViaOAuthProvider({
-        code: route?.query?.code ?? '',
-        provider_id: route?.query?.state ?? '',
+        code: route?.query?.code ?? "",
+        provider_id: route?.query?.state ?? "",
         redirect_uri: `${config.BASE_WEB_URL}/oauth/callback`,
       });
       setLoading(false);
@@ -60,7 +60,7 @@ export default {
     });
 
     function successHandler(res: any) {
-      const register_token = res?.register_token ?? '';
+      const register_token = res?.register_token ?? "";
 
       if (!!register_token) {
         router.push(`/auth/signup?register_token=${register_token}`);
@@ -72,13 +72,13 @@ export default {
 
     function errorHandler(res: any) {
       Object.assign(dialog, {
-        type: 'error',
-        heading: 'Headings.UnableToOAuth',
-        body: `${t('Error.UnableToOAuth')}: ${t(res?.detail ?? '')}`,
+        type: "error",
+        heading: "Headings.UnableToOAuth",
+        body: `${t("Error.UnableToOAuth")}: ${t(res?.detail ?? "")}`,
         primaryBtn: {
-          label: 'Links.GoBack',
+          label: "Links.GoBack",
           onclick: () => {
-            router.push('/auth/login');
+            router.push("/auth/login");
           },
         },
         secondaryBtn: null,

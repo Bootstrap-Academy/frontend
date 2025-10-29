@@ -1,43 +1,43 @@
 <template>
-  <div class="sm:container-fluid px-4">
-    <section v-if="!isPremium" class="flex flex-col items-center mt-10 gap-10">
+  <div class="px-4 sm:container-fluid">
+    <section v-if="!isPremium" class="mt-10 flex flex-col items-center gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
       </h2>
-      
-      <p v-if="hearts >= 6" class="text-xl text-center">
+
+      <p v-if="hearts >= 6" class="text-center text-xl">
         {{ t("Body.HeartsAreFilled") }}
       </p>
 
-      <div v-else class="md:flex md:space-x-8 w-full">
-        <div class="w-full ring-1 ring-gray text-center p-8 rounded-xl">
-          <h2 class="text-2xl font-bold tracking-tight text-accent mb-6">
+      <div v-else class="w-full md:flex md:space-x-8">
+        <div class="ring-gray w-full rounded-xl p-8 text-center ring-1">
+          <h2 class="mb-6 text-2xl font-bold tracking-tight text-accent">
             {{ t("Headings.AutomaticRefill") }}
           </h2>
           <SubscriptionTimer :target-time="getNextMidnight()" />
         </div>
-        <div class="flex items-center max-md:justify-center max-md:my-4 uppercase">
+        <div class="flex items-center uppercase max-md:my-4 max-md:justify-center">
           <p class="text-3xl">{{ t("Headings.Or") }}</p>
         </div>
-        <div class="w-full ring-1 ring-gray text-center p-8 rounded-xl">  
-          <h2 class="text-2xl font-bold tracking-tight text-accent mb-6">
+        <div class="ring-gray w-full rounded-xl p-8 text-center ring-1">
+          <h2 class="mb-6 text-2xl font-bold tracking-tight text-accent">
             {{ t("Headings.RefillHeartsNow") }}
           </h2>
-          
-          <div v-if="coins < 50" class="flex justify-center mt-4">
-            <p class="text-xl max-w-sm">
+
+          <div v-if="coins < 50" class="mt-4 flex justify-center">
+            <p class="max-w-sm text-xl">
               {{ t("Body.Need50MorphCoinsForRefill") }}
             </p>
           </div>
           <div v-else>
             <div class="flex justify-center" v-if="hearts != 0">
-              <p class="text-xl text-center text-warning mb-6">
+              <p class="mb-6 text-center text-xl text-warning">
                 {{ t("Body.NotAllHeartsUsed") }}
-                <br/>
+                <br />
                 {{ t("Body.RefillHeartsNow") }}
               </p>
             </div>
-            <InputBtn @click="filHearts" :icon="SvgHeart" full iconRight secondary >
+            <InputBtn @click="filHearts" :icon="SvgHeart" full iconRight secondary>
               {{ t("Buttons.Refill") }}
             </InputBtn>
           </div>
@@ -48,34 +48,47 @@
 
     <SubscriptionPremiumUntillCountDown v-if="!!isPremium" class="mt-20" />
 
-    <section class="rounded-md mb-20 mt-10">
+    <section class="mb-20 mt-10 rounded-md">
       <div class="mx-auto max-w-2xl sm:text-center" v-if="!isPremium">
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
           {{ t("Headings.NoTrickPricing") }}
         </h2>
-        <p class="mt-2 text-lg leading-8 text-gray">
+        <p class="text-gray mt-2 text-lg leading-8">
           {{ t("Body.PremiumCardMain") }}
         </p>
       </div>
 
-      <div class="flex flex-end gap-2 justify-center items-center mb-3 mt-16">
-        <InputButtonToggle :mobileResponsive="false" :buttonOptions="buttonOptions" v-model="selectedButton"
-          class="mb-3" />
+      <div class="flex-end mb-3 mt-16 flex items-center justify-center gap-2">
+        <InputButtonToggle
+          :mobileResponsive="false"
+          :buttonOptions="buttonOptions"
+          v-model="selectedButton"
+          class="mb-3"
+        />
       </div>
 
       <div class="flex justify-center">
-        <p class="text-accent mt-3 text-center max-w-md" v-if="isPremium">
+        <p class="mt-3 max-w-md text-center text-accent" v-if="isPremium">
           {{ t("Headings.BuyAdditionalSubscription") }}
         </p>
       </div>
-      <SubscriptionCard :subscribeMonthly="() => subscribe(false)" :subscribeYearly="() => subscribe(true)"
-        :yearly="selectedButton === 1" class="px-2 mt-5 mb-5" />
+      <SubscriptionCard
+        :subscribeMonthly="() => subscribe(false)"
+        :subscribeYearly="() => subscribe(true)"
+        :yearly="selectedButton === 1"
+        class="mb-5 mt-5 px-2"
+      />
 
       <div class="mt-10 flex flex-col items-center" v-if="!!isPremium">
-        <p class="text-accent font-bold">{{ t("Body.ChangeAutoPaySubscription") }}</p>
+        <p class="font-bold text-accent">{{ t("Body.ChangeAutoPaySubscription") }}</p>
 
-        <InputButtonToggle :mobileResponsive="false" secondary :buttonOptions="changeSubscriptionAutopayButtons"
-          v-model="setValueForAutopayButton" class="mt-4 mb-20" />
+        <InputButtonToggle
+          :mobileResponsive="false"
+          secondary
+          :buttonOptions="changeSubscriptionAutopayButtons"
+          v-model="setValueForAutopayButton"
+          class="mb-20 mt-4"
+        />
       </div>
     </section>
   </div>
@@ -111,10 +124,7 @@ export default {
           return 0;
         } else if (premiumStatusAutoPay.value == "YEARLY") {
           return 1;
-        } else if (
-          premiumStatusAutoPay.value == null ||
-          !!!premiumStatusAutoPay.value
-        ) {
+        } else if (premiumStatusAutoPay.value == null || !!!premiumStatusAutoPay.value) {
           return 2;
         }
       },
@@ -135,11 +145,8 @@ export default {
       return heartInfo.value?.hearts ?? 0;
     });
 
-    const buttonOptions = [
-      { name: "Buttons.Monthly" },
-      { name: "Buttons.Yearly" },
-    ];
-    
+    const buttonOptions = [{ name: "Buttons.Monthly" }, { name: "Buttons.Yearly" }];
+
     const changeSubscriptionAutopayButtons = [
       { name: "Buttons.Monthly" },
       { name: "Buttons.Yearly" },
@@ -165,13 +172,16 @@ export default {
                 autopay: !!premiumStatusAutoPay.value,
               });
               if (success) {
-                openSnackbar("success", isYearly ? "Success.SubscribedYearly" : "Success.SubscribedMonthly");
+                openSnackbar(
+                  "success",
+                  isYearly ? "Success.SubscribedYearly" : "Success.SubscribedMonthly"
+                );
               }
             },
           },
           {
             label: "Buttons.Cancel",
-            onclick: () => { },
+            onclick: () => {},
           }
         );
       } else {
@@ -243,7 +253,7 @@ export default {
         },
         {
           label: "Buttons.Cancel",
-          onclick: () => { },
+          onclick: () => {},
         }
       );
     }
@@ -261,15 +271,8 @@ export default {
 
     function getNextMidnight() {
       const now = new Date();
-      const nextDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-        0,
-        0,
-        0
-      );
-      
+      const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+
       return nextDay.getTime();
     }
 

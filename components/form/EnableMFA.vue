@@ -13,13 +13,7 @@
       :rules="form.code.rules"
     />
 
-    <InputBtn
-      :loading="form.submitting"
-      class="self-center"
-      @click="onclickSubmitForm()"
-      mt
-      mb
-    >
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
       {{ t("Buttons.EnableMFA") }}
     </InputBtn>
 
@@ -58,12 +52,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -74,8 +63,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },

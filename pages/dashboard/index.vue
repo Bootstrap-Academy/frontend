@@ -1,5 +1,5 @@
 <template>
-  <main class="container mt-main mb-main grid gap-container">
+  <main class="mt-main mb-main container grid gap-container">
     <header class="grid gap-2">
       <h1 class="text-heading-1">
         {{ t("Headings.Dashboard") }}
@@ -10,7 +10,7 @@
     </header>
 
     <section class="grid gap-card-sm lg:grid-cols-2">
-      <div class="card style-card bg-secondary">
+      <div class="card bg-secondary style-card">
         <UserCourses />
       </div>
 

@@ -1,6 +1,6 @@
 <template>
   <section
-    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
     <Transition mode="out-in" name="slide-up-down">
       <Dialog v-if="dialog && dialog.type" :dialog="dialog">
@@ -17,9 +17,7 @@
           </p>
           <p>
             {{ t("Headings.TotalMorphcoins") }}:
-            <span class="font-bold text-accent">
-              {{ coins }} {{ t("Headings.Morphcoins") }}
-            </span>
+            <span class="font-bold text-accent"> {{ coins }} {{ t("Headings.Morphcoins") }} </span>
           </p>
         </template>
       </Dialog>

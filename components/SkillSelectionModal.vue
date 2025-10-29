@@ -1,46 +1,34 @@
 <template>
   <Modal v-if="show">
-    <article class="style-card bg-secondary max-w-screen-md w-full">
-      <div class="card overflow-scroll max-h-[80vh]">
+    <article class="w-full max-w-screen-md bg-secondary style-card">
+      <div class="card max-h-[80vh] overflow-scroll">
         <div class="flex justify-center">
-          <TagIcon class="w-12 h-12 m-4 text-accent" />
+          <TagIcon class="m-4 h-12 w-12 text-accent" />
         </div>
-        <h2 class="text-heading-2 mb-box text-center">
+        <h2 class="text-heading-2 text-center mb-box">
           {{ t("Headings.SelectSkill") }}
         </h2>
-        <div class="flex justify-center mb-4">
+        <div class="mb-4 flex justify-center">
           <p class="max-w-md text-center">
-            {{ t("Body.SelectSkillDescription")}}
+            {{ t("Body.SelectSkillDescription") }}
           </p>
         </div>
-        <div
-          v-for="(skill, index) in skills"
-          :key="index"
-          class="flex gap-card"
-        >
+        <div v-for="(skill, index) in skills" :key="index" class="flex gap-card">
           <article
-            class="w-full grid grid-cols-1 gap-y-1 border-2 rounded-md py-2 px-4 mt-box cursor-pointer"
-            :class="
-              selectedSkill === skill.id
-                ? 'border-accent'
-                : 'border-transparent bg-primary'
-            "
+            class="grid w-full cursor-pointer grid-cols-1 gap-y-1 rounded-md border-2 px-4 py-2 mt-box"
+            :class="selectedSkill === skill.id ? 'border-accent' : 'border-transparent bg-primary'"
             @click="selectSkill(skill.id)"
           >
             <p class="text-body-1">{{ skill.name }}</p>
           </article>
         </div>
       </div>
-      <div class="card flex gap-card flex-wrap bg-[#1c3250]">
+      <div class="card flex flex-wrap bg-[#1c3250] gap-card">
         <Btn secondary @click="closeModal">
           {{ t("Buttons.Cancel") }}
         </Btn>
         <div class="flex-1"></div>
-        <Btn
-          :disabled="!selectedSkill"
-          class="disabled:opacity-25"
-          @click="confirmSelection"
-        >
+        <Btn :disabled="!selectedSkill" class="disabled:opacity-25" @click="confirmSelection">
           {{ t("Buttons.Next") }}
         </Btn>
       </div>

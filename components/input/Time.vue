@@ -1,16 +1,16 @@
 <template>
   <article>
-    <label for="" class="text-body text-body-2 font-body mb-2 md:mb-1 block">
+    <label for="" class="text-body-2 mb-2 block text-body font-body md:mb-1">
       {{ t(label) }}
     </label>
-    <div class="flex gap-2 items-center">
+    <div class="flex items-center gap-2">
       <input
         ref="DOM_INPUT_HRS"
         v-model="hours"
         type="number"
         min="0"
         max="23"
-        class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
+        class="relative z-10 block min-w-[35px] max-w-fit flex-shrink-0 appearance-none rounded bg-secondary py-1 text-center text-base tracking-[0.15em] text-white ring-2 ring-tertiary transition duration-500 ease-out focus:outline-none focus:ring-accent focus:ring-offset-2 focus:ring-offset-tertiary md:min-w-[45px] md:px-4 md:py-2.5"
       />
       <h3 class="text-heading-1">:</h3>
       <input
@@ -19,15 +19,13 @@
         type="number"
         min="0"
         max="59"
-        class="block tracking-[0.15em] flex-shrink-0 max-w-fit min-w-[35px] py-1 md:min-w-[45px] md:px-4 md:py-2.5 text-base text-white bg-secondary rounded relative z-10 transition ease-out duration-500 focus:outline-none appearance-none ring-2 ring-tertiary focus:ring-offset-2 focus:ring-offset-tertiary focus:ring-accent text-center"
+        class="relative z-10 block min-w-[35px] max-w-fit flex-shrink-0 appearance-none rounded bg-secondary py-1 text-center text-base tracking-[0.15em] text-white ring-2 ring-tertiary transition duration-500 ease-out focus:outline-none focus:ring-accent focus:ring-offset-2 focus:ring-offset-tertiary md:min-w-[45px] md:px-4 md:py-2.5"
       />
     </div>
 
     <p
-      class="pt-2 text-xs relative z-0 transition ease-out duration-500 text-error"
-      :class="
-        error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'
-      "
+      class="relative z-0 pt-2 text-xs text-error transition duration-500 ease-out"
+      :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
       {{ error }}.
     </p>
@@ -77,8 +75,7 @@ export default defineComponent({
 
       const selectedDate = new Date(props.minDate);
       const currentDate = new Date();
-      const isFutureDate =
-        currentDate.getMilliseconds() - selectedDate.getMilliseconds() > 0;
+      const isFutureDate = currentDate.getMilliseconds() - selectedDate.getMilliseconds() > 0;
 
       // checking hrs
       if (hrs < 0) {
@@ -104,8 +101,7 @@ export default defineComponent({
           if (!!DOM_INPUT_HRS.value) DOM_INPUT_HRS.value.setCustomValidity(msg);
         } else if (hrs == minHrs.value && mins < minMins.value) {
           msg = "Minutes cannot be set in the past";
-          if (!!DOM_INPUT_MINS.value)
-            DOM_INPUT_MINS.value.setCustomValidity(msg);
+          if (!!DOM_INPUT_MINS.value) DOM_INPUT_MINS.value.setCustomValidity(msg);
         }
       }
 
@@ -166,6 +162,6 @@ export default defineComponent({
 
 <style scoped>
 .time {
-  @apply p-0 w-10 h-10 text-center text-body-1;
+  @apply text-body-1 h-10 w-10 p-0 text-center;
 }
 </style>

@@ -1,9 +1,5 @@
 <template>
-  <form
-    class="flex flex-col gap-3"
-    @submit.prevent="onclickSubmitForm()"
-    ref="formRef"
-  >
+  <form class="flex flex-col gap-3" @submit.prevent="onclickSubmitForm()" ref="formRef">
     <SectionTitle
       subheading="Subheadings.WebShop"
       heading="Headings.BuyHearts"
@@ -13,40 +9,38 @@
     />
 
     <article
-      class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+      class="relative z-10 grid w-full max-w-full grid-cols-[2em_auto_minmax(0,1fr)] items-center rounded-md border bg-secondary px-4 py-3 text-base text-white transition-all gap-box"
       :class="[!form.morphCoins.valid ? 'border-error' : 'border-transparent']"
     >
       <img
         src="/images/coin.png"
         :alt="t('AltAttributes.Morphcoin')"
-        class="w-8 h-8 object-contain"
+        class="h-8 w-8 object-contain"
       />
       <h3 class="text-heading-3">{{ t("Headings.Morphcoins") }}</h3>
       <input
         id="Morphcoins"
         name="Morphcoins"
         type="number"
-        class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
+        class="min-w-auto appearance-none border-none bg-transparent text-right outline-none"
         @change="onchangeValidateMorphcoins()"
         @input="oninputValidateMorphcoins($event)"
         :value="form.morphCoins.value"
       />
     </article>
-    <ArrowDownCircleIcon
-      class="w-12 h-12 text-accent -my-6 relative z-20 mx-auto"
-    />
+    <ArrowDownCircleIcon class="relative z-20 -my-6 mx-auto h-12 w-12 text-accent" />
 
     <article
-      class="w-full max-w-full px-4 py-3 text-base text-white bg-secondary rounded-md relative z-10 grid gap-box grid-cols-[2em_auto_minmax(0,1fr)] items-center border transition-all"
+      class="relative z-10 grid w-full max-w-full grid-cols-[2em_auto_minmax(0,1fr)] items-center rounded-md border bg-secondary px-4 py-3 text-base text-white transition-all gap-box"
       :class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
     >
-      <HeartIcon class="w-8 h-8 text-accent" />
+      <HeartIcon class="h-8 w-8 text-accent" />
       <h3 class="text-heading-3">{{ t("Headings.Hearts") }}</h3>
       <input
         id="Euros"
         name="Euros"
         type="number"
-        class="bg-transparent text-right outline-none border-none appearance-none min-w-auto"
+        class="min-w-auto appearance-none border-none bg-transparent text-right outline-none"
         @change="onchangeValidateEuros()"
         @input="oninputValidateEuros($event)"
         :value="form.euros.value"
@@ -56,12 +50,12 @@
     <hr class="mt-card mb-card" />
 
     <article class="w-fit mb-card">
-      <h2 class="text-accent text-sm uppercase">
+      <h2 class="text-sm uppercase text-accent">
         {{ t("Headings.TotalBill") }}
       </h2>
       <div class="flex items-center gap-box">
-        <h1 class="m-0 text-heading-1">{{ form.euros.value }}</h1>
-        <h3 class="m-0 text-heading-3 text-body">
+        <h1 class="text-heading-1 m-0">{{ form.euros.value }}</h1>
+        <h3 class="text-heading-3 m-0 text-body">
           {{ t("Headings.Euros").toLocaleLowerCase() }}
         </h3>
       </div>
@@ -70,11 +64,7 @@
     <Btn
       full
       @click="onclickSubmitForm"
-      :class="
-        form.euros.valid && form.morphCoins.valid
-          ? ''
-          : 'pointer-events-none opacity-60'
-      "
+      :class="form.euros.valid && form.morphCoins.valid ? '' : 'pointer-events-none opacity-60'"
     >
       {{ t("Buttons.BuyCoins") }}
     </Btn>
@@ -126,12 +116,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
             console.log(key);
           }
@@ -164,10 +149,7 @@ export default defineComponent({
       if (form.validate()) {
         router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
       } else {
-        openSnackbar(
-          "error",
-          "Error.MustAgreeToBothPointsInOrderToMoveForward"
-        );
+        openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
       }
     }
 

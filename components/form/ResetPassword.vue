@@ -1,48 +1,42 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.ResetPasswordCode')"
-			v-model="form.code.value"
-			@valid="form.code.valid = $event"
-			:rules="form.code.rules"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.ResetPasswordCode')"
+      v-model="form.code.value"
+      @valid="form.code.valid = $event"
+      :rules="form.code.rules"
+    />
 
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
 
-		<Input
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-			:rules="form.password.rules"
-		/>
+    <Input
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+      :rules="form.password.rules"
+    />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mt
-			mb
-		>
-			{{ t('Buttons.ResetPassword') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
+      {{ t("Buttons.ResetPassword") }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import type { IForm } from '~/types/form';
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import type { IForm } from "~/types/form";
 
 export default defineComponent({
   setup() {
@@ -55,30 +49,27 @@ export default defineComponent({
     const form = reactive<IForm>({
       code: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.ResetPasswordCode',
-          (v: string) =>
-            /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) ||
-						'Error.InputCodeFormat',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.ResetPasswordCode",
+          (v: string) => /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) || "Error.InputCodeFormat",
         ],
       },
       email: {
-        value: '',
+        value: "",
         valid: false,
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailAddress",
+          (v: string) => /.+@.+\..+/.test(v) || "Error.InputEmailForm",
         ],
       },
       password: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Password",
           (v: string) =>
-            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
-						'Error.InputPasswordError',
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || "Error.InputPasswordError",
         ],
       },
       submitting: false,
@@ -86,12 +77,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -102,8 +88,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -118,7 +103,7 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar('error', 'Error.InvalidForm');
+        openSnackbar("error", "Error.InvalidForm");
       }
     }
 
@@ -126,14 +111,14 @@ export default defineComponent({
 
     function successHandler(res: any) {
       openDialog(
-        'success',
-        'Success.PasswordChanged',
-        'Success.PasswordChangedBody',
+        "success",
+        "Success.PasswordChanged",
+        "Success.PasswordChangedBody",
         true,
         {
-          label: 'Buttons.Okay',
+          label: "Buttons.Okay",
           onclick: () => {
-            router.push('/auth/login');
+            router.push("/auth/login");
           },
         },
         null
@@ -141,7 +126,7 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
-      openSnackbar('error', res?.detail ?? '');
+      openSnackbar("error", res?.detail ?? "");
     }
 
     return {

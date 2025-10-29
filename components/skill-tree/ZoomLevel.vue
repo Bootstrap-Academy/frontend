@@ -1,10 +1,10 @@
 <template>
   <article
-    class="flex gap-card-sm w-fit p-3 justify-between items-center rounded-2xl bg-primary overflow-hidden"
+    class="flex w-fit items-center justify-between overflow-hidden rounded-2xl bg-primary p-3 gap-card-sm"
   >
     <button
       @click="zoomIn"
-      class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-xl bg-tertiary text-accent text-3xl flex justify-center items-center"
+      class="flex h-10 min-h-[2.5rem] w-10 min-w-[2.5rem] items-center justify-center rounded-xl bg-tertiary text-3xl text-accent"
     >
       +
     </button>
@@ -13,7 +13,7 @@
 
     <button
       @click="zoomOut"
-      class="w-10 h-10 min-w-[2.5rem] min-h-[2.5rem] rounded-xl bg-tertiary text-accent text-3xl flex justify-center items-center"
+      class="flex h-10 min-h-[2.5rem] w-10 min-w-[2.5rem] items-center justify-center rounded-xl bg-tertiary text-3xl text-accent"
     >
       -
     </button>

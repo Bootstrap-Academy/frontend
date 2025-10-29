@@ -1,7 +1,7 @@
 <template>
   <div>
     <InputTextarea :label="'Headings.ReportComment'" v-model="comment" />
-    <article class="flex gap-8 flex-wrap justify-evenly">
+    <article class="flex flex-wrap justify-evenly gap-8">
       <Chip
         v-for="(chip, i) of reportValueArray"
         :key="i"
@@ -13,13 +13,9 @@
         {{ t(`Headings.${chip.key}`) }}
       </Chip>
     </article>
-    <article class="flex justify-end gap-4 flex-wrap mt-12">
-      <InputBtn @click="closeReportDialog()" secondary>
-        {{ t("Buttons.Cancel") }}</InputBtn
-      >
-      <InputBtn :loading="loading" @click="submitForm()">{{
-        t("Buttons.Report")
-      }}</InputBtn>
+    <article class="mt-12 flex flex-wrap justify-end gap-4">
+      <InputBtn @click="closeReportDialog()" secondary> {{ t("Buttons.Cancel") }}</InputBtn>
+      <InputBtn :loading="loading" @click="submitForm()">{{ t("Buttons.Report") }}</InputBtn>
     </article>
   </div>
 </template>

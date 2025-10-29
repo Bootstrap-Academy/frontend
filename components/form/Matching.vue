@@ -8,20 +8,16 @@
       v-if="!!data"
     />
 
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-10 w-full mt-10">
+    <section class="mt-10 grid w-full grid-cols-1 gap-10 md:grid-cols-2">
       <article>
         <p class="text-accent">
           {{ t("Headings.LabelForMatchings") }}
         </p>
         <div class="py-5">
-          <div
-            v-for="i of matchingsLength"
-            :key="i"
-            class="md:flex gap-10 items-center"
-          >
+          <div v-for="i of matchingsLength" :key="i" class="items-center gap-10 md:flex">
             <p class="md:hidden">{{ alphabetIs(i) }}:</p>
             <Input :rules="rules" v-model="left[i - 1]" class="w-full" />
-            <ArrowRightIcon class="h-8 w-8 -mt-4 text-accent hidden md:block" />
+            <ArrowRightIcon class="-mt-4 hidden h-8 w-8 text-accent md:block" />
           </div>
         </div>
       </article>
@@ -33,12 +29,12 @@
         <div class="py-5">
           <div v-for="i of matchingsLength" :key="i">
             <P class="md:hidden">{{ alphabetIs(i) }}:</P>
-            <div class="flex gap-3 w-full items-center">
+            <div class="flex w-full items-center gap-3">
               <Input :rules="rules" v-model="right[i - 1]" class="w-full" />
               <TrashIcon
                 v-if="!!!data"
                 @click="removeMatching(i)"
-                class="h-6 w-6 cursor-pointer text-accent -mt-4"
+                class="-mt-4 h-6 w-6 cursor-pointer text-accent"
               />
             </div>
           </div>
@@ -46,10 +42,7 @@
       </article>
     </section>
     <div v-if="!!!data">
-      <PlusCircleIcon
-        class="h-7 w-7 text-accent cursor-pointer"
-        @click="addNewMatching()"
-      />
+      <PlusCircleIcon class="h-7 w-7 cursor-pointer text-accent" @click="addNewMatching()" />
     </div>
     <!-- <p>
       {{ left }}
@@ -61,13 +54,7 @@
     <p>{{ solution }}</p>
     <p>{{ matchingsLength }}</p> -->
 
-    <InputBtn
-      :loading="loading"
-      @click="fnCreateMatching()"
-      class="self-center"
-      mt
-      v-if="!data"
-    >
+    <InputBtn :loading="loading" @click="fnCreateMatching()" class="self-center" mt v-if="!data">
       <span v-if="!!!data">{{ t("Buttons.CreateMatching") }} </span>
       <span v-else-if="user.admin">{{ t("Buttons.UpdateMatching") }} </span>
     </InputBtn>
@@ -188,33 +175,33 @@ const IsAnyEmptyIndex = (array: Array<string>) => {
 
 function alphabetIs(number: number) {
   switch (number) {
-  case 1: {
-    return "A";
-  }
-  case 2: {
-    return "B";
-  }
-  case 3: {
-    return "C";
-  }
-  case 4: {
-    return "D";
-  }
-  case 5: {
-    return "E";
-  }
-  case 6: {
-    return "F";
-  }
-  case 7: {
-    return "G";
-  }
-  case 8: {
-    return "H";
-  }
-  case 9: {
-    return "I";
-  }
+    case 1: {
+      return "A";
+    }
+    case 2: {
+      return "B";
+    }
+    case 3: {
+      return "C";
+    }
+    case 4: {
+      return "D";
+    }
+    case 5: {
+      return "E";
+    }
+    case 6: {
+      return "F";
+    }
+    case 7: {
+      return "G";
+    }
+    case 8: {
+      return "H";
+    }
+    case 9: {
+      return "I";
+    }
   }
 }
 

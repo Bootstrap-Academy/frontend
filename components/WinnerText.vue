@@ -50,10 +50,7 @@
         ]"
       ></div>
       <div
-        :class="[
-          textSize ? `${textSize}` : 'text-xs',
-          textColor ? `${textColor}` : '',
-        ]"
+        :class="[textSize ? `${textSize}` : 'text-xs', textColor ? `${textColor}` : '']"
         id="h3 "
       >
         {{ text }}

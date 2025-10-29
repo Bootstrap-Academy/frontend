@@ -1,6 +1,6 @@
 <template>
-  <div class="grid gap-card grid-rows-[auto_minmax(0,1fr)] h-full w-full">
-    <header class="flex flex-wrap gap-card justify-between" v-if="showButtons">
+  <div class="grid h-full w-full grid-rows-[auto_minmax(0,1fr)] gap-card">
+    <header class="flex flex-wrap justify-between gap-card" v-if="showButtons">
       <div class="flex gap-3">
         <InputSelect
           class="z-0"
@@ -34,16 +34,13 @@
         >
       </article>
     </header>
-    <div
-      ref="editorContainer"
-      class="w-full h-full min-h-[300px] style-card overflow-hidden"
-    ></div>
+    <div ref="editorContainer" class="h-full min-h-[300px] w-full overflow-hidden style-card"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent, onMounted, onBeforeUnmount, watch, } from "vue";
+import { defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
 import type { Prop, Ref } from "vue";
 import * as monaco from "monaco-editor";
 import { HeartIcon } from "@heroicons/vue/24/outline";
@@ -93,9 +90,7 @@ export default defineComponent({
       return items;
     });
 
-    const handleEditorDidMount = (
-      editorInstance: monaco.editor.IStandaloneCodeEditor
-    ) => {
+    const handleEditorDidMount = (editorInstance: monaco.editor.IStandaloneCodeEditor) => {
       editor = editorInstance;
 
       editor.getModel()?.onDidChangeContent(() => {
@@ -128,14 +123,10 @@ export default defineComponent({
 
     async function fnCreateSubmission() {
       submitButtonLoading.value = true;
-      const [success, error] = await createSubmission(
-        props.challengeId,
-        props.codingChallengeId,
-        {
-          environment: language.value,
-          code: code.value,
-        }
-      );
+      const [success, error] = await createSubmission(props.challengeId, props.codingChallengeId, {
+        environment: language.value,
+        code: code.value,
+      });
       await getHearts();
       await getBalance();
       submitButtonLoading.value = false;
@@ -160,10 +151,7 @@ export default defineComponent({
         {
           label: "Buttons.Update",
           onclick: () => {
-            emit(
-              "update:modelValue",
-              environments.value[language.value].example
-            );
+            emit("update:modelValue", environments.value[language.value].example);
           },
         },
         {
