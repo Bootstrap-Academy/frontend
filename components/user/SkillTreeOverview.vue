@@ -60,21 +60,21 @@ export default {
           heading: "Headings.ActiveSkills",
           body: "Body.ActiveSkills",
           skills: rootSkills.value.filter(
-            (skill: any) => skill.progress < 100 && skill.xp > 0
+            (skill: any) => (skill.progress ?? 0) < 1 && (skill.xp ?? 0) > 0
           ),
         },
         {
           heading: "Headings.CompletedSkills",
           body: "Body.CompletedSkills",
           skills: rootSkills.value.filter(
-            (skill: any) => skill.progress === 100
+            (skill: any) => (skill.progress ?? 0) >= 1
           ),
         },
         {
           heading: "Headings.OtherSkills",
           body: "Body.OtherSkills",
           skills: rootSkills.value.filter(
-            (skill: any) => skill.progress < 100 && skill.xp === 0
+            (skill: any) => (skill.progress ?? 0) < 1 && (skill.xp ?? 0) === 0
           ),
         },
       ];
