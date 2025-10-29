@@ -27,12 +27,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue';
-import Gleap from 'gleap';
 
 export default defineComponent({
   setup() {
-    const config = useRuntimeConfig().public;
-
     const dialog = computed(() => {
       return {
         type: 'info',
@@ -42,9 +39,6 @@ export default defineComponent({
           label: 'Buttons.CookiePolicy',
           onclick: () => {
             agreed.value = true;
-            if (process.client) {
-              Gleap.initialize(config.Gleap_API_KEY);
-            }
           },
         },
         secondaryBtn: {

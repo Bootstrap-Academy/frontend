@@ -382,24 +382,6 @@
 								</a>
 							</td>
 						</tr>
-						<tr>
-							<td>Gleap</td>
-							<td>
-								Gleap GmbH, Dr.-Walter-Zumtobel-Straße 2, 6850 Dornbirn,
-								Österreich
-							</td>
-							<td>Kommunikation und Fehlermeldung/-behebung</td>
-							<td>
-								Ihre Einwilligung gem. Art. 6 Abs. 1 S. 1 lit. a DSGVO;
-								Vertragserfüllung und Durchführung vorvertraglicher Maßnahmen gem.
-								Art. 6 Abs. 1 S. 1 lit. b. DSGVO
-							</td>
-							<td>
-								<a href="https://www.gleap.io/privacy-policy" target="_blank">
-									https://www.gleap.io/privacy-policy
-								</a>
-							</td>
-						</tr>
 					</table>
 				</div>
 			</article>
