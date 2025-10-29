@@ -4,17 +4,17 @@
       <article
         class="my-10 flex flex-col flex-wrap items-center justify-center gap-6 pt-10 sm:flex-row"
       >
-        <LeaderboardTopUserCard :user="leaderBoardList[1]" v-if="!!leaderBoardList[1]" />
+        <LeaderboardTopUserCard :user="topThreeUsers[1]" v-if="!!topThreeUsers[1]" />
         <LeaderboardTopUserCard
-          :user="leaderBoardList[0]"
+          :user="topThreeUsers[0]"
           class="sm:-mt-20"
-          v-if="!!leaderBoardList[0]"
+          v-if="!!topThreeUsers[0]"
         />
-        <LeaderboardTopUserCard :user="leaderBoardList[2]" v-if="!!leaderBoardList[2]" />
+        <LeaderboardTopUserCard :user="topThreeUsers[2]" v-if="!!topThreeUsers[2]" />
       </article>
       <article class="px-3 pb-24 sm:px-10">
-        <div v-for="(user, i) of leaderBoardList" :key="i">
-          <LeaderboardUserCard v-if="user.rank > 3" :item="user" />
+        <div v-for="(user, i) of remainingUsers" :key="i">
+          <LeaderboardUserCard :item="user" />
         </div>
       </article>
     </section>
@@ -48,19 +48,24 @@
 
 <script lang="ts">
 import type { PropType } from "vue";
+import { computed } from "vue";
 import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 export default {
   props: {
     leaderBoardList: { type: Array as PropType<any>, default: [] },
   },
-  setup() {
+  setup(props) {
     const { t } = useI18n();
     const limit = useLeaderboardLimit();
     const offset = useLeaderboardOffset();
     const btnLoading = ref(false);
     const route: any = useRoute();
     const totalLeaderboardUsers = useTotalLeaderboardUsers();
+    const topThreeUsers = computed(() => props.leaderBoardList.slice(0, 3));
+    const remainingUsers = computed(() =>
+      props.leaderBoardList.slice(3).filter((user: any) => user?.rank > 3)
+    );
 
     const selectedButton = computed(() => {
       return route?.query?.selectedButton ?? "";
@@ -94,6 +99,8 @@ export default {
       btnLoading,
       offset,
       totalLeaderboardUsers,
+      topThreeUsers,
+      remainingUsers,
     };
   },
 };
