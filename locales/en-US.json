@@ -10,11 +10,23 @@
     "GetMorphcoins": "Get MorphCoins",
     "WebShop": "Web Shop"
   },
+  "VerdictHint": {
+    "OK": "All tests passed successfully.",
+    "COMPILATION_ERROR": "We could not compile your program. Review the compiler output below.",
+    "INVALID_OUTPUT_FORMAT": "The evaluator could not read your output. Make sure it matches the expected format.",
+    "MEMORY_LIMIT_EXCEEDED": "Your program used {actual_mib} MiB of memory but the limit is {limit_mib} MiB.",
+    "NO_OUTPUT": "Your program did not print any output.",
+    "PRE_CHECK_FAILED": "The evaluator rejected the submission before execution.",
+    "RUNTIME_ERROR": "Your program exited with status {exit_code}. Check the runtime logs for details.",
+    "TIME_LIMIT_EXCEEDED": "Your program ran for {actual_seconds}s but the limit is {limit_seconds}s.",
+    "WRONG_ANSWER": "The result is incorrect. Review the evaluator feedback below."
+  },
 
   "Headings": {
     "Dashboard": "Dashboard",
     "SkillTreeOverview": "Skill Tree Overview",
-    "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
+    "DragAndDropToMatchMatchings": "Match the Items",
+    "MatchingInstructions": "Click on an item from the left, then click on the matching item on the right. Or drag from left to right to draw a connection.",
     "AnswersForMatchingsRespectively": "Answers for Matchings",
     "LabelForMatchings": "Labels for Matchings",
     "NoteCannotEditMatching": "Edit Restriction",
@@ -36,6 +48,9 @@
     "Error": "Error",
     "NoErrorFound": "No Error Found",
     "ErrorMessage": "Error Message",
+    "CompilerOutput": "Compiler stderr",
+    "RuntimeStdErr": "Runtime stderr",
+    "RuntimeStdOut": "Runtime stdout",
     "ShowErrorMessage": "Show Error Message",
     "ExampleOutput": "Output",
     "Example": "Example",
@@ -817,6 +832,8 @@
     "EditChallenge": "Edit Challenge",
     "Details": "Details",
     "Load": "Load",
+    "ShowDetails": "Show details",
+    "HideDetails": "Hide details",
     "Solve": "Solve",
     "MyChallenges": "My Challenges",
     "Challenges": "Challenges",
