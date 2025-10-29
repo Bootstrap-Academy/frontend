@@ -493,6 +493,16 @@ ul li {
   @apply ml-10 list-disc mt-box;
 }
 a {
-  @apply underline-link cursor-pointer;
+  @apply relative cursor-pointer pb-2;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  width: max(50%, 25px);
+  height: 1px;
+  background-color: var(--color-accent);
+  bottom: 0;
+  left: 0;
 }
 </style>

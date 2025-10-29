@@ -641,11 +641,26 @@ ol li {
   @apply ml-10 list-decimal mt-box;
 }
 
-a:not(.table-content li a) {
-  @apply underline-link cursor-pointer;
+a {
+  @apply relative cursor-pointer pb-2;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  width: max(50%, 25px);
+  height: 1px;
+  background-color: var(--color-accent);
+  bottom: 0;
+  left: 0;
 }
 
 .table-content li a {
-  @apply block cursor-pointer mt-card-sm;
+  @apply block cursor-pointer pb-0 mt-card-sm;
+  position: static;
+}
+
+.table-content li a::after {
+  content: none;
 }
 </style>
