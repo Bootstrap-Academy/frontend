@@ -45,10 +45,14 @@
         />
 
         <article>
-          <div class="flex gap-x-2 items-center">
+          <div class="flex items-center gap-x-2">
             <p class="mb-2 ml-1">{{ t("Headings.EvaluatorCode") }}</p>
           </div>
-          <ChallengesCodeEditor :selectedLanguage="'python'" class="h-full" v-model="form.evaluator.value" />
+          <ChallengesCodeEditor
+            :selectedLanguage="'python'"
+            class="h-full"
+            v-model="form.evaluator.value"
+          />
           <!-- error if there is any during evaluator code creation-->
 
           <div v-if="!!evaluatorCodeErrorDetails.stderr">
@@ -63,7 +67,7 @@
         </article>
 
         <article>
-          <div class="flex justify-end -mb-5">
+          <div class="-mb-5 flex justify-end">
             <InputSelect
               v-if="languages.length"
               :rules="form.solution_environment.rules"
@@ -73,7 +77,7 @@
               v-model="form.solution_environment.value"
             />
           </div>
-          <div class="flex gap-2 items-center">
+          <div class="flex items-center gap-2">
             <p class="mb-2 ml-1">{{ t("Headings.SolutionCode") }}</p>
           </div>
           <ChallengesCodeEditor
@@ -84,7 +88,7 @@
 
           <div
             @click="enterExampleCode()"
-            class="text-xs text-accent justify-end -mt-4 cursor-pointer flex gap-2 items-center"
+            class="-mt-4 flex cursor-pointer items-center justify-end gap-2 text-xs text-accent"
           >
             {{ t("Headings.ClickForExampleCode") }}
             <CodeBracketIcon class="h-5 w-5" />
@@ -93,14 +97,14 @@
           <p v-if="!!SolutionCodeErrorDetails.verdict" class="mt-4">
             {{ t(SolutionCodeErrorDetails.verdict) }}
           </p>
-          <p v-if="!!SolutionCodeErrorDetails.stderr" class="mt-4">
+          <div v-if="!!SolutionCodeErrorDetails.stderr" class="mt-4">
             <span class="block">{{ t("Headings.Error") }} </span>
-            <p class="whitespace-pre text-error">{{ SolutionCodeErrorDetails.stderr }}</p>
-          </p>
-          <p v-if="!!SolutionCodeErrorDetails.stdout" class="mt-4">
+            <pre class="whitespace-pre text-error">{{ SolutionCodeErrorDetails.stderr }}</pre>
+          </div>
+          <div v-if="!!SolutionCodeErrorDetails.stdout" class="mt-4">
             <span class="block text-accent">{{ t("Headings.Output") }}</span>
-            <p class="whitespace-pre">{{ SolutionCodeErrorDetails.stdout }}</p>
-          </p>
+            <pre class="whitespace-pre">{{ SolutionCodeErrorDetails.stdout }}</pre>
+          </div>
         </article>
 
         <section class="mt-10">
@@ -113,10 +117,10 @@
                   :heading="'Headings.WhyWeUseThem'"
                   :content="'Body.WhyWeUseTests'"
                 >
-                  <InformationCircleIcon class="text-white h-6 w-6 -mt-2" />
+                  <InformationCircleIcon class="-mt-2 h-6 w-6 text-white" />
                 </Tooltip>
               </article>
-              <article class="grid grid-cols-1 md:grid-cols-2 gap-x-10">
+              <article class="grid grid-cols-1 gap-x-10 md:grid-cols-2">
                 <Input
                   :label="t('Inputs.StaticTests')"
                   :type="'number'"
@@ -140,11 +144,9 @@
           <article class="flex justify-end">
             <div
               @click="advanceSettings = !advanceSettings"
-              class="flex items-center gap-2 group cursor-pointer px-3 py-1 rounded-full w-fit bg-[#6448e433] hover:bg-[#5e41de4d]"
+              class="group flex w-fit cursor-pointer items-center gap-2 rounded-full bg-[#6448e433] px-3 py-1 hover:bg-[#5e41de4d]"
             >
-              <Cog6ToothIcon
-                class="text-white h-7 w-7 group-hover:animate-spin"
-              />
+              <Cog6ToothIcon class="h-7 w-7 text-white group-hover:animate-spin" />
               <p class="text-[#afa7dd]">
                 {{ advanceSettings ? "Hide Settings" : "Advance Settings" }}
               </p>
@@ -152,19 +154,11 @@
           </article>
         </section>
 
-        <section
-          v-if="!!!propData || user?.admin"
-          class="flex gap-3 flex-wrap justify-end"
-        >
+        <section v-if="!!!propData || user?.admin" class="flex flex-wrap justify-end gap-3">
           <InputBtn @click="closeDialog()" class="self-end" secondary mt>
             {{ t("Buttons.Close") }}
           </InputBtn>
-          <InputBtn
-            :loading="loading"
-            class="self-end"
-            @click="onclickSubmitForm()"
-            mt
-          >
+          <InputBtn :loading="loading" class="self-end" @click="onclickSubmitForm()" mt>
             <span v-if="!!propData">
               {{ t("Buttons.UpdateCodingChallenge") }}
             </span>
@@ -309,12 +303,7 @@ export default {
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             console.log(key);
 
             isValid = false;
@@ -328,8 +317,7 @@ export default {
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != "validate" && key != "body" && key != "submitting")
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -370,22 +358,18 @@ export default {
 
     async function fnEditCodingChallenge() {
       loading.value = true;
-      const [success, error] = await updateCodingChallenge(
-        props?.challengeId,
-        props.propData.id,
-        {
-          description: form.description.value,
-          // coins: !!form.coins.value ? form.coins.value : 0,
-          // xp: !!form.xp.value ? form.xp.value : 0,
-          time_limit: configs.value.time_limit,
-          memory_limit: configs.value.memory_limit,
-          static_tests: form.static_tests.value,
-          random_tests: form.random_tests.value,
-          solution_environment: form.solution_environment.value,
-          solution_code: form.solution_code.value,
-          evaluator: form.evaluator.value,
-        }
-      );
+      const [success, error] = await updateCodingChallenge(props?.challengeId, props.propData.id, {
+        description: form.description.value,
+        // coins: !!form.coins.value ? form.coins.value : 0,
+        // xp: !!form.xp.value ? form.xp.value : 0,
+        time_limit: configs.value.time_limit,
+        memory_limit: configs.value.memory_limit,
+        static_tests: form.static_tests.value,
+        random_tests: form.random_tests.value,
+        solution_environment: form.solution_environment.value,
+        solution_code: form.solution_code.value,
+        evaluator: form.evaluator.value,
+      });
       loading.value = false;
       success ? editSuccessHandler(success) : errorHandler(error);
     }
@@ -401,10 +385,7 @@ export default {
 
     function errorHandler(res: any) {
       console.log("in handler", res.error);
-      if (
-        res?.error == "Error.EvaluatorFailed" ||
-        res?.error == "Error.EvaluatorInvalidOutput"
-      ) {
+      if (res?.error == "Error.EvaluatorFailed" || res?.error == "Error.EvaluatorInvalidOutput") {
         console.log("evaluator code failed", res.details);
         evaluatorCodeErrorDetails.value = {
           stderr: res.details.run.stderr,
@@ -470,20 +451,16 @@ export default {
         form.static_tests.value = props?.propData?.static_tests ?? "";
         form.random_tests.value = props?.propData?.random_tests ?? "";
 
-        form.description.valid =
-          props?.propData.description.trim() != "" ? true : false;
+        form.description.valid = props?.propData.description.trim() != "" ? true : false;
         // form.xp.valid = props?.propData.xp >= 0 ? true : false;
         // form.coins.valid = props?.propData.coins >= 0 ? true : false;
-        form.random_tests.valid =
-          props?.propData.random_tests >= 1 ? true : false;
-        form.static_tests.valid =
-          props?.propData.static_tests >= 1 ? true : false;
+        form.random_tests.valid = props?.propData.random_tests >= 1 ? true : false;
+        form.static_tests.valid = props?.propData.static_tests >= 1 ? true : false;
       }
     }
 
     function enterExampleCode() {
-      form.solution_code.value =
-        environments.value[form.solution_environment.value].example;
+      form.solution_code.value = environments.value[form.solution_environment.value].example;
     }
 
     function clearErrorsForCode() {
