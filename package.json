@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint --max-warnings=0 --report-unused-disable-directives \"*.{js,ts,vue}\" \"components/**/*.{js,ts,vue}\" \"composables/**/*.{js,ts}\" \"pages/**/*.{js,ts,vue}\" \"plugins/**/*.{js,ts}\" \"layouts/**/*.{js,ts,vue}\"",
+    "lint": "eslint . --ext .js,.ts,.vue --no-error-on-unmatched-pattern --max-warnings=0 --report-unused-disable-directives",
     "lint:fix": "npm run lint -- --fix",
     "test:e2e": "playwright test tests/e2e",
     "test:e2e:ui": "playwright test --ui tests/e2e",
