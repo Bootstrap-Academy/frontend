@@ -94,7 +94,7 @@ export default defineComponent({
     })
 
     // ARIA-Hooks
-	// The IDs are defined here to link the h2 and p tags to the Modal component
+    // The IDs are defined here to link the h2 and p tags to the Modal component
     const titleId = 'cookie-dialog-title'
     const descId  = 'cookie-dialog-description'
 

@@ -30,20 +30,20 @@ export default defineComponent({
 // - 'close': When user presses the Escape key.	
   emit: ['backdrop', 'close'],
   props: {
-	// `labelId` links the dialog to its title for screen readers.
-	labelId: {
+    // `labelId` links the dialog to its title for screen readers.
+    labelId: {
 	  type: String,
 	  required: true,
-	},
-	// `descriptionId` links the dialog to a longer description and is optional.
-	descriptionId: {
+    },
+    // `descriptionId` links the dialog to a longer description and is optional.
+    descriptionId: {
 	  type: String,
 	  required: false,
 	  default: null,
-	},
+    },
   },
   setup(props, { emit }) {
-	// reference to main dialog content div.
+    // reference to main dialog content div.
     const panel = ref<HTMLElement | null>(null);
     const { trapFocus, untrapFocus } = useFocusTrap(panel);
 
@@ -76,7 +76,7 @@ export default defineComponent({
       document.body.style.overflow = '';
     });
 
-	// Returns the `panel` ref so the template can bind to it.
+    // Returns the `panel` ref so the template can bind to it.
     return { emit, panel };
   },
 });
