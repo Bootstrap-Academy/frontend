@@ -1,6 +1,6 @@
 <template>
   <button class="relative py-3 text-left" @blur="closeMenu">
-    <div class="flex gap-1 sm:gap-2 md:gap-4 items-center">
+    <div class="flex items-center gap-1 sm:gap-2 md:gap-4">
       <UserHearts />
       <UserCoins />
 
@@ -18,21 +18,21 @@
           @click="toggleMenu"
           :src="image"
           :alt="t('AltAttributes.UserAvatar')"
-          class="min-w-[2.5rem] min-h-[2.5rem] w-10 h-10 object-cover rounded-full"
+          class="h-10 min-h-[2.5rem] w-10 min-w-[2.5rem] rounded-full object-cover"
         />
       </div>
     </div>
 
     <Transition>
       <nav
-        class="w-60 pt-4 absolute right-0 top-[115%] z-50 bg-tertiary grid gap-5 rounded overflow-clip shadow-2xl shadow-tertiary"
+        class="absolute right-0 top-[115%] z-50 grid w-60 gap-5 overflow-clip rounded bg-tertiary pt-4 shadow-2xl shadow-tertiary"
         v-if="show"
       >
         <NuxtLink
           v-for="({ label, pathname }, i) of links"
           :key="i"
           :to="pathname"
-          class="h-fit w-full px-6 py-1.5 text-heading cursor-pointer"
+          class="h-fit w-full cursor-pointer px-6 py-1.5 text-heading"
           @click="closeMenu"
         >
           {{ t(label) }}
@@ -45,11 +45,7 @@
 </template>
 
 <script>
-import {
-  ChevronDownIcon,
-  SparklesIcon,
-  CheckBadgeIcon,
-} from "@heroicons/vue/24/solid";
+import { ChevronDownIcon, SparklesIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useNow, useDateFormat } from "@vueuse/core";
@@ -89,17 +85,9 @@ export default {
     ];
 
     const validTill = computed(() => {
-      const from = useDateFormat(
-        premiumInfo.value?.since * 1000,
-        "MMMM DD, YYYY"
-      );
-      const to = useDateFormat(
-        premiumInfo.value?.until * 1000,
-        "MMMM DD, YYYY"
-      );
-      return ` ${t("Headings.Since")}  ${from.value} ${t("Headings.Until")} ${
-        to.value
-      }`;
+      const from = useDateFormat(premiumInfo.value?.since * 1000, "MMMM DD, YYYY");
+      const to = useDateFormat(premiumInfo.value?.until * 1000, "MMMM DD, YYYY");
+      return ` ${t("Headings.Since")}  ${from.value} ${t("Headings.Until")} ${to.value}`;
     });
 
     function closeMenu() {

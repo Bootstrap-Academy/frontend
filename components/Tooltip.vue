@@ -23,12 +23,7 @@ async function calculatePosition() {
     floatingRef.value,
     {
       placement: props.placement,
-      middleware: [
-        offset(8),
-        flip(),
-        shift({ padding: 5 }),
-        arrow({ element: arrowRef.value }),
-      ],
+      middleware: [offset(8), flip(), shift({ padding: 5 }), arrow({ element: arrowRef.value })],
     }
   );
 
@@ -66,7 +61,7 @@ function show() {
 </script>
 
 <template>
-  <div class="inline-block mb-0 pb-0">
+  <div class="mb-0 inline-block pb-0">
     <div
       ref="referenceRef"
       class="cursor-pointer"
@@ -82,7 +77,7 @@ function show() {
       @mouseleave="hide"
       ref="floatingRef"
       :class="[
-        'absolute w-max max-w-[calc(100vw-50px)] sm:max-w-[380px] text-sm top-0 left-0 z-50 bg-light text-subheading p-3 rounded-md cursor-default',
+        'absolute left-0 top-0 z-50 w-max max-w-[calc(100vw-50px)] cursor-default rounded-md bg-light p-3 text-sm text-subheading sm:max-w-[380px]',
         isHidden && 'hidden',
       ]"
     >
@@ -90,10 +85,7 @@ function show() {
       <p class="mt-3" v-if="!!props.content">
         {{ t(props.content) }}
       </p>
-      <div
-        ref="arrowRef"
-        class="absolute bg-light h-[10px] w-[10px] rotate-45"
-      ></div>
+      <div ref="arrowRef" class="absolute h-[10px] w-[10px] rotate-45 bg-light"></div>
     </div>
   </div>
 </template>

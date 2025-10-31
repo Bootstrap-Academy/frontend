@@ -25,14 +25,14 @@
       <UserCoins />
     </section>
     <main
-      class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
+      class="md:h-screen-inner card grid grid-cols-1 grid-rows-[auto_auto_auto_minmax(0,70vh)] gap-card md:grid-cols-2 md:grid-rows-[auto_minmax(0,1fr)]"
     >
       <Head>
         <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
       </Head>
 
       <aside
-        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-auto min-h-[85vh]"
+        class="card grid min-h-[85vh] grid-cols-1 overflow-auto bg-secondary pt-card-sm style-card gap-card"
       >
         <ChallengesItemSubmission
           :data="challenge"
@@ -71,10 +71,7 @@ import {
   getExamples,
   useCodingExamples,
 } from "~~/composables/codingChallenges";
-import {
-  useDialogCodingChallengeFeedback,
-  useDialogSlot,
-} from "~~/composables/dialogSlot";
+import { useDialogCodingChallengeFeedback, useDialogSlot } from "~~/composables/dialogSlot";
 
 definePageMeta({
   layout: "inner",

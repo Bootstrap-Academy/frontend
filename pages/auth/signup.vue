@@ -18,39 +18,39 @@
 ✅ Form Post Api Success Handling + ✅ Translation
 -->
 <template>
-	<main
-		class="container-fluid pt-container pb-container h-screen-inner min grid gap-container grid-cols-1 midXl:grid-cols-[minmax(0,0.8fr)_auto] items-center justify-items-end"
-	>
-		<article class="hidden midXl:flex gap-8 flex-col items-center">
-			<SectionTitle
-				center
-				subheading="Buttons.Signup"
-				heading="Headings.Signup"
-				body="Body.Signup"
-			/>
-			<SvgSignup />
-		</article>
+  <main
+    class="h-screen-inner min container-fluid grid grid-cols-1 items-center justify-items-end gap-container pt-container pb-container midXl:grid-cols-[minmax(0,0.8fr)_auto]"
+  >
+    <article class="hidden flex-col items-center gap-8 midXl:flex">
+      <SectionTitle
+        center
+        subheading="Buttons.Signup"
+        heading="Headings.Signup"
+        body="Body.Signup"
+      />
+      <SvgSignup />
+    </article>
 
-		<section class="container-form">
-			<h3 class="text-center text-heading-3 mb-6 md:mb-8">
-				{{ t('Forms.Signup') }}
-			</h3>
+    <section class="container-form">
+      <h3 class="text-heading-3 mb-6 text-center md:mb-8">
+        {{ t("Forms.Signup") }}
+      </h3>
 
-			<FormSignup />
-		</section>
-	</main>
+      <FormSignup />
+    </section>
+  </main>
 </template>
 
 <script>
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 definePageMeta({
-  layout: 'inner',
+  layout: "inner",
 });
 
 export default {
   head: {
-    title: 'Signup',
+    title: "Signup",
   },
   setup() {
     const { t } = useI18n();

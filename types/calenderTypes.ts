@@ -38,16 +38,16 @@ export class WebinarEvent extends EventBase {
 export class CoachingEvent extends EventBase {
   type: "coaching" = "coaching";
   student: {
-		id: string;
-		name: string;
-		display_name: string;
-		email: string;
-		avatar_url: string;
-	} = {
-      id: "",
-      name: "",
-      display_name: "",
-      email: "",
-      avatar_url: "",
-    };
+    id: string;
+    name: string;
+    display_name: string;
+    email: string;
+    avatar_url: string;
+  } = {
+    id: "",
+    name: "",
+    display_name: "",
+    email: "",
+    avatar_url: "",
+  };
 }

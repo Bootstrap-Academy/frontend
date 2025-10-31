@@ -1,14 +1,14 @@
-import { useState } from '#app';
-import { useUser } from './user';
-export const useCoins = () => useState('coins', () => 0);
-export const usePaypalClientID = () => useState('paypalClientID', () => '');
+import { useState } from "#app";
+import { useUser } from "./user";
+export const useCoins = () => useState("coins", () => 0);
+export const usePaypalClientID = () => useState("paypalClientID", () => "");
 
 export async function getBalance() {
   const user = <any>useUser();
 
   try {
     if (!!!user.value || !!!user.value.id) {
-      throw { data: 'Missing user id' };
+      throw { data: "Missing user id" };
     }
 
     const response = await GET(`/shop/coins/${user.value.id}`);
@@ -27,7 +27,7 @@ export async function getPaypalClientID() {
     const response = await GET(`/shop/coins/paypal`);
 
     const paypalClientID = usePaypalClientID();
-    paypalClientID.value = response ?? '';
+    paypalClientID.value = response ?? "";
 
     return [response, null];
   } catch (error: any) {
@@ -48,7 +48,7 @@ export async function createPaypalOrder(body: any) {
 export async function onApproveCapturePaypalOrder(orderID: string) {
   try {
     if (!!!orderID) {
-      throw { data: 'Missing order id' };
+      throw { data: "Missing order id" };
     }
 
     const response = await POST(`/shop/coins/paypal/orders/${orderID}/capture`);

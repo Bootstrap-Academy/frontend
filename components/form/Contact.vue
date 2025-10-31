@@ -1,53 +1,48 @@
 <template>
-	<form
-		:key="keyForm"
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Name')"
-			v-model="form.name.value"
-			@valid="form.name.valid = $event"
-			:rules="form.name.rules"
-		/>
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			type="email"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
-		<Input
-			:label="t('Inputs.Subject')"
-			v-model="form.subject.value"
-			@valid="form.subject.valid = $event"
-			:rules="form.subject.rules"
-		/>
-		<InputTextarea
-			label="Inputs.Message"
-			v-model="form.message.value"
-			@valid="form.message.valid = $event"
-			:rules="form.message.rules"
-		/>
+  <form
+    :key="keyForm"
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.Name')"
+      v-model="form.name.value"
+      @valid="form.name.valid = $event"
+      :rules="form.name.rules"
+    />
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      type="email"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
+    <Input
+      :label="t('Inputs.Subject')"
+      v-model="form.subject.value"
+      @valid="form.subject.valid = $event"
+      :rules="form.subject.rules"
+    />
+    <InputTextarea
+      label="Inputs.Message"
+      v-model="form.message.value"
+      @valid="form.message.valid = $event"
+      :rules="form.message.rules"
+    />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-end"
-			@click="onclickSubmitForm()"
-			mt
-		>
-			{{ t('Buttons.SendMessage') }}
-		</InputBtn>
-	</form>
+    <InputBtn :loading="form.submitting" class="self-end" @click="onclickSubmitForm()" mt>
+      {{ t("Buttons.SendMessage") }}
+    </InputBtn>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useReCaptcha } from 'vue-recaptcha-v3';
-import type { IForm } from '~/types/form';
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useReCaptcha } from "vue-recaptcha-v3";
+import type { IForm } from "~/types/form";
 
 export default defineComponent({
   setup() {
@@ -61,37 +56,37 @@ export default defineComponent({
     const form = reactive<IForm>({
       email: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailAddress",
+          (v: string) => /.+@.+\..+/.test(v) || "Error.InputEmailForm",
         ],
       },
       name: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
-          (v: string) => v.length >= 2 || 'Error.InputMinLength_2',
-          (v: string) => v.length <= 256 || 'Error.InputMaxLength_256',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Name",
+          (v: string) => v.length >= 2 || "Error.InputMinLength_2",
+          (v: string) => v.length <= 256 || "Error.InputMaxLength_256",
         ],
       },
       subject: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Subject',
-          (v: string) => v.length >= 2 || 'Error.InputMinLength_2',
-          (v: string) => v.length <= 256 || 'Error.InputMaxLength_256',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Subject",
+          (v: string) => v.length >= 2 || "Error.InputMinLength_2",
+          (v: string) => v.length <= 256 || "Error.InputMaxLength_256",
         ],
       },
       message: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Message',
-          (v: string) => v.length >= 10 || 'Error.InputMinLength_10',
-          (v: string) => v.length <= 4096 || 'Error.InputMaxLength_4096',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Message",
+          (v: string) => v.length >= 10 || "Error.InputMinLength_10",
+          (v: string) => v.length <= 4096 || "Error.InputMaxLength_4096",
         ],
       },
       submitting: false,
@@ -99,12 +94,7 @@ export default defineComponent({
         let isValid = true;
 
         for (const key in form) {
-          if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						!form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -115,8 +105,7 @@ export default defineComponent({
       body: () => {
         let obj: any = {};
         for (const key in form) {
-          if (key != 'validate' && key != 'body' && key != 'submitting')
-            obj[key] = form[key].value;
+          if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
         return obj;
       },
@@ -127,7 +116,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha('login');
+        const token = await executeRecaptcha("login");
         return token;
       } catch (error) {
         return null;
@@ -150,15 +139,15 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar('error', 'Error.InvalidForm');
+        openSnackbar("error", "Error.InvalidForm");
       }
     }
 
     function successHandler(res: any) {
-      form.email.value = '';
-      form.name.value = '';
-      form.subject.value = '';
-      form.message.value = '';
+      form.email.value = "";
+      form.name.value = "";
+      form.subject.value = "";
+      form.message.value = "";
 
       form.email.valid = false;
       form.name.valid = false;
@@ -167,11 +156,11 @@ export default defineComponent({
 
       keyForm.value = keyForm.value + 1;
 
-      openSnackbar('success', 'Success.ContactUs');
+      openSnackbar("success", "Success.ContactUs");
     }
 
     function errorHandler(res: any) {
-      openSnackbar('error', res);
+      openSnackbar("error", res);
     }
 
     return {

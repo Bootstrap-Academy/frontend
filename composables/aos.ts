@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from "vue";
 
 export function setAOSViaParent(
   parentRef: any,
@@ -16,7 +16,7 @@ export function setAOSViaParent(
 
   const options = {
     root: null,
-    rootMargin: '0px',
+    rootMargin: "0px",
     threshold: 0.15,
   };
 
@@ -61,7 +61,7 @@ export function setStaggeringAOSViaParent(
 
   const options = {
     root: null,
-    rootMargin: '0px',
+    rootMargin: "0px",
     threshold: 0.15,
   };
 

@@ -20,30 +20,25 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form max-w-3xl">
-			<SectionTitle
-				center
-				heading="Headings.EditProfile"
-				size="sm"
-				class="mb-card mx-auto"
-			/>
-			<FormProfile :data="user" />
-		</section>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <section class="container-form max-w-3xl">
+      <SectionTitle center heading="Headings.EditProfile" size="sm" class="mx-auto mb-card" />
+      <FormProfile :data="user" />
+    </section>
+  </section>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  layout: 'inner',
-  middleware: ['auth'],
+  layout: "inner",
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Edit Profile',
+    title: "Edit Profile",
   },
   setup() {
     const user = useUser();
@@ -51,12 +46,12 @@ export default {
     onMounted(async () => {
       if (!hasEmail.value) {
         openDialog(
-          'warning',
-          'Headings.MissingEmail',
-          'Body.MissingEmail',
+          "warning",
+          "Headings.MissingEmail",
+          "Body.MissingEmail",
           true,
           {
-            label: 'Buttons.Okay',
+            label: "Buttons.Okay",
             onclick: () => {},
           },
           null

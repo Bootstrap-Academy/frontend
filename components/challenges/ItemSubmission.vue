@@ -1,71 +1,109 @@
 <template>
   <article>
     <h4 class="text-heading-3">{{ t("Headings.Submissions") }}</h4>
-    <div class="border border-primary rounded-md overflow-auto mt-3">
+    <div class="mt-3 overflow-auto rounded-md border border-primary">
       <table class="w-full overflow-scroll">
         <tr>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             No.
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Timestamp") }}
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Language") }}
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Status") }}
           </th>
           <th
-            class="px-5 py-3 border-b-2 border-primary bg-primary text-left text-sm font-semibold text-heading font-body uppercase tracking-widest"
+            class="border-b-2 border-primary bg-primary px-5 py-3 text-left text-sm font-semibold uppercase tracking-widest text-heading font-body"
           >
             {{ t("Headings.Actions") }}
           </th>
         </tr>
 
         <tr v-for="(submission, i) of submissions" :key="submission.name">
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
-          >
+          <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             #{{ i + 1 }}
           </td>
           <td
-            class="px-2 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
+            class="text-body-1 border-b border-r border-primary px-2 py-3 text-sm text-body font-body"
           >
             {{ dateFormat(submission?.creation_timestamp) }}
           </td>
           <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm"
+            class="text-body-1 border-b border-r border-primary px-5 py-3 text-sm text-body font-body"
           >
             {{ submission?.environment ?? "" }}
           </td>
-          <td class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body text-sm min-w-[200px]">
-            <div class="text-sm bg-primary p-2 rounded-md flex items-center space-x-4">
-              <div class="w-full flex space-x-2 items-center">
-                <div class="min-w-max">
+          <td
+            class="text-body-1 min-w-[220px] border-b border-r border-primary px-5 py-3 align-top text-sm text-body font-body"
+          >
+            <div class="space-y-3 rounded-md bg-primary p-3 text-sm">
+              <div class="flex items-start space-x-3">
+                <div class="mt-0.5 min-w-max">
                   <component :is="verdictIcons(submission.result?.verdict)" class="h-5 w-5" />
                 </div>
-                <span>
-                  {{ t(verdictIs(submission)) }}
-                </span>
+                <div class="space-y-1">
+                  <p class="font-semibold">
+                    {{ messageTitle(submission) }}
+                  </p>
+                  <p
+                    v-if="messageDescription(submission)"
+                    class="text-body-2 whitespace-pre-wrap text-xs"
+                  >
+                    {{ messageDescription(submission) }}
+                  </p>
+                </div>
               </div>
-              <Tooltip :heading="t('Headings.ShowErrorMessage')">
-                <ExclamationTriangleIcon v-if="submission.result.compile?.stderr || submission.result.run?.stderr"
-                  class="h-5 w-5 text-accent cursor-pointer" @click="openErrorMessageDialog(submission)" />
-              </Tooltip>
+              <div v-if="hasDetails(submission)" class="text-xs">
+                <button
+                  class="text-accent hover:underline"
+                  type="button"
+                  @click="toggleDetails(submission.id)"
+                >
+                  {{
+                    isDetailsOpen(submission.id)
+                      ? t("Buttons.HideDetails")
+                      : t("Buttons.ShowDetails")
+                  }}
+                </button>
+                <div v-if="isDetailsOpen(submission.id)" class="text-body-2 mt-2 space-y-3">
+                  <p v-if="detailSummary(submission)" class="whitespace-pre-wrap">
+                    {{ detailSummary(submission) }}
+                  </p>
+                  <div v-if="submission.result?.compile?.stderr">
+                    <p class="mb-1 font-semibold">{{ t("Headings.CompilerOutput") }}</p>
+                    <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                      >{{ submission.result.compile.stderr }}
+                    </pre>
+                  </div>
+                  <div v-if="submission.result?.run?.stderr">
+                    <p class="mb-1 font-semibold">{{ t("Headings.RuntimeStdErr") }}</p>
+                    <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                      >{{ submission.result.run.stderr }}
+                    </pre>
+                  </div>
+                  <div v-if="submission.result?.run?.stdout">
+                    <p class="mb-1 font-semibold">{{ t("Headings.RuntimeStdOut") }}</p>
+                    <pre class="overflow-x-auto whitespace-pre-wrap rounded-md bg-secondary p-2"
+                      >{{ submission.result.run.stdout }}
+                    </pre>
+                  </div>
+                </div>
+              </div>
             </div>
           </td>
-          <td
-            class="px-5 py-3 border-b border-r border-primary text-body-1 text-body font-body"
-          >
+          <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             <InputBtn
               class="w-fit"
               @click="loadSubmission(submission?.id ?? '')"
@@ -78,7 +116,7 @@
           </td>
         </tr>
       </table>
-      <p class="p-3 text-accent w-full" v-if="!submissions.length">
+      <p class="w-full p-3 text-accent" v-if="!submissions.length">
         {{ t("Headings.NoSubmissionCreated") }}
       </p>
     </div>
@@ -86,12 +124,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
 import { useDateFormat } from "@vueuse/core";
-import { CheckIcon, ExclamationTriangleIcon, NoSymbolIcon, FlagIcon, CircleStackIcon, DocumentIcon, CheckCircleIcon, ShieldExclamationIcon, PowerIcon, ClockIcon, XMarkIcon } from "@heroicons/vue/24/outline";
+import {
+  CheckIcon,
+  NoSymbolIcon,
+  FlagIcon,
+  CircleStackIcon,
+  DocumentIcon,
+  CheckCircleIcon,
+  ShieldExclamationIcon,
+  PowerIcon,
+  ClockIcon,
+  XMarkIcon,
+} from "@heroicons/vue/24/outline";
 
 export default defineComponent({
   emits: ["id"],
@@ -100,10 +150,11 @@ export default defineComponent({
     challengeId: { type: String, default: "" },
     codingChallengeId: { type: String, default: "" },
   },
-  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon, ExclamationTriangleIcon },
+  components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
     const submissions: any = useCodingSubmissions();
+    const expandedRows = ref<Record<string, boolean>>({});
 
     const verdictIs: any = (submission: any) => {
       const verdictMapping: { [key: string]: string } = {
@@ -119,7 +170,6 @@ export default defineComponent({
       };
 
       const verdict = submission.result?.verdict ?? "";
-      console.log("verdict is ", verdict);
 
       if (!submission.result) {
         return "Headings.PendingResult";
@@ -141,43 +191,62 @@ export default defineComponent({
       return formatted;
     }
     async function loadSubmission(id: any) {
-      const [success, error] = await getSubmission(
-        props.challengeId,
-        props.codingChallengeId,
-        id
-      );
+      const [success, error] = await getSubmission(props.challengeId, props.codingChallengeId, id);
 
       if (!!error) openSnackbar("error", error);
     }
 
-    function openErrorMessageDialog(submission: any) {
-      const errorMessage = submission.result.compile?.stderr || submission.result.run?.stderr;
-      openDialog(
-        'error',
-        'Headings.ErrorMessage',
-        errorMessage,
-        false,
-        {
-          label: 'Buttons.Okay',
-          onclick: async () => { },
-        },
-        {},
+    function verdictIcons(verdict: string) {
+      const verdictIconMapping: { [key: string]: any } = {
+        COMPILATION_ERROR: NoSymbolIcon,
+        INVALID_OUTPUT_FORMAT: FlagIcon,
+        MEMORY_LIMIT_EXCEEDED: CircleStackIcon,
+        NO_OUTPUT: DocumentIcon,
+        OK: CheckCircleIcon,
+        PRE_CHECK_FAILED: ShieldExclamationIcon,
+        RUNTIME_ERROR: PowerIcon,
+        TIME_LIMIT_EXCEEDED: ClockIcon,
+        WRONG_ANSWER: XMarkIcon,
+      };
+      return verdictIconMapping[verdict];
+    }
+
+    function messageTitle(submission: any) {
+      const message = submission.result?.message;
+      if (!submission.result) return t("Headings.PendingResult");
+      if (message?.title_key) return t(message.title_key);
+      return t(verdictIs(submission));
+    }
+
+    function messageDescription(submission: any) {
+      const message = submission.result?.message;
+      if (!message?.body_key) return "";
+      const params = message.body_params ?? {};
+      return t(message.body_key, params);
+    }
+
+    function detailSummary(submission: any) {
+      const detail = submission.result?.message?.detail;
+      return detail ?? "";
+    }
+
+    function hasDetails(submission: any) {
+      return (
+        !!detailSummary(submission) ||
+        !!submission.result?.compile?.stderr ||
+        !!submission.result?.run?.stderr ||
+        !!submission.result?.run?.stdout
       );
     }
 
-    function verdictIcons(verdict: string){
-      const verdictIconMapping: { [key: string]: any } = {
-        "COMPILATION_ERROR": NoSymbolIcon,
-        "INVALID_OUTPUT_FORMAT": FlagIcon,
-        "MEMORY_LIMIT_EXCEEDED": CircleStackIcon,
-        "NO_OUTPUT": DocumentIcon,
-        "OK": CheckCircleIcon,
-        "PRE_CHECK_FAILED": ShieldExclamationIcon,
-        "RUNTIME_ERROR": PowerIcon,
-        "TIME_LIMIT_EXCEEDED": ClockIcon,
-        "WRONG_ANSWER": XMarkIcon,
-      };
-      return verdictIconMapping[verdict];
+    function toggleDetails(id: string) {
+      const key = String(id ?? "");
+      expandedRows.value[key] = !expandedRows.value[key];
+    }
+
+    function isDetailsOpen(id: string) {
+      const key = String(id ?? "");
+      return !!expandedRows.value[key];
     }
 
     return {
@@ -187,8 +256,13 @@ export default defineComponent({
       loadSubmission,
       dateFormat,
       verdictIs,
-      openErrorMessageDialog,
       verdictIcons,
+      messageTitle,
+      messageDescription,
+      detailSummary,
+      hasDetails,
+      toggleDetails,
+      isDetailsOpen,
       CheckIcon,
       CodeBracketIcon,
       CheckBadgeIcon,
@@ -201,7 +275,6 @@ export default defineComponent({
       PowerIcon,
       ClockIcon,
       XMarkIcon,
-      ExclamationTriangleIcon,
     };
   },
 });

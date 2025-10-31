@@ -2,28 +2,28 @@
   <article class="progress-card rounded bg-primary">
     <!-- progress bar -->
     <div
-      class="progress-bar h-1 w-full rounded items-center"
+      class="progress-bar h-1 w-full items-center rounded"
       :style="{ background: progressBar }"
     ></div>
 
     <!-- skill -->
-    <article class="flex items-center flex-wrap py-3 px-4 bg-primary rounded gap-3 md:gap-5">
+    <article class="flex flex-wrap items-center gap-3 rounded bg-primary px-4 py-3 md:gap-5">
       <img
         :src="image"
-        class="h-10 w-10 sm:h-12 sm:w-12 object-cover rounded order-1"
+        class="order-1 h-10 w-10 rounded object-cover sm:h-12 sm:w-12"
         :alt="t('AltAttributes.SkillCover')"
       />
 
-      <div class="grow order-3 md:order-2 w-full md:w-min">
+      <div class="order-3 w-full grow md:order-2 md:w-min">
         <h6 class="text-body-1 break-words capitalize">
           {{ name }}
         </h6>
         <div
-          class="mt-1 flex flex-nowrap text-nowrap gap-box w-full items-center text-body-2 text-subheading font-body"
+          class="text-body-2 mt-1 flex w-full flex-nowrap items-center text-nowrap text-subheading font-body gap-box"
         >
           <div>
             <span class="text-body">{{ completed }}/{{ total }}</span>
-             {{t("Headings.Skills")}}
+            {{ t("Headings.Skills") }}
           </div>
           <div class="text-heading-2 leading-none text-accent">•</div>
           <div>
@@ -38,19 +38,15 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-between md:justify-between-0 gap-x-3 md:gap-x-5 order-2 md:order-3 grow md:grow-0">
+      <div
+        class="md:justify-between-0 order-2 flex grow items-center justify-between gap-x-3 md:order-3 md:grow-0 md:gap-x-5"
+      >
         <Chip xs :color="level.color">
           {{ t(level.text) }}
         </Chip>
 
         <div class="flex gap-2">
-          <Icon
-            @click="onclickViewSkillPath"
-            class="cursor-pointer"
-            rounded
-            sm
-            :icon="EyeIcon"
-          />
+          <Icon @click="onclickViewSkillPath" class="cursor-pointer" rounded sm :icon="EyeIcon" />
           <Icon
             @click="onclickViewSkillProgressDetails"
             class="cursor-pointer"
@@ -66,11 +62,7 @@
     </article>
 
     <!-- sub skill table -->
-    <SkillTreeProgressSkillsTable
-      v-if="show"
-      :data="skills"
-      :rootSkillId="id"
-    />
+    <SkillTreeProgressSkillsTable v-if="show" :data="skills" :rootSkillId="id" />
   </article>
 </template>
 
@@ -220,9 +212,8 @@ export default defineComponent({
     });
 
     const completed = computed(() => {
-      return skills.value.filter(
-        (skill: any) => skill.level >= 50 || skill.completed == true
-      ).length;
+      return skills.value.filter((skill: any) => skill.level >= 50 || skill.completed == true)
+        .length;
     });
 
     const progress = computed(() => {

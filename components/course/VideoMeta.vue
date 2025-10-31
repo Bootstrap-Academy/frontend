@@ -1,56 +1,45 @@
 <template>
-  <header
-    class="flex gap-card justify-between items-center flex-wrap md:flex-nowrap"
-  >
+  <header class="flex flex-wrap items-center justify-between gap-card md:flex-nowrap">
     <div class="flex flex-wrap items-center">
       <NuxtLink :to="path" class="flex">
-        <span class="max-w-max clamp"> {{ course?.title ?? "" }} </span>
+        <span class="clamp max-w-max"> {{ course?.title ?? "" }} </span>
         <span>/</span>
       </NuxtLink>
 
-      <h1 class="text-heading-2 capitalize mr-6 ml-2">
+      <h1 class="text-heading-2 ml-2 mr-6 capitalize">
         {{ activeLecture?.title ?? "" }}
       </h1>
-      <Tooltip
-        :heading="'Headings.Completed'"
-        :content="''"
-        :placement="'right'"
-      >
+      <Tooltip :heading="'Headings.Completed'" :content="''" :placement="'right'">
         <CheckBadgeIcon
           v-if="
-            activeLecture.completed ||
-            listOfCompletedCourses.find((lec) => lec == activeLecture.id)
+            activeLecture.completed || listOfCompletedCourses.find((lec) => lec == activeLecture.id)
           "
           class="h-10 w-10 text-accent"
         />
       </Tooltip>
     </div>
 
-    <div class="flex gap-box flex-wrap h-fit flex-shrink-0 mt-0.5">
+    <div class="mt-0.5 flex h-fit flex-shrink-0 flex-wrap gap-box">
       <template
         v-if="
-          activeLecture.completed ||
-          listOfCompletedCourses.find((lec) => lec == activeLecture.id)
+          activeLecture.completed || listOfCompletedCourses.find((lec) => lec == activeLecture.id)
         "
       >
-        <Btn i-if="user?.admin || canCreate" :icon="PlusCircleIcon" secondary sm @click="addTask">{{ t("Buttons.AddTask") }}</Btn>
+        <Btn i-if="user?.admin || canCreate" :icon="PlusCircleIcon" secondary sm @click="addTask">{{
+          t("Buttons.AddTask")
+        }}</Btn>
       </template>
 
-      <Btn
-        sm
-        v-else-if="!activeLecture.completed"
-        secondary
-        @click="markLectureAsComplete()"
-      >
+      <Btn sm v-else-if="!activeLecture.completed" secondary @click="markLectureAsComplete()">
         {{ t("Buttons.MarkCompleted") }}
       </Btn>
     </div>
 
     <div
-      class="block midXl:hidden bg-tertiary py-1 px-2 rounded-lg h-fit w-fit cursor-pointer"
+      class="block h-fit w-fit cursor-pointer rounded-lg bg-tertiary px-2 py-1 midXl:hidden"
       @click="emit('update:modelValue', !modelValue)"
     >
-      <p class="text-accent text-body-2 justify-self-end">Content</p>
+      <p class="text-body-2 justify-self-end text-accent">Content</p>
     </div>
 
     <CourseVideoControls
@@ -61,13 +50,13 @@
       :activeLecture="activeLecture"
       v-if="!!activeSection && !!activeLecture"
     />
-    
+
     <SkillSelectionModal
       :show="showSkillSelection"
       :skills="possibleRootSkills"
       @close="showSkillSelection = false"
       @select="handleSkillSelection"
-  />
+    />
   </header>
 </template>
 
@@ -159,7 +148,7 @@ export default defineComponent({
       }
     });
 
-    function addTask(){
+    function addTask() {
       const subSkillID = props.subSkillID || courseID.value;
       let skillID = selectedSkillID.value || props.skillID;
 
@@ -167,8 +156,10 @@ export default defineComponent({
         skillID = possibleRootSkills.value[0].id;
       }
 
-      if (skillID){
-        return router.push(`/quizzes/${skillID}/${subSkillID}/create?course=${courseID.value}&section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel.value}`);
+      if (skillID) {
+        return router.push(
+          `/quizzes/${skillID}/${subSkillID}/create?course=${courseID.value}&section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel.value}`
+        );
       }
 
       showSkillSelection.value = true;
@@ -176,10 +167,7 @@ export default defineComponent({
 
     async function markLectureAsComplete() {
       setLoading(true);
-      const [success, error] = await completeLecture(
-        courseID.value,
-        activeLectureID.value
-      );
+      const [success, error] = await completeLecture(courseID.value, activeLectureID.value);
       setLoading(false);
 
       if (success) {

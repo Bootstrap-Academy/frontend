@@ -27,7 +27,7 @@ async function createApiFetch(url, method, body, query) {
   const config = useRuntimeConfig().public;
   const accessToken = getAccessToken();
 
-  return $fetch(url, {
+  const requestOptions = {
     baseURL: config.BASE_API_URL,
     method: method,
     body: body,
@@ -38,7 +38,20 @@ async function createApiFetch(url, method, body, query) {
     onRequest,
     onResponse,
     onResponseError,
-  });
+  };
+
+  try {
+    return await $fetch(url, requestOptions);
+  } catch (error) {
+    const retryResult = await attemptAuthRetry(error, url, error?.options ?? requestOptions);
+    if (retryResult.handled) {
+      if (retryResult.success) {
+        return retryResult.data;
+      }
+      throw retryResult.error ?? error;
+    }
+    throw error;
+  }
 }
 
 const onRequest = async ({ request, options }) => {
@@ -69,7 +82,9 @@ const onResponse = async ({ request, options, response }) => {
   }
 };
 
-const onResponseError = async ({ request, options, response }) => {
+const onResponseError = async (context) => {
+  const { options } = context;
+  const response = context.response;
   // if (response.status == 403) {
   //   console.log("resoinse._Data", response._data.detail);
   //   openSnackbar("error", "Error.NotAllowed");
@@ -98,22 +113,23 @@ const onResponseError = async ({ request, options, response }) => {
     // console.log("error", details);
   }
 
+  const detailsLower = typeof details === "string" ? details.toLocaleLowerCase() : "";
+  const errorLower =
+    typeof response?._data?.error === "string" ? response._data.error.toLocaleLowerCase() : "";
+
   if (
-    details.toLocaleLowerCase().includes("invalid token") ||
-    details.toLocaleLowerCase().includes("invalid refresh token")
+    response?.status === 401 &&
+    !options._retry &&
+    (detailsLower.includes("invalid token") ||
+      detailsLower.includes("invalid refresh token") ||
+      errorLower.includes("invalid_token"))
   ) {
-    const router = useRouter();
-    const route = useRoute();
-    if (
-      route.fullPath.includes("/auth") ||
-      route.fullPath == "/" ||
-      route.fullPath == "/contact" ||
-      route.fullPath == "/skill-tree"
-    ) {
-    } else {
-      setStates(null);
-      router.push(`/auth/login?redirect=${route.fullPath}`);
-    }
+    options._shouldRetry = true;
+    return;
+  }
+
+  if (detailsLower.includes("invalid token") || detailsLower.includes("invalid refresh token")) {
+    logoutAfterInvalidToken();
   }
 
   if (details.includes("user already exists")) {
@@ -222,4 +238,107 @@ function isAccessTokenExpired() {
   } catch (error) {
     return false;
   }
+}
+
+async function attemptAuthRetry(error, url, options) {
+  const response = error?.response;
+  if (!response || response.status !== 401 || !options._shouldRetry) {
+    return { handled: false };
+  }
+
+  options._shouldRetry = false;
+
+  const [data, retryError] = await retryRequestWithFreshToken(url, options);
+  if (data !== null) {
+    return { handled: true, success: true, data };
+  }
+
+  if (!retryError || retryError?.response?.status === 401) {
+    logoutAfterInvalidToken();
+  }
+
+  return { handled: true, success: false, error: retryError ?? error };
+}
+
+async function retryRequestWithFreshToken(request, options) {
+  const refreshed = await ensureFreshAccessToken();
+  if (!refreshed) {
+    return [null, null];
+  }
+
+  const retryOptions = cloneRequestOptions(options);
+  retryOptions._retry = true;
+
+  try {
+    const data = await $fetch(request, retryOptions);
+    return [data, null];
+  } catch (error) {
+    return [null, error];
+  }
+}
+
+async function ensureFreshAccessToken() {
+  let release;
+
+  try {
+    if (mutex.isLocked()) {
+      await mutex.waitForUnlock();
+    } else {
+      release = await mutex.acquire();
+      const [success] = await refresh();
+      if (!success) {
+        return false;
+      }
+    }
+  } catch (error) {
+    return false;
+  } finally {
+    if (release) {
+      release();
+    }
+  }
+
+  return !!getAccessToken();
+}
+
+function cloneRequestOptions(options) {
+  const baseOptions = options ? { ...options } : {};
+  const headers = normalizeHeaders(baseOptions.headers);
+  const accessToken = getAccessToken();
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  baseOptions.headers = headers;
+  return baseOptions;
+}
+
+function logoutAfterInvalidToken() {
+  const router = useRouter();
+  const route = useRoute();
+
+  setStates(null);
+
+  if (
+    route.fullPath.includes("/auth") ||
+    route.fullPath === "/" ||
+    route.fullPath === "/contact" ||
+    route.fullPath === "/skill-tree"
+  ) {
+    return;
+  }
+
+  router.push(`/auth/login?redirect=${route.fullPath}`);
+}
+
+function normalizeHeaders(headers) {
+  if (!headers) {
+    return {};
+  }
+
+  if (headers instanceof Headers) {
+    return Object.fromEntries(headers.entries());
+  }
+
+  return { ...headers };
 }

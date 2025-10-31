@@ -1,91 +1,122 @@
 <template>
   <div>
-    <main class="container pb-card mt-card-sm">
+    <main class="container mt-card-sm pb-card">
       <div class="flex justify-center">
-        <div class="flex flex-col items-center max-w-max mb-8">
-          <div class="py-2 px-4 md:py-3 md:px-6 bg-secondary mb-4 style-box w-full flex justify-center items-center">
+        <div class="mb-8 flex max-w-max flex-col items-center">
+          <div
+            class="mb-4 flex w-full items-center justify-center bg-secondary px-4 py-2 style-box md:px-6 md:py-3"
+          >
             <template v-for="(path, i) of breadcrumbs" :key="i">
-              <NuxtLink v-if="path.to" :to="path.to" class="inline-block text-body-2">
+              <NuxtLink v-if="path.to" :to="path.to" class="text-body-2 inline-block">
                 {{ t(path.label) }}
               </NuxtLink>
-              <h1 v-else class="text-heading-2 capitalize inline-block">
+              <h1 v-else class="text-heading-2 inline-block capitalize">
                 {{ t(path.label) }}
               </h1>
-              <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-                /
-              </span>
+              <span v-if="i < breadcrumbs.length - 1" class="mx-3 text-accent"> / </span>
             </template>
           </div>
 
-          <div v-if="quizzesToShow.length > 0 || selectedOption != 0" class="flex justify-center w-full">
-            <InputButtonToggle :mobileResponsive="true" v-model="selectedOption" :buttonOptions="buttonOptions"
-              class="w-full" />
+          <div
+            v-if="quizzesToShow.length > 0 || selectedOption != 0"
+            class="flex w-full justify-center"
+          >
+            <InputButtonToggle
+              :mobileResponsive="true"
+              v-model="selectedOption"
+              :buttonOptions="buttonOptions"
+              class="w-full"
+            />
           </div>
         </div>
       </div>
 
       <div class="flex max-md:flex-col max-md:items-center">
-        <div class="lg:w-2/5 md:w-3/5 w-full">
-          <p class="mb-2 text-xs flex justify-center md:pt-8"
-            v-if="!!arrayOfSubtasks.length && !!quizzesToShow?.length">
-          <p v-if="selectedOption === 0">
-            <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span>:
-            {{
-              t("Headings.AmountSolvedQuizzes", {
-                amount: arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length,
-                total: arrayOfSubtasks?.length
-              })
-            }}
-          </p>
-          <p v-else-if="selectedOption === 1">
-            <span class="text-accent">{{ t("Headings.UnsolvedQuizzes") }}</span>:
-            {{ quizzesToShow?.length }}
-          </p>
-          <p v-else-if="selectedOption === 2">
-            <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span>:
-            {{ quizzesToShow?.length }}
-          </p>
-          <p v-else-if="selectedOption === 3">
-            <span class="text-accent">{{ t("Headings.OwnQuizzes") }}</span>:
-            {{ quizzesToShow?.length }}
-          </p>
-          </p>
-          <aside class="p-2 grid max-h-[600px] h-fit overflow-auto gap-4" v-if="quizzesToShow.length">
+        <div class="w-full md:w-3/5 lg:w-2/5">
+          <div
+            class="mb-2 flex justify-center text-xs md:pt-8"
+            v-if="!!arrayOfSubtasks.length && !!quizzesToShow?.length"
+          >
+            <p v-if="selectedOption === 0">
+              <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span
+              >:
+              {{
+                t("Headings.AmountSolvedQuizzes", {
+                  amount: solvedSubtaskCount,
+                  total: totalSubtaskCount,
+                })
+              }}
+            </p>
+            <p v-else-if="selectedOption === 1">
+              <span class="text-accent">{{ t("Headings.UnsolvedQuizzes") }}</span
+              >:
+              {{ quizzesToShow?.length }}
+            </p>
+            <p v-else-if="selectedOption === 2">
+              <span class="text-accent">{{ t("Headings.SolvedQuizzes") }}</span
+              >:
+              {{ quizzesToShow?.length }}
+            </p>
+            <p v-else-if="selectedOption === 3">
+              <span class="text-accent">{{ t("Headings.OwnQuizzes") }}</span
+              >:
+              {{ quizzesToShow?.length }}
+            </p>
+          </div>
+          <aside
+            class="grid h-fit max-h-[600px] gap-4 overflow-auto p-2"
+            v-if="quizzesToShow.length"
+          >
             <template v-if="loading">
               <QuizCardSkeleton v-for="n in 9" :key="n" class="w-full" />
             </template>
 
             <template v-else-if="quizzesToShow && quizzesToShow.length">
-              <div class="max-h-fit grid gap-card">
-                <QuizCard :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'" class="max-h-fit" :class="quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''
-                  " v-for="(quiz, i) of sortQuizzes()" :key="i" full :data="quiz" @click="solveThis(quiz)" />
+              <div class="grid max-h-fit gap-card">
+                <QuizCard
+                  :id="querySubTaskId == quiz.id ? querySubTaskId : 'none'"
+                  class="max-h-fit"
+                  :class="quiz?.id == selectedQuiz?.id ? 'border border-accent' : ''"
+                  v-for="(quiz, i) of sortQuizzes()"
+                  :key="i"
+                  full
+                  :data="quiz"
+                  @click="solveThis(quiz)"
+                />
               </div>
             </template>
           </aside>
         </div>
-        <FormQuizAnswer :amount-questions-left="quizzesToShow.filter((quiz: any) => !quiz.solved).length"
-          v-if="quizzesToShow.length || loading" :data="selectedQuiz ?? quizzesToShow[0]"
-          @solved="setSolvedLocally($event)" @rated="setRatedLocally($event)" @nextQuestion="nextQuestion($event)"
-          @updateQuestion="updateQuestion($event)" class="lg:w-3/5 md:w-2/5 w-full" />
+        <FormQuizAnswer
+          :amount-questions-left="quizzesToShow.filter((quiz: any) => !quiz.solved).length"
+          v-if="quizzesToShow.length || loading"
+          :data="selectedQuiz ?? quizzesToShow[0]"
+          @solved="setSolvedLocally($event)"
+          @rated="setRatedLocally($event)"
+          @nextQuestion="nextQuestion($event)"
+          @updateQuestion="updateQuestion($event)"
+          class="w-full md:w-2/5 lg:w-3/5"
+        />
       </div>
     </main>
-    <div v-if="!loading && quizzesToShow.length > 0 && arrayOfSubtasks.filter((quiz: any) => !quiz.solved).length == 0">
-      <CheckCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
-      <p class="text-center w-full mb-20 text-xl">
-        {{
-          t("Headings.AllSolved")
-        }}
+    <div v-if="!loading && quizzesToShow.length > 0 && unsolvedSubtaskCount === 0">
+      <CheckCircleIcon class="mx-auto mb-8 h-20 w-20 text-accent" />
+      <p class="mb-20 w-full text-center text-xl">
+        {{ t("Headings.AllSolved") }}
       </p>
     </div>
     <div v-else-if="!loading && quizzesToShow.length == 0">
-      <MagnifyingGlassCircleIcon class="text-accent w-20 h-20 mb-8 mx-auto" />
-      <p class="text-center w-full mb-20 text-xl">
+      <MagnifyingGlassCircleIcon class="mx-auto mb-8 h-20 w-20 text-accent" />
+      <p class="mb-20 w-full text-center text-xl">
         {{
-          t(selectedOption == 0 ? "Headings.EmptyTasksForThis" : "Headings.EmptyTasksForThisFilter", {
-            placeholder: t(notFoundFor),
-            filter: t(buttonOptions[selectedOption].name),
-            type: t("Headings.Quizzes"),
-          })
+          t(
+            selectedOption == 0 ? "Headings.EmptyTasksForThis" : "Headings.EmptyTasksForThisFilter",
+            {
+              placeholder: t(notFoundFor),
+              filter: t(buttonOptions[selectedOption].name),
+              type: t("Headings.Quizzes"),
+            }
+          )
         }}
       </p>
     </div>
@@ -105,7 +136,7 @@ import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/ou
 export default defineComponent({
   components: {
     CheckCircleIcon,
-    MagnifyingGlassCircleIcon
+    MagnifyingGlassCircleIcon,
   },
   setup() {
     const { t } = useI18n();
@@ -247,10 +278,7 @@ export default defineComponent({
 
     async function manageAllDataForQuizzes() {
       if (!!querySubTaskId.value && !!taskId.value) {
-        const [success, error] = await getSubTaskInQuiz(
-          taskId.value,
-          querySubTaskId.value
-        );
+        const [success, error] = await getSubTaskInQuiz(taskId.value, querySubTaskId.value);
         if (success) selectedQuiz.value = success;
       }
 
@@ -295,9 +323,18 @@ export default defineComponent({
       return quiz.creator === user.value?.id;
     }
 
+    const totalSubtaskCount = computed(() => arrayOfSubtasks.value.length);
+    const solvedSubtaskCount = computed(
+      () => arrayOfSubtasks.value.filter((quiz: any) => quiz.solved).length
+    );
+    const unsolvedSubtaskCount = computed(() => totalSubtaskCount.value - solvedSubtaskCount.value);
+
     function sortQuizzes() {
-      return quizzesToShow.value
-        .sort((prevItem: { solved: boolean; creator: string }, nextItem: { solved: boolean; creator: string }) => {
+      return quizzesToShow.value.sort(
+        (
+          prevItem: { solved: boolean; creator: string },
+          nextItem: { solved: boolean; creator: string }
+        ) => {
           const prevSolved = prevItem.solved;
           const nextSolved = nextItem.solved;
           const prevOwn = isQuizOwner(prevItem);
@@ -310,29 +347,30 @@ export default defineComponent({
           if (prevSolved !== nextSolved) return prevSolved ? 1 : -1;
 
           return 0;
-        });
+        }
+      );
     }
 
     watch(selectedOption, (selectedOptionValue) => {
       switch (selectedOptionValue) {
-      case 0: // All
-        quizzesToShow.value = arrayOfSubtasks.value;
-        break;
-      case 1: // Unsolved
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz: { solved: boolean; creator: string }) => !quiz.solved && !isQuizOwner(quiz)
-        );
-        break;
-      case 2: // Solved
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz: { solved: boolean; creator: string }) => quiz.solved && !isQuizOwner(quiz)
-        );
-        break;
-      case 3: // Own
-        quizzesToShow.value = arrayOfSubtasks.value.filter(
-          (quiz: { solved: boolean; creator: string }) => isQuizOwner(quiz)
-        );
-        break;
+        case 0: // All
+          quizzesToShow.value = arrayOfSubtasks.value;
+          break;
+        case 1: // Unsolved
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => !quiz.solved && !isQuizOwner(quiz)
+          );
+          break;
+        case 2: // Solved
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => quiz.solved && !isQuizOwner(quiz)
+          );
+          break;
+        case 3: // Own
+          quizzesToShow.value = arrayOfSubtasks.value.filter(
+            (quiz: { solved: boolean; creator: string }) => isQuizOwner(quiz)
+          );
+          break;
       }
     });
 
@@ -368,6 +406,9 @@ export default defineComponent({
       breadcrumbs,
       querySubTaskId,
       sortQuizzes,
+      totalSubtaskCount,
+      solvedSubtaskCount,
+      unsolvedSubtaskCount,
     };
   },
 });

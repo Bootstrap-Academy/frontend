@@ -1,95 +1,85 @@
 <template>
-	<form
-		class="flex flex-col gap-box"
-		:class="{ 'form-submitting': form.submitting }"
-		@submit.prevent="onclickSubmitForm()"
-		ref="refForm"
-	>
-		<Input
-			:label="t('Inputs.Nickname')"
-			v-model="form.name.value"
-			@valid="form.name.valid = $event"
-			:rules="form.name.rules"
-		/>
+  <form
+    class="flex flex-col gap-box"
+    :class="{ 'form-submitting': form.submitting }"
+    @submit.prevent="onclickSubmitForm()"
+    ref="refForm"
+  >
+    <Input
+      :label="t('Inputs.Nickname')"
+      v-model="form.name.value"
+      @valid="form.name.valid = $event"
+      :rules="form.name.rules"
+    />
 
-		<Input
-			:label="t('Inputs.Name')"
-			v-model="form.display_name.value"
-			@valid="form.display_name.valid = $event"
-			:rules="form.display_name.rules"
-		/>
+    <Input
+      :label="t('Inputs.Name')"
+      v-model="form.display_name.value"
+      @valid="form.display_name.valid = $event"
+      :rules="form.display_name.rules"
+    />
 
-		<Input
-			:label="t('Inputs.EmailAddress')"
-			type="email"
-			v-model="form.email.value"
-			@valid="form.email.valid = $event"
-			:rules="form.email.rules"
-		/>
+    <Input
+      :label="t('Inputs.EmailAddress')"
+      type="email"
+      v-model="form.email.value"
+      @valid="form.email.valid = $event"
+      :rules="form.email.rules"
+    />
 
-		<Input
-			v-if="!register_token"
-			:label="t('Inputs.Password')"
-			type="password"
-			v-model="form.password.value"
-			@valid="form.password.valid = $event"
-			:rules="form.password.rules"
-		/>
+    <Input
+      v-if="!register_token"
+      :label="t('Inputs.Password')"
+      type="password"
+      v-model="form.password.value"
+      @valid="form.password.valid = $event"
+      :rules="form.password.rules"
+    />
 
-		<InputCheckbox
-			label="Links.IAgreeTo"
-			id="TermsAndConditions"
-			:link="{
-				to: '/docs/terms-and-conditions',
-				label: 'Links.TermsAndConditions',
-			}"
-			target="_blank"
-			required
-			v-model="form.termsAndConditions.value"
-			@valid="form.termsAndConditions.valid = $event"
-		/>
+    <InputCheckbox
+      label="Links.IAgreeTo"
+      id="TermsAndConditions"
+      :link="{
+        to: '/docs/terms-and-conditions',
+        label: 'Links.TermsAndConditions',
+      }"
+      target="_blank"
+      required
+      v-model="form.termsAndConditions.value"
+      @valid="form.termsAndConditions.valid = $event"
+    />
 
-		<InputCheckbox
-			label="Links.IAgreeTo"
-			id="privacy"
-			:link="{
-				to: '/docs/privacy',
-				label: 'Links.Privacy',
-			}"
-			target="_blank"
-			required
-			v-model="form.privacy.value"
-			@valid="form.privacy.valid = $event"
-		/>
+    <InputCheckbox
+      label="Links.IAgreeTo"
+      id="privacy"
+      :link="{
+        to: '/docs/privacy',
+        label: 'Links.Privacy',
+      }"
+      target="_blank"
+      required
+      v-model="form.privacy.value"
+      @valid="form.privacy.valid = $event"
+    />
 
-		<InputCheckbox
-			id="Newsletter"
-			label="Links.Newsletter"
-			v-model="form.newsletter.value"
-		/>
+    <InputCheckbox id="Newsletter" label="Links.Newsletter" v-model="form.newsletter.value" />
 
-		<InputBtn
-			:loading="form.submitting"
-			class="self-center"
-			@click="onclickSubmitForm()"
-			mb
-			mt
-		>
-			{{ t('Buttons.CreateAccount') }}
-		</InputBtn>
+    <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mb mt>
+      {{ t("Buttons.CreateAccount") }}
+    </InputBtn>
 
-		<NuxtLink to="/auth/login" class="self-center">
-			{{ t('Links.AlreadyHaveAccount') }}
-			<span class="text-accent">{{ t('Links.GoToLogin') }}</span>
-		</NuxtLink>
-	</form>
+    <NuxtLink to="/auth/login" class="self-center">
+      {{ t("Links.AlreadyHaveAccount") }}
+      <span class="text-accent">{{ t("Links.GoToLogin") }}</span>
+    </NuxtLink>
+  </form>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useReCaptcha } from 'vue-recaptcha-v3';
-import type { IForm } from '~/types/form';
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useReCaptcha } from "vue-recaptcha-v3";
+import type { IForm } from "~/types/form";
 
 export default defineComponent({
   setup() {
@@ -101,41 +91,39 @@ export default defineComponent({
     // ============================================================= reactive
     const form = reactive<IForm>({
       name: {
-        value: '',
+        value: "",
         valid: false,
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Nickname',
-          (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
-          (v: string) => v.length <= 32 || 'Error.InputMinLength_32',
-          (v: string) =>
-            /^[a-zA-Z\d]{3,32}$/.test(v) || 'Error.InputNicknameError',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Nickname",
+          (v: string) => v.length >= 3 || "Error.InputMinLength_3",
+          (v: string) => v.length <= 32 || "Error.InputMinLength_32",
+          (v: string) => /^[a-zA-Z\d]{3,32}$/.test(v) || "Error.InputNicknameError",
         ],
       },
       display_name: {
-        value: '',
+        value: "",
         valid: false,
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Name',
-          (v: string) => v.length >= 3 || 'Error.InputMinLength_3',
-          (v: string) => v.length <= 64 || 'Error.InputMinLength_64',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Name",
+          (v: string) => v.length >= 3 || "Error.InputMinLength_3",
+          (v: string) => v.length <= 64 || "Error.InputMinLength_64",
         ],
       },
       email: {
-        value: '',
+        value: "",
         valid: false,
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.EmailAddress',
-          (v: string) => /.+@.+\..+/.test(v) || 'Error.InputEmailForm',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.EmailAddress",
+          (v: string) => /.+@.+\..+/.test(v) || "Error.InputEmailForm",
         ],
       },
       password: {
         valid: false,
-        value: '',
+        value: "",
         rules: [
-          (v: string) => !!v || 'Error.InputEmpty_Inputs.Password',
+          (v: string) => !!v || "Error.InputEmpty_Inputs.Password",
           (v: string) =>
-            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) ||
-						'Error.InputPasswordError',
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || "Error.InputPasswordError",
         ],
       },
       termsAndConditions: {
@@ -160,11 +148,11 @@ export default defineComponent({
 
         for (const key in form) {
           if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'newsletter' &&
-						!form[key].valid
+            key != "validate" &&
+            key != "body" &&
+            key != "submitting" &&
+            key != "newsletter" &&
+            !form[key].valid
           ) {
             isValid = false;
           }
@@ -177,12 +165,12 @@ export default defineComponent({
         let obj: any = {};
         for (const key in form) {
           if (
-            key != 'validate' &&
-						key != 'body' &&
-						key != 'submitting' &&
-						key != 'termsAndConditions' &&
-						key != 'newsletter' &&
-						key != 'privacy'
+            key != "validate" &&
+            key != "body" &&
+            key != "submitting" &&
+            key != "termsAndConditions" &&
+            key != "newsletter" &&
+            key != "privacy"
           )
             obj[key] = form[key].value;
         }
@@ -195,7 +183,7 @@ export default defineComponent({
     const getReCaptchaToken = async () => {
       try {
         await recaptchaLoaded();
-        const token = await executeRecaptcha('login');
+        const token = await executeRecaptcha("login");
         return token;
       } catch (error) {
         return null;
@@ -205,17 +193,17 @@ export default defineComponent({
     // ============================================================= OAuth Signup
     const route = useRoute();
     const register_token = computed(() => {
-      return route?.query?.register_token ?? '';
+      return route?.query?.register_token ?? "";
     });
     onMounted(() => {
       if (!!register_token.value) {
         openDialog(
-          'success',
-          'Headings.OAuthSuccess',
-          'Success.OAuthSuccess',
+          "success",
+          "Headings.OAuthSuccess",
+          "Success.OAuthSuccess",
           true,
           {
-            label: 'Buttons.Okay',
+            label: "Buttons.Okay",
             onclick: () => {},
           },
           null
@@ -232,14 +220,14 @@ export default defineComponent({
 
         const updatedBody = !!register_token.value
           ? {
-            ...form.body(),
-            recaptcha_response: recaptcha_response,
-            oauth_register_token: register_token.value,
-					  }
+              ...form.body(),
+              recaptcha_response: recaptcha_response,
+              oauth_register_token: register_token.value,
+            }
           : {
-            ...form.body(),
-            recaptcha_response: recaptcha_response,
-					  };
+              ...form.body(),
+              recaptcha_response: recaptcha_response,
+            };
 
         const [success, error] = await signup(updatedBody);
 
@@ -255,7 +243,7 @@ export default defineComponent({
 
         success ? successHandler(success, isNewsletter) : errorHandler(error);
       } else {
-        openSnackbar('error', 'Error.InvalidForm');
+        openSnackbar("error", "Error.InvalidForm");
       }
     }
 
@@ -263,16 +251,14 @@ export default defineComponent({
 
     function successHandler(res: any, isNewsletter: boolean) {
       openDialog(
-        'success',
-        'Success.SignupSuccessful',
-        `${t('Success.AccountCreated')} ${
-          isNewsletter ? t('Success.NewsletterSignup') : ''
-        }`,
+        "success",
+        "Success.SignupSuccessful",
+        `${t("Success.AccountCreated")} ${isNewsletter ? t("Success.NewsletterSignup") : ""}`,
         true,
         {
-          label: 'Buttons.VerifyAccount',
+          label: "Buttons.VerifyAccount",
           onclick: () => {
-            router.push('/auth/verify-account');
+            router.push("/auth/verify-account");
           },
         },
         null
@@ -280,7 +266,7 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
-      openSnackbar('error', res?.detail ?? '');
+      openSnackbar("error", res?.detail ?? "");
     }
 
     return {

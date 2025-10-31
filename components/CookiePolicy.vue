@@ -80,7 +80,7 @@ export default defineComponent({
     const route = useRoute()
 
     // Zustimmungs-Flag
-    const agreed = computed({
+    const agreed = computed<boolean>({
       get: () => cookie_agreedToCookiePolicy.value || false,
       set: (v: boolean) => {
         cookie_agreedToCookiePolicy.value = v

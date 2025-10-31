@@ -1,5 +1,5 @@
 <template>
-  <main class="relative h-screen-main min grid place-items-center select-none">
+  <main class="h-screen-main min relative grid select-none place-items-center">
     <SkillTreeHeader :breadcrumbs="breadcrumbs" :quizzesQuickStart="true" />
 
     <LoadingDots v-if="loading">
@@ -8,7 +8,7 @@
 
     <section
       v-else-if="nodes && nodes.length"
-      class="map relative z-0 w-screen h-fit m-auto max-w-[100vw] h-screen-main max overflow-hidden"
+      class="map h-screen-main max relative z-0 m-auto h-fit w-screen max-w-[100vw] overflow-hidden"
       ref="mainRef"
     >
       <svg ref="svgRef" :width="mapWidth" :height="mapHeight" :viewBox="mapViewBox">
@@ -72,8 +72,7 @@ export default {
     const MIN_WHEEL_STEP = 0.015;
     const MAX_WHEEL_STEP = 0.35;
 
-    const clamp = (value: number, min: number, max: number) =>
-      Math.min(Math.max(value, min), max);
+    const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
     // ! ======================================================= Set Up
     function onclickUploadCertificates() {
@@ -84,7 +83,7 @@ export default {
         false,
         {
           label: "Buttons.Okay",
-          onclick: () => { },
+          onclick: () => {},
         },
         null
       );
@@ -93,9 +92,7 @@ export default {
     const setupComplete = ref(false);
     const loading = ref(true);
 
-    const cookie_nextNode = useCookie<{ row: number; column: number }>(
-      "rootTree_nextNode"
-    );
+    const cookie_nextNode = useCookie<{ row: number; column: number }>("rootTree_nextNode");
     const nextNode = computed({
       get() {
         return cookie_nextNode.value || { row: 10, column: 10 };
@@ -173,10 +170,7 @@ export default {
 
       let previous = { row: parentNode.row, column: parentNode.column };
 
-      if (
-        nextNode.value.row == node.row &&
-        nextNode.value.column == node.column
-      ) {
+      if (nextNode.value.row == node.row && nextNode.value.column == node.column) {
         nextNode.value = { ...previous };
       } else if (!!previous) {
         nextNode.value = { row: node.row, column: node.column };
@@ -240,16 +234,11 @@ export default {
       const instance = panzoomInstance.value;
       if (!instance) return;
 
-      const delta =
-        event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
+      const delta = event.deltaY === 0 && event.deltaX ? event.deltaX : event.deltaY;
       if (!delta) return;
 
       const intensity = clamp(Math.abs(delta) / 120, 0.2, 4);
-      const step = clamp(
-        intensity * ZOOM_BASE_STEP,
-        MIN_WHEEL_STEP,
-        MAX_WHEEL_STEP
-      );
+      const step = clamp(intensity * ZOOM_BASE_STEP, MIN_WHEEL_STEP, MAX_WHEEL_STEP);
 
       instance.zoomWithWheel(event, { step, animate: false });
     };

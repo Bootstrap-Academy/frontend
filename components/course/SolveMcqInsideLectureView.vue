@@ -1,21 +1,21 @@
 <template>
   <div>
-  		<article class="flex gap-4 flex-wrap mb-7">
-  			<chip sm :color="'chip-color-13'" class="w-fit" md>
-  				{{ t("Headings.TotalQuizzes") }}:
-  				<span>{{ allQuizzes.length }}</span>
-  			</chip>
-  			<chip color="chip-color-13" class="w-fit" md v-if="quizzesInThisLecture">
-  				{{ t("Headings.TotalQuizzesInLecture") }}:
-  				<span>{{ quizzesInThisLecture.length }}</span>
-  			</chip>
-  			<chip sm :color="'chip-color-13'" class="w-fit" md>
-  				{{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
-  			</chip>
-  			<chip sm :color="'chip-color-13'" class="w-fit" md>
-  				{{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
-  			</chip>
-  		</article>
+    <article class="mb-7 flex flex-wrap gap-4">
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.TotalQuizzes") }}:
+        <span>{{ allQuizzes.length }}</span>
+      </chip>
+      <chip color="chip-color-13" class="w-fit" md v-if="quizzesInThisLecture">
+        {{ t("Headings.TotalQuizzesInLecture") }}:
+        <span>{{ quizzesInThisLecture.length }}</span>
+      </chip>
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.MyQuizzes") }}: <span>{{ userCreatedQuizzes }}</span>
+      </chip>
+      <chip sm :color="'chip-color-13'" class="w-fit" md>
+        {{ t("Headings.SolvedQuizzes") }}: <span>{{ solvedQuizzes }}</span>
+      </chip>
+    </article>
 
     <!--<FormQuizAnswer
       v-if="quizzesToShow.length && !!selectedQuiz"
@@ -28,7 +28,7 @@
     <p v-else-if="!!!selectedQuiz" class="w-full text-xl text-center">
       {{ t("Headings.NoQuizFoundForYouToSolve") }}
     </p> -->
-	</div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -36,17 +36,15 @@ import { useI18n } from "vue-i18n";
 import type { Quiz } from "~/types/courseTypes";
 
 const props = defineProps<{
-    totalQuizzes: Quiz[];
-    quizzesInThisLecture?: Quiz[];
-  }>();
-
+  totalQuizzes: Quiz[];
+  quizzesInThisLecture?: Quiz[];
+}>();
 
 const { t } = useI18n();
 const selectedQuiz = ref();
 const user: any = useUser();
 
-const allQuizzes = computed(() => props.totalQuizzes)
-
+const allQuizzes = computed(() => props.totalQuizzes);
 
 const solvedQuizzes = computed(() => {
   let total = 0;
@@ -84,8 +82,8 @@ function nextQuestion(id: any) {
   for (let i = index; i < allQuizzes.value?.length; i++) {
     if (
       !allQuizzes.value[i]?.solved &&
-				allQuizzes.value[i]?.creator != user?.value.id 
-    // && i != index
+      allQuizzes.value[i]?.creator != user?.value.id
+      // && i != index
     ) {
       selectedQuiz.value = allQuizzes.value[i];
       break;

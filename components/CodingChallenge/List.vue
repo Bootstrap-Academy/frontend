@@ -1,26 +1,23 @@
 <template>
   <div
-    class="rounded-md h-full px-1 py3 lg:px-2 lg:py-6 border border-light overflow-y-scroll"
+    class="py3 h-full overflow-y-scroll rounded-md border border-light px-1 lg:px-2 lg:py-6"
     :class="showInnerBorder ? ' ' : ''"
   >
     <SkeletonCodingChallengeList v-if="!!loading" />
     <p
-      class="text-center h-full flex items-center justify-center"
+      class="flex h-full items-center justify-center text-center"
       v-else-if="!codingChallenges.length"
     >
       {{ t("Headings.NoCodingChallengeCreated") }}
     </p>
 
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-4"
-      v-else-if="codingChallenges.length"
-    >
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2" v-else-if="codingChallenges.length">
       <CodingChallengeCard
         @click="solveCodingChallenge(codingChallenge)"
         v-for="(codingChallenge, i) of codingChallenges"
         :codingChallenge="codingChallenge"
         :key="i"
-        class="border border-light rounded-md"
+        class="rounded-md border border-light"
       >
       </CodingChallengeCard>
     </div>

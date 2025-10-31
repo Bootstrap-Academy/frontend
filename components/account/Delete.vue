@@ -1,32 +1,32 @@
 <template>
-  <article class="bg-secondary card style-card flex flex-col items-center justify-center">
-    <TrashIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
+  <article class="card flex flex-col items-center justify-center bg-secondary style-card">
+    <TrashIcon class="mb-4 h-10 w-10 max-w-xl text-accent" />
 
-    <h2 class="text-heading-2">{{ t('Headings.DeleteAccount') }}</h2>
+    <h2 class="text-heading-2">{{ t("Headings.DeleteAccount") }}</h2>
 
-    <p class="text-warning mb-4">
-      {{ t('Body.IrreversibleAction') }}
+    <p class="mb-4 text-warning">
+      {{ t("Body.IrreversibleAction") }}
     </p>
 
-    <div class="flex items-center space-x-4 mb-8 mt-2">
-      <NoSymbolIcon class="h-8 w-8 text-accent max-w-xl" />
+    <div class="mb-8 mt-2 flex items-center space-x-4">
+      <NoSymbolIcon class="h-8 w-8 max-w-xl text-accent" />
       <p class="text-center">
-        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[0] }} <br />
-        {{ t('Body.LooseProgressMorphCoinsAndCourses').split("%%%")[1] }}
+        {{ t("Body.LooseProgressMorphCoinsAndCourses").split("%%%")[0] }} <br />
+        {{ t("Body.LooseProgressMorphCoinsAndCourses").split("%%%")[1] }}
       </p>
     </div>
 
     <InputBtn :loading="loading" @click="onclick">
-      {{ t('Buttons.DeleteAccount') }}
+      {{ t("Buttons.DeleteAccount") }}
     </InputBtn>
   </article>
 </template>
 
 <script lang="ts">
-import { NoSymbolIcon } from '@heroicons/vue/24/outline';
-import { TrashIcon } from '@heroicons/vue/24/solid';
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { NoSymbolIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/solid";
+import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   components: {
@@ -41,29 +41,29 @@ export default defineComponent({
 
     async function onclick() {
       openDialog(
-        'warning',
-        'Headings.DeleteAccount',
-        'Body.DeleteAccount',
+        "warning",
+        "Headings.DeleteAccount",
+        "Body.DeleteAccount",
         false,
         {
-          label: 'Buttons.DeleteAccount',
+          label: "Buttons.DeleteAccount",
           onclick: async () => {
             loading.value = true;
             const [success, error] = await deleteUser();
             loading.value = false;
 
             if (success) {
-              router.push('/auth/login');
+              router.push("/auth/login");
               setTimeout(() => {
-                openSnackbar('success', 'Success.DeleteAccount');
+                openSnackbar("success", "Success.DeleteAccount");
               }, 1000);
             } else {
-              openSnackbar('error', error?.detail ?? '');
+              openSnackbar("error", error?.detail ?? "");
             }
           },
         },
         {
-          label: 'Buttons.Cancel',
+          label: "Buttons.Cancel",
           onclick: () => {},
         }
       );

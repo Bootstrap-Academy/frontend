@@ -4,16 +4,14 @@
     <section
       v-else-if="!loading && allGlobalChallenges.length"
       @click="fnOpenDialog(challenge.id)"
-      class="group cursor-pointer hover:scale-105 border border-accent transition-all my-3 p-3 sm:p-5 rounded-md flex flex-col sm:flex-row items-start justify-between gap-4 sm:items-center"
+      class="group my-3 flex cursor-pointer flex-col items-start justify-between gap-4 rounded-md border border-accent p-3 transition-all hover:scale-105 sm:flex-row sm:items-center sm:p-5"
       v-for="(challenge, i) of allGlobalChallenges"
       :key="i"
     >
-      <p class="text-white clamp tight">
+      <p class="clamp tight text-white">
         {{ challenge?.description ?? "" }}
       </p>
-      <ArrowRightIcon
-        class="h-7 w-7 scale-75 text-white group-hover:scale-100 transition-all"
-      />
+      <ArrowRightIcon class="h-7 w-7 scale-75 text-white transition-all group-hover:scale-100" />
     </section>
 
     <section v-else-if="!allGlobalChallenges.length && !loading">
@@ -40,8 +38,7 @@ export default {
   props: { leaderBoardList: { type: Array, default: [] } },
   setup() {
     const { t } = useI18n();
-    const dialogLeaderBoardChallengeBased =
-      useDialogLeaderBoardChallengeBased();
+    const dialogLeaderBoardChallengeBased = useDialogLeaderBoardChallengeBased();
     const loading = ref(true);
     const challengeId = ref("");
     const allGlobalChallenges: any = ref([]);

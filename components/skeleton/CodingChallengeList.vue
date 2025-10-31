@@ -1,34 +1,26 @@
 <template>
-  <section
-    v-for="i of 6"
-    :key="i"
-    class="bg-primary mb-4 p-2 group cursor-pointer"
-  >
-    <article class="flex gap-3 justify-between">
-      <SkeletonText sm class="sm:w-3/4 clamp tight line-1 text-accent" />
+  <section v-for="i of 6" :key="i" class="group mb-4 cursor-pointer bg-primary p-2">
+    <article class="flex justify-between gap-3">
+      <SkeletonText sm class="clamp tight line-1 text-accent sm:w-3/4" />
 
       <ArrowRightIcon
         class="h-6 w-6 text-accent transition-all duration-500 group-hover:scale-125"
       />
     </article>
 
-    <article class="flex flex-wrap gap-x-5 gap-y-2 justify-between mt-4">
+    <article class="mt-4 flex flex-wrap justify-between gap-x-5 gap-y-2">
       <div class="flex gap-3">
-        <p class="text-sm flex">
-          {{ t("Headings.Time") }}: <SkeletonText class="max-w-[40px]" />
-        </p>
-        <p class="text-sm flex">
+        <p class="flex text-sm">{{ t("Headings.Time") }}: <SkeletonText class="max-w-[40px]" /></p>
+        <p class="flex text-sm">
           {{ t("Headings.Memory") }}: <SkeletonText class="max-w-[50px]" />
         </p>
       </div>
       <div class="flex gap-3">
-        <p class="text-sm flex">
+        <p class="flex text-sm">
           {{ t("Headings.XP") }}:
           <SkeletonText class="max-w-[40px]" />
         </p>
-        <p class="text-sm flex">
-          {{ t("Headings.Coins") }}: <SkeletonText class="max-w-[50px]" />
-        </p>
+        <p class="flex text-sm">{{ t("Headings.Coins") }}: <SkeletonText class="max-w-[50px]" /></p>
       </div>
     </article>
   </section>

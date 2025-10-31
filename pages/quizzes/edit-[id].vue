@@ -1,34 +1,29 @@
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	>
-		<section class="container-form max-w-3xl">
-			<SectionTitle
-				center
-				heading="Headings.CreateQuiz"
-				size="sm"
-				class="mb-card mx-auto"
-			/>
-			<FormQuiz :data="quiz" />
-		</section>
-	</section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  >
+    <section class="container-form max-w-3xl">
+      <SectionTitle center heading="Headings.CreateQuiz" size="sm" class="mx-auto mb-card" />
+      <FormQuiz :data="quiz" />
+    </section>
+  </section>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  layout: 'inner',
-  middleware: ['auth'],
+  layout: "inner",
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Create Quiz',
+    title: "Create Quiz",
   },
   setup() {
     const route = useRoute();
 
     const quizID = computed(() => {
-      return (route.params?.id ?? '').toString();
+      return (route.params?.id ?? "").toString();
     });
 
     const quiz = useQuiz();

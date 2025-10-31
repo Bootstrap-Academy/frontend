@@ -1,8 +1,8 @@
 <template>
-  <aside class="grid gap-container h-fit">
+  <aside class="grid h-fit gap-container">
     <CalendarFeatures />
 
-    <article class="grid gap-card-sm xl:gap-box z-[100]">
+    <article class="z-[100] grid gap-card-sm xl:gap-box">
       <h2 class="text-heading-2">
         {{ t("Headings.UpcomingEvents") }}
       </h2>
@@ -10,12 +10,7 @@
         {{ t("Body.NoUpcomingEvents") }}
       </p>
 
-      <CalendarEvent
-        v-for="(event, i) of events"
-        :key="i"
-        no-booking
-        :data="event"
-      />
+      <CalendarEvent v-for="(event, i) of events" :key="i" no-booking :data="event" />
     </article>
   </aside>
 </template>

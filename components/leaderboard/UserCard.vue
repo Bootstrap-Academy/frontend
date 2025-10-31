@@ -1,8 +1,8 @@
 <template>
   <section
-    class="border-b border-accent border-t border-t-transparent border-x border-x-transparent hover:border hover:border-accent hover:shadow-sm hover:shadow-accent hover:scale-105 duration-300 transition-all my-5 p-3 sm:p-5 rounded-md flex flex-col sm:flex-row items-start justify-between gap-4 sm:items-center"
+    class="my-5 flex flex-col items-start justify-between gap-4 rounded-md border-x border-b border-t border-accent border-x-transparent border-t-transparent p-3 transition-all duration-300 hover:scale-105 hover:border hover:border-accent hover:shadow-sm hover:shadow-accent sm:flex-row sm:items-center sm:p-5"
   >
-    <article class="flex gap-2 items-center">
+    <article class="flex items-center gap-2">
       <p>{{ item.rank }})</p>
       <SvgLevel1Icon v-if="item.rank == 0" />
       <SvgLevel2Icon v-else-if="item.rank == 1" />
@@ -15,13 +15,13 @@
       <SvgLevel9Icon v-else />
       <img
         :src="item?.user?.avatar_url ?? '/images/user1.jpg'"
-        class="h-20 w-20 object-cover rounded-full"
+        class="h-20 w-20 rounded-full object-cover"
         :alt="t('AltAttributes.UserAvatar')"
       />
       <p
         :class="[
           {
-            'animate-pulse text-white text-xl font-medium': item.rank < 4,
+            'animate-pulse text-xl font-medium text-white': item.rank < 4,
           },
         ]"
       >
@@ -29,9 +29,9 @@
       </p>
     </article>
 
-    <article class="flex gap-4 sm:gap-7 items-center">
+    <article class="flex items-center gap-4 sm:gap-7">
       <p class="text-sm">
-        <span class="font-medium text-base">{{ t("Headings.Score") }}</span
+        <span class="text-base font-medium">{{ t("Headings.Score") }}</span
         >{{ item.score }}
       </p>
       <p>

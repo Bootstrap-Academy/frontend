@@ -2,14 +2,14 @@
   <button
     type="submit"
     :class="classes"
-    class="min-w-[150px] text-center justify-center relative"
+    class="relative min-w-[150px] justify-center text-center"
     @click.prevent="onclick"
   >
     <Transition mode="out-in">
       <svg
         v-if="loading"
         aria-hidden="true"
-        class="icon text-tertiary rotating fill-white"
+        class="icon rotating fill-white text-tertiary"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -24,13 +24,9 @@
         />
       </svg>
 
-      <div
-        v-else
-        class="flex gap-2 items-center"
-        :class="iconRight ? 'flex-row-reverse' : ''"
-      >
-        <div class="flex gap-1 absolute right-0.5 bottom-0.5">
-          <p class="text-black -mt-1.5">-</p>
+      <div v-else class="flex items-center gap-2" :class="iconRight ? 'flex-row-reverse' : ''">
+        <div class="absolute bottom-0.5 right-0.5 flex gap-1">
+          <p class="-mt-1.5 text-black">-</p>
           <component
             class="icon"
             v-if="icon"
@@ -119,19 +115,18 @@ export default defineComponent({
 
 button {
   font-family: Arial, Helvetica, sans-serif;
-  @apply h-fit rounded flex items-center text-center 
-			 uppercase tracking-widest transition-basic;
+  @apply flex h-fit items-center rounded text-center uppercase tracking-widest transition-basic;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
-  @apply text-xs px-3.5 py-2 gap-2;
+  @apply gap-2 px-3.5 py-2 text-xs;
 }
 .md {
-  @apply text-base px-5 py-3 gap-3;
+  @apply gap-3 px-5 py-3 text-base;
 }
 .lg {
-  @apply text-base px-6 py-4 gap-4;
+  @apply gap-4 px-6 py-4 text-base;
 }
 :is(.sm, .md, .lg).tertiary {
   @apply px-0;
@@ -139,13 +134,13 @@ button {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-  @apply w-3 h-3;
+  @apply h-3 w-3;
 }
 .md .icon {
-  @apply w-5 h-5;
+  @apply h-5 w-5;
 }
 .lg .icon {
-  @apply w-7 h-7;
+  @apply h-7 w-7;
 }
 .primary .icon {
   @apply fill-primary;

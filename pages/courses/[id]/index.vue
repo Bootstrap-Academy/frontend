@@ -20,34 +20,31 @@
 -->
 
 <template>
-	<CourseSkeleton v-if="loading" />
+  <CourseSkeleton v-if="loading" />
 
-	<main
-		v-else-if="course"
-		class="relative container-fluid h-screen-main min mt-main mb-main"
-	>
-		<Head>
-			<Title>Course Details - {{ course?.title ?? "" }}</Title>
-		</Head>
+  <main v-else-if="course" class="h-screen-main min mt-main mb-main container-fluid relative">
+    <Head>
+      <Title>Course Details - {{ course?.title ?? "" }}</Title>
+    </Head>
 
-		<CourseHeader :data="course" />
+    <CourseHeader :data="course" />
 
-		<CourseDetails :data="course" />
+    <CourseDetails :data="course" />
 
-		<CourseOverview
-			:skillID="skillID"
-			:subSkillID="subSkillID"
-			:data="course"
-			:isCourseAccessible="isCourseAccessible"
-			class="md:sticky md:top-container md:self-start"
-		/>
+    <CourseOverview
+      :skillID="skillID"
+      :subSkillID="subSkillID"
+      :data="course"
+      :isCourseAccessible="isCourseAccessible"
+      class="md:sticky md:self-start md:top-container"
+    />
 
-		<section>
-			<h2 class="mb-box text-heading-3">
-				{{ t("Headings.CourseCurriculum") }}
-			</h2>
+    <section>
+      <h2 class="text-heading-3 mb-box">
+        {{ t("Headings.CourseCurriculum") }}
+      </h2>
 
-      <div class="card style-card bg-secondary">
+      <div class="card bg-secondary style-card">
         <CourseCurriculum
           :data="course"
           :skillID="skillID"
@@ -64,21 +61,17 @@
         'hide-scrollbar': !!!allQuizzes || allQuizzes.length <= 1,
       }"
     >
-      <InputButtonToggle
-        :buttonOptions="buttonOptions"
-        v-model="selectedbutton"
-        class="my-10"
-      />
+      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" class="my-10" />
       <section>
         <article v-show="selectedbutton == 0">
-          <h2 class="mb-box text-heading-3">
+          <h2 class="text-heading-3 mb-box">
             {{ t("Headings.QuizzesInCourse") }}
           </h2>
           <QuizList :quizzes="allQuizzes" />
         </article>
 
         <article v-show="selectedbutton == 1">
-          <h2 class="mb-box text-heading-3">
+          <h2 class="text-heading-3 mb-box">
             {{ t("Headings.Matchings") }}
           </h2>
           <MatchingList :quizId="quiz?.id" />
@@ -87,7 +80,7 @@
     </div>
   </main>
 
-	<CourseEmptyState v-else />
+  <CourseEmptyState v-else />
 </template>
 
 <script lang="ts">
@@ -118,7 +111,7 @@ export default {
       { name: "Buttons.Matchings", disabled: matchings.value.length === 0 },
     ]);
 
-    const selectedbutton = ref(buttonOptions.value.findIndex(option => !option.disabled));
+    const selectedbutton = ref(buttonOptions.value.findIndex((option) => !option.disabled));
 
     const id = computed(() => {
       return <string>(route.params?.id ?? "");
@@ -147,7 +140,7 @@ export default {
         isCourseAccessible.value = true;
       }
       // await getQuizInfos();
-      await getQuizzes(course.value.id)
+      await getQuizzes(course.value.id);
 
       loading.value = false;
     });
@@ -182,38 +175,38 @@ export default {
 </script>
 
 <style scoped>
-	main {
-		@apply grid gap-container grid-cols-1 md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px] place-content-start;
+main {
+  @apply grid grid-cols-1 place-content-start gap-container md:grid-cols-[1fr_275px] xl:grid-cols-[1fr_350px];
 
-		grid-template-areas:
-			"header"
-			"overview"
-			"details"
-			"curriculum";
-	}
+  grid-template-areas:
+    "header"
+    "overview"
+    "details"
+    "curriculum";
+}
 
-	main > *:nth-child(1) {
-		grid-area: header;
-	}
+main > *:nth-child(1) {
+  grid-area: header;
+}
 
-	main > *:nth-child(2) {
-		grid-area: details;
-	}
+main > *:nth-child(2) {
+  grid-area: details;
+}
 
-	main > *:nth-child(3) {
-		grid-area: overview;
-	}
+main > *:nth-child(3) {
+  grid-area: overview;
+}
 
-	main > *:nth-child(4) {
-		grid-area: curriculum;
-	}
+main > *:nth-child(4) {
+  grid-area: curriculum;
+}
 
-	@media screen and (min-width: 768px) {
-		main {
-			grid-template-areas:
-				"header header"
-				"details overview"
-				"curriculum overview";
-		}
-	}
+@media screen and (min-width: 768px) {
+  main {
+    grid-template-areas:
+      "header header"
+      "details overview"
+      "curriculum overview";
+  }
+}
 </style>

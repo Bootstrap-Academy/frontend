@@ -2,32 +2,26 @@
   <div>
     <section v-if="leaderBoardList.length">
       <article
-        class="flex gap-6 flex-col sm:flex-row items-center justify-center my-10 pt-10 flex-wrap"
+        class="my-10 flex flex-col flex-wrap items-center justify-center gap-6 pt-10 sm:flex-row"
       >
+        <LeaderboardTopUserCard :user="topThreeUsers[1]" v-if="!!topThreeUsers[1]" />
         <LeaderboardTopUserCard
-          :user="leaderBoardList[1]"
-          v-if="!!leaderBoardList[1]"
-        />
-        <LeaderboardTopUserCard
-          :user="leaderBoardList[0]"
+          :user="topThreeUsers[0]"
           class="sm:-mt-20"
-          v-if="!!leaderBoardList[0]"
+          v-if="!!topThreeUsers[0]"
         />
-        <LeaderboardTopUserCard
-          :user="leaderBoardList[2]"
-          v-if="!!leaderBoardList[2]"
-        />
+        <LeaderboardTopUserCard :user="topThreeUsers[2]" v-if="!!topThreeUsers[2]" />
       </article>
       <article class="px-3 pb-24 sm:px-10">
-        <div v-for="(user, i) of leaderBoardList" :key="i">
-          <LeaderboardUserCard v-if="user.rank > 3" :item="user" />
+        <div v-for="(user, i) of remainingUsers" :key="i">
+          <LeaderboardUserCard :item="user" />
         </div>
       </article>
     </section>
 
-    <div class="flex justify-center mt-6">
+    <div class="mt-6 flex justify-center">
       <InputBtn
-      v-if="leaderBoardList.length < totalLeaderboardUsers"
+        v-if="leaderBoardList.length < totalLeaderboardUsers"
         :loading="btnLoading"
         @click="loadMore()"
         :icon="TrophyIcon"
@@ -42,8 +36,11 @@
         </div>
       </InputBtn>
     </div>
-    <p v-if="leaderBoardList.length == totalLeaderboardUsers" class="flex flex-col items-center text-accent">      
-      <component v-if="TrophyIcon" :is="TrophyIcon" class="w-10 h-10 bg-primary mb-4"/>
+    <p
+      v-if="leaderBoardList.length == totalLeaderboardUsers"
+      class="flex flex-col items-center text-accent"
+    >
+      <component v-if="TrophyIcon" :is="TrophyIcon" class="mb-4 h-10 w-10 bg-primary" />
       {{ t("Headings.NoMoreUser") }}
     </p>
   </div>
@@ -51,19 +48,24 @@
 
 <script lang="ts">
 import type { PropType } from "vue";
+import { computed } from "vue";
 import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 export default {
   props: {
     leaderBoardList: { type: Array as PropType<any>, default: [] },
   },
-  setup() {
+  setup(props) {
     const { t } = useI18n();
     const limit = useLeaderboardLimit();
     const offset = useLeaderboardOffset();
     const btnLoading = ref(false);
     const route: any = useRoute();
     const totalLeaderboardUsers = useTotalLeaderboardUsers();
+    const topThreeUsers = computed(() => props.leaderBoardList.slice(0, 3));
+    const remainingUsers = computed(() =>
+      props.leaderBoardList.slice(3).filter((user: any) => user?.rank > 3)
+    );
 
     const selectedButton = computed(() => {
       return route?.query?.selectedButton ?? "";
@@ -83,10 +85,7 @@ export default {
       if (selectedButton.value == 0) {
         await getLanguageLeaderboard(selectedLanguage.value, offset.value);
       } else if (selectedButton.value == 1) {
-        await getCodingChallengeLeaderboard(
-          selectedChallengeId.value,
-          offset.value
-        );
+        await getCodingChallengeLeaderboard(selectedChallengeId.value, offset.value);
       } else if (selectedButton.value == 2) {
         await getOverAllLeaderBoard(offset.value);
         // await getLanguageLeaderboard();
@@ -100,6 +99,8 @@ export default {
       btnLoading,
       offset,
       totalLeaderboardUsers,
+      topThreeUsers,
+      remainingUsers,
     };
   },
 };

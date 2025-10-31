@@ -6,14 +6,17 @@ import { MatchingForSections } from "~/types/matching";
 import type { RefSymbol } from "@vue/reactivity";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
-export const useQuizzesInCourseInfo = () => useState<LecturesWithQuiz[]>("quizzesInCourseInfo", () => []);
+export const useQuizzesInCourseInfo = () =>
+  useState<LecturesWithQuiz[]>("quizzesInCourseInfo", () => []);
 export const useQuizzesInCourse = () => useState<Quiz[]>("quizzesInCourse", () => []);
-export const useQuizzesInLectureInfo = () => useState<LecturesWithQuiz[]>("quizzesInLectureInfo", () => []);
+export const useQuizzesInLectureInfo = () =>
+  useState<LecturesWithQuiz[]>("quizzesInLectureInfo", () => []);
 export const useQuizzesInLecture = () => useState<Quiz[]>("quizzesInLecture", () => []);
 export const useQuiz = () => useState<any>("quiz", () => null);
 export const useSubTasksInQuiz = () => useState<Quiz[]>("subTasksInQuiz", () => []);
 export const useSubTaskInQuiz = () => useState<Quiz>("subTaskInQuiz", () => new Quiz());
-export const useSubTaskAndSolutionInQuiz = () => useState<any>("subTaskAndSolutionInQuiz", () => null);
+export const useSubTaskAndSolutionInQuiz = () =>
+  useState<any>("subTaskAndSolutionInQuiz", () => null);
 
 export async function getQuiz(id: string) {
   try {
@@ -146,21 +149,27 @@ export const assignQuizzesInCourse = async () => {
       });
     });
     allQuizzesInfo.value.forEach(async (lecture) => {
-      console.log('getting Matches')
+      console.log("getting Matches");
       const matchesInLecture = await getMatchingsInLecture(lecture.id);
       matchesInLecture?.forEach((matching) => {
         if (!matchesForLectures.value.some((match) => match.matching.id === matching.id)) {
-          matchesForLectures.value.push(new MatchingForSections(lecture.section_id, lecture.lecture_id, matching));
+          matchesForLectures.value.push(
+            new MatchingForSections(lecture.section_id, lecture.lecture_id, matching)
+          );
         }
       });
     });
   }
 };
 
-export async function getQuizzesInLecture(courseId: any, section_id: string = "", lecture_id: string = "") {
+export async function getQuizzesInLecture(
+  courseId: any,
+  section_id: string = "",
+  lecture_id: string = ""
+) {
   const res = await GET(`/challenges/courses/${courseId}/tasks`, {
     section_id: section_id === "" ? undefined : section_id,
-    lecture_id: lecture_id === "" ? undefined : lecture_id
+    lecture_id: lecture_id === "" ? undefined : lecture_id,
   })
     .then(async (res) => {
       await getMatchingsInCourse(courseId, section_id, lecture_id);
@@ -187,7 +196,7 @@ export const assignLectureQuizzes = async () => {
     await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
 
     subTasksInSkill.value.forEach((quiz) => {
-      console.log('subTasksInSkill', subTasksInSkill.value, quiz)
+      console.log("subTasksInSkill", subTasksInSkill.value, quiz);
       quizzesInLecture.value.push(quiz);
     });
 
@@ -305,7 +314,10 @@ export async function updateSubTaskInQuizForAdmin(taskId: any, subTaskId: any, b
 
 export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
   try {
-    const res = await POST(`challenges/tasks/${taskId}/multiple_choice/${subTaskid}/attempts`, body);
+    const res = await POST(
+      `challenges/tasks/${taskId}/multiple_choice/${subTaskid}/attempts`,
+      body
+    );
     let success = null;
     if (!!res.error) {
       success = "Too Much Requests";

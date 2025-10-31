@@ -1,36 +1,36 @@
 <template>
-	<section class="relative h-7.5 w-screen overflow-clip" :class="color">
-		<article class="container-fluid flex justify-end gap-3 py-1.5 h-fit">
-			<img
-				@click="locale = 'en-US'"
-				src="/images/en.webp"
-				:alt="t('AltAttributes.EnglishTranslation')"
-				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
-				:class="locale == 'en-US' ? 'opacity-100' : 'opacity-60'"
-			/>
+  <section class="h-7.5 relative w-screen overflow-clip" :class="color">
+    <article class="container-fluid flex h-fit justify-end gap-3 py-1.5">
+      <img
+        @click="locale = 'en-US'"
+        src="/images/en.webp"
+        :alt="t('AltAttributes.EnglishTranslation')"
+        class="h-4 w-4 cursor-pointer rounded-3xl object-cover transition duration-200 ease-out"
+        :class="locale == 'en-US' ? 'opacity-100' : 'opacity-60'"
+      />
 
-			<img
-				@click="locale = 'de'"
-				src="/images/de.webp"
-				:alt="t('AltAttributes.GermanTranslation')"
-				class="transition duration-200 ease-out cursor-pointer w-4 h-4 rounded-3xl object-cover"
-				:class="locale == 'de' ? 'opacity-100' : 'opacity-60'"
-			/>
-		</article>
-	</section>
+      <img
+        @click="locale = 'de'"
+        src="/images/de.webp"
+        :alt="t('AltAttributes.GermanTranslation')"
+        class="h-4 w-4 cursor-pointer rounded-3xl object-cover transition duration-200 ease-out"
+        :class="locale == 'de' ? 'opacity-100' : 'opacity-60'"
+      />
+    </article>
+  </section>
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 export default {
   props: {
-    color: { type: String, default: 'bg-tertiary' },
+    color: { type: String, default: "bg-tertiary" },
   },
   setup() {
     const { t, locale } = useI18n();
 
-    const cookie_locale = useCookie('locale');
+    const cookie_locale = useCookie("locale");
 
     watch(
       () => locale.value,

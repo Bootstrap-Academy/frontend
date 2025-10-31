@@ -1,14 +1,9 @@
 <template>
   <section
-    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
     <section class="container-form max-w-3xl">
-      <SectionTitle
-        center
-        heading="Headings.CreateChallenge"
-        size="sm"
-        class="mb-card mx-auto"
-      />
+      <SectionTitle center heading="Headings.CreateChallenge" size="sm" class="mx-auto mb-card" />
       <FormChallenge />
     </section>
   </section>

@@ -1,15 +1,12 @@
 <template>
-  <div :class="bgClasses" class="px-5 py-3 rounded-md">
+  <div :class="bgClasses" class="rounded-md px-5 py-3">
     <section>
-      <component :is="icon" class="h-6 w-6 text-white inline-block mr-5" />
-      <p
-        :class="textClasses"
-        class="font-semibold text-xl inline-block text-dark"
-      >
+      <component :is="icon" class="mr-5 inline-block h-6 w-6 text-white" />
+      <p :class="textClasses" class="inline-block text-xl font-semibold text-dark">
         {{ t(heading) }}
       </p>
     </section>
-    <p class="text-white pl-11" :class="textClasses">{{ t(content) }}</p>
+    <p class="pl-11 text-white" :class="textClasses">{{ t(content) }}</p>
   </div>
 </template>
 

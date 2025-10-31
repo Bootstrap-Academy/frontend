@@ -14,25 +14,29 @@
 -->
 
 <template>
-	<main ref="aos" class="grid gap-container allow-scroll h-auto">
-		<HeroLanding class="pt-container" />
-		<HeroSponsors />
-		<HeroAbout class="pt-container" />
-		<HeroFeatures class="pt-container" />
-		<HeroFAQS class="pt-container mb-main pb-container" />
-	</main>
+  <main ref="aos" class="allow-scroll grid h-auto gap-container">
+    <HeroLanding class="pt-container" />
+    <HeroSponsors />
+    <HeroAbout class="pt-container" />
+    <HeroFeatures class="pt-container" />
+    <HeroFAQS class="mb-main pt-container pb-container" />
+  </main>
 </template>
 
 <script lang="ts">
+definePageMeta({
+  middleware: ["redirect-authenticated"],
+});
+
 export default {
   head: {
-    title: 'Bootstrap Academy',
+    title: "Bootstrap Academy",
   },
   setup() {
     const aos = ref<HTMLDivElement | null>(null);
 
     onMounted(() => {
-      setAOSViaParent(aos.value, 'aos', 'show', [3]);
+      setAOSViaParent(aos.value, "aos", "show", [3]);
     });
 
     return { aos };

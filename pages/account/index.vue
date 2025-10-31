@@ -20,14 +20,14 @@
 -->
 
 <template>
-  <main class="container grid gap-container mt-main mb-main">
-    <h1 class="text-heading-1 text-center">{{ t('Headings.MyAccount') }}</h1>
+  <main class="mt-main mb-main container grid gap-container">
+    <h1 class="text-heading-1 text-center">{{ t("Headings.MyAccount") }}</h1>
     <AccountVerifyEmail />
-    <div class="md:flex justify-between md:space-x-12 max-md:space-y-6">
+    <div class="justify-between max-md:space-y-6 md:flex md:space-x-12">
       <AccountNewsletter class="md:w-1/2" />
       <AccountMFA class="md:w-1/2" />
     </div>
-    <div class="md:flex justify-between md:space-x-12 max-md:space-y-6 mb-16">
+    <div class="mb-16 justify-between max-md:space-y-6 md:flex md:space-x-12">
       <AccountChangePassword class="md:w-1/2" />
       <AccountDelete class="md:w-1/2" />
     </div>
@@ -35,15 +35,15 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 definePageMeta({
-  middleware: ['auth'],
+  middleware: ["auth"],
 });
 
 export default {
   head: {
-    title: 'Account Settings',
+    title: "Account Settings",
   },
   setup() {
     const { t } = useI18n();

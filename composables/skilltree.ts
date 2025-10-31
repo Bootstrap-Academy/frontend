@@ -3,15 +3,9 @@ import type { PanzoomObject } from "@panzoom/panzoom";
 import { SkillTree, RootSkill, SubSkill } from "~/types/skillTreeTypes";
 
 export const useSubSkillTree = () =>
-  useState<SkillTree<SubSkill>>(
-    "subSkillTree",
-    () => new SkillTree<SubSkill>()
-  );
+  useState<SkillTree<SubSkill>>("subSkillTree", () => new SkillTree<SubSkill>());
 export const useRootSkillTree = () =>
-  useState<SkillTree<RootSkill>>(
-    "rootSkillTree",
-    () => new SkillTree<RootSkill>()
-  );
+  useState<SkillTree<RootSkill>>("rootSkillTree", () => new SkillTree<RootSkill>());
 
 export async function getRootSkillTree() {
   try {
@@ -108,9 +102,7 @@ export function scrollMapToNode(
 
   if (panzoomInstance && mapRef) {
     const rect =
-      typeof mapRef.getBoundingClientRect === "function"
-        ? mapRef.getBoundingClientRect()
-        : null;
+      typeof mapRef.getBoundingClientRect === "function" ? mapRef.getBoundingClientRect() : null;
 
     if (rect) {
       const { scale } = panzoomInstance.getTransform();

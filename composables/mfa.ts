@@ -1,10 +1,10 @@
 export async function initializeMFA() {
   const user = <any>useUser();
-  const userID = user?.value?.id ?? '';
+  const userID = user?.value?.id ?? "";
 
   try {
     if (!!!userID) {
-      throw { data: { detail: 'Missing user id' } };
+      throw { data: { detail: "Missing user id" } };
     }
 
     const response = await POST(`/auth/users/${userID}/mfa`);
@@ -17,11 +17,11 @@ export async function initializeMFA() {
 
 export async function enableMFA(body: any) {
   const user = <any>useUser();
-  const userID = user?.value?.id ?? '';
+  const userID = user?.value?.id ?? "";
 
   try {
     if (!!!userID) {
-      throw { data: { detail: 'Missing user id' } };
+      throw { data: { detail: "Missing user id" } };
     }
 
     const response = await PUT(`/auth/users/${userID}/mfa`, body);
@@ -34,11 +34,11 @@ export async function enableMFA(body: any) {
 
 export async function disableMFA() {
   const user = <any>useUser();
-  const userID = user?.value?.id ?? '';
+  const userID = user?.value?.id ?? "";
 
   try {
     if (!!!userID) {
-      throw { data: { detail: 'Missing user id' } };
+      throw { data: { detail: "Missing user id" } };
     }
 
     const response = await DELETE(`/auth/users/${userID}/mfa`);

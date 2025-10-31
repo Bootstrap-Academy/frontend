@@ -1,31 +1,26 @@
 <template>
   <article
     v-if="data"
-    class="lecture-box group cursor-pointer grid grid-cols-[auto_minmax(0,1fr)_auto] gap-box items-center"
+    class="lecture-box group grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-box"
     :id="id"
   >
     <CheckCircleIcon
       v-if="completed"
-      class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 transition-basic icon fill-info group-hover:fill-info"
+      class="icon h-5 w-5 flex-shrink-0 fill-info transition-basic group-hover:fill-info md:h-6 md:w-6"
       :class="[isActive ? 'opacity-100' : 'opacity-50']"
     />
     <PlayCircleIcon
       v-else
-      class="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 transition-basic icon"
+      class="icon h-5 w-5 flex-shrink-0 transition-basic md:h-6 md:w-6"
       :class="[
-        isActive
-          ? 'fill-accent group-hover:fill-accent'
-          : 'fill-subheading group-hover:fill-white',
+        isActive ? 'fill-accent group-hover:fill-accent' : 'fill-subheading group-hover:fill-white',
       ]"
     />
 
-    <p
-      class="text-body-1 clamp line-1 transition-basic text-body"
-      :title="title"
-    >
+    <p class="clamp line-1 text-body-1 text-body transition-basic" :title="title">
       {{ title }}
     </p>
-    <p class="text-body-2 text-subheading flex-shrink-0 w-fit">
+    <p class="text-body-2 w-fit flex-shrink-0 text-subheading">
       {{ t("Headings.Mins", { n: duration }, duration) }}
     </p>
   </article>
@@ -58,9 +53,7 @@ export default defineComponent({
       let isCompleted = props.data?.completed ?? false;
 
       if (isCompleted == false) {
-        isCompleted = !!listOfCompletedCourses.value.find(
-          (itemID) => itemID == id.value
-        );
+        isCompleted = !!listOfCompletedCourses.value.find((itemID) => itemID == id.value);
       }
       return isCompleted;
     });
@@ -74,9 +67,7 @@ export default defineComponent({
     });
 
     const duration = computed(() => {
-      return Math.round(
-        convertTimestampToDate(props.data?.duration ?? 0).minutes
-      );
+      return Math.round(convertTimestampToDate(props.data?.duration ?? 0).minutes);
     });
 
     return { t, id, completed, title, duration, isActive };

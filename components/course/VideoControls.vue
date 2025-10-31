@@ -1,20 +1,20 @@
 <template>
   <section>
-    <article class="flex midXl:hidden gap-card items-center">
+    <article class="flex items-center gap-card midXl:hidden">
       <div class="flex gap-2">
         <ArrowLeftCircleIcon
           v-if="!isFirstLecture"
           @click="goToPrevLecture"
-          class="w-10 h-10 text-accent cursor-pointer"
+          class="h-10 w-10 cursor-pointer text-accent"
         />
         <ArrowRightCircleIcon
           @click="goToNextLecture"
-          class="w-10 h-10 text-accent cursor-pointer"
+          class="h-10 w-10 cursor-pointer text-accent"
         />
       </div>
     </article>
     <!-- pr-[70px] -->
-    <article class="hidden midXl:flex gap-box items-center">
+    <article class="hidden items-center gap-box midXl:flex">
       <Btn v-if="!isFirstLecture" sm tertiary @click="goToPrevLecture" :icon="ArrowLeftIcon">
         {{ t("Buttons.Prev") }}
       </Btn>
@@ -45,9 +45,9 @@ const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 
-const isFirstLecture = computed(() => lectures.value.findIndex(
-  (lecture) => lecture.id == activeLectureID.value
-) <= 0);
+const isFirstLecture = computed(
+  () => lectures.value.findIndex((lecture) => lecture.id == activeLectureID.value) <= 0
+);
 
 const activeLectureID = computed(() => {
   return props.activeLecture?.id ?? "";
@@ -76,9 +76,7 @@ const lectures: Ref<any[]> = computed(() => {
 async function goToPrevLecture() {
   if (lectures.value.length <= 0) return;
 
-  let indexOfCurrentLecture = lectures.value.findIndex(
-    (lec) => lec.id == activeLectureID.value
-  );
+  let indexOfCurrentLecture = lectures.value.findIndex((lec) => lec.id == activeLectureID.value);
 
   // current lecture is first lecture
   if (indexOfCurrentLecture <= 0) {
@@ -112,9 +110,7 @@ async function goToPrevLecture() {
 async function goToNextLecture() {
   if (lectures.value.length <= 0) return;
 
-  let indexOfCurrentLecture = lectures.value.findIndex(
-    (lec) => lec.id == activeLectureID.value
-  );
+  let indexOfCurrentLecture = lectures.value.findIndex((lec) => lec.id == activeLectureID.value);
 
   // current lecture is last lecture
   if (indexOfCurrentLecture >= lectures.value.length - 1) {

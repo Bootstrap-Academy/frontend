@@ -20,41 +20,45 @@ export default {
     const links = computed(() => {
       return authorized.value
         ? [
-          {
-            label: "Links.Calendar",
-            pathname: "/calendar",
-          },
-          {
-            label: "Links.SkillTree",
-            pathname: "/skill-tree",
-          },
-          {
-            label: "Links.Jobs",
-            pathname: "/jobs",
-          },
-          {
-            label: "Links.Challenges",
-            pathname: "/challenges/all",
-          },
-        ]
+            {
+              label: "Links.Dashboard",
+              pathname: "/dashboard",
+            },
+            {
+              label: "Links.Calendar",
+              pathname: "/calendar",
+            },
+            {
+              label: "Links.SkillTree",
+              pathname: "/skill-tree",
+            },
+            {
+              label: "Links.Jobs",
+              pathname: "/jobs",
+            },
+            {
+              label: "Links.Challenges",
+              pathname: "/challenges/all",
+            },
+          ]
         : [
-          {
-            label: "Links.Home",
-            pathname: "/",
-          },
-          {
-            label: "Links.SkillTree",
-            pathname: "/skill-tree",
-          },
-          {
-            label: "Links.Contact",
-            pathname: "/contact",
-          },
-          // {
-          // 	label: 'Links.Challenges',
-          // 	pathname: '/challenges',
-          // },
-        ];
+            {
+              label: "Links.Home",
+              pathname: "/",
+            },
+            {
+              label: "Links.SkillTree",
+              pathname: "/skill-tree",
+            },
+            {
+              label: "Links.Contact",
+              pathname: "/contact",
+            },
+            // {
+            // 	label: 'Links.Challenges',
+            // 	pathname: '/challenges',
+            // },
+          ];
     });
 
     return { links, authorized };

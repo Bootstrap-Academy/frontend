@@ -19,7 +19,7 @@
 
 <template>
   <section
-    class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
     <Transition mode="out-in" name="slide-up-down">
       <Dialog v-if="dialog && dialog.type" :dialog="dialog" />
@@ -65,9 +65,7 @@ export default {
           : "Headings.UnableSubscribedToNewsLetter",
         body: !!success
           ? "Body.SubscribedToNewsLetter"
-          : `${t("Body.UnableSubscribedToNewsLetter")}: ${t(
-            error?.detail ?? ""
-          )}`,
+          : `${t("Body.UnableSubscribedToNewsLetter")}: ${t(error?.detail ?? "")}`,
         primaryBtn: {
           label: !!success ? "Buttons.Okay" : "Links.BackToAccount",
           onclick: () => {

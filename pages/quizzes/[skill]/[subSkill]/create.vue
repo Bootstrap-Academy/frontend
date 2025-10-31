@@ -1,8 +1,8 @@
 <template>
   <section
-    class="grid-auto gap-card container h-screen-inner min pb-container pt-container grid-rows-[auto_auto_1fr] grid place-items-center"
+    class="grid-auto h-screen-inner min container grid grid-rows-[auto_auto_1fr] place-items-center gap-card pt-container pb-container"
   >
-    <section class="flex gap-3 items-center justify-end mb-3">
+    <section class="mb-3 flex items-center justify-end gap-3">
       <InputButtonToggle
         v-model="selectedTab"
         :mobile-responsive="false"
@@ -18,10 +18,7 @@
       <LazyMatchingEditableList :matchings="myMatchings" :taskId="quizId" />
     </section>
     <section v-if="selectedTab == 2" class="container-form max-w-4xl">
-      <LazyCodingChallengeEditableList
-        :challengeId="quizId"
-        :codingChallenges="codingChallenges"
-      />
+      <LazyCodingChallengeEditableList :challengeId="quizId" :codingChallenges="codingChallenges" />
     </section>
   </section>
 </template>

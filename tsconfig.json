@@ -1,7 +1,10 @@
 {
-	// https://v3.nuxtjs.org/concepts/typescript
-	"extends": "./.nuxt/tsconfig.json",
-	"buildOptions": {
-		"volar.inlayHints.eventArgumentInInlineHandlers": false
-	}
+  // https://v3.nuxtjs.org/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext"
+  },
+  "buildOptions": {
+    "volar.inlayHints.eventArgumentInInlineHandlers": false
+  }
 }

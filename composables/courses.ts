@@ -2,13 +2,10 @@ import { useState } from "#app";
 import { Course } from "~/types/courseTypes";
 import type { GetUnseenLectureResponse } from "~/types/courseTypes";
 
-export const useListOfCompletedCourses = () =>
-  useState("listOfCompletedCourses", (): any[] => []);
+export const useListOfCompletedCourses = () => useState("listOfCompletedCourses", (): any[] => []);
 export const useMyCourses = () => useState("myCourses", (): any[] => []);
-export const useCourses = () =>
-  useState<Course[]>("courses", (): Course[] => []);
-export const useCourse = () =>
-  useState<Course>("course", (): Course => new Course());
+export const useCourses = () => useState<Course[]>("courses", (): Course[] => []);
+export const useCourse = () => useState<Course>("course", (): Course => new Course());
 export const useVideoSRC = () => useState("videoSRC", (): string => "");
 
 export async function getTheseCourses(arrOfCourseIDs: string[]) {
@@ -42,9 +39,7 @@ export async function getTheseCourses(arrOfCourseIDs: string[]) {
 
 export async function getMyCourses() {
   try {
-    const response: Course[] = await GET(
-      `/skills/courses?owned=true&recent_first=true`
-    );
+    const response: Course[] = await GET(`/skills/courses?owned=true&recent_first=true`);
 
     const myCourses = useMyCourses();
     myCourses.value = response ?? [];
@@ -126,10 +121,7 @@ export async function enrollIntoCourse(id: string) {
   }
 }
 
-export async function getLectureVideoSRC(
-  courseID: string,
-  { id, video_id, type }: any
-) {
+export async function getLectureVideoSRC(courseID: string, { id, video_id, type }: any) {
   try {
     if (!!!courseID) {
       throw { data: { detail: "Invalid course ID" } };
@@ -171,9 +163,7 @@ export async function completeLecture(courseID: string, lectureID: string) {
       throw { data: { detail: "Invalid lecture ID" } };
     }
 
-    const response = await PUT(
-      `/skills/courses/${courseID}/lectures/${lectureID}/complete`
-    );
+    const response = await PUT(`/skills/courses/${courseID}/lectures/${lectureID}/complete`);
 
     return [response, null];
   } catch (error: any) {
@@ -202,11 +192,7 @@ export async function getFilteredMyCourses(filters: any[]) {
         });
       } else if (typeof filters[key] == "boolean" && filters[key] == true) {
         query = query + `${key}=${filters[key]}&`;
-      } else if (
-        typeof filters[key] == "string" &&
-				!!filters[key] &&
-				filters[key] != "---"
-      ) {
+      } else if (typeof filters[key] == "string" && !!filters[key] && filters[key] != "---") {
         query = query + `${key}=${filters[key]}&`;
       } else if (typeof filters[key] == "number" && filters[key] != -1) {
         query = query + `${key}=${filters[key]}&`;
@@ -224,9 +210,7 @@ export async function getFilteredMyCourses(filters: any[]) {
 
       let arr = [...response, ...allCoursesResponse];
 
-      myCourses.value = [
-        ...new Map(arr.map((item) => [item["id"], item])).values(),
-      ];
+      myCourses.value = [...new Map(arr.map((item) => [item["id"], item])).values()];
     }
 
     return [response, null];

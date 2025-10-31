@@ -1,29 +1,23 @@
 <template>
-  <section class="card style-card bg-secondary">
+  <section class="card bg-secondary style-card">
     <article class="mx-auto w-fit">
-      <p class="text-subheading text-body-1 uppercase">
+      <p class="text-body-1 uppercase text-subheading">
         {{ t("Headings.Price") }}
       </p>
       <div class="flex items-end gap-box">
-        <h2 class="m-0 text-display-2 leading-none">
+        <h2 class="text-display-2 m-0 leading-none">
           {{ price > 0 ? abbreviateNumber(price) : t("Headings.Free") }}
         </h2>
-        <p v-if="price > 0" class="m-0 text-body-1">
+        <p v-if="price > 0" class="text-body-1 m-0">
           {{ t("Headings.Morphcoins", { n: " " }, price) }}
         </p>
       </div>
     </article>
 
-    <hr class="mt-4 mb-8" />
+    <hr class="mb-8 mt-4" />
 
     <div class="grid gap-box">
-      <IconText
-        v-for="({ icon, value }, i) of stats"
-        :key="i"
-        :icon="icon"
-        lg
-        highlight-label
-      >
+      <IconText v-for="({ icon, value }, i) of stats" :key="i" :icon="icon" lg highlight-label>
         {{ value }}
       </IconText>
 
@@ -64,10 +58,13 @@
       />
     </div>
 
-    <div class="flex justify-center items-center space-x-2 mb-4" v-if="totalUnfinishedLectures == 0">
-      <CheckBadgeIcon class="w-8 h-8 text-success" />
+    <div
+      class="mb-4 flex items-center justify-center space-x-2"
+      v-if="totalUnfinishedLectures == 0"
+    >
+      <CheckBadgeIcon class="h-8 w-8 text-success" />
       <p>
-        {{t("Headings.CourseCompleted")}}
+        {{ t("Headings.CourseCompleted") }}
       </p>
     </div>
 
@@ -77,9 +74,7 @@
       @click="onclickEnroll"
       :class="{ 'pointer-events-none opacity-70': loading }"
     >
-      {{
-        isCourseAccessible ? t("Buttons.WatchCourse") : t("Buttons.EnrollNow")
-      }}
+      {{ isCourseAccessible ? t("Buttons.WatchCourse") : t("Buttons.EnrollNow") }}
     </InputBtn>
   </section>
 </template>
@@ -94,13 +89,13 @@ import {
 } from "@heroicons/vue/24/outline";
 import { CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
-  
-const props= defineProps({
+
+const props = defineProps({
   isCourseAccessible: { type: Boolean, default: false },
   data: { type: Object as PropType<any>, default: null },
   skillID: { type: String, default: null },
   subSkillID: { type: String, default: null },
-})
+});
 const { t } = useI18n();
 const route = useRoute();
 
@@ -121,8 +116,8 @@ async function onclickEnroll() {
   if (props.isCourseAccessible == false) {
     if (
       !termsAndConditions.value ||
-          !confirmRightToWithdrawal.value ||
-          !confirmDontUseRightToWithdrawal.value
+      !confirmRightToWithdrawal.value ||
+      !confirmDontUseRightToWithdrawal.value
     ) {
       snackbar.value = {
         show: true,
@@ -179,8 +174,7 @@ const totalLectures = computed(() => {
     });
 
     const totalDuration = allLectures.reduce(
-      (previousValue: number, currentValue: any) =>
-        previousValue + currentValue.duration ?? 0,
+      (previousValue: number, currentValue: any) => previousValue + currentValue.duration ?? 0,
       0
     );
 
@@ -191,27 +185,17 @@ const totalLectures = computed(() => {
     minutesLeftInHours = Math.round(minutesLeftInHours * 60);
 
     let hoursString =
-          roundedHours > 0
-            ? t(
-              "Headings.Hours",
-              { n: roundedHours },
-              roundedHours
-            ).toLocaleLowerCase()
-            : "";
+      roundedHours > 0
+        ? t("Headings.Hours", { n: roundedHours }, roundedHours).toLocaleLowerCase()
+        : "";
     let minsString =
-          minutesLeftInHours > 0
-            ? t(
-              "Headings.Mins",
-              { n: minutesLeftInHours },
-              minutesLeftInHours
-            ).toLocaleLowerCase()
-            : "";
+      minutesLeftInHours > 0
+        ? t("Headings.Mins", { n: minutesLeftInHours }, minutesLeftInHours).toLocaleLowerCase()
+        : "";
     return {
       quantity: allLectures.length,
       duration: `${hoursString} ${
-        !!hoursString && !!minsString
-          ? t("Headings.And").toLocaleLowerCase()
-          : ""
+        !!hoursString && !!minsString ? t("Headings.And").toLocaleLowerCase() : ""
       } ${minsString}`,
     };
   } else {
@@ -234,9 +218,7 @@ const totalUnfinishedLectures = computed(() => {
       allLectures = [...allLectures, ...section.lectures];
     });
 
-    const unfinishedLectures = allLectures.filter(
-      (lecture: any) => !lecture.completed
-    );
+    const unfinishedLectures = allLectures.filter((lecture: any) => !lecture.completed);
 
     return unfinishedLectures.length;
   } else {
@@ -280,8 +262,6 @@ const stats = computed(() => {
     },
   ];
 });
-
-  
 </script>
 
 <style scoped></style>

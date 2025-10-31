@@ -1,22 +1,22 @@
 hear
 <template>
-  <article class="relative w-fit h-fit" @focusout="show = false" tabindex="0">
+  <article class="relative h-fit w-fit" @focusout="show = false" tabindex="0">
     <div
-      class="cursor-pointer h-fit"
+      class="h-fit cursor-pointer"
       @click="show = !show"
-      :class="[sm ? 'p-2' : 'p-3', { 'bg-secondary rounded ': filled }]"
+      :class="[sm ? 'p-2' : 'p-3', { 'rounded bg-secondary': filled }]"
     >
-      <EllipsisVerticalIcon class="w-5 h-5 text-body" />
+      <EllipsisVerticalIcon class="h-5 w-5 text-body" />
     </div>
 
     <transition name="slide-up" mode="in-out">
       <button
         v-if="show"
-        class="appearance-none absolute right-[100%] top-[-40%] bg-tertiary p-4 style-box w-fit grid gap-2 z-50"
+        class="absolute right-[100%] top-[-40%] z-50 grid w-fit appearance-none gap-2 bg-tertiary p-4 style-box"
         :class="filled ? 'right-[150%]' : 'right-[100%]'"
       >
         <p
-          class="text-body-2 text-heading text-left cursor-pointer whitespace-nowrap"
+          class="text-body-2 cursor-pointer whitespace-nowrap text-left text-heading"
           v-for="(item, i) of list"
           :key="i"
           @click="item.onclick"

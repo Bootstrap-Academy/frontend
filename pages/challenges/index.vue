@@ -25,19 +25,19 @@
 -->
 
 <template>
-	<section
-		class="container-fluid pt-container pb-container h-screen-inner min grid place-items-center"
-	></section>
+  <section
+    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
+  ></section>
 </template>
 
 <script lang="ts">
 definePageMeta({
-  layout: 'inner',
+  layout: "inner",
 });
 
 export default {
   head: {
-    title: 'Challenges',
+    title: "Challenges",
   },
   setup() {
     const router = useRouter();
@@ -46,7 +46,7 @@ export default {
     const config = useRuntimeConfig().public;
 
     onMounted(async () => {
-      router.replace('/challenges/all');
+      router.replace("/challenges/all");
     });
 
     return {};

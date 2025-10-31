@@ -1,17 +1,10 @@
 <template>
   <section>
     <article class="flex justify-end">
-      <InputSelect
-        v-model="selectedLanguage"
-        :options="languages"
-        v-if="languages.length"
-      />
+      <InputSelect v-model="selectedLanguage" :options="languages" v-if="languages.length" />
     </article>
     <SkeletonLeaderboard v-if="loading" />
-    <LeaderboardListing
-      v-else-if="leaderBoardList.length"
-      :leaderBoardList="leaderBoardList"
-    />
+    <LeaderboardListing v-else-if="leaderBoardList.length" :leaderBoardList="leaderBoardList" />
     <section v-else-if="!leaderBoardList.length">
       <p>{{ t("Headings.EmptyLeaderBoardList") }}</p>
     </section>

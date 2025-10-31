@@ -25,40 +25,34 @@
       <UserCoins />
     </section>
     <main
-      class="grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_minmax(0,70vh)] md:grid-rows-[auto_minmax(0,1fr)] gap-card card md:h-screen-inner"
+      class="md:h-screen-inner card grid grid-cols-1 grid-rows-[auto_auto_auto_minmax(0,70vh)] gap-card md:grid-cols-2 md:grid-rows-[auto_minmax(0,1fr)]"
     >
       <Head>
         <Title>Solve Challenge - {{ challenge?.title ?? "" }}</Title>
       </Head>
 
-      <header class="w-fit flex items-items gap-card">
+      <header class="items-items flex w-fit gap-card">
         <div>
           <template v-for="(path, i) of breadcrumbs" :key="i">
-            <NuxtLink
-              v-if="path.to"
-              :to="path.to"
-              class="inline-block text-body-2"
-            >
+            <NuxtLink v-if="path.to" :to="path.to" class="text-body-2 inline-block">
               {{ t(path.label) }}
             </NuxtLink>
-            <h1 v-else class="text-heading-2 capitalize inline-block">
+            <h1 v-else class="text-heading-2 inline-block capitalize">
               {{ t(path.label) }}
             </h1>
 
-            <span v-if="i < breadcrumbs.length - 1" class="text-accent mx-3">
-              /
-            </span>
+            <span v-if="i < breadcrumbs.length - 1" class="mx-3 text-accent"> / </span>
           </template>
         </div>
-        <p class="py-1 px-3 bg-warning rounded text-primary w-fit h-fit">
+        <p class="h-fit w-fit rounded bg-warning px-3 py-1 text-primary">
           {{ t("Headings.Active") }}
         </p>
       </header>
 
-      <div class="bg-secondary style-box w-fit h-fit"></div>
+      <div class="h-fit w-fit bg-secondary style-box"></div>
 
       <aside
-        class="card style-card bg-secondary grid gap-card grid-cols-1 pt-card-sm overflow-auto"
+        class="card grid grid-cols-1 overflow-auto bg-secondary pt-card-sm style-card gap-card"
       >
         <ChallengesItemSubmission
           :data="challenge"

@@ -8,11 +8,10 @@
     :aria-labelledby="labelId"
     :aria-describedby="descriptionId ?? undefined"
   >
-    <Language class="h-[33px]" />
     <div
       ref="panel"
       class="modal-content container-fluid pt-card pb-card grid place-items-center"
-      tabindex="-1"
+      role="document"
     >
       <slot></slot>
     </div>
@@ -45,6 +44,7 @@ export default defineComponent({
   setup(props, { emit }) {
     // reference to main dialog content div.
     const panel = ref<HTMLElement | null>(null);
+    const previousFocus = ref<HTMLElement | null>(null);
     const { trapFocus, untrapFocus } = useFocusTrap(panel);
 
     // Composable handles the focus trap logic.
@@ -58,13 +58,24 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      // When the modal is mounted, focus is set to it. => Crucial for keyboard users and screen readers.
+      // When the modal is mounted, find and focus the first interactive element
       if (panel.value) {
-        panel.value.focus();
+        const firstFocusable = panel.value.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable instanceof HTMLElement) {
+          firstFocusable.focus();
+        } else {
+          // Fallback: focus the panel itself if no focusable element is found
+          panel.value.focus();
+        }
       }
+      
       // Event listeners handle the Escape key and trap the focus.
       document.addEventListener('keydown', handleEscape);
       trapFocus();
+      
+      // Store the previously focused element to restore focus when modal closes
+      previousFocus.value = document.activeElement as HTMLElement;
+      
       // Prevents the body from scrolling.
       document.body.style.overflow = 'hidden';
     });
@@ -74,6 +85,11 @@ export default defineComponent({
       document.removeEventListener('keydown', handleEscape);
       untrapFocus();
       document.body.style.overflow = '';
+      
+      // Restore focus to the element that was focused before the modal opened
+      if (previousFocus.value) {
+        previousFocus.value.focus();
+      }
     });
 
     // Returns the `panel` ref so the template can bind to it.
@@ -84,18 +100,18 @@ export default defineComponent({
 
 <style scoped>
 .modal-content {
-	animation: modalContent 0.75s ease-out forwards;
-	height: calc(100vh - 33px);
+  animation: modalContent 0.75s ease-out forwards;
+  height: calc(100vh - 33px);
 }
 
 @keyframes modalContent {
-	0% {
-		opacity: 0;
-		transform: translateY(30px);
-	}
-	100% {
-		opacity: 1;
-		transform: translateY(0);
-	}
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

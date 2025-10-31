@@ -1,11 +1,9 @@
 <template>
   <section
-    class="relative flex items-center justify-center container-fluid pt-container pb-container lg:py-0 lg:h-screen-main overflow-hidden w-screen"
+    class="lg:h-screen-main container-fluid relative flex w-screen items-center justify-center overflow-hidden pt-container pb-container lg:py-0"
   >
     <SvgHero />
-    <article
-      class="max-w-5xl relative z-20 text-center flex flex-col justify-center items-center"
-    >
+    <article class="relative z-20 flex max-w-5xl flex-col items-center justify-center text-center">
       <strong class="text-heading-2 text-accent font-heading">
         {{ t("Subheadings.Hero") }}
       </strong>

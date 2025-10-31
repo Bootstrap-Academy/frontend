@@ -1,7 +1,7 @@
 <template>
   <section>
     <header
-      class="flex flex-col md:flex-row gap-card justify-between cursor-pointer"
+      class="flex cursor-pointer flex-col justify-between gap-card md:flex-row"
       @click="toggleShowChallenges()"
     >
       <div>
@@ -12,7 +12,7 @@
       <!-- <p>{{ data?.points?.current ?? 0 }} / {{ data?.points?.total ?? 10 }}</p> -->
       <p
         v-if="categoryStats?.total > 0"
-        class="rounded-full text-sm py-1 px-3.5 text-[#dfdede] flex-shrink-0 min-w-[200px] h-7"
+        class="h-7 min-w-[200px] flex-shrink-0 rounded-full px-3.5 py-1 text-sm text-[#dfdede]"
         :style="{ background: progressBar }"
       >
         {{ t(progress >= 100 ? "Headings.Completed" : "Headings.Untried") }}
@@ -32,39 +32,30 @@
       </Btn>
     </NuxtLink>
 
-    <div class="grid gap-box grid-cols-1 pt-box" v-show="showChallenges">
-      <div v-if="loading" class="box px-4 xl:px-5 style-box bg-secondary">
+    <div class="grid grid-cols-1 gap-box pt-box" v-show="showChallenges">
+      <div v-if="loading" class="box bg-secondary px-4 style-box xl:px-5">
         <header
-          class="grid gap-card grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] cursor-pointer"
+          class="grid cursor-pointer grid-cols-1 gap-card sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
         >
-          <h2 class="mt-1.5 text-heading-3">
+          <h2 class="text-heading-3 mt-1.5">
             <SkeletonText />
           </h2>
 
-          <SkeletonText
-            class="min-w-[8rem] w-32 max-w-[8rem] h-4 mt-1.5"
-            body
-          />
+          <SkeletonText class="mt-1.5 h-4 w-32 min-w-[8rem] max-w-[8rem]" body />
 
-          <p
-            class="!m-0 text-right flex items-center gap-2 w-fit place-self-end"
-          >
-            <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" />
+          <p class="!m-0 flex w-fit items-center gap-2 place-self-end text-right">
+            <SkeletonText class="h-5 w-10 min-w-[2.5rem] max-w-[2.5rem]" />
             /
-            <SkeletonText class="min-w-[2.5rem] w-10 max-w-[2.5rem] h-5" body />
+            <SkeletonText class="h-5 w-10 min-w-[2.5rem] max-w-[2.5rem]" body />
           </p>
         </header>
       </div>
 
       <template v-else-if="challenges && challenges.length > 0">
-        <ChallengesItem
-          v-for="challenge of challenges"
-          :key="challenge.id"
-          :data="challenge"
-        />
+        <ChallengesItem v-for="challenge of challenges" :key="challenge.id" :data="challenge" />
       </template>
 
-      <p v-else class="py-2 px-4 text-warning style-box bg-warning-light w-fit">
+      <p v-else class="w-fit px-4 py-2 text-warning bg-warning-light style-box">
         {{ t("Error.NoChallengesAvailable") }}
       </p>
     </div>
@@ -92,21 +83,18 @@ export default defineComponent({
     const loading = ref(challenges.length <= 0);
 
     onMounted(async () => {
-      const [success, error] = await getChallengesByCategory(
+      const [success, error] = await getChallengesByCategory(props.data?.id ?? "");
+      console.log("error", error);
+      const [statsSuccess, statsError] = await getStatsCategoryWiseForCodingChallenges(
         props.data?.id ?? ""
       );
-      console.log("error", error);
-      const [statsSuccess, statsError] =
-        await getStatsCategoryWiseForCodingChallenges(props.data?.id ?? "");
       loading.value = false;
       Object.assign(challenges, success ? success : []);
       categoryStats.value = statsSuccess ? statsSuccess : null;
     });
 
     const progress = computed(() => {
-      return (
-        (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100
-      );
+      return (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100;
     });
 
     const progressBar = computed(() => {
@@ -138,8 +126,8 @@ export default defineComponent({
         query: showChallenges.value
           ? {}
           : {
-            category: category.value,
-          },
+              category: category.value,
+            },
       });
     }
 

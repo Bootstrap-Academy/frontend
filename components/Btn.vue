@@ -69,12 +69,11 @@ export default defineComponent({
 
 <style scoped>
 button {
-  @apply h-fit rounded flex items-center text-center
-			 uppercase tracking-widest transition-basic font-body;
+  @apply flex h-fit items-center rounded text-center uppercase tracking-widest font-body transition-basic;
 }
 
 button:disabled {
-  @apply opacity-50 cursor-not-allowed;
+  @apply cursor-not-allowed opacity-50;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STYLE */
@@ -91,13 +90,13 @@ button:disabled {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
-  @apply text-xs px-3.5 py-2 gap-2 font-medium;
+  @apply gap-2 px-3.5 py-2 text-xs font-medium;
 }
 .md {
-  @apply text-sm px-5 py-3 gap-3 font-bold;
+  @apply gap-3 px-5 py-3 text-sm font-bold;
 }
 .lg {
-  @apply text-base px-6 py-4 gap-4;
+  @apply gap-4 px-6 py-4 text-base;
 }
 :is(.sm, .md, .lg).tertiary {
   @apply px-0 sm:px-0 md:px-0 lg:px-0 xl:px-0;
@@ -105,13 +104,13 @@ button:disabled {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ICON */
 .sm .icon {
-  @apply w-4 h-4;
+  @apply h-4 w-4;
 }
 .md .icon {
-  @apply w-5 h-5;
+  @apply h-5 w-5;
 }
 .lg .icon {
-  @apply w-6 h-6;
+  @apply h-6 w-6;
 }
 .primary .icon {
   @apply fill-primary;

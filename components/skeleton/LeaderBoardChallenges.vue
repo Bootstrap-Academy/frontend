@@ -1,12 +1,10 @@
 <template>
   <div v-for="i of 18" :key="i">
     <section
-      class="group cursor-pointer hover:scale-105 border border-accent transition-all my-3 p-3 sm:p-5 rounded-md flex flex-col sm:flex-row items-start justify-between gap-4 sm:items-center"
+      class="group my-3 flex cursor-pointer flex-col items-start justify-between gap-4 rounded-md border border-accent p-3 transition-all hover:scale-105 sm:flex-row sm:items-center sm:p-5"
     >
       <SkeletonText class="max-w-[200px]" />
-      <ArrowRightIcon
-        class="h-7 w-7 scale-75 text-white group-hover:scale-100"
-      />
+      <ArrowRightIcon class="h-7 w-7 scale-75 text-white group-hover:scale-100" />
     </section>
   </div>
 </template>

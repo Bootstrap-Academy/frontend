@@ -1,23 +1,26 @@
 <template>
-  <article class="bg-secondary card style-card flex flex-col items-center justify-center" v-if="!show">
-    <CheckBadgeIcon class="h-10 w-10 text-accent mb-4 max-w-xl" />
+  <article
+    class="card flex flex-col items-center justify-center bg-secondary style-card"
+    v-if="!show"
+  >
+    <CheckBadgeIcon class="mb-4 h-10 w-10 max-w-xl text-accent" />
 
-    <h2 class="text-heading-2">{{ t('Headings.VerifyAccount') }}</h2>
+    <h2 class="text-heading-2">{{ t("Headings.VerifyAccount") }}</h2>
 
-    <p class="mt-2 mb-8 max-w-xl text-center">
-      {{ t('Body.VerifyAccountCard') }}
+    <p class="mb-8 mt-2 max-w-xl text-center">
+      {{ t("Body.VerifyAccountCard") }}
     </p>
 
     <InputBtn :loading="loading" @click="onclick">
-      {{ t('Buttons.VerifyAccount') }}
+      {{ t("Buttons.VerifyAccount") }}
     </InputBtn>
   </article>
 </template>
 
 <script lang="ts">
-import { CheckBadgeIcon } from '@heroicons/vue/24/solid';
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { CheckBadgeIcon } from "@heroicons/vue/24/solid";
+import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   components: {
@@ -35,26 +38,26 @@ export default defineComponent({
     const loading = ref(false);
 
     async function onclick() {
-      let email = user?.value?.email ?? '';
+      let email = user?.value?.email ?? "";
       if (!!!email) {
         openDialog(
-          'warning',
-          'Headings.MissingEmail',
-          'Body.MissingEmail',
+          "warning",
+          "Headings.MissingEmail",
+          "Body.MissingEmail",
           false,
           {
-            label: 'Buttons.AddEmail',
+            label: "Buttons.AddEmail",
             onclick: () => {
-              router.push('/profile/edit');
+              router.push("/profile/edit");
             },
           },
           {
-            label: 'Buttons.Cancel',
-            onclick: () => { },
+            label: "Buttons.Cancel",
+            onclick: () => {},
           }
         );
       } else {
-        router.push('/auth/verify-account');
+        router.push("/auth/verify-account");
       }
     }
 

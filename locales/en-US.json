@@ -10,9 +10,23 @@
     "GetMorphcoins": "Get MorphCoins",
     "WebShop": "Web Shop"
   },
+  "VerdictHint": {
+    "OK": "All tests passed successfully.",
+    "COMPILATION_ERROR": "We could not compile your program. Review the compiler output below.",
+    "INVALID_OUTPUT_FORMAT": "The evaluator could not read your output. Make sure it matches the expected format.",
+    "MEMORY_LIMIT_EXCEEDED": "Your program used {actual_mib} MiB of memory but the limit is {limit_mib} MiB.",
+    "NO_OUTPUT": "Your program did not print any output.",
+    "PRE_CHECK_FAILED": "The evaluator rejected the submission before execution.",
+    "RUNTIME_ERROR": "Your program exited with status {exit_code}. Check the runtime logs for details.",
+    "TIME_LIMIT_EXCEEDED": "Your program ran for {actual_seconds}s but the limit is {limit_seconds}s.",
+    "WRONG_ANSWER": "The result is incorrect. Review the evaluator feedback below."
+  },
 
   "Headings": {
-    "DragAndDropToMatchMatchings": "Drag And Drop To Match Matchings",
+    "Dashboard": "Dashboard",
+    "SkillTreeOverview": "Skill Tree Overview",
+    "DragAndDropToMatchMatchings": "Match the Items",
+    "MatchingInstructions": "Click on an item from the left, then click on the matching item on the right. Or drag from left to right to draw a connection.",
     "AnswersForMatchingsRespectively": "Answers for Matchings",
     "LabelForMatchings": "Labels for Matchings",
     "NoteCannotEditMatching": "Edit Restriction",
@@ -34,6 +48,9 @@
     "Error": "Error",
     "NoErrorFound": "No Error Found",
     "ErrorMessage": "Error Message",
+    "CompilerOutput": "Compiler stderr",
+    "RuntimeStdErr": "Runtime stderr",
+    "RuntimeStdOut": "Runtime stdout",
     "ShowErrorMessage": "Show Error Message",
     "ExampleOutput": "Output",
     "Example": "Example",
@@ -372,6 +389,8 @@
     "SelectSkill": "Select Skill"
   },
   "Body": {
+    "DashboardIntro": "Jump back into your courses or challenges to keep the momentum going.",
+    "SkillTreeOverview": "Browse every root skill and open the details whenever you want to go deeper.",
     "SelectSkillDescription": "We need to know under which root skill you want to create the content.",
     "DeleteMatching": "Are you sure you want to delete this matching? This action cannot be undone.",
     "WhyWeUseTests": "The numbers you enter when creating or modifying a coding challenge are simply the number of static/random test cases to test the user's solution against. For example, if I set static_tests=5 and random_tests=3, then for every submission, 5 static testcases and 3 random testcases are generated, which the user's submission is tested against",
@@ -813,6 +832,8 @@
     "EditChallenge": "Edit Challenge",
     "Details": "Details",
     "Load": "Load",
+    "ShowDetails": "Show details",
+    "HideDetails": "Hide details",
     "Solve": "Solve",
     "MyChallenges": "My Challenges",
     "Challenges": "Challenges",
@@ -912,6 +933,7 @@
     "BackToAccount": "Back to Account",
     "GoToLogin": "Go to login",
     "Home": "Home",
+    "Dashboard": "Dashboard",
     "SkillTree": "Skill Tree",
     "Contact": "Contact",
     "Privacy": "Privacy Policy",

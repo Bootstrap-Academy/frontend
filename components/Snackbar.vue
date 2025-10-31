@@ -1,29 +1,23 @@
 <template>
   <Transition name="slide-up">
-    <div
-      class="card fixed z-50 bottom-[85px] right-0 flex justify-end"
-      v-if="show"
-    >
+    <div class="card fixed bottom-[85px] right-0 z-50 flex justify-end" v-if="show">
       <div class="bg-secondary">
         <article
-          class="border-t-4 rounded-b p-4 md:p-6 shadow-lg grid gap-x-4 md:gap-x-6 grid-cols-[auto_1fr]"
+          class="grid grid-cols-[auto_1fr] gap-x-4 rounded-b border-t-4 p-4 shadow-lg md:gap-x-6 md:p-6"
           role="alert"
           :class="[theme.bgLight, theme.border]"
         >
           <component
-            class="h-8 w-8 row-span-2"
+            class="row-span-2 h-8 w-8"
             :class="[theme.fill]"
             :is="theme.icon"
             @click="fnCloseSnackbar(theme.icon)"
           ></component>
 
-          <h6
-            class="text-heading-4 text-heading font-heading"
-            :class="{ 'mt-1': !!!body }"
-          >
+          <h6 class="text-heading-4 text-heading font-heading" :class="{ 'mt-1': !!!body }">
             {{ t(heading) }}
           </h6>
-          <p class="text-body-1 text-body font-body m-0">
+          <p class="text-body-1 m-0 text-body font-body">
             {{ t(body) }}
           </p>
         </article>

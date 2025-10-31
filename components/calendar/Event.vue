@@ -1,62 +1,57 @@
 <template>
-	<article
-		class="p-4 style-card lg:style-box bg-secondary border-l-4"
-		:class="[theme.border]"
-	>
-		<header
-			class="flex justify-between gap-x-card gap-y-2 flex-wrap-reverse mb-4"
-		>
-			<div v-if="data.type == 'coaching'" class="flex gap-box">
-				<img
-					:src="data.instructor.avatar_url ?? '/images/about-2.webp'"
-					class="w-6 h-6 object-cover rounded-[50px]"
+  <article class="border-l-4 bg-secondary p-4 style-card lg:style-box" :class="[theme.border]">
+    <header class="mb-4 flex flex-wrap-reverse justify-between gap-y-2 gap-x-card">
+      <div v-if="data.type == 'coaching'" class="flex gap-box">
+        <img
+          :src="data.instructor.avatar_url ?? '/images/about-2.webp'"
+          class="h-6 w-6 rounded-[50px] object-cover"
           :alt="t('AltAttributes.EventInstructorAvatar')"
-				/>
+        />
 
-				<h3 class="capitalize text-heading-4">
-					{{ data.instructor.display_name ?? data.instructor.name ?? type }}
-				</h3>
-			</div>
+        <h3 class="text-heading-4 capitalize">
+          {{ data.instructor.display_name ?? data.instructor.name ?? type }}
+        </h3>
+      </div>
 
-			<h3 v-else class="capitalize text-heading-4">{{ title }}</h3>
-			<button
-				@click="onclickCard"
-				v-if="data.link"
-				:class="[theme.text, theme.bgLight]"
-				class="py-1 px-2 rounded text-body-2 w-fit flex-shrink-0 h-fit"
-			>
-				{{ t("Links.Link") }}
-			</button>
-		</header>
+      <h3 v-else class="text-heading-4 capitalize">{{ title }}</h3>
+      <button
+        @click="onclickCard"
+        v-if="data.link"
+        :class="[theme.text, theme.bgLight]"
+        class="text-body-2 h-fit w-fit flex-shrink-0 rounded px-2 py-1"
+      >
+        {{ t("Links.Link") }}
+      </button>
+    </header>
 
-		<IconText
-			v-for="(stat, i) of stats"
-			:key="i"
-			:icon="stat.icon"
-			class="w-full my-2.5"
-			:highlightIcon="false"
-			sm
-			:iconColor="theme.text"
-			:fill="theme.fill"
-		>
-			{{ stat.value }}
-		</IconText>
+    <IconText
+      v-for="(stat, i) of stats"
+      :key="i"
+      :icon="stat.icon"
+      class="my-2.5 w-full"
+      :highlightIcon="false"
+      sm
+      :iconColor="theme.text"
+      :fill="theme.fill"
+    >
+      {{ stat.value }}
+    </IconText>
 
-		<CalendarEventBooking
-			:key="id"
-			:isMine="isMine"
-			:booked="data.booked"
-			:bookable="data.bookable"
-			:id="id"
-			:type="type"
-			:theme="theme"
-			:subSkillID="skillID"
-			:start="data.start"
-			:stats="stats"
-			:description="description"
-			:event="data"
-		/>
-	</article>
+    <CalendarEventBooking
+      :key="id"
+      :isMine="isMine"
+      :booked="data.booked"
+      :bookable="data.bookable"
+      :id="id"
+      :type="type"
+      :theme="theme"
+      :subSkillID="skillID"
+      :start="data.start"
+      :stats="stats"
+      :description="description"
+      :event="data"
+    />
+  </article>
 </template>
 
 <script lang="ts">
@@ -78,8 +73,6 @@ export default defineComponent({
     noBooking: { type: Boolean, default: false },
   },
   setup(props) {
-			
-
     const { t } = useI18n();
     const user = useUser();
 
@@ -93,24 +86,24 @@ export default defineComponent({
 
     const theme = computed(() => {
       switch (type.value) {
-      case "coaching":
-        return {
-          bg: "bg-info",
-          bgLight: "bg-info-light",
-          fill: "fill-info",
-          stroke: "stroke-info",
-          border: "border-info",
-          text: "text-info",
-        };
-      default:
-        return {
-          bg: "bg-warning",
-          bgLight: "bg-warning-light",
-          fill: "fill-warning",
-          stroke: "stroke-warning",
-          border: "border-warning",
-          text: "text-warning",
-        };
+        case "coaching":
+          return {
+            bg: "bg-info",
+            bgLight: "bg-info-light",
+            fill: "fill-info",
+            stroke: "stroke-info",
+            border: "border-info",
+            text: "text-info",
+          };
+        default:
+          return {
+            bg: "bg-warning",
+            bgLight: "bg-warning-light",
+            fill: "fill-warning",
+            stroke: "stroke-warning",
+            border: "border-warning",
+            text: "text-warning",
+          };
       }
     });
 
@@ -119,7 +112,6 @@ export default defineComponent({
     });
 
     const instructor = computed(() => {
-
       return props.data.instructor;
     });
 
@@ -194,11 +186,7 @@ export default defineComponent({
         },
         {
           icon: IconMorphcoin,
-          value: t(
-            "Headings.Morphcoins",
-            { n: abbreviateNumber(price.value) },
-            price.value
-          ),
+          value: t("Headings.Morphcoins", { n: abbreviateNumber(price.value) }, price.value),
           heading: "Headings.Price",
         },
       ];

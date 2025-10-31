@@ -1,16 +1,14 @@
-import { useState } from '#app';
+import { useState } from "#app";
 
-export const useCoachings = () => useState('coachings', () => []);
+export const useCoachings = () => useState("coachings", () => []);
 
 export async function getCoachingsForThisSubSkill(subSkillID: string) {
   try {
     if (!!!subSkillID) {
-      throw { data: { detail: 'Invalid sub skill ID' } };
+      throw { data: { detail: "Invalid sub skill ID" } };
     }
 
-    const response = await GET(
-      `/events/calendar?type=coaching&skill_id=${subSkillID}`
-    );
+    const response = await GET(`/events/calendar?type=coaching&skill_id=${subSkillID}`);
 
     const coachings = useCoachings();
     coachings.value = response?.events ?? [];
@@ -33,11 +31,11 @@ export async function bookCoachingForThisSubSkillWithThisInstructor(
 ) {
   try {
     if (!!!subSkillID) {
-      throw { data: { detail: 'Invalid sub skill ID' } };
+      throw { data: { detail: "Invalid sub skill ID" } };
     }
 
     if (!!!slot_id) {
-      throw { data: { detail: 'Invalid instructor ID' } };
+      throw { data: { detail: "Invalid instructor ID" } };
     }
 
     const response = await POST(`/events/coachings/${subSkillID}/${slot_id}`);
