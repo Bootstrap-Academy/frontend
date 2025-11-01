@@ -44,11 +44,14 @@
       <button
         v-if="reward.status === 'ready'"
         type="button"
-        class="inline-flex items-center gap-2 rounded-lg bg-[color:var(--color-accent)] px-4 py-2 text-sm font-semibold text-[color:var(--color-dark)] transition hover:bg-[rgba(12,201,171,0.85)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:var(--color-accent)] focus-visible:ring-offset-[color:var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-70"
+        class="inline-flex items-center gap-2 rounded-lg bg-[color:var(--color-accent)] px-4 py-2 text-sm font-semibold text-[color:var(--color-dark)] transition hover:bg-[rgba(12,201,171,0.85)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-70"
         :disabled="busy"
         @click="$emit('claim', reward.category)"
       >
-        <span v-if="busy" class="size-3 animate-spin rounded-full border-2 border-[color:var(--color-dark)] border-r-transparent" />
+        <span
+          v-if="busy"
+          class="size-3 animate-spin rounded-full border-2 border-[color:var(--color-dark)] border-r-transparent"
+        />
         <span>{{ t("DailyRewards.Buttons.Claim") }}</span>
       </button>
 
@@ -75,10 +78,7 @@
         {{ unavailableLabel }}
       </p>
 
-      <p
-        v-else
-        class="text-sm font-medium text-[color:var(--color-subheading)]"
-      >
+      <p v-else class="text-sm font-medium text-[color:var(--color-subheading)]">
         {{ claimedLabel }}
       </p>
     </div>
@@ -125,32 +125,28 @@ export default defineComponent({
     let celebrationTimeout: ReturnType<typeof setTimeout> | null = null;
 
     const categoryLabel = computed(() =>
-      t(`DailyRewards.Categories.${props.reward.category}` as const),
+      t(`DailyRewards.Categories.${props.reward.category}` as const)
     );
 
-    const statusLabel = computed(() =>
-      t(`DailyRewards.Status.${props.reward.status}` as const),
-    );
+    const statusLabel = computed(() => t(`DailyRewards.Status.${props.reward.status}` as const));
 
     const statusBadgeClass = computed(
-      () => STATUS_CLASS[props.reward.status] ?? STATUS_CLASS.pending,
+      () => STATUS_CLASS[props.reward.status] ?? STATUS_CLASS.pending
     );
 
-    const statusDotClass = computed(
-      () => DOT_CLASS[props.reward.status] ?? DOT_CLASS.pending,
-    );
+    const statusDotClass = computed(() => DOT_CLASS[props.reward.status] ?? DOT_CLASS.pending);
 
     const activityHint = computed(() => buildActivityHint(props.reward));
     const defaultHint = computed(() =>
-      t(`DailyRewards.DefaultHint.${props.reward.category}` as const),
+      t(`DailyRewards.DefaultHint.${props.reward.category}` as const)
     );
 
     const showPendingCta = computed(
-      () => props.reward.status === "pending" && props.reward.category !== "arrival",
+      () => props.reward.status === "pending" && props.reward.category !== "arrival"
     );
 
     const pendingCtaLabel = computed(() =>
-      t(`DailyRewards.Buttons.Resume.${props.reward.category}` as const),
+      t(`DailyRewards.Buttons.Resume.${props.reward.category}` as const)
     );
 
     const unavailableLabel = computed(() => {
@@ -180,7 +176,7 @@ export default defineComponent({
         } else if (status !== "claimed") {
           celebrate.value = false;
         }
-      },
+      }
     );
 
     onBeforeUnmount(() => {

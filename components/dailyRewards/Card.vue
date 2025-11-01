@@ -1,6 +1,6 @@
 <template>
   <section
-    class="card daily-rewards-card grid gap-5 rounded-2xl bg-[color:var(--color-secondary)] p-6 text-[color:var(--color-heading)]"
+    class="daily-rewards-card card grid gap-5 rounded-2xl bg-[color:var(--color-secondary)] p-6 text-[color:var(--color-heading)]"
     aria-labelledby="daily-rewards-heading"
   >
     <header class="grid gap-2">
@@ -24,7 +24,11 @@
     </header>
 
     <div v-if="pending" class="grid gap-4">
-      <div v-for="index in 4" :key="index" class="animate-pulse rounded-xl bg-[rgba(11,25,46,0.35)] p-4">
+      <div
+        v-for="index in 4"
+        :key="index"
+        class="animate-pulse rounded-xl bg-[rgba(11,25,46,0.35)] p-4"
+      >
         <div class="flex items-center justify-between">
           <div class="h-4 w-32 rounded bg-[rgba(255,255,255,0.09)]" />
           <div class="h-4 w-16 rounded bg-[rgba(255,255,255,0.05)]" />
@@ -33,7 +37,10 @@
       </div>
     </div>
 
-    <div v-else-if="error" class="rounded-xl border border-[rgba(235,88,87,0.35)] bg-[rgba(235,88,87,0.08)] p-5 text-sm text-[color:var(--color-body)]">
+    <div
+      v-else-if="error"
+      class="rounded-xl border border-[rgba(235,88,87,0.35)] bg-[rgba(235,88,87,0.08)] p-5 text-sm text-[color:var(--color-body)]"
+    >
       <p>{{ t("DailyRewards.Error") }}</p>
       <button
         type="button"
@@ -44,7 +51,10 @@
       </button>
     </div>
 
-    <div v-else-if="!featureEnabled" class="rounded-xl border border-[rgba(205,215,245,0.15)] bg-[rgba(11,25,46,0.35)] p-5 text-sm text-[color:var(--color-body)]">
+    <div
+      v-else-if="!featureEnabled"
+      class="rounded-xl border border-[rgba(205,215,245,0.15)] bg-[rgba(11,25,46,0.35)] p-5 text-sm text-[color:var(--color-body)]"
+    >
       <p>{{ t("DailyRewards.Disabled") }}</p>
     </div>
 
@@ -113,14 +123,14 @@ export default defineComponent({
     } = useDailyRewards();
 
     const hasReadyRewards = computed(() =>
-      rewards.value.some((reward) => reward.status === "ready"),
+      rewards.value.some((reward) => reward.status === "ready")
     );
 
     const summaryByCategory = computed(() =>
       rewards.value.reduce<Record<RewardCategory, DailyReward>>((acc, reward) => {
         acc[reward.category] = reward;
         return acc;
-      }, Object.create(null)),
+      }, Object.create(null))
     );
 
     const handleClaim = async (category: RewardCategory) => {
@@ -133,7 +143,7 @@ export default defineComponent({
           t("DailyRewards.ToastBody.ClaimSingle", {
             category: t(`DailyRewards.Categories.${category}`),
             coins: current?.coins ?? 0,
-          }),
+          })
         );
       } else if (claimError !== "busy") {
         openSnackbar(
@@ -141,23 +151,26 @@ export default defineComponent({
           "DailyRewards.Toast.ClaimError",
           t("DailyRewards.ToastBody.ClaimError", {
             category: t(`DailyRewards.Categories.${category}`),
-          }),
+          })
         );
       }
     };
 
     const handleClaimAll = async () => {
       const readyRewards = rewards.value.filter((reward) => reward.status === "ready");
-      const readyCoinMap = readyRewards.reduce<Record<RewardCategory, number>>((acc, reward) => {
-        acc[reward.category] = reward.coins;
-        return acc;
-      }, {} as Record<RewardCategory, number>);
+      const readyCoinMap = readyRewards.reduce<Record<RewardCategory, number>>(
+        (acc, reward) => {
+          acc[reward.category] = reward.coins;
+          return acc;
+        },
+        {} as Record<RewardCategory, number>
+      );
 
       const result = await claimAll();
       if (result.ok) {
         const claimedCoins = result.claimed.reduce(
           (sum, category) => sum + (readyCoinMap[category] ?? 0),
-          0,
+          0
         );
         const successBody = t("DailyRewards.ToastBody.ClaimAllSuccess", {
           coins: claimedCoins,
@@ -171,13 +184,13 @@ export default defineComponent({
                   .map(({ category }) => t(`DailyRewards.Categories.${category}`))
                   .join(", "),
               })}`
-            : successBody,
+            : successBody
         );
       } else if (result.error !== "busy") {
         openSnackbar(
           "error",
           "DailyRewards.Toast.ClaimAllError",
-          t("DailyRewards.ToastBody.ClaimAllError"),
+          t("DailyRewards.ToastBody.ClaimAllError")
         );
       }
     };
@@ -219,8 +232,7 @@ export default defineComponent({
             (pickSampleValue("skill_id", "skillId") ? "skill" : undefined) ??
             (pickSampleValue("quiz_id", "quizId") ? "quiz" : undefined);
           let solveId =
-            pickSampleValue("solve_id", "solveId") ??
-            pickSampleValue("quiz_id", "quizId");
+            pickSampleValue("solve_id", "solveId") ?? pickSampleValue("quiz_id", "quizId");
 
           if (!solveId) {
             if (resolvedQuizzesFrom === "course") {
@@ -236,7 +248,7 @@ export default defineComponent({
             "query_subtask_id",
             "querySubTaskId",
             "subtask_id",
-            "subTaskId",
+            "subTaskId"
           );
           const taskId = pickSampleValue("task_id", "taskId");
           const rootSkillId = pickSampleValue("root_skill_id", "rootSkillId", "rootSkillID");
@@ -277,7 +289,7 @@ export default defineComponent({
             "coding_challenge_id",
             "codingChallengeId",
             "subtask_id",
-            "subTaskId",
+            "subTaskId"
           );
           if (challengeId) {
             if (codingChallengeId) {

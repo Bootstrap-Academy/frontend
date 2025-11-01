@@ -52,10 +52,7 @@ interface ClaimAllOutcome {
 const categories: RewardCategory[] = ["arrival", "lecture", "practice", "lab"];
 
 export function useDailyRewards() {
-  const ariaAnnouncement = useState<string | null>(
-    "daily-rewards-aria-announcement",
-    () => null,
-  );
+  const ariaAnnouncement = useState<string | null>("daily-rewards-aria-announcement", () => null);
 
   const claimBusy = ref<Record<RewardCategory, boolean>>(
     categories.reduce(
@@ -63,8 +60,8 @@ export function useDailyRewards() {
         acc[category] = false;
         return acc;
       },
-      {} as Record<RewardCategory, boolean>,
-    ),
+      {} as Record<RewardCategory, boolean>
+    )
   );
 
   const claimAllBusy = ref(false);
@@ -78,7 +75,7 @@ export function useDailyRewards() {
     {
       server: true,
       watch: [],
-    },
+    }
   );
 
   const rewards = computed(() => data.value?.rewards ?? []);
@@ -86,7 +83,7 @@ export function useDailyRewards() {
   const availableCoins = computed(() =>
     rewards.value
       .filter((reward) => reward.status === "ready")
-      .reduce((total, reward) => total + (reward.coins ?? 0), 0),
+      .reduce((total, reward) => total + (reward.coins ?? 0), 0)
   );
 
   const claimedToday = computed(() => data.value?.claim_totals?.claimed_today ?? 0);
@@ -104,14 +101,10 @@ export function useDailyRewards() {
   });
 
   const shouldPoll = computed(
-    () =>
-      needsResetRefresh.value ||
-      rewards.value.some((reward) => reward.status !== "claimed"),
+    () => needsResetRefresh.value || rewards.value.some((reward) => reward.status !== "claimed")
   );
 
-  const countdownLabel = computed(() =>
-    formatResetCountdown(data.value?.date, currentTime.value),
-  );
+  const countdownLabel = computed(() => formatResetCountdown(data.value?.date, currentTime.value));
 
   const { pause: pausePolling, resume: resumePolling } = useIntervalFn(
     () => refreshNuxtData(DAILY_REWARDS_KEY),
@@ -119,7 +112,7 @@ export function useDailyRewards() {
     {
       immediate: false,
       immediateCallback: false,
-    },
+    }
   );
 
   if (!isClient) {
@@ -136,7 +129,7 @@ export function useDailyRewards() {
           pausePolling();
         }
       },
-      { immediate: true },
+      { immediate: true }
     );
 
     useEventListener(
@@ -150,7 +143,7 @@ export function useDailyRewards() {
         if (shouldPoll.value) {
           resumePolling();
         }
-      },
+      }
     );
   }
 
@@ -162,13 +155,13 @@ export function useDailyRewards() {
 
   const mutateReward = (
     category: RewardCategory,
-    updater: (reward: DailyReward) => DailyReward,
+    updater: (reward: DailyReward) => DailyReward
   ) => {
     if (!data.value) return;
     data.value = {
       ...data.value,
       rewards: data.value.rewards.map((reward) =>
-        reward.category === category ? updater({ ...reward }) : reward,
+        reward.category === category ? updater({ ...reward }) : reward
       ),
     };
   };
@@ -231,7 +224,7 @@ export function useDailyRewards() {
         rewards: rewards.value.map((reward) =>
           reward.status === "ready"
             ? { ...reward, status: "claimed", claimed_at: optimisticTimestamp }
-            : reward,
+            : reward
         ),
       };
     }
@@ -243,10 +236,7 @@ export function useDailyRewards() {
           .filter((reward) => response.claimed_categories.includes(reward.category))
           .reduce((sum, reward) => sum + reward.coins, 0);
         resetAnnouncement();
-        ariaAnnouncement.value = buildClaimAllAnnouncement(
-          response.claimed_categories,
-          totalCoins,
-        );
+        ariaAnnouncement.value = buildClaimAllAnnouncement(response.claimed_categories, totalCoins);
       }
       await refreshNuxtData(DAILY_REWARDS_KEY);
       return {
@@ -304,15 +294,12 @@ function formatResetCountdown(dateIso?: string | null, nowReference?: Date) {
 
   if (diffMinutes >= 60) {
     const hours = Math.round(diffMinutes / 60);
-    return new Intl.RelativeTimeFormat(undefined, { numeric: "auto" }).format(
-      hours,
-      "hour",
-    );
+    return new Intl.RelativeTimeFormat(undefined, { numeric: "auto" }).format(hours, "hour");
   }
 
   return new Intl.RelativeTimeFormat(undefined, { numeric: "auto" }).format(
     diffMinutes || 1,
-    "minute",
+    "minute"
   );
 }
 
@@ -332,9 +319,6 @@ function capitalize(value: string) {
 function normalizeError(error: any) {
   if (!error) return "unknown";
   const detail =
-    error?.data?.detail ??
-    error?.response?._data?.detail ??
-    error?.message ??
-    error?.toString();
+    error?.data?.detail ?? error?.response?._data?.detail ?? error?.message ?? error?.toString();
   return typeof detail === "string" ? detail : "unknown";
 }
