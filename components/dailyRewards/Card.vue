@@ -274,7 +274,15 @@ export default defineComponent({
           const isMatchingSubtask = rawSubtaskType?.includes("matching") ?? false;
 
           const courseId = pickSampleValue("course_id", "courseId");
-          const skillId = pickSampleValue("skill_id", "skillId");
+          const rawSkillId = pickSampleValue("skill_id", "skillId");
+          const skillIdsValue = pickSampleValue("skill_ids", "skillIds");
+          const derivedSkillId =
+            Array.isArray(skillIdsValue)
+              ? skillIdsValue.find(
+                  (value) => value !== undefined && value !== null && value !== ""
+                )
+              : skillIdsValue;
+          const skillId = rawSkillId ?? derivedSkillId;
           const quizId = pickSampleValue("quiz_id", "quizId");
           const taskId = pickSampleValue("task_id", "taskId");
           const rawSolveId = pickSampleValue("solve_id", "solveId");
