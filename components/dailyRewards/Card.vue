@@ -38,7 +38,7 @@
     </div>
 
     <div
-      v-else-if="error"
+      v-else-if="hasError"
       class="rounded-xl border border-[rgba(235,88,87,0.35)] bg-[rgba(235,88,87,0.08)] p-5 text-sm text-[color:var(--color-body)]"
     >
       <p>{{ t("DailyRewards.Error") }}</p>
@@ -52,7 +52,7 @@
     </div>
 
     <div
-      v-else-if="!featureEnabled"
+      v-else-if="featureDisabled"
       class="rounded-xl border border-[rgba(205,215,245,0.15)] bg-[rgba(11,25,46,0.35)] p-5 text-sm text-[color:var(--color-body)]"
     >
       <p>{{ t("DailyRewards.Disabled") }}</p>
@@ -122,9 +122,56 @@ export default defineComponent({
       ariaAnnouncement,
     } = useDailyRewards();
 
+    const isFeatureDisabledError = (err: unknown) => {
+      if (!err || typeof err !== "object") {
+        return false;
+      }
+      const errorLike = err as Record<string, any>;
+      const status =
+        errorLike?.response?.status ??
+        errorLike?.statusCode ??
+        errorLike?.status ??
+        errorLike?.response?.statusCode;
+      if (status !== 404) {
+        return false;
+      }
+      const errorCode =
+        errorLike?.response?._data?.error ??
+        errorLike?.response?._data?.code ??
+        errorLike?.data?.error ??
+        errorLike?.data?.code;
+      if (typeof errorCode === "string" && errorCode.toLowerCase().includes("featuredisabled")) {
+        return true;
+      }
+      const detail =
+        errorLike?.response?._data?.detail ??
+        errorLike?.data?.detail ??
+        (typeof errorLike?.message === "string" ? errorLike.message : "");
+      if (typeof detail === "string" && detail.toLowerCase().includes("feature disabled")) {
+        return true;
+      }
+      // Default to treating a 404 response from daily rewards as feature disabled.
+      return true;
+    };
+
     const hasReadyRewards = computed(() =>
       rewards.value.some((reward) => reward.status === "ready")
     );
+
+    const hasError = computed(() => {
+      const currentError = error.value;
+      if (!currentError) {
+        return false;
+      }
+      return !isFeatureDisabledError(currentError);
+    });
+
+    const featureDisabled = computed(() => {
+      if (isFeatureDisabledError(error.value)) {
+        return true;
+      }
+      return !featureEnabled.value;
+    });
 
     const summaryByCategory = computed(() =>
       rewards.value.reduce<Record<RewardCategory, DailyReward>>((acc, reward) => {
@@ -219,7 +266,9 @@ export default defineComponent({
             (pickSampleValue("skill_id", "skillId") ? "skill" : undefined) ??
             (pickSampleValue("quiz_id", "quizId") ? "quiz" : undefined);
           let solveId =
-            pickSampleValue("solve_id", "solveId") ?? pickSampleValue("quiz_id", "quizId");
+            pickSampleValue("solve_id", "solveId") ??
+            pickSampleValue("quiz_id", "quizId") ??
+            pickSampleValue("task_id", "taskId");
 
           if (!solveId) {
             if (resolvedQuizzesFrom === "course") {
@@ -332,6 +381,8 @@ export default defineComponent({
       claimBusy,
       claimAllBusy,
       ariaAnnouncement,
+      featureDisabled,
+      hasError,
       hasReadyRewards,
       handleClaim,
       handleClaimAll,
