@@ -274,11 +274,11 @@ export default defineComponent({
           const rawChallengeId =
             pickSampleValue("challenge_id", "challengeId", "task_id", "taskId") ??
             (typeof sample.task === "object" && sample.task !== null
-              ? sample.task.id ??
+              ? (sample.task.id ??
                 sample.task.challenge_id ??
                 sample.task.challengeId ??
                 sample.task.task_id ??
-                sample.task.taskId
+                sample.task.taskId)
               : undefined);
           const challengeId =
             rawChallengeId !== undefined && rawChallengeId !== null && rawChallengeId !== ""
