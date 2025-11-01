@@ -9,6 +9,10 @@
       </p>
     </header>
 
+    <section class="grid gap-card-sm">
+      <DailyRewardsCard />
+    </section>
+
     <section class="grid gap-card-sm lg:grid-cols-2">
       <div class="card bg-secondary style-card">
         <UserCourses />

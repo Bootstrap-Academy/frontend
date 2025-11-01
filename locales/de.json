@@ -387,6 +387,65 @@
     "MyAccount": "Mein Konto",
     "SelectSkill": "Skill auswählen"
   },
+  "DailyRewards": {
+    "Heading": "T\u00e4gliche Belohnungen",
+    "Subheading": "Melde dich an, bleib dran und sammle deine Coins ein.",
+    "Coins": "Coins",
+    "Countdown": "Reset {relative}",
+    "Error": "Belohnungen konnten nicht geladen werden. Versuch es gleich nochmal.",
+    "Disabled": "Daily Rewards sind noch nicht aktiv.",
+    "Footer": "Heute bereits eingesackt: {coins} Coins",
+    "Buttons": {
+      "Claim": "Einsacken",
+      "ClaimAll": "Alles einsacken",
+      "Retry": "Nochmal versuchen",
+      "Resume": {
+        "arrival": "Check-in starten",
+        "lecture": "Vorlesung fortsetzen",
+        "practice": "Jetzt ueben",
+        "lab": "Lab starten"
+      }
+    },
+    "Categories": {
+      "arrival": "Daily Check-in",
+      "lecture": "Lecture Run",
+      "practice": "Practice Grind",
+      "lab": "Lab Breakthrough"
+    },
+    "Status": {
+      "pending": "Ausstehend",
+      "ready": "Bereit",
+      "claimed": "Eingeloest",
+      "unavailable": "Nicht verfuegbar"
+    },
+    "StatusLabel": {
+      "ClaimedAt": "Eingeloest um {time}"
+    },
+    "Unavailable": {
+      "no_recommendation": "Noch keine Empfehlung.",
+      "default": "Gerade nicht verfuegbar."
+    },
+    "DefaultHint": {
+      "arrival": "Hol dir den taeglichen Check-in fuer direkte Coins.",
+      "lecture": "Schliesse heute eine Vorlesung ab, um das zu triggern.",
+      "practice": "Quiz oder Matching loesen und die Leiste fuellen.",
+      "lab": "Ein Lab abschliessen, dann blinkt die Belohnung."
+    },
+    "Toast": {
+      "ClaimSuccess": "Belohnung gesichert!",
+      "ClaimError": "Claim fehlgeschlagen",
+      "ClaimAllSuccess": "Loot eingesackt!",
+      "ClaimAllPartial": "Teilweise eingesackt",
+      "ClaimAllError": "Claim-all fehlgeschlagen"
+    },
+    "ToastBody": {
+      "ClaimSingle": "{category} hat dir {coins} Coins eingebracht.",
+      "ClaimError": "{category} konnte nicht eingesackt werden. Versuch es erneut.",
+      "ClaimAllSuccess": "Du hast {coins} Coins eingesackt.",
+      "ClaimAllPartial": "Noch offen: {categories}. Schnapp sie dir!",
+      "ClaimAllError": "Neu laden oder spaeter wieder probieren."
+    }
+  },
   "Body": {
     "DashboardIntro": "Steig direkt wieder in deine Kurse oder Challenges ein.",
     "SkillTreeOverview": "Behalte deine Root-Skills im Blick und öffne die Details, wenn du tiefer einsteigen möchtest.",
