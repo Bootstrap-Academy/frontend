@@ -21,7 +21,7 @@ export interface DailyReward {
 }
 
 export interface DailyRewardsPayload {
-  date: string;
+  date_utc: string;
   feature_enabled: boolean;
   rewards: DailyReward[];
   claim_totals?: {
@@ -30,9 +30,15 @@ export interface DailyRewardsPayload {
   };
 }
 
+export interface ClaimSuccess {
+  category: RewardCategory;
+  coins: number;
+  claimed_at: string;
+}
+
 export interface ClaimAllResponse {
   status: "ok";
-  claimed_categories: RewardCategory[];
+  claimed: ClaimSuccess[];
   skipped_categories: { category: RewardCategory; reason: string }[];
 }
 
@@ -44,7 +50,8 @@ interface ClaimOutcome {
 
 interface ClaimAllOutcome {
   ok: boolean;
-  claimed: RewardCategory[];
+  claimed: ClaimSuccess[];
+  totalClaimedCoins: number;
   skipped: { category: RewardCategory; reason: string }[];
   error?: string;
 }
@@ -92,8 +99,9 @@ export function useDailyRewards() {
   const currentTime = isClient ? useNow({ interval: 60_000 }) : ref(new Date());
 
   const needsResetRefresh = computed(() => {
-    if (!data.value?.date) return true;
-    const dayStart = new Date(`${data.value.date}T00:00:00Z`);
+    const snapshotDay = data.value?.date_utc;
+    if (!snapshotDay) return true;
+    const dayStart = new Date(`${snapshotDay}T00:00:00Z`);
     if (Number.isNaN(dayStart.getTime())) return true;
     const nextDay = new Date(dayStart);
     nextDay.setUTCDate(nextDay.getUTCDate() + 1);
@@ -104,7 +112,9 @@ export function useDailyRewards() {
     () => needsResetRefresh.value || rewards.value.some((reward) => reward.status !== "claimed")
   );
 
-  const countdownLabel = computed(() => formatResetCountdown(data.value?.date, currentTime.value));
+  const countdownLabel = computed(() =>
+    formatResetCountdown(data.value?.date_utc, currentTime.value)
+  );
 
   const { pause: pausePolling, resume: resumePolling } = useIntervalFn(
     () => refreshNuxtData(DAILY_REWARDS_KEY),
@@ -210,7 +220,7 @@ export function useDailyRewards() {
 
   const claimAll = async (): Promise<ClaimAllOutcome> => {
     if (claimAllBusy.value) {
-      return { ok: false, claimed: [], skipped: [], error: "busy" };
+      return { ok: false, claimed: [], totalClaimedCoins: 0, skipped: [], error: "busy" };
     }
 
     claimAllBusy.value = true;
@@ -231,17 +241,17 @@ export function useDailyRewards() {
 
     try {
       const response = (await POST("/daily-rewards/claim-all")) as ClaimAllResponse;
-      if (response?.claimed_categories?.length) {
-        const totalCoins = readyRewards
-          .filter((reward) => response.claimed_categories.includes(reward.category))
-          .reduce((sum, reward) => sum + reward.coins, 0);
+      const claimedCategories = response.claimed.map((item) => item.category);
+      const totalCoins = response.claimed.reduce((sum, item) => sum + item.coins, 0);
+      if (claimedCategories.length) {
         resetAnnouncement();
-        ariaAnnouncement.value = buildClaimAllAnnouncement(response.claimed_categories, totalCoins);
+        ariaAnnouncement.value = buildClaimAllAnnouncement(claimedCategories, totalCoins);
       }
       await refreshNuxtData(DAILY_REWARDS_KEY);
       return {
         ok: true,
-        claimed: response?.claimed_categories ?? [],
+        claimed: response.claimed,
+        totalClaimedCoins: totalCoins,
         skipped: response?.skipped_categories ?? [],
       };
     } catch (err: any) {
@@ -251,6 +261,7 @@ export function useDailyRewards() {
       return {
         ok: false,
         claimed: [],
+        totalClaimedCoins: 0,
         skipped: [],
         error: normalizeError(err),
       };

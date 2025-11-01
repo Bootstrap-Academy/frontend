@@ -157,23 +157,10 @@ export default defineComponent({
     };
 
     const handleClaimAll = async () => {
-      const readyRewards = rewards.value.filter((reward) => reward.status === "ready");
-      const readyCoinMap = readyRewards.reduce<Record<RewardCategory, number>>(
-        (acc, reward) => {
-          acc[reward.category] = reward.coins;
-          return acc;
-        },
-        {} as Record<RewardCategory, number>
-      );
-
       const result = await claimAll();
       if (result.ok) {
-        const claimedCoins = result.claimed.reduce(
-          (sum, category) => sum + (readyCoinMap[category] ?? 0),
-          0
-        );
         const successBody = t("DailyRewards.ToastBody.ClaimAllSuccess", {
-          coins: claimedCoins,
+          coins: result.totalClaimedCoins,
         });
         openSnackbar(
           "success",
