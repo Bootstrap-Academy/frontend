@@ -271,7 +271,12 @@ export default defineComponent({
           break;
         }
         case "lab": {
-          const challengeId = sample.challenge_id ?? sample.challengeId;
+          const challengeId = pickSampleValue(
+            "challenge_id",
+            "challengeId",
+            "task_id",
+            "taskId"
+          );
           const codingChallengeId = pickSampleValue(
             "coding_challenge_id",
             "codingChallengeId",
@@ -281,13 +286,13 @@ export default defineComponent({
           if (challengeId) {
             if (codingChallengeId) {
               router.push({
-                path: `/challenges/QuizCodingChallenge-${challengeId}`,
+                path: `/challenges/QuizCodingChallenge-${String(challengeId)}`,
                 query: {
                   codingChallenge: String(codingChallengeId),
                 },
               });
             } else {
-              router.push(`/challenges/QuizCodingChallenge-${challengeId}`);
+              router.push(`/challenges/QuizCodingChallenge-${String(challengeId)}`);
             }
           } else {
             router.push("/challenges");
