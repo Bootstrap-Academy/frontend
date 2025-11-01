@@ -25,7 +25,7 @@ export interface DailyRewardsPayload {
   feature_enabled: boolean;
   rewards: DailyReward[];
   claim_totals?: {
-    available: number;
+    available_coins: number;
     claimed_today: number;
   };
 }

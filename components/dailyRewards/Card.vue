@@ -260,40 +260,68 @@ export default defineComponent({
           break;
         }
         case "practice": {
+          const normalizeString = (value: unknown) =>
+            typeof value === "string" && value.trim() !== "" ? value.toLowerCase() : undefined;
+          const deriveQuizzesFrom = (value?: string) => {
+            if (!value) return undefined;
+            if (value.includes("course")) return "course";
+            if (value.includes("skill")) return "skill";
+            if (value.includes("quiz")) return "quiz";
+            return undefined;
+          };
+
+          const rawSubtaskType = normalizeString(pickSampleValue("subtask_type", "subtaskType"));
+          const isMatchingSubtask = rawSubtaskType?.includes("matching") ?? false;
+
+          const courseId = pickSampleValue("course_id", "courseId");
+          const skillId = pickSampleValue("skill_id", "skillId");
+          const quizId = pickSampleValue("quiz_id", "quizId");
+          const taskId = pickSampleValue("task_id", "taskId");
+          const rawSolveId = pickSampleValue("solve_id", "solveId");
+
+          const rawQuizzesFrom = normalizeString(pickSampleValue("quizzes_from", "quizzesFrom"));
+          const derivedQuizzesFromFromType = deriveQuizzesFrom(rawSubtaskType);
+
           const resolvedQuizzesFrom =
-            (pickSampleValue("quizzes_from", "quizzesFrom") as string | undefined) ??
-            (pickSampleValue("course_id", "courseId") ? "course" : undefined) ??
-            (pickSampleValue("skill_id", "skillId") ? "skill" : undefined) ??
-            (pickSampleValue("quiz_id", "quizId") ? "quiz" : undefined);
-          let solveId =
-            pickSampleValue("solve_id", "solveId") ??
-            pickSampleValue("quiz_id", "quizId") ??
-            pickSampleValue("task_id", "taskId");
+            rawQuizzesFrom ??
+            (courseId ? "course" : undefined) ??
+            (skillId ? "skill" : undefined) ??
+            (quizId ? "quiz" : undefined) ??
+            derivedQuizzesFromFromType ??
+            "quiz";
+
+          let solveId = rawSolveId ?? quizId ?? taskId;
 
           if (!solveId) {
             if (resolvedQuizzesFrom === "course") {
-              solveId = pickSampleValue("course_id", "courseId");
+              solveId = courseId;
             } else if (resolvedQuizzesFrom === "skill") {
-              solveId = pickSampleValue("skill_id", "skillId");
+              solveId = skillId;
             } else if (resolvedQuizzesFrom === "quiz") {
-              solveId = pickSampleValue("quiz_id", "quizId");
+              solveId = quizId;
             }
           }
+
+          const normalizedSolveId =
+            solveId !== undefined && solveId !== null && solveId !== ""
+              ? String(solveId)
+              : undefined;
 
           const querySubTaskId = pickSampleValue(
             "query_subtask_id",
             "querySubTaskId",
+            "matching_id",
+            "matchingId",
             "subtask_id",
             "subTaskId"
           );
-          const taskId = pickSampleValue("task_id", "taskId");
           const rootSkillId = pickSampleValue("root_skill_id", "rootSkillId", "rootSkillID");
           const subSkillId = pickSampleValue("sub_skill_id", "subSkillId", "subSkillID");
-          const fallbackSkillId = pickSampleValue("skill_id", "skillId");
+          const fallbackSkillId = skillId;
 
-          if (solveId && resolvedQuizzesFrom) {
+          if (normalizedSolveId) {
             const query: Record<string, string> = {
-              quizzesFrom: String(resolvedQuizzesFrom),
+              quizzesFrom: resolvedQuizzesFrom,
             };
             if (querySubTaskId) {
               query.querySubTaskId = String(querySubTaskId);
@@ -308,8 +336,10 @@ export default defineComponent({
               query.subSkillID = String(subSkillId);
             }
 
+            const solveBasePath = isMatchingSubtask ? "/matchings" : "/quizzes";
+
             router.push({
-              path: `/quizzes/solve-${String(solveId)}`,
+              path: `${solveBasePath}/solve-${normalizedSolveId}`,
               query,
             });
           } else if (fallbackSkillId) {
