@@ -271,28 +271,42 @@ export default defineComponent({
           break;
         }
         case "lab": {
-          const challengeId = pickSampleValue(
-            "challenge_id",
-            "challengeId",
-            "task_id",
-            "taskId"
-          );
-          const codingChallengeId = pickSampleValue(
+          const rawChallengeId =
+            pickSampleValue("challenge_id", "challengeId", "task_id", "taskId") ??
+            (typeof sample.task === "object" && sample.task !== null
+              ? sample.task.id ??
+                sample.task.challenge_id ??
+                sample.task.challengeId ??
+                sample.task.task_id ??
+                sample.task.taskId
+              : undefined);
+          const challengeId =
+            rawChallengeId !== undefined && rawChallengeId !== null && rawChallengeId !== ""
+              ? String(rawChallengeId)
+              : undefined;
+          const codingChallengeIdValue = pickSampleValue(
             "coding_challenge_id",
             "codingChallengeId",
             "subtask_id",
             "subTaskId"
           );
+          const codingChallengeId =
+            codingChallengeIdValue !== undefined &&
+            codingChallengeIdValue !== null &&
+            codingChallengeIdValue !== ""
+              ? String(codingChallengeIdValue)
+              : undefined;
+
           if (challengeId) {
             if (codingChallengeId) {
               router.push({
-                path: `/challenges/QuizCodingChallenge-${String(challengeId)}`,
+                path: `/challenges/QuizCodingChallenge-${challengeId}`,
                 query: {
-                  codingChallenge: String(codingChallengeId),
+                  codingChallenge: codingChallengeId,
                 },
               });
             } else {
-              router.push(`/challenges/QuizCodingChallenge-${String(challengeId)}`);
+              router.push(`/challenges/QuizCodingChallenge-${challengeId}`);
             }
           } else {
             router.push("/challenges");
