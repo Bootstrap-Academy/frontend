@@ -18,10 +18,7 @@
       </p>
 
       <div class="col-span-2 md:col-span-1">
-        <slot
-          name="content"
-          :t="t"
-        />
+        <slot name="content" :t="t" />
       </div>
     </div>
 
@@ -73,7 +70,7 @@ export default defineComponent({
     CheckCircleIcon,
   },
   props: {
-    dialog: { type: Object as PropType<any>, default: null },  
+    dialog: { type: Object as PropType<any>, default: null },
     labelId: { type: String, required: true },
     descriptionId: { type: String, required: false, default: null },
   },

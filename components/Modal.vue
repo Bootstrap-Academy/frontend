@@ -1,7 +1,7 @@
 <!-- Modal.vue is the centre for accessibility of modal dialogs (invisible container for ARIA attributes and keyboard control). -->
 <template>
   <section
-    class="pb-container fixed z-50 left-0 top-0 w-screen h-screen overflow-hidden bg-[#0b192edd]"
+    class="fixed left-0 top-0 z-50 h-screen w-screen overflow-hidden bg-[#0b192edd] pb-container"
     role="dialog"
     aria-modal="true"
     :aria-labelledby="labelId"
@@ -11,7 +11,7 @@
     <Language class="h-[33px]" />
     <div
       ref="panel"
-      class="modal-content container-fluid pt-card pb-card grid place-items-center"
+      class="modal-content container-fluid grid place-items-center pt-card pb-card"
       tabindex="-1"
     >
       <slot />
@@ -20,26 +20,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
-import Language from '@/components/Language.vue';
-import { useFocusTrap } from '../composables/useFocusTrap';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from "vue";
+import Language from "@/components/Language.vue";
+import { useFocusTrap } from "../composables/useFocusTrap";
 
 export default defineComponent({
-// Component can emit two events:
-// - 'backdrop': When user clicks on the backdrop.
-// - 'close': When user presses the Escape key.	
-  emit: ['backdrop', 'close'],
+  // Component can emit two events:
+  // - 'backdrop': When user clicks on the backdrop.
+  // - 'close': When user presses the Escape key.
+  emit: ["backdrop", "close"],
   props: {
     // `labelId` links the dialog to its title for screen readers.
     labelId: {
-	  type: String,
-	  required: true,
+      type: String,
+      required: true,
     },
     // `descriptionId` links the dialog to a longer description and is optional.
     descriptionId: {
-	  type: String,
-	  required: false,
-	  default: null,
+      type: String,
+      required: false,
+      default: null,
     },
   },
   setup(props, { emit }) {
@@ -52,8 +52,8 @@ export default defineComponent({
 
     // This function handles the Escape key press.
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        emit('close');
+      if (event.key === "Escape") {
+        emit("close");
       }
     };
 
@@ -63,17 +63,17 @@ export default defineComponent({
         panel.value.focus();
       }
       // Event listeners handle the Escape key and trap the focus.
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
       trapFocus();
       // Prevents the body from scrolling.
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     });
 
     onBeforeUnmount(() => {
       // When modal is removed, event listeners get cleaned up and the body's scrollability is restored.
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape);
       untrapFocus();
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     });
 
     // Returns the `panel` ref so the template can bind to it.
