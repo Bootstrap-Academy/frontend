@@ -7,6 +7,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // only unit tests
+    include: ['tests/unit/**/*.spec.{ts,js}'],
+    // no e2e tests
+    exclude: [ 'tests/e2e/**',
+      'node_modules/**',
+      'dist/**',
+      '.nuxt/**',],
   },
   resolve: {
     alias: {

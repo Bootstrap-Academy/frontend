@@ -1,37 +1,35 @@
 <template>
-  <div 
-    role="dialog"
-    :aria-labelledby="labelId"
-    :aria-describedby="descriptionId"
-    aria-modal="true"
-    class="relative z-[9999] max-h-full w-full max-w-3xl overflow-y-auto bg-secondary style-card"
+  <article
+    class="relative z-[9999] max-h-full w-full max-w-3xl overflow-y-scroll bg-secondary style-card"
   >
     <div class="card grid grid-cols-[auto_1fr] gap-x-4 md:gap-x-6">
       <component
+        :is="theme.icon"
         class="row-span-2 h-10 w-10 md:row-span-3"
         :class="[theme.fill]"
-        :is="theme.icon"
-        aria-hidden="true"
-      ></component>
+      />
 
-      <h6 :id="labelId" class="text-heading-2 text-heading font-heading">
+      <h6 class="text-heading-2 text-heading font-heading">
         {{ t(heading) }}
       </h6>
 
-      <p :id="descriptionId" class="text-body-1 m-0 text-body font-body mt-box">
+      <p class="text-body-1 m-0 text-body font-body mt-box">
         {{ t(body) }}
       </p>
 
       <div class="col-span-2 md:col-span-1">
-        <slot name="content" :t="t" />
+        <slot
+          name="content"
+          :t="t"
+        />
       </div>
     </div>
 
     <div class="card flex flex-wrap justify-end bg-[#1c3250] gap-card">
       <Btn
         v-if="!!secondaryBtn.label"
-        :bgColor="theme.bg"
-        :borderColor="theme.border"
+        :bg-color="theme.bg"
+        :border-color="theme.border"
         secondary
         @click="
           secondaryBtn.onclick();
@@ -42,8 +40,8 @@
       </Btn>
       <Btn
         v-if="!!primaryBtn.label"
-        :bgColor="theme.bg"
-        :borderColor="theme.border"
+        :bg-color="theme.bg"
+        :border-color="theme.border"
         @click="
           primaryBtn.onclick();
           closeDialog();
@@ -68,16 +66,16 @@ import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
-  props: {
-    dialog: { type: Object as PropType<any>, default: null },  
-    labelId: { type: String, required: true },
-    descriptionId: { type: String, required: false, default: null },
-  },
   components: {
     ExclamationCircleIcon,
     InformationCircleIcon,
     XCircleIcon,
     CheckCircleIcon,
+  },
+  props: {
+    dialog: { type: Object as PropType<any>, default: null },  
+    labelId: { type: String, required: true },
+    descriptionId: { type: String, required: false, default: null },
   },
   setup(props) {
     const { t } = useI18n();
@@ -150,7 +148,7 @@ export default defineComponent({
 
       return {
         label: label,
-        onclick: !!label ? props.dialog.secondaryBtn.onclick : () => {},
+        onclick: label ? props.dialog.secondaryBtn.onclick : () => {},
       };
     });
 

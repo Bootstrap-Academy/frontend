@@ -2,18 +2,19 @@
 <template>
   <section
     class="pb-container fixed z-50 left-0 top-0 w-screen h-screen overflow-hidden bg-[#0b192edd]"
-    @click.self="$emit('backdrop', true)"
     role="dialog"
     aria-modal="true"
     :aria-labelledby="labelId"
     :aria-describedby="descriptionId ?? undefined"
+    @click.self="$emit('backdrop', true)"
   >
+    <Language class="h-[33px]" />
     <div
       ref="panel"
       class="modal-content container-fluid pt-card pb-card grid place-items-center"
-      role="document"
+      tabindex="-1"
     >
-      <slot></slot>
+      <slot />
     </div>
   </section>
 </template>
@@ -44,7 +45,6 @@ export default defineComponent({
   setup(props, { emit }) {
     // reference to main dialog content div.
     const panel = ref<HTMLElement | null>(null);
-    const previousFocus = ref<HTMLElement | null>(null);
     const { trapFocus, untrapFocus } = useFocusTrap(panel);
 
     // Composable handles the focus trap logic.
@@ -58,24 +58,13 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      // When the modal is mounted, find and focus the first interactive element
+      // When the modal is mounted, focus is set to it. => Crucial for keyboard users and screen readers.
       if (panel.value) {
-        const firstFocusable = panel.value.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (firstFocusable instanceof HTMLElement) {
-          firstFocusable.focus();
-        } else {
-          // Fallback: focus the panel itself if no focusable element is found
-          panel.value.focus();
-        }
+        panel.value.focus();
       }
-      
       // Event listeners handle the Escape key and trap the focus.
       document.addEventListener('keydown', handleEscape);
       trapFocus();
-      
-      // Store the previously focused element to restore focus when modal closes
-      previousFocus.value = document.activeElement as HTMLElement;
-      
       // Prevents the body from scrolling.
       document.body.style.overflow = 'hidden';
     });
@@ -85,11 +74,6 @@ export default defineComponent({
       document.removeEventListener('keydown', handleEscape);
       untrapFocus();
       document.body.style.overflow = '';
-      
-      // Restore focus to the element that was focused before the modal opened
-      if (previousFocus.value) {
-        previousFocus.value.focus();
-      }
     });
 
     // Returns the `panel` ref so the template can bind to it.

@@ -1,10 +1,10 @@
 <template>
-	<!-- removed the dialog component and put the content into the modal component. -->
-    <!-- template renders the content directly (labelId, descriptionId) and transfers the ARIA attributes (role="dialog", aria-modal="true" and aria-labelledby) to the modal component via the props. -->
-		<Modal
+  <!-- removed the dialog component and put the content into the modal component. -->
+  <!-- template renders the content directly (labelId, descriptionId) and transfers the ARIA attributes (role="dialog", aria-modal="true" and aria-labelledby) to the modal component via the props. -->
+  <Modal
     v-if="!agreed && route.name !== 'docs-privacy'"
-    :labelId="titleId"
-    :descriptionId="descId"
+    :label-id="titleId"
+    :description-id="descId"
   >
     <!-- Panel -->
     <section
@@ -17,7 +17,10 @@
         <!-- Icon  -->
         <span class="relative inline-flex h-7 w-7 shrink-0">
           <!-- circle -->
-          <span class="absolute inset-0 rounded-full bg-info" aria-hidden="true"></span>
+          <span
+            class="absolute inset-0 rounded-full bg-info"
+            aria-hidden="true"
+          />
           <!-- 'i' with Panel-background-color -->
           <span
             class="relative m-auto font-bold italic leading-none"
@@ -28,14 +31,20 @@
           </span>
         </span>
 
-        <h2 :id="titleId" class="text-lg font-semibold leading-6 m-0">
+        <h2
+          :id="titleId"
+          class="text-lg font-semibold leading-6 m-0"
+        >
           {{ t('Headings.CookiePolicy') }}
         </h2>
       </div>
 
       <!-- Body -->
       <div class="px-6 pb-4">
-        <p :id="descId" class="m-0 text-sm leading-relaxed">
+        <p
+          :id="descId"
+          class="m-0 text-sm leading-relaxed"
+        >
           {{ t('Body.CookiePolicy') }}
           <NuxtLink
             to="/docs/privacy"
@@ -54,7 +63,8 @@
           :primary="true"
           :md="true"
           class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff2d55]"
-          @click="agreed = true">
+          @click="agreed = true"
+        >
           {{ t('Buttons.CookiePolicy') }}
         </Btn>
       </div>
