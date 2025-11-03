@@ -4,7 +4,7 @@ export interface DialogButton {
 }
 
 export interface DialogProps {
-  type?: 'info' | 'success' | 'error' | 'warning';
+  type?: "info" | "success" | "error" | "warning";
   heading?: string;
   body?: string;
   primaryBtn?: DialogButton;
