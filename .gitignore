@@ -11,3 +11,5 @@ dist
 # local backups
 *.bak
 
+
+test-results/

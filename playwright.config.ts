@@ -1,12 +1,12 @@
-import { defineConfig } from '@playwright/test'
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: 'tests/e2e',            // <— nur E2E-Verzeichnis
-  use: { baseURL: 'http://localhost:3000', headless: true },
+  testDir: "tests/e2e", // E2E directory only
+  use: { baseURL: "http://localhost:3000", headless: true },
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: true,
-    timeout: 120000
+    timeout: 120000,
   },
-})
+});

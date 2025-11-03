@@ -1,35 +1,10 @@
-# ---- Narrow Prettier scope for CI ----
-# ignore everything...
-*
-**/*
-
-# allow only source files in these directories
-!components/**
-!composables/**
-!pages/**
-!plugins/**
-!tests/**
-!types/**
-
-# allow only typical source file extensions
-!*.js
-!*.ts
-!*.vue
-!*.json
-!*.md
-
-
-# ---- Exclude root docs & configs from CI check ----
-/CODE_OF_CONDUCT.md
-/CONTRIBUTING.md
-/README.md
-/description.ts
-/error.vue
-/eslint.config.js
-/nuxt.config.ts
-/package.json
-/package-lock.json
-/tailwind.config.js
-/tsconfig.json
-/vitest.config.ts
-
+.nuxt
+.output
+.vscode
+.idea
+dist
+node_modules
+package-lock.json
+public
+coverage
+*.log
