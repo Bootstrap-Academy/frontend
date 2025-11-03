@@ -1,4 +1,5 @@
 {
 	"cSpell.words": ["coachings", "Morphcoin", "morphcoins", "Recaptcha", "TOTP"],
-	"vue.codeActions.enabled": false
+	"vue.codeActions.enabled": false,
+	"typescript.tsdk": "node_modules\\typescript\\lib"
 }

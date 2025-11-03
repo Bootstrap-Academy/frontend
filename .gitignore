@@ -7,3 +7,9 @@ node_modules
 .env
 dist
 /.direnv
+
+# local backups
+*.bak
+
+
+test-results/

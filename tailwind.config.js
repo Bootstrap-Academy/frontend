@@ -52,11 +52,6 @@ module.exports = {
   plugins: [
     plugin(function ({ addBase, addComponents, addUtilities, theme }) {
       addComponents({
-        // @apply px-4 sm:px-6 md:px-8
-        ".container": {
-          paddingLeft: theme("spacing.4"),
-          paddingRight: theme("spacing.4"),
-        },
         // text-4xl md:text-5xl lg:text-6xl font-bold capitalize
         ".text-display-1": {
           fontSize: theme("fontSize.body"),

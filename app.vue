@@ -8,8 +8,13 @@
     <NuxtPage />
 
     <CookiePolicy />
-    <Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
-      <Dialog :dialog="dialog" />
+    <Modal
+      v-if="dialog && dialog.show"
+      @backdrop="handleDialogOnBackdrop()"
+      :labelId="dialog.labelId"
+      :descriptionId="dialog.descriptionId"
+    >
+      <Dialog :dialog="dialog" :labelId="dialog.labelId" :descriptionId="dialog.descriptionId" />
     </Modal>
     <Snackbar class="z-[999]" />
 

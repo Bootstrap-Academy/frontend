@@ -1,75 +1,114 @@
 <template>
-  <div>
-    <Modal v-if="!agreed && route.name != 'docs-privacy'">
-      <Dialog
-        :dialog="dialog"
-        role="dialog"
-        aria-labelledby="cookie-dialog-title"
-        aria-describedby="cookie-dialog-description"
-        aria-modal="true"
-      >
-        <template #content="{ t }">
-          <p id="cookie-dialog-description" class="text-body-1 m-0 text-body font-body mt-box">
-            {{ t("Body.CookiePolicy") }}
+  <!-- removed the dialog component and put the content into the modal component. -->
+  <!-- template renders the content directly (labelId, descriptionId) and transfers the ARIA attributes (role="dialog", aria-modal="true" and aria-labelledby) to the modal component via the props. -->
+  <Modal
+    v-if="!agreed && route.name !== 'docs-privacy'"
+    :label-id="titleId"
+    :description-id="descId"
+  >
+    <!-- Panel -->
+    <section
+      class="w-[560px] max-w-[92vw] overflow-hidden rounded-lg bg-primary text-white shadow-lg"
+      :aria-labelledby="titleId"
+      :aria-describedby="descId"
+    >
+      <!-- Header: Icon + Heading -->
+      <div class="flex items-start gap-3 p-6 pb-3">
+        <!-- Icon  -->
+        <span class="relative inline-flex h-7 w-7 shrink-0">
+          <!-- circle -->
+          <span class="absolute inset-0 rounded-full bg-info" aria-hidden="true" />
+          <!-- 'i' with Panel-background-color -->
+          <span
+            class="relative m-auto font-bold italic leading-none"
+            style="color: var(--color-primary, transparent)"
+            aria-hidden="true"
+          >
+            i
+          </span>
+        </span>
 
-            <NuxtLink to="/docs/privacy" class="underline-link inline-block w-fit">
-              {{ t("Body.CookiePolicyLink") }}
-            </NuxtLink>
-          </p>
-        </template>
-      </Dialog>
-    </Modal>
-  </div>
+        <h2 :id="titleId" class="m-0 text-lg font-semibold leading-6">
+          {{ t("Headings.CookiePolicy") }}
+        </h2>
+      </div>
+
+      <!-- Body -->
+      <div class="px-6 pb-4">
+        <p :id="descId" class="m-0 text-sm leading-relaxed">
+          {{ t("Body.CookiePolicy") }}
+          <NuxtLink
+            to="/docs/privacy"
+            class="border-b border-[#38f7c7] no-underline transition-colors hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff2d55]"
+          >
+            {{ t("Body.CookiePolicyLink") }}
+          </NuxtLink>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-white/5 flex justify-end px-6 py-4">
+        <!-- Button -->
+        <Btn
+          :primary="true"
+          :md="true"
+          class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff2d55]"
+          @click="agreed = true"
+        >
+          {{ t("Buttons.CookiePolicy") }}
+        </Btn>
+      </div>
+    </section>
+  </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, computed } from "vue";
+import { useI18n } from "vue-i18n";
+import Gleap from "gleap";
+import Btn from "./Btn.vue";
+import Modal from "./Modal.vue";
 
 export default defineComponent({
+  components: { Btn, Modal },
   setup() {
-    const dialog = computed(() => {
-      return {
-        type: "info",
-        heading: "Headings.CookiePolicy",
-        body: "",
-        primaryBtn: {
-          label: "Buttons.CookiePolicy",
-          onclick: () => {
-            agreed.value = true;
-          },
-        },
-        secondaryBtn: {
-          label: "",
-          onclick: () => {},
-        },
-      };
-    });
+    const { t } = useI18n();
+    const config = useRuntimeConfig().public;
 
+    // Consent-Cookie
     const cookie_agreedToCookiePolicy = useCookie<boolean>("agreedToCookiePolicy");
-
-    const router = useRouter();
     const route = useRoute();
 
-    const agreed = computed({
-      get() {
-        return cookie_agreedToCookiePolicy.value || false;
-      },
-      set(data: boolean) {
-        cookie_agreedToCookiePolicy.value = data;
+    // Zustimmungs-Flag
+    const agreed = computed<boolean>({
+      get: () => cookie_agreedToCookiePolicy.value || false,
+      set: (v: boolean) => {
+        cookie_agreedToCookiePolicy.value = v;
+        if (v && import.meta.client) {
+          if (!(window as any).__gleapInited) {
+            Gleap.initialize(config.Gleap_API_KEY as string);
+            (window as any).__gleapInited = true;
+          }
+        }
       },
     });
 
-    onMounted(() => {
-      const dialogElement = document.querySelector('[role="dialog"]');
-      if (dialogElement && dialogElement instanceof HTMLElement) {
-        dialogElement.setAttribute("tabindex", "-1");
-        dialogElement.focus();
-      }
-    });
+    // ARIA-Hooks
+    // The IDs are defined here to link the h2 and p tags to the Modal component
+    const titleId = "cookie-dialog-title";
+    const descId = "cookie-dialog-description";
 
-    return { agreed, dialog, route };
+    return { t, agreed, route, titleId, descId };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+:root {
+  --color-primary: inherit;
+}
+
+section[aria-labelledby="cookie-dialog-title"] {
+  --color-primary: #0e1b2b;
+}
+</style>

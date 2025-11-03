@@ -6,6 +6,8 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, computed } from "vue";
+
 export default defineComponent({
   props: {
     full: { type: Boolean, default: false },
@@ -17,19 +19,17 @@ export default defineComponent({
     tertiary: { type: Boolean, default: false },
     icon: { type: Object, default: null },
     iconRight: { type: Boolean, default: false },
+    disabled: { type: Boolean, default: false },
+    // bgColor and borderColor ar no longer used directly in the computed classes, as the primary/secondary logic handle the color based on the theme.
+    // However, they are kept as props for backward compatibility if needed.
     bgColor: { type: String, default: "bg-accent" },
     borderColor: { type: String, default: "border-accent" },
-    disabled: { type: Boolean, default: false },
   },
   emits: ["click"],
   setup(props, { emit }) {
     function onclick() {
       if (!props.disabled) emit("click", true);
     }
-
-    const textColor = computed(() => {
-      return props.bgColor.includes("warning") ? "text-primary" : "text-white";
-    });
     const classes = computed(() => {
       return [
         {
@@ -40,15 +40,20 @@ export default defineComponent({
           "text-center justify-center w-full": props.full,
           disabled: props.disabled,
         },
+        /*
         props.primary && !props.secondary && !props.tertiary
           ? `primary ${props.bgColor} text-primary enabled:hover:${props.bgColor} border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
-          : "",
+          : '',
         props.secondary
           ? `secondary bg-transparent text-heading enabled:hover:bg-transparent border ${props.borderColor} enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-tertiary`
-          : "",
+          : '',
         props.tertiary
           ? `tertiary bg-transparent text-heading enabled:hover:bg-transparent enabled:hover:scale-105 border border-transparent enabled:hover:ring-4 md:enabled:hover:ring-8 enabled:hover:ring-transparent`
-          : "",
+          : '',
+          */
+        props.primary && !props.secondary && !props.tertiary ? `primary` : "",
+        props.secondary ? `secondary` : "",
+        props.tertiary ? `tertiary` : "",
       ];
     });
     return { classes, onclick };
@@ -66,15 +71,16 @@ button:disabled {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ STYLE */
-/* .primary {
-	@apply bg-accent hover:bg-accent border border-accent focus:ring-8 focus:ring-tertiary;
+.primary {
+  /* Apply specific classes that match desired look. */
+  @apply rounded bg-info px-4 py-2 font-bold text-white hover:bg-info;
 }
 .secondary {
-	@apply bg-transparent hover:bg-transparent border border-accent focus:ring-8 focus:ring-tertiary;
+  @apply border border-accent bg-transparent hover:bg-transparent focus:ring-8 focus:ring-tertiary;
 }
 .tertiary {
-	@apply bg-transparent hover:bg-transparent hover:scale-105 border border-transparent focus:ring-8 focus:ring-transparent;
-} */
+  @apply border border-transparent bg-transparent hover:scale-105 hover:bg-transparent focus:ring-8 focus:ring-transparent;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .sm {
