@@ -5,7 +5,14 @@
       :src="videoSRC"
       title="YouTube player"
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allow="
+        accelerometer;
+        autoplay;
+        clipboard-write;
+        encrypted-media;
+        gyroscope;
+        picture-in-picture;
+      "
       allowfullscreen
       :key="`youtube-${activeLecture.id}`"
     ></iframe>
