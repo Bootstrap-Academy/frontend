@@ -5,8 +5,17 @@
 
   "lockFileMaintenance": {
     "enabled": true,
+    "automerge": true,
     "schedule": ["* 0 1,15 * *"]
   },
+
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchManagers": ["npm"],
+      "automerge": true
+    }
+  ],
 
   "nodenv": {
     "enabled": false
