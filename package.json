@@ -17,14 +17,16 @@
     "@types/katex": "^0.16.8",
     "@types/markdown-it": "^14.1.2",
     "autoprefixer": "^10.4.24",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.7.0",
+    "vue-eslint-parser": "^10.2.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
     "nuxt": "4.3.1",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3",
     "vue-i18n": "^11.2.7"
   },
   "dependencies": {
