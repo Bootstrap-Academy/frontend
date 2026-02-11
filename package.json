@@ -17,7 +17,7 @@
     "@types/katex": "^0.16.8",
     "@types/markdown-it": "^14.1.2",
     "autoprefixer": "^10.4.24",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.7.0",
     "prettier": "^3.8.1",
