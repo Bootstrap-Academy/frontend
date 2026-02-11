@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { MapPinIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/vue/24/solid";
+import { MapPinIcon, EnvelopeIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
 
 export default {
@@ -83,10 +83,6 @@ export default {
       {
         icon: EnvelopeIcon,
         body: "hallo@bootstrap.academy",
-      },
-      {
-        icon: PhoneIcon,
-        body: "+49 89 24 88 62 51 - 8",
       },
     ];
 
