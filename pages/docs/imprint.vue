@@ -37,7 +37,7 @@
 
     <h2 class="text-heading-2 mb-box mt-card">Kontakt</h2>
     <p>
-      Telefon: +49 89 24 88 62 51 0
+      Telefon: +493021928640
       <br />
       E-Mail: hallo@bootstrap.academy
     </p>
