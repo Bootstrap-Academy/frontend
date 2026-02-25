@@ -16,7 +16,7 @@
     "@types/dompurify": "^3.2.0",
     "@types/katex": "^0.16.8",
     "@types/markdown-it": "^14.1.2",
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.4.27",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.8.0",
