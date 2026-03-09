@@ -34,7 +34,7 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@panzoom/panzoom": "^4.6.1",
-    "@typescript-eslint/parser": "^8.56.1",
+    "@typescript-eslint/parser": "^8.57.0",
     "@vueuse/core": "^14.2.1",
     "async-mutex": "^0.5.0",
     "dompurify": "^3.3.2",
