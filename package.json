@@ -44,7 +44,7 @@
     "katex": "^0.16.38",
     "markdown-it": "^14.1.1",
     "monaco-editor": "^0.55.1",
-    "nanoid": "^5.1.6",
+    "nanoid": "^5.1.7",
     "npm": "^11.11.1",
     "qrcode.vue": "^3.8.0",
     "vue-recaptcha-v3": "^2.0.1",
