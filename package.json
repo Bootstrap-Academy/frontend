@@ -27,7 +27,7 @@
     "postcss": "^8.5.8",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
-    "vue-i18n": "^11.3.0"
+    "vue-i18n": "^11.3.1"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
