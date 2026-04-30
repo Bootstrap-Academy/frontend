@@ -24,7 +24,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "nuxt": "4.4.4",
-    "postcss": "^8.5.12",
+    "postcss": "^8.5.13",
     "tailwindcss": "^3.4.19",
     "typescript": "^6.0.3",
     "vue-i18n": "^11.4.0"
