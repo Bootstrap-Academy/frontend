@@ -42,7 +42,7 @@
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
     "katex": "^0.17.0",
-    "markdown-it": "^14.1.1",
+    "markdown-it": "^14.2.0",
     "monaco-editor": "^0.55.1",
     "nanoid": "^5.1.11",
     "npm": "^11.15.0",
