@@ -37,7 +37,7 @@
     "@typescript-eslint/parser": "^8.60.0",
     "@vueuse/core": "^14.3.0",
     "async-mutex": "^0.5.0",
-    "dompurify": "^3.4.6",
+    "dompurify": "^3.4.7",
     "highlight.js": "^11.11.1",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
