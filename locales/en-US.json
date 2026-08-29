@@ -388,6 +388,65 @@
     "MyAccount": "My Account",
     "SelectSkill": "Select Skill"
   },
+  "DailyRewards": {
+    "Heading": "Daily Rewards",
+    "Subheading": "Sign in, keep learning, and collect your coins each day.",
+    "Coins": "coins",
+    "Countdown": "Resets {relative}",
+    "Error": "We couldn't load your rewards. Try again in a moment.",
+    "Disabled": "Daily rewards are warming up and will unlock soon.",
+    "Footer": "Coins claimed today: {coins}",
+    "Buttons": {
+      "Claim": "Claim",
+      "ClaimAll": "Claim all",
+      "Retry": "Try again",
+      "Resume": {
+        "arrival": "Check in",
+        "lecture": "Jump into a lecture",
+        "practice": "Practice now",
+        "lab": "Launch a lab"
+      }
+    },
+    "Categories": {
+      "arrival": "Daily Check-in",
+      "lecture": "Lecture Run",
+      "practice": "Practice Grind",
+      "lab": "Lab Breakthrough"
+    },
+    "Status": {
+      "pending": "Pending",
+      "ready": "Ready",
+      "claimed": "Claimed",
+      "unavailable": "Unavailable"
+    },
+    "StatusLabel": {
+      "ClaimedAt": "Claimed at {time}"
+    },
+    "Unavailable": {
+      "no_recommendation": "No fresh recommendation yet.",
+      "default": "Not available right now."
+    },
+    "DefaultHint": {
+      "arrival": "Claim your daily check-in for instant coins.",
+      "lecture": "Finish a lecture today to light this up.",
+      "practice": "Clear a quiz or matching task to charge the meter.",
+      "lab": "Ship a lab solution to trigger this reward."
+    },
+    "Toast": {
+      "ClaimSuccess": "Reward secured!",
+      "ClaimError": "Claim failed",
+      "ClaimAllSuccess": "Loot haul!",
+      "ClaimAllPartial": "Partial haul",
+      "ClaimAllError": "Claim all failed"
+    },
+    "ToastBody": {
+      "ClaimSingle": "{category} dropped {coins} coins into your bank.",
+      "ClaimError": "Couldn't claim {category}. Try again.",
+      "ClaimAllSuccess": "You grabbed {coins} coins.",
+      "ClaimAllPartial": "Still pending: {categories}. Knock those out!",
+      "ClaimAllError": "Reload or try again in a bit."
+    }
+  },
   "Body": {
     "DashboardIntro": "Jump back into your courses or challenges to keep the momentum going.",
     "SkillTreeOverview": "Browse every root skill and open the details whenever you want to go deeper.",
