@@ -186,7 +186,8 @@
       <p>
         Die technische Dokumentation unserer Programmierschnittstellen (OpenAPI, Swagger, Redoc) ist
         öffentlich abrufbar. Bootstrap Academy ist ein Open-Source-Projekt; der Quellcode der
-        Dienste ist auf GitHub einsehbar. Die Dokumentation enthält keine personenbezogenen Daten.
+        Dienste ist weitgehend öffentlich einsehbar (GitHub). Die Dokumentation enthält keine
+        personenbezogenen Daten.
       </p>
       <p>
         Für externe Angebote, auf die wir verlinken, gelten die Datenschutzhinweise des jeweiligen
@@ -217,8 +218,9 @@
           Fehlerberichte (sicherer und stabiler Betrieb, Abwehr von Angriffen, Fehlersuche),
           Datensicherungen (Schutz vor Datenverlust), Auslieferung der Weboberfläche über ein
           Content-Delivery-Netz (Verfügbarkeit, Schutz vor Überlastungsangriffen), Moderation und
-          Missbrauchsschutz, Bestenliste (motivierende Lernumgebung). Gegen diese Verarbeitungen
-          können Sie Widerspruch einlegen (Abschnitt 23).
+          Missbrauchsschutz, Bestenliste (motivierende Lernumgebung), Beantwortung allgemeiner
+          Anfragen (Abschnitt 17.2). Gegen diese Verarbeitungen können Sie Widerspruch einlegen
+          (Abschnitt 23).
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung): das Laden von YouTube-Videos
@@ -269,7 +271,11 @@
             <td>Sicherer Betrieb, Abwehr von Angriffen, Fehlersuche</td>
             <td>IP-Adresse, Zeitpunkt, URL, HTTP-Status, Browserkennung, Referrer</td>
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>30 Tage</td>
+            <td>
+              30 Tage; Zugriffsprotokolle des Webhostings hinter static.bootstrap.academy: [OWNER:
+              Aufbewahrungsdauer der Zugriffsprotokolle des Hetzner-Webhostings
+              (static.bootstrap.academy) prüfen]
+            </td>
             <td>Hetzner Online GmbH, Deutschland (Hosting)</td>
           </tr>
           <tr>
@@ -352,8 +358,8 @@
             <td>Art. 6 Abs. 1 lit. b DSGVO</td>
             <td>Vergangene Termine: kurz nach Ende; übrige Daten bis zur Kontolöschung</td>
             <td>
-              Kursleiter:innen und Teilnehmer:innen (Anzeigename); 8x8, Inc., USA (Jitsi Meet, EU-US
-              Data Privacy Framework) beim Beitritt zu einem Videocall
+              Kursleiter:innen und Teilnehmer:innen (Anzeigename und Nickname); 8x8, Inc., USA
+              (Jitsi Meet, EU-US Data Privacy Framework) beim Beitritt zu einem Videocall
             </td>
           </tr>
           <tr>
@@ -372,7 +378,7 @@
             <td>Rechnungsstellung, steuerliche Pflichten</td>
             <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Rechnungsinhalt</td>
             <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO</td>
-            <td>Zehn Jahre ab Ende des Ausstellungsjahres</td>
+            <td>Acht Jahre ab Ende des Ausstellungsjahres</td>
             <td>Europäische Kommission (VIES), nur die USt-IdNr.</td>
           </tr>
           <tr>
@@ -388,7 +394,7 @@
             <td>Verifizierung, Passwort-Zurücksetzung, Kauf- und Buchungsbestätigungen</td>
             <td>E-Mail-Adresse, Inhalt der Nachricht, Rechnung</td>
             <td>Art. 6 Abs. 1 lit. b DSGVO; Rechnung: lit. c</td>
-            <td>Versendete E-Mails speichern wir nicht; Rechnungen zehn Jahre</td>
+            <td>Versendete E-Mails speichern wir nicht; Rechnungen acht Jahre</td>
             <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
           </tr>
           <tr>
@@ -427,7 +433,9 @@
         für Kursvideos und Datensicherungen sowie unser Fehlerberichtssystem laufen auf Servern der
         Hetzner Online GmbH, Industriestraße 25, 91710 Gunzenhausen, Deutschland, in deren
         Rechenzentren in Falkenstein und Nürnberg. Hetzner ist Auftragsverarbeiter nach Art. 28
-        DSGVO und verarbeitet Daten nur nach unserer Weisung.
+        DSGVO und verarbeitet Daten nur nach unserer Weisung. Vorschaubilder der Kurse liefern wir
+        außerdem über static.bootstrap.academy aus einem Webhosting-Paket der Hetzner Online GmbH
+        aus (Abschnitt 8.1).
       </p>
       <h3>7.2 Cloudflare, Inc.</h3>
       <p>
@@ -451,11 +459,12 @@
         Anbieter: Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA. Cloudflare
         ist Auftragsverarbeiter nach Art. 28 DSGVO. Die Übermittlung in die USA stützt sich auf den
         Angemessenheitsbeschluss der Europäischen Kommission zum EU-US Data Privacy Framework
-        (Beschluss (EU) 2023/1795), an dem Cloudflare teilnimmt (Abschnitt 19). Rechtsgrundlage der
-        Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse ist die schnelle,
-        weltweit verfügbare und gegen Überlastungsangriffe geschützte Auslieferung der
-        Weboberfläche. Wir selbst speichern die bei Cloudflare anfallenden Verbindungsdaten nicht;
-        zur Verarbeitung bei Cloudflare informiert dessen Datenschutzerklärung.
+        (Durchführungsbeschluss (EU) 2023/1795), an dem Cloudflare teilnimmt (Abschnitt 19).
+        Rechtsgrundlage der Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes
+        Interesse ist die schnelle, weltweit verfügbare und gegen Überlastungsangriffe geschützte
+        Auslieferung der Weboberfläche. Wir selbst speichern die bei Cloudflare anfallenden
+        Verbindungsdaten nicht; zur Verarbeitung bei Cloudflare informiert dessen
+        Datenschutzerklärung.
       </p>
       <h3>7.3 Datensicherungen</h3>
       <p>
@@ -488,13 +497,18 @@
         sandkasten.bootstrap.academy protokollieren jede Anfrage mit IP-Adresse, Zeitpunkt,
         aufgerufener Adresse (URL) und Methode, HTTP-Status, Browserkennung (User-Agent) und
         Referrer. Die Systemprotokolle der Dienste enthalten technische Meldungen, die im Einzelfall
-        Nutzerkennungen oder aufgerufene Adressen enthalten können. Zweck ist der sichere und
-        stabile Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten,
-        Fehlersuche. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle werden nach 30
-        Tagen gelöscht und sind nicht Teil der Datensicherungen. Aus den Webserver-Protokollen
-        erzeugen wir auf einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl
-        der Anfragen, Antwortzeiten, Fehlerquoten); diese enthalten keine IP-Adressen und keinen
-        Personenbezug.
+        Nutzerkennungen oder aufgerufene Adressen enthalten können; schlägt die Auswertung einer
+        Programmieraufgabe wegen eines Fehlers im Auswertungsskript der Aufgabe fehl, kann die
+        Fehlermeldung auch Ausgaben dieses Skripts enthalten. Zweck ist der sichere und stabile
+        Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten, Fehlersuche.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle werden nach 30 Tagen gelöscht
+        und sind nicht Teil der Datensicherungen. Aus den Webserver-Protokollen erzeugen wir auf
+        einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl der Anfragen,
+        Antwortzeiten, Fehlerquoten); diese enthalten keine IP-Adressen und keinen Personenbezug.
+        Beim Abruf der Vorschaubilder von static.bootstrap.academy (Abschnitt 7.1) protokolliert der
+        Webserver dieses Webhosting-Pakets IP-Adresse, Zeitpunkt, aufgerufene Datei und
+        Browserkennung; wir werten diese Protokolle nicht aus [OWNER: Aufbewahrungsdauer der
+        Zugriffsprotokolle des Hetzner-Webhostings (static.bootstrap.academy) prüfen].
       </p>
       <h3>8.2 Fehlerberichte</h3>
       <p>
@@ -562,7 +576,7 @@
           <tr>
             <td><code>locale</code></td>
             <td>Cookie</td>
-            <td>Gewählte Sprache</td>
+            <td>Sprache der Oberfläche (Voreinstellung oder Ihre Auswahl)</td>
             <td>Sitzungsende</td>
           </tr>
           <tr>
@@ -587,6 +601,18 @@
             <td><code>currentVideo</code>, <code>currentVideoTime</code></td>
             <td>Cookie</td>
             <td>Wiedergabeposition, um ein Kursvideo fortzusetzen</td>
+            <td>Sitzungsende</td>
+          </tr>
+          <tr>
+            <td><code>zoomLevel</code></td>
+            <td>Cookie</td>
+            <td>Von Ihnen gewählte Zoomstufe des Skill-Baums</td>
+            <td>Sitzungsende</td>
+          </tr>
+          <tr>
+            <td><code>rootTree_nextNode</code>, <code>subTree_nextNode</code></td>
+            <td>Cookie</td>
+            <td>Zuletzt von Ihnen ausgewählte Position im Skill-Baum (Zeile und Spalte)</td>
             <td>Sitzungsende</td>
           </tr>
           <tr>
@@ -633,7 +659,7 @@
       <ul>
         <li>
           <strong>Nickname</strong> (Benutzername): eindeutige Kennung Ihres Kontos und Anmeldename.
-          Er besteht aus Buchstaben und Ziffern, muss plattformweit eindeutig sein und kann
+          Er besteht aus 3 bis 32 Buchstaben und Ziffern, muss plattformweit eindeutig sein und kann
           höchstens alle 30 Tage geändert werden. Ein Pseudonym ist ausdrücklich zulässig; ein
           Klarname ist nicht erforderlich. Der Nickname ist für andere angemeldete Nutzer:innen
           sichtbar (Abschnitte 12.2 und 14).
@@ -710,7 +736,8 @@
         Rechnungsangaben, sind aber keinem Konto mehr zugeordnet. In Datensicherungen verbleiben die
         Daten bis zum Ablauf der in Abschnitt 7.3 genannten Fristen. Nicht verbrauchte gekaufte
         MorphCoins erstatten wir auf Anfrage, wenn Sie uns vor der Löschung kontaktieren (Abschnitt
-        15.1).
+        15.1). Verlangen Sie die Löschung stattdessen per E-Mail, setzen wir sie innerhalb von 30
+        Tagen um.
       </p>
     </section>
 
@@ -803,10 +830,11 @@
       <h3>12.2 Bestenliste</h3>
       <p>
         Die Bestenliste zeigt angemeldeten Nutzer:innen mit verifizierter E-Mail-Adresse eine
-        Rangliste nach Gesamt-XP. Zu jedem Eintrag werden Anzeigename, Profilbild, Gesamt-XP und
-        Rang angezeigt; die technische Antwort enthält außerdem Nickname und Registrierungsdatum. Es
-        gibt Ranglisten insgesamt, je Programmiersprache und je Aufgabe. Für nicht angemeldete
-        Besucher:innen ist die Bestenliste nicht abrufbar. Ihre XP je Skill sehen nur Sie selbst.
+        Rangliste nach Gesamt-XP. Zu jedem Eintrag werden Anzeigename, Standard-Avatar, Gesamt-XP
+        und Rang angezeigt; die technische Antwort enthält außerdem Nickname, Registrierungsdatum
+        und die Kennzeichnung als Administrator:in. Es gibt Ranglisten insgesamt, je
+        Programmiersprache und je Aufgabe. Für nicht angemeldete Besucher:innen ist die Bestenliste
+        nicht abrufbar. Ihre XP je Skill sehen nur Sie selbst.
       </p>
       <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse ist eine
@@ -820,9 +848,10 @@
       <p>
         Der Bereich „Jobs“ mit Stellenanzeigen ist derzeit nicht freigeschaltet. Wird er
         freigeschaltet, prüft der Dienst Jobs anhand Ihrer Skill-Level, ob Ihnen die Kontaktdaten
-        einer Stelle angezeigt werden. Diese Prüfung findet nur innerhalb der Plattform statt;
-        ausschreibende Unternehmen erhalten keine Daten über Sie – weder Profil-, Lern- noch
-        Skill-Daten. Bewerbungen werden nicht über die Plattform abgewickelt.
+        einer Stelle angezeigt werden; die Skill-Level ruft er dafür aus dem Dienst Skills ab und
+        hält sie höchstens fünf Minuten im Zwischenspeicher. Diese Prüfung findet nur innerhalb der
+        Plattform statt; ausschreibende Unternehmen erhalten keine Daten über Sie – weder Profil-,
+        Lern- noch Skill-Daten. Bewerbungen werden nicht über die Plattform abgewickelt.
       </p>
     </section>
 
@@ -876,7 +905,8 @@
         Sperre speichern wir Art, Beginn, Ende, Grund und die entscheidende Person. Die Dauer einer
         Sperre wird nicht individuell festgelegt, sondern folgt einer festen Staffel nach der Zahl
         Ihrer bisherigen Sperren derselben Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach
-        unbefristet. Ihre eigenen Sperren können Sie in der Plattform einsehen.
+        unbefristet. Eine Anzeige Ihrer Sperren in der Oberfläche gibt es derzeit noch nicht;
+        Auskunft darüber erhalten Sie auf Anfrage (Abschnitt 23).
       </p>
       <p>
         Zusätzlich wird eine nutzererstellte Aufgabe automatisch ausgeblendet und den
@@ -904,13 +934,14 @@
         bestandene Prüfungen sowie – wenn Sie als Kursleiter:in tätig sind – Ihre angebotenen
         Webinare, Coachings und Terminfenster. Zu Ihrem Konto sind dort Ihre Nutzerkennung und die
         Termindaten gespeichert; Anzeigename und Nickname ruft der Dienst bei Bedarf aus dem
-        Kerndienst ab und hält sie höchstens fünf Minuten im Zwischenspeicher. Kursleiter:innen
-        sehen die Anzeigenamen der Teilnehmer:innen; Teilnehmer:innen sehen Anzeigename und Nickname
-        der Kursleiter:in. Nach einem Webinar können Sie die Kursleiter:in mit einer Note von 1 bis
-        5 bewerten; sobald Sie bewertet haben, entfernen wir den Bezug zwischen der Bewertung und
-        Ihrer Person. Bewertungen, die Sie als Kursleiter:in erhalten, stammen von Teilnehmer:innen.
-        Kostenpflichtige Anmeldungen und Buchungen werden mit MorphCoins bezahlt (Abschnitt 15); zur
-        Buchung erhalten Sie eine Bestätigungs-E-Mail.
+        Kerndienst ab und hält sie höchstens fünf Minuten im Zwischenspeicher. Bei Coachings und
+        Prüfungen sehen Kursleiter:in und buchende Person gegenseitig Anzeigename und Nickname; bei
+        Webinaren sehen Teilnehmer:innen Anzeigename und Nickname der Kursleiter:in, andere
+        Teilnehmer:innen werden nicht angezeigt, nur ihre Anzahl. Nach einem Webinar können Sie die
+        Kursleiter:in mit einer Note von 1 bis 5 bewerten; sobald Sie bewertet haben, entfernen wir
+        den Bezug zwischen der Bewertung und Ihrer Person. Bewertungen, die Sie als Kursleiter:in
+        erhalten, stammen von Teilnehmer:innen. Kostenpflichtige Anmeldungen und Buchungen werden
+        mit MorphCoins bezahlt (Abschnitt 15); zur Buchung erhalten Sie eine Bestätigungs-E-Mail.
       </p>
       <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Vergangene Termine werden kurz nach ihrem
@@ -918,15 +949,15 @@
       </p>
       <h3>14.2 Videokonferenzen (Jitsi Meet)</h3>
       <p>
-        Für Coachings erzeugen wir Konferenzräume auf der öffentlichen Jitsi-Meet-Instanz
-        meet.jit.si, betrieben von 8x8, Inc., Campbell, Kalifornien, USA. Der Raumname ist eine
-        zufällige Zeichenfolge. Wenn Sie einem Raum beitreten, übermittelt Ihr Browser IP-Adresse,
-        Browserdaten sowie Ihre Audio- und Videodaten an 8x8; 8x8 verarbeitet diese in eigener
-        Verantwortung nach seinen Datenschutzhinweisen. Wir speichern keine Inhalte der Gespräche.
-        Rechtsgrundlage für die Bereitstellung des Raums ist Art. 6 Abs. 1 lit. b DSGVO
-        (Durchführung des gebuchten Coachings). 8x8, Inc. nimmt am EU-US Data Privacy Framework teil
-        (Abschnitt 19). Für Webinare hinterlegen Kursleiter:innen den Konferenzlink selbst; welcher
-        Anbieter dort verwendet wird, erkennen Sie an der Adresse des Links.
+        Für gebuchte Coaching- und Prüfungstermine erzeugen wir Konferenzräume auf der öffentlichen
+        Jitsi-Meet-Instanz meet.jit.si, betrieben von 8x8, Inc., Campbell, Kalifornien, USA. Der
+        Raumname ist eine zufällige Zeichenfolge. Wenn Sie einem Raum beitreten, übermittelt Ihr
+        Browser IP-Adresse, Browserdaten sowie Ihre Audio- und Videodaten an 8x8; 8x8 verarbeitet
+        diese in eigener Verantwortung nach seinen Datenschutzhinweisen. Wir speichern keine Inhalte
+        der Gespräche. Rechtsgrundlage für die Bereitstellung des Raums ist Art. 6 Abs. 1 lit. b
+        DSGVO (Durchführung des gebuchten Termins). 8x8, Inc. nimmt am EU-US Data Privacy Framework
+        teil (Abschnitt 19). Für Webinare hinterlegen Kursleiter:innen den Konferenzlink selbst;
+        welcher Anbieter dort verwendet wird, erkennen Sie an der Adresse des Links.
       </p>
       <h3>14.3 Kalender-Abo (iCal)</h3>
       <p>
@@ -980,24 +1011,29 @@
       <p>
         Für Rechnungen und Gutschriften benötigen wir Rechnungsdaten, die Sie in Ihrem Profil
         angeben: ob Sie als Unternehmen handeln, Vor- und Nachname, Straße, Postleitzahl, Ort, Land
-        und bei Unternehmen die Umsatzsteuer-Identifikationsnummer. Für den Kauf von MorphCoins ist
-        mindestens die Angabe des Landes erforderlich (Umsatzsteuer). Wir erheben diese Daten erst,
-        wenn Sie eine kostenpflichtige Leistung erwerben oder eine Gutschrift erhalten. Geben Sie
-        eine USt-IdNr. an, prüfen wir sie über das Mehrwertsteuer-Informationsaustauschsystem (VIES)
-        der Europäischen Kommission; übermittelt wird ausschließlich die USt-IdNr., nicht Ihr Name
-        oder Ihre Anschrift. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
-        den umsatzsteuerrechtlichen Prüfpflichten.
+        und bei Unternehmen die Umsatzsteuer-Identifikationsnummer. Für den Kauf von MorphCoins als
+        Privatperson sind mindestens die Angabe, dass Sie nicht als Unternehmen handeln, und Ihr
+        Land erforderlich (Umsatzsteuer); Unternehmen müssen die vollständigen Rechnungsdaten
+        einschließlich USt-IdNr. angeben. Wir erheben diese Daten erst, wenn Sie eine
+        kostenpflichtige Leistung erwerben oder MorphCoins als Belohnung gutgeschrieben bekommen
+        möchten. MorphCoins, die Sie als Belohnung erhalten, werden Ihnen erst gutgeschrieben, wenn
+        Ihre Rechnungsdaten vollständig sind; bis dahin halten wir sie zurück. Geben Sie eine
+        USt-IdNr. an, prüfen wir sie über das Mehrwertsteuer-Informationsaustauschsystem (VIES) der
+        Europäischen Kommission; übermittelt wird ausschließlich die USt-IdNr., nicht Ihr Name oder
+        Ihre Anschrift. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit den
+        umsatzsteuerrechtlichen Prüfpflichten.
       </p>
       <h3>15.4 Rechnungen und Gutschriften</h3>
       <p>
         Zu jedem MorphCoins-Kauf erstellen wir eine Rechnung, die wir Ihnen als PDF mit der
-        Kaufbestätigung per E-Mail senden; Gutschriften erstellen wir bei Erstattungen und bei
-        Auszahlungen an Kursleiter:innen. Rechnungen und Gutschriften enthalten Name, Anschrift,
-        E-Mail-Adresse und gegebenenfalls USt-IdNr. Wir erzeugen die PDF-Dateien auf unserem eigenen
-        Server; ein externer Dienst ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
-        DSGVO für die Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren
-        Rechnungen und Gutschriften zehn Jahre auf (§ 147 AO, § 257 HGB), gerechnet ab dem Ende des
-        Kalenderjahres der Ausstellung – auch nach einer Kontolöschung.
+        Kaufbestätigung per E-Mail senden; Gutschriften erstellen wir bei Erstattungen sowie über
+        MorphCoins, die Sie als Belohnung erhalten haben (etwa als Kursleiter:in oder für erstellte
+        Aufgaben). Rechnungen und Gutschriften enthalten Name, Anschrift, E-Mail-Adresse und
+        gegebenenfalls USt-IdNr. Wir erzeugen die PDF-Dateien auf unserem eigenen Server; ein
+        externer Dienst ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die
+        Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und
+        Gutschriften acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG),
+        gerechnet ab dem Ende des Kalenderjahres der Ausstellung – auch nach einer Kontolöschung.
       </p>
     </section>
 
@@ -1111,7 +1147,7 @@
           </tr>
           <tr>
             <td>8x8, Inc.</td>
-            <td>Jitsi Meet für Coachings (Abschnitt 14.2)</td>
+            <td>Jitsi Meet für Coachings und Prüfungen (Abschnitt 14.2)</td>
             <td>EU-US Data Privacy Framework</td>
           </tr>
         </tbody>
@@ -1149,11 +1185,12 @@
         </thead>
         <tbody>
           <tr>
-            <td>
-              Konto, Profil, Zwei-Faktor-Daten, Verknüpfungen mit GitHub, Discord oder Google,
-              Altersbestätigung, AGB-Zustimmung
-            </td>
+            <td>Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung</td>
             <td>Bis zur Kontolöschung</td>
+          </tr>
+          <tr>
+            <td>Verknüpfungen mit GitHub, Discord oder Google</td>
+            <td>Bis zur Aufhebung der Verknüpfung oder bis zur Kontolöschung</td>
           </tr>
           <tr>
             <td>Sitzungen</td>
@@ -1188,11 +1225,15 @@
           </tr>
           <tr>
             <td>Rechnungen und Gutschriften</td>
-            <td>Zehn Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung</td>
+            <td>Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung</td>
           </tr>
           <tr>
             <td>Server-Logs</td>
-            <td>30 Tage</td>
+            <td>
+              30 Tage; Zugriffsprotokolle des Webhostings hinter static.bootstrap.academy: [OWNER:
+              Aufbewahrungsdauer der Zugriffsprotokolle des Hetzner-Webhostings
+              (static.bootstrap.academy) prüfen]
+            </td>
           </tr>
           <tr>
             <td>Fehlerberichte</td>
@@ -1232,9 +1273,10 @@
         des Mindestalters und die Zustimmung zu den AGB erforderlich. Ohne diese Angaben können wir
         kein Konto anlegen; die Pflicht ergibt sich aus dem Nutzungsvertrag. Kurzbeschreibung und
         Tags im Profil sind freiwillig. Rechnungsdaten sind nur erforderlich, wenn Sie MorphCoins
-        kaufen oder Gutschriften erhalten möchten; ohne sie ist nur der kostenpflichtige Bereich
-        nicht nutzbar. Alle weiteren Verarbeitungen ergeben sich aus Funktionen, die Sie selbst
-        nutzen (Kurse, Aufgaben, Events, Videos).
+        kaufen oder MorphCoins als Belohnung gutgeschrieben bekommen möchten; ohne sie können Sie
+        keine MorphCoins kaufen, und verdiente MorphCoins werden zurückgehalten (Abschnitt 15.3);
+        alle übrigen Funktionen bleiben nutzbar. Alle weiteren Verarbeitungen ergeben sich aus
+        Funktionen, die Sie selbst nutzen (Kurse, Aufgaben, Events, Videos).
       </p>
     </section>
 
@@ -1248,8 +1290,9 @@
         und Erziehungsberechtigte erreichen uns bei Fragen zu einem Konto unter
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>.
         Einwilligungen (Abschnitt 16) können nach Art. 8 DSGVO nur Personen ab 16 Jahren wirksam
-        erteilen. Minderjährige ab 16 Jahren dürfen kostenpflichtige Leistungen nur mit Zustimmung
-        ihrer gesetzlichen Vertreter erwerben (§§ 107, 108 BGB).
+        erteilen. Für kostenpflichtige Leistungen, die Minderjährige ab 16 Jahren erwerben, gelten
+        die §§ 107 bis 110 BGB (Zustimmung der gesetzlichen Vertreter); Einzelheiten stehen in den
+        Allgemeinen Geschäftsbedingungen.
       </p>
     </section>
 
@@ -1296,11 +1339,12 @@
           jederzeit gegen die Verarbeitung Sie betreffender personenbezogener Daten zu
           widersprechen, die wir auf Art. 6 Abs. 1 lit. f DSGVO stützen. Das betrifft die
           Server-Logs, die Fehlerberichte, die Datensicherungen, die Auslieferung der Weboberfläche
-          über Cloudflare, die Moderation und die Bestenliste. Wir verarbeiten die Daten dann nicht
-          mehr, es sei denn, wir können zwingende schutzwürdige Gründe für die Verarbeitung
-          nachweisen, die Ihre Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung
-          dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Direktwerbung
-          betreiben wir nicht. Richten Sie Ihren Widerspruch an
+          über Cloudflare, die Moderation, die Bestenliste und die Beantwortung allgemeiner Anfragen
+          (Abschnitt 17.2). Wir verarbeiten die Daten dann nicht mehr, es sei denn, wir können
+          zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die Ihre Interessen,
+          Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung
+          oder Verteidigung von Rechtsansprüchen. Direktwerbung betreiben wir nicht. Richten Sie
+          Ihren Widerspruch an
           <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a
           >.
         </strong>
@@ -1310,8 +1354,9 @@
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
         oder an die in Abschnitt 2 genannte Anschrift. Zur Zuordnung Ihrer Anfrage können wir Sie
         bitten, von der bei uns hinterlegten E-Mail-Adresse zu schreiben oder Ihre Identität auf
-        andere Weise nachzuweisen. Wir antworten innerhalb eines Monats. Zu automatisierten
-        Entscheidungen siehe Abschnitt 13.4.
+        andere Weise nachzuweisen. Wir antworten unverzüglich, spätestens innerhalb eines Monats;
+        ist ausnahmsweise eine Verlängerung nach Art. 12 Abs. 3 DSGVO nötig, informieren wir Sie
+        innerhalb dieses Monats darüber. Zu automatisierten Entscheidungen siehe Abschnitt 13.4.
       </p>
     </section>
 
