@@ -31,7 +31,7 @@ export default defineComponent({
     const MAX_ZOOM_LEVEL = 5;
     const { t } = useI18n();
 
-    const cookie_zoomLevel = useCookie<number>("zoomLevel");
+    const cookie_zoomLevel = useAppCookie<number>("zoomLevel");
 
     const zoomLevel = computed({
       get() {

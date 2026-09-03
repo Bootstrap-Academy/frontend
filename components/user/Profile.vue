@@ -87,7 +87,7 @@ export default {
       await getPremiumStatus();
     });
 
-    const showFreeQuizzesOnly = useCookie("showFreeQuizzesOnly");
+    const showFreeQuizzesOnly = useAppCookie("showFreeQuizzesOnly");
     return {
       image,
       username,

@@ -131,8 +131,8 @@ export default defineComponent({
     );
 
     function onTimeUpdate(videoID: string, event: any) {
-      const videoCookie = useCookie("currentVideo");
-      const timeCookie = useCookie("currentVideoTime");
+      const videoCookie = useAppCookie("currentVideo");
+      const timeCookie = useAppCookie("currentVideoTime");
 
       const currentVideoTime = event.target.currentTime;
       timeCookie.value = currentVideoTime;
@@ -141,8 +141,8 @@ export default defineComponent({
     }
 
     function onVideoLoad(videoID: string, event: any) {
-      const videoCookie = useCookie("currentVideo");
-      const timeCookie = useCookie("currentVideoTime");
+      const videoCookie = useAppCookie("currentVideo");
+      const timeCookie = useAppCookie("currentVideoTime");
 
       if (!videoCookie || videoCookie.value === "" || !timeCookie || timeCookie.value === "")
         return;

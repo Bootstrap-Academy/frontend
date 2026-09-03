@@ -30,14 +30,16 @@ export default {
   setup() {
     const { t, locale } = useI18n();
 
-    const cookie_locale = useCookie("locale");
+    const cookie_locale = useAppCookie("locale");
 
+    // Only store the language once the user picks one, never on page load.
     watch(
       () => locale.value,
       (newValue, oldValue) => {
+        if (newValue === oldValue) return;
         cookie_locale.value = newValue;
       },
-      { deep: true, immediate: true }
+      { deep: true }
     );
 
     return { locale, t };
