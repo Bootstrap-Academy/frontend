@@ -40,7 +40,6 @@ Resolution:
 - Keep the **production values** (not test values) in `runtimeConfig.public`, especially:
   - `BASE_API_URL=https://api.bootstrap.academy`
   - `BASE_WEB_URL=https://bootstrap.academy`
-  - production `Vue3ReCaptcha_SITE_KEY`
   - existing `Gleap_API_KEY`
 
 Then continue:

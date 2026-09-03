@@ -85,7 +85,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
 import type { IForm } from "~/types/form";
 import IconGithub from "~/components/icon/Github.vue";
 import IconGoogle from "~/components/icon/Google.vue";
@@ -174,18 +173,6 @@ export default defineComponent({
       });
     });
 
-    // ============================================================= reCaptcha
-    const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
-    const getReCaptchaToken = async () => {
-      try {
-        await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
-        return token;
-      } catch (error) {
-        return null;
-      }
-    };
-
     // ============================================================= Checks
     const router = useRouter();
     const route = useRoute();
@@ -199,12 +186,7 @@ export default defineComponent({
       if (form.validate()) {
         form.submitting = true;
 
-        let recaptcha_response = await getReCaptchaToken();
-
-        const [success, error] = await login({
-          ...form.body(),
-          recaptcha_response: recaptcha_response,
-        });
+        const [success, error] = await login(form.body());
 
         form.submitting = false;
 
