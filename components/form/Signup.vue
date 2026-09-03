@@ -13,7 +13,7 @@
     />
 
     <Input
-      :label="t('Inputs.Name')"
+      :label="t('Inputs.DisplayName')"
       v-model="form.display_name.value"
       @valid="form.display_name.valid = $event"
       :rules="form.display_name.rules"
@@ -50,19 +50,22 @@
     />
 
     <InputCheckbox
-      label="Links.IAgreeTo"
-      id="privacy"
-      :link="{
-        to: '/docs/privacy',
-        label: 'Links.Privacy',
-      }"
-      target="_blank"
+      label="Links.MinimumAge"
+      id="MinimumAge"
       required
-      v-model="form.privacy.value"
-      @valid="form.privacy.valid = $event"
+      v-model="form.ageConfirmed.value"
+      @valid="form.ageConfirmed.valid = $event"
     />
 
     <InputCheckbox id="Newsletter" label="Links.Newsletter" v-model="form.newsletter.value" />
+
+    <p class="text-body-1 text-body">
+      {{ t("Links.PrivacyNoticeHint") }}
+      <NuxtLink to="/docs/privacy" target="_blank" class="text-accent hover:underline">{{
+        t("Links.PrivacyNoticeLinkText")
+      }}</NuxtLink
+      >{{ t("Links.PrivacyNoticeHintEnd") }}
+    </p>
 
     <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mb mt>
       {{ t("Buttons.CreateAccount") }}
@@ -103,7 +106,7 @@ export default defineComponent({
         value: "",
         valid: false,
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.Name",
+          (v: string) => !!v || "Error.InputEmpty_Inputs.DisplayName",
           (v: string) => v.length >= 3 || "Error.InputMinLength_3",
           (v: string) => v.length <= 64 || "Error.InputMinLength_64",
         ],
@@ -129,7 +132,7 @@ export default defineComponent({
         value: false,
         valid: false,
       },
-      privacy: {
+      ageConfirmed: {
         value: false,
         valid: false,
       },
@@ -168,11 +171,15 @@ export default defineComponent({
             key != "body" &&
             key != "submitting" &&
             key != "termsAndConditions" &&
-            key != "newsletter" &&
-            key != "privacy"
+            key != "ageConfirmed" &&
+            key != "newsletter"
           )
             obj[key] = form[key].value;
         }
+
+        obj.terms_version = TERMS_VERSION;
+        obj.age_confirmed = form.ageConfirmed.value;
+
         return obj;
       },
     });
