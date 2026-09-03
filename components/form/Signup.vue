@@ -57,8 +57,6 @@
       @valid="form.ageConfirmed.valid = $event"
     />
 
-    <InputCheckbox id="Newsletter" label="Links.Newsletter" v-model="form.newsletter.value" />
-
     <p class="text-body-1 text-body">
       {{ t("Links.PrivacyNoticeHint") }}
       <NuxtLink to="/docs/privacy" target="_blank" class="text-accent hover:underline">{{
@@ -136,10 +134,6 @@ export default defineComponent({
         value: false,
         valid: false,
       },
-      newsletter: {
-        value: false,
-        valid: true,
-      },
       submitting: false,
       validate: () => {
         let isValid = true;
@@ -149,13 +143,7 @@ export default defineComponent({
         }
 
         for (const key in form) {
-          if (
-            key != "validate" &&
-            key != "body" &&
-            key != "submitting" &&
-            key != "newsletter" &&
-            !form[key].valid
-          ) {
+          if (key != "validate" && key != "body" && key != "submitting" && !form[key].valid) {
             isValid = false;
           }
         }
@@ -171,8 +159,7 @@ export default defineComponent({
             key != "body" &&
             key != "submitting" &&
             key != "termsAndConditions" &&
-            key != "ageConfirmed" &&
-            key != "newsletter"
+            key != "ageConfirmed"
           )
             obj[key] = form[key].value;
         }
@@ -221,15 +208,9 @@ export default defineComponent({
 
         if (!!success) await requestEmailVerification();
 
-        let isNewsletter = false;
-        if (!!success && !!form.newsletter.value) {
-          const [suc, err] = await requestNewsletterRegistration();
-          isNewsletter = !!suc;
-        }
-
         form.submitting = false;
 
-        success ? successHandler(success, isNewsletter) : errorHandler(error);
+        success ? successHandler(success) : errorHandler(error);
       } else {
         openSnackbar("error", "Error.InvalidForm");
       }
@@ -237,11 +218,11 @@ export default defineComponent({
 
     const router = useRouter();
 
-    function successHandler(res: any, isNewsletter: boolean) {
+    function successHandler(res: any) {
       openDialog(
         "success",
         "Success.SignupSuccessful",
-        `${t("Success.AccountCreated")} ${isNewsletter ? t("Success.NewsletterSignup") : ""}`,
+        t("Success.AccountCreated"),
         true,
         {
           label: "Buttons.VerifyAccount",

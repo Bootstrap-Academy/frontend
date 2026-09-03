@@ -24,11 +24,10 @@
     <h1 class="text-heading-1 text-center">{{ t("Headings.MyAccount") }}</h1>
     <AccountVerifyEmail />
     <div class="justify-between max-md:space-y-6 md:flex md:space-x-12">
-      <AccountNewsletter class="md:w-1/2" />
       <AccountMFA class="md:w-1/2" />
+      <AccountChangePassword class="md:w-1/2" />
     </div>
     <div class="mb-16 justify-between max-md:space-y-6 md:flex md:space-x-12">
-      <AccountChangePassword class="md:w-1/2" />
       <AccountDelete class="md:w-1/2" />
     </div>
   </main>

@@ -158,8 +158,6 @@ const onResponseError = async (context) => {
     return (response._data.detail = "Error.InvalidVerificationCode");
   } else if (details.includes("email already verified")) {
     return (response._data.detail = "Error.EmailAlreadyVerified");
-  } else if (details.includes("newsletter already subscribed")) {
-    return (response._data.detail = "Error.NewsletterAlreadySubscribed");
   } else if (details.includes("mfa already enabled")) {
     return (response._data.detail = "Error.MFAAlreadyEnabled");
   } else if (details.includes("mfa not initialized")) {

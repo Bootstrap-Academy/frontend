@@ -33,10 +33,6 @@ export default {
               pathname: "/skill-tree",
             },
             {
-              label: "Links.Jobs",
-              pathname: "/jobs",
-            },
-            {
               label: "Links.Challenges",
               pathname: "/challenges/all",
             },
