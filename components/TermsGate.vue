@@ -47,6 +47,7 @@
           }"
           target="_blank"
           required
+          :show-error="attempted"
           v-model="termsAndConditions"
         />
 
@@ -54,6 +55,7 @@
           label="Links.MinimumAge"
           id="TermsGateMinimumAge"
           required
+          :show-error="attempted"
           v-model="ageConfirmed"
         />
       </div>
@@ -91,6 +93,10 @@ export default defineComponent({
     const submitting = ref(false);
     const declining = ref(false);
 
+    // Set once acceptance has been attempted, so an unticked box is pointed
+    // out next to itself and not only in the snackbar.
+    const attempted = ref(false);
+
     const show = computed(() => needsTermsAcceptance(route.path));
     const valid = computed(() => termsAndConditions.value && ageConfirmed.value);
 
@@ -112,6 +118,8 @@ export default defineComponent({
     );
 
     async function onclickAccept() {
+      attempted.value = true;
+
       if (!!!valid.value) {
         openSnackbar("error", "Error.InvalidForm");
         return;
@@ -146,6 +154,7 @@ export default defineComponent({
       bodyParts,
       submitting,
       declining,
+      attempted,
       termsAndConditions,
       ageConfirmed,
       onclickAccept,

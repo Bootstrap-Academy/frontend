@@ -39,7 +39,7 @@
       class="relative z-0 pt-2 text-xs text-error transition duration-500 ease-out"
       :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
-      {{ error }}.
+      {{ error ? $t(error) : "" }}.
     </p>
   </article>
 </template>
@@ -56,6 +56,12 @@ export default defineComponent({
     target: { type: String, default: "" },
     id: { type: String, default: "" },
     required: { type: Boolean, default: false },
+    /**
+     * Show the "this is required" message even though the box has never been
+     * touched. Forms set this after a submit that was refused, so that a
+     * required box the user simply left alone is pointed out.
+     */
+    showError: { type: Boolean, default: false },
     label: { type: String, default: "" },
     link: {
       type: Object as PropType<{ to: string; label: string }>,
@@ -65,20 +71,28 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
+    // ============================================================= refs
+    const touched = ref(false);
+
     // ============================================================= computed
     const input = computed({
       get() {
         return props.modelValue;
       },
       set(value) {
+        touched.value = true;
         emit("update:modelValue", value);
-        error.value = value ? "" : "This is required";
-        emit("valid", !!!error.value);
+        emit("valid", !!value);
       },
     });
 
-    // ============================================================= refs
-    const error = ref("");
+    // The message stays hidden until the user has touched the box or the form
+    // asked for it, so an untouched form does not start out red.
+    const error = computed(() =>
+      props.required && !props.modelValue && (touched.value || props.showError)
+        ? "Error.CheckboxRequired"
+        : ""
+    );
 
     // ============================================================= functions
     return { input, error };
