@@ -1,13 +1,18 @@
 <!--
   AGB 20.2 promises that a new version of the terms is presented at the next
-  login and that silence is not acceptance, so the gate blocks the interface
-  until the user either accepts or deletes the account. It is rendered from
-  `app.vue` into the slot of whichever layout is active, so it reaches every
-  route.
+  login and that silence is not acceptance, and it lets the user reject the new
+  version: the version they accepted before keeps applying and we may then
+  terminate ordinarily under AGB 4.3. The gate therefore offers exactly two
+  explicit actions - accept, or "decide later" - and nothing else closes it:
+  there is no backdrop click handler and no escape handler, so the modal cannot
+  be dismissed by accident.
 
-  Nothing is remembered on the client. Whether the gate shows is derived from
-  the `terms_version` on the profile that the API returns, and accepting writes
-  the row on the server and reloads the profile.
+  It is rendered from `app.vue` into the slot of whichever layout is active, so
+  it reaches every route.
+
+  Nothing is remembered on the client beyond this app session. Whether the gate
+  shows is derived from the `terms_version` on the profile that the API returns;
+  both actions write the row on the server and reload the profile.
 -->
 <template>
   <section
@@ -23,7 +28,13 @@
       </h2>
 
       <p class="text-body-1 text-body font-body mt-box">
-        {{ t("Body.NewTermsAndConditions") }}
+        {{ bodyParts[0]
+        }}<NuxtLink
+          to="/docs/terms-and-conditions"
+          target="_blank"
+          class="text-accent hover:underline"
+          >{{ t("Links.TermsAndConditions") }}</NuxtLink
+        >{{ bodyParts[1] }}
       </p>
 
       <div class="flex flex-col gap-box mt-box">
@@ -52,6 +63,10 @@
           {{ t("Buttons.AcceptTermsAndConditions") }}
         </InputBtn>
 
+        <InputBtn secondary :loading="declining" @click="onclickDecline()">
+          {{ t("Buttons.DecideLater") }}
+        </InputBtn>
+
         <NuxtLink to="/account" class="text-body-1 text-accent hover:underline">
           {{ t("Headings.DeleteAccount") }}
         </NuxtLink>
@@ -69,21 +84,30 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const user = <any>useUser();
+    const dismissed = useTermsGateDismissed();
 
     const termsAndConditions = ref(false);
     const ageConfirmed = ref(false);
     const submitting = ref(false);
+    const declining = ref(false);
 
     const show = computed(() => needsTermsAcceptance(route.path));
     const valid = computed(() => termsAndConditions.value && ageConfirmed.value);
 
+    // The link to the terms replaces the `%%%` placeholder in the sentence.
+    const bodyParts = computed(() => {
+      const [before, after = ""] = t("Body.NewTermsAndConditions").split("%%%");
+      return [before, after];
+    });
+
     // A user who logs out and back in as somebody else has to tick both boxes
-    // again.
+    // again and is asked again, even if the previous user postponed.
     watch(
       () => user.value?.id,
       () => {
         termsAndConditions.value = false;
         ageConfirmed.value = false;
+        dismissed.value = false;
       }
     );
 
@@ -100,13 +124,32 @@ export default defineComponent({
       if (!!!success) openSnackbar("error", error?.detail ?? "");
     }
 
+    // Postponing needs no checkbox: the user agrees to nothing. The refusal is
+    // recorded on the server and the gate is closed until the app is loaded
+    // again.
+    async function onclickDecline() {
+      declining.value = true;
+      const [success, error] = await declineTerms();
+      declining.value = false;
+
+      if (!!!success) {
+        openSnackbar("error", error?.detail ?? "");
+        return;
+      }
+
+      dismissed.value = true;
+    }
+
     return {
       t,
       show,
+      bodyParts,
       submitting,
+      declining,
       termsAndConditions,
       ageConfirmed,
       onclickAccept,
+      onclickDecline,
     };
   },
 });
