@@ -16,6 +16,13 @@
     -->
     <ContractTermination />
 
+    <!--
+      AGB 20.2: a new version of the terms is presented at the next login.
+      Rendered here for the same reason as the bar above - it lands in the slot
+      of every layout and therefore covers every route.
+    -->
+    <TermsGate />
+
     <Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
       <Dialog :dialog="dialog" />
     </Modal>
