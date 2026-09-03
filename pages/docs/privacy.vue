@@ -27,7 +27,7 @@
     <ol class="table-content mt-container">
       <li><a href="#verantwortliche">Verantwortliche Stelle</a></li>
       <li>
-        <a href="#datenschutzbeauftragte">Datenschutzbeauftragte oder Datenschutzbeauftragter</a>
+        <a href="#datenschutz-ansprechstelle">Ansprechstelle für den Datenschutz</a>
       </li>
       <li><a href="#geltungsbereich">Geltungsbereich und Systeme</a></li>
       <li><a href="#rechtsgrundlagen">Rechtsgrundlagen</a></li>
@@ -71,9 +71,12 @@
       </p>
     </section>
 
-    <section id="datenschutzbeauftragte">
-      <h2>3 Datenschutzbeauftragte oder Datenschutzbeauftragter</h2>
-      <p>[OWNER: Datenschutzbeauftragte:r — Angabe folgt]</p>
+    <section id="datenschutz-ansprechstelle">
+      <h2>3 Ansprechstelle für den Datenschutz</h2>
+      <p>
+        Eine Datenschutzbeauftragte oder einen Datenschutzbeauftragten haben wir nicht benannt; eine
+        Pflicht dazu besteht für uns nicht (Art. 37 Abs. 1 DSGVO, § 38 Abs. 1 BDSG).
+      </p>
       <p>
         Anfragen zum Datenschutz und zur Ausübung Ihrer Rechte richten Sie bitte an
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
@@ -155,10 +158,10 @@
           </tr>
           <tr>
             <td>Events</td>
-            <td>Webinare, Coachings, Prüfungen</td>
+            <td>Webinare, Coachings</td>
             <td>
-              Anmeldungen, Buchungen, Coaching-Angebote, bestandene Prüfungen, Bewertungen von
-              Kursleiter:innen (Abschnitt 14)
+              Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleiter:innen (Abschnitt
+              14)
             </td>
           </tr>
           <tr>
@@ -218,9 +221,9 @@
           Fehlerberichte (sicherer und stabiler Betrieb, Abwehr von Angriffen, Fehlersuche),
           Datensicherungen (Schutz vor Datenverlust), Auslieferung der Weboberfläche über ein
           Content-Delivery-Netz (Verfügbarkeit, Schutz vor Überlastungsangriffen), Moderation und
-          Missbrauchsschutz, Bestenliste (motivierende Lernumgebung), Beantwortung allgemeiner
-          Anfragen (Abschnitt 17.2). Gegen diese Verarbeitungen können Sie Widerspruch einlegen
-          (Abschnitt 23).
+          Missbrauchsschutz, Betrieb des Discord-Bots (Abschnitt 17.3), Bestenliste (motivierende
+          Lernumgebung), Beantwortung allgemeiner Anfragen (Abschnitt 17.2). Gegen diese
+          Verarbeitungen können Sie Widerspruch einlegen (Abschnitt 23).
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung): das Laden von YouTube-Videos
@@ -272,9 +275,8 @@
             <td>IP-Adresse, Zeitpunkt, URL, HTTP-Status, Browserkennung, Referrer</td>
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
             <td>
-              30 Tage; Zugriffsprotokolle des Webhostings hinter static.bootstrap.academy: [OWNER:
-              Aufbewahrungsdauer der Zugriffsprotokolle des Hetzner-Webhostings
-              (static.bootstrap.academy) prüfen]
+              30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
+              static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
             </td>
             <td>Hetzner Online GmbH, Deutschland (Hosting)</td>
           </tr>
@@ -283,7 +285,7 @@
             <td>Fehlerbehebung</td>
             <td>Fehlermeldung, Stacktrace, aufgerufene URL, Nutzerkennung</td>
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>[OWNER: Aufbewahrungsdauer der Fehlerberichte in GlitchTip festlegen]</td>
+            <td>90 Tage</td>
             <td>Keine (selbst betriebenes System bei Hetzner)</td>
           </tr>
           <tr>
@@ -350,10 +352,10 @@
           </tr>
           <tr>
             <td>Events, Webinare, Coaching (Abschnitt 14)</td>
-            <td>Durchführung von Webinaren, Coachings und Prüfungen</td>
+            <td>Durchführung von Webinaren und Coachings</td>
             <td>
-              Anmeldungen, Buchungen, bestandene Prüfungen, Bewertungen, Kalender-Kennung; im
-              Videocall IP-Adresse, Audio und Video
+              Anmeldungen, Buchungen, Bewertungen, Kalender-Kennung; im Videocall IP-Adresse, Audio
+              und Video
             </td>
             <td>Art. 6 Abs. 1 lit. b DSGVO</td>
             <td>Vergangene Termine: kurz nach Ende; übrige Daten bis zur Kontolöschung</td>
@@ -402,10 +404,19 @@
             <td>Bearbeitung von Anfragen</td>
             <td>Name, E-Mail-Adresse, Betreff, Nachricht</td>
             <td>Art. 6 Abs. 1 lit. b DSGVO; sonst lit. f</td>
-            <td>
-              Bis zur Erledigung, danach [OWNER: Löschfrist für Support-Mails, Vorschlag 12 Monate]
-            </td>
+            <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
             <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
+          </tr>
+          <tr>
+            <td>Discord-Bot (Abschnitt 17.3)</td>
+            <td>Moderation und Betrieb des Community-Servers</td>
+            <td>
+              Discord-Nutzerkennung und -Name, Beitritts-, Austritts- und Aktivitätszeitpunkte,
+              Moderationsvorgänge
+            </td>
+            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+            <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
+            <td>Keine (eigener Server bei Hetzner)</td>
           </tr>
           <tr>
             <td>Datensicherungen (Abschnitt 7.3)</td>
@@ -413,12 +424,12 @@
             <td>Alle gespeicherten Daten, verschlüsselt</td>
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
             <td>
-              14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen [OWNER: Backup-Aufbewahrung mit
-              der Infrastruktur-Konfiguration abgleichen]
+              Stündlich für 48 Stunden, dann 14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen
+              (längstens rund ein Jahr)
             </td>
             <td>
-              Hetzner Online GmbH (Storage Box), Deutschland; Backup-Server eines vertraglich
-              gebundenen Entwicklers, Deutschland
+              Hetzner Online GmbH (Storage Box), Deutschland; ein von uns beauftragter
+              Auftragsverarbeiter mit Sitz in Deutschland (Backup-Server)
             </td>
           </tr>
         </tbody>
@@ -470,16 +481,16 @@
       <p>
         Wir sichern stündlich die Datenbanken aller Dienste und das Archiv der Rechnungen und
         Gutschriften. Die Sicherungen sind verschlüsselt (restic). Ziele sind (1) eine Storage Box
-        der Hetzner Online GmbH in Deutschland und (2) ein Server in Deutschland, den ein für uns
-        tätiger Entwickler betreibt und der als Auftragsverarbeiter nach Art. 28 DSGVO gebunden ist
-        [OWNER: AVV mit dem Betreiber des zweiten Backup-Ziels bestätigen]. Aufbewahrt werden 14
-        tägliche, 8 wöchentliche und 12 monatliche Sicherungen [OWNER: Backup-Aufbewahrung mit der
-        Infrastruktur-Konfiguration abgleichen]; ältere Sicherungen werden automatisch gelöscht.
-        Daten, die Sie oder wir löschen, verschwinden damit spätestens nach Ablauf dieser Fristen
-        auch aus den Sicherungen. Server-Logs sind nicht Teil der Sicherungen. Sicherungen dienen
-        ausschließlich der Wiederherstellung nach einem Ausfall; wir verwenden sie nicht, um
-        gelöschte Daten einzelner Personen wiederherzustellen. Rechtsgrundlage ist Art. 6 Abs. 1
-        lit. f DSGVO (Schutz vor Datenverlust).
+        der Hetzner Online GmbH in Deutschland und (2) ein Server in Deutschland bei einem von uns
+        beauftragten Auftragsverarbeiter (Art. 28 DSGVO) mit Sitz in Deutschland. Aufbewahrt werden
+        die stündlichen Sicherungen der letzten 48 Stunden sowie 14 tägliche, 8 wöchentliche und 12
+        monatliche Sicherungen; ältere Sicherungen werden auf beiden Zielen automatisch gelöscht,
+        eine Sicherung wird also längstens rund ein Jahr aufbewahrt. Daten, die Sie oder wir
+        löschen, verschwinden damit spätestens nach Ablauf dieser Fristen auch aus den Sicherungen.
+        Server-Logs sind nicht Teil der Sicherungen. Sicherungen dienen ausschließlich der
+        Wiederherstellung nach einem Ausfall; wir verwenden sie nicht, um gelöschte Daten einzelner
+        Personen wiederherzustellen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Schutz vor
+        Datenverlust).
       </p>
       <h3>7.4 Weitere Empfänger</h3>
       <p>
@@ -506,9 +517,9 @@
         einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl der Anfragen,
         Antwortzeiten, Fehlerquoten); diese enthalten keine IP-Adressen und keinen Personenbezug.
         Beim Abruf der Vorschaubilder von static.bootstrap.academy (Abschnitt 7.1) protokolliert der
-        Webserver dieses Webhosting-Pakets IP-Adresse, Zeitpunkt, aufgerufene Datei und
-        Browserkennung; wir werten diese Protokolle nicht aus [OWNER: Aufbewahrungsdauer der
-        Zugriffsprotokolle des Hetzner-Webhostings (static.bootstrap.academy) prüfen].
+        Webserver dieses Webhosting-Pakets Zeitpunkt, aufgerufene Datei und Browserkennung; die
+        IP-Adresse wird dort nach der Dokumentation des Hosters nur anonymisiert abgelegt. Wir
+        werten diese Protokolle nicht aus; sie werden nach 30 Tagen automatisch gelöscht.
       </p>
       <h3>8.2 Fehlerberichte</h3>
       <p>
@@ -519,8 +530,8 @@
         fehlgeschlagenen Zahlungen kann er die Fehlerantwort von PayPal enthalten. Das System ist
         nur aus unserem Administrationsnetz erreichbar; ein Dienst Dritter ist nicht beteiligt. Die
         Weboberfläche im Browser sendet keine Fehlerberichte. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
-        f DSGVO (Fehlerbehebung). Speicherdauer: [OWNER: Aufbewahrungsdauer der Fehlerberichte in
-        GlitchTip festlegen].
+        f DSGVO (Fehlerbehebung). Speicherdauer: 90 Tage; danach werden die Berichte automatisch
+        gelöscht.
       </p>
     </section>
 
@@ -900,13 +911,14 @@
       </p>
       <h3>13.4 Moderation, Sperren und automatisierte Entscheidungen</h3>
       <p>
-        Meldungen prüfen Administrator:innen. Stellen sie einen Missbrauch fest, können sie eine
-        Sperre verhängen: entweder für das Erstellen von Aufgaben oder für das Melden. Zu einer
-        Sperre speichern wir Art, Beginn, Ende, Grund und die entscheidende Person. Die Dauer einer
-        Sperre wird nicht individuell festgelegt, sondern folgt einer festen Staffel nach der Zahl
-        Ihrer bisherigen Sperren derselben Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach
-        unbefristet. Eine Anzeige Ihrer Sperren in der Oberfläche gibt es derzeit noch nicht;
-        Auskunft darüber erhalten Sie auf Anfrage (Abschnitt 23).
+        Meldungen prüfen Administrator:innen; eine gemeldete Aufgabe wird bis zu dieser Prüfung
+        vorläufig ausgeblendet. Stellen sie einen Missbrauch fest, können sie eine Sperre verhängen:
+        entweder für das Erstellen von Aufgaben oder für das Melden. Zu einer Sperre speichern wir
+        Art, Beginn, Ende, Grund und die entscheidende Person. Die Dauer einer Sperre wird nicht
+        individuell festgelegt, sondern folgt einer festen Staffel nach der Zahl Ihrer bisherigen
+        Sperren derselben Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach unbefristet. Eine Anzeige
+        Ihrer Sperren in der Oberfläche gibt es derzeit noch nicht; Auskunft darüber erhalten Sie
+        auf Anfrage (Abschnitt 23).
       </p>
       <p>
         Zusätzlich wird eine nutzererstellte Aufgabe automatisch ausgeblendet und den
@@ -930,18 +942,19 @@
       <h2>14 Events, Webinare und Coaching</h2>
       <h3>14.1 Teilnahme und Buchung</h3>
       <p>
-        Im Dienst Events speichern wir Ihre Anmeldungen zu Webinaren, gebuchte Coaching-Termine,
-        bestandene Prüfungen sowie – wenn Sie als Kursleiter:in tätig sind – Ihre angebotenen
-        Webinare, Coachings und Terminfenster. Zu Ihrem Konto sind dort Ihre Nutzerkennung und die
-        Termindaten gespeichert; Anzeigename und Nickname ruft der Dienst bei Bedarf aus dem
-        Kerndienst ab und hält sie höchstens fünf Minuten im Zwischenspeicher. Bei Coachings und
-        Prüfungen sehen Kursleiter:in und buchende Person gegenseitig Anzeigename und Nickname; bei
-        Webinaren sehen Teilnehmer:innen Anzeigename und Nickname der Kursleiter:in, andere
-        Teilnehmer:innen werden nicht angezeigt, nur ihre Anzahl. Nach einem Webinar können Sie die
-        Kursleiter:in mit einer Note von 1 bis 5 bewerten; sobald Sie bewertet haben, entfernen wir
-        den Bezug zwischen der Bewertung und Ihrer Person. Bewertungen, die Sie als Kursleiter:in
-        erhalten, stammen von Teilnehmer:innen. Kostenpflichtige Anmeldungen und Buchungen werden
-        mit MorphCoins bezahlt (Abschnitt 15); zur Buchung erhalten Sie eine Bestätigungs-E-Mail.
+        Im Dienst Events speichern wir Ihre Anmeldungen zu Webinaren, gebuchte Coaching-Termine
+        sowie – wenn Sie als Kursleiter:in tätig sind – Ihre angebotenen Webinare, Coachings und
+        Terminfenster. Zu Ihrem Konto sind dort Ihre Nutzerkennung und die Termindaten gespeichert;
+        Anzeigename und Nickname ruft der Dienst bei Bedarf aus dem Kerndienst ab und hält sie
+        höchstens fünf Minuten im Zwischenspeicher. Bei Coachings sehen Kursleiter:in und buchende
+        Person gegenseitig Anzeigename und Nickname; bei Webinaren sehen Teilnehmer:innen
+        Anzeigename und Nickname der Kursleiter:in, andere Teilnehmer:innen werden nicht angezeigt,
+        nur ihre Anzahl. Nach einem Webinar können Sie die Kursleiter:in mit einer Note von 1 bis 5
+        bewerten; sobald Sie bewertet haben, entfernen wir den Bezug zwischen der Bewertung und
+        Ihrer Person. Bewertungen, die Sie als Kursleiter:in erhalten, stammen von Teilnehmer:innen.
+        Kostenpflichtige Anmeldungen und Buchungen werden mit MorphCoins bezahlt (Abschnitt 15); zur
+        Buchung erhalten Sie eine Bestätigungs-E-Mail. Prüfungstermine sind in der Software
+        vorgesehen, werden derzeit aber nicht angeboten.
       </p>
       <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Vergangene Termine werden kurz nach ihrem
@@ -949,7 +962,7 @@
       </p>
       <h3>14.2 Videokonferenzen (Jitsi Meet)</h3>
       <p>
-        Für gebuchte Coaching- und Prüfungstermine erzeugen wir Konferenzräume auf der öffentlichen
+        Für gebuchte Coaching-Termine erzeugen wir Konferenzräume auf der öffentlichen
         Jitsi-Meet-Instanz meet.jit.si, betrieben von 8x8, Inc., Campbell, Kalifornien, USA. Der
         Raumname ist eine zufällige Zeichenfolge. Wenn Sie einem Raum beitreten, übermittelt Ihr
         Browser IP-Adresse, Browserdaten sowie Ihre Audio- und Videodaten an 8x8; 8x8 verarbeitet
@@ -1034,6 +1047,9 @@
         Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und
         Gutschriften acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG),
         gerechnet ab dem Ende des Kalenderjahres der Ausstellung – auch nach einer Kontolöschung.
+        Löschen Sie Ihr Konto, halten wir den nicht verbrauchten Anteil Ihrer gekauften MorphCoins
+        in einer Schlussabrechnung fest, die wir wie eine Rechnung aufbewahren, damit wir ihn auch
+        danach erstatten können (Ziffer 6.7 der AGB).
       </p>
     </section>
 
@@ -1083,16 +1099,28 @@
         Gleiches gilt für E-Mails, die Sie uns direkt senden. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
         b DSGVO, wenn Ihre Anfrage Ihr Konto oder einen Vertrag betrifft, sonst Art. 6 Abs. 1 lit. f
         DSGVO (Beantwortung von Anfragen). Wir speichern die Kommunikation, solange es zur
-        Bearbeitung nötig ist, und danach [OWNER: Löschfrist für Support-Mails, Vorschlag 12
-        Monate].
+        Bearbeitung nötig ist, und löschen sie zwölf Monate nach Abschluss der Anfrage; länger nur,
+        wenn eine gesetzliche Aufbewahrungspflicht besteht oder wir die Kommunikation zur
+        Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen benötigen.
       </p>
       <h3>17.3 Discord-Community</h3>
       <p>
-        Für unsere Discord-Community betreiben wir den Bot „MorpheusHelper“ auf unserem Server bei
-        Hetzner mit eigener Datenbank. [OWNER: welche Daten verarbeitet der Discord-Bot?
-        Datenkategorien, Zweck, Rechtsgrundlage und Speicherdauer ergänzen] Für die Nutzung von
-        Discord selbst gelten die Datenschutzhinweise von Discord. Daten aus der Lernplattform
-        werden nicht an den Bot oder an Discord übermittelt.
+        Für unsere Discord-Community betreiben wir den Bot „MorpheusHelper“ (Quellcode öffentlich
+        auf GitHub) auf unserem Server bei Hetzner mit eigener Datenbank. Der Bot speichert dort
+        Discord-Nutzerkennungen und -Namen, die Zeitpunkte von Server-Beitritten, Austritten,
+        Namensänderungen und der Verifizierung, den Zeitpunkt der jeweils letzten Nachricht eines
+        Mitglieds sowie Moderationsvorgänge (Meldungen, Verwarnungen, Stummschaltungen, Kicks,
+        Sperren und interne Team-Notizen) mit Begründung, ausführendem Team-Mitglied und
+        Zeitstempel. Hinzu kommen Konfigurationsdaten (Rollen- und Kanalkennungen, Reaktionsrollen)
+        und Einträge über automatisch entfernte Nachrichten mit Nutzerkennung, Nutzername, Kanal und
+        Zeitpunkt, bei Treffern des Wortfilters einschließlich des betroffenen Nachrichtentexts;
+        weitere Nachrichteninhalte speichert der Bot nicht. Zweck ist die Moderation und der Betrieb
+        des Community-Servers; Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Interesse an einem
+        sicheren und regelkonformen Community-Betrieb). Eine automatische Löschung sieht der Bot
+        nicht vor; wir löschen Einträge auf Anfrage (Abschnitt 23), soweit sie nicht zur
+        Durchsetzung einer laufenden Sperre benötigt werden. Für die Nutzung von Discord selbst
+        gelten die Datenschutzhinweise von Discord. Daten aus der Lernplattform werden nicht an den
+        Bot oder an Discord übermittelt.
       </p>
     </section>
 
@@ -1147,7 +1175,7 @@
           </tr>
           <tr>
             <td>8x8, Inc.</td>
-            <td>Jitsi Meet für Coachings und Prüfungen (Abschnitt 14.2)</td>
+            <td>Jitsi Meet für Coachings (Abschnitt 14.2)</td>
             <td>EU-US Data Privacy Framework</td>
           </tr>
         </tbody>
@@ -1230,26 +1258,27 @@
           <tr>
             <td>Server-Logs</td>
             <td>
-              30 Tage; Zugriffsprotokolle des Webhostings hinter static.bootstrap.academy: [OWNER:
-              Aufbewahrungsdauer der Zugriffsprotokolle des Hetzner-Webhostings
-              (static.bootstrap.academy) prüfen]
+              30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
+              static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
             </td>
           </tr>
           <tr>
             <td>Fehlerberichte</td>
-            <td>[OWNER: Aufbewahrungsdauer der Fehlerberichte in GlitchTip festlegen]</td>
+            <td>90 Tage</td>
           </tr>
           <tr>
             <td>Kontakt- und Support-Kommunikation</td>
-            <td>
-              Bis zur Erledigung, danach [OWNER: Löschfrist für Support-Mails, Vorschlag 12 Monate]
-            </td>
+            <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
+          </tr>
+          <tr>
+            <td>Discord-Bot</td>
+            <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
           </tr>
           <tr>
             <td>Datensicherungen</td>
             <td>
-              14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen [OWNER: Backup-Aufbewahrung mit
-              der Infrastruktur-Konfiguration abgleichen]
+              Stündlich für 48 Stunden, dann 14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen
+              (längstens rund ein Jahr)
             </td>
           </tr>
           <tr>
@@ -1339,12 +1368,12 @@
           jederzeit gegen die Verarbeitung Sie betreffender personenbezogener Daten zu
           widersprechen, die wir auf Art. 6 Abs. 1 lit. f DSGVO stützen. Das betrifft die
           Server-Logs, die Fehlerberichte, die Datensicherungen, die Auslieferung der Weboberfläche
-          über Cloudflare, die Moderation, die Bestenliste und die Beantwortung allgemeiner Anfragen
-          (Abschnitt 17.2). Wir verarbeiten die Daten dann nicht mehr, es sei denn, wir können
-          zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die Ihre Interessen,
-          Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung
-          oder Verteidigung von Rechtsansprüchen. Direktwerbung betreiben wir nicht. Richten Sie
-          Ihren Widerspruch an
+          über Cloudflare, die Moderation, den Discord-Bot (Abschnitt 17.3), die Bestenliste und die
+          Beantwortung allgemeiner Anfragen (Abschnitt 17.2). Wir verarbeiten die Daten dann nicht
+          mehr, es sei denn, wir können zwingende schutzwürdige Gründe für die Verarbeitung
+          nachweisen, die Ihre Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung
+          dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Direktwerbung
+          betreiben wir nicht. Richten Sie Ihren Widerspruch an
           <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a
           >.
         </strong>
