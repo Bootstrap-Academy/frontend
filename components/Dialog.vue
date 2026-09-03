@@ -14,7 +14,12 @@
       </h6>
 
       <p class="text-body-1 m-0 text-body font-body mt-box">
-        {{ t(body) }}
+        <template v-if="bodyLink">
+          {{ bodyParts[0]
+          }}<a :href="bodyLink.href" class="text-accent hover:underline">{{ bodyLink.label }}</a
+          >{{ bodyParts[1] }}
+        </template>
+        <template v-else>{{ t(body) }}</template>
       </p>
 
       <div class="col-span-2 md:col-span-1">
@@ -131,6 +136,16 @@ export default defineComponent({
       return props.dialog?.body ?? "";
     });
 
+    // An optional link that replaces the `%%%` placeholder inside the body.
+    const bodyLink = computed(() => {
+      return props.dialog?.bodyLink ?? null;
+    });
+
+    const bodyParts = computed(() => {
+      const [before, after = ""] = t(body.value).split("%%%");
+      return [before, after];
+    });
+
     const primaryBtn = computed(() => {
       return {
         label: props.dialog?.primaryBtn?.label ?? "",
@@ -152,6 +167,8 @@ export default defineComponent({
       theme,
       heading,
       body,
+      bodyLink,
+      bodyParts,
       primaryBtn,
       secondaryBtn,
     };

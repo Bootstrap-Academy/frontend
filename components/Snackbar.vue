@@ -15,10 +15,10 @@
           ></component>
 
           <h6 class="text-heading-4 text-heading font-heading" :class="{ 'mt-1': !!!body }">
-            {{ t(heading) }}
+            {{ t(heading, params) }}
           </h6>
           <p class="text-body-1 m-0 text-body font-body">
-            {{ t(body) }}
+            {{ t(body, params) }}
           </p>
         </article>
       </div>
@@ -113,7 +113,12 @@ export default defineComponent({
       return snackbar.value?.body ?? "";
     });
 
-    return { t, theme, heading, body, show, fnCloseSnackbar };
+    // Values interpolated into the message, e.g. a price read from the API.
+    const params = computed(() => {
+      return snackbar.value?.params ?? {};
+    });
+
+    return { t, theme, heading, body, params, show, fnCloseSnackbar };
   },
 });
 </script>

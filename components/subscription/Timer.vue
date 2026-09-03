@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { ref, onMounted } from "vue";
+import { onUnmounted, ref, onMounted } from "vue";
 
 export default {
   props: {
@@ -20,7 +20,7 @@ export default {
 
     const updateTimer = () => {
       const currentTime = new Date().getTime();
-      remainingTime.value = props.targetTime - currentTime;
+      remainingTime.value = Math.max(0, props.targetTime - currentTime);
     };
 
     const formatTime = (milliseconds) => {
@@ -34,9 +34,15 @@ export default {
       return (number < 10 ? "0" : "") + number;
     };
 
+    let interval: ReturnType<typeof setInterval> | undefined;
+
     onMounted(() => {
-      setInterval(updateTimer, 1000);
+      interval = setInterval(updateTimer, 1000);
       updateTimer();
+    });
+
+    onUnmounted(() => {
+      if (interval) clearInterval(interval);
     });
 
     return {
