@@ -28,6 +28,10 @@ import { TrashIcon } from "@heroicons/vue/24/solid";
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 
+// Address a refund of purchased Morphcoins has to be requested from before the
+// account is deleted; it is named in the confirmation dialog.
+const CONTACT_EMAIL = "hallo@bootstrap.academy";
+
 export default defineComponent({
   components: {
     TrashIcon,
@@ -65,7 +69,8 @@ export default defineComponent({
         {
           label: "Buttons.Cancel",
           onclick: () => {},
-        }
+        },
+        { href: `mailto:${CONTACT_EMAIL}`, label: CONTACT_EMAIL }
       );
     }
 

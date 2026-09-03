@@ -14,7 +14,8 @@
           <h2 class="mb-6 text-2xl font-bold tracking-tight text-accent">
             {{ t("Headings.AutomaticRefill") }}
           </h2>
-          <SubscriptionTimer :target-time="getNextMidnight()" />
+          <SubscriptionTimer :target-time="nextRefill" />
+          <p class="mt-4 text-sm">{{ t("Body.AutomaticRefillAtUtc") }}</p>
         </div>
         <div class="flex items-center uppercase max-md:my-4 max-md:justify-center">
           <p class="text-3xl">{{ t("Headings.Or") }}</p>
@@ -26,7 +27,7 @@
 
           <div v-if="coins < refillPrice" class="mt-4 flex justify-center">
             <p class="max-w-sm text-xl">
-              {{ t("Body.Need50MorphCoinsForRefill") }}
+              {{ t("Body.NeedCoinsForRefill", { coins: refillPrice }) }}
             </p>
           </div>
           <div v-else>
@@ -133,7 +134,7 @@ import SvgHeart from "../../components/svg/Heart.vue";
 
 export default {
   setup() {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const coins = useCoins();
     const selectedButton = ref(0);
     const currentCard = ref(1);
@@ -250,60 +251,18 @@ export default {
     }
 
     async function filHearts() {
-      // if (hearts.value >= 6) return openSnackbar("info", "Error.AlreadyHaveHearts");
-      // else if (hearts.value == 5 && coins.value < 15)
-      //   return openSnackbar("error", "Error.Need15CoinsForRefill");
-      // else if (hearts.value == 4 && coins.value < 20)
-      //   return openSnackbar("error", "Error.Need20CoinsForRefill");
-      // else if (hearts.value == 3 && coins.value < 30)
-      //   return openSnackbar("error", "Error.Need30CoinsForRefill");
-      // else if (hearts.value == 2 && coins.value < 35)
-      //   return openSnackbar("error", "Error.Need35CoinsForRefill");
-      // else if (hearts.value == 1 && coins.value < 45)
-      //   return openSnackbar("error", "Error.Need45CoinsForRefill");
-      // else if (hearts.value == 0 && coins.value < 50)
-      //   return openSnackbar("error", "Error.Need50CoinsForRefill");
-      // else if (hearts.value < 6 && coins.value > 0) {
-      //   return openDialog(
-      //     "info",
-      //     `Headings.RefillHearts`,
-      //     hearts.value == 0
-      //       ? "Body.Refill3Hearts"
-      //       : "" || hearts.value == 1
-      //       ? "Body.Refill2p5Hearts"
-      //       : "" || hearts.value == 2
-      //       ? "Body.Refill2Hearts"
-      //       : "" || hearts.value == 3
-      //       ? "Body.Refill1p5Hearts"
-      //       : "" || hearts.value == 4
-      //       ? "Body.Refill1Hearts"
-      //       : "" || hearts.value == 5
-      //       ? "Body.Refill0p5Hearts"
-      //       : "",
-      //     false,
-      //     {
-      //       label: "Buttons.Refill",
-      //       onclick: async () => {
-      //         await refillHearts();
-      //       },
-      //     },
-      //     {
-      //       label: "Buttons.Cancel",
-      //       onclick: () => {},
-      //     }
-      //   );
-      // }
-
       if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       } else if (coins.value < refillPrice.value) {
-        return openSnackbar("error", "Error.Need50CoinsForRefill");
+        return openSnackbar("error", "Error.NeedCoinsForRefill", "", false, {
+          coins: refillPrice.value,
+        });
       }
 
       order.value = {
         coins: refillPrice.value,
         characteristics: "Body.OrderHeartsCharacteristics",
-        params: { max: heartConfig.value.hearts_max },
+        params: { max: formatHearts(heartConfig.value.hearts_max, locale.value) },
         details: [],
         submit: async () => {
           const [success] = await refillHearts();
@@ -323,12 +282,8 @@ export default {
       }
     };
 
-    function getNextMidnight() {
-      const now = new Date();
-      const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-
-      return nextDay.getTime();
-    }
+    // The backend refills at 00:00 UTC, which is not the visitor's midnight.
+    const nextRefill = computed(() => nextHeartRefill());
 
     async function fnUpdatePremiumAutoPay(value: any) {
       setLoading(true);
@@ -370,7 +325,7 @@ export default {
       heartInfo,
       coins,
       formatTime,
-      getNextMidnight,
+      nextRefill,
       filHearts,
       setValueForAutopayButton,
       autopay,

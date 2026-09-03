@@ -1,21 +1,22 @@
+<!--
+  The heart counter in the navigation bar. The API counts half hearts
+  (`hearts_max` is 6), the interface shows whole hearts drawn in halves, which
+  is the unit the terms and conditions use: three hearts, half a heart per quiz
+  or matching attempt, one heart per coding challenge.
+-->
 <template>
   <div class="group flex items-center gap-2" @click="gotoSubscription()">
     <div v-if="!isPremmium" class="text-heading hover:text-white">
       <article class="flex h-10 items-center gap-1 rounded-full bg-tertiary px-5 py-2">
-        <!-- <HeartIcon
-          class="flex-shrink-0 text-accent block w-4 h-4 group-hover:animate-pulse group-hover:scale-105"
-        />{{ hearts / 2 ?? "" }} -->
-
-        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 2" />
-        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 4" />
-        <SvgFullHeart :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" v-if="hearts >= 6" />
-        <SvgHalfHeart
-          :color="'accent'"
-          class="h-3 w-3 sm:h-5 sm:w-5"
-          v-if="hearts == 3 || hearts == 5 || hearts == 1"
-        />
-
-        <OutlineHeartIcon v-if="hearts == 0" class="h-6 w-6 text-accent" />
+        <template v-for="slot of slots" :key="slot">
+          <SvgFullHeart v-if="hearts >= slot * 2" :color="'accent'" class="h-3 w-3 sm:h-5 sm:w-5" />
+          <SvgHalfHeart
+            v-else-if="hearts === slot * 2 - 1"
+            :color="'accent'"
+            class="h-3 w-3 sm:h-5 sm:w-5"
+          />
+          <OutlineHeartIcon v-else class="h-4 w-4 text-accent sm:h-6 sm:w-6" />
+        </template>
 
         <PlusIcon class="text-headiacang ml-1 block h-3 w-3 flex-shrink-0 sm:h-3.5 sm:w-3.5" />
       </article>
@@ -46,6 +47,7 @@ export default defineComponent({
     const loading = ref(true);
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
+    const heartConfig = useHeartConfig();
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
     });
@@ -53,20 +55,25 @@ export default defineComponent({
       return premiumInfo.value?.premium ?? false;
     });
 
+    // One entry per whole heart, so the row always shows how many are missing.
+    const slots = computed(() =>
+      Array.from({ length: heartSlots(heartConfig.value) }, (_, index) => index + 1)
+    );
+
     function gotoSubscription() {
       const router = useRouter();
       router.push("/subscription");
     }
 
     onMounted(async () => {
-      await getHearts();
-      await getPremiumStatus();
+      await Promise.all([getHearts(), getPremiumStatus(), loadHeartConfig()]);
       loading.value = false;
     });
 
     return {
       loading,
       hearts,
+      slots,
       gotoSubscription,
       isPremmium,
       OutlineHeartIcon,

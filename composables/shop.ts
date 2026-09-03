@@ -90,3 +90,35 @@ export function formatEuros(amount: number, locale: string): string {
     currency: "EUR",
   }).format(Number.isFinite(amount) ? amount : 0);
 }
+
+/**
+ * Hearts are counted in half hearts by the API (`hearts_max` is 6), while the
+ * terms and conditions and the whole interface use whole hearts drawn in
+ * halves (three hearts, half a heart per quiz or matching attempt, one heart
+ * per coding challenge). Every heart figure shown to a user goes through this
+ * conversion so that the interface never states the raw API number.
+ */
+export function displayHearts(hearts: number): number {
+  return (Number(hearts) || 0) / 2;
+}
+
+/** Number of whole hearts drawn for `hearts_max`, e.g. 3 for the API's 6. */
+export function heartSlots(config: HeartConfig): number {
+  return Math.ceil(displayHearts(config.hearts_max));
+}
+
+/** Format a heart figure in the displayed unit, e.g. `0,5` or `3`. */
+export function formatHearts(hearts: number, locale: string): string {
+  return new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", {
+    maximumFractionDigits: 1,
+  }).format(displayHearts(hearts));
+}
+
+/**
+ * Timestamp of the next automatic refill. The backend refills lazily whenever
+ * the last refill is older than the most recent `auto_refill_time`, which is
+ * 00:00 **UTC** — not the local midnight of the visitor.
+ */
+export function nextHeartRefill(now: Date = new Date()): number {
+  return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0);
+}

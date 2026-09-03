@@ -18,7 +18,7 @@
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
-          <p>{{ t("Body.ThreeHeartsEveryDay") }}</p>
+          <p>{{ t("Body.HeartsEveryDay", { n: dailyHearts }) }}</p>
           <Tooltip :heading="'Body.UnlimitedHeartsTooltip'">
             <InformationCircleIcon class="h-6 w-6 text-accent" />
           </Tooltip>
@@ -107,6 +107,12 @@ import { useCoins } from "../../composables/coins";
 const { t, locale } = useI18n();
 const premiumInfo: any = usePremiumInfo();
 const coinConfig = useCoinConfig();
+const heartConfig = useHeartConfig();
+
+onMounted(loadHeartConfig);
+
+// Hearts are shown in whole hearts, not in the half hearts the API counts.
+const dailyHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
 
 const isPremium = computed(() => {
   return premiumInfo.value?.premium;
