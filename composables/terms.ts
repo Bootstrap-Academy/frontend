@@ -3,10 +3,18 @@ export const TERMS_VERSION = "2026-09";
 
 /**
  * Routes on which the re-acceptance gate stays hidden: the documents the gate
- * links to, and the account page the user needs in order to delete the account
- * instead of accepting.
+ * links to, the account page the user needs in order to delete the account
+ * instead of accepting, and the two declaration pages. § 312k Abs. 2 BGB and
+ * § 356a BGB want the cancellation and the withdrawal to be reachable
+ * directly, so nothing may be put in front of them - least of all a dialog
+ * about the very terms the user is about to leave behind.
  */
-const TERMS_GATE_EXEMPT_PREFIXES = ["/docs", "/account"];
+const TERMS_GATE_EXEMPT_PREFIXES = [
+  "/docs",
+  "/account",
+  "/vertrag-kuendigen",
+  "/vertrag-widerrufen",
+];
 
 /**
  * Whether the gate has been dismissed with "decide later" since the app was

@@ -8,7 +8,11 @@
   be dismissed by accident.
 
   It is rendered from `app.vue` into the slot of whichever layout is active, so
-  it reaches every route.
+  it reaches every route, except the ones a user has to be able to reach no
+  matter what they think of the new version (`composables/terms.ts`).
+
+  `aria-modal` promises that everything behind it is unreachable, so the
+  keyboard is kept inside it for as long as it is open.
 
   Nothing is remembered on the client beyond this app session. Whether the gate
   shows is derived from the `terms_version` on the profile that the API returns;
@@ -17,6 +21,7 @@
 <template>
   <section
     v-if="show"
+    ref="refGate"
     class="fixed left-0 top-0 z-[100] flex h-screen w-screen items-center justify-center overflow-y-auto bg-[#0b192edd] p-4"
     role="dialog"
     aria-modal="true"
@@ -88,6 +93,7 @@ export default defineComponent({
     const user = <any>useUser();
     const dismissed = useTermsGateDismissed();
 
+    const refGate = ref<HTMLElement | null>(null);
     const termsAndConditions = ref(false);
     const ageConfirmed = ref(false);
     const submitting = ref(false);
@@ -98,6 +104,8 @@ export default defineComponent({
     const attempted = ref(false);
 
     const show = computed(() => needsTermsAcceptance(route.path));
+
+    useFocusTrap(refGate, show);
     const valid = computed(() => termsAndConditions.value && ageConfirmed.value);
 
     // The link to the terms replaces the `%%%` placeholder in the sentence.
@@ -150,6 +158,7 @@ export default defineComponent({
 
     return {
       t,
+      refGate,
       show,
       bodyParts,
       submitting,
