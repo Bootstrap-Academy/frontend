@@ -11,10 +11,7 @@ export async function requestNewsletterRegistration() {
       newsletter: true,
     });
 
-    const user = <any>useUser();
-    const cookie_user = useCookie("user");
-    user.value = response ?? null;
-    cookie_user.value = user.value;
+    setUser(response);
 
     return [response, null];
   } catch (error: any) {
@@ -33,10 +30,7 @@ export async function registerForNewsletter(body: any) {
 
     const response = await PUT(`/auth/users/${user_id}/newsletter`, body);
 
-    const user = <any>useUser();
-    const cookie_user = useCookie("user");
-    user.value = response ?? null;
-    cookie_user.value = user.value;
+    setUser(response);
 
     return [response, null];
   } catch (error: any) {
@@ -57,10 +51,7 @@ export async function unregisterFromNewsletter() {
       newsletter: false,
     });
 
-    const user = <any>useUser();
-    const cookie_user = useCookie("user");
-    user.value = response ?? null;
-    cookie_user.value = user.value;
+    setUser(response);
 
     return [response, null];
   } catch (error: any) {

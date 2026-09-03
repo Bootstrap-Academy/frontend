@@ -54,7 +54,7 @@ import { useI18n } from "vue-i18n";
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 import { useShowConfetti } from "~~/composables/user";
 let showConfetti = useShowConfetti();
-const hideAnimation: any = useCookie("hideAnimationNextTime");
+const hideAnimation: any = useAppCookie("hideAnimationNextTime");
 const boxInfo = ref(false);
 const { t } = useI18n();
 

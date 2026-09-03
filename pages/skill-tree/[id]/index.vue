@@ -102,7 +102,7 @@ export default {
     const setupComplete = ref(false);
     const loading = ref(true);
 
-    const cookie_nextNode = useCookie<{ row: number; column: number }>("subTree_nextNode");
+    const cookie_nextNode = useAppCookie<{ row: number; column: number }>("subTree_nextNode");
     const nextNode = computed({
       get() {
         return cookie_nextNode.value || { row: 10, column: 10 };

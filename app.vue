@@ -7,7 +7,6 @@
     </LazyClientOnly>
     <NuxtPage />
 
-    <CookiePolicy />
     <Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
       <Dialog :dialog="dialog" />
     </Modal>
@@ -40,21 +39,9 @@ export default {
         dialog.value.primaryBtn.onclick();
     }
 
-    const user: Ref<any> = useUser();
-    const cookie_user = useCookie("user");
-    user.value = cookie_user.value ?? null;
-
-    const session: Ref<any> = useSession();
-    const cookie_session = useCookie("session");
-    session.value = cookie_session.value ?? null;
-
+    // The session is restored from the cookies in `plugins/session.client.ts`,
+    // which also loads the full profile of the logged in user.
     const accessToken = useAccessToken();
-    const cookie_accessToken = useCookie("accessToken");
-    accessToken.value = cookie_accessToken.value ?? "";
-
-    const refreshToken = useRefreshToken();
-    const cookie_refreshToken = useCookie("refreshToken");
-    refreshToken.value = cookie_refreshToken.value ?? "";
 
     const nuxtApp = useNuxtApp();
 

@@ -45,7 +45,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
-    const lastViewCourse: any = useCookie("lastViewCourse");
+    const lastViewCourse: any = useAppCookie("lastViewCourse");
 
     const lastViewCourseInfo = computed(() => {
       let quizzes = useQuizzesInCourse();

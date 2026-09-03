@@ -102,26 +102,21 @@ export default {
 
     const loading = ref(!(jobs.value && jobs.value.length > 0));
 
-    const cookie_filters = <any>useCookie("job_filters");
-    const filters = reactive(
-      cookie_filters.value ?? {
-        type: [],
-        remote: false,
-        search_term: "",
-        requirements_met: false,
-        professional_level: [],
-        salary_min: 0,
-        salary_unit: "---",
-      }
-    );
+    const filters = reactive({
+      type: [],
+      remote: false,
+      search_term: "",
+      requirements_met: false,
+      professional_level: [],
+      salary_min: 0,
+      salary_unit: "---",
+    });
 
     async function setFilters(paramFilters: any) {
       Object.assign(filters, {
         ...filters,
         ...paramFilters,
       });
-
-      cookie_filters.value = JSON.stringify(filters);
 
       // loading.value = !(jobs.value && jobs.value.length > 0);
       loading.value = true;

@@ -171,7 +171,7 @@ export default defineComponent({
       setLoading(false);
 
       if (success) {
-        const hideAnimation: any = useCookie("hideAnimationNextTime");
+        const hideAnimation: any = useAppCookie("hideAnimationNextTime");
         console.log("hide animation cookie", hideAnimation.value);
         if (hideAnimation.value === undefined || hideAnimation.value == false)
           showConfetti.value = true;
