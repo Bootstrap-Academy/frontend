@@ -52,32 +52,28 @@
             )
           }}
         </p>
-        <div
-          @click="
-            hasEnoughCoins
-              ? props.yearly
-                ? subscribeYearly
-                  ? subscribeYearly()
-                  : null
-                : subscribeMonthly
-                  ? subscribeMonthly()
-                  : null
-              : null
-          "
-          role="button"
-          :class="{
-            'mb-8 flex cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95':
-              hasEnoughCoins,
-            'flex cursor-default items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 duration-200':
-              !hasEnoughCoins,
-          }"
-        >
-          <p class="text-lg font-bold text-black">{{ yearly ? "10.000" : "1.000" }}</p>
-          <img src="/images/coin.png" alt="coin" class="h-8 w-8 object-contain" />
+        <div class="mb-8">
+          <button
+            type="button"
+            :disabled="!hasEnoughCoins"
+            @click="onclickSubscribe"
+            :class="{
+              'flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95':
+                hasEnoughCoins,
+              'flex w-full cursor-default items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 duration-200':
+                !hasEnoughCoins,
+            }"
+          >
+            <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
+            <Price :coins="planPrice" class="justify-center font-bold text-black" />
+          </button>
+          <p v-if="!hasEnoughCoins" class="mt-2 text-center font-bold text-error">
+            {{ t("Body.NotEnoughMorphcoins") }}
+          </p>
+          <p v-else-if="yearly" class="mt-2 text-center text-black">
+            {{ t("Body.PricePerMonth", { amount: pricePerMonth }) }}
+          </p>
         </div>
-        <p v-if="!hasEnoughCoins" class="mt-2 text-center font-bold text-error">
-          {{ t("Body.NotEnoughMorphcoins") }}
-        </p>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
           <p class="text-black">{{ t("Body.UnlimitedHearts") }}</p>
@@ -100,21 +96,34 @@ const props = defineProps({
   subscribeMonthly: Function,
   subscribeYearly: Function,
   yearly: { type: Boolean, default: false },
+  monthlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.MONTHLY },
+  yearlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.YEARLY },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";
 import { BookOpenIcon, InformationCircleIcon, RocketLaunchIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
 import { useCoins } from "../../composables/coins";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const premiumInfo: any = usePremiumInfo();
+const coinConfig = useCoinConfig();
 
 const isPremium = computed(() => {
   return premiumInfo.value?.premium;
 });
 
 const coins = useCoins();
-const hasEnoughCoins = computed(() => {
-  return props.yearly ? coins.value >= 10_000 : coins.value >= 1_000;
-});
+const planPrice = computed(() => (props.yearly ? props.yearlyPrice : props.monthlyPrice));
+const hasEnoughCoins = computed(() => coins.value >= planPrice.value);
+
+// Art. 246a § 1 Abs. 1 Nr. 8 EGBGB: the monthly cost of a yearly plan.
+const pricePerMonth = computed(() =>
+  formatEuros(coinsToEuros(props.yearlyPrice, coinConfig.value) / 12, locale.value)
+);
+
+function onclickSubscribe() {
+  if (!hasEnoughCoins.value) return;
+  if (props.yearly) props.subscribeYearly?.();
+  else props.subscribeMonthly?.();
+}
 </script>

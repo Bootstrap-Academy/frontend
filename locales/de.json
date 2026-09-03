@@ -384,7 +384,13 @@
     "CreationDate": "Erstellungsdatum",
     "EmptySubtasks": "In dieser Vorlesung gibt es noch keine Quizze.",
     "MyAccount": "Mein Konto",
-    "SelectSkill": "Skill auswählen"
+    "SelectSkill": "Skill auswählen",
+    "OrderSummary": "Bestellübersicht",
+    "TotalPrice": "Gesamtpreis",
+    "NetAmount": "Nettobetrag",
+    "VatAmount": "MwSt. ({vat} %)",
+    "AutomaticRenewal": "Automatische Verlängerung",
+    "ContractTerm": "Laufzeit"
   },
   "Body": {
     "DashboardIntro": "Steig direkt wieder in deine Kurse oder Challenges ein.",
@@ -505,7 +511,7 @@
     "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
     "NoUpcomingEvents": "Keine Veranstaltungen geplant",
     "LearnNewSkillsForFree": "Lerne neue technische Fähigkeiten mit unserem kostenlosen Plan",
-    "GetAllServices": "Erhalte alle Dienste für eine %%% Gebühr",
+    "GetAllServices": "Alle Kurse und unbegrenzte Herzen für eine %%% Gebühr",
     "Monthly": "monatliche",
     "Yearly": "jährliche",
     "CurrentPlan": "Aktueller Plan",
@@ -526,7 +532,17 @@
     "IncreasedSecurity": "Erhöhte Sicherheit",
     "NoMoreIncreaseSecurity": "Keine erhöhte Sicherheit mehr",
     "ExcitingUpdates": "spannende Neuigkeiten und Updates",
-    "NoMoreExcitingUpdates": "keine spannende Neuigkeiten und Updates mehr"
+    "NoMoreExcitingUpdates": "keine spannende Neuigkeiten und Updates mehr",
+    "PriceInclVat": "{amount} inkl. {vat} % MwSt.",
+    "PricePerMonth": "entspricht {amount} je Monat",
+    "OrderPremiumCharacteristics": "Premium-Mitgliedschaft: Zugriff auf alle Kurse und unbegrenzte Herzen.",
+    "OrderCoinsCharacteristics": "Aufladung deines Morphcoin-Guthabens. Morphcoins sind das Zahlungsmittel der Plattform und sofort nach dem Kauf verfügbar.",
+    "OrderHeartsCharacteristics": "Einmalige Auffüllung deiner Herzen auf das Maximum von {max}.",
+    "OrderCourseCharacteristics": "Dauerhafter Zugriff auf alle Lektionen dieses Kurses.",
+    "AutomaticRenewalOn": "Ein — nach Ablauf wird automatisch verlängert und erneut in Morphcoins abgebucht. Du kannst die automatische Verlängerung auf dieser Seite jederzeit abschalten.",
+    "AutomaticRenewalOff": "Aus — die Mitgliedschaft endet mit Ablauf der Laufzeit. Eine automatische Verlängerung kannst du auf dieser Seite einschalten.",
+    "PremiumTermMonthly": "1 Monat ab Kauf",
+    "PremiumTermYearly": "12 Monate ab Kauf"
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -905,7 +921,9 @@
     "CalendarPrevMonth": "Vorheriger Monat",
     "MoreEventInfo": "Mehr Infos",
     "LearnMore": "Mehr erfahren",
-    "LoadVideo": "Video laden"
+    "LoadVideo": "Video laden",
+    "OrderWithObligationToPay": "Zahlungspflichtig bestellen",
+    "ContinueToOrderSummary": "Weiter zur Bestellübersicht"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",
@@ -976,7 +994,11 @@
     "RightToWithdrawal": "Dir steht ein 14-tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
     "RightToWithdrawalLink": "hier",
     "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen.",
-    "VideoPrivacyHint": "Beim Abspielen werden Daten an YouTube (Google) übertragen. Details in unseren"
+    "VideoPrivacyHint": "Beim Abspielen werden Daten an YouTube (Google) übertragen. Details in unseren",
+    "OrderLegalHint": "Es gelten unsere",
+    "OrderLegalHintMiddle": "und die",
+    "OrderLegalHintEnd": ".",
+    "RightOfWithdrawalLinkText": "Widerrufsbelehrung"
   },
   "Success": {
     "SolvedMatching": "Matching gelöst ✅",
@@ -1154,7 +1176,8 @@
     "MFANotEnabled": "MFA ist nicht aktiviert",
     "PasswordResetFailed": "Kennwort kann nicht zurückgesetzt werden. Bitte probier es später erneut.",
     "InvalidCode": "Dieser Code ist ungültig.",
-    "ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden."
+    "ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden.",
+    "InvalidCoinAmount": "Ungültige Anzahl an Morphcoins. Bitte starte den Kauf erneut."
   },
   "Months": {
     "January": "Januar",

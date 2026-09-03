@@ -45,6 +45,10 @@
         </span>
       </Chip>
     </div>
+    <!--
+      Booking debits Morphcoins, so the summary required by § 312j Abs. 2 BGB
+      and the statutory order button are shown before the booking is placed.
+    -->
     <Modal v-if="confirm" class="z-100 overflow-scroll">
       <CalendarEventSummary
         :event="event"
@@ -52,28 +56,39 @@
         :stats="stats"
         :description="description"
       >
-        <Accordion :title="dialog.heading" class="w-full">
-          <Dialog :dialog="dialog">
-            <template #content>
-              <InputCheckbox
-                id="RightToWithdrawal"
-                class="mb-card-sm"
-                label="Links.RightToWithdrawal"
-                :link="{
-                  to: '/docs/right-of-withdrawal',
-                  label: 'Links.RightToWithdrawalLink',
-                }"
-                target="_blank"
-                v-model="confirmRightToWithdrawal"
-              />
-              <InputCheckbox
-                id="DontUseRightToWithdrawal"
-                label="Links.DontUseRightToWithdrawal"
-                v-model="confirmDontUseRightToWithdrawal"
-              />
-            </template>
-          </Dialog>
-        </Accordion>
+        <OrderSummary
+          :coins="price"
+          :heading="btn"
+          :submit-label="price > 0 ? 'Buttons.OrderWithObligationToPay' : bookLabel"
+          class="w-full"
+          @order="onclickBook"
+        >
+          <template #characteristics>
+            <p class="text-body-1 m-0 text-body">{{ t("Body.ConfirmBooking") }}</p>
+          </template>
+
+          <template #consent>
+            <InputCheckbox
+              id="RightToWithdrawal"
+              label="Links.RightToWithdrawal"
+              :link="{
+                to: '/docs/right-of-withdrawal',
+                label: 'Links.RightToWithdrawalLink',
+              }"
+              target="_blank"
+              v-model="confirmRightToWithdrawal"
+            />
+            <InputCheckbox
+              id="DontUseRightToWithdrawal"
+              label="Links.DontUseRightToWithdrawal"
+              v-model="confirmDontUseRightToWithdrawal"
+            />
+          </template>
+
+          <template #actions>
+            <Btn secondary @click="confirm = false">{{ t("Buttons.Cancel") }}</Btn>
+          </template>
+        </OrderSummary>
       </CalendarEventSummary>
     </Modal>
 
@@ -125,6 +140,11 @@ const btn = computed(() => {
 
 const btnMoreInfo = ref("Buttons.MoreEventInfo");
 
+const price = computed(() => props.event?.price ?? 0);
+const bookLabel = computed(() =>
+  props.type === "coaching" ? "Buttons.YesBookCoaching" : "Buttons.YesBookWebinar"
+);
+
 const isEventBooked = ref(props.booked ?? false);
 
 const dialog = <any>reactive({});
@@ -135,55 +155,27 @@ const information = ref(false);
 
 function onclickConfirm() {
   confirm.value = true;
+}
 
-  let btnText = "";
-  let type = "";
-
-  switch (props.type) {
-    case "coaching":
-      btnText = "Buttons.YesBookCoaching";
-      type = "info";
-      break;
-    default:
-      btnText = "Buttons.YesBookWebinar";
-      type = "warning";
-      break;
+async function onclickBook() {
+  if (!confirmRightToWithdrawal.value || !confirmDontUseRightToWithdrawal.value) {
+    openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
+    return;
   }
 
-  Object.assign(dialog, {
-    type: type,
-    heading: btn.value,
-    body: "Body.ConfirmBooking",
-    primaryBtn: {
-      label: btnText,
-      onclick: async () => {
-        if (!confirmRightToWithdrawal.value || !confirmDontUseRightToWithdrawal.value) {
-          openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
-          return;
-        }
-
-        setLoading(true);
-        switch (props.type) {
-          case "coaching":
-            await bookCoaching();
-            break;
-          default:
-            await bookWebinar();
-            break;
-        }
-        confirmRightToWithdrawal.value = false;
-        confirmDontUseRightToWithdrawal.value = false;
-        setLoading(false);
-        confirm.value = false;
-      },
-    },
-    secondaryBtn: {
-      label: "Buttons.Cancel",
-      onclick: () => {
-        confirm.value = false;
-      },
-    },
-  });
+  setLoading(true);
+  switch (props.type) {
+    case "coaching":
+      await bookCoaching();
+      break;
+    default:
+      await bookWebinar();
+      break;
+  }
+  confirmRightToWithdrawal.value = false;
+  confirmDontUseRightToWithdrawal.value = false;
+  setLoading(false);
+  confirm.value = false;
 }
 
 async function bookCoaching() {

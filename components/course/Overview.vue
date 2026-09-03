@@ -12,6 +12,7 @@
           {{ t("Headings.Morphcoins", { n: " " }, price) }}
         </p>
       </div>
+      <Price v-if="price > 0" :coins="price" euro-only class="text-body-2 text-body" />
     </article>
 
     <hr class="mb-8 mt-4" />
@@ -27,36 +28,6 @@
     </div>
 
     <hr class="my-8" />
-
-    <div v-if="!isCourseAccessible">
-      <InputCheckbox
-        label="Links.IAgreeTo"
-        id="TermsAndConditions"
-        :link="{
-          to: '/docs/terms-and-conditions',
-          label: 'Links.TermsAndConditions',
-        }"
-        target="_blank"
-        v-model="termsAndConditions"
-      />
-
-      <InputCheckbox
-        label="Links.RightToWithdrawal"
-        id="RightToWithdrawal"
-        :link="{
-          to: '/docs/right-of-withdrawal',
-          label: 'Links.RightToWithdrawalLink',
-        }"
-        target="_blank"
-        v-model="confirmRightToWithdrawal"
-        class="mt-card-sm mb-card-sm"
-      />
-      <InputCheckbox
-        label="Links.DontUseRightToWithdrawal"
-        id="DontUseRightToWithdrawal"
-        v-model="confirmDontUseRightToWithdrawal"
-      />
-    </div>
 
     <div
       class="mb-4 flex items-center justify-center space-x-2"
@@ -76,6 +47,60 @@
     >
       {{ isCourseAccessible ? t("Buttons.WatchCourse") : t("Buttons.EnrollNow") }}
     </InputBtn>
+
+    <!--
+      Unlocking a paid course debits Morphcoins, so the order summary and the
+      statutory order button are shown before the course is unlocked
+      (§ 312j Abs. 2 und 3 BGB).
+    -->
+    <Modal v-if="confirming" @backdrop="confirming = false">
+      <div class="w-full max-w-2xl bg-secondary p-8 style-card">
+        <OrderSummary
+          :coins="price"
+          :loading="loading"
+          :submit-label="price > 0 ? 'Buttons.OrderWithObligationToPay' : 'Buttons.EnrollNow'"
+          @order="onclickOrder"
+        >
+          <template #characteristics>
+            <p class="text-body-1 m-0 text-heading">{{ data?.title ?? "" }}</p>
+            <p class="text-body-1 m-0 text-body">{{ t("Body.OrderCourseCharacteristics") }}</p>
+          </template>
+
+          <template #consent>
+            <InputCheckbox
+              label="Links.IAgreeTo"
+              id="TermsAndConditions"
+              :link="{
+                to: '/docs/terms-and-conditions',
+                label: 'Links.TermsAndConditions',
+              }"
+              target="_blank"
+              v-model="termsAndConditions"
+            />
+
+            <InputCheckbox
+              label="Links.RightToWithdrawal"
+              id="RightToWithdrawal"
+              :link="{
+                to: '/docs/right-of-withdrawal',
+                label: 'Links.RightToWithdrawalLink',
+              }"
+              target="_blank"
+              v-model="confirmRightToWithdrawal"
+            />
+            <InputCheckbox
+              label="Links.DontUseRightToWithdrawal"
+              id="DontUseRightToWithdrawal"
+              v-model="confirmDontUseRightToWithdrawal"
+            />
+          </template>
+
+          <template #actions>
+            <Btn secondary @click="confirming = false">{{ t("Buttons.Cancel") }}</Btn>
+          </template>
+        </OrderSummary>
+      </div>
+    </Modal>
   </section>
 </template>
 
@@ -111,45 +136,50 @@ const router = useRouter();
 const termsAndConditions = ref(false);
 const confirmRightToWithdrawal = ref(false);
 const confirmDontUseRightToWithdrawal = ref(false);
+const confirming = ref(false);
 
-async function onclickEnroll() {
-  if (props.isCourseAccessible == false) {
-    if (
-      !termsAndConditions.value ||
-      !confirmRightToWithdrawal.value ||
-      !confirmDontUseRightToWithdrawal.value
-    ) {
-      snackbar.value = {
-        show: true,
-        type: "error",
-        heading: "Error.MustAgreeToBothPointsInOrderToMoveForward",
-        body: "",
-      };
-      return;
-    }
+function onclickEnroll() {
+  if (props.isCourseAccessible) {
+    router.push(`${link.value}`);
+    return;
   }
 
-  if (!props.isCourseAccessible) {
-    loading.value = true;
+  confirming.value = true;
+}
 
-    const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
-    if (success) await getCourseByID(props.data?.id ?? "");
-    loading.value = false;
-
-    if (error) {
-      snackbar.value = {
-        show: true,
-        type: "error",
-        heading: error?.detail ?? "",
-        body: "",
-      };
-      return;
-    }
-
-    router.push(`${link.value}`);
-  } else {
-    router.push(`${link.value}`);
+async function onclickOrder() {
+  if (
+    !termsAndConditions.value ||
+    !confirmRightToWithdrawal.value ||
+    !confirmDontUseRightToWithdrawal.value
+  ) {
+    snackbar.value = {
+      show: true,
+      type: "error",
+      heading: "Error.MustAgreeToBothPointsInOrderToMoveForward",
+      body: "",
+    };
+    return;
   }
+
+  loading.value = true;
+
+  const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
+  if (success) await getCourseByID(props.data?.id ?? "");
+  loading.value = false;
+  confirming.value = false;
+
+  if (error) {
+    snackbar.value = {
+      show: true,
+      type: "error",
+      heading: error?.detail ?? "",
+      body: "",
+    };
+    return;
+  }
+
+  router.push(`${link.value}`);
 }
 
 const price = computed(() => {

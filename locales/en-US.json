@@ -385,7 +385,13 @@
     "CreationDate": "Creation date",
     "EmptySubtasks": "In this lecture, there are no quizzes yet.",
     "MyAccount": "My Account",
-    "SelectSkill": "Select Skill"
+    "SelectSkill": "Select Skill",
+    "OrderSummary": "Order summary",
+    "TotalPrice": "Total price",
+    "NetAmount": "Net amount",
+    "VatAmount": "VAT ({vat}%)",
+    "AutomaticRenewal": "Automatic renewal",
+    "ContractTerm": "Term"
   },
   "Body": {
     "DashboardIntro": "Jump back into your courses or challenges to keep the momentum going.",
@@ -506,7 +512,7 @@
     "OtherSkills": "Rest of the skills which are available for exploring.",
     "NoUpcomingEvents": "No Events planned",
     "LearnNewSkillsForFree": "Learn new tech skills with our Free plan",
-    "GetAllServices": "Get all services for a %%% fee",
+    "GetAllServices": "All courses and unlimited hearts for a %%% fee",
     "Monthly": "monthly",
     "Yearly": "yearly",
     "CurrentPlan": "current plan",
@@ -527,7 +533,17 @@
     "IncreasedSecurity": "Increased security",
     "NoMoreIncreaseSecurity": "No more increased security",
     "ExcitingUpdates": "Exciting news and updates",
-    "NoMoreExcitingUpdates": "No more exciting news and updates"
+    "NoMoreExcitingUpdates": "No more exciting news and updates",
+    "PriceInclVat": "{amount} incl. {vat}% VAT",
+    "PricePerMonth": "equals {amount} per month",
+    "OrderPremiumCharacteristics": "Premium membership: access to all courses and unlimited hearts.",
+    "OrderCoinsCharacteristics": "Top-up of your Morphcoin balance. Morphcoins are the platform's means of payment and are available immediately after the purchase.",
+    "OrderHeartsCharacteristics": "One-off refill of your hearts to the maximum of {max}.",
+    "OrderCourseCharacteristics": "Permanent access to all lectures of this course.",
+    "AutomaticRenewalOn": "On — the membership renews automatically when it expires and is charged in Morphcoins again. You can switch automatic renewal off on this page at any time.",
+    "AutomaticRenewalOff": "Off — the membership ends when the term expires. You can switch automatic renewal on from this page.",
+    "PremiumTermMonthly": "1 month from the purchase",
+    "PremiumTermYearly": "12 months from the purchase"
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -910,7 +926,9 @@
     "CalendarPrevMonth": "Previous month",
     "MoreEventInfo": "More info",
     "LearnMore": "Learn More",
-    "LoadVideo": "Load video"
+    "LoadVideo": "Load video",
+    "OrderWithObligationToPay": "Order with obligation to pay",
+    "ContinueToOrderSummary": "Continue to the order summary"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",
@@ -977,7 +995,11 @@
     "RightToWithdrawal": "You have a 14-day right of withdrawal. You will find the cancellation policy + cancellation form",
     "RightToWithdrawalLink": "here",
     "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period.",
-    "VideoPrivacyHint": "Playing the video sends data to YouTube (Google). Details are in our"
+    "VideoPrivacyHint": "Playing the video sends data to YouTube (Google). Details are in our",
+    "OrderLegalHint": "Our",
+    "OrderLegalHintMiddle": "and our",
+    "OrderLegalHintEnd": " apply.",
+    "RightOfWithdrawalLinkText": "withdrawal policy"
   },
   "Success": {
     "SolvedMatching": "Matching Solved ✅",
@@ -1155,7 +1177,8 @@
     "MFANotEnabled": "MFA is not enabled",
     "PasswordResetFailed": "Unable to reset password. Please try again later.",
     "InvalidCode": "This code is invalid. Please use a valid one",
-    "ProviderNotFound": "Unable to find this provider. Please select another one."
+    "ProviderNotFound": "Unable to find this provider. Please select another one.",
+    "InvalidCoinAmount": "Invalid number of Morphcoins. Please start the purchase again."
   },
   "Months": {
     "January": "January",

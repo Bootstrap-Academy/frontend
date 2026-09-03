@@ -5,7 +5,7 @@
         {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
       </span>
       für
-      <span class="font-black text-black font-body"> {{ coinsInEuros }} euros </span>
+      <span class="font-black text-black font-body"> {{ totalPrice }} </span>
       kaufen
     </h1>
     <h1 v-else class="text-heading-1 mb-2 text-subheading">
@@ -14,127 +14,157 @@
         {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
       </span>
       for
-      <span class="font-black text-black font-body"> {{ coinsInEuros }} euros </span>
+      <span class="font-black text-black font-body"> {{ totalPrice }} </span>
     </h1>
     <p class="mb-2 text-subheading mb-card">
       {{ t("Body.BuyCoins") }}
     </p>
 
-    <article class="mb-card">
-      <h2 class="text-heading-2 mb-2 flex flex-wrap items-center font-black text-black gap-card">
-        {{ t("Headings.YourProfileInformation") }}
+    <p
+      v-if="!validAmount"
+      class="text-body-1 flex w-fit items-center border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
+    >
+      <ExclamationCircleIcon class="h-7 w-7" />
 
-        <NuxtLink :to="`/profile/edit?coins=${coinsToBuy}`">
-          <Btn>{{ t("Buttons.EditProfile") }}</Btn>
-        </NuxtLink>
-      </h2>
+      {{ t("Error.InvalidCoinAmount") }}
 
-      <p
-        v-if="!canBuy"
-        class="text-body-1 flex w-fit border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
-      >
-        <ExclamationCircleIcon class="h-7 w-7" />
+      <NuxtLink to="/morphcoins/buy" class="font-bold underline">
+        {{ t("Headings.BuyMorphcoins") }}
+      </NuxtLink>
+    </p>
 
-        {{ t("Body.MissingProfileInfo") }}
-      </p>
+    <template v-else>
+      <article class="mb-card">
+        <h2 class="text-heading-2 mb-2 flex flex-wrap items-center font-black text-black gap-card">
+          {{ t("Headings.YourProfileInformation") }}
 
-      <div class="flex gap-box">
-        <h3 class="text-body-1 text-body">{{ t("Headings.UserType") }}:</h3>
-        <p class="text-body-1 text-black">
-          {{ t(user.business ? "Headings.Business" : "Headings.Person") }}
+          <NuxtLink :to="`/profile/edit?coins=${coinsToBuy}`">
+            <Btn>{{ t("Buttons.EditProfile") }}</Btn>
+          </NuxtLink>
+        </h2>
+
+        <p
+          v-if="!canBuy"
+          class="text-body-1 flex w-fit border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
+        >
+          <ExclamationCircleIcon class="h-7 w-7" />
+
+          {{ t("Body.MissingProfileInfo") }}
         </p>
-      </div>
 
-      <template v-if="user.business">
         <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.FirstName") }}:</h3>
-          <p v-if="user && user.first_name" class="text-body-1 m-0 text-black">
-            {{ user.first_name }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
+          <h3 class="text-body-1 text-body">{{ t("Headings.UserType") }}:</h3>
+          <p class="text-body-1 text-black">
+            {{ t(user.business ? "Headings.Business" : "Headings.Person") }}
           </p>
         </div>
 
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.LastName") }}:</h3>
-          <p v-if="user && user.last_name" class="text-body-1 m-0 text-black">
-            {{ user.last_name }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
+        <template v-if="user.business">
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.FirstName") }}:</h3>
+            <p v-if="user && user.first_name" class="text-body-1 m-0 text-black">
+              {{ user.first_name }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
 
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Street") }}:</h3>
-          <p v-if="user && user.street" class="text-body-1 m-0 text-black">
-            {{ user.street }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.LastName") }}:</h3>
+            <p v-if="user && user.last_name" class="text-body-1 m-0 text-black">
+              {{ user.last_name }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
 
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.ZipCode") }}:</h3>
-          <p v-if="user && user.zip_code" class="text-body-1 m-0 text-black">
-            {{ user.zip_code }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Street") }}:</h3>
+            <p v-if="user && user.street" class="text-body-1 m-0 text-black">
+              {{ user.street }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
 
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.VAT_ID") }}:</h3>
-          <p v-if="user && user.vat_id" class="text-body-1 m-0 text-black">
-            {{ user.vat_id }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
-      </template>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.ZipCode") }}:</h3>
+            <p v-if="user && user.zip_code" class="text-body-1 m-0 text-black">
+              {{ user.zip_code }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
 
-      <template v-else>
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Country") }}:</h3>
-          <p v-if="user && user.country" class="text-body-1 m-0 text-black">
-            {{ user.country }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.VAT_ID") }}:</h3>
+            <p v-if="user && user.vat_id" class="text-body-1 m-0 text-black">
+              {{ user.vat_id }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
+        </template>
 
-        <div class="flex gap-box">
-          <h3 class="text-body-1 m-0 text-body">
-            {{ t("Inputs.EmailAddress") }}
-          </h3>
-          <p v-if="user && user.email" class="text-body-1 m-0 text-black">
-            {{ user.email }}
-          </p>
-          <p v-else class="text-body-1 m-0 text-error">
-            {{ t("Headings.Missing") }}
-          </p>
-        </div>
-      </template>
-    </article>
+        <template v-else>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Country") }}:</h3>
+            <p v-if="user && user.country" class="text-body-1 m-0 text-black">
+              {{ user.country }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
 
-    <article class="mb-card">
-      <h2 class="text-heading-2 mb-4 font-black text-black">
-        {{ t("Headings.PurchaseMorphcoins") }}
-      </h2>
-      <div
-        id="paypal-button-container"
-        ref="paypal"
-        class="w-full max-w-md"
-        :class="{
-          'pointer-events-none opacity-70': !canBuy,
-        }"
-      ></div>
-    </article>
+          <div class="flex gap-box">
+            <h3 class="text-body-1 m-0 text-body">
+              {{ t("Inputs.EmailAddress") }}
+            </h3>
+            <p v-if="user && user.email" class="text-body-1 m-0 text-black">
+              {{ user.email }}
+            </p>
+            <p v-else class="text-body-1 m-0 text-error">
+              {{ t("Headings.Missing") }}
+            </p>
+          </div>
+        </template>
+      </article>
+
+      <!--
+        The order is placed here, so this is where the information required by
+        § 312j Abs. 2 BGB and the "Zahlungspflichtig bestellen" button belong.
+        PayPal is only the payment method and its SDK is loaded after the
+        order has been placed.
+      -->
+      <article class="max-w-2xl bg-secondary p-6 style-card mb-card">
+        <OrderSummary
+          :coins="coinsToBuy"
+          breakdown
+          :disabled="!canBuy"
+          :hide-actions="ordered"
+          @order="onclickOrder"
+        >
+          <template #characteristics>
+            <p class="text-body-1 m-0 text-body">
+              {{ t("Body.OrderCoinsCharacteristics") }}
+            </p>
+          </template>
+        </OrderSummary>
+      </article>
+
+      <article v-if="ordered" class="mb-card">
+        <h2 class="text-heading-2 mb-4 font-black text-black">
+          {{ t("Headings.PurchaseMorphcoins") }}
+        </h2>
+        <div id="paypal-button-container" ref="paypal" class="w-full max-w-md"></div>
+      </article>
+    </template>
   </main>
 </template>
 
@@ -159,13 +189,18 @@ export default {
     const router = useRouter();
 
     const coins = useCoins();
+    const coinConfig = useCoinConfig();
     const coinsToBuy = computed(() => {
       return parseInt(route?.query?.coins ?? "0");
     });
-    const coinsInEuros = computed(() => {
-      let coins = coinsToBuy.value ?? 0;
-      return Number((coins / 100).toFixed(2));
+    // A deep link must not be able to order an amount the shop does not sell.
+    const validAmount = computed(() => {
+      const amount = coinsToBuy.value;
+      return Number.isInteger(amount) && amount >= COIN_PURCHASE_MIN && amount <= COIN_PURCHASE_MAX;
     });
+    const totalPrice = computed(() =>
+      formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
+    );
     const user = useUser();
 
     const canBuy = computed(() => {
@@ -184,22 +219,36 @@ export default {
     });
 
     const paypal = ref(null);
+    const ordered = ref(false);
     const paypalClientID = usePaypalClientID();
 
-    onMounted(async () => {
-      // setting paypal client ID
+    onMounted(loadCoinConfig);
+
+    // Placing the order is what starts the purchase, so the PayPal SDK is
+    // requested only from here (§ 25 Abs. 2 Nr. 2 TDDDG).
+    async function onclickOrder() {
+      if (!validAmount.value || !canBuy.value) return;
+
+      setLoading(true);
       await getPaypalClientID();
+      setLoading(false);
 
-      if (!!!coinsToBuy.value || !!!paypalClientID.value) return;
+      if (!!!paypalClientID.value) {
+        openSnackbar("error", "Error.BuyCoins");
+        return;
+      }
 
-      let clientID = paypalClientID.value;
-      let orderBody = JSON.stringify({
-        coins: coinsToBuy.value,
-      });
+      ordered.value = true;
+      await nextTick();
+      renderPaypalButtons();
+    }
+
+    function renderPaypalButtons() {
+      const orderBody = JSON.stringify({ coins: coinsToBuy.value });
 
       const script = document.createElement("script");
       script.setAttribute("data-namespace", "paypal_sdk");
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientID}&currency=EUR`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientID.value}&currency=EUR`;
 
       script.addEventListener("load", () => {
         paypal_sdk
@@ -237,9 +286,20 @@ export default {
           .render(paypal.value);
       });
       document.body.appendChild(script);
-    });
+    }
 
-    return { t, locale, coinsToBuy, coinsInEuros, user, canBuy, paypal };
+    return {
+      t,
+      locale,
+      coinsToBuy,
+      totalPrice,
+      validAmount,
+      user,
+      canBuy,
+      paypal,
+      ordered,
+      onclickOrder,
+    };
   },
 };
 </script>
