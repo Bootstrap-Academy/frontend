@@ -514,7 +514,12 @@
     "NoContractFoundForEmail": "We cannot determine the end of the contract automatically from your details. We will review your cancellation and confirm the end date separately by e-mail.",
     "ConfirmationEmailSent": "We have just sent you a confirmation with this content by e-mail to {email}.",
     "ConfirmationEmailNotSent": "The confirmation e-mail could not be delivered. Please save or print this page.",
-    "CancelPremiumHint": "There you can cancel your premium membership with the statutory cancellation form; we confirm the receipt by e-mail immediately."
+    "CancelPremiumHint": "There you can cancel your premium membership with the statutory cancellation form; we confirm the receipt by e-mail immediately.",
+    "WithdrawalConsentLanguageNote": "The following declarations are part of the contract. The contract language is German, so they are shown in German only.",
+    "WithdrawalConsentServicePerformance": "Ich verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.",
+    "WithdrawalConsentServiceLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.",
+    "WithdrawalConsentDigitalPerformance": "Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen.",
+    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -953,7 +958,6 @@
     "GoToCourse": "Go To Course",
     "RightToWithdrawal": "You have a 14-day right of withdrawal. You will find the cancellation policy + cancellation form",
     "RightToWithdrawalLink": "here",
-    "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period.",
     "VideoPrivacyHint": "Playing the video sends data to YouTube (Google). Details are in our",
     "OrderLegalHint": "Our",
     "OrderLegalHintMiddle": "and our",
@@ -1134,7 +1138,8 @@
     "ProviderNotFound": "Unable to find this provider. Please select another one.",
     "InvalidCoinAmount": "Invalid number of Morphcoins. Please start the purchase again.",
     "TooManyRequests": "Too many requests. Please try again later or write to us at hallo{'@'}bootstrap.academy.",
-    "DeclarationNotSubmitted": "Your declaration could not be submitted. Please try again or send your declaration to hallo{'@'}bootstrap.academy."
+    "DeclarationNotSubmitted": "Your declaration could not be submitted. Please try again or send your declaration to hallo{'@'}bootstrap.academy.",
+    "WithdrawalConsentMissing": "Please give both withdrawal declarations to place the order"
   },
   "Months": {
     "January": "January",

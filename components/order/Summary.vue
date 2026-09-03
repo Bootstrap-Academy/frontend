@@ -60,8 +60,9 @@
       <slot name="actions" />
       <InputBtn
         :loading="loading"
+        :aria-disabled="disabled"
         :class="{ 'pointer-events-none opacity-70': disabled }"
-        @click="$emit('order')"
+        @click="onclickOrder"
       >
         {{ t(submitLabel) }}
       </InputBtn>
@@ -90,7 +91,14 @@ const props = defineProps({
   submitLabel: { type: String, default: "Buttons.OrderWithObligationToPay" },
 });
 
-defineEmits<{ (e: "order"): void }>();
+const emit = defineEmits<{ (e: "order"): void }>();
+
+// The order must not be placeable while something is still missing, no matter
+// how the button is activated.
+function onclickOrder() {
+  if (props.disabled || props.loading) return;
+  emit("order");
+}
 
 const { t, locale } = useI18n();
 const config = useCoinConfig();

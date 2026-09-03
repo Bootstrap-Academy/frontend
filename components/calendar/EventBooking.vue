@@ -59,6 +59,7 @@
         <OrderSummary
           :coins="price"
           :heading="btn"
+          :disabled="!canBook"
           :submit-label="price > 0 ? 'Buttons.OrderWithObligationToPay' : bookLabel"
           class="w-full"
           @order="onclickBook"
@@ -68,21 +69,12 @@
           </template>
 
           <template #consent>
-            <InputCheckbox
-              id="RightToWithdrawal"
-              label="Links.RightToWithdrawal"
-              :link="{
-                to: '/docs/right-of-withdrawal',
-                label: 'Links.RightToWithdrawalLink',
-              }"
-              target="_blank"
-              v-model="confirmRightToWithdrawal"
-            />
-            <InputCheckbox
-              id="DontUseRightToWithdrawal"
-              label="Links.DontUseRightToWithdrawal"
-              v-model="confirmDontUseRightToWithdrawal"
-            />
+            <!--
+              Webinars and coachings are services, so a paid booking needs the
+              declarations of § 356 Abs. 5 Nr. 2 BGB. A free event is not
+              booked against payment, so they are not asked for.
+            -->
+            <OrderWithdrawalConsent v-if="price > 0" kind="service" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
@@ -149,21 +141,39 @@ const isEventBooked = ref(props.booked ?? false);
 
 const dialog = <any>reactive({});
 const confirm = ref(false);
-const confirmRightToWithdrawal = ref(false);
-const confirmDontUseRightToWithdrawal = ref(false);
+const withdrawalConsent = ref(false);
 const information = ref(false);
 
+const canBook = computed(() => price.value <= 0 || withdrawalConsent.value);
+
 function onclickConfirm() {
+  // The dialog is rebuilt every time it opens, so the boxes start unticked.
+  withdrawalConsent.value = false;
   confirm.value = true;
 }
 
 async function onclickBook() {
-  if (!confirmRightToWithdrawal.value || !confirmDontUseRightToWithdrawal.value) {
+  if (!canBook.value) {
     openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
     return;
   }
 
   setLoading(true);
+
+  // Bookings are placed against the events service, which does not store the
+  // declarations, so they are recorded here first.
+  if (price.value > 0) {
+    const [, consentError] = await recordWithdrawalConsent(
+      props.type === "coaching" ? "coaching" : "webinar",
+      props.id
+    );
+    if (consentError) {
+      setLoading(false);
+      openSnackbar("error", consentError?.detail ?? "Error.WithdrawalConsentMissing");
+      return;
+    }
+  }
+
   switch (props.type) {
     case "coaching":
       await bookCoaching();
@@ -172,8 +182,7 @@ async function onclickBook() {
       await bookWebinar();
       break;
   }
-  confirmRightToWithdrawal.value = false;
-  confirmDontUseRightToWithdrawal.value = false;
+  withdrawalConsent.value = false;
   setLoading(false);
   confirm.value = false;
 }

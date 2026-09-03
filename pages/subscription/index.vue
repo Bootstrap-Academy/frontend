@@ -115,7 +115,12 @@
     -->
     <Modal v-if="order" @backdrop="order = null">
       <div class="w-full max-w-2xl bg-secondary p-8 style-card">
-        <OrderSummary :coins="order.coins" :loading="ordering" @order="confirmOrder">
+        <OrderSummary
+          :coins="order.coins"
+          :loading="ordering"
+          :disabled="!withdrawalConsent"
+          @order="confirmOrder"
+        >
           <template #characteristics>
             <p class="text-body-1 m-0 text-body">{{ t(order.characteristics, order.params) }}</p>
 
@@ -128,6 +133,10 @@
                 <dd class="text-body-1 m-0 text-heading">{{ t(detail.value) }}</dd>
               </template>
             </dl>
+          </template>
+
+          <template #consent>
+            <OrderWithdrawalConsent :kind="order.consentKind" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
@@ -211,6 +220,8 @@ export default {
     // The pending order shown in the order summary, or `null`.
     const order = ref<any>(null);
     const ordering = ref(false);
+    // The declarations of § 356 Abs. 5/6 BGB for the pending order.
+    const withdrawalConsent = ref(false);
 
     function subscribe(isYearly: boolean) {
       const plan = isYearly ? "YEARLY" : "MONTHLY";
@@ -225,8 +236,11 @@ export default {
       // configured; a first purchase never enables it.
       const renews = !!premiumStatusAutoPay.value;
 
+      withdrawalConsent.value = false;
       order.value = {
         coins: coinsRequired,
+        // Premium is a service (part A of the withdrawal instruction).
+        consentKind: "service",
         characteristics: "Body.OrderPremiumCharacteristics",
         params: {},
         details: [
@@ -240,7 +254,11 @@ export default {
           },
         ],
         submit: async () => {
-          const [success] = await buyPremium({ plan, autopay: renews });
+          const [success] = await buyPremium({
+            plan,
+            autopay: renews,
+            ...withdrawalConsentBody(),
+          });
           if (success) {
             openSnackbar(
               "success",
@@ -253,6 +271,10 @@ export default {
 
     async function confirmOrder() {
       if (!order.value || ordering.value) return;
+      if (!withdrawalConsent.value) {
+        openSnackbar("error", "Error.WithdrawalConsentMissing");
+        return;
+      }
 
       ordering.value = true;
       try {
@@ -260,6 +282,7 @@ export default {
       } finally {
         ordering.value = false;
         order.value = null;
+        withdrawalConsent.value = false;
       }
     }
 
@@ -272,13 +295,16 @@ export default {
         });
       }
 
+      withdrawalConsent.value = false;
       order.value = {
         coins: refillPrice.value,
+        // Hearts are digital content (part B of the withdrawal instruction).
+        consentKind: "digital",
         characteristics: "Body.OrderHeartsCharacteristics",
         params: { max: formatHearts(heartConfig.value.hearts_max, locale.value) },
         details: [],
         submit: async () => {
-          const [success] = await refillHearts();
+          const [success] = await refillHearts(withdrawalConsentBody());
           if (success) openSnackbar("success", "Success.RefilledHearts");
         },
       };
@@ -323,6 +349,7 @@ export default {
       heartConfig,
       order,
       ordering,
+      withdrawalConsent,
       confirmOrder,
       monthlyPrice,
       yearlyPrice,

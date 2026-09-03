@@ -73,26 +73,6 @@
       @valid="form.termsAndConditions.valid = $event"
     />
 
-    <InputCheckbox
-      class="mb-card"
-      label="Links.RightToWithdrawal"
-      id="RightToWithdrawal"
-      :link="{
-        to: '/docs/right-of-withdrawal',
-        label: 'Links.RightToWithdrawalLink',
-      }"
-      target="_blank"
-      v-model="form.confirmRightToWithdrawal.value"
-      @valid="form.confirmRightToWithdrawal.valid = $event"
-    />
-    <InputCheckbox
-      class="mb-card"
-      id="DontUseRightToWithdrawal"
-      label="Links.DontUseRightToWithdrawal"
-      v-model="form.confirmDontUseRightToWithdrawal.value"
-      @valid="form.confirmDontUseRightToWithdrawal.valid = $event"
-    />
-
     <Btn
       full
       @click="onclickSubmitForm"
@@ -135,14 +115,6 @@ export default defineComponent({
         value: 500,
       },
       termsAndConditions: {
-        value: false,
-        valid: false,
-      },
-      confirmRightToWithdrawal: {
-        value: false,
-        valid: false,
-      },
-      confirmDontUseRightToWithdrawal: {
         value: false,
         valid: false,
       },
