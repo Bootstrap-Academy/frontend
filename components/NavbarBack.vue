@@ -88,11 +88,6 @@ export default defineComponent({
         pathname = "/profile";
         label = "Links.GoToProfile";
       }
-      // ! Job
-      else if (name == "jobs-id") {
-        pathname = "/jobs";
-        label = "Links.GoToJobs";
-      }
       // ! Morphcoins
       else if (name == "morphcoins-paypal") {
         pathname = "/morphcoins/buy";

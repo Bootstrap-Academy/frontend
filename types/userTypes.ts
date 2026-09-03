@@ -16,7 +16,6 @@ export class User {
   last_name_change: number = 0;
   mfa_enabled: boolean = false;
   name: string = "";
-  newsLetter: boolean = false;
   password: boolean = false;
   registration: number = 0;
   street: string = "";

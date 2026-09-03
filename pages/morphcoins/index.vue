@@ -49,7 +49,6 @@ definePageMeta({
 
 import {
   AcademicCapIcon,
-  BriefcaseIcon,
   UserGroupIcon,
   IdentificationIcon,
   ShoppingCartIcon,
@@ -65,7 +64,6 @@ export default {
   },
   components: {
     AcademicCapIcon,
-    BriefcaseIcon,
     UserGroupIcon,
     IdentificationIcon,
     ShoppingCartIcon,
@@ -82,12 +80,6 @@ export default {
         button: "Buttons.GoToShop",
         pathname: "/morphcoins/buy",
         type: "buy",
-      },
-      {
-        icon: BriefcaseIcon,
-        button: "Buttons.ExploreJobs",
-        pathname: "/jobs",
-        type: "jobs",
       },
       {
         icon: AcademicCapIcon,

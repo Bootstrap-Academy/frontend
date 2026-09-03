@@ -87,12 +87,6 @@ export async function logout() {
     const videoSRC = useVideoSRC();
     videoSRC.value = "";
 
-    // Jobs Composable
-    const job = useJob();
-    job.value = null;
-    const jobs = useJobs();
-    jobs.value = [];
-
     // Ratings Composable
     const unratedWebinars = useUnratedWebinars();
     unratedWebinars.value = [];

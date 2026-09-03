@@ -43,7 +43,6 @@ export default {
       CheckCircleIcon,
       CheckCircleIcon,
       CheckCircleIcon,
-      CheckCircleIcon,
     ];
 
     onMounted(() => {

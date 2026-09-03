@@ -239,13 +239,11 @@
     "About": "Lernen neu definiert",
     "Features": "Was gibt es hier?",
     "HeroFAQS": "Häufige Fragen",
-    "Subscribe": "Newsletter abonnieren",
     "VerifyAccount": "Konto verifizieren",
     "EditProfile": "Profil bearbeiten",
     "SkillPoints": "Skillpunkte",
     "Nodes": "Knoten",
     "WatchedCourses": "Gesehene Kurse",
-    "MyJobsOffers": "Meine Jobangebote",
     "Pending": "Ausstehend",
     "Accepted": "Akzeptiert",
     "Rejected": "Abgelehnt",
@@ -271,34 +269,20 @@
     "Sections": "Keine Abschnitte | {n} Abschnitt | {n} Abschnitte",
     "CourseCurriculum": "Lehrplan",
     "FilterBy": "Filter",
-    "EmploymentType": "Anstellungsart",
-    "Salary": "Gehalt",
-    "ProfessionalLevel": "Erfahrungsgrad",
-    "JobEnvironment": "Arbeitsort",
     "Result": "Keine Ergebnisse | {n} Ergebnis | {n} Ergebnisse",
     "SortBy": "Sortieren nach",
     "BestMatch": "Bester Treffer",
-    "Responsibilities": "Verantwortlichkeiten",
-    "SkillRequirements": "Skill-Anforderungen",
-    "JobDetails": "Jobdetails",
-    "JobOverview": "Jobübersicht",
     "Experience": "Erfahrung",
     "Minimum": "Mindestens",
     "Year": "Jahr",
     "Years": "Jahren",
-    "OfferSalary": "Lohnangebot",
     "Location": "Ort",
     "Remote": "Remote",
     "Office": "Office",
     "Contact": "Kontakt",
-    "LastUpdated": "Last Updated",
     "VerifyCertificate": "Zertifikat verifizieren",
     "CourseContent": "Kursinhalt",
-    "ApplyForJob": "Bewerbung",
     "Latest": "Neueste",
-    "JobType": "Auftragsart",
-    "SalaryUnit": "Gehaltseinheit",
-    "RemoteOnly": "Nur Home-Office",
     "CertificatesBased": "Basierend auf Zertifikaten",
     "WhoWeAre": "Wer wir sind",
     "DeleteAccount": "Konto löschen",
@@ -335,27 +319,14 @@
     "OfWhichUnsolved": "davon ungelöst",
     "TotalMorphcoins": "Morphcoins gesamt",
     "DisabledMFAViaRecoveryCode": "MFA deaktiviert",
-    "SubscribedToNewsLetter": "Newsletter abonniert",
-    "BootstrapNewsletter": "Bootstrap-Newsletter",
-    "UnregisterNewsletter": "Vom Newsletter abmelden",
-    "RegisterForNewsletter": "Bootstrap-Newsletter",
     "UnableToOAuth": "OAuth-Fehler",
     "CoursesComingSoon": "Kurse - Demnächst!",
     "CoachingComingSoon": "Coaching - Demnächst!",
     "WebinarsComingSoon": "Webinare - Demnächst!",
     "ExamsComingSoon": "Prüfungen - Demnächst!",
-    "UnableSubscribedToNewsLetter": "Anmeldung zum Newsletter",
     "MissingEmail": "E-Mail fehlt",
     "AddedEmail": "Neue E-Mail hinzugefügt",
-    "Entry": "Einstiegsjob",
-    "Junior": "Junior",
     "Senior": "Senior",
-    "Manager": "Manager",
-    "FullTime": "Vollzeit",
-    "PartTime": "Teilzeit",
-    "Internship": "Praktikum",
-    "Temporary": "Vorübergehend",
-    "MiniJob": "Minijob",
     "Task": "Aufgabe",
     "Hour": "Stunde",
     "Day": "Tag",
@@ -409,21 +380,16 @@
     "DisableAutopay": "Möchtest du die automatische Zahlung deaktivieren?",
     "SubscribeFirst": "Um Autopay auszuwählen, musst du zunächst ein Abonnement abschließen",
     "AutoPay": "Option für stressfreien Zahlung mit unserer Auto-Pay-Option",
-
     "Refill0p5Hearts": "0.5 Herzen für 15 Morphcoins auffüllen",
     "Refill1Hearts": "1 Herz für 20 Morphcoins auffüllen",
-
     "Refill1p5Hearts": "1.5 Herzen für 30 Morphcoins auffüllen",
     "Refill2Hearts": "2 Herzen für 35 Morphcoins auffüllen",
-
     "Refill2p5Hearts": "2.5 Herzen für 45 Morphcoins auffüllen",
     "Refill3Hearts": "3 Herz für 50 Morphcoins auffüllen",
-
     "HeartsAreFilled": "Verbrauchen Sie zuerst Ihre Herzen, um sie anschließend wieder aufzufüllen.",
     "Need50MorphCoinsForRefill": "Du benötigst mindestens 50 Morphcoins, um deine Herzen wieder aufzufüllen.",
     "NotAllHeartsUsed": "Du hast noch nicht alle Herzen verbraucht.",
     "RefillHeartsNow": "Möchtest du sie wirklich wieder auffüllen?",
-
     "BuyMonthlySubscription": "Für das Monatsabonnement werden 1,000 Morphcoins von deinem Konto abgebucht",
     "BuyYearlySubscription": "Für das Jahresabonnement werden 10,000 Morphcoins von deinem Konto abgebucht",
     "PremiumCardMain": "Erhalte monatlichen Zugang zu über 50 Kursen und jeder heute verfügbaren Vorlesung sowie allen neuen Inhalten, die wir in Zukunft hinzufügen, mit einem Monats- oder Jahresabonnement.",
@@ -456,7 +422,6 @@
     "GiveCoachingMsg": "Werde Sub-Skill-Level 42 oder schick uns über das Kontakt-Formular Referenzen zu, um Coachings anbieten zu können",
     "RootSkillTreeLoading": "Root Skill Tree wird geladen",
     "SubSkillTreeLoading": "Teilbaum {placeholder} wird geladen",
-    "MorphcoinsToolTip": "Jobs, die von uns angeboten und nur mit der Währung dieser Plattform bezahlt werden",
     "WantToDisable": "Wenn du MFA jemals deaktivieren möchtest, geht das auf der Kontoseite unter:",
     "ChallengesNickname": "Alle Accounts von the-morpheus.cc wurden in die Bootstrap Academy migriert, du kannst dich also weiterhin mit deinem alten Coding Challenges-Account anmelden.",
     "Download": "Hier gibt's die kostenlose App",
@@ -481,10 +446,8 @@
     "LastUpdated": "Zuletzt aktualisiert",
     "VerifyCertificate": "Bitte gib das Zertifikatspasswort ein, um das Zertifikat anzuzeigen.",
     "EnterNewTag": "Gib ein neues Tag ein",
-    "SearchJobs": "nach Jobs suchen",
     "SearchCourses": "Kurse suchen",
     "SearchCertificates": "Zertifikate suchen",
-    "ApplyForJob": "Bewirb dich unter: {placeholder}",
     "AddTags": "Drück Leertaste, um ein neues Tag hinzuzufügen",
     "DeleteAccount": "Möchtest du dein Konto wirklich löschen? Alle deine Fortschritte und Kurse, die du gekauft hast, gehen verloren. Diese Aktion kann nicht rückgängig gemacht werden.",
     "VerifyAccountCard": "Dein Profil ist nicht verifiziert. Bitte verifiziere dein Konto, um Coins zu kaufen, Kurse anzusehen und mehr!",
@@ -496,12 +459,8 @@
     "ConfirmBooking": "Bitte bestätige, wenn du diese Veranstaltung buchen möchtest.",
     "AreYouSureCancelEvent": "Möchtest du diese Veranstaltung wirklich stornieren?",
     "DisabledMFAViaRecoveryCode": "Da du dich mit deinem Wiederherstellungscode angemeldet hast, wurde deine Multi-Faktor-Authentifizierung (MFA) deaktiviert. Klicke auf die Schaltfläche, wenn du MFA wieder aktivieren möchtest.",
-    "SubscribedToNewsLetter": "Herzlichen Glückwunsch! Du hast den Newsletter der Bootstrap Academy erfolgreich abonniert. Wir können es kaum erwarten, aufregende Neuigkeiten mit dir direkt zu teilen!",
-    "BootstrapNewsletter": "Um den Bootstrap-Newsletter zu erhalten, gib bitte den Registrierungscode ein, der dir per E-Mail zugesandt wurde.",
-    "ConfirmUnregisterNewsletter": "Möchtest du dich wirklich vom Bootstrap-Newsletter abmelden? Du kannst dich jederzeit neu anmelden.",
     "Challenges": "Bitte melde dich an, um die Coding Challenges zu nutzen",
     "OrLoginWith": "Oder logge dich so ein",
-    "UnableSubscribedToNewsLetter": "Anmeldung zum Newsletter nicht möglich",
     "MissingEmail": "Bitte füge deinem Profil eine E-Mail-Adresse hinzu, um dein Konto zu verifizieren.",
     "AddedEmail": "Deine E-Mail-Adresse wurde deinem Profil erfolgreich hinzugefügt. Ein Bestätigungscode wurde dir an Ihre hinzugefügte E-Mail-Adresse gesendet. Bitte verwende diesen Code, um dein Konto zu verifizieren und alle Vorteile der Bootstrap Academy zu nutzen.",
     "NotLoggedIn": "Bitte melde dich an, um fortzufahren.",
@@ -531,8 +490,6 @@
     "MFATooltipBody": "MFA bedeutet, dass Du zum Anmelden nicht nur ein Passwort, sondern auch einen zusätzlichen Code benötigst. Selbst wenn ein Hacker Dein Passwort herausfindet, muss er immer noch diesen zusätzlichen Schutz überwinden, um auf Dein Konto zuzugreifen.",
     "IncreasedSecurity": "Erhöhte Sicherheit",
     "NoMoreIncreaseSecurity": "Keine erhöhte Sicherheit mehr",
-    "ExcitingUpdates": "spannende Neuigkeiten und Updates",
-    "NoMoreExcitingUpdates": "keine spannende Neuigkeiten und Updates mehr",
     "PriceInclVat": "{amount} inkl. {vat} % MwSt.",
     "PricePerMonth": "entspricht {amount} je Monat",
     "OrderPremiumCharacteristics": "Premium-Mitgliedschaft: Zugriff auf alle Kurse und unbegrenzte Herzen.",
@@ -579,7 +536,7 @@
     },
     "About": {
       "1": "Videokurse in allen Schwierigkeitsgraden.",
-      "2": "Webinare, Coachings, Job-Angebote.",
+      "2": "Webinare, Coachings.",
       "3": "Übungen",
       "4": "Vollständig kostenfrei, wenn du dich engagierst"
     },
@@ -597,18 +554,14 @@
         "Body": "Du brauchst diese ganz besondere, individuelle Hilfe? Du möchtest ein Mentoring von einem Experten direkt für dich? Dafür gibt's die Coachings."
       },
       "4": {
-        "Heading": "Job-Angebote",
-        "Body": "Irgendwann möchte man auch Geld verdienen mit seiner Leidenschaft. Du findest direkt hier auf unserer Seite tolle Job-Angebote, die du sogar auf deine Talente und Zertifikate zuschneiden kannst."
-      },
-      "5": {
         "Heading": "Übungen",
         "Body": "Wir lieben Challenges! Deshalb haben wir für dich die Coding Challenges - und noch so viele mehr sind in Arbeit!"
       },
-      "6": {
+      "5": {
         "Heading": "Der Skilltree",
         "Body": "Standest du jemals vor dem großen Wald an Programmiersprachen und Technologien und hattest keine Ahnung, was du lernen sollst? Dafür haben wir nun unsere Roadmap: Den Skilltree!"
       },
-      "7": {
+      "6": {
         "Heading": "Zertifikate",
         "Body": "Um sich auf Jobs zu bewerben oder einfach nur um Trophäen zu jagen und es sich selbst zu beweisen, hilft ein echtes Zertifikat - nicht für eine Teilnahme, sondern für eine ordentliche Prüfung. Wir arbeiten mit Hochschulen und Firmen zusammen, um noch einen größeren Mehrwehrt zu liefern."
       }
@@ -616,7 +569,7 @@
     "HeroFAQS": {
       "1": {
         "Heading": "Wie kann ich mitmachen? Wie kann ich MorphCoins bekommen?",
-        "Body": "Es gibt einige Möglichkeiten hier zu helfen - und MorphCoins dafür zu bekommen: Wir bieten regelmäßig Jobs an, du kannst mir bei den Videos helfen, Webinare halten, Coach werden, Prüfungen abnehmen oder uns Bugs melden und helfen sie zu reparieren. Außerdem kannst du MorphCoins direkt per PayPal, SEPA Lastschrift, giropay und Debit-/Kreditkarte kaufen. Alle Zahlungsmethoden werden durch PayPal abgewickelt. Mehr Informationen findest du"
+        "Body": "Es gibt einige Möglichkeiten hier zu helfen - und MorphCoins dafür zu bekommen: Du kannst mir bei den Videos helfen, Webinare halten, Coach werden oder uns Bugs melden und helfen sie zu reparieren. Außerdem kannst du MorphCoins direkt per PayPal, SEPA Lastschrift, giropay und Debit-/Kreditkarte kaufen. Alle Zahlungsmethoden werden durch PayPal abgewickelt. Mehr Informationen findest du"
       },
       "2": {
         "Heading": "Sind MorphCoins eine Kryptowährung?",
@@ -641,46 +594,26 @@
         "Body": "Du kannst MorphCoins auch mit Euros im Shop kaufen. Dies ist direkt per PayPal, SEPA Lastschrift, giropay und Debit-/Kreditkarte möglich. Alle Zahlungsmethoden werden durch PayPal abgewickelt."
       },
       "2": {
-        "Heading": "Jobs",
-        "Body": "Erledige eine Aufgabe für uns. Was du tun musst, ist extrem von den Jobs abhängig und dementsprechend ist auch die Belohnung sehr unterschiedlich. Du findest alle Informationen zum jeweiligen Job auf seiner Seite. Wir können aber auch immer neue Coding Challenges brauchen."
-      },
-      "3": {
         "Heading": "Lektionen",
         "Body": "Schick mir alles, was ich für eine Lektion brauche. Du hast noch den Code eines kleinen Python Projekts, wo du spannende Bibliotheken nutzt? Oder hast gerade etwas auf dem Server installiert und Screenshots oder sogar ein Video von jedem Schritt gemacht? Schick es mir und ich teile es mit der Community. Beachte, dass das danach ein öffentliches Projekt ist und du mir die Rechte abgeben musst! Dazu musst du auch erstmal die Rechte haben! Also bitte nur original work. Wenn ich außerdem noch zu viele Bugs fixen muss, muss ich deine Belohnung reduzieren."
       },
-      "4": {
+      "3": {
         "Heading": "Webinare",
         "Body": "Halte Webinare als Dozent. Du kannst etwas schon richtig gut, vielleicht hast du schon gearbeitet und willst dein Wissen in Webinaren teilen? Wenn du Level 15 in einem Skill erreicht hast, bekommst du die Fähigkeit selbst Webinare zu halten! Das Beste: Den Großteil der MorphCoin darfst du behalten!"
       },
-      "5": {
+      "4": {
         "Heading": "Coachings",
         "Body": "Bewirb dich und werde Coach. Du möchtest den Menschen direkt und individuell helfen? Dazu brauchst du nur den Skill - auf Level 42 - und ein paar Softskills. Was du verlangst, liegt ganz bei dir (und deinem Rating)!"
       },
-      "6": {
+      "5": {
         "Heading": "Bug Bounty",
         "Body": "Finde Bugs aller Art, melde sie und hilf uns, sie zu reparieren. Du bist Hacker? Du hast einen Bug gefunden, eine Sicherheitslücke oder einen Fehler im Text oder in der Sortierung? Nutze das Icon unten rechts um es an uns zu melden! Je nach Schwere gibt's auch ne Belohnung. Disclaimer: Du darfst keine Tools nutzen, die den Server oder das Netzwerk potentiell zerstören oder stören würden oder sogennante Denial-of-Service tools! Alle Daten, die du vielleicht aus Versehen lesen kannst, müssen sofort(!) von deinen Systemen restlos gelöscht werden! Grundsätzlich dürfen Informationen über alle Funde nicht weitergegeben werden, nur an uns. Daten auf unseren Systemen dürfen NICHT verändert werden! Bitte versucht auch, möglichst andere Teilnehmer im Netz nicht anzugreifen. Limitiert euch auf euch selbst. Limitiert euch auch bitte auf diese Website, das heißt alles, was nicht zur Bootstrap Academy gehört, ist out of scope - Youtube beispielweise. Wir nutzen Youtube-Videos, aber ihr habt keine Erlaubnis das anzugreifen. Zudem wird nur der Erste, der was meldet belohnt. Drittanbieter, denen ihr die Lücke vielleicht verkauft werden meist keinen Reward bekommen. Apropos Rewards: Normalerweise werden Belohnungen ausschließlich in MorphCoins ausgezahlt, die Summe richtet sich nach der Schwere des Bugs, aber auch nach der Qualität des Reports und wie gut er uns beim reparieren hilft. Eine Höhe lässt sich im Vorfeld nicht angeben. In Fällen, wo wir zuvor eine Abmachung getroffen haben, kommt eine Auszahlung in Euro in Frage. Falls ihr das wollt, meldet euch bei uns BEVOR ihr nach Bugs sucht!"
-      },
-      "7": {
-        "Heading": "Prüfer",
-        "Body": "Bewirb dich und werde Prüfer. Du kannst gut einschätzen, wie gut jemand ist? Du kennst die Fragen, die alle aus der Reserve locken? Melde dich bei mir als Prüfer - du brauchst dazu nur den passenden Skill und ein paar softskills."
       }
     },
     "Filter": {
-      "FullTime": "Vollzeit",
-      "Freelance": "Freiberuflich",
-      "Internship": "Praktikum",
-      "PartTime": "Teilzeit",
-      "Temporary": "Zeitlich begrenzt",
-      "Remote": "Remote",
-      "Office": "Vor Ort",
-      "Entry": "Einstiegsjob",
-      "Junior": "Junior",
-      "Senior": "Senior",
-      "Manager": "Manager",
       "Morphcoins": "Morphcoins",
       "Euros": "Euro",
       "Dollars": "Dollar",
-      "MiniJob": "Minijob",
       "Any": "Egal",
       "All": "Alle",
       "Booked": "Gebucht",
@@ -831,7 +764,6 @@
     "SaveChallenge": "Challenge speichern",
     "DeleteChallenge": "Challenge löschen",
     "Close": "Schließen",
-
     "CreateChallenge": "Challenge erstellen",
     "UpdateChallenge": "Challenge erstellen",
     "AddChallenge": "Challenge hinzufügen",
@@ -882,13 +814,10 @@
     "Next": "Weiter",
     "LinkCalendar": "Kalender verknüpfen",
     "GoToShop": "ZUM SHOP",
-    "ExploreJobs": "Jobs Finden",
     "ContactUs": "Schreib uns",
     "EnrollNow": "Jetzt anmelden",
     "WatchCourse": "Kurs ansehen",
     "Reset": "Zurücksetzen",
-    "ViewDetails": "Details anzeigen",
-    "ApplyNow": "Jetzt Bewerben",
     "ViewCertificate": "Zertifikat ansehen",
     "Logout": "Ausloggen",
     "DeleteAccount": "Ja, Konto löschen",
@@ -913,9 +842,6 @@
     "CancelEventCard": "Stornieren",
     "YesCancelEvent": "Ja, Veranstaltung stornieren",
     "Re-EnableMFA": "Ja, MFA erneut aktivieren",
-    "UnregisterNewsletter": "Vom Newsletter abmelden",
-    "RegisterForNewsletter": "Für den Newsletter anmelden",
-    "ConfirmUnregisterNewsletter": "Ja, vom Newsletter abmelden",
     "AddEmail": "E-Mail hinzufügen",
     "CalendarNextMonth": "Nächster Monat",
     "CalendarPrevMonth": "Vorheriger Monat",
@@ -935,7 +861,6 @@
     "IHaveReadWebinarDeletePolicy": "Ich habe die Webinar-Stornierungs-/Löschrichtlinie gelesen und stimme ihr zu.",
     "ViewSkill": "Skill anzeigen",
     "ViewSubSkill": "Sub-Skill anzeigen",
-    "GoToJobs": "Zu den Jobs",
     "CloseProgressDetails": "Fortschrittsdetails schließen",
     "ViewSkillPath": "Fertigkeitspfad anzeigen",
     "ViewProgressDetails": "Fortschrittsdetails anzeigen",
@@ -974,7 +899,6 @@
     "GoToSignup": "Zur Anmeldung",
     "GetMorphcoins": "Erhalte Morphcoins",
     "Calendar": "Kalender",
-    "Jobs": "Jobs",
     "BackToDetails": "Zurück zu den Details",
     "MyAccount": "Mein Konto",
     "GetMorphCoins": "Erhalte Morphcoins",
@@ -989,8 +913,6 @@
     "ExploreSkillTree": "Erkunde den Skilltree",
     "GetStarted": "Dort kannst du sie finden.",
     "GoToProfile": "Zum Profil",
-    "ResendNewsletterRegistrationCode": "Registrierungscode für den Newsletter erneut senden",
-    "Newsletter": "Ich möchte mich für den Bootstrap-Newsletter anmelden.",
     "RightToWithdrawal": "Dir steht ein 14-tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
     "RightToWithdrawalLink": "hier",
     "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen.",
@@ -1056,9 +978,6 @@
     "BookedExam": "Die Buchung deiner Prüfung war erfolgreich.",
     "BookedCoaching": "Die Buchung deiner Coaching-Sitzung war erfolgreich.",
     "BookedWebinar": "Die Buchung des Webinar war erfolgreich.",
-    "NewsLetterRegistration": "Du bekommst von uns eine E-Mail mit dem Registrierungscode für den Newsletter.",
-    "UnregisterFromNewsletter": "Erfolgreich vom Newsletter abgemeldet",
-    "NewsletterSignup": "Du erhälst eine E-Mail mit dem Registrierungscode für den Newsletter. Geh in dein Konto, um die Newsletter-Registrierung abzuschließen.",
     "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
   },
   "Error": {
@@ -1170,7 +1089,6 @@
     "PermissionDenied": "Du hast keine Berechtigung für diese Aktion",
     "InvalidVerificationCode": "Dieser Bestätigungscode ist ungültig. Bitte verwende einen gültigen.",
     "EmailAlreadyVerified": "Diese E-Mail wurde bereits bestätigt",
-    "NewsletterAlreadySubscribed": "Du hast den Newsletter der Bootstrap Academy bereits abonniert",
     "MFAAlreadyEnabled": "MFA ist bereits aktiviert",
     "MFANotInitialized": "MFA ist noch nicht eingerichtet",
     "MFANotEnabled": "MFA ist nicht aktiviert",
@@ -1226,14 +1144,6 @@
     "Lecture": {
       "Heading": "Video nicht gefunden",
       "Body": "Diese Video existiert möglicherweise nicht oder wurde entfernt."
-    },
-    "Jobs": {
-      "Heading": "Keine passenden Jobs",
-      "Body": ""
-    },
-    "Job": {
-      "Heading": "Auftrag nicht gefunden",
-      "Body": "Dieser Job ist möglicherweise nicht vorhanden oder wurde entfernt."
     },
     "Certificates": {
       "Line1": "Du hast keine Zertifikate",

@@ -105,14 +105,6 @@
           :options="form.salaryUnit.options"
         />
 
-        <InputCheckboxGroup
-          sm
-          classesForCheckbox="mt-card"
-          name="professionalLevel"
-          v-model="form.jobType.value"
-          :options="form.jobType.options"
-        />
-
         <InputCheckbox
           label="Links.IAgreeTo"
           id="TermsAndConditions"
@@ -208,31 +200,6 @@ export default {
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.MFACode",
           (v: string) => v.length >= 6 || "Error.InputMinLength_6",
-        ],
-      },
-      jobType: {
-        value: ["full_time", "part_time"],
-        options: [
-          {
-            value: "full_time",
-            label: "List.Filter.FullTime",
-          },
-          {
-            value: "internship",
-            label: "List.Filter.Internship",
-          },
-          {
-            value: "part_time",
-            label: "List.Filter.PartTime",
-          },
-          {
-            value: "temporary",
-            label: "List.Filter.Temporary",
-          },
-          {
-            value: "mini_job",
-            label: "List.Filter.MiniJob",
-          },
         ],
       },
       salaryUnit: {
