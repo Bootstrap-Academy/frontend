@@ -8,6 +8,16 @@ export const useRefreshToken = () => useState("refreshToken", () => "");
 export const useShowConfetti = () => useState("showConfetti", () => false);
 
 /**
+ * Whether the full profile has been loaded from the API in this app session.
+ *
+ * The `user` cookie only carries the id and the two names, so anything that
+ * depends on another field - the e-mail address, the invoice address, the
+ * accepted version of the terms - has to wait for `GET /auth/users/me` instead
+ * of treating the missing field as "not set".
+ */
+export const useProfileLoaded = () => useState("profileLoaded", () => false);
+
+/**
  * The `user` cookie only carries what the interface needs before the profile
  * has been loaded from the API: the id and the two names. Everything else
  * (e-mail address, invoice address, VAT id, ...) stays on the server and is
@@ -65,6 +75,8 @@ export function restoreStates() {
   const user = <any>useUser();
   const cookie_user = <any>useAppCookie("user");
   user.value = cookie_user.value ?? null;
+  // The cookie is not the profile; the plugin loads that right afterwards.
+  useProfileLoaded().value = false;
 
   const session = <any>useSession();
   const cookie_session = <any>useAppCookie("session");
@@ -81,6 +93,8 @@ export function restoreStates() {
 
 export function setStates(response: any) {
   setUser(response?.user ?? null);
+  // Login, signup and refresh answer with the full profile.
+  useProfileLoaded().value = !!response?.user;
 
   const session = <any>useSession();
   const cookie_session = <any>useAppCookie("session");
@@ -132,6 +146,7 @@ export async function getUser() {
     const response = await GET(`/auth/users/me`);
 
     setUser(response);
+    useProfileLoaded().value = true;
 
     return [response, null];
   } catch (error: any) {

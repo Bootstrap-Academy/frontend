@@ -23,11 +23,15 @@ export const useTermsGateDismissed = () => useState("termsGateDismissed", () => 
  *
  * Nothing is kept on the client: the answer is derived from the user profile
  * that `GET /auth/users/me` returns, so the server row is the only record.
+ * As long as that profile has not arrived - a slow or unreachable API - the
+ * gate stays closed: the `user` cookie carries no `terms_version`, and asking
+ * again would let a user who has long accepted record a refusal by mistake.
  */
 export function needsTermsAcceptance(path: string) {
   const user = <any>useUser();
 
   if (!!!isAuth.value || !!!user.value?.id) return false;
+  if (!!!useProfileLoaded().value) return false;
   if (useTermsGateDismissed().value) return false;
   if (TERMS_GATE_EXEMPT_PREFIXES.some((prefix) => path.startsWith(prefix))) return false;
 

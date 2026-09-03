@@ -55,11 +55,11 @@
         <div class="flex gap-box">
           <h3 class="text-body-1 text-body">{{ t("Headings.UserType") }}:</h3>
           <p class="text-body-1 text-black">
-            {{ t(user.business ? "Headings.Business" : "Headings.Person") }}
+            {{ t(user?.business ? "Headings.Business" : "Headings.Person") }}
           </p>
         </div>
 
-        <template v-if="user.business">
+        <template v-if="user?.business">
           <div class="flex gap-box">
             <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.FirstName") }}:</h3>
             <p v-if="user && user.first_name" class="text-body-1 m-0 text-black">
