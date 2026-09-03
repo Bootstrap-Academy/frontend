@@ -89,7 +89,6 @@ export default {
 
     const showFreeQuizzesOnly = useAppCookie("showFreeQuizzesOnly");
     return {
-      image,
       username,
       nickname,
       description,
