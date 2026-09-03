@@ -55,11 +55,9 @@
         {{ t("Headings.TotalBill") }}
       </h2>
       <div class="flex items-center gap-box">
-        <h1 class="text-heading-1 m-0">{{ form.euros.value }}</h1>
-        <h3 class="text-heading-3 m-0 text-body">
-          {{ t("Headings.Euros").toLocaleLowerCase() }}
-        </h3>
+        <h1 class="text-heading-1 m-0">{{ totalPrice }}</h1>
       </div>
+      <Price :coins="coinsToBuy" class="text-body-2 text-body" />
     </article>
 
     <InputCheckbox
@@ -100,7 +98,7 @@
       @click="onclickSubmitForm"
       :class="form.euros.valid && form.morphCoins.valid ? '' : 'pointer-events-none opacity-60'"
     >
-      {{ t("Buttons.BuyCoins") }}
+      {{ t("Buttons.ContinueToOrderSummary") }}
     </Btn>
 
     <NuxtLink to="/morphcoins" class="mx-auto mt-card">
@@ -120,7 +118,10 @@ export default defineComponent({
   components: { ArrowDownCircleIcon },
   props: {},
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
+    const coinConfig = useCoinConfig();
+
+    onMounted(loadCoinConfig);
 
     const formRef = ref<HTMLFormElement | null>(null);
 
@@ -187,19 +188,25 @@ export default defineComponent({
       }
     }
 
+    const coinsToBuy = computed(() => Number(form.morphCoins.value) || 0);
+    const totalPrice = computed(() =>
+      formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
+    );
+
     // ============================================================= Handling Euros
-    const MAX_EUROS = 10_000;
-    const MIN_EUROS = 5;
+    const rate = computed(() => coinConfig.value.coins_per_euro);
+    const MAX_EUROS = computed(() => COIN_PURCHASE_MAX / rate.value);
+    const MIN_EUROS = computed(() => COIN_PURCHASE_MIN / rate.value);
     let euroErrorMsg = "";
     function oninputValidateEuros(event: any) {
       let currentVal = event?.target?.value ?? form.euros.value;
       currentVal = roundOffTo(currentVal, 2);
 
-      if (currentVal > MAX_EUROS) {
+      if (currentVal > MAX_EUROS.value) {
         currentVal = form.euros.value;
         openSnackbar("error", "Error.MaxEuros");
         euroErrorMsg = "";
-      } else if (currentVal < MIN_EUROS) {
+      } else if (currentVal < MIN_EUROS.value) {
         form.euros.valid = false;
         euroErrorMsg = "Error.MinEuros";
       } else {
@@ -210,7 +217,7 @@ export default defineComponent({
       event.target.value = currentVal;
       form.euros.value = currentVal;
 
-      form.morphCoins.value = form.euros.value * 100;
+      form.morphCoins.value = form.euros.value * rate.value;
     }
 
     function onchangeValidateEuros() {
@@ -218,8 +225,8 @@ export default defineComponent({
     }
 
     // ============================================================= Handling Morphcoins
-    const MAX_MORPHCOINS = 1000_000;
-    const MIN_MORPHCOINS = 500;
+    const MAX_MORPHCOINS = COIN_PURCHASE_MAX;
+    const MIN_MORPHCOINS = COIN_PURCHASE_MIN;
     let morphcoinsErrorMsg = "";
     function oninputValidateMorphcoins(event: any) {
       let currentVal = event?.target?.value ?? form.morphCoins.value;
@@ -239,7 +246,7 @@ export default defineComponent({
       event.target.value = currentVal;
       form.morphCoins.value = currentVal;
 
-      form.euros.value = form.morphCoins.value / 100;
+      form.euros.value = roundOffTo(form.morphCoins.value / rate.value, 2);
     }
 
     function onchangeValidateMorphcoins() {
@@ -250,6 +257,8 @@ export default defineComponent({
       t,
       form,
       formRef,
+      coinsToBuy,
+      totalPrice,
       onclickSubmitForm,
 
       oninputValidateEuros,

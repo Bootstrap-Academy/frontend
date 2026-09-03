@@ -73,8 +73,11 @@ export default defineComponent({
     noBooking: { type: Boolean, default: false },
   },
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const user = useUser();
+    const coinConfig = useCoinConfig();
+
+    onMounted(loadCoinConfig);
 
     const id = computed(() => {
       return props.data.id ?? "";
@@ -164,6 +167,20 @@ export default defineComponent({
       return props.data.description ?? "";
     });
 
+    // Coins are a means of payment, so the Euro total incl. VAT is shown next
+    // to the coin figure (Art. 246a § 1 Abs. 1 Nr. 5 EGBGB).
+    const priceLabel = computed(() => {
+      const n = new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US").format(
+        price.value
+      );
+      const coins = t("Headings.Morphcoins", { n }, price.value);
+      if (price.value <= 0) return coins;
+
+      const amount = formatEuros(coinsToEuros(price.value, coinConfig.value), locale.value);
+      const vat = coinConfig.value.vat_percent;
+      return `${coins} (${t("Body.PriceInclVat", { amount, vat })})`;
+    });
+
     const stats = computed(() => {
       return [
         // {
@@ -186,7 +203,7 @@ export default defineComponent({
         },
         {
           icon: IconMorphcoin,
-          value: t("Headings.Morphcoins", { n: abbreviateNumber(price.value) }, price.value),
+          value: priceLabel.value,
           heading: "Headings.Price",
         },
       ];

@@ -11,7 +11,7 @@
       :class="{ 'card-sm items-center lg:pt-box lg:pb-box': price.value <= 0 }"
     >
       <IconText v-if="price.value > 0" :highlightIcon="false" sm :icon="price.icon">
-        {{ t("Headings.Morphcoins", { n: abbreviateNumber(price.value) }, price.value) }}
+        <Price :coins="price.value" />
       </IconText>
       <Chip v-else-if="completed" xs color="bg-success">
         {{ t("Headings.Completed") }}

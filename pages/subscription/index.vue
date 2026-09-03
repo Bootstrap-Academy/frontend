@@ -5,7 +5,7 @@
         {{ t("Headings.RefillHearts") }}
       </h2>
 
-      <p v-if="hearts >= 6" class="text-center text-xl">
+      <p v-if="hearts >= heartConfig.hearts_max" class="text-center text-xl">
         {{ t("Body.HeartsAreFilled") }}
       </p>
 
@@ -24,7 +24,7 @@
             {{ t("Headings.RefillHeartsNow") }}
           </h2>
 
-          <div v-if="coins < 50" class="mt-4 flex justify-center">
+          <div v-if="coins < refillPrice" class="mt-4 flex justify-center">
             <p class="max-w-sm text-xl">
               {{ t("Body.Need50MorphCoinsForRefill") }}
             </p>
@@ -76,6 +76,8 @@
         :subscribeMonthly="() => subscribe(false)"
         :subscribeYearly="() => subscribe(true)"
         :yearly="selectedButton === 1"
+        :monthlyPrice="monthlyPrice"
+        :yearlyPrice="yearlyPrice"
         class="mb-5 mt-5 px-2"
       />
 
@@ -91,6 +93,35 @@
         />
       </div>
     </section>
+
+    <!--
+      Every coin purchase is an order, so the order summary required by
+      § 312j Abs. 2 BGB and the statutory order button are shown before the
+      coins are debited.
+    -->
+    <Modal v-if="order" @backdrop="order = null">
+      <div class="w-full max-w-2xl bg-secondary p-8 style-card">
+        <OrderSummary :coins="order.coins" :loading="ordering" @order="confirmOrder">
+          <template #characteristics>
+            <p class="text-body-1 m-0 text-body">{{ t(order.characteristics, order.params) }}</p>
+
+            <dl
+              v-if="order.details.length"
+              class="grid grid-cols-[auto_minmax(0,1fr)] gap-y-1 gap-x-card"
+            >
+              <template v-for="detail of order.details" :key="detail.label">
+                <dt class="text-body-1 m-0 text-body">{{ t(detail.label) }}</dt>
+                <dd class="text-body-1 m-0 text-heading">{{ t(detail.value) }}</dd>
+              </template>
+            </dl>
+          </template>
+
+          <template #actions>
+            <Btn secondary @click="order = null">{{ t("Buttons.Cancel") }}</Btn>
+          </template>
+        </OrderSummary>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -108,7 +139,17 @@ export default {
     const currentCard = ref(1);
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
+    const premiumPlans = usePremiumPlans();
+    const heartConfig = useHeartConfig();
     const autopay = ref(false);
+
+    onMounted(async () => {
+      await Promise.all([loadCoinConfig(), loadHeartConfig(), getPremiumPlans()]);
+    });
+
+    const monthlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "MONTHLY"));
+    const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
+    const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
 
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
@@ -153,39 +194,58 @@ export default {
       { name: "Buttons.TurnOff" },
     ];
 
-    function subscribe(isYearly: boolean) {
-      console.log("Coins", coins.value);
-      const plan = isYearly ? "YEARLY" : "MONTHLY";
-      const coinsRequired = isYearly ? 10_000 : 1_000;
+    // The pending order shown in the order summary, or `null`.
+    const order = ref<any>(null);
+    const ordering = ref(false);
 
-      if (coins.value >= coinsRequired) {
-        openDialog(
-          "info",
-          isYearly ? "Headings.BuyYearlySubscription" : "Headings.BuyMonthlySubscription",
-          isYearly ? "Body.BuyYearlySubscription" : "Body.BuyMonthlySubscription",
-          false,
+    function subscribe(isYearly: boolean) {
+      const plan = isYearly ? "YEARLY" : "MONTHLY";
+      const coinsRequired = isYearly ? yearlyPrice.value : monthlyPrice.value;
+
+      if (coins.value < coinsRequired) {
+        openSnackbar("error", "Error.NotEnoughCoins");
+        return;
+      }
+
+      // The renewal is only booked along if the account already has autopay
+      // configured; a first purchase never enables it.
+      const renews = !!premiumStatusAutoPay.value;
+
+      order.value = {
+        coins: coinsRequired,
+        characteristics: "Body.OrderPremiumCharacteristics",
+        params: {},
+        details: [
           {
-            label: "Buttons.Buy",
-            onclick: async () => {
-              const [success] = await buyPremium({
-                plan: plan,
-                autopay: !!premiumStatusAutoPay.value,
-              });
-              if (success) {
-                openSnackbar(
-                  "success",
-                  isYearly ? "Success.SubscribedYearly" : "Success.SubscribedMonthly"
-                );
-              }
-            },
+            label: "Headings.ContractTerm",
+            value: isYearly ? "Body.PremiumTermYearly" : "Body.PremiumTermMonthly",
           },
           {
-            label: "Buttons.Cancel",
-            onclick: () => {},
+            label: "Headings.AutomaticRenewal",
+            value: renews ? "Body.AutomaticRenewalOn" : "Body.AutomaticRenewalOff",
+          },
+        ],
+        submit: async () => {
+          const [success] = await buyPremium({ plan, autopay: renews });
+          if (success) {
+            openSnackbar(
+              "success",
+              isYearly ? "Success.SubscribedYearly" : "Success.SubscribedMonthly"
+            );
           }
-        );
-      } else {
-        openSnackbar("error", "Error.NotEnoughCoins");
+        },
+      };
+    }
+
+    async function confirmOrder() {
+      if (!order.value || ordering.value) return;
+
+      ordering.value = true;
+      try {
+        await order.value.submit();
+      } finally {
+        ordering.value = false;
+        order.value = null;
       }
     }
 
@@ -234,28 +294,22 @@ export default {
       //   );
       // }
 
-      if (hearts.value >= 6) {
+      if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
-      } else if (coins.value < 50) {
+      } else if (coins.value < refillPrice.value) {
         return openSnackbar("error", "Error.Need50CoinsForRefill");
       }
-      return openDialog(
-        "info",
-        `Headings.RefillHearts`,
-        "Body.RefillHearts",
-        false,
-        {
-          label: "Buttons.Refill",
-          onclick: async () => {
-            const [success, error] = await refillHearts();
-            if (success) openSnackbar("success", "Success.RefilledHearts");
-          },
+
+      order.value = {
+        coins: refillPrice.value,
+        characteristics: "Body.OrderHeartsCharacteristics",
+        params: { max: heartConfig.value.hearts_max },
+        details: [],
+        submit: async () => {
+          const [success] = await refillHearts();
+          if (success) openSnackbar("success", "Success.RefilledHearts");
         },
-        {
-          label: "Buttons.Cancel",
-          onclick: () => {},
-        }
-      );
+      };
     }
 
     const formatTime = (time: number) => {
@@ -298,6 +352,13 @@ export default {
     return {
       t,
       subscribe,
+      heartConfig,
+      order,
+      ordering,
+      confirmOrder,
+      monthlyPrice,
+      yearlyPrice,
+      refillPrice,
       currentCard,
       selectedButton,
       buttonOptions,
