@@ -14,11 +14,20 @@
 
   <Modal v-if="ordering" @backdrop="ordering = false">
     <div class="w-full max-w-2xl bg-secondary p-8 style-card">
-      <OrderSummary :coins="refillPrice" :loading="loading" @order="confirmOrder">
+      <OrderSummary
+        :coins="refillPrice"
+        :loading="loading"
+        :disabled="!withdrawalConsent"
+        @order="confirmOrder"
+      >
         <template #characteristics>
           <p class="text-body-1 m-0 text-body">
             {{ t("Body.OrderHeartsCharacteristics", { max: maxHearts }) }}
           </p>
+        </template>
+
+        <template #consent>
+          <OrderWithdrawalConsent kind="digital" v-model="withdrawalConsent" />
         </template>
 
         <template #actions>
@@ -40,6 +49,9 @@ export default {
     const heartConfig = useHeartConfig();
     const ordering = ref(false);
     const loading = ref(false);
+    // Hearts are digital content, so the declarations of § 356 Abs. 6 Nr. 2
+    // BGB are required before the refill is ordered.
+    const withdrawalConsent = ref(false);
 
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
@@ -59,21 +71,35 @@ export default {
         });
       }
 
+      // The dialog is rebuilt every time it opens, so the boxes start unticked.
+      withdrawalConsent.value = false;
       ordering.value = true;
     }
 
     async function confirmOrder() {
       if (loading.value) return;
+      if (!withdrawalConsent.value) {
+        return openSnackbar("error", "Error.WithdrawalConsentMissing");
+      }
 
       loading.value = true;
-      const [success] = await refillHearts();
+      const [success] = await refillHearts(withdrawalConsentBody());
       loading.value = false;
       ordering.value = false;
 
       if (success) openSnackbar("success", "Success.RefilledHearts");
     }
 
-    return { t, fnRefillHearts, confirmOrder, ordering, loading, refillPrice, maxHearts };
+    return {
+      t,
+      fnRefillHearts,
+      confirmOrder,
+      ordering,
+      loading,
+      withdrawalConsent,
+      refillPrice,
+      maxHearts,
+    };
   },
 };
 </script>

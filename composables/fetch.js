@@ -178,6 +178,8 @@ const onResponseError = async (context) => {
     return (response._data.detail = "Error.NoCourseAccess");
   } else if (details.includes("not enough coins")) {
     return (response._data.detail = "Error.NotEnoughCoins");
+  } else if (details.includes("withdrawal consent missing")) {
+    return (response._data.detail = "Error.WithdrawalConsentMissing");
   } else if (details.includes("cannot start in the past")) {
     return (response._data.detail = "Error.CannotStartInPast");
   } else if (details.includes("too many requests")) {

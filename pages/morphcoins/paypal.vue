@@ -146,7 +146,7 @@
         <OrderSummary
           :coins="coinsToBuy"
           breakdown
-          :disabled="!canBuy"
+          :disabled="!canBuy || !withdrawalConsent"
           :hide-actions="ordered"
           @order="onclickOrder"
         >
@@ -154,6 +154,10 @@
             <p class="text-body-1 m-0 text-body">
               {{ t("Body.OrderCoinsCharacteristics") }}
             </p>
+          </template>
+
+          <template #consent>
+            <OrderWithdrawalConsent kind="digital" v-model="withdrawalConsent" />
           </template>
         </OrderSummary>
       </article>
@@ -220,6 +224,9 @@ export default {
 
     const paypal = ref(null);
     const ordered = ref(false);
+    // Morphcoins are digital content, so the declarations of § 356 Abs. 6
+    // Nr. 2 BGB have to be given before the order can be placed.
+    const withdrawalConsent = ref(false);
     const paypalClientID = usePaypalClientID();
 
     onMounted(loadCoinConfig);
@@ -228,6 +235,10 @@ export default {
     // requested only from here (§ 25 Abs. 2 Nr. 2 TDDDG).
     async function onclickOrder() {
       if (!validAmount.value || !canBuy.value) return;
+      if (!withdrawalConsent.value) {
+        openSnackbar("error", "Error.WithdrawalConsentMissing");
+        return;
+      }
 
       setLoading(true);
       await getPaypalClientID();
@@ -244,7 +255,10 @@ export default {
     }
 
     function renderPaypalButtons() {
-      const orderBody = JSON.stringify({ coins: coinsToBuy.value });
+      const orderBody = JSON.stringify({
+        coins: coinsToBuy.value,
+        ...withdrawalConsentBody(),
+      });
 
       const script = document.createElement("script");
       script.setAttribute("data-namespace", "paypal_sdk");
@@ -298,6 +312,7 @@ export default {
       canBuy,
       paypal,
       ordered,
+      withdrawalConsent,
       onclickOrder,
     };
   },

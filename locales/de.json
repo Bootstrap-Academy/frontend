@@ -513,7 +513,12 @@
     "NoContractFoundForEmail": "Den Zeitpunkt, zu dem der Vertrag endet, können wir zu Ihren Angaben nicht automatisch ermitteln. Wir prüfen Ihre Kündigung und bestätigen Ihnen den Beendigungszeitpunkt gesondert per E-Mail.",
     "ConfirmationEmailSent": "Eine Bestätigung mit diesem Inhalt haben wir Ihnen soeben per E-Mail an {email} geschickt.",
     "ConfirmationEmailNotSent": "Die Bestätigungs-E-Mail konnte nicht zugestellt werden. Bitte speichern oder drucken Sie diese Seite.",
-    "CancelPremiumHint": "Dort können Sie Ihre Premium-Mitgliedschaft mit dem gesetzlichen Kündigungsformular kündigen; den Eingang bestätigen wir Ihnen sofort per E-Mail."
+    "CancelPremiumHint": "Dort können Sie Ihre Premium-Mitgliedschaft mit dem gesetzlichen Kündigungsformular kündigen; den Eingang bestätigen wir Ihnen sofort per E-Mail.",
+    "WithdrawalConsentLanguageNote": "Die folgenden Erklärungen sind Teil des Vertrags und daher nur auf Deutsch verfügbar.",
+    "WithdrawalConsentServicePerformance": "Ich verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.",
+    "WithdrawalConsentServiceLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.",
+    "WithdrawalConsentDigitalPerformance": "Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen.",
+    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -951,7 +956,6 @@
     "GoToProfile": "Zum Profil",
     "RightToWithdrawal": "Dir steht ein 14-tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
     "RightToWithdrawalLink": "hier",
-    "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen.",
     "VideoPrivacyHint": "Beim Abspielen werden Daten an YouTube (Google) übertragen. Details in unseren",
     "OrderLegalHint": "Es gelten unsere",
     "OrderLegalHintMiddle": "und die",
@@ -1132,7 +1136,8 @@
     "ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden.",
     "InvalidCoinAmount": "Ungültige Anzahl an Morphcoins. Bitte starte den Kauf erneut.",
     "TooManyRequests": "Zu viele Anfragen. Bitte versuchen Sie es später erneut oder schreiben Sie uns an hallo{'@'}bootstrap.academy.",
-    "DeclarationNotSubmitted": "Ihre Erklärung konnte nicht übermittelt werden. Bitte versuchen Sie es erneut oder senden Sie Ihre Erklärung an hallo{'@'}bootstrap.academy."
+    "DeclarationNotSubmitted": "Ihre Erklärung konnte nicht übermittelt werden. Bitte versuchen Sie es erneut oder senden Sie Ihre Erklärung an hallo{'@'}bootstrap.academy.",
+    "WithdrawalConsentMissing": "Bitte gib die beiden Erklärungen zum Widerrufsrecht ab, um zu bestellen"
   },
   "Months": {
     "January": "Januar",

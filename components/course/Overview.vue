@@ -58,6 +58,7 @@
         <OrderSummary
           :coins="price"
           :loading="loading"
+          :disabled="!canOrder"
           :submit-label="price > 0 ? 'Buttons.OrderWithObligationToPay' : 'Buttons.EnrollNow'"
           @order="onclickOrder"
         >
@@ -78,21 +79,12 @@
               v-model="termsAndConditions"
             />
 
-            <InputCheckbox
-              label="Links.RightToWithdrawal"
-              id="RightToWithdrawal"
-              :link="{
-                to: '/docs/right-of-withdrawal',
-                label: 'Links.RightToWithdrawalLink',
-              }"
-              target="_blank"
-              v-model="confirmRightToWithdrawal"
-            />
-            <InputCheckbox
-              label="Links.DontUseRightToWithdrawal"
-              id="DontUseRightToWithdrawal"
-              v-model="confirmDontUseRightToWithdrawal"
-            />
+            <!--
+              A paid course is digital content, so the declarations of
+              § 356 Abs. 6 Nr. 2 BGB are required. A free course is not
+              ordered against payment, so they are not asked for.
+            -->
+            <OrderWithdrawalConsent v-if="price > 0" kind="digital" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
@@ -134,8 +126,7 @@ const snackbar = useSnackbar();
 const router = useRouter();
 
 const termsAndConditions = ref(false);
-const confirmRightToWithdrawal = ref(false);
-const confirmDontUseRightToWithdrawal = ref(false);
+const withdrawalConsent = ref(false);
 const confirming = ref(false);
 
 function onclickEnroll() {
@@ -144,15 +135,14 @@ function onclickEnroll() {
     return;
   }
 
+  // The dialog is rebuilt every time it opens, so the boxes start unticked.
+  termsAndConditions.value = false;
+  withdrawalConsent.value = false;
   confirming.value = true;
 }
 
 async function onclickOrder() {
-  if (
-    !termsAndConditions.value ||
-    !confirmRightToWithdrawal.value ||
-    !confirmDontUseRightToWithdrawal.value
-  ) {
+  if (!canOrder.value) {
     snackbar.value = {
       show: true,
       type: "error",
@@ -163,6 +153,22 @@ async function onclickOrder() {
   }
 
   loading.value = true;
+
+  // Courses are unlocked by the skills service, which does not store the
+  // declarations, so they are recorded here before the order is placed.
+  if (price.value > 0) {
+    const [, consentError] = await recordWithdrawalConsent("course", props.data?.id ?? "");
+    if (consentError) {
+      loading.value = false;
+      snackbar.value = {
+        show: true,
+        type: "error",
+        heading: consentError?.detail ?? "Error.WithdrawalConsentMissing",
+        body: "",
+      };
+      return;
+    }
+  }
 
   const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
   if (success) await getCourseByID(props.data?.id ?? "");
@@ -185,6 +191,10 @@ async function onclickOrder() {
 const price = computed(() => {
   return props.data?.price ?? 0;
 });
+
+const canOrder = computed(
+  () => termsAndConditions.value && (price.value <= 0 || withdrawalConsent.value)
+);
 
 const totalSections = computed(() => {
   let sections = props.data?.sections ?? 0;
