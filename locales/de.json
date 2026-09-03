@@ -908,7 +908,8 @@
     "CalendarNextMonth": "Nächster Monat",
     "CalendarPrevMonth": "Vorheriger Monat",
     "MoreEventInfo": "Mehr Infos",
-    "LearnMore": "Mehr erfahren"
+    "LearnMore": "Mehr erfahren",
+    "LoadVideo": "Video laden"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",
@@ -978,7 +979,8 @@
     "Newsletter": "Ich möchte mich für den Bootstrap-Newsletter anmelden.",
     "RightToWithdrawal": "Dir steht ein 14-tägiges Widerrufsrecht zu. Widerrufsbelehrung + Widerrufsformular findest du",
     "RightToWithdrawalLink": "hier",
-    "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen."
+    "DontUseRightToWithdrawal": "Ich verlange, dass die Dienstleister vor Ende der Widerrufsfrist mit der in Auftrag gegebenen Dienstleistung beginnen.",
+    "VideoPrivacyHint": "Beim Abspielen werden Daten an YouTube (Google) übertragen. Details in unseren"
   },
   "Success": {
     "SolvedMatching": "Matching gelöst ✅",

@@ -1,21 +1,41 @@
 <template>
   <article v-if="videoSRC && activeLecture">
-    <iframe
-      v-if="activeLecture.type == 'youtube'"
-      :src="videoSRC"
-      title="YouTube player"
-      frameborder="0"
-      allow="
-        accelerometer;
-        autoplay;
-        clipboard-write;
-        encrypted-media;
-        gyroscope;
-        picture-in-picture;
-      "
-      allowfullscreen
-      :key="`youtube-${activeLecture.id}`"
-    ></iframe>
+    <template v-if="activeLecture.type == 'youtube'">
+      <iframe
+        v-if="youtubeLoaded"
+        :src="youtubeEmbedSRC"
+        title="YouTube player"
+        frameborder="0"
+        allow="
+          accelerometer;
+          autoplay;
+          clipboard-write;
+          encrypted-media;
+          gyroscope;
+          picture-in-picture;
+        "
+        allowfullscreen
+        :key="`youtube-${activeLecture.id}`"
+      ></iframe>
+
+      <div v-else :key="`youtube-placeholder-${activeLecture.id}`">
+        <div
+          class="video-placeholder card flex flex-col items-center justify-center bg-secondary text-center gap-card"
+        >
+          <PlayCircleIcon class="h-16 w-16 text-accent" />
+          <p class="text-heading-4 max-w-full break-words">{{ activeLecture.title ?? "" }}</p>
+          <Btn :icon="PlayIcon" @click="loadYoutubeVideo">{{ t("Buttons.LoadVideo") }}</Btn>
+        </div>
+
+        <p class="text-body-2 text-body mt-box">
+          {{ t("Links.VideoPrivacyHint") }}
+          <NuxtLink to="/docs/privacy" target="_blank" class="text-accent hover:underline">{{
+            t("Links.PrivacyNoticeLinkText")
+          }}</NuxtLink
+          >{{ t("Links.PrivacyNoticeHintEnd") }}
+        </p>
+      </div>
+    </template>
 
     <video
       ref="video"
@@ -46,6 +66,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
+import { useI18n } from "vue-i18n";
+import { PlayCircleIcon, PlayIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
   props: {
@@ -55,14 +77,31 @@ export default defineComponent({
   },
   setup(props) {
     const videoSRC = useVideoSRC();
+    const { t } = useI18n();
 
     let videoInterval: any;
     const video = ref<HTMLVideoElement | null>(null);
     const refSource = ref<HTMLSourceElement | any>(null);
 
+    // YouTube embeds are only mounted after an explicit click, so that no request
+    // reaches Google before the user asks for it. The choice is deliberately not
+    // persisted anywhere: it is asked again for every lecture and every visit.
+    const youtubeLoaded = ref(false);
+
+    const youtubeEmbedSRC = computed(() => {
+      if (!!!videoSRC.value) return "";
+      return `${videoSRC.value}${videoSRC.value.includes("?") ? "&" : "?"}autoplay=1`;
+    });
+
+    function loadYoutubeVideo() {
+      youtubeLoaded.value = true;
+    }
+
     watch(
       () => props.activeLecture,
       async (newValue, oldValue) => {
+        youtubeLoaded.value = false;
+
         if (!!!newValue) return;
 
         const courseID = props.course?.id ?? "";
@@ -118,7 +157,18 @@ export default defineComponent({
       }
     }
 
-    return { videoSRC, refSource, onTimeUpdate, onVideoLoad };
+    return {
+      t,
+      videoSRC,
+      refSource,
+      onTimeUpdate,
+      onVideoLoad,
+      youtubeLoaded,
+      youtubeEmbedSRC,
+      loadYoutubeVideo,
+      PlayCircleIcon,
+      PlayIcon,
+    };
   },
 });
 </script>
@@ -142,6 +192,22 @@ iframe {
   video,
   iframe {
     @apply h-[90vh] w-full max-w-full;
+  }
+}
+
+/* The placeholder mirrors the player box, but grows instead of clipping its content. */
+.video-placeholder {
+  @apply h-fit w-full min-w-[50vw] max-w-full style-card md:min-h-[60vh];
+}
+@media only screen and (max-width: 768px) and (max-aspect-ratio: 1/1) {
+  .video-placeholder {
+    @apply w-full max-w-full;
+    min-height: calc(100vw * 0.5);
+  }
+}
+@media only screen and (max-width: 768px) and (min-aspect-ratio: 1/1) {
+  .video-placeholder {
+    @apply min-h-[90vh] w-full max-w-full;
   }
 }
 </style>

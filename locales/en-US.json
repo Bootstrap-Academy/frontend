@@ -913,7 +913,8 @@
     "CalendarNextMonth": "Next month",
     "CalendarPrevMonth": "Previous month",
     "MoreEventInfo": "More info",
-    "LearnMore": "Learn More"
+    "LearnMore": "Learn More",
+    "LoadVideo": "Load video"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",
@@ -979,7 +980,8 @@
     "Newsletter": "I want to register for Bootstrap newsletter.",
     "RightToWithdrawal": "You have a 14-day right of withdrawal. You will find the cancellation policy + cancellation form",
     "RightToWithdrawalLink": "here",
-    "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period."
+    "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period.",
+    "VideoPrivacyHint": "Playing the video sends data to YouTube (Google). Details are in our"
   },
   "Success": {
     "SolvedMatching": "Matching Solved ✅",
