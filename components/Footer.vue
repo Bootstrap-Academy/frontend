@@ -79,6 +79,10 @@ export default defineComponent({
         pathname: "/docs/terms-and-conditions",
       },
       {
+        label: "Links.RightOfWithdrawal",
+        pathname: "/docs/right-of-withdrawal",
+      },
+      {
         label: "Links.Imprint",
         pathname: "/docs/imprint",
       },

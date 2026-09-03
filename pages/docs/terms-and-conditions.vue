@@ -13,438 +13,969 @@
 <template>
   <main class="mt-main mb-main container">
     <h1>
-      Allgemeine Geschäftsbedingungen von bootstrap academy GmbH, Wittelsbacherplatz 1 80333 München
-      (nachfolgend „Anbieter“) für die Nutzung der Plattform bootstraps-academy
+      Allgemeine Geschäftsbedingungen (AGB) der bootstrap academy GmbH für die Lernplattform
+      Bootstrap Academy
     </h1>
 
     <h2 class="mt-card">
-      Plattform:
-      <a :href="webLink" target="_blank">
-        {{ webLink }}
-      </a>
+      Plattform: <a href="https://bootstrap.academy" target="_blank">https://bootstrap.academy</a>
+      <br />
+      Anbieter: bootstrap academy GmbH, Wittelsbacherplatz 1, 80333 München (nachfolgend „Anbieter“
+      oder „wir“)
       <br />
       E-Mail-Adresse: hallo@bootstrap.academy
     </h2>
+    <p class="mt-card">
+      <em
+        >Note for English-speaking users: the contract language is German (Ziffer 1.4). These terms
+        are currently available in German only.</em
+      >
+    </p>
 
     <article>
-      <h2>1. Allgemeine Bestimmungen und Leistungsgegenstand</h2>
       <p>
-        1.1 Der Anbieter stellt seinen Kunden eine webbasierte Plattform einschließlich Wartung und
-        Pflege nach Maßgabe dieser AGB zur Verfügung. Die Plattform bietet registrierten Nutzern das
-        Erlernen von Programmierkenntnissen insbesondere durch Schulungen, Webinare,
-        On-Demand-Videokurse und Coachings.
+        Diese AGB regeln die Nutzung der Lernplattform Bootstrap Academy (bootstrap.academy) und der
+        dort angebotenen kostenlosen und kostenpflichtigen Leistungen. Sie gelten für Verbraucher
+        und Unternehmer; Ziffer 22 enthält ergänzende Regelungen für Unternehmer. Die
+        Widerrufsbelehrung für Verbraucher und die Datenschutzhinweise sind eigenständige Dokumente,
+        die Sie im Fußbereich jeder Seite finden.
+      </p>
+      <h2>Inhalt</h2>
+      <ul>
+        <li><a href="#ziffer-1">1. Geltungsbereich und Begriffe</a></li>
+        <li><a href="#ziffer-2">2. Leistungen der Plattform</a></li>
+        <li><a href="#ziffer-3">3. Registrierung, Vertragsschluss und Vertragstext</a></li>
+        <li><a href="#ziffer-4">4. Laufzeit und Beendigung des Nutzungsvertrags</a></li>
+        <li><a href="#ziffer-5">5. Nutzungsrechte an Inhalten der Plattform</a></li>
+        <li><a href="#ziffer-6">6. MorphCoins</a></li>
+        <li><a href="#ziffer-7">7. Kostenpflichtige Kurse</a></li>
+        <li><a href="#ziffer-8">8. Premium</a></li>
+        <li><a href="#ziffer-9">9. Herzen</a></li>
+        <li><a href="#ziffer-10">10. Webinare und Coachings (Events)</a></li>
+        <li><a href="#ziffer-11">11. Bestellvorgang, Preise, Zahlung und Rechnungen</a></li>
+        <li><a href="#ziffer-12">12. Minderjährige</a></li>
+        <li><a href="#ziffer-13">13. Pflichten der Nutzer</a></li>
+        <li><a href="#ziffer-14">14. Nutzerinhalte, Moderation und Meldeverfahren</a></li>
+        <li>
+          <a href="#ziffer-15">
+            15. Einschränkung und Sperrung des Kontos, außerordentliche Kündigung
+          </a>
+        </li>
+        <li><a href="#ziffer-16">16. Verfügbarkeit, Wartung, Änderungen und Gewährleistung</a></li>
+        <li><a href="#ziffer-17">17. Datenschutz und Daten nach Vertragsende</a></li>
+        <li><a href="#ziffer-18">18. Haftung</a></li>
+        <li><a href="#ziffer-19">19. Freistellung</a></li>
+        <li><a href="#ziffer-20">20. Änderungen dieser AGB</a></li>
+        <li>
+          <a href="#ziffer-21">21. Streitbeilegung, anwendbares Recht und Gerichtsstand</a>
+        </li>
+        <li><a href="#ziffer-22">22. Ergänzende Regelungen für Unternehmer</a></li>
+      </ul>
+    </article>
+
+    <article id="ziffer-1">
+      <h2>1. Geltungsbereich und Begriffe</h2>
+      <p>
+        1.1 Diese AGB gelten für alle Verträge zwischen dem Anbieter und Ihnen als Nutzer über die
+        Nutzung der Plattform und über die dort angebotenen Leistungen: das kostenlose Nutzerkonto,
+        MorphCoins, kostenpflichtige Kurse, Premium, Herzen sowie Webinare und Coachings.
+        Abweichende oder ergänzende Bedingungen von Ihnen werden nicht Vertragsbestandteil, es sei
+        denn, wir stimmen ihnen ausdrücklich in Textform zu.
       </p>
       <p>
-        1.2 Von diesen Geschäftsbedingungen abweichende AGB, die durch den Kunden verwendet werden,
-        erkennt der Anbieter – vorbehaltlich einer ausdrücklichen Zustimmung – nicht an. Individuell
-        vereinbarte Leistungen gehen den Regelungen dieser AGB vor.
+        1.2 Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt,
+        die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit
+        zugerechnet werden können (§ 13 BGB). Unternehmer ist eine natürliche oder juristische
+        Person oder eine rechtsfähige Personengesellschaft, die bei Abschluss eines Rechtsgeschäfts
+        in Ausübung ihrer gewerblichen oder selbständigen beruflichen Tätigkeit handelt (§ 14 BGB).
+      </p>
+      <p>1.3 In diesen AGB bedeuten:</p>
+      <ul>
+        <li>
+          „Plattform“: die Lernplattform unter bootstrap.academy einschließlich der zugehörigen
+          Programmierschnittstelle (api.bootstrap.academy);
+        </li>
+        <li>„Nutzerkonto“: Ihr persönliches, kostenloses Konto auf der Plattform;</li>
+        <li>
+          „MorphCoins“: das Zahlungsmittel innerhalb der Plattform. Wir unterscheiden „gekaufte
+          MorphCoins“ (gegen Geld erworben) und „Belohnungs-Coins“ (von uns als Belohnung
+          gutgeschrieben), siehe Ziffer 6;
+        </li>
+        <li>
+          „Premium“: die im Voraus bezahlte, zeitlich befristete Mitgliedschaft nach Ziffer 8;
+        </li>
+        <li>„Herzen“: das Spielelement nach Ziffer 9;</li>
+        <li>„Events“: Webinare und Coachings nach Ziffer 10;</li>
+        <li>„Nutzerinhalte“: alle Inhalte, die Sie auf der Plattform einstellen (Ziffer 14).</li>
+      </ul>
+      <p>1.4 Vertragssprache ist Deutsch. Maßgeblich ist die deutsche Fassung dieser AGB.</p>
+    </article>
+
+    <article id="ziffer-2">
+      <h2>2. Leistungen der Plattform</h2>
+      <p>
+        2.1 Mit einem Nutzerkonto können Sie kostenlos nutzen: den Skilltree mit kostenlosen Kursen,
+        Quizze und Zuordnungsaufgaben („Matchings“), Coding-Challenges, bei denen Ihr Code auf
+        unseren Servern ausgeführt und geprüft wird, das Erstellen eigener Aufgaben, die Bestenliste
+        und die Herzen. Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse erforderlich.
+      </p>
+      <p>
+        2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – das einmalige
+        Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8), das sofortige Auffüllen der
+        Herzen (Ziffer 9) sowie kostenpflichtige Webinare und Coachings (Ziffer 10); Kursleiter
+        können Events auch kostenlos anbieten. Den Preis jeder Leistung zeigen wir Ihnen vor der
+        Bestellung in MorphCoins und in Euro an (Ziffer 11).
+      </p>
+      <p>
+        2.3 Die Inhalte der Plattform stammen von uns, von Kursleitern, die Webinare und Coachings
+        durchführen, und von anderen Nutzern (Nutzerinhalte). Wir schulden die Bereitstellung der
+        Plattform und der von Ihnen erworbenen Leistungen, nicht einen bestimmten Lernerfolg oder
+        ein bestimmtes Prüfungsergebnis.
+      </p>
+      <p>
+        2.4 Wir entwickeln die Plattform weiter. Kostenlose Funktionen dürfen wir aus triftigem
+        Grund ändern, ergänzen oder einstellen, insbesondere wegen technischer Weiterentwicklung,
+        aus Sicherheitsgründen, wegen rechtlicher Anforderungen, wegen geringer Nutzung oder weil
+        der Betrieb für uns unverhältnismäßig aufwendig wird. Dabei entstehen Ihnen keine Kosten.
+        Änderungen, die eine von Ihnen genutzte Funktion mehr als unerheblich einschränken, kündigen
+        wir vorher per E-Mail und auf der Plattform an (§ 327r BGB); Sie können den Nutzungsvertrag
+        jederzeit nach Ziffer 4.2 beenden. Für kostenpflichtige Leistungen gilt Ziffer 16.4.
       </p>
     </article>
 
-    <article>
-      <h2>2. Vertragsgegenstand und Leistungen</h2>
+    <article id="ziffer-3">
+      <h2>3. Registrierung, Vertragsschluss und Vertragstext</h2>
       <p>
-        2.1 Der Anbieter stellt dem Kunden eine Plattform (nachfolgend „Plattform“) zum Erlernen von
-        Programmierkenntnissen insbesondere durch Schulungen, Webinare, On-Demand-Demand-Videokurse
-        und Coachings zur Verfügung (Zweck). Vertragsgegenstand ist ausschließlich die
-        Zurverfügungstellung der Plattform über das Internet zu diesem Zweck.
+        3.1 Für die Nutzung der Plattform legen Sie ein Nutzerkonto an. Die Registrierung ist
+        kostenlos. Erforderlich sind ein Nickname (Anmeldename; ein Pseudonym ist zulässig), ein
+        Anzeigename, Ihre E-Mail-Adresse und ein Passwort. Statt eines Passworts können Sie sich mit
+        einem bestehenden Konto bei GitHub, Discord oder Google registrieren und anmelden.
       </p>
       <p>
-        2.2 Der Anbieter beseitigt nach Maßgabe der technischen Möglichkeiten unverzüglich sämtliche
-        Funktionsstörungen. Eine Funktionsstörung liegt vor, wenn die Plattform nicht für ihren
-        vorgesehenen Zweck genutzt werden kann oder in sonstiger Weise nicht funktionsgerecht
-        arbeitet, so dass die Nutzung der Plattform nicht oder nur eingeschränkt möglich ist.
+        3.2 Sie müssen mindestens 16 Jahre alt sein; das bestätigen Sie bei der Registrierung. Für
+        Minderjährige gilt ergänzend Ziffer 12.
       </p>
       <p>
-        2.3 Die Verfügbarkeit der Plattform beträgt 98,5 % im Jahresmittel einschließlich
-        Wartungsarbeiten, jedoch darf die Verfügbarkeit nicht länger als zwei Kalendertage in Folge
-        beeinträchtigt oder unterbrochen sein. Hiervon ausgenommen sind notwendige reguläre
-        Wartungsarbeiten sowie diejenigen Zeiträume, in denen die Verfügbarkeit aufgrund von
-        Ereignissen eingeschränkt wird, die der Anbieter nicht zu vertreten hat (z.B. höhere Gewalt,
-        Handlungen Dritter, technische Probleme oder Änderungen der Rechtslage).
+        3.3 Ablauf der Registrierung: Sie geben Ihre Angaben in das Registrierungsformular ein,
+        bestätigen Ihr Mindestalter und akzeptieren diese AGB über ein Kontrollkästchen.
+        Eingabefehler können Sie vor dem Absenden jederzeit in den Formularfeldern erkennen und
+        korrigieren. Mit dem Absenden des Formulars geben Sie ein Angebot auf Abschluss des
+        Nutzungsvertrags ab. Der Vertrag kommt zustande, wenn wir Ihr Nutzerkonto anlegen. Zur
+        Bestätigung Ihrer E-Mail-Adresse senden wir Ihnen eine E-Mail mit einem Bestätigungscode.
+        Kostenpflichtige Bestellungen und einige weitere Funktionen stehen erst nach Bestätigung
+        Ihrer E-Mail-Adresse zur Verfügung.
       </p>
+      <p>
+        3.4 Diese AGB können Sie jederzeit unter bootstrap.academy/docs/terms-and-conditions
+        abrufen, speichern und ausdrucken. Welche Fassung Sie akzeptiert haben und wann, speichern
+        wir mit Ihrem Nutzerkonto und teilen es Ihnen auf Anfrage mit; frühere Fassungen stellen wir
+        Ihnen auf Anfrage zur Verfügung. Ihre Registrierungsdaten speichern wir in Ihrem
+        Nutzerkonto, wo Sie sie einsehen und ändern können.
+      </p>
+      <p>
+        3.5 Jede Person darf nur ein Nutzerkonto haben. Das Nutzerkonto ist nicht übertragbar.
+        Halten Sie Ihre Zugangsdaten geheim und informieren Sie uns unverzüglich, wenn Sie einen
+        Missbrauch Ihres Kontos bemerken.
+      </p>
+      <p>3.6 Einem Verhaltenskodex haben wir uns nicht unterworfen.</p>
     </article>
 
-    <article>
-      <h2>3. Registrierung, Vertragsschluss und Pflichtinformationen</h2>
+    <article id="ziffer-4">
+      <h2>4. Laufzeit und Beendigung des Nutzungsvertrags</h2>
       <p>
-        3.1 Kunden können einen Account auf der Plattform anlegen. Die Registrierung erfolgt, indem
-        der Kunde das jeweils gewünschte Paket auswählt, die Pflichtangaben eingibt und nach dem
-        Durchlaufen aller weiteren verpflichtenden Schritte die Registrierung mit einem Klick auf
-        den Registrierungs-Button abschließt. Vor dem verbindlichen Abschluss der Registrierung kann
-        der Kunde seine Eingaben überprüfen und jederzeit über die üblichen Tastatur-, Maus-, Touch-
-        oder sonstigen zur Verfügung stehenden Eingabefunktionen korrigieren. Durch die
-        Registrierung kommt ein Nutzungsvertrag zwischen dem Anbieter und dem Kunden zustande.
+        4.1 Der Nutzungsvertrag läuft auf unbestimmte Zeit. Es gibt keine Mindestlaufzeit. Für das
+        Nutzerkonto selbst fallen keine Entgelte an.
       </p>
       <p>
-        3.2 Die AGB werden dem Kunden vor der verbindlichen Registrierung zur Verfügung gestellt.
-        Eine darüberhinausgehende Zugänglichmachung des Vertragstexts durch den Anbieter erfolgt
-        nicht.
-      </p>
-      <p>3.3 Die Vertragssprache ist Deutsch.</p>
-      <p>3.4 Es gilt das gesetzliche Mängelgewährleistungsrecht.</p>
-      <p></p>
-      <p></p>
-    </article>
-
-    <article>
-      <h2>4. Nutzungsumfang</h2>
-      <p>
-        Der Anbieter räumt dem Kunden das nicht ausschließliche und nicht übertragbare Recht ein,
-        die Plattform während der Dauer des Vertrages bestimmungsgemäß zu nutzen. Der Kunde ist
-        nicht berechtigt, seinen Plattformzugang einem unberechtigten Dritten teilweise oder
-        vollständig, entgeltlich oder unentgeltlich zur Nutzung zu überlassen. Mitarbeiter,
-        Erfüllungs- und Verrichtungsgehilfen des Kunden, die in dieser Funktion auf die Plattform
-        zugreifen oder Dritte die dem Vertragszweck nach bestimmungsgemäß auf die Plattform
-        zugreifen sollen, gelten nicht als unberechtigte Dritte. Eine Weitervermietung des
-        Plattformzugangs ist dem Kunden ausdrücklich untersagt.
-      </p>
-    </article>
-
-    <article>
-      <h2>5. Videokurse „On demand“</h2>
-      <p>
-        5.1 Der Anbieter bietet dem Kunden On-Demand-Videokurse an. Leistungsgegenstand ist dabei
-        die Zurverfügungstellung der Videokurse für den vertraglich vorgesehenen Zeitraum. Hierzu
-        erhält der Kunde ein einfaches Nutzungsrecht. Der Kunde ist berechtigt, die Videokurse im
-        bereitgestellten Format über die bereitgestellten Kanäle anzusehen. Sofern vertraglich
-        vorgesehen, darf er die Kurse auch seinen Mitarbeitern oder anderen vom Vertrag
-        autorisierten Personen zeigen. Eine darüberhinausgehende Nutzung ist untersagt. Der Kunde
-        ist insbesondere nicht berechtigt, die Videos aufzuzeichnen oder sonst wie zu
-        vervielfältigen, sie zu verkaufen oder sie sonst wie kommerziell zu nutzen. Nach Beendigung
-        des Vertrages zur Plattformnutzung stehen dem Kunden die Videoinhalte nicht mehr zur
-        Verfügung.
+        4.2 Sie können den Nutzungsvertrag jederzeit ohne Einhaltung einer Frist beenden, indem Sie
+        Ihr Konto in den Kontoeinstellungen löschen oder uns die Kündigung per E-Mail an
+        hallo@bootstrap.academy mitteilen. Bei einer Kündigung per E-Mail löschen wir Ihr Konto
+        innerhalb von 30 Tagen. Vor der Löschung weisen wir Sie auf noch vorhandene gekaufte
+        MorphCoins hin; beantragen Sie deren Erstattung bitte vor der Löschung (Ziffer 6.7). Löschen
+        Sie Ihr Konto während eines laufenden Premium-Zeitraums, erstatten wir den Preis für die
+        restliche Laufzeit nicht; Sie können die Löschung auch erst zum Ende der Laufzeit vornehmen.
+        Für gebuchte Events gilt Ziffer 10.5.
       </p>
       <p>
-        5.2 Die Kurse können als integraler Bestandteil der Plattform oder als kostenpflichtige
-        Zusatzleistung innerhalb der Plattform angeboten werden.
-      </p>
-    </article>
-
-    <article>
-      <h2>6. Schulungen und Live-Webinare</h2>
-      <p>
-        6.1 Der Anbieter bietet seinen Kunden verschiedene Online-Veranstaltungen in Form von
-        Workshops / Seminaren / Webinaren (nachfolgend „Veranstaltung“) zu vorab festgelegten
-        Terminen an. Beginn, Ende, Inhalt, Form, Seminar- bzw. Workshopleiter sind dem jeweiligen
-        Angebot zu entnehmen und werden dem Kunden vor Vertragsschluss mitgeteilt. Kunde und
-        Teilnehmer können, müssen aber nicht in einer Person zusammenfallen. Die Veranstaltungen
-        können als integraler Bestandteil der Plattform oder als kostenpflichtige Zusatzleistung
-        innerhalb der Plattform angeboten werden.
+        4.3 Wir können den Nutzungsvertrag mit einer Frist von vier Wochen in Textform (E-Mail an
+        Ihre hinterlegte Adresse) ordentlich kündigen. Das Recht zur außerordentlichen Kündigung aus
+        wichtigem Grund (Ziffer 15.5) bleibt unberührt.
       </p>
       <p>
-        6.2 Die Veranstaltungen werden nach bestem Wissen und Gewissen durchgeführt. Der Anbieter
-        wird die Seminar- bzw. Workshopleiter stets gewissenhaft auswählen. Der Anbieter ist
-        berechtigt, den Seminar- bzw. Workshopleiter jederzeit nach freiem Ermessen – auch
-        kurzfristig – durch einen anderen geeigneten Seminar- bzw. Workshopleiter zu ersetzen,
-        sofern dies dem Teilnehmer / dem Vertragspartner zumutbar ist.
-      </p>
-      <p>
-        6.3 Ein bestimmter Erfolg, der über die Durchführung einer gewissenhaft vorbereiteten und
-        einer nach dem Ermessen des Veranstalters sinnvoll konzeptionierten Veranstaltung
-        hinausgeht, ist nicht geschuldet.
-      </p>
-      <p>
-        6.4 Sofern die Veranstaltung vom Kunden als kostenpflichtige Zusatzleistung gebucht wurde
-        ist die Stornierung einer gebuchten Veranstaltung durch den Teilnehmer grundsätzlich nicht
-        möglich. Auch bei Nichtteilnahme, insbesondere bei kurzfristiger Absage, wird die
-        vereinbarte Gebühr in voller Höhe fällig, es sei denn, dass der Platz des betreffenden
-        Teilnehmers anderweitig vergeben werden konnte. Dabei ist es unerheblich, ob der
-        Vertragspartner / Teilnehmer den Grund für die Nichtteilnahme (z.B. Krankheit) oder die
-        Verhinderung an der Teilnahme selbst zu verantworten hat. Dem Teilnehmer steht es frei
-        nachzuweisen, dass ein Schaden nicht oder nur in geringerer Höhe entstanden ist. Sofern der
-        Anbieter eine Veranstaltung aus Gründen, die der Anbieter nicht zu verantworten hat, absagen
-        oder an einen anderen Ort verlagern oder sonst wie modifizieren muss , wird der Anbieter den
-        Teilnehmern / Vertragspartnern einen Alternativtermin bzw. eine alternative Veranstaltung
-        oder einen alternativen Ort vorschlagen. Bei einem Alternativtermin oder einer
-        Alternativveranstaltung findet eine Erstattung der Teilnahmegebühr statt, wenn der
-        Teilnehmer den Alternativtermin / die alternative Veranstaltung nicht wahrnehmen kann oder
-        nicht wahrnehmen möchte. Das gesetzliche Widerrufsrecht bleibt von den hier formulierten
-        Stornobedingungen unberührt.
-      </p>
-    </article>
-
-    <article>
-      <h2>7. Coachings</h2>
-      <p>
-        7.1 Der Anbieter bietet seinen Kunden Individual-Coachings an. Hierbei wählt der Anbieter
-        einen geeigneten Coach aus. Termine und konkrete Inhalte des Coachings werden in
-        persönlichen Gesprächen zwischen Coach und Coachee festgelegt.
-      </p>
-      <p>
-        7.2 Die Coachings können als integraler Bestandteil der Plattform oder als kostenpflichtige
-        Zusatzleistung innerhalb der Plattform angeboten werden.
-      </p>
-      <p>
-        7.3 Für die inhaltliche Ausgestaltung der Coachings ist allein der Coach in Abstimmung mit
-        dem Kunden verantwortlich. Ein bestimmter Erfolg ist seitens der des Anbieters nicht
-        geschuldet.
-      </p>
-    </article>
-
-    <article>
-      <h2>8. Coins innerhalb der Plattform</h2>
-      <p>
-        8.1 Innerhalb der Plattform erhält der Kunde die Möglichkeit, sogenannte Coins zu erwerben
-        und diese als Tauschmittel innerhalb der Plattform nutzen. Der Anbieter entscheidet im
-        freien Ermessen darüber, welche Leistungen mit Coins erworben werden können und für welche
-        Leistungen die Nutzer Coins erhalten können. Dienstleistungen, die mit den Coins erworben
-        werden können und Leistungen, für die man Coins erhält, sind auf der Plattform entsprechend
-        ausgewiesen; fehlt ein solcher Hinweis ist davon auszugehen, dass die betreffende Leistung
-        nicht am Coin-System teilnimmt.
-      </p>
-      <p>
-        8.2 Sofern nicht anders angegeben sind die Coins nicht übertragbar. Eine Einlösung der Coins
-        bei Drittanbietern oder außerhalb der Plattform ist ausgeschlossen. Eine Auszahlung der
-        Coins in Geld ist ausgeschlossen. Das Widerrufsrecht und sonstiges zwingendes
-        Verbraucherschutzrecht bleiben hiervon unberührt.
-      </p>
-      <p>
-        8.3 Der eingelöste Coin-Betrag wird auf den Gesamtpreis des erworbenen Produkts angerechnet.
-        Der Gesamtpreis, der für Produkte zu zahlen ist, die mit Coins gekauft wurden, beinhaltet
-        den Preis der Produkte inkl. Mehrwertsteuer. Sofern die Coins für den Erwerb des jeweiligen
-        Produktes nicht genügen, ist der Restbetrag in Geld auszugleichen.
-      </p>
-      <p>
-        8.4 Soweit eine Leistung, die mit Coins erworben wurde, wieder zurückgegeben wird, erfolgt
-        eine ggf. erforderlich werdende Erstattung ebenfalls in Coins.
-      </p>
-      <p>8.5 Mit dem Ende des Vertrages zur Plattformnutzung verfallen die Coins.</p>
-      <p>
-        8.6 Der Anbieter ist berechtigt, die Teilnahme am Coinsystem im Falle von Zahlungsverzug und
-        für die Dauer des Zahlungsverzugs zu unterbinden.
-      </p>
-    </article>
-
-    <article>
-      <h2>9. Support</h2>
-      <p>
-        Anwendungsprobleme werden im Rahmen des Supports durch den Anbieter bearbeitet. Der Support
-        ist grundsätzlich werktags von Montag bis Freitag 09:00 – 18:00 Uhr gewährleistet.
-        Supportleistungen sind zum Zwecke der schnellstmöglichen Bearbeitung über die hierfür auf
-        der Webseite des Anbieters vorgesehenen Kommunikationswege oder über das ggf. zur Verfügung
-        stehende Ticket-System zu erfragen. Supportanfragen werden während der regulären
-        Geschäftszeiten grundsätzlich chronologisch, nach der Reihenfolge ihres Eingangs beim
-        Anbieter bearbeitet.
-      </p>
-    </article>
-
-    <article>
-      <h2>10. Pflichten des Kunden</h2>
-      <p>
-        10.1 Der Kunde ist verpflichtet, die bei seiner Anmeldung angegebenen Daten stets aktuell zu
-        halten und Verstöße gegen diese AGB und gegen geltendes Recht zu unterlassen. Insbesondere
-        ist der Kunde dazu verpflichtet, Zahlungsforderungen des Anbieters fristgerecht
-        nachzukommen. Der Kunde hat ferner dafür Sorge zu tragen, dass sein Account nur von ihm
-        selbst benutzt wird. Er hat seine Zugangsdaten und die von ihm hinterlegten Daten
-        vertraulich zu behandeln und sicherzustellen, dass unberechtigte Dritte keinen Zugriff auf
-        seine Daten haben. Verletzt der Kunde diese Pflicht schuldhaft, ist er für hieraus
-        entstehende Schäden selbst verantwortlich.
-      </p>
-      <p>
-        10.2 Der Kunde ist ferner verpflichtet, die Plattform nur zu ihrem vorgesehenen Zweck zu
-        verwenden und bei der Nutzung der Plattform sämtliche vertraglichen und gesetzlichen
-        Vorschriften zu beachten. Jegliche, über den Zweck des Nutzungsverhältnisses hinausgehende
-        Nutzung ist untersagt. Insbesondere ist es dem Kunden untersagt
+        4.4 Beenden wir den Nutzungsvertrag durch ordentliche Kündigung oder stellen wir die
+        Plattform ein, verlieren Sie keine bezahlte Gegenleistung. Wir erstatten in diesem Fall nach
+        Ziffer 6.8:
       </p>
       <ul>
-        <li>sich mehrfach unter verschiedenen Identitäten auf der Plattform zu registrieren;</li>
-        <li>falsche oder irreführende Behauptungen innerhalb der Plattform zu verbreiten;</li>
-        <li>die Plattform zu Werbezwecken oder sonstigen kommerziellen Zwecken zu nutzen;</li>
+        <li>nicht verbrauchte gekaufte MorphCoins zum Erwerbskurs (Ziffer 6.7);</li>
+        <li>den auf die Zeit nach der Beendigung entfallenden Anteil des Premium-Preises;</li>
+        <li>den Preis gebuchter, noch nicht durchgeführter Events;</li>
         <li>
-          andere Nutzer zu bedrohen, zu beleidigen, zu belästigen oder deren Rechte in sonstiger
-          Weise zu verletzen;
-        </li>
-        <li>
-          andere Nutzer auf eine andere Plattform abzuwerben oder einen entsprechenden Versuch zu
-          unternehmen;
-        </li>
-        <li>
-          bei der Nutzung der Plattform gegen diese AGB oder geltendes Recht (z.B. Urheber- und
-          Markenrecht) zu verstoßen;
-        </li>
-        <li>Daten über die Plattform automatisiert abzugreifen (z.B. mit Crawlern)</li>
-        <li>Kettenbriefe oder Spam-Nachrichten zu versenden;</li>
-        <li>
-          pornographische, rassistische, gewaltverherrlichende oder –verharmlosende,
-          volksverhetzende, rechtsextremistische verfassungsfeindliche oder sonstige gegen geltendes
-          Recht und die guten Sitten verstoßende Inhalte innerhalb der Plattform zu verbreiten.
+          den Preis von Kursen, die Sie kostenpflichtig freigeschaltet haben und auf die Sie durch
+          die Beendigung den Zugriff verlieren.
         </li>
       </ul>
-
       <p>
-        10.3 Unbeschadet der Verpflichtung des Anbieters zur Datensicherung ist der Kunde selbst für
-        die Eingabe, Pflege und Sicherung seiner zur Nutzung der Plattform erforderlichen Daten und
-        Informationen verantwortlich. Im Falle eines Datenverlustes innerhalb der Plattform, welchen
-        der Anbieter zu vertreten hat, beschränkt sich die Haftung des Anbieters auf die
-        Wiederherstellungs- und Rücksicherungskosten für diejenigen Daten, die auch im Falle einer
-        ordnungsgemäß erfolgten Datensicherung durch den Kunden verloren, gegangen wären.
-        Unzureichende Datensicherung kann dazu führen, dass sich der Kunde ein Mitverschulden im
-        Sinne des § 254 BGB zurechnen lassen muss. Die Vorschriften unter der Überschrift „Haftung
-        und Freistellung“ bleiben vom vorliegenden Absatz unberührt.
+        4.5 Nach der Beendigung löschen wir Ihre Daten nach Ziffer 17.2. Sichern Sie Inhalte, die
+        Sie behalten möchten (zum Beispiel eigenen Code), vor der Beendigung; auf Anfrage stellen
+        wir Ihnen Ihre Daten vorher in einem maschinenlesbaren Format bereit (Ziffer 17.3).
       </p>
+    </article>
 
+    <article id="ziffer-5">
+      <h2>5. Nutzungsrechte an Inhalten der Plattform</h2>
       <p>
-        10.4 Der Kunde ist verpflichtet, seine Daten und Informationen vor der Eingabe auf Viren
-        oder sonstige schädliche Komponenten zu prüfen und hierzu dem Stand der Technik
-        entsprechende Virenschutzprogramme einzusetzen.
+        5.1 Sie erhalten das einfache, nicht übertragbare Recht, die Inhalte der Plattform (Kurse,
+        Videos, Texte, Aufgaben) für Ihre persönliche Aus- und Weiterbildung zu nutzen. Unternehmer
+        dürfen die Inhalte für die Weiterbildung der Person nutzen, für die das Nutzerkonto angelegt
+        ist.
+      </p>
+      <p>
+        5.2 Nicht erlaubt ist insbesondere, Inhalte aufzuzeichnen, herunterzuladen, zu
+        vervielfältigen, öffentlich zugänglich zu machen, zu verkaufen oder sonst kommerziell zu
+        verwerten, soweit dies nicht gesetzlich erlaubt ist oder wir es ausdrücklich gestatten.
+        Inhalte, die unter einer offenen Lizenz stehen, dürfen Sie nach den Bedingungen dieser
+        Lizenz nutzen.
+      </p>
+      <p>
+        5.3 Kursvideos werden von YouTube (Google) eingebettet und erst nach Ihrem Klick geladen.
+        Für die Wiedergabe gelten zusätzlich die Nutzungsbedingungen von YouTube; Einzelheiten
+        stehen in den Datenschutzhinweisen.
+      </p>
+      <p>
+        5.4 Das Nutzungsrecht besteht, solange der Nutzungsvertrag besteht; für Inhalte, die Sie
+        über Premium nutzen, solange Premium läuft; für kostenpflichtig freigeschaltete Kurse nach
+        Ziffer 7.2.
+      </p>
+    </article>
+
+    <article id="ziffer-6">
+      <h2>6. MorphCoins</h2>
+      <p>
+        6.1 MorphCoins sind das Zahlungsmittel innerhalb der Plattform. Sie können MorphCoins kaufen
+        (gekaufte MorphCoins) oder von uns als Belohnung erhalten (Belohnungs-Coins). Beide Arten
+        werden in einem gemeinsamen Guthaben geführt und angezeigt. Den nicht verbrauchten Anteil
+        gekaufter MorphCoins ermitteln wir aus Ihren Käufen (Rechnungen), bereits erfolgten
+        Erstattungen und Ihrem aktuellen Guthaben; dabei gelten Belohnungs-Coins als zuerst
+        verbraucht (Ziffer 6.7).
+      </p>
+      <p>
+        6.2 Kauf: 100 MorphCoins kosten 1,00 € einschließlich der gesetzlichen Umsatzsteuer. Je Kauf
+        können Sie mindestens 500 und höchstens 1.000.000 MorphCoins erwerben. Die Bezahlung erfolgt
+        über PayPal; andere Zahlungsarten bieten wir derzeit nicht an. Voraussetzung ist eine
+        bestätigte E-Mail-Adresse und die Angabe Ihrer Rechnungsdaten: Als Verbraucher geben Sie
+        mindestens an, dass Sie nicht als Unternehmer handeln, und Ihr Land; als Unternehmer geben
+        Sie die vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer an
+        (Ziffer 22.3). Die MorphCoins werden Ihrem Guthaben gutgeschrieben, sobald PayPal uns die
+        Zahlung bestätigt hat; Sie erhalten eine Kaufbestätigung mit Rechnung per E-Mail (Ziffer
+        11).
+      </p>
+      <p>
+        6.3 Belohnungs-Coins vergeben wir für Beiträge zur Plattform: für von Ihnen erstellte
+        Aufgaben, die andere Nutzer positiv bewerten; an Kursleiter als Anteil am Preis der von
+        ihnen durchgeführten Webinare und Coachings (derzeit 70 % des Preises); sowie im Einzelfall
+        für weitere Beiträge, die wir mit Ihnen vereinbaren, zum Beispiel das Erstellen von
+        Kursinhalten oder das Melden von Sicherheitslücken. Die Höhe der Belohnung legen wir fest
+        und können sie für die Zukunft ändern. Bereits gutgeschriebene Belohnungs-Coins bleiben
+        erhalten.
+      </p>
+      <p>
+        6.4 Belohnungs-Coins werden Ihrem Guthaben erst gutgeschrieben, wenn Ihre Rechnungsdaten
+        (Name, Anschrift, Land; bei Unternehmern zusätzlich die Umsatzsteuer-Identifikationsnummer)
+        vollständig sind. Bis dahin halten wir sie für Sie zurück; die Höhe zurückgehaltener
+        MorphCoins teilen wir Ihnen auf Anfrage mit. Über Belohnungs-Coins, die eine Vergütung
+        darstellen (insbesondere Anteile für Kursleiter), erstellen wir je Kalendermonat eine
+        Gutschrift im Gutschriftverfahren (§ 14 Abs. 2 UStG), die wir Ihnen nach Ablauf des Monats
+        als PDF zur Verfügung stellen (derzeit auf Anfrage per E-Mail). Sie erklären sich mit diesem
+        Verfahren einverstanden und teilen uns mit, wenn Sie als Unternehmer handeln.
+      </p>
+      <p>
+        6.5 Verwendung: Mit MorphCoins bezahlen Sie ausschließlich Leistungen auf der Plattform
+        (Ziffer 2.2). MorphCoins sind nicht auf andere Nutzer übertragbar und können nicht bei
+        Dritten oder außerhalb der Plattform eingelöst werden. Bei jeder Leistung zeigen wir den
+        Preis in MorphCoins und den Euro-Gegenwert zum Erwerbskurs an.
+      </p>
+      <p>
+        6.6 Kein Verfall durch Zeitablauf: MorphCoins verfallen nicht durch Zeitablauf.
+        Belohnungs-Coins werden nicht in Geld ausgezahlt; das gilt auch für Belohnungs-Coins, die
+        eine Vergütung darstellen (Ziffer 6.4). Löschen Sie Ihr Konto oder kündigen wir es
+        außerordentlich nach Ziffer 15.5, entfallen Belohnungs-Coins ersatzlos. Kündigen wir
+        ordentlich (Ziffer 4.3) oder stellen wir die Plattform ein, können Sie Belohnungs-Coins bis
+        zum Vertragsende für Leistungen der Plattform verwenden; darauf weisen wir Sie in der
+        Kündigung hin. Gekaufte MorphCoins behalten ihren Gegenwert nach Ziffer 6.7.
+      </p>
+      <p>
+        6.7 Erstattung gekaufter MorphCoins: Nicht verbrauchte gekaufte MorphCoins erstatten wir
+        Ihnen jederzeit auf Anfrage per E-Mail an hallo@bootstrap.academy zum Erwerbskurs (100
+        MorphCoins = 1,00 €). Nicht verbraucht ist der Teil Ihres aktuellen Guthabens, der die Summe
+        der von Ihnen gekauften und noch nicht erstatteten MorphCoins nicht übersteigt. Wir
+        erstellen eine Gutschrift und zahlen den Betrag innerhalb von 14 Tagen nach Eingang Ihrer
+        Anfrage auf das PayPal-Konto zurück, mit dem Sie bezahlt haben; Kosten berechnen wir dafür
+        nicht. Die erstatteten MorphCoins ziehen wir von Ihrem Guthaben ab. Stellen Sie die Anfrage
+        möglichst, bevor Sie Ihr Konto löschen. Bei der Löschung halten wir den nicht verbrauchten
+        Anteil Ihrer gekauften MorphCoins in einer Schlussabrechnung fest, die wir zusammen mit
+        Ihren Rechnungen aufbewahren (Ziffer 11.5); auf dieser Grundlage erstatten wir auch nach der
+        Löschung. Ihre gesetzlichen Rechte, insbesondere das Widerrufsrecht, bleiben unberührt.
+      </p>
+      <p>
+        6.8 Gesetzliche und in diesen AGB vorgesehene Erstattungen (zum Beispiel nach Widerruf,
+        Minderung oder Vertragsbeendigung nach §§ 327m bis 327o BGB oder nach Ziffer 4.4) leisten
+        wir mit demselben Zahlungsmittel, das Sie verwendet haben: Haben Sie mit gekauften
+        MorphCoins bezahlt, erstatten wir nach Ihrer Wahl in MorphCoins oder in Euro zum Erwerbskurs
+        auf Ihr PayPal-Konto. Haben Sie mit Belohnungs-Coins bezahlt, erstatten wir in
+        Belohnungs-Coins. Eine Erstattung ausschließlich in MorphCoins gegen Ihren Willen findet
+        nicht statt.
+      </p>
+      <p>
+        6.9 Preise in MorphCoins können wir für die Zukunft ändern. Änderungen gelten nicht für
+        bereits erworbene Leistungen und nicht für laufende Premium-Zeiträume. Den Erwerbskurs nach
+        Ziffer 6.2 ändern wir nur nach Ziffer 20.2.
+      </p>
+    </article>
+
+    <article id="ziffer-7">
+      <h2>7. Kostenpflichtige Kurse</h2>
+      <p>
+        7.1 Einzelne Kurse sind kostenpflichtig. Den Preis zeigen wir auf der Kursseite in
+        MorphCoins und in Euro an. Mit der Bestellung (Ziffer 11) schalten wir den Kurs sofort für
+        Ihr Nutzerkonto frei.
+      </p>
+      <p>
+        7.2 Die Freischaltung ist eine einmalige Leistung: Sie erhalten Zugriff auf den Kurs,
+        solange Ihr Nutzerkonto besteht, ohne weitere Kosten. Der Zugriff endet mit der Beendigung
+        des Nutzungsvertrags; bei einer Beendigung durch uns gilt Ziffer 4.4.
+      </p>
+      <p>
+        7.3 Wir dürfen Kursinhalte aktualisieren, verbessern und ergänzen und einzelne Lektionen
+        durch gleichwertige ersetzen. Änderungen, die den Kurs für Sie mehr als unerheblich
+        beeinträchtigen, kündigen wir Ihnen vorher in Textform an; Ihnen stehen dann die Rechte aus
+        § 327r BGB zu (Ziffer 16.4). Stellen wir einen kostenpflichtig freigeschalteten Kurs
+        vollständig ein, erstatten wir Ihnen den gezahlten Preis nach Ziffer 6.8.
+      </p>
+      <p>
+        7.4 Mit Premium (Ziffer 8) können Sie alle kostenpflichtigen Kurse während der
+        Premium-Laufzeit nutzen, ohne sie freizuschalten. Nach dem Ende von Premium endet dieser
+        Zugriff, sofern Sie den Kurs nicht gesondert freigeschaltet haben.
+      </p>
+    </article>
+
+    <article id="ziffer-8">
+      <h2>8. Premium</h2>
+      <p>
+        8.1 Leistungsumfang: Premium umfasst für die gebuchte Laufzeit den Zugriff auf alle Kurse
+        der Plattform, auch auf kostenpflichtige Kurse (Ziffer 7.4), sowie die Nutzung von Quizzen,
+        Zuordnungsaufgaben und Coding-Challenges ohne Verbrauch von Herzen (Ziffer 9.1). Nicht
+        enthalten sind Webinare und Coachings (Ziffer 10). Der Kurskatalog kann sich während der
+        Laufzeit ändern (Ziffer 16.4).
+      </p>
+      <p>
+        8.2 Preis und Laufzeit: Premium kostet 1.000 MorphCoins (10,00 €) für einen Monat oder
+        10.000 MorphCoins (100,00 €, entsprechend 8,33 € je Monat) für ein Jahr. Der Preis wird bei
+        der Bestellung im Voraus von Ihrem Guthaben abgebucht. Die Laufzeit beginnt mit der
+        Bestellung. Buchen Sie Premium, während ein Premium-Zeitraum läuft, verlängert sich die
+        Laufzeit um den gebuchten Zeitraum.
+      </p>
+      <p>
+        8.3 Ende der Laufzeit: Premium endet automatisch mit Ablauf der Laufzeit, wenn Sie die
+        automatische Verlängerung nicht eingeschaltet haben. Eine Mindestlaufzeit über den gebuchten
+        Zeitraum hinaus gibt es nicht.
+      </p>
+      <p>
+        8.4 Automatische Verlängerung (optional): Bei der Bestellung und jederzeit danach auf der
+        Seite „Abonnement“ in Ihrem Konto können Sie die automatische Verlängerung ein- oder
+        ausschalten. Ist sie bei Ablauf der gebuchten Laufzeit eingeschaltet, verlängert sich
+        Premium auf unbestimmte Zeit: Wir buchen dann – spätestens bei Ihrer nächsten Nutzung der
+        Plattform nach dem Ablauf – für jeden weiteren Monat 1.000 MorphCoins (10,00 €) von Ihrem
+        Guthaben ab; der Monat beginnt mit der Abbuchung. Ein Jahreszeitraum verlängert sich also
+        nicht um ein weiteres Jahr, sondern monatlich zum Monatspreis; ein neues Jahr können Sie
+        jederzeit gesondert buchen (Ziffer 8.2). Reicht Ihr Guthaben nicht aus, findet keine
+        Verlängerung statt: Premium endet, die automatische Verlängerung wird abgeschaltet, und es
+        entstehen keine Kosten. Sie sind nicht verpflichtet, MorphCoins für eine Verlängerung
+        nachzukaufen.
+      </p>
+      <p>
+        8.5 Kündigung: Sie können Premium jederzeit kündigen – während der gebuchten Laufzeit zu
+        deren Ende, nach einer automatischen Verlängerung zum Ende des laufenden Monats – über die
+        Schaltfläche „Verträge hier kündigen“ im Fußbereich jeder Seite und die dortige
+        Bestätigungsseite unter bootstrap.academy/vertrag-kuendigen (§ 312k BGB), auf der Seite
+        „Abonnement“ in Ihrem Konto durch Ausschalten der automatischen Verlängerung oder per E-Mail
+        an hallo@bootstrap.academy. Den Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs
+        sowie den Zeitpunkt, zu dem Premium endet, bestätigen wir Ihnen sofort per E-Mail. Für den
+        laufenden, bereits bezahlten Zeitraum erfolgt bei Ihrer Kündigung keine Erstattung. Das
+        Recht zur außerordentlichen Kündigung aus wichtigem Grund, Ihr Widerrufsrecht (siehe
+        Widerrufsbelehrung) und Ihre Rechte bei Mängeln (Ziffer 16.2) bleiben unberührt.
+      </p>
+      <p>
+        8.6 Wir können Premium ordentlich nur zum Ende der laufenden Laufzeit kündigen. Stellen wir
+        Premium vorher ein, gilt Ziffer 4.4 entsprechend.
+      </p>
+    </article>
+
+    <article id="ziffer-9">
+      <h2>9. Herzen</h2>
+      <p>
+        9.1 Herzen sind ein Spielelement. Jedes Nutzerkonto hat höchstens drei Herzen; angezeigt
+        werden sie in halben und ganzen Herzen. Für jeden Lösungsversuch bei einem Quiz oder einer
+        Zuordnungsaufgabe wird ein halbes Herz abgezogen, für jeden Lösungsversuch bei einer
+        Coding-Challenge ein ganzes Herz – unabhängig davon, ob die Lösung richtig ist. Für
+        Aufgaben, die Sie selbst erstellt haben, und mit Premium (Ziffer 8.1) werden keine Herzen
+        abgezogen. Ohne ausreichende Herzen können Sie diese Aufgaben erst wieder bearbeiten, wenn
+        Ihre Herzen aufgefüllt sind.
+      </p>
+      <p>
+        9.2 Ihre Herzen werden täglich um 00:00 Uhr UTC (01:00 Uhr MEZ, 02:00 Uhr MESZ) automatisch
+        und kostenlos vollständig aufgefüllt. Sie können die Herzen außerdem jederzeit für 50
+        MorphCoins (0,50 €) sofort vollständig auffüllen; die Bestellung folgt Ziffer 11, die
+        Leistung wird sofort erbracht.
+      </p>
+      <p>
+        9.3 Herzen haben keinen Geldwert, sind nicht übertragbar und werden nicht erstattet oder
+        ausgezahlt. Für Premium gilt Ziffer 8.1.
+      </p>
+    </article>
+
+    <article id="ziffer-10">
+      <h2>10. Webinare und Coachings (Events)</h2>
+      <p>
+        10.1 Auf der Plattform werden Webinare (Online-Seminare für mehrere Teilnehmer) und
+        Coachings (Einzeltermine) zu festen Terminen angeboten. Vertragspartner für die Buchung ist
+        der Anbieter. Durchgeführt werden Events von Kursleitern; das sind Nutzer der Plattform, die
+        die auf der Plattform genannten Voraussetzungen für das Anbieten von Events erfüllen, sowie
+        unser Team. Welche Preise ein Kursleiter verlangen darf, hängt von seinen Bewertungen durch
+        Teilnehmer ab. Termin, Dauer, Inhalt, Kursleiter und Preis ergeben sich aus der jeweiligen
+        Beschreibung.
+      </p>
+      <p>
+        10.2 Buchung: Kostenpflichtige Termine buchen Sie mit MorphCoins nach Ziffer 11; der Preis
+        wird bei der Buchung abgebucht. Sie erhalten eine Buchungsbestätigung per E-Mail. Der Termin
+        findet online statt: Coachings in einem Videokonferenzraum bei Jitsi Meet (meet.jit.si,
+        betrieben von 8x8, Inc.), Webinare über den vom Kursleiter angegebenen Konferenzlink. Sie
+        benötigen dafür ein Gerät mit Kamera, Mikrofon und Internetverbindung.
+      </p>
+      <p>
+        10.3 Stornierung durch Sie: Sie können einen gebuchten Termin vor seinem Beginn in Ihrem
+        Kalender auf der Plattform (bis 24 Stunden vor Beginn) oder per E-Mail an
+        hallo@bootstrap.academy stornieren. Maßgeblich ist der Zeitpunkt, zu dem uns Ihre
+        Stornierung zugeht. Es gilt:
+      </p>
+      <ul>
+        <li>
+          a) Stornieren Sie bis sieben Tage vor Beginn des Termins, ist die Stornierung kostenlos;
+          wir erstatten den vollen Preis.
+        </li>
+        <li>
+          b) Stornieren Sie später, aber mindestens 24 Stunden vor Beginn, behalten wir als
+          pauschale Entschädigung 50 % des Preises ein und erstatten die übrigen 50 %.
+        </li>
+        <li>
+          c) Stornieren Sie weniger als 24 Stunden vor Beginn oder nehmen Sie ohne Stornierung nicht
+          teil, behalten wir den vollen Preis als pauschale Entschädigung ein.
+        </li>
+      </ul>
+      <p>
+        Die Pauschalen nach b) und c) entsprechen dem Ausfall, der uns und dem Kursleiter bei einer
+        so kurzfristigen Absage nach dem gewöhnlichen Lauf der Dinge entsteht, weil der Termin für
+        Sie freigehalten wurde und in dieser Zeit regelmäßig nicht mehr anderweitig vergeben werden
+        kann. Ihnen bleibt ausdrücklich der Nachweis gestattet, dass uns kein Schaden oder ein
+        wesentlich geringerer Schaden als die Pauschale entstanden ist; in diesem Fall erstatten wir
+        den entsprechend höheren Betrag. Konnten wir den Platz oder den Termin anderweitig vergeben,
+        erstatten wir den vollen Preis. Mehr als den Preis des Termins schulden Sie uns wegen einer
+        Stornierung oder Nichtteilnahme in keinem Fall. Erstattungen leisten wir nach Ziffer 6.8 in
+        der Art von MorphCoins, mit der Sie bezahlt haben. Ihr Widerrufsrecht als Verbraucher (siehe
+        Widerrufsbelehrung) und das Recht zur Kündigung aus wichtigem Grund bleiben unberührt;
+        widerrufen Sie innerhalb der Widerrufsfrist, bevor der Termin begonnen hat, erstatten wir
+        den vollen Preis.
+      </p>
+      <p>
+        10.4 Absage durch uns oder den Kursleiter: Fällt ein Termin aus Gründen aus, die nicht bei
+        Ihnen liegen (zum Beispiel Erkrankung des Kursleiters, technische Störung auf unserer Seite,
+        zu wenige Teilnehmer), erstatten wir den vollen Preis nach Ziffer 6.8. Bieten wir einen
+        Ersatztermin an, können Sie diesen wahrnehmen oder die Erstattung wählen.
+      </p>
+      <p>
+        10.5 Löschen Sie Ihr Konto, werden gebuchte Termine storniert; Ziffer 10.3 gilt
+        entsprechend. Beantragen Sie in diesem Fall die Erstattung gekaufter MorphCoins nach Ziffer
+        6.7 vor der Löschung.
+      </p>
+      <p>
+        10.6 Während eines Events dürfen Sie keine Aufzeichnungen anfertigen, es sei denn, alle
+        Beteiligten stimmen zu. Wer einen Termin nachhaltig stört, kann vom Kursleiter
+        ausgeschlossen werden; ein Anspruch auf Erstattung besteht dann nicht, wenn Sie die Störung
+        zu vertreten haben.
+      </p>
+      <p>
+        10.7 Wir schulden die ordnungsgemäße Durchführung des Events, nicht einen bestimmten Lern-
+        oder Prüfungserfolg.
+      </p>
+    </article>
+
+    <article id="ziffer-11">
+      <h2>11. Bestellvorgang, Preise, Zahlung und Rechnungen</h2>
+      <p>
+        11.1 Ablauf einer Bestellung: Sie wählen die Leistung aus (MorphCoins, Kurs, Premium,
+        Auffüllen der Herzen, Event). Vor der Bestellung zeigen wir Ihnen die wesentlichen Merkmale
+        der Leistung, den Gesamtpreis in MorphCoins und in Euro einschließlich Umsatzsteuer, bei
+        Premium die Laufzeit und die Einstellung der automatischen Verlängerung sowie die Hinweise
+        zum Widerrufsrecht an. Als Verbraucher geben Sie dort auch die in der Widerrufsbelehrung
+        beschriebenen Erklärungen zur sofortigen Ausführung ab. Ihre Eingaben können Sie bis zum
+        Klick auf die Bestellschaltfläche korrigieren oder die Bestellung abbrechen. Mit dem Klick
+        auf die Schaltfläche „zahlungspflichtig bestellen“ geben Sie ein verbindliches Angebot ab.
+      </p>
+      <p>
+        11.2 Vertragsschluss: Beim Kauf von MorphCoins kommt der Vertrag zustande, wenn wir die
+        MorphCoins nach Bestätigung der Zahlung durch PayPal Ihrem Guthaben gutschreiben. Bei
+        Leistungen, die Sie mit MorphCoins bezahlen, kommt der Vertrag zustande, wenn wir die
+        Leistung freischalten oder die Buchung bestätigen; das geschieht unmittelbar nach der
+        Bestellung. Über jede Bestellung erhalten Sie eine Bestätigung an Ihre hinterlegte
+        E-Mail-Adresse, die den Vertragsinhalt, diese AGB und die Widerrufsbelehrung enthält (§ 312f
+        BGB). Ihre Bestelldaten speichern wir in Ihrem Nutzerkonto.
+      </p>
+      <p>
+        11.3 Preise: Alle Euro-Preise verstehen sich einschließlich der gesetzlichen Umsatzsteuer
+        (derzeit 19 %). Der Euro-Gegenwert von Preisen in MorphCoins entspricht dem Erwerbskurs nach
+        Ziffer 6.2. Weitere Kosten entstehen nicht; die Kosten Ihrer Internetverbindung tragen Sie
+        selbst.
+      </p>
+      <p>
+        11.4 Zahlung: MorphCoins bezahlen Sie über PayPal; die Zahlung ist mit der Bestellung
+        fällig. Alle anderen Leistungen bezahlen Sie mit MorphCoins aus Ihrem Guthaben; reicht das
+        Guthaben nicht aus, kommt keine Bestellung zustande. Eine Bezahlung in Raten bieten wir
+        nicht an.
+      </p>
+      <p>
+        11.5 Rechnungen über den Kauf von MorphCoins stellen wir elektronisch als PDF aus und senden
+        sie mit der Kaufbestätigung an Ihre hinterlegte E-Mail-Adresse; auf Anfrage senden wir Ihnen
+        eine Rechnung erneut zu. Gutschriften stellen wir nach den Ziffern 6.4 und 6.7 als PDF
+        bereit. Rechnungen und Gutschriften bewahren wir nach den steuerrechtlichen Vorschriften
+        acht Jahre auf.
+      </p>
+    </article>
+
+    <article id="ziffer-12">
+      <h2>12. Minderjährige</h2>
+      <p>
+        12.1 Personen unter 16 Jahren dürfen kein Nutzerkonto anlegen. Erfahren wir, dass ein Konto
+        von einer Person unter 16 Jahren angelegt wurde, löschen wir es; für gekaufte MorphCoins
+        gilt Ziffer 6.7 entsprechend.
+      </p>
+      <p>
+        12.2 Nutzer, die 16 oder 17 Jahre alt sind, dürfen die kostenlosen Leistungen ohne
+        Zustimmung ihrer gesetzlichen Vertreter nutzen. Für kostenpflichtige Leistungen (MorphCoins,
+        Kurse, Premium, Auffüllen der Herzen, Events) gelten die §§ 107 bis 110 BGB: Der Vertrag ist
+        wirksam, wenn die gesetzlichen Vertreter vorher eingewilligt haben oder ihn nachträglich
+        genehmigen (§§ 107, 108 BGB) oder wenn der Minderjährige den Preis mit Mitteln bezahlt, die
+        ihm zu diesem Zweck oder zur freien Verfügung von den gesetzlichen Vertretern oder mit deren
+        Zustimmung von einem Dritten überlassen wurden (§ 110 BGB). Bestellen Sie als Minderjähriger
+        eine kostenpflichtige Leistung, bestätigen Sie damit, dass eine dieser Voraussetzungen
+        vorliegt; bei Zweifeln dürfen wir einen Nachweis verlangen und die Bestellung bis dahin
+        zurückstellen.
+      </p>
+      <p>
+        12.3 Gesetzliche Vertreter erreichen uns bei Fragen zu einem Konto unter
+        hallo@bootstrap.academy. Genehmigen sie einen Vertrag nicht, machen wir ihn rückgängig und
+        erstatten die erhaltenen Zahlungen nach Ziffer 6.8.
+      </p>
+    </article>
+
+    <article id="ziffer-13">
+      <h2>13. Pflichten der Nutzer</h2>
+      <p>13.1 Sie sind verpflichtet,</p>
+      <ul>
+        <li>
+          bei der Registrierung und bei Bestellungen richtige und vollständige Angaben zu machen und
+          diese aktuell zu halten;
+        </li>
+        <li>
+          nur ein Nutzerkonto zu führen und es keiner anderen Person zur Nutzung zu überlassen;
+        </li>
+        <li>Ihre Zugangsdaten geheim zu halten;</li>
+        <li>die Plattform nur im Rahmen dieser AGB und der geltenden Gesetze zu nutzen.</li>
+      </ul>
+      <p>13.2 Untersagt ist insbesondere,</p>
+      <ul>
+        <li>
+          Sicherheitsmaßnahmen, Zugriffsbeschränkungen, das Herzen- oder MorphCoins-System oder die
+          Bestenliste zu umgehen oder zu manipulieren, zum Beispiel durch Mehrfachkonten, Skripte
+          oder das Ausnutzen von Fehlern;
+        </li>
+        <li>
+          Inhalte der Plattform automatisiert und massenhaft abzurufen (Scraping) oder die Plattform
+          durch automatisierte Zugriffe zu beeinträchtigen. Die Nutzung der öffentlich
+          dokumentierten Programmierschnittstelle für eigene Werkzeuge ist erlaubt, solange sie
+          diese AGB einhält und die Plattform nicht beeinträchtigt;
+        </li>
+        <li>
+          Schadsoftware, Code oder Inhalte einzustellen, die die Plattform, unsere Systeme oder
+          andere Nutzer schädigen oder die Code-Ausführungsumgebung angreifen sollen;
+        </li>
+        <li>
+          in eingereichtem Code oder in Aufgaben Zugangsdaten, Geheimnisse oder personenbezogene
+          Daten Dritter zu hinterlegen;
+        </li>
+        <li>
+          rechtswidrige Inhalte einzustellen, insbesondere Inhalte, die Urheber-, Marken- oder
+          Persönlichkeitsrechte verletzen oder die beleidigend, bedrohend, volksverhetzend,
+          gewaltverherrlichend, pornografisch oder jugendgefährdend sind;
+        </li>
+        <li>
+          andere Nutzer zu belästigen, zu täuschen oder unaufgefordert zu Werbezwecken anzusprechen;
+        </li>
+        <li>
+          die Plattform für Werbung oder für kommerzielle Angebote zu nutzen, die nicht Teil der
+          Plattform sind;
+        </li>
+        <li>
+          das Melde- und Bewertungssystem missbräuchlich zu verwenden, etwa durch wissentlich
+          falsche Meldungen.
+        </li>
+      </ul>
+      <p>
+        13.3 Prüfen Sie Dateien und Code, die Sie einreichen oder hochladen, vor der Übermittlung
+        auf Schadsoftware.
+      </p>
+      <p>
+        13.4 Verstöße können zu Maßnahmen nach den Ziffern 14 und 15 führen. Gesetzliche
+        Schadensersatzansprüche bleiben unberührt.
+      </p>
+    </article>
+
+    <article id="ziffer-14">
+      <h2>14. Nutzerinhalte, Moderation und Meldeverfahren</h2>
+      <p>
+        14.1 Nutzerinhalte sind alle Inhalte, die Sie auf der Plattform einstellen: von Ihnen
+        erstellte Aufgaben und Quizfragen, eingereichter Code, Bewertungen und Meldungen, Ihr
+        Nickname und Ihr Anzeigename sowie Kurzbeschreibung und Schlagwörter in Ihrem Profil; bei
+        Kursleitern auch die Beschreibungen ihrer Events. Für Ihre Nutzerinhalte sind Sie
+        verantwortlich. Wir prüfen Nutzerinhalte nicht vorab.
+      </p>
+      <p>
+        14.2 Sie räumen uns an Ihren Nutzerinhalten das einfache, räumlich unbeschränkte,
+        unentgeltliche Recht ein, sie zum Betrieb der Plattform zu speichern, zu vervielfältigen,
+        anderen Nutzern anzuzeigen, eingereichten Code auszuführen und Aufgaben, die Sie für andere
+        Nutzer erstellt haben, diesen zugänglich zu machen. Das Recht endet, wenn Sie den Inhalt
+        oder Ihr Konto löschen; Kopien in Datensicherungen werden nach den in den
+        Datenschutzhinweisen genannten Fristen gelöscht. Weitergehende Rechte, insbesondere zur
+        Nutzung für Werbung oder zum Training von KI-Modellen, räumen Sie uns nicht ein. Sie
+        versichern, dass Sie über die erforderlichen Rechte an Ihren Nutzerinhalten verfügen.
+      </p>
+      <p>
+        14.3 Beschränkungen für Nutzerinhalte: Für Nutzerinhalte gelten die Regeln in Ziffer 13.2.
+        Inhalte, die gegen diese Regeln oder gegen Gesetze verstoßen, entfernen wir oder schränken
+        ihre Sichtbarkeit ein; daneben können Maßnahmen nach Ziffer 15 folgen. Bei allen Maßnahmen
+        gehen wir sorgfältig, objektiv und verhältnismäßig vor und berücksichtigen Ihre Rechte,
+        insbesondere die Meinungsfreiheit.
+      </p>
+      <p>14.4 So moderieren wir:</p>
+      <ul>
+        <li>
+          Meldungen: Andere Nutzer können von Ihnen erstellte Aufgaben über die Meldefunktion
+          melden; jede Person kann uns rechtswidrige Inhalte nach Ziffer 14.5 melden. Eine über die
+          Meldefunktion gemeldete Aufgabe wird bis zur Prüfung vorläufig ausgeblendet. Meldungen
+          prüft ein Mensch aus unserem Team; erweist sich eine Meldung als unbegründet, wird die
+          Aufgabe wieder eingeblendet.
+        </li>
+        <li>
+          Automatische Maßnahmen: Eine von Nutzern erstellte Aufgabe wird außerdem automatisch
+          ausgeblendet und uns zur Prüfung vorgelegt, wenn sie mindestens zehn negative und mehr
+          negative als positive Bewertungen erhalten hat. Die Ausblendung ist vorläufig; die
+          endgültige Entscheidung trifft ein Mensch. Weitere automatisierte Entscheidungen über
+          Inhalte oder Konten treffen wir nicht.
+        </li>
+        <li>
+          Maßnahmen: Je nach Schwere und Wiederholung eines Verstoßes kommen in Betracht: ein
+          Hinweis oder eine Verwarnung; das Entfernen oder Ausblenden des Inhalts; die befristete
+          Sperre einzelner Funktionen (derzeit: Erstellen von Aufgaben oder Abgeben von Meldungen);
+          die befristete oder dauerhafte Sperrung des Kontos; die außerordentliche Kündigung (Ziffer
+          15).
+        </li>
+        <li>
+          Dauer von Funktionssperren: Die Dauer wird nicht im Einzelfall festgelegt, sondern folgt
+          einer festen Staffel nach der Zahl Ihrer bisherigen Sperren derselben Art: 3 Tage, dann 7
+          Tage, dann 30 Tage, danach unbefristet. Ob eine Sperre verhängt wird, entscheidet ein
+          Mensch; auf Ihre Beschwerde hin prüft ein Mensch auch die Dauer.
+        </li>
+      </ul>
+      <p>
+        14.5 Meldung rechtswidriger Inhalte: Wenn Sie der Ansicht sind, dass ein Inhalt auf der
+        Plattform rechtswidrig ist, melden Sie ihn per E-Mail an hallo@bootstrap.academy mit
+        folgenden Angaben: eine Begründung, warum der Inhalt rechtswidrig ist; die genaue Fundstelle
+        (Link) des Inhalts; Ihr Name und Ihre E-Mail-Adresse (außer bei Meldungen, die sexuellen
+        Missbrauch von Kindern betreffen); eine Erklärung, dass Sie in gutem Glauben davon überzeugt
+        sind, dass Ihre Angaben richtig und vollständig sind. Wir bestätigen Ihnen den Eingang
+        unverzüglich, prüfen die Meldung zeitnah, sorgfältig, objektiv und frei von Willkür, teilen
+        Ihnen unsere Entscheidung mit und weisen dabei auf die Möglichkeit hin, die Entscheidung
+        nach Ziffer 14.7 überprüfen zu lassen.
+      </p>
+      <p>
+        14.6 Begründung unserer Entscheidungen: Entfernen oder blenden wir einen Nutzerinhalt aus,
+        sperren wir Funktionen oder Ihr Konto oder kündigen wir außerordentlich, informieren wir Sie
+        spätestens mit der Maßnahme per E-Mail über: die Maßnahme und ihre Dauer; die Tatsachen und
+        Umstände, auf die wir uns stützen, einschließlich einer etwaigen Meldung; ob automatisierte
+        Mittel beteiligt waren; die Rechtsvorschrift oder die Ziffer dieser AGB, gegen die verstoßen
+        wurde, mit einer Erläuterung; sowie Ihre Möglichkeiten, die Entscheidung überprüfen zu
+        lassen (Beschwerde nach Ziffer 14.7 und der Rechtsweg zu den Gerichten). Bei irreführenden
+        kommerziellen Inhalten in großem Umfang (Spam) kann die Begründung entfallen (Art. 17 Abs. 2
+        DSA).
+      </p>
+      <p>
+        14.7 Überprüfung: Gegen jede Maßnahme nach den Ziffern 14.3 bis 14.6 und 15 sowie gegen
+        unsere Entscheidung über Ihre Meldung können Sie innerhalb von sechs Monaten kostenlos
+        Beschwerde per E-Mail an hallo@bootstrap.academy einlegen und Ihren Standpunkt darlegen.
+        Über die Beschwerde entscheidet ein Mensch, der an der ursprünglichen Entscheidung nicht
+        beteiligt war, soweit dies bei der Größe unseres Teams möglich ist. Wir antworten
+        unverzüglich in Textform und heben die Maßnahme auf, wenn sie nicht gerechtfertigt war. Der
+        Rechtsweg bleibt Ihnen unbenommen.
+      </p>
+      <p>
+        14.8 Zentrale Kontaktstelle nach Art. 11 und Art. 12 der Verordnung (EU) 2022/2065 (Digital
+        Services Act) für Behörden und für Nutzer: hallo@bootstrap.academy. Kommunikation ist auf
+        Deutsch und Englisch möglich.
+      </p>
+    </article>
+
+    <article id="ziffer-15">
+      <h2>15. Einschränkung und Sperrung des Kontos, außerordentliche Kündigung</h2>
+      <p>
+        15.1 Wir dürfen Ihr Konto oder einzelne Funktionen nur einschränken oder sperren, wenn Sie
+        gegen diese AGB oder gegen Gesetze verstoßen haben, wenn von Ihrem Konto eine konkrete
+        Gefahr für die Sicherheit der Plattform, unserer Systeme oder anderer Nutzer ausgeht oder
+        wenn wir dazu gesetzlich oder behördlich verpflichtet sind. Ein bloßer Hinweis Dritter
+        genügt dafür nicht; wir prüfen jede Meldung selbst.
+      </p>
+      <p>
+        15.2 Wir wählen die mildeste geeignete Maßnahme (Ziffer 14.4) und hören Sie vorher an, es
+        sei denn, sofortiges Handeln ist erforderlich, zum Beispiel bei offensichtlich
+        rechtswidrigen Inhalten, bei Angriffen auf die Plattform oder aufgrund einer gesetzlichen
+        Pflicht. Sperren befristen wir, soweit nicht ein schwerer oder wiederholter Verstoß eine
+        dauerhafte Sperre rechtfertigt.
+      </p>
+      <p>
+        15.3 Jede Maßnahme begründen wir nach Ziffer 14.6. Sie können sie nach Ziffer 14.7
+        überprüfen lassen.
+      </p>
+      <p>
+        15.4 Während einer Sperre Ihres Kontos buchen wir keine MorphCoins ab, und die automatische
+        Verlängerung von Premium ruht. Einen laufenden, bezahlten Premium-Zeitraum verlängern wir
+        nach Ihrer Wahl um die Dauer der Sperre oder erstatten den auf die Sperre entfallenden
+        Anteil nach Ziffer 6.8. Gebuchte Events, an denen Sie wegen der Sperre nicht teilnehmen
+        können, erstatten wir. Auch während einer Sperre stellen wir Ihnen auf Anfrage Ihre Daten in
+        einem maschinenlesbaren Format bereit (Ziffer 17.3), und Sie können Ihr Konto löschen; für
+        gekaufte MorphCoins gilt Ziffer 6.7.
+      </p>
+      <p>
+        15.5 Bei einem schweren Verstoß oder bei wiederholten Verstößen trotz Verwarnung können wir
+        den Nutzungsvertrag außerordentlich ohne Frist kündigen (§ 314 BGB). Dasselbe Recht haben
+        Sie, wenn wir unsere Pflichten schwerwiegend verletzen. Bei einer außerordentlichen
+        Kündigung durch uns erstatten wir nicht verbrauchte gekaufte MorphCoins (Ziffer 6.7) und den
+        auf die Zeit nach der Kündigung entfallenden Anteil des Premium-Preises;
+        Schadensersatzansprüche gegen Sie bleiben unberührt und können wir gegen die Erstattung
+        aufrechnen.
+      </p>
+    </article>
+
+    <article id="ziffer-16">
+      <h2>16. Verfügbarkeit, Wartung, Änderungen und Gewährleistung</h2>
+      <p>
+        16.1 Wir bemühen uns, die Plattform rund um die Uhr verfügbar zu halten, versprechen aber
+        keine ununterbrochene Verfügbarkeit. Wartungsarbeiten, die die Plattform vorübergehend
+        unerreichbar machen, kündigen wir, soweit möglich, vorher auf der Plattform an und führen
+        sie nach Möglichkeit außerhalb der Hauptnutzungszeiten durch. Störungen beheben wir so
+        schnell, wie es uns möglich ist.
+      </p>
+      <p>
+        16.2 Rechte bei Mängeln kostenpflichtiger Leistungen: Für MorphCoins, Kurse, Premium, das
+        Auffüllen der Herzen und Events gelten die gesetzlichen Vorschriften über Verträge über
+        digitale Produkte (§§ 327 ff. BGB) beziehungsweise das gesetzliche Gewährleistungsrecht.
+        Entspricht eine Leistung nicht dem Vertrag – zum Beispiel, weil ein freigeschalteter Kurs
+        oder Premium über längere Zeit nicht nutzbar ist –, können Sie insbesondere Nacherfüllung
+        verlangen (§ 327l BGB), den Preis mindern (§ 327n BGB), den Vertrag beenden (§ 327m BGB) und
+        Schadensersatz verlangen. Bei Premium muss die Leistung während der gesamten Laufzeit
+        vertragsgemäß sein; wir stellen die dafür erforderlichen Aktualisierungen bereit (§ 327f
+        BGB). Mängel melden Sie bitte an hallo@bootstrap.academy.
+      </p>
+      <p>
+        16.3 Kostenlose Leistungen: Auch für kostenlose digitale Leistungen, für die Sie uns
+        personenbezogene Daten bereitstellen, gelten die §§ 327 ff. BGB (§ 327 Abs. 3 BGB). Ein
+        Anspruch auf den Fortbestand einzelner kostenloser Funktionen besteht nicht (Ziffer 2.4).
+      </p>
+      <p>
+        16.4 Änderungen kostenpflichtiger digitaler Produkte, die über das zur Erhaltung der
+        Vertragsmäßigkeit Erforderliche hinausgehen (zum Beispiel neue Funktionen, aktualisierte
+        Kursinhalte, der Ersatz einzelner Lektionen, die Anpassung an neue technische Umgebungen
+        oder Sicherheitsanforderungen), dürfen wir vornehmen, wenn dafür ein triftiger Grund besteht
+        – insbesondere Sicherheit, technische Weiterentwicklung, rechtliche Anforderungen oder
+        inhaltliche Aktualisierung –, Ihnen dadurch keine zusätzlichen Kosten entstehen und wir Sie
+        klar und verständlich über die Änderung informieren (§ 327r BGB). Beeinträchtigt eine
+        Änderung Ihren Zugriff oder die Nutzbarkeit mehr als unerheblich, informieren wir Sie vorher
+        per E-Mail über die Merkmale und den Zeitpunkt der Änderung; Sie können den betroffenen
+        Vertrag dann innerhalb von 30 Tagen kostenlos beenden und erhalten eine Erstattung nach §§
+        327o, 327p BGB und Ziffer 6.8.
+      </p>
+      <p>
+        16.5 Technische Voraussetzungen: ein aktueller Browser mit aktiviertem JavaScript und eine
+        Internetverbindung; für Events zusätzlich Kamera und Mikrofon. Wir unterstützen die jeweils
+        aktuellen Versionen verbreiteter Browser.
+      </p>
+    </article>
+
+    <article id="ziffer-17">
+      <h2>17. Datenschutz und Daten nach Vertragsende</h2>
+      <p>
+        17.1 Welche personenbezogenen Daten wir verarbeiten, steht in unseren Datenschutzhinweisen
+        unter bootstrap.academy/docs/privacy. Sie sind nicht Teil dieser AGB.
+      </p>
+      <p>
+        17.2 Löschen Sie Ihr Konto selbst, werden Ihre Kontodaten sofort gelöscht. Kündigen Sie per
+        E-Mail oder endet der Vertrag auf andere Weise, löschen wir Ihre Daten innerhalb von 30
+        Tagen nach Vertragsende. Rechnungen und Gutschriften bewahren wir wegen gesetzlicher
+        Pflichten acht Jahre auf; Datensicherungen werden nach den in den Datenschutzhinweisen
+        genannten Fristen überschrieben.
+      </p>
+      <p>
+        17.3 Auf Anfrage stellen wir Ihnen Ihre Daten – auch während einer Sperre – innerhalb eines
+        Monats in einem strukturierten, gängigen und maschinenlesbaren Format (JSON) bereit.
+      </p>
+    </article>
+
+    <article id="ziffer-18">
+      <h2>18. Haftung</h2>
+      <p>
+        18.1 Wir haften unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der
+        Gesundheit, für Schäden, die auf Vorsatz oder grober Fahrlässigkeit von uns, unseren
+        gesetzlichen Vertretern oder unseren Erfüllungsgehilfen beruhen, bei arglistigem
+        Verschweigen eines Mangels, aus der Übernahme einer Garantie, nach dem Produkthaftungsgesetz
+        sowie nach Art. 82 DSGVO.
+      </p>
+      <p>
+        18.2 Bei einfach fahrlässiger Verletzung einer wesentlichen Vertragspflicht haften wir –
+        außer in den Fällen der Ziffer 18.1 – nur für den vertragstypischen, bei Vertragsschluss
+        vorhersehbaren Schaden. Wesentliche Vertragspflichten sind Pflichten, deren Erfüllung die
+        ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung
+        Sie regelmäßig vertrauen dürfen.
+      </p>
+      <p>
+        18.3 Im Übrigen ist unsere Haftung für einfache Fahrlässigkeit ausgeschlossen. Die Ziffern
+        18.1 bis 18.3 gelten auch für die Haftung unserer gesetzlichen Vertreter und
+        Erfüllungsgehilfen.
+      </p>
+      <p>
+        18.4 Ihre gesetzlichen Rechte bei Mängeln digitaler Produkte (§§ 327 ff. BGB) und die
+        Erstattungsansprüche nach diesen AGB werden durch diese Ziffer nicht eingeschränkt.
+      </p>
+      <p>
+        18.5 Für Nutzerinhalte und für Inhalte, die Kursleiter in Events vermitteln, haften wir nach
+        den gesetzlichen Vorschriften für Hostingdienste. Wir prüfen diese Inhalte nicht vorab,
+        sondern nach einer Meldung (Ziffer 14).
+      </p>
+    </article>
+
+    <article id="ziffer-19">
+      <h2>19. Freistellung</h2>
+      <p>
+        19.1 Sie stellen uns von Ansprüchen Dritter frei, die diese wegen einer schuldhaften
+        Verletzung von Rechten Dritter, dieser AGB oder gesetzlicher Vorschriften durch Sie gegen
+        uns geltend machen, einschließlich der angemessenen Kosten der Rechtsverteidigung in
+        gesetzlicher Höhe. Die Freistellungspflicht entfällt, soweit Sie die Rechtsverletzung nicht
+        zu vertreten haben oder wir sie mitverursacht haben.
+      </p>
+      <p>
+        19.2 Sie sind verpflichtet, uns über drohende Ansprüche Dritter unverzüglich zu informieren,
+        sobald Sie davon Kenntnis erlangen. Wir informieren Sie unverzüglich über Ansprüche, die
+        Dritte gegen uns erheben, geben Ihnen Gelegenheit zur Stellungnahme und schließen keinen
+        Vergleich ohne Ihre Zustimmung, die Sie nicht unbillig verweigern dürfen.
+      </p>
+    </article>
+
+    <article id="ziffer-20">
+      <h2>20. Änderungen dieser AGB</h2>
+      <p>
+        20.1 Wir können diese AGB für die Zukunft ändern. Über jede Änderung informieren wir Sie
+        mindestens sechs Wochen vor dem Wirksamwerden per E-Mail an Ihre hinterlegte Adresse und auf
+        der Plattform. In der Mitteilung nennen wir die geänderten Regelungen, den Zeitpunkt des
+        Wirksamwerdens und Ihre Rechte nach dieser Ziffer.
+      </p>
+      <p>
+        20.2 Änderungen, die Ihre Zustimmung erfordern: Änderungen, die den Leistungsumfang der
+        Plattform oder kostenpflichtiger Leistungen, Preise, den Erwerbskurs, die Regeln für
+        MorphCoins, Premium, Herzen oder Events, die Laufzeit- und Kündigungsregeln, die Haftung
+        oder diese Ziffer betreffen, werden nur wirksam, wenn Sie ihnen ausdrücklich zustimmen. Wir
+        legen Ihnen die neue Fassung bei Ihrer nächsten Anmeldung vor; Sie können sie annehmen oder
+        ablehnen. Ihr Schweigen gilt nicht als Zustimmung. Lehnen Sie die neue Fassung ab, gilt für
+        bestehende Verträge die bisherige Fassung weiter; neue kostenpflichtige Leistungen können
+        Sie dann nur zu den bei der Bestellung geltenden Bedingungen erwerben (Ziffer 20.4). Wir
+        können den Nutzungsvertrag in diesem Fall nach Ziffer 4.3 kündigen; Ziffer 4.4 gilt.
+      </p>
+      <p>
+        20.3 Änderungen ohne Ihre ausdrückliche Zustimmung: Nur bei rein redaktionellen Änderungen,
+        die den Inhalt nicht verändern, bei Änderungen, die wegen einer Gesetzesänderung oder einer
+        gerichtlichen oder behördlichen Entscheidung erforderlich sind, und bei Änderungen, die
+        ausschließlich zu Ihrem Vorteil sind, gilt: Widersprechen Sie der Änderung nicht bis zum
+        Wirksamwerden in Textform, gilt sie als angenommen. Auf diese Folge weisen wir Sie in der
+        Mitteilung besonders hin. Widersprechen Sie, können Sie den Nutzungsvertrag bis zum
+        Wirksamwerden ohne Frist kündigen; wir können ihn nach Ziffer 4.3 kündigen, wenn uns die
+        Fortsetzung mit der bisherigen Fassung nicht zumutbar ist. Ziffer 4.4 gilt.
+      </p>
+      <p>
+        20.4 Für jede kostenpflichtige Bestellung gilt die Fassung dieser AGB, die wir Ihnen bei der
+        Bestellung anzeigen.
+      </p>
+    </article>
+
+    <article id="ziffer-21">
+      <h2>21. Streitbeilegung, anwendbares Recht und Gerichtsstand</h2>
+      <p>
+        21.1 Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+        Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG). Bei Beschwerden wenden Sie sich
+        bitte an hallo@bootstrap.academy; wir bemühen uns um eine schnelle Lösung.
+      </p>
+      <p>
+        21.2 Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.
+        Sind Sie Verbraucher mit gewöhnlichem Aufenthalt in einem anderen Staat, bleiben die
+        zwingenden Verbraucherschutzvorschriften dieses Staates unberührt.
+      </p>
+      <p>
+        21.3 Sind Sie Kaufmann, juristische Person des öffentlichen Rechts oder
+        öffentlich-rechtliches Sondervermögen, ist ausschließlicher Gerichtsstand München. Für
+        Verbraucher gelten die gesetzlichen Gerichtsstände.
+      </p>
+      <p>
+        21.4 Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt der Vertrag im Übrigen
+        wirksam; an die Stelle der unwirksamen Bestimmung treten die gesetzlichen Vorschriften (§
+        306 BGB).
+      </p>
+    </article>
+
+    <article id="ziffer-22">
+      <h2>22. Ergänzende Regelungen für Unternehmer</h2>
+      <p>22.1 Für Nutzer, die als Unternehmer handeln, gelten diese AGB mit folgenden Maßgaben.</p>
+      <p>
+        22.2 Ein Widerrufsrecht besteht nicht. Die Widerrufsbelehrung sowie die Regelungen in Ziffer
+        8.5 zur Kündigungsschaltfläche, in Ziffer 12 und in Ziffer 16.2 Satz 1 bis 3 gelten nur für
+        Verbraucher; die gesetzlichen Gewährleistungsrechte für Unternehmer bleiben unberührt.
+      </p>
+      <p>
+        22.3 Unternehmer können MorphCoins kaufen, wenn sie vollständige Rechnungsdaten (Name,
+        Anschrift, Land) und ihre Umsatzsteuer-Identifikationsnummer angegeben haben (Ziffer 6.2);
+        die Umsatzsteuer-Identifikationsnummer prüfen wir über das
+        Mehrwertsteuer-Informationsaustauschsystem der Europäischen Kommission. Die Umsatzsteuer
+        weisen wir in der Rechnung gesondert aus. Für Belohnungs-Coins, die eine Vergütung
+        darstellen, rechnen wir im Gutschriftverfahren ab (Ziffer 6.4).
+      </p>
+      <p>
+        22.4 Unternehmer können nur mit Forderungen aufrechnen, die unbestritten, rechtskräftig
+        festgestellt oder entscheidungsreif sind oder die mit unserer Forderung in einem
+        Gegenseitigkeitsverhältnis stehen; Zurückbehaltungsrechte können sie nur wegen
+        Gegenansprüchen aus demselben Vertragsverhältnis geltend machen.
+      </p>
+      <p>
+        22.5 Sind Sie Kaufmann, juristische Person des öffentlichen Rechts oder
+        öffentlich-rechtliches Sondervermögen, gilt der Gerichtsstand nach Ziffer 21.3. Für andere
+        Unternehmer gelten die gesetzlichen Gerichtsstände.
       </p>
     </article>
 
     <article>
-      <h2>11. Preise/Vergütung</h2>
-      <p>
-        Das Entgelt für die Plattformnutzung bzw. die Kosten für den Erwerb von Coins wird dem
-        Kunden vor Vertragsschluss mitgeteilt bzw. individualvertraglich vereinbart. Vorbehaltlich
-        abweichender Vereinbarungen werden Rechnungen in elektronischer Form (z.B. als PDF per
-        E-Mail) übermittelt; der Kunde stimmt dieser Übermittlungsform zu.
-      </p>
-    </article>
-
-    <article>
-      <h2>12. Sperrung des Kundenaccounts</h2>
-      <p>
-        12.1 Der Anbieter ist zur Sperrung des Kundenaccounts berechtigt, wenn der Kunde mit
-        mindestens einer Zahlungsrate in Verzug gerät. Das gleiche gilt, wenn er mit mehreren
-        Zahlungsraten teilweise in Verzug ist, die in Ihrer Summe einer ganzen Rate entsprechen.
-      </p>
-      <p>
-        12.2 Der Anbieter ist ferner zur sofortigen Sperrung des Kundenaccounts berechtigt, wenn der
-        begründete Verdacht besteht, dass die gespeicherten Daten gegen geltendes Recht oder gegen
-        diese AGB verstoßen oder dass der Kunde die Plattform in einer rechts- oder vertragswidrigen
-        Weise nutzt. Ein begründeter Verdacht für eine Rechtswidrigkeit und/oder eine
-        Rechtsverletzung liegt insbesondere dann vor, wenn Gerichte, Behörden und/oder sonstige
-        Dritte den Anbieter über einen solchen Verdacht in Kenntnis setzen. Der Anbieter hat den
-        Kunden über die Sperre und den Grund hierfür unverzüglich zu informieren. Die Sperrung wird
-        aufgehoben, sobald der Verdacht entkräftet ist.
-      </p>
-      <p>
-        12.3 Sperrungen lassen die Vertragslaufzeit unberührt und entbinden den Kunden nicht von
-        seiner Zahlungspflicht.
-      </p>
-    </article>
-
-    <article>
-      <h2>13. Laufzeit, Kündigung</h2>
-      <p>
-        13.1 Vorbehaltlich abweichender Bestimmungen hat der Vertrag eine Mindestlaufzeit von 24
-        Monaten. Die Kündigungsfrist beträgt 1 Monat. Wird der Vertrag nicht fristgerecht zum
-        Laufzeitende gekündigt, verlängert er sich automatisch auf unbestimmte Zeit und kann mit
-        einer Kündigungsfrist von einem Monat gekündigt werden. Das Recht zur außerordentlichen
-        fristlosen Kündigung aus wichtigem Grund bleibt unberührt. Zur fristlosen Kündigung ist der
-        Anbieter insbesondere berechtigt, wenn der Kunde fällige Zahlungen trotz Mahnung und
-        Nachfristsetzung nicht leistet oder die wesentlichen vertraglichen Bestimmungen über die
-        Nutzung der Plattform vorsätzlich oder fahrlässig verletzt.
-      </p>
-      <p>
-        13.2 Fällige und bezahlte Entgelte für nicht vollständig genutzte oder angefangene
-        Buchungsperioden (z.B. aufgrund von Kündigungen) werden nicht erstattet bzw. werden
-        weiterhin geschuldet; gesetzlich zwingende Rückerstattungsansprüche – insb. aufgrund von
-        zwingender Haftung, Rücktritt, Anfechtung oder Mängelgewährleistung – bleiben unberührt.
-      </p>
-    </article>
-
-    <article>
-      <h2>14. Herausgabe und Löschung der Daten nach Vertragsbeendigung oder Sperrung</h2>
-      <p>
-        Im Falle der Vertragsbeendigung wird der Anbieter die vom Kunden auf der Plattform
-        hinterlegten Daten vier (4) Monate nach Vertragsbeendigung unwiderruflich löschen. Es
-        obliegt dem Kunden, die Daten, die er in seinem Account gespeichert hat vor der
-        Vertragsbeendigung anderweitig zu sichern. Im Falle einer außerordentlichen fristlosen
-        Kündigung oder Sperrung, kann der Kunde die Herausgabe seiner Daten beim Anbieter
-        beantragen. Der Anbieter wird die Daten herausgeben, sofern der Grund für die fristlose
-        Kündigung oder die Sperrung der Herausgabe nicht entgegensteht (z.B. aufgrund des Verdachts
-        auf Rechtswidrigkeit der abgelegten Daten). Über die Form, in der die Daten zur Verfügung
-        gestellt werden, entscheidet der Anbieter in freiem Ermessen unter Berücksichtigung der
-        Interessen des Kunden (Zumutbarkeit).
-      </p>
-    </article>
-
-    <article>
-      <h2>15. Haftung und Freistellung</h2>
-      <p>
-        15.1 Der Anbieter haftet aus jedem Rechtsgrund uneingeschränkt bei Vorsatz oder grober
-        Fahrlässigkeit, bei vorsätzlicher oder fahrlässiger Verletzung des Lebens, des Körpers oder
-        der Gesundheit, aufgrund eines Garantieversprechens, soweit diesbezüglich nichts Anderes
-        geregelt ist oder aufgrund zwingender Haftung wie etwa nach dem Produkthaftungsgesetz.
-        Verletzt der Anbieter fahrlässig eine wesentliche Vertragspflicht, ist die Haftung auf den
-        vertragstypischen, vorhersehbaren Schaden begrenzt, sofern nicht gemäß vorstehender Ziffer
-        unbeschränkt gehaftet wird. Wesentliche Vertragspflichten sind Pflichten, die der Vertrag
-        dem Anbieter nach seinem Inhalt zur Erreichung des Vertragszwecks auferlegt, deren Erfüllung
-        die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren
-        Einhaltung der Kunde regelmäßig vertrauen darf. Im Übrigen ist eine Haftung des Anbieters
-        ausgeschlossen.
-      </p>
-      <p>
-        15.2 Vorstehende Haftungsregelungen gelten auch im Hinblick auf die Haftung des Anbieters
-        für seine Erfüllungsgehilfen und gesetzlichen Vertreter.
-      </p>
-      <p>
-        15.3 Der Kunde stellt den Anbieter von jeglichen Ansprüchen Dritter – einschließlich der
-        Kosten für die Rechtsverteidigung in ihrer gesetzlichen Höhe – frei, die gegen den Anbieter
-        aufgrund von rechts- oder vertragswidrigen Handlungen des Kunden geltend gemacht werden.
-        Dies umfasst die angemessenen Kosten der Rechtsverteidigung (insb. Gerichts- und
-        Anwaltskosten) in ihrer gesetzlichen Höhe. Satz 1 und 2 gelten nicht, wenn der Anbieter /
-        Kunde die Rechtsverletzung nicht zu vertreten hat. Unabhängig davon ist der Anbieter jedoch
-        verpflichtet, den Anbieter über möglicherweise drohende Drittansprüche unverzüglich zu
-        informieren.
-      </p>
-    </article>
-
-    <article>
-      <h2>16. Datenschutz</h2>
-      <p>
-        Der Anbieter behandelt die vom Kunden zur Vertragserfüllung zur Verfügung gestellten
-        personenbezogenen Daten im Einklang mit den gesetzlichen Datenschutzvorschriften.
-      </p>
-    </article>
-
-    <article>
-      <h2>17. Schlussbestimmungen</h2>
-      <p>
-        17.1 Auf die Verträge zwischen dem Anbieter und dem Kunden findet das Recht der
-        Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts Anwendung, soweit diese
-        Rechtswahl nicht dazu führt, dass ein Verbraucher hierdurch zwingenden
-        verbraucherschützenden Normen entzogen wird.
-      </p>
-      <p>
-        17.2 Sofern der Kunde Kaufmann ist oder keinen allgemeinen Gerichtsstand in Deutschland hat,
-        vereinbaren die Parteien den Sitz des Anbieters als Gerichtstand für sämtliche
-        Streitigkeiten, die aus dem vorliegenden Vertragsverhältnis resultieren. Satz 1 gilt nicht,
-        wenn für die Streitigkeit ein ausschließlicher Gerichtsstand begründet wird.
-      </p>
-      <p>
-        17.3 Der Anbieter ist berechtigt, diese AGB aus sachlich gerechtfertigten Gründen (z.B.
-        Änderungen in der Rechtsprechung, Gesetzeslage, Marktgegebenheiten oder
-        Unternehmensstrategie) und unter Einhaltung einer angemessenen Frist zu ändern.
-        Bestandskunden werden hierüber spätestens zwei Wochen vor Inkrafttreten der Änderung per
-        E-Mail benachrichtigt. Sofern der Bestandskunde nicht innerhalb der in der
-        Änderungsmitteilung gesetzten Frist widerspricht, gilt seine Zustimmung zur Änderung als
-        erteilt. Widerspricht er, treten die Änderungen nicht in Kraft; der Anbieter ist in diesem
-        Fall berechtigt, den Vertrag zum Zeitpunkt des Inkrafttretens der Änderung außerordentlich
-        zu kündigen. In der Benachrichtigung wird auf die beabsichtigte Änderung dieser AGB auf die
-        Frist und die Folgen des Widerspruchs oder seines Ausbleibens hingewiesen.
-      </p>
-    </article>
-
-    <article>
-      <h2>18. Gesetzliche Pflichtinformationen zur Online-Streitbeilegung für Verbraucher</h2>
-      <p>
-        Die EU-Kommission stellt im Internet unter folgendem Link eine Plattform zur
-        Online-Streitbeilegung bereit:
-        <a href="https://ec.europa.eu/consumers/odr" target="_blank">
-          https://ec.europa.eu/consumers/odr
-        </a>
-        Diese Plattform dient als Anlaufstelle zur außergerichtlichen Beilegung von Streitigkeiten
-        aus Online-Kauf- oder Dienstleistungsverträgen, an denen ein Verbraucher beteiligt ist. Der
-        Anbieter ist weder bereit noch verpflichtet, an einem Verbraucherstreitschlichtungsverfahren
-        nach dem VSBG teilzunehmen. Die E-Mail-Adresse des Anbieters ist der Überschrift dieser
-        Nutzungsbedingungen zu entnehmen.
-      </p>
-    </article>
-
-    <article>
-      <h2>Stand: Oktober 2022</h2>
+      <h2>Stand: September 2026</h2>
     </article>
   </main>
 </template>
@@ -452,16 +983,10 @@
 <script>
 export default {
   setup() {
-    const config = useRuntimeConfig().public;
-
-    const webLink = computed(() => {
-      return `${config.BASE_WEB_URL}`;
-    });
-
-    return { webLink };
+    return {};
   },
   head: {
-    title: "Right of Withdrawal",
+    title: "AGB",
   },
 };
 </script>
