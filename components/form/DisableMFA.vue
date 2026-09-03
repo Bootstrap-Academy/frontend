@@ -52,7 +52,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
 import type { IForm } from "~/types/form";
 
 export default defineComponent({
@@ -110,18 +109,6 @@ export default defineComponent({
       },
     });
 
-    // ============================================================= reCaptcha
-    const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
-    const getReCaptchaToken = async () => {
-      try {
-        await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
-        return token;
-      } catch (error) {
-        return null;
-      }
-    };
-
     // ============================================================= functions
     const router = useRouter();
 
@@ -150,12 +137,7 @@ export default defineComponent({
       if (form.validate()) {
         form.submitting = true;
 
-        let recaptcha_response = await getReCaptchaToken();
-
-        const [success, error] = await login({
-          ...form.body(),
-          recaptcha_response: recaptcha_response,
-        });
+        const [success, error] = await login(form.body());
 
         success ? successHandler(success) : errorHandler(error);
       } else {

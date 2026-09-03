@@ -78,7 +78,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
 import type { IForm } from "~/types/form";
 
 export default defineComponent({
@@ -178,18 +177,6 @@ export default defineComponent({
       },
     });
 
-    // ============================================================= reCaptcha
-    const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
-    const getReCaptchaToken = async () => {
-      try {
-        await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
-        return token;
-      } catch (error) {
-        return null;
-      }
-    };
-
     // ============================================================= OAuth Signup
     const route = useRoute();
     const register_token = computed(() => {
@@ -216,18 +203,12 @@ export default defineComponent({
       if (form.validate()) {
         form.submitting = true;
 
-        let recaptcha_response = await getReCaptchaToken();
-
         const updatedBody = !!register_token.value
           ? {
               ...form.body(),
-              recaptcha_response: recaptcha_response,
               oauth_register_token: register_token.value,
             }
-          : {
-              ...form.body(),
-              recaptcha_response: recaptcha_response,
-            };
+          : form.body();
 
         const [success, error] = await signup(updatedBody);
 

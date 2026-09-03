@@ -1141,7 +1141,6 @@
     "NoLoginMethod": "Keine Anmeldemethode",
     "InvalidCredentials": "Ungültige Anmeldeinformationen",
     "UserDisabled": "Dein Konto ist derzeit deaktiviert. Kontaktiere uns für weitere Einzelheiten.",
-    "RecaptchaFailed": "Das Captcha ist fehlgeschlagen.",
     "AccountNotVerified": "Bitte verifiziere dein Konto, um fortzufahren.",
     "UserNotFound": "Benutzer wurde nicht gefunden",
     "PermissionDenied": "Du hast keine Berechtigung für diese Aktion",

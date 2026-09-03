@@ -1142,7 +1142,6 @@
     "NoLoginMethod": "No login method",
     "InvalidCredentials": "Invalid credentials",
     "UserDisabled": "Your account is currently disabled. Contact us for more details.",
-    "RecaptchaFailed": "Your recaptcha has failed.",
     "AccountNotVerified": "Please verify your account in order to move forward.",
     "UserNotFound": "User was not found",
     "PermissionDenied": "You do not have permission for this action",

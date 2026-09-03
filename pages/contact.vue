@@ -12,7 +12,6 @@
 
 ✅ Display data
 
-✅ Recaptcha
 ✅ Api implemented
 ✅ Form Client Side Error Handling
 ✅ Form Submission Process

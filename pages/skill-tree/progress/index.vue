@@ -7,7 +7,6 @@
 ❌ Tested on firefox
 ❌ Tested on safari
 
-❌ Recaptcha
 ❌ Api implemented
 ❌ Form Client Side Error Handling
 ❌ Form Submission Process

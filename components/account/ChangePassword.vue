@@ -22,7 +22,6 @@ import { EnvelopeOpenIcon } from "@heroicons/vue/24/outline";
 import { KeyIcon } from "@heroicons/vue/24/solid";
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import { useReCaptcha } from "vue-recaptcha-v3";
 
 export default defineComponent({
   components: {
@@ -59,12 +58,8 @@ export default defineComponent({
       }
 
       loading.value = true;
-      let recaptcha_response = await getReCaptchaToken();
 
-      const [success, error] = await forgotPassword({
-        email: email,
-        recaptcha_response: recaptcha_response,
-      });
+      const [success, error] = await forgotPassword({ email: email });
       loading.value = false;
 
       if (success) {
@@ -85,18 +80,6 @@ export default defineComponent({
         openSnackbar("error", error?.detail ?? "");
       }
     }
-
-    // ============================================================= reCaptcha
-    const { executeRecaptcha, recaptchaLoaded }: any = useReCaptcha();
-    const getReCaptchaToken = async () => {
-      try {
-        await recaptchaLoaded();
-        const token = await executeRecaptcha("login");
-        return token;
-      } catch (error) {
-        return null;
-      }
-    };
 
     return { t, loading, onclick };
   },

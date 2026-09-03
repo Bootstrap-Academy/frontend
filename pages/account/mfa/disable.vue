@@ -11,7 +11,6 @@
 ❌ Tested on android mobile
 ❌ Tested on apple mobile
 
-✅ Recaptcha
 ✅ Api implemented
 ✅ Form Client Side Error Handling
 ✅ Form Submission Process
