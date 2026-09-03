@@ -21,7 +21,6 @@ export class EventBase {
 }
 
 export class Instructor {
-  avatar_url: string = "";
   display_name: string = "";
   email: string = "";
   id: string = "";
@@ -42,12 +41,10 @@ export class CoachingEvent extends EventBase {
     name: string;
     display_name: string;
     email: string;
-    avatar_url: string;
   } = {
     id: "",
     name: "",
     display_name: "",
     email: "",
-    avatar_url: "",
   };
 }

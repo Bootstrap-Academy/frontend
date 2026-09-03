@@ -14,11 +14,10 @@
         >
           <CheckBadgeIcon class="h-6 w-6 text-[#d4af37]" />
         </Tooltip>
-        <img
+        <Avatar
           @click="toggleMenu"
-          :src="image"
-          :alt="t('AltAttributes.UserAvatar')"
-          class="h-10 min-h-[2.5rem] w-10 min-w-[2.5rem] rounded-full object-cover"
+          :name="displayName"
+          class="h-10 min-h-[2.5rem] w-10 min-w-[2.5rem]"
         />
       </div>
     </div>
@@ -107,8 +106,8 @@ export default {
     }
 
     const user = useUser();
-    const image = computed(() => {
-      return user?.value?.avatar_url ?? "/images/about-2.webp";
+    const displayName = computed(() => {
+      return user?.value?.display_name ?? "";
     });
     return {
       links,
@@ -119,7 +118,7 @@ export default {
 
       isPremium,
       t,
-      image,
+      displayName,
       validTill,
     };
   },

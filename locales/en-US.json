@@ -979,8 +979,7 @@
     "Newsletter": "I want to register for Bootstrap newsletter.",
     "RightToWithdrawal": "You have a 14-day right of withdrawal. You will find the cancellation policy + cancellation form",
     "RightToWithdrawalLink": "here",
-    "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period.",
-    "GravatarImage": "Change your gravatar image at"
+    "DontUseRightToWithdrawal": "I request that you start the commissioned service before the end of the cancellation period."
   },
   "Success": {
     "SolvedMatching": "Matching Solved ✅",

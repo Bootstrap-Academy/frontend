@@ -5,19 +5,7 @@
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
-    <InputMedia class="mx-auto" id="image" rounded no-input v-model="image">
-      <template #hint="{ t }">
-        {{ t("Links.GravatarImage") }}
-        <a
-          href="https://de.gravatar.com/"
-          target="_blank"
-          :alt="t('AltAttributes.UserAvatar')"
-          class="cursor-pointer"
-        >
-          gravatar.com
-        </a>
-      </template>
-    </InputMedia>
+    <Avatar class="mx-auto h-40 w-40 flex-shrink-0" :name="form.display_name.value" />
 
     <Input
       :label="t('Inputs.Nickname')"
@@ -250,10 +238,6 @@ export default defineComponent({
     });
 
     // ============================================================= Setting Form
-    const image = computed(() => {
-      return props.data?.avatar_url ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
-    });
-
     const hintNickname = computed(() => {
       let timestamp = props.data?.last_name_change ?? "";
       if (!!!timestamp) return "";
@@ -366,7 +350,6 @@ export default defineComponent({
       onclickSubmitForm,
       refForm,
       t,
-      image,
       hintNickname,
       business,
     };
