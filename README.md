@@ -16,6 +16,11 @@ If you would like to submit a bug report or feature request, or are looking for 
 - Run `npm run format` to apply the enforced Prettier style (CI runs `npm run format:check`).
 - Run `npm run lint` to ensure the code passes the ESLint rules.
 
+## Documentation
+
+- [`docs/CONSUMER_UI.md`](docs/CONSUMER_UI.md): the terms gate, the order summary with the withdrawal declarations, and the permanent cancellation/withdrawal bar.
+- [`docs/DEPLOYMENT_RUNBOOK.md`](docs/DEPLOYMENT_RUNBOOK.md): shipping `develop` to production.
+
 ## Note on Account Creation
 
 You need to create separate accounts for test instances (localhost, [https://test.bootstrap.academy](https://test.bootstrap.academy), PullRequest-preview pages) and live instances ([https://bootstrap.academy](https://bootstrap.academy)). These are two separate database systems.
