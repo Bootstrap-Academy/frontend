@@ -18,16 +18,19 @@
     </h1>
 
     <h2 class="mt-card">
-      Plattform:
-      <a :href="webLink" target="_blank">
-        {{ webLink }}
-      </a>
+      Plattform: <a href="https://bootstrap.academy" target="_blank">https://bootstrap.academy</a>
       <br />
       Anbieter: bootstrap academy GmbH, Wittelsbacherplatz 1, 80333 München (nachfolgend „Anbieter“
       oder „wir“)
       <br />
       E-Mail-Adresse: hallo@bootstrap.academy
     </h2>
+    <p class="mt-card">
+      <em
+        >Note for English-speaking users: the contract language is German (Ziffer 1.4). These terms
+        are currently available in German only.</em
+      >
+    </p>
 
     <article>
       <p>
@@ -112,15 +115,16 @@
       <h2>2. Leistungen der Plattform</h2>
       <p>
         2.1 Mit einem Nutzerkonto können Sie kostenlos nutzen: den Skilltree mit kostenlosen Kursen,
-        Quizze und Zuordnungsaufgaben, Coding-Challenges, bei denen Ihr Code auf unseren Servern
-        ausgeführt und geprüft wird, das Erstellen eigener Aufgaben, die Bestenliste und die Herzen.
-        Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse erforderlich.
+        Quizze und Zuordnungsaufgaben („Matchings“), Coding-Challenges, bei denen Ihr Code auf
+        unseren Servern ausgeführt und geprüft wird, das Erstellen eigener Aufgaben, die Bestenliste
+        und die Herzen. Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse erforderlich.
       </p>
       <p>
         2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – das einmalige
         Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8), das sofortige Auffüllen der
-        Herzen (Ziffer 9) sowie Webinare und Coachings (Ziffer 10). Den Preis jeder Leistung zeigen
-        wir Ihnen vor der Bestellung in MorphCoins und in Euro an (Ziffer 11).
+        Herzen (Ziffer 9) sowie kostenpflichtige Webinare und Coachings (Ziffer 10); Kursleiter
+        können Events auch kostenlos anbieten. Den Preis jeder Leistung zeigen wir Ihnen vor der
+        Bestellung in MorphCoins und in Euro an (Ziffer 11).
       </p>
       <p>
         2.3 Die Inhalte der Plattform stammen von uns, von Kursleitern, die Webinare und Coachings
@@ -129,10 +133,13 @@
         ein bestimmtes Prüfungsergebnis.
       </p>
       <p>
-        2.4 Wir entwickeln die Plattform weiter. Kostenlose Funktionen können wir ändern, ergänzen
-        oder einstellen; Änderungen, die eine von Ihnen genutzte Funktion einschränken, kündigen
-        wir, soweit möglich, vorher auf der Plattform an. Für kostenpflichtige Leistungen gilt
-        Ziffer 16.4.
+        2.4 Wir entwickeln die Plattform weiter. Kostenlose Funktionen dürfen wir aus triftigem
+        Grund ändern, ergänzen oder einstellen, insbesondere wegen technischer Weiterentwicklung,
+        aus Sicherheitsgründen, wegen rechtlicher Anforderungen, wegen geringer Nutzung oder weil
+        der Betrieb für uns unverhältnismäßig aufwendig wird. Dabei entstehen Ihnen keine Kosten.
+        Änderungen, die eine von Ihnen genutzte Funktion mehr als unerheblich einschränken, kündigen
+        wir vorher per E-Mail und auf der Plattform an (§ 327r BGB); Sie können den Nutzungsvertrag
+        jederzeit nach Ziffer 4.2 beenden. Für kostenpflichtige Leistungen gilt Ziffer 16.4.
       </p>
     </article>
 
@@ -153,15 +160,16 @@
         bestätigen Ihr Mindestalter und akzeptieren diese AGB über ein Kontrollkästchen.
         Eingabefehler können Sie vor dem Absenden jederzeit in den Formularfeldern erkennen und
         korrigieren. Mit dem Absenden des Formulars geben Sie ein Angebot auf Abschluss des
-        Nutzungsvertrags ab. Der Vertrag kommt zustande, wenn wir Ihr Nutzerkonto anlegen und Ihnen
-        die E-Mail zur Bestätigung Ihrer E-Mail-Adresse senden. Kostenpflichtige Bestellungen und
-        einige weitere Funktionen stehen erst nach Bestätigung Ihrer E-Mail-Adresse zur Verfügung.
+        Nutzungsvertrags ab. Der Vertrag kommt zustande, wenn wir Ihr Nutzerkonto anlegen. Zur
+        Bestätigung Ihrer E-Mail-Adresse senden wir Ihnen eine E-Mail mit einem Bestätigungscode.
+        Kostenpflichtige Bestellungen und einige weitere Funktionen stehen erst nach Bestätigung
+        Ihrer E-Mail-Adresse zur Verfügung.
       </p>
       <p>
-        3.4 Wir speichern die von Ihnen akzeptierte Fassung dieser AGB zusammen mit dem Zeitpunkt
-        Ihrer Zustimmung. Sie können diese Fassung jederzeit in Ihrem Nutzerkonto abrufen, speichern
-        und ausdrucken; die jeweils aktuelle Fassung finden Sie unter
-        bootstrap.academy/docs/terms-and-conditions. Ihre Registrierungsdaten speichern wir in Ihrem
+        3.4 Diese AGB können Sie jederzeit unter bootstrap.academy/docs/terms-and-conditions
+        abrufen, speichern und ausdrucken. Welche Fassung Sie akzeptiert haben und wann, speichern
+        wir mit Ihrem Nutzerkonto und teilen es Ihnen auf Anfrage mit; frühere Fassungen stellen wir
+        Ihnen auf Anfrage zur Verfügung. Ihre Registrierungsdaten speichern wir in Ihrem
         Nutzerkonto, wo Sie sie einsehen und ändern können.
       </p>
       <p>
@@ -246,38 +254,40 @@
       <p>
         6.1 MorphCoins sind das Zahlungsmittel innerhalb der Plattform. Sie können MorphCoins kaufen
         (gekaufte MorphCoins) oder von uns als Belohnung erhalten (Belohnungs-Coins). Beide Arten
-        werden in einem gemeinsamen Guthaben angezeigt. Über Käufe, Gutschriften und Ausgaben führen
-        wir Buch, sodass wir den gekauften, nicht verbrauchten Anteil jederzeit ermitteln können.
-        Bei Ausgaben werden zuerst Belohnungs-Coins verbraucht, danach gekaufte MorphCoins. [OWNER:
-        Verbrauchsreihenfolge (erst Belohnungs-Coins, dann gekaufte MorphCoins) bestätigen]
+        werden in einem gemeinsamen Guthaben geführt und angezeigt. Den nicht verbrauchten Anteil
+        gekaufter MorphCoins ermitteln wir aus Ihren Käufen (Rechnungen), bereits erfolgten
+        Erstattungen und Ihrem aktuellen Guthaben; dabei gelten Belohnungs-Coins als zuerst
+        verbraucht (Ziffer 6.7).
       </p>
       <p>
-        6.2 Kauf: 100 MorphCoins kosten 1,00 € einschließlich 19 % Umsatzsteuer. Je Kauf können Sie
-        mindestens 500 und höchstens 1.000.000 MorphCoins erwerben. Die Bezahlung erfolgt über
-        PayPal; andere Zahlungsarten bieten wir derzeit nicht an. Voraussetzung ist eine bestätigte
-        E-Mail-Adresse und die Angabe Ihrer Rechnungsdaten: Als Verbraucher geben Sie mindestens an,
-        dass Sie nicht als Unternehmer handeln, und Ihr Land; als Unternehmer geben Sie die
-        vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer an (Ziffer
-        22.3). Die MorphCoins werden Ihrem Guthaben gutgeschrieben, sobald PayPal uns die Zahlung
-        bestätigt hat; Sie erhalten eine Kaufbestätigung mit Rechnung per E-Mail (Ziffer 11).
+        6.2 Kauf: 100 MorphCoins kosten 1,00 € einschließlich der gesetzlichen Umsatzsteuer. Je Kauf
+        können Sie mindestens 500 und höchstens 1.000.000 MorphCoins erwerben. Die Bezahlung erfolgt
+        über PayPal; andere Zahlungsarten bieten wir derzeit nicht an. Voraussetzung ist eine
+        bestätigte E-Mail-Adresse und die Angabe Ihrer Rechnungsdaten: Als Verbraucher geben Sie
+        mindestens an, dass Sie nicht als Unternehmer handeln, und Ihr Land; als Unternehmer geben
+        Sie die vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer an
+        (Ziffer 22.3). Die MorphCoins werden Ihrem Guthaben gutgeschrieben, sobald PayPal uns die
+        Zahlung bestätigt hat; Sie erhalten eine Kaufbestätigung mit Rechnung per E-Mail (Ziffer
+        11).
       </p>
       <p>
-        6.3 Belohnungs-Coins vergeben wir für Beiträge zur Plattform, insbesondere für das Erstellen
-        von Aufgaben, die andere Nutzer positiv bewerten, und an Kursleiter für durchgeführte
-        Webinare und Coachings. [OWNER: tatsächlich bestehende Belohnungswege bestätigen – die Seite
-        /morphcoins bewirbt derzeit auch „Jobs“ und „Prüfer“, wofür es keine Umsetzung gibt] Welche
-        Beiträge wir mit wie vielen Belohnungs-Coins vergüten, zeigen wir an der jeweiligen Stelle
-        auf der Plattform an; diese Regeln können wir für die Zukunft ändern. Bereits
-        gutgeschriebene Belohnungs-Coins bleiben erhalten.
+        6.3 Belohnungs-Coins vergeben wir für Beiträge zur Plattform: für von Ihnen erstellte
+        Aufgaben, die andere Nutzer positiv bewerten; an Kursleiter als Anteil am Preis der von
+        ihnen durchgeführten Webinare und Coachings (derzeit 70 % des Preises); sowie im Einzelfall
+        für weitere Beiträge, die wir mit Ihnen vereinbaren, zum Beispiel das Erstellen von
+        Kursinhalten oder das Melden von Sicherheitslücken. Die Höhe der Belohnung legen wir fest
+        und können sie für die Zukunft ändern. Bereits gutgeschriebene Belohnungs-Coins bleiben
+        erhalten.
       </p>
       <p>
         6.4 Belohnungs-Coins werden Ihrem Guthaben erst gutgeschrieben, wenn Ihre Rechnungsdaten
         (Name, Anschrift, Land; bei Unternehmern zusätzlich die Umsatzsteuer-Identifikationsnummer)
-        vollständig sind. Bis dahin halten wir sie für Sie zurück und zeigen sie als zurückgehaltene
-        MorphCoins an. Über Belohnungs-Coins, die eine Vergütung darstellen (insbesondere Anteile
-        für Kursleiter), erstellen wir monatlich eine Gutschrift im Gutschriftverfahren (§ 14 Abs. 2
-        Satz 2 UStG). Sie erklären sich mit diesem Verfahren einverstanden und teilen uns mit, wenn
-        Sie als Unternehmer handeln.
+        vollständig sind. Bis dahin halten wir sie für Sie zurück; die Höhe zurückgehaltener
+        MorphCoins teilen wir Ihnen auf Anfrage mit. Über Belohnungs-Coins, die eine Vergütung
+        darstellen (insbesondere Anteile für Kursleiter), erstellen wir je Kalendermonat eine
+        Gutschrift im Gutschriftverfahren (§ 14 Abs. 2 UStG), die wir Ihnen nach Ablauf des Monats
+        als PDF zur Verfügung stellen (derzeit auf Anfrage per E-Mail). Sie erklären sich mit diesem
+        Verfahren einverstanden und teilen uns mit, wenn Sie als Unternehmer handeln.
       </p>
       <p>
         6.5 Verwendung: Mit MorphCoins bezahlen Sie ausschließlich Leistungen auf der Plattform
@@ -286,21 +296,26 @@
         Preis in MorphCoins und den Euro-Gegenwert zum Erwerbskurs an.
       </p>
       <p>
-        6.6 Kein Verfall: MorphCoins verfallen nicht durch Zeitablauf. Belohnungs-Coins haben keinen
-        Geldwert; sie werden nicht ausgezahlt und entfallen mit der Löschung des Nutzerkontos
-        ersatzlos. Gekaufte MorphCoins behalten ihren Gegenwert nach Ziffer 6.7.
+        6.6 Kein Verfall durch Zeitablauf: MorphCoins verfallen nicht durch Zeitablauf.
+        Belohnungs-Coins werden nicht in Geld ausgezahlt; das gilt auch für Belohnungs-Coins, die
+        eine Vergütung darstellen (Ziffer 6.4). Löschen Sie Ihr Konto oder kündigen wir es
+        außerordentlich nach Ziffer 15.5, entfallen Belohnungs-Coins ersatzlos. Kündigen wir
+        ordentlich (Ziffer 4.3) oder stellen wir die Plattform ein, können Sie Belohnungs-Coins bis
+        zum Vertragsende für Leistungen der Plattform verwenden; darauf weisen wir Sie in der
+        Kündigung hin. Gekaufte MorphCoins behalten ihren Gegenwert nach Ziffer 6.7.
       </p>
       <p>
         6.7 Erstattung gekaufter MorphCoins: Nicht verbrauchte gekaufte MorphCoins erstatten wir
         Ihnen jederzeit auf Anfrage per E-Mail an hallo@bootstrap.academy zum Erwerbskurs (100
-        MorphCoins = 1,00 €). Wir erstellen eine Gutschrift und zahlen den Betrag innerhalb von 14
-        Tagen nach Eingang Ihrer Anfrage auf das PayPal-Konto zurück, mit dem Sie bezahlt haben;
-        Kosten berechnen wir dafür nicht. Die erstatteten MorphCoins ziehen wir von Ihrem Guthaben
-        ab. Stellen Sie die Anfrage bitte, bevor Sie Ihr Konto löschen: Mit der Löschung wird Ihr
-        Guthaben aus unserer Datenbank entfernt, und wir können den nicht verbrauchten Anteil danach
-        nur noch erstatten, wenn Sie uns Kauf und Restguthaben nachweisen, zum Beispiel mit Ihren
-        Rechnungen und Kaufbestätigungen. Ihre gesetzlichen Rechte, insbesondere das Widerrufsrecht,
-        bleiben unberührt.
+        MorphCoins = 1,00 €). Nicht verbraucht ist der Teil Ihres aktuellen Guthabens, der die Summe
+        der von Ihnen gekauften und noch nicht erstatteten MorphCoins nicht übersteigt. Wir
+        erstellen eine Gutschrift und zahlen den Betrag innerhalb von 14 Tagen nach Eingang Ihrer
+        Anfrage auf das PayPal-Konto zurück, mit dem Sie bezahlt haben; Kosten berechnen wir dafür
+        nicht. Die erstatteten MorphCoins ziehen wir von Ihrem Guthaben ab. Stellen Sie die Anfrage
+        möglichst, bevor Sie Ihr Konto löschen. Bei der Löschung halten wir den nicht verbrauchten
+        Anteil Ihrer gekauften MorphCoins in einer Schlussabrechnung fest, die wir zusammen mit
+        Ihren Rechnungen aufbewahren (Ziffer 11.5); auf dieser Grundlage erstatten wir auch nach der
+        Löschung. Ihre gesetzlichen Rechte, insbesondere das Widerrufsrecht, bleiben unberührt.
       </p>
       <p>
         6.8 Gesetzliche und in diesen AGB vorgesehene Erstattungen (zum Beispiel nach Widerruf,
@@ -355,9 +370,10 @@
       </p>
       <p>
         8.2 Preis und Laufzeit: Premium kostet 1.000 MorphCoins (10,00 €) für einen Monat oder
-        10.000 MorphCoins (100,00 €) für ein Jahr. Der Preis wird bei der Bestellung im Voraus von
-        Ihrem Guthaben abgebucht. Die Laufzeit beginnt mit der Bestellung. Buchen Sie Premium,
-        während ein Premium-Zeitraum läuft, verlängert sich die Laufzeit um den gebuchten Zeitraum.
+        10.000 MorphCoins (100,00 €, entsprechend 8,33 € je Monat) für ein Jahr. Der Preis wird bei
+        der Bestellung im Voraus von Ihrem Guthaben abgebucht. Die Laufzeit beginnt mit der
+        Bestellung. Buchen Sie Premium, während ein Premium-Zeitraum läuft, verlängert sich die
+        Laufzeit um den gebuchten Zeitraum.
       </p>
       <p>
         8.3 Ende der Laufzeit: Premium endet automatisch mit Ablauf der Laufzeit, wenn Sie die
@@ -365,25 +381,29 @@
         Zeitraum hinaus gibt es nicht.
       </p>
       <p>
-        8.4 Automatische Verlängerung (optional): Bei der Bestellung und jederzeit danach können Sie
-        in Ihrem Konto die automatische Verlängerung ein- oder ausschalten. Ist sie eingeschaltet,
-        buchen wir zum Ende der Laufzeit den Preis der gewählten Laufzeit (Monat oder Jahr) erneut
-        von Ihrem MorphCoins-Guthaben ab und verlängern Premium um diesen Zeitraum. Reicht Ihr
-        Guthaben nicht aus, findet keine Verlängerung statt: Premium endet, die automatische
-        Verlängerung wird abgeschaltet, und es entstehen keine Kosten. Sie sind nicht verpflichtet,
-        MorphCoins für eine Verlängerung nachzukaufen.
+        8.4 Automatische Verlängerung (optional): Bei der Bestellung und jederzeit danach auf der
+        Seite „Abonnement“ in Ihrem Konto können Sie die automatische Verlängerung ein- oder
+        ausschalten. Ist sie bei Ablauf der gebuchten Laufzeit eingeschaltet, verlängert sich
+        Premium auf unbestimmte Zeit: Wir buchen dann – spätestens bei Ihrer nächsten Nutzung der
+        Plattform nach dem Ablauf – für jeden weiteren Monat 1.000 MorphCoins (10,00 €) von Ihrem
+        Guthaben ab; der Monat beginnt mit der Abbuchung. Ein Jahreszeitraum verlängert sich also
+        nicht um ein weiteres Jahr, sondern monatlich zum Monatspreis; ein neues Jahr können Sie
+        jederzeit gesondert buchen (Ziffer 8.2). Reicht Ihr Guthaben nicht aus, findet keine
+        Verlängerung statt: Premium endet, die automatische Verlängerung wird abgeschaltet, und es
+        entstehen keine Kosten. Sie sind nicht verpflichtet, MorphCoins für eine Verlängerung
+        nachzukaufen.
       </p>
       <p>
-        8.5 Kündigung: Sie können die automatische Verlängerung jederzeit mit Wirkung zum Ende der
-        laufenden Laufzeit kündigen: über die Schaltfläche „Verträge hier kündigen“ im Fußbereich
-        jeder Seite und die dortige Bestätigungsseite (§ 312k BGB), in Ihrem Konto durch Ausschalten
-        der automatischen Verlängerung oder per E-Mail an hallo@bootstrap.academy. Premium läuft
-        dann bis zum Ende der bezahlten Laufzeit weiter und endet danach. Den Inhalt Ihrer
-        Kündigung, Datum und Uhrzeit ihres Zugangs sowie den Zeitpunkt, zu dem Premium endet,
-        bestätigen wir Ihnen sofort per E-Mail. Für die restliche, bereits bezahlte Laufzeit erfolgt
-        bei Ihrer Kündigung keine Erstattung. Das Recht zur außerordentlichen Kündigung aus
-        wichtigem Grund, Ihr Widerrufsrecht (siehe Widerrufsbelehrung) und Ihre Rechte bei Mängeln
-        (Ziffer 16.2) bleiben unberührt.
+        8.5 Kündigung: Sie können Premium jederzeit kündigen – während der gebuchten Laufzeit zu
+        deren Ende, nach einer automatischen Verlängerung zum Ende des laufenden Monats – über die
+        Schaltfläche „Verträge hier kündigen“ im Fußbereich jeder Seite und die dortige
+        Bestätigungsseite unter bootstrap.academy/vertrag-kuendigen (§ 312k BGB), auf der Seite
+        „Abonnement“ in Ihrem Konto durch Ausschalten der automatischen Verlängerung oder per E-Mail
+        an hallo@bootstrap.academy. Den Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs
+        sowie den Zeitpunkt, zu dem Premium endet, bestätigen wir Ihnen sofort per E-Mail. Für den
+        laufenden, bereits bezahlten Zeitraum erfolgt bei Ihrer Kündigung keine Erstattung. Das
+        Recht zur außerordentlichen Kündigung aus wichtigem Grund, Ihr Widerrufsrecht (siehe
+        Widerrufsbelehrung) und Ihre Rechte bei Mängeln (Ziffer 16.2) bleiben unberührt.
       </p>
       <p>
         8.6 Wir können Premium ordentlich nur zum Ende der laufenden Laufzeit kündigen. Stellen wir
@@ -419,27 +439,52 @@
       <p>
         10.1 Auf der Plattform werden Webinare (Online-Seminare für mehrere Teilnehmer) und
         Coachings (Einzeltermine) zu festen Terminen angeboten. Vertragspartner für die Buchung ist
-        der Anbieter. Durchgeführt werden Events von Kursleitern, die wir auswählen; Kursleiter
-        können auch andere Nutzer der Plattform sein. Termin, Dauer, Inhalt, Kursleiter und Preis
-        ergeben sich aus der jeweiligen Beschreibung.
+        der Anbieter. Durchgeführt werden Events von Kursleitern; das sind Nutzer der Plattform, die
+        die auf der Plattform genannten Voraussetzungen für das Anbieten von Events erfüllen, sowie
+        unser Team. Welche Preise ein Kursleiter verlangen darf, hängt von seinen Bewertungen durch
+        Teilnehmer ab. Termin, Dauer, Inhalt, Kursleiter und Preis ergeben sich aus der jeweiligen
+        Beschreibung.
       </p>
       <p>
-        10.2 Buchung: Sie buchen einen Termin mit MorphCoins nach Ziffer 11; der Preis wird bei der
-        Buchung abgebucht. Sie erhalten eine Buchungsbestätigung per E-Mail. Der Termin findet
-        online statt: Coachings in einem Videokonferenzraum bei Jitsi Meet (meet.jit.si, betrieben
-        von 8x8, Inc.), Webinare über den vom Kursleiter angegebenen Konferenzlink. Sie benötigen
-        dafür ein Gerät mit Kamera, Mikrofon und Internetverbindung.
+        10.2 Buchung: Kostenpflichtige Termine buchen Sie mit MorphCoins nach Ziffer 11; der Preis
+        wird bei der Buchung abgebucht. Sie erhalten eine Buchungsbestätigung per E-Mail. Der Termin
+        findet online statt: Coachings in einem Videokonferenzraum bei Jitsi Meet (meet.jit.si,
+        betrieben von 8x8, Inc.), Webinare über den vom Kursleiter angegebenen Konferenzlink. Sie
+        benötigen dafür ein Gerät mit Kamera, Mikrofon und Internetverbindung.
       </p>
       <p>
-        10.3 Stornierung durch Sie: Bis 24 Stunden vor Beginn können Sie einen gebuchten Termin in
-        Ihrem Kalender auf der Plattform kostenlos stornieren; die MorphCoins schreiben wir Ihrem
-        Guthaben in der Art gut, in der Sie bezahlt haben. Bei einer späteren Stornierung oder bei
-        Nichtteilnahme bleibt der Preis geschuldet, abzüglich der Aufwendungen, die wir und der
-        Kursleiter dadurch ersparen. Ihnen bleibt der Nachweis vorbehalten, dass uns kein oder ein
-        wesentlich geringerer Schaden entstanden ist; konnte der Platz anderweitig vergeben werden,
-        erstatten wir den vollen Preis. [OWNER: Stornoregeln bestätigen – der Code von events-ms
-        erstattet derzeit bis 7 Tage vor Beginn den vollen Preis, bis 24 Stunden vor Beginn die
-        Hälfte und lässt danach keine Stornierung mehr zu; Code und AGB müssen übereinstimmen]
+        10.3 Stornierung durch Sie: Sie können einen gebuchten Termin vor seinem Beginn in Ihrem
+        Kalender auf der Plattform (bis 24 Stunden vor Beginn) oder per E-Mail an
+        hallo@bootstrap.academy stornieren. Maßgeblich ist der Zeitpunkt, zu dem uns Ihre
+        Stornierung zugeht. Es gilt:
+      </p>
+      <ul>
+        <li>
+          a) Stornieren Sie bis sieben Tage vor Beginn des Termins, ist die Stornierung kostenlos;
+          wir erstatten den vollen Preis.
+        </li>
+        <li>
+          b) Stornieren Sie später, aber mindestens 24 Stunden vor Beginn, behalten wir als
+          pauschale Entschädigung 50 % des Preises ein und erstatten die übrigen 50 %.
+        </li>
+        <li>
+          c) Stornieren Sie weniger als 24 Stunden vor Beginn oder nehmen Sie ohne Stornierung nicht
+          teil, behalten wir den vollen Preis als pauschale Entschädigung ein.
+        </li>
+      </ul>
+      <p>
+        Die Pauschalen nach b) und c) entsprechen dem Ausfall, der uns und dem Kursleiter bei einer
+        so kurzfristigen Absage nach dem gewöhnlichen Lauf der Dinge entsteht, weil der Termin für
+        Sie freigehalten wurde und in dieser Zeit regelmäßig nicht mehr anderweitig vergeben werden
+        kann. Ihnen bleibt ausdrücklich der Nachweis gestattet, dass uns kein Schaden oder ein
+        wesentlich geringerer Schaden als die Pauschale entstanden ist; in diesem Fall erstatten wir
+        den entsprechend höheren Betrag. Konnten wir den Platz oder den Termin anderweitig vergeben,
+        erstatten wir den vollen Preis. Mehr als den Preis des Termins schulden Sie uns wegen einer
+        Stornierung oder Nichtteilnahme in keinem Fall. Erstattungen leisten wir nach Ziffer 6.8 in
+        der Art von MorphCoins, mit der Sie bezahlt haben. Ihr Widerrufsrecht als Verbraucher (siehe
+        Widerrufsbelehrung) und das Recht zur Kündigung aus wichtigem Grund bleiben unberührt;
+        widerrufen Sie innerhalb der Widerrufsfrist, bevor der Termin begonnen hat, erstatten wir
+        den vollen Preis.
       </p>
       <p>
         10.4 Absage durch uns oder den Kursleiter: Fällt ein Termin aus Gründen aus, die nicht bei
@@ -498,9 +543,11 @@
         nicht an.
       </p>
       <p>
-        11.5 Rechnungen und Gutschriften stellen wir elektronisch als PDF aus und senden sie an Ihre
-        hinterlegte E-Mail-Adresse. Auf Anfrage senden wir Ihnen eine Rechnung erneut zu. Rechnungen
-        und Gutschriften bewahren wir nach den steuerrechtlichen Vorschriften acht Jahre auf.
+        11.5 Rechnungen über den Kauf von MorphCoins stellen wir elektronisch als PDF aus und senden
+        sie mit der Kaufbestätigung an Ihre hinterlegte E-Mail-Adresse; auf Anfrage senden wir Ihnen
+        eine Rechnung erneut zu. Gutschriften stellen wir nach den Ziffern 6.4 und 6.7 als PDF
+        bereit. Rechnungen und Gutschriften bewahren wir nach den steuerrechtlichen Vorschriften
+        acht Jahre auf.
       </p>
     </article>
 
@@ -513,14 +560,15 @@
       </p>
       <p>
         12.2 Nutzer, die 16 oder 17 Jahre alt sind, dürfen die kostenlosen Leistungen ohne
-        Zustimmung ihrer gesetzlichen Vertreter nutzen. Kostenpflichtige Leistungen (MorphCoins,
-        Kurse, Premium, Auffüllen der Herzen, Events) dürfen Minderjährige nur mit Einwilligung
-        ihrer gesetzlichen Vertreter erwerben (§§ 107, 108 BGB). Ein ohne diese Einwilligung
-        geschlossener Vertrag ist von Anfang an wirksam, wenn der Minderjährige die Leistung mit
-        Mitteln bewirkt, die ihm zu diesem Zweck oder zur freien Verfügung von den gesetzlichen
-        Vertretern oder mit deren Zustimmung von einem Dritten überlassen wurden (§ 110 BGB).
-        Minderjährige dürfen kostenpflichtige Leistungen nur bestellen, wenn diese Einwilligung
-        vorliegt; wir dürfen einen Nachweis verlangen.
+        Zustimmung ihrer gesetzlichen Vertreter nutzen. Für kostenpflichtige Leistungen (MorphCoins,
+        Kurse, Premium, Auffüllen der Herzen, Events) gelten die §§ 107 bis 110 BGB: Der Vertrag ist
+        wirksam, wenn die gesetzlichen Vertreter vorher eingewilligt haben oder ihn nachträglich
+        genehmigen (§§ 107, 108 BGB) oder wenn der Minderjährige den Preis mit Mitteln bezahlt, die
+        ihm zu diesem Zweck oder zur freien Verfügung von den gesetzlichen Vertretern oder mit deren
+        Zustimmung von einem Dritten überlassen wurden (§ 110 BGB). Bestellen Sie als Minderjähriger
+        eine kostenpflichtige Leistung, bestätigen Sie damit, dass eine dieser Voraussetzungen
+        vorliegt; bei Zweifeln dürfen wir einen Nachweis verlangen und die Bestellung bis dahin
+        zurückstellen.
       </p>
       <p>
         12.3 Gesetzliche Vertreter erreichen uns bei Fragen zu einem Konto unter
@@ -649,14 +697,14 @@
       </ul>
       <p>
         14.5 Meldung rechtswidriger Inhalte: Wenn Sie der Ansicht sind, dass ein Inhalt auf der
-        Plattform rechtswidrig ist, melden Sie ihn per E-Mail an [OWNER: abuse@bootstrap.academy
-        oder hallo@bootstrap.academy] mit folgenden Angaben: eine Begründung, warum der Inhalt
-        rechtswidrig ist; die genaue Fundstelle (Link) des Inhalts; Ihr Name und Ihre E-Mail-Adresse
-        (außer bei Meldungen, die sexuellen Missbrauch von Kindern betreffen); eine Erklärung, dass
-        Sie überzeugt sind, dass Ihre Angaben richtig und vollständig sind. Wir bestätigen Ihnen den
-        Eingang unverzüglich, prüfen die Meldung zeitnah, sorgfältig und objektiv, teilen Ihnen
-        unsere Entscheidung mit und weisen dabei auf die Möglichkeit hin, die Entscheidung nach
-        Ziffer 14.7 überprüfen zu lassen.
+        Plattform rechtswidrig ist, melden Sie ihn per E-Mail an hallo@bootstrap.academy mit
+        folgenden Angaben: eine Begründung, warum der Inhalt rechtswidrig ist; die genaue Fundstelle
+        (Link) des Inhalts; Ihr Name und Ihre E-Mail-Adresse (außer bei Meldungen, die sexuellen
+        Missbrauch von Kindern betreffen); eine Erklärung, dass Sie in gutem Glauben davon überzeugt
+        sind, dass Ihre Angaben richtig und vollständig sind. Wir bestätigen Ihnen den Eingang
+        unverzüglich, prüfen die Meldung zeitnah, sorgfältig, objektiv und frei von Willkür, teilen
+        Ihnen unsere Entscheidung mit und weisen dabei auf die Möglichkeit hin, die Entscheidung
+        nach Ziffer 14.7 überprüfen zu lassen.
       </p>
       <p>
         14.6 Begründung unserer Entscheidungen: Entfernen oder blenden wir einen Nutzerinhalt aus,
@@ -665,8 +713,9 @@
         Umstände, auf die wir uns stützen, einschließlich einer etwaigen Meldung; ob automatisierte
         Mittel beteiligt waren; die Rechtsvorschrift oder die Ziffer dieser AGB, gegen die verstoßen
         wurde, mit einer Erläuterung; sowie Ihre Möglichkeiten, die Entscheidung überprüfen zu
-        lassen (Ziffer 14.7, außergerichtliche Streitbeilegung, Gerichte). Bei massenhaft
-        verbreiteten irreführenden Werbeinhalten (Spam) kann die Begründung entfallen.
+        lassen (Beschwerde nach Ziffer 14.7 und der Rechtsweg zu den Gerichten). Bei irreführenden
+        kommerziellen Inhalten in großem Umfang (Spam) kann die Begründung entfallen (Art. 17 Abs. 2
+        DSA).
       </p>
       <p>
         14.7 Überprüfung: Gegen jede Maßnahme nach den Ziffern 14.3 bis 14.6 und 15 sowie gegen
@@ -901,7 +950,7 @@
       <p>22.1 Für Nutzer, die als Unternehmer handeln, gelten diese AGB mit folgenden Maßgaben.</p>
       <p>
         22.2 Ein Widerrufsrecht besteht nicht. Die Widerrufsbelehrung sowie die Regelungen in Ziffer
-        8.5 zur Kündigungsschaltfläche, in Ziffer 12 und in Ziffer 16.2 Satz 1 bis 4 gelten nur für
+        8.5 zur Kündigungsschaltfläche, in Ziffer 12 und in Ziffer 16.2 Satz 1 bis 3 gelten nur für
         Verbraucher; die gesetzlichen Gewährleistungsrechte für Unternehmer bleiben unberührt.
       </p>
       <p>
@@ -913,10 +962,16 @@
         darstellen, rechnen wir im Gutschriftverfahren ab (Ziffer 6.4).
       </p>
       <p>
-        22.4 Unternehmer können nur mit unbestrittenen oder rechtskräftig festgestellten Forderungen
-        aufrechnen und Zurückbehaltungsrechte nur aus demselben Vertragsverhältnis geltend machen.
+        22.4 Unternehmer können nur mit Forderungen aufrechnen, die unbestritten, rechtskräftig
+        festgestellt oder entscheidungsreif sind oder die mit unserer Forderung in einem
+        Gegenseitigkeitsverhältnis stehen; Zurückbehaltungsrechte können sie nur wegen
+        Gegenansprüchen aus demselben Vertragsverhältnis geltend machen.
       </p>
-      <p>22.5 Gerichtsstand ist München (Ziffer 21.3).</p>
+      <p>
+        22.5 Sind Sie Kaufmann, juristische Person des öffentlichen Rechts oder
+        öffentlich-rechtliches Sondervermögen, gilt der Gerichtsstand nach Ziffer 21.3. Für andere
+        Unternehmer gelten die gesetzlichen Gerichtsstände.
+      </p>
     </article>
 
     <article>
@@ -928,13 +983,7 @@
 <script>
 export default {
   setup() {
-    const config = useRuntimeConfig().public;
-
-    const webLink = computed(() => {
-      return `${config.BASE_WEB_URL}`;
-    });
-
-    return { webLink };
+    return {};
   },
   head: {
     title: "AGB",

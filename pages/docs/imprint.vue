@@ -29,23 +29,20 @@
       Rechtsform: Gesellschaft mit beschränkter Haftung (GmbH)
       <br />
       <strong>Vertreten durch den Geschäftsführer:</strong>
-      [OWNER: Name laut aktuellem Handelsregisterauszug – bisher angegeben: Dan Bauer]
+      Daniel Michael Bauer
     </p>
 
     <p>
       Registergericht: Amtsgericht München
       <br />
       Handelsregisternummer: HRB 275681
-      <br />
-      [OWNER: Registergericht und Handelsregisternummer mit dem aktuellen Auszug abgleichen]
     </p>
 
-    <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: [OWNER: USt-IdNr. eintragen]</p>
+    <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE354823768</p>
 
     <h2 class="text-heading-2 mb-box mt-card">Kontakt</h2>
     <p>
-      Telefon: [OWNER: die tatsächlich erreichbare Telefonnummer – +49 30 21928640 (bisheriges
-      Impressum) oder +49 89 24886251-0 (bisherige Widerrufsbelehrung)]
+      Telefon: +49 30 21928640
       <br />
       E-Mail: hallo@bootstrap.academy
       <br />
@@ -55,8 +52,11 @@
 
     <h2 class="text-heading-2 mb-box mt-card">Verantwortlich im Sinne des § 18 Abs. 2 MStV</h2>
     <p>
-      [OWNER: Name und ladungsfähige Anschrift der verantwortlichen Person – bisher angegeben:
-      Cedric Mössner, c/o RA Matutis, Berliner Straße 57, 14467 Potsdam]
+      Daniel Michael Bauer
+      <br />
+      Wittelsbacherplatz 1
+      <br />
+      80333 München
     </p>
 
     <h2 class="text-heading-2 mb-box mt-card">
@@ -71,13 +71,11 @@
 
     <h2 class="text-heading-2 mb-box mt-card">Meldung rechtswidriger Inhalte</h2>
     <p>
-      Inhalte auf der Plattform, die Sie für rechtswidrig halten, können Sie per E-Mail an [OWNER:
-      abuse@bootstrap.academy oder hallo@bootstrap.academy] melden (Art. 16 DSA). Welche Angaben
-      eine Meldung enthalten sollte und wie wir Meldungen bearbeiten, beschreibt Ziffer 14 unserer
-      <NuxtLink to="/docs/terms-and-conditions#ziffer-14"
-        >Allgemeinen Geschäftsbedingungen</NuxtLink
-      >
-      .
+      Inhalte auf der Plattform, die Sie für rechtswidrig halten, können Sie per E-Mail an
+      hallo@bootstrap.academy melden (Art. 16 DSA). Welche Angaben eine Meldung enthalten sollte und
+      wie wir Meldungen bearbeiten, beschreibt Ziffer 14 unserer
+      <NuxtLink to="/docs/terms-and-conditions#ziffer-14">Allgemeinen Geschäftsbedingungen</NuxtLink
+      >.
     </p>
 
     <h2 class="text-heading-2 mb-box mt-card">Verbraucherstreitbeilegung</h2>
@@ -102,7 +100,7 @@
 <script>
 export default {
   head: {
-    title: "Imprint",
+    title: "Impressum",
   },
   setup() {
     return {};

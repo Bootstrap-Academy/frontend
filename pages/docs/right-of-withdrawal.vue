@@ -13,6 +13,12 @@
 <template>
   <main class="mt-main mb-main container">
     <h1>Widerrufsbelehrung</h1>
+    <p>
+      <em
+        >Note for English-speaking users: this withdrawal instruction is currently available in
+        German only; the contract language is German.</em
+      >
+    </p>
 
     <p>
       Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die
@@ -41,17 +47,14 @@
       <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.</p>
       <p>
         Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (bootstrap academy GmbH, Wittelsbacherplatz
-        1, 80333 München, Telefon: [OWNER: Telefonnummer – die tatsächlich erreichbare Nummer, +49
-        30 21928640 (Impressum) oder +49 89 24886251-0 (bisherige Widerrufsbelehrung)], E-Mail:
-        hallo@bootstrap.academy) mittels einer eindeutigen Erklärung (z. B. ein mit der Post
-        versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen,
-        informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch
-        nicht vorgeschrieben ist. Sie können Ihr Widerrufsrecht auch online unter [OWNER:
-        Widerrufsfunktion „Vertrag widerrufen“ nach § 356a BGB bereitstellen und hier ihre Adresse
-        eintragen, z. B. bootstrap.academy/account/widerruf] ausüben. Wenn Sie diese Online-Funktion
-        nutzen, übermitteln wir Ihnen auf einem dauerhaften Datenträger (z. B. durch eine E-Mail)
-        unverzüglich eine Eingangsbestätigung mit Informationen zum Inhalt der Widerrufserklärung
-        sowie dem Datum und der Uhrzeit ihres Eingangs.
+        1, 80333 München, Telefon: +49 30 21928640, E-Mail: hallo@bootstrap.academy) mittels einer
+        eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren
+        Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte
+        Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Sie können Ihr
+        Widerrufsrecht auch online unter https://bootstrap.academy/vertrag-widerrufen ausüben. Wenn
+        Sie diese Online-Funktion nutzen, übermitteln wir Ihnen auf einem dauerhaften Datenträger
+        (z. B. durch eine E-Mail) unverzüglich eine Eingangsbestätigung mit Informationen zum Inhalt
+        der Widerrufserklärung sowie dem Datum und der Uhrzeit ihres Eingangs.
       </p>
       <p>
         Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des
@@ -68,10 +71,10 @@
         Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde
         ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung
         Entgelte berechnet. Haben Sie verlangt, dass die Dienstleistungen während der Widerrufsfrist
-        beginnen sollen, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der
-        bis zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich
-        dieses Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum
-        Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht.
+        beginnen soll, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis
+        zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich dieses
+        Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum Gesamtumfang der
+        im Vertrag vorgesehenen Dienstleistungen entspricht.
       </p>
     </article>
 
@@ -86,15 +89,14 @@
       <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsabschlusses.</p>
       <p>
         Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (bootstrap academy GmbH, Wittelsbacherplatz
-        1, 80333 München, Telefon: [OWNER: Telefonnummer – wie in Teil A], E-Mail:
-        hallo@bootstrap.academy) mittels einer eindeutigen Erklärung (z. B. ein mit der Post
-        versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen,
-        informieren. Sie können dafür das beigefügte Muster-Widerrufsformular verwenden, das jedoch
-        nicht vorgeschrieben ist. Sie können Ihr Widerrufsrecht auch online unter [OWNER: Adresse
-        der Widerrufsfunktion – wie in Teil A] ausüben. Wenn Sie diese Online-Funktion nutzen,
-        übermitteln wir Ihnen auf einem dauerhaften Datenträger (z. B. durch eine E-Mail)
-        unverzüglich eine Eingangsbestätigung mit Informationen zum Inhalt der Widerrufserklärung
-        sowie dem Datum und der Uhrzeit ihres Eingangs.
+        1, 80333 München, Telefon: +49 30 21928640, E-Mail: hallo@bootstrap.academy) mittels einer
+        eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über Ihren
+        Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das beigefügte
+        Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist. Sie können Ihr
+        Widerrufsrecht auch online unter https://bootstrap.academy/vertrag-widerrufen ausüben. Wenn
+        Sie diese Online-Funktion nutzen, übermitteln wir Ihnen auf einem dauerhaften Datenträger
+        (z. B. durch eine E-Mail) unverzüglich eine Eingangsbestätigung mit Informationen zum Inhalt
+        der Widerrufserklärung sowie dem Datum und der Uhrzeit ihres Eingangs.
       </p>
       <p>
         Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des
@@ -159,9 +161,10 @@
         schalten wir sofort frei, Herzen füllen wir sofort auf. Deshalb bitten wir Sie bei jeder
         dieser Bestellungen um die beiden unten genannten Erklärungen. Haben Sie sie abgegeben und
         haben Sie unsere Bestätigungs-E-Mail erhalten, erlischt Ihr Widerrufsrecht für diese
-        Bestellung mit der Gutschrift, Freischaltung oder Auffüllung. Unabhängig vom Widerrufsrecht
-        erstatten wir Ihnen nicht verbrauchte gekaufte MorphCoins jederzeit auf Anfrage (Ziffer 6.7
-        der AGB).
+        Bestellung, sobald wir mit der Gutschrift, Freischaltung oder Auffüllung begonnen haben und
+        Ihnen unsere Bestätigungs-E-Mail zugegangen ist – je nachdem, was später eintritt.
+        Unabhängig vom Widerrufsrecht erstatten wir Ihnen nicht verbrauchte gekaufte MorphCoins
+        jederzeit auf Anfrage (Ziffer 6.7 der AGB).
       </p>
     </article>
 
@@ -221,8 +224,7 @@
     </p>
 
     <p>
-      – An
-      <br />
+      – An: <br />
       bootstrap academy GmbH
       <br />
       Wittelsbacherplatz 1
@@ -283,7 +285,7 @@ export default {
     return {};
   },
   head: {
-    title: "Right of Withdrawal",
+    title: "Widerrufsbelehrung",
   },
 };
 </script>
