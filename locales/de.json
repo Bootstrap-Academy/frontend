@@ -1085,6 +1085,7 @@
     "NoLecturesAvailable": "Keine Vorlesungen vorhanden",
     "NoDescriptionAvailable": "Keine Beschreibung verfügbar",
     "VerifyEmail": "Konto konnte nicht bestätigt werden. Versuche es später noch einmal",
+    "CheckboxRequired": "Bitte bestätige diesen Punkt",
     "InputCodeFormat": "Ungültiges Codeformat",
     "InputEmpty": "{placeholder} ist erforderlich",
     "InputMinLength": "Muss {placeholder} oder mehr Zeichen sein",

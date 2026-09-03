@@ -1087,6 +1087,7 @@
     "NoLecturesAvailable": "No lectures available",
     "NoDescriptionAvailable": "No description available",
     "VerifyEmail": "Unable to verify account. Try again later",
+    "CheckboxRequired": "Please confirm this point",
     "InputCodeFormat": "Invalid code format",
     "InputEmpty": "{placeholder} is required",
     "InputMinLength": "Must {placeholder} or more characters",

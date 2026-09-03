@@ -45,6 +45,7 @@
       }"
       target="_blank"
       required
+      :show-error="submitted"
       v-model="form.termsAndConditions.value"
       @valid="form.termsAndConditions.valid = $event"
     />
@@ -53,6 +54,7 @@
       label="Links.MinimumAge"
       id="MinimumAge"
       required
+      :show-error="submitted"
       v-model="form.ageConfirmed.value"
       @valid="form.ageConfirmed.valid = $event"
     />
@@ -87,6 +89,10 @@ export default defineComponent({
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
+
+    // Set once the form has been submitted, so that the consent boxes point
+    // themselves out instead of the button doing nothing.
+    const submitted = ref(false);
 
     // ============================================================= reactive
     const form = reactive<IForm>({
@@ -194,6 +200,8 @@ export default defineComponent({
 
     // ============================================================= functions
     async function onclickSubmitForm() {
+      submitted.value = true;
+
       if (form.validate()) {
         form.submitting = true;
 
@@ -242,6 +250,7 @@ export default defineComponent({
       form,
       onclickSubmitForm,
       refForm,
+      submitted,
       t,
       register_token,
     };
