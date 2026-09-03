@@ -361,7 +361,16 @@
     "NetAmount": "Nettobetrag",
     "VatAmount": "MwSt. ({vat} %)",
     "AutomaticRenewal": "Automatische Verlängerung",
-    "ContractTerm": "Laufzeit"
+    "ContractTerm": "Laufzeit",
+    "CancelContract": "Vertrag kündigen",
+    "WithdrawContract": "Vertrag widerrufen",
+    "CancellationReceived": "Ihre Kündigung ist bei uns eingegangen.",
+    "WithdrawalReceived": "Ihr Widerruf ist bei uns eingegangen.",
+    "DeclarationReceivedAt": "Eingang der Erklärung",
+    "DeclarationReference": "Vorgangsnummer",
+    "CancellationReason": "Grund der Kündigung",
+    "OrderDetails": "Angaben zur Bestellung",
+    "ContractTermination": "Vertragsbeendigung"
   },
   "Body": {
     "DashboardIntro": "Steig direkt wieder in deine Kurse oder Challenges ein.",
@@ -493,7 +502,18 @@
     "AutomaticRenewalOn": "Ein — nach Ablauf wird automatisch verlängert und erneut in Morphcoins abgebucht. Du kannst die automatische Verlängerung auf dieser Seite jederzeit abschalten.",
     "AutomaticRenewalOff": "Aus — die Mitgliedschaft endet mit Ablauf der Laufzeit. Eine automatische Verlängerung kannst du auf dieser Seite einschalten.",
     "PremiumTermMonthly": "1 Monat ab Kauf",
-    "PremiumTermYearly": "12 Monate ab Kauf"
+    "PremiumTermYearly": "12 Monate ab Kauf",
+    "CancelContractIntro": "Mit diesem Formular können Sie Ihren Vertrag mit der bootstrap academy GmbH kündigen. Sie benötigen dafür weder ein Konto noch eine Anmeldung. Den Eingang Ihrer Kündigung bestätigen wir Ihnen sofort per E-Mail; den Inhalt Ihrer Erklärung können Sie anschließend speichern oder ausdrucken.",
+    "WithdrawContractIntro": "Mit diesem Formular können Sie Ihren Vertrag mit der bootstrap academy GmbH widerrufen. Sie benötigen dafür weder ein Konto noch eine Anmeldung. Den Eingang Ihres Widerrufs bestätigen wir Ihnen sofort per E-Mail; den Inhalt Ihrer Erklärung können Sie anschließend speichern oder ausdrucken.",
+    "ContractEmailHint": "Bitte geben Sie die E-Mail-Adresse an, mit der Ihr Konto bzw. Ihr Vertrag geführt wird.",
+    "OrderReferenceHint": "Die Bestellnummer finden Sie in der Bestellbestätigungs-E-Mail zu Ihrer Bestellung.",
+    "DeclarationReceivedAtValue": "{datetime} Uhr (Zeitzone Europe/Berlin)",
+    "EndAtNextPossibleDate": "zum nächstmöglichen Zeitpunkt",
+    "ContractEndsOn": "Ihr Vertrag endet am {date}.",
+    "NoContractFoundForEmail": "Den Zeitpunkt, zu dem der Vertrag endet, können wir zu Ihren Angaben nicht automatisch ermitteln. Wir prüfen Ihre Kündigung und bestätigen Ihnen den Beendigungszeitpunkt gesondert per E-Mail.",
+    "ConfirmationEmailSent": "Eine Bestätigung mit diesem Inhalt haben wir Ihnen soeben per E-Mail an {email} geschickt.",
+    "ConfirmationEmailNotSent": "Die Bestätigungs-E-Mail konnte nicht zugestellt werden. Bitte speichern oder drucken Sie diese Seite.",
+    "CancelPremiumHint": "Dort können Sie Ihre Premium-Mitgliedschaft mit dem gesetzlichen Kündigungsformular kündigen; den Eingang bestätigen wir Ihnen sofort per E-Mail."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -704,7 +724,23 @@
     "MFACode": "6-stelliger MFA-Code",
     "RecoveryCode": "Wiederherstellungscode",
     "RegistrationCode": "Registrierungscode",
-    "AnswerOption": "Antwort-Möglichkeit"
+    "AnswerOption": "Antwort-Möglichkeit",
+    "CancellationType": "Art der Kündigung",
+    "OrdinaryCancellation": "Ordentliche Kündigung",
+    "ExtraordinaryCancellation": "Außerordentliche Kündigung",
+    "ExtraordinaryCancellationReason": "Grund der außerordentlichen Kündigung (optional)",
+    "DeclarationName": "Name",
+    "DeclarationEmail": "E-Mail-Adresse",
+    "Contract": "Vertrag",
+    "ContractOrOrder": "Vertrag / Bestellung",
+    "ContractCoins": "MorphCoin-Kauf",
+    "ContractPremium": "Premium-Mitgliedschaft",
+    "ContractOther": "Sonstiger Vertrag",
+    "EndOfContract": "Beendigungszeitpunkt",
+    "EndAtNextPossibleDate": "Zum nächstmöglichen Zeitpunkt",
+    "EndAtDate": "Zum folgenden Datum",
+    "EndDate": "Beendigungsdatum",
+    "OrderDetails": "Bestellnummer oder sonstige Angaben zur Bestellung (optional)"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -843,7 +879,13 @@
     "LearnMore": "Mehr erfahren",
     "LoadVideo": "Video laden",
     "OrderWithObligationToPay": "Zahlungspflichtig bestellen",
-    "ContinueToOrderSummary": "Weiter zur Bestellübersicht"
+    "ContinueToOrderSummary": "Weiter zur Bestellübersicht",
+    "CancelContractsHere": "Verträge hier kündigen",
+    "WithdrawFromContract": "Vertrag widerrufen",
+    "CancelNow": "jetzt kündigen",
+    "WithdrawNow": "jetzt widerrufen",
+    "SaveAsPdfOrPrint": "Als PDF speichern / Drucken",
+    "CancelPremium": "Premium kündigen"
   },
   "Links": {
     "LeaderBoard": "Bestenliste",
@@ -914,7 +956,9 @@
     "OrderLegalHint": "Es gelten unsere",
     "OrderLegalHintMiddle": "und die",
     "OrderLegalHintEnd": ".",
-    "RightOfWithdrawalLinkText": "Widerrufsbelehrung"
+    "RightOfWithdrawalLinkText": "Widerrufsbelehrung",
+    "CancelContractsHere": "Verträge hier kündigen",
+    "WithdrawFromContract": "Vertrag widerrufen"
   },
   "Success": {
     "SolvedMatching": "Matching gelöst ✅",
@@ -972,7 +1016,9 @@
     "BookedExam": "Die Buchung deiner Prüfung war erfolgreich.",
     "BookedCoaching": "Die Buchung deiner Coaching-Sitzung war erfolgreich.",
     "BookedWebinar": "Die Buchung des Webinar war erfolgreich.",
-    "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen."
+    "OAuthSuccess": "Login mit OAuth war erfolgreich. Füge jetzt bitte deine Kontoinformationen hinzu, um deinen Anmeldevorgang abzuschließen.",
+    "CancellationDeclared": "Ihre Kündigung ist bei uns eingegangen.",
+    "WithdrawalDeclared": "Ihr Widerruf ist bei uns eingegangen."
   },
   "Error": {
     "WrongMatchingAttempt": "Falsches Matching ❌. Versuchen Sie es erneut",
@@ -1084,7 +1130,9 @@
     "PasswordResetFailed": "Kennwort kann nicht zurückgesetzt werden. Bitte probier es später erneut.",
     "InvalidCode": "Dieser Code ist ungültig.",
     "ProviderNotFound": "Dieser Anbieter kann nicht gefunden werden.",
-    "InvalidCoinAmount": "Ungültige Anzahl an Morphcoins. Bitte starte den Kauf erneut."
+    "InvalidCoinAmount": "Ungültige Anzahl an Morphcoins. Bitte starte den Kauf erneut.",
+    "TooManyRequests": "Zu viele Anfragen. Bitte versuchen Sie es später erneut oder schreiben Sie uns an hallo{'@'}bootstrap.academy.",
+    "DeclarationNotSubmitted": "Ihre Erklärung konnte nicht übermittelt werden. Bitte versuchen Sie es erneut oder senden Sie Ihre Erklärung an hallo{'@'}bootstrap.academy."
   },
   "Months": {
     "January": "Januar",

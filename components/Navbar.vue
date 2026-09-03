@@ -1,5 +1,5 @@
 <template>
-  <section class="container-fluid flex items-center justify-between py-4">
+  <section class="container-fluid flex items-center justify-between py-4 print:hidden">
     <!-- START -->
     <NuxtLink :to="authorized ? '/dashboard' : '/'" class="hidden items-center gap-card-sm lg:flex">
       <img

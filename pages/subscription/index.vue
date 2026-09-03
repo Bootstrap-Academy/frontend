@@ -90,8 +90,21 @@
           secondary
           :buttonOptions="changeSubscriptionAutopayButtons"
           v-model="setValueForAutopayButton"
-          class="mb-20 mt-4"
+          class="mt-4"
         />
+      </div>
+
+      <!--
+        Turning the automatic renewal off is not a cancellation. The statutory
+        route under § 312k BGB, with the confirmation by e-mail, lives on its
+        own page and stays reachable even while no period is currently active -
+        which is exactly when the toggle above is unavailable.
+      -->
+      <div class="mb-20 mt-10 flex flex-col items-center">
+        <NuxtLink to="/vertrag-kuendigen">
+          <Btn class="!normal-case">{{ t("Buttons.CancelPremium") }}</Btn>
+        </NuxtLink>
+        <p class="mt-3 max-w-md text-center">{{ t("Body.CancelPremiumHint") }}</p>
       </div>
     </section>
 

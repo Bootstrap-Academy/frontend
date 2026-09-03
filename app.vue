@@ -7,6 +7,15 @@
     </LazyClientOnly>
     <NuxtPage />
 
+    <!--
+      § 312k Abs. 2 BGB (cancellation) and § 356a BGB (withdrawal) require a
+      permanently available button. Rendered here, inside `<NuxtLayout>` and
+      right after the page, it lands in the slot of every layout - `default`,
+      `inner`, `empty` and `errorLayout` alike - and therefore appears on
+      every route.
+    -->
+    <ContractTermination />
+
     <Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
       <Dialog :dialog="dialog" />
     </Modal>

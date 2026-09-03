@@ -11,6 +11,13 @@
         <InputBtn class="w-full" @click="navigateTo('/')"> Go Home </InputBtn>
       </section>
     </main>
+
+    <!--
+      `app.vue` is not rendered for the error page, so the permanently
+      available buttons required by § 312k Abs. 2 BGB and § 356a BGB are added
+      here as well.
+    -->
+    <ContractTermination />
   </NuxtLayout>
 </template>
 
