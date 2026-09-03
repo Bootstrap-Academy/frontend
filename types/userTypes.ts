@@ -20,6 +20,8 @@ export class User {
   registration: number = 0;
   street: string = "";
   tags: unknown[] = [];
+  terms_version: null | string = null;
+  terms_accepted_at: null | number = null;
   vat_id: null | unknown = null;
   zip_code: string = "";
 }
