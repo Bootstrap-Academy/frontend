@@ -140,7 +140,7 @@ export async function getLectureVideoSRC(courseID: string, { id, video_id, type 
         throw { data: { detail: "Invalid lecture video id" } };
       }
 
-      videoSRC.value = `https://www.youtube.com/embed/${video_id}?rel=0`;
+      videoSRC.value = `https://www.youtube-nocookie.com/embed/${video_id}?rel=0`;
       return [true, null];
     }
 
