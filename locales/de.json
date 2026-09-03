@@ -249,6 +249,8 @@
     "Rejected": "Abgelehnt",
     "MyCertificates": "Zertifikate",
     "EventTypes": "Event-Arten",
+    "CalendarSubscription": "Kalender-Abo",
+    "RotateCalendarLink": "Abo-Link erneuern?",
     "Coaching": "Coaching",
     "Exam": "Prüfung",
     "Webinar": "Webinar",
@@ -374,6 +376,8 @@
     "ContractTermination": "Vertragsbeendigung"
   },
   "Body": {
+    "CalendarSubscription": "Mit diesem Link abonnierst du deine Termine in einer Kalender-App. Wer den Link kennt, kann deine Termine lesen – teile ihn also nicht. Erneuerst du ihn, verlieren alle bisher eingerichteten Abos den Zugriff.",
+    "RotateCalendarLink": "Der bisherige Abo-Link wird sofort ungültig. Kalender-Apps, die ihn verwenden, erhalten keine Termine mehr, bis du den neuen Link dort einträgst.",
     "DashboardIntro": "Steig direkt wieder in deine Kurse oder Challenges ein.",
     "SkillTreeOverview": "Behalte deine Root-Skills im Blick und öffne die Details, wenn du tiefer einsteigen möchtest.",
     "SelectSkillDescription": "Wir müssen wissen, unter welchem Root-Skill du die Inhalte erstellen möchtest.",
@@ -850,6 +854,9 @@
     "Back": "Zurück",
     "Next": "Weiter",
     "LinkCalendar": "Kalender verknüpfen",
+    "CopyCalendarLink": "Link kopieren",
+    "CalendarLinkCopied": "Kopiert",
+    "RotateCalendarLink": "Abo-Link erneuern",
     "GoToShop": "ZUM SHOP",
     "ContactUs": "Schreib uns",
     "EnrollNow": "Jetzt anmelden",
@@ -969,6 +976,7 @@
     "WithdrawFromContract": "Vertrag widerrufen"
   },
   "Success": {
+    "RotateCalendarLink": "Neuer Abo-Link erstellt. Trage ihn in deiner Kalender-App ein.",
     "SolvedMatching": "Matching gelöst ✅",
     "DeleteMatching": "Matching erfolgreich gelöscht",
     "CreateMatching": "Matching erfolgreich erstellt",
