@@ -9,6 +9,14 @@ export const TERMS_VERSION = "2026-09";
 const TERMS_GATE_EXEMPT_PREFIXES = ["/docs", "/account"];
 
 /**
+ * Whether the gate has been dismissed with "decide later" since the app was
+ * loaded. This lives in the Nuxt state and nowhere else: no cookie, no storage,
+ * so the gate is shown again on the next app start as long as the user has not
+ * accepted. The refusal itself is recorded on the server.
+ */
+export const useTermsGateDismissed = () => useState("termsGateDismissed", () => false);
+
+/**
  * Whether the logged in user still has to accept the current version of the
  * terms and conditions. Accounts created before the acceptance was recorded
  * have no `terms_version` at all and are asked as well.
@@ -20,6 +28,7 @@ export function needsTermsAcceptance(path: string) {
   const user = <any>useUser();
 
   if (!!!isAuth.value || !!!user.value?.id) return false;
+  if (useTermsGateDismissed().value) return false;
   if (TERMS_GATE_EXEMPT_PREFIXES.some((prefix) => path.startsWith(prefix))) return false;
 
   return user.value.terms_version != TERMS_VERSION;
@@ -35,6 +44,24 @@ export async function acceptTerms() {
       terms_version: TERMS_VERSION,
       age_confirmed: true,
     });
+
+    await getUser();
+
+    return [response, null];
+  } catch (error: any) {
+    return [null, error.data];
+  }
+}
+
+/**
+ * Record that the user does not accept the current version and refresh the
+ * profile. AGB 20.2: the version the user accepted before keeps applying, so
+ * the profile still carries the old `terms_version` afterwards and the gate
+ * would show again - the caller dismisses it for the rest of this app session.
+ */
+export async function declineTerms() {
+  try {
+    const response = await POST(`/auth/users/me/terms/decline`);
 
     await getUser();
 

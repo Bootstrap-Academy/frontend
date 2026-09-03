@@ -22,6 +22,7 @@ export class User {
   tags: unknown[] = [];
   terms_version: null | string = null;
   terms_accepted_at: null | number = null;
+  terms_declined_at: null | number = null;
   vat_id: null | unknown = null;
   zip_code: string = "";
 }
