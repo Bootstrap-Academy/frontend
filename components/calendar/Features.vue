@@ -14,9 +14,32 @@
       </h3>
     </article>
 
-    <a :href="ics" download type="text/calendar">
-      <Btn full class="mt-box">{{ t("Buttons.LinkCalendar") }}</Btn>
-    </a>
+    <section class="grid gap-3 mt-box">
+      <h2 class="text-heading-2">{{ t("Headings.CalendarSubscription") }}</h2>
+      <p class="text-body-2">{{ t("Body.CalendarSubscription") }}</p>
+
+      <div class="flex items-center gap-2">
+        <input
+          ref="urlInput"
+          class="text-body-2 w-full min-w-0 rounded border border-tertiary bg-primary px-3 py-2"
+          :value="ics"
+          :aria-label="t('Headings.CalendarSubscription')"
+          readonly
+          @focus="selectUrl"
+        />
+        <Btn sm secondary :disabled="!ics" @click="copy">
+          {{ copied ? t("Buttons.CalendarLinkCopied") : t("Buttons.CopyCalendarLink") }}
+        </Btn>
+      </div>
+
+      <a :href="ics" download type="text/calendar">
+        <Btn full>{{ t("Buttons.LinkCalendar") }}</Btn>
+      </a>
+
+      <Btn full secondary :disabled="!ics || rotating" @click="rotate">
+        {{ t("Buttons.RotateCalendarLink") }}
+      </Btn>
+    </section>
 
     <h2 class="text-heading-2 mt-card">{{ t("Headings.FilterBy") }}</h2>
 
@@ -33,6 +56,55 @@ export default defineComponent({
     const { t } = useI18n();
 
     const ics = useICS();
+
+    const urlInput = ref<HTMLInputElement | null>(null);
+    const copied = ref(false);
+    const rotating = ref(false);
+
+    function selectUrl(event: FocusEvent) {
+      (event.target as HTMLInputElement).select();
+    }
+
+    async function copy() {
+      try {
+        await navigator.clipboard.writeText(ics.value);
+      } catch {
+        // clipboard access can be denied; fall back to selecting the url so it
+        // can be copied by hand
+        urlInput.value?.select();
+        return;
+      }
+      copied.value = true;
+      setTimeout(() => (copied.value = false), 3000);
+    }
+
+    function rotate() {
+      openDialog(
+        "warning",
+        "Headings.RotateCalendarLink",
+        "Body.RotateCalendarLink",
+        false,
+        {
+          label: "Buttons.RotateCalendarLink",
+          onclick: async () => {
+            rotating.value = true;
+            const [response, error] = await rotateIcsToken();
+            rotating.value = false;
+
+            if (response) {
+              copied.value = false;
+              openSnackbar("success", "Success.RotateCalendarLink");
+            } else {
+              openSnackbar("error", error?.detail ?? "");
+            }
+          },
+        },
+        {
+          label: "Buttons.Cancel",
+          onclick: () => {},
+        }
+      );
+    }
 
     const coaching = reactive({
       label: "Headings.Coaching",
@@ -80,7 +152,19 @@ export default defineComponent({
         tooltip: "Body.MyEventsFilterToolTip",
       },
     ]);
-    return { t, types, eventFilter, eventFilterOptions, ics };
+    return {
+      t,
+      types,
+      eventFilter,
+      eventFilterOptions,
+      ics,
+      urlInput,
+      copied,
+      rotating,
+      selectUrl,
+      copy,
+      rotate,
+    };
   },
 });
 </script>

@@ -248,6 +248,8 @@
     "Rejected": "Rejected",
     "MyCertificates": "Certificates",
     "EventTypes": "Event Types",
+    "CalendarSubscription": "Calendar Subscription",
+    "RotateCalendarLink": "Create a new subscription link?",
     "Coaching": "Coaching",
     "Exam": "Exam",
     "Webinar": "Webinar",
@@ -374,6 +376,8 @@
     "ContractTermination": "Ending a contract"
   },
   "Body": {
+    "CalendarSubscription": "Subscribe to your events in a calendar app with this link. Anyone who knows the link can read your events, so do not share it. Creating a new one cuts off every subscription that uses the old link.",
+    "RotateCalendarLink": "The current subscription link stops working immediately. Calendar apps that use it will no longer receive your events until you enter the new link there.",
     "DashboardIntro": "Jump back into your courses or challenges to keep the momentum going.",
     "SkillTreeOverview": "Browse every root skill and open the details whenever you want to go deeper.",
     "SelectSkillDescription": "We need to know under which root skill you want to create the content.",
@@ -856,6 +860,9 @@
     "Back": "Back",
     "Next": "Next",
     "LinkCalendar": "Link Calendar",
+    "CopyCalendarLink": "Copy link",
+    "CalendarLinkCopied": "Copied",
+    "RotateCalendarLink": "New subscription link",
     "GoToShop": "Go To Shop",
     "ContactUs": "Contact Us",
     "EnrollNow": "Enroll Now",
@@ -971,6 +978,7 @@
     "WithdrawFromContract": "Withdraw from contract"
   },
   "Success": {
+    "RotateCalendarLink": "New subscription link created. Enter it in your calendar app.",
     "SolvedMatching": "Matching Solved ✅",
     "DeleteMatching": "Matching Delete Successfully",
     "CreateMatching": "Matching Created Successfully",
