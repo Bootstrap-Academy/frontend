@@ -6,9 +6,9 @@
           {{ t("Headings.WebinarRating") }}
         </h6>
 
-        <img
-          class="h-14 w-14 flex-shrink-0 rounded-full object-cover mt-card md:h-16 md:w-16 lg:h-20 lg:w-20"
-          :src="instructor.avatar_url"
+        <Avatar
+          class="h-14 w-14 flex-shrink-0 mt-card md:h-16 md:w-16 lg:h-20 lg:w-20"
+          :name="instructor.display_name ?? ''"
           :alt="t('AltAttributes.EventInstructorAvatar')"
         />
         <h3 class="text-heading-3 mt-2 text-center">

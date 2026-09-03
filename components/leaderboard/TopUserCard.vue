@@ -2,11 +2,7 @@
   <div
     class="relative flex w-[220px] max-w-[320px] flex-col items-center rounded-md border border-light px-6 py-10 transition-all duration-300 hover:-translate-y-2"
   >
-    <img
-      class="h-20 w-20 rounded-full object-cover"
-      :src="user?.user?.avatar_url ?? '/images/user1.jpg'"
-      :alt="t('AltAttributes.UserAvatar')"
-    />
+    <Avatar class="h-20 w-20 flex-shrink-0" :name="user?.user?.display_name ?? ''" />
     <p class="mt-1">
       {{ user?.rank }}<span v-if="user?.rank == 1">st </span>
       <span v-if="user?.rank == 2">nd </span>

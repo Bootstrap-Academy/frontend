@@ -14,10 +14,10 @@
         <div class="flex items-center space-x-4">
           <Rating :rating="event.instructor_rating ?? 0" sm stars />
           <div class="flex items-center gap-2">
-            <img
-              :src="event.instructor.avatar_url ?? '/images/about-2.webp'"
-              class="h-6 w-6 rounded-[50px] object-cover"
+            <Avatar
+              :name="event.instructor.display_name ?? ''"
               :alt="t('AltAttributes.EventInstructorAvatar')"
+              class="h-6 w-6 flex-shrink-0"
             />
             <p>{{ event.instructor.display_name }}</p>
           </div>

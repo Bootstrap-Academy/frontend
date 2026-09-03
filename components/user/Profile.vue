@@ -1,9 +1,8 @@
 <template>
   <section class="card bg-secondary style-card">
-    <img
-      :src="image"
-      :alt="t('AltAttributes.UserAvatar')"
-      class="mx-auto h-32 w-32 rounded-full bg-tertiary shadow-xl shadow-primary mb-box"
+    <Avatar
+      :name="nickname || username"
+      class="mx-auto h-32 w-32 shadow-xl shadow-primary mb-box"
     />
     <h2 class="clamp line-1 text-heading-2 text-center">{{ username }}</h2>
     <p class="clamp line-1 text-body-1 text-center">{{ nickname }}</p>
@@ -44,10 +43,6 @@ export default {
   components: { EnvelopeIcon, CalendarIcon },
   setup(props) {
     const { t } = useI18n();
-
-    const image = computed(() => {
-      return props.data?.avatar_url ?? "/images/about-2.webp";
-    });
 
     const username = computed(() => {
       return props.data?.name ?? "";

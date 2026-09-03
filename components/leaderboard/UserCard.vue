@@ -13,11 +13,7 @@
       <SvgLevel7Icon v-else-if="item.rank == 6" />
       <SvgLevel8Icon v-else-if="item.rank == 7" />
       <SvgLevel9Icon v-else />
-      <img
-        :src="item?.user?.avatar_url ?? '/images/user1.jpg'"
-        class="h-20 w-20 rounded-full object-cover"
-        :alt="t('AltAttributes.UserAvatar')"
-      />
+      <Avatar :name="item?.user?.display_name ?? ''" class="h-20 w-20 flex-shrink-0" />
       <p
         :class="[
           {

@@ -2,10 +2,10 @@
   <article class="border-l-4 bg-secondary p-4 style-card lg:style-box" :class="[theme.border]">
     <header class="mb-4 flex flex-wrap-reverse justify-between gap-y-2 gap-x-card">
       <div v-if="data.type == 'coaching'" class="flex gap-box">
-        <img
-          :src="data.instructor.avatar_url ?? '/images/about-2.webp'"
-          class="h-6 w-6 rounded-[50px] object-cover"
+        <Avatar
+          :name="data.instructor.display_name ?? data.instructor.name ?? ''"
           :alt="t('AltAttributes.EventInstructorAvatar')"
+          class="h-6 w-6 flex-shrink-0"
         />
 
         <h3 class="text-heading-4 capitalize">

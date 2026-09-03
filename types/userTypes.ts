@@ -1,6 +1,5 @@
 export class User {
   admin: boolean = false;
-  avatar_url: string = "";
   business: boolean = false;
   can_buy_coins: boolean = false;
   can_receive_coins: boolean = false;

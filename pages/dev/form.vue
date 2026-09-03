@@ -16,14 +16,7 @@
           v-model="form.image.url"
           @file="form.image.value = $event"
           @valid="form.image.valid = $event"
-        >
-          <template #hint="{ t }">
-            {{ t("Links.GravatarImage") }}
-            <a href="https://de.gravatar.com/" target="_blank" class="cursor-pointer">
-              gravatar.com
-            </a>
-          </template>
-        </InputMedia>
+        />
 
         <InputMedia
           label="Inputs.CourseVideo"
