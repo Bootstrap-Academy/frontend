@@ -1,5 +1,7 @@
 <template>
-  <section class="container-fluid flex items-center justify-between gap-4 bg-secondary">
+  <section
+    class="container-fluid flex items-center justify-between gap-4 bg-secondary print:hidden"
+  >
     <Btn tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
       <img
         src="/images/logo.png"

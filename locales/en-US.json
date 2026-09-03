@@ -361,7 +361,16 @@
     "NetAmount": "Net amount",
     "VatAmount": "VAT ({vat}%)",
     "AutomaticRenewal": "Automatic renewal",
-    "ContractTerm": "Term"
+    "ContractTerm": "Term",
+    "CancelContract": "Cancel contract",
+    "WithdrawContract": "Withdraw from contract",
+    "CancellationReceived": "We have received your cancellation.",
+    "WithdrawalReceived": "We have received your withdrawal.",
+    "DeclarationReceivedAt": "Declaration received",
+    "DeclarationReference": "Reference number",
+    "CancellationReason": "Reason for the cancellation",
+    "OrderDetails": "Order details",
+    "ContractTermination": "Ending a contract"
   },
   "Body": {
     "DashboardIntro": "Jump back into your courses or challenges to keep the momentum going.",
@@ -494,7 +503,18 @@
     "AutomaticRenewalOn": "On — the membership renews automatically when it expires and is charged in Morphcoins again. You can switch automatic renewal off on this page at any time.",
     "AutomaticRenewalOff": "Off — the membership ends when the term expires. You can switch automatic renewal on from this page.",
     "PremiumTermMonthly": "1 month from the purchase",
-    "PremiumTermYearly": "12 months from the purchase"
+    "PremiumTermYearly": "12 months from the purchase",
+    "CancelContractIntro": "Use this form to cancel your contract with bootstrap academy GmbH. You need neither an account nor a login. We confirm the receipt of your cancellation by e-mail immediately; you can save or print the content of your declaration afterwards.",
+    "WithdrawContractIntro": "Use this form to withdraw from your contract with bootstrap academy GmbH. You need neither an account nor a login. We confirm the receipt of your withdrawal by e-mail immediately; you can save or print the content of your declaration afterwards.",
+    "ContractEmailHint": "Please enter the e-mail address your account or contract is held under.",
+    "OrderReferenceHint": "You will find the order number in the purchase confirmation e-mail for your order.",
+    "DeclarationReceivedAtValue": "{datetime} (time zone Europe/Berlin)",
+    "EndAtNextPossibleDate": "at the earliest possible date",
+    "ContractEndsOn": "Your contract ends on {date}.",
+    "NoContractFoundForEmail": "We cannot determine the end of the contract automatically from your details. We will review your cancellation and confirm the end date separately by e-mail.",
+    "ConfirmationEmailSent": "We have just sent you a confirmation with this content by e-mail to {email}.",
+    "ConfirmationEmailNotSent": "The confirmation e-mail could not be delivered. Please save or print this page.",
+    "CancelPremiumHint": "There you can cancel your premium membership with the statutory cancellation form; we confirm the receipt by e-mail immediately."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -705,7 +725,23 @@
     "MFACode": "MFA 6 digit Code",
     "RecoveryCode": "Recovery Code",
     "RegistrationCode": "Registration Code",
-    "AnswerOption": "Answer Option"
+    "AnswerOption": "Answer Option",
+    "CancellationType": "Type of cancellation",
+    "OrdinaryCancellation": "Ordinary cancellation",
+    "ExtraordinaryCancellation": "Extraordinary cancellation",
+    "ExtraordinaryCancellationReason": "Reason for the extraordinary cancellation (optional)",
+    "DeclarationName": "Name",
+    "DeclarationEmail": "E-mail address",
+    "Contract": "Contract",
+    "ContractOrOrder": "Contract / order",
+    "ContractCoins": "MorphCoin purchase",
+    "ContractPremium": "Premium membership",
+    "ContractOther": "Other contract",
+    "EndOfContract": "End of the contract",
+    "EndAtNextPossibleDate": "At the earliest possible date",
+    "EndAtDate": "On the following date",
+    "EndDate": "End date",
+    "OrderDetails": "Order number or other details of the order (optional)"
   },
   "Buttons": {
     "Matching": "Matching",
@@ -849,7 +885,13 @@
     "LearnMore": "Learn More",
     "LoadVideo": "Load video",
     "OrderWithObligationToPay": "Order with obligation to pay",
-    "ContinueToOrderSummary": "Continue to the order summary"
+    "ContinueToOrderSummary": "Continue to the order summary",
+    "CancelContractsHere": "Cancel contracts here",
+    "WithdrawFromContract": "Withdraw from contract",
+    "CancelNow": "cancel now",
+    "WithdrawNow": "withdraw now",
+    "SaveAsPdfOrPrint": "Save as PDF / Print",
+    "CancelPremium": "Cancel Premium"
   },
   "Links": {
     "LeaderBoard": "LeaderBoard",
@@ -916,7 +958,9 @@
     "OrderLegalHint": "Our",
     "OrderLegalHintMiddle": "and our",
     "OrderLegalHintEnd": " apply.",
-    "RightOfWithdrawalLinkText": "withdrawal policy"
+    "RightOfWithdrawalLinkText": "withdrawal policy",
+    "CancelContractsHere": "Cancel contracts here",
+    "WithdrawFromContract": "Withdraw from contract"
   },
   "Success": {
     "SolvedMatching": "Matching Solved ✅",
@@ -975,7 +1019,9 @@
     "BookedExam": "Your exam has been booked successfully.",
     "BookedCoaching": "Your coaching session has been booked successfully.",
     "BookedWebinar": "Your webinar has been booked successfully.",
-    "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
+    "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process.",
+    "CancellationDeclared": "We have received your cancellation.",
+    "WithdrawalDeclared": "We have received your withdrawal."
   },
   "Error": {
     "WrongMatchingAttempt": "Incorrect Matchings❌. Try Again",
@@ -1086,7 +1132,9 @@
     "PasswordResetFailed": "Unable to reset password. Please try again later.",
     "InvalidCode": "This code is invalid. Please use a valid one",
     "ProviderNotFound": "Unable to find this provider. Please select another one.",
-    "InvalidCoinAmount": "Invalid number of Morphcoins. Please start the purchase again."
+    "InvalidCoinAmount": "Invalid number of Morphcoins. Please start the purchase again.",
+    "TooManyRequests": "Too many requests. Please try again later or write to us at hallo{'@'}bootstrap.academy.",
+    "DeclarationNotSubmitted": "Your declaration could not be submitted. Please try again or send your declaration to hallo{'@'}bootstrap.academy."
   },
   "Months": {
     "January": "January",

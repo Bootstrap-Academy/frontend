@@ -180,6 +180,8 @@ const onResponseError = async (context) => {
     return (response._data.detail = "Error.NotEnoughCoins");
   } else if (details.includes("cannot start in the past")) {
     return (response._data.detail = "Error.CannotStartInPast");
+  } else if (details.includes("too many requests")) {
+    return (response._data.detail = "Error.TooManyRequests");
   } else if (details.includes("email not verified")) {
     // return openSnackbar("error", "Error.AccountNotVerified");
     return (response._data.detail = "Error.AccountNotVerified");

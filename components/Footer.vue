@@ -1,5 +1,7 @@
 <template>
-  <footer class="container-fluid relative z-0 flex flex-col items-center gap-7 bg-tertiary pt-8">
+  <footer
+    class="container-fluid relative z-0 flex flex-col items-center gap-7 bg-tertiary pt-8 print:hidden"
+  >
     <img
       src="/images/logo-text.png"
       :alt="t('AltAttributes.BootstrapAcademyLogo')"
@@ -70,6 +72,17 @@ export default defineComponent({
     ];
 
     let usefulLinks = [
+      // The two statutory declaration pages are additionally reachable from
+      // here; the permanent bar in `components/ContractTermination.vue` is
+      // what § 312k Abs. 2 BGB and § 356a BGB actually require.
+      {
+        label: "Links.CancelContractsHere",
+        pathname: "/vertrag-kuendigen",
+      },
+      {
+        label: "Links.WithdrawFromContract",
+        pathname: "/vertrag-widerrufen",
+      },
       {
         label: "Links.Privacy",
         pathname: "/docs/privacy",

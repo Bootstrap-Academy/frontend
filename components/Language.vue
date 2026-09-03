@@ -1,5 +1,5 @@
 <template>
-  <section class="h-7.5 relative w-screen overflow-clip" :class="color">
+  <section class="h-7.5 relative w-screen overflow-clip print:hidden" :class="color">
     <article class="container-fluid flex h-fit justify-end gap-3 py-1.5">
       <img
         @click="locale = 'en-US'"
