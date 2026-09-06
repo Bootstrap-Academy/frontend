@@ -287,14 +287,14 @@
       <p>
         6.4 Belohnungs-Coins werden Ihrem Guthaben erst gutgeschrieben, wenn Ihre E-Mail-Adresse
         bestätigt ist und Ihre Rechnungsdaten (Name, Anschrift, Land; bei Unternehmern zusätzlich
-        die Umsatzsteuer-Identifikationsnummer) vollständig sind; die Gutschrift erfolgt, sobald Sie
-        vollständige Rechnungsdaten speichern. Bis dahin halten wir sie für Sie zurück; die Höhe
-        zurückgehaltener MorphCoins teilen wir Ihnen auf Anfrage mit. Über Belohnungs-Coins, die
-        eine Vergütung darstellen (insbesondere Anteile für Kursleiter), erstellen wir je
-        Kalendermonat eine Gutschrift im Gutschriftverfahren (§ 14 Abs. 2 UStG), die wir Ihnen nach
-        Ablauf des Monats als PDF zur Verfügung stellen (derzeit auf Anfrage per E-Mail). Sie
-        erklären sich mit diesem Verfahren einverstanden und teilen uns mit, wenn Sie als
-        Unternehmer handeln.
+        die Umsatzsteuer-Identifikationsnummer) vollständig sind; die Gutschrift erfolgt, wenn Sie
+        Ihre Rechnungsdaten bei bestätigter E-Mail-Adresse (gegebenenfalls erneut) speichern. Bis
+        dahin halten wir sie für Sie zurück; die Höhe zurückgehaltener MorphCoins teilen wir Ihnen
+        auf Anfrage mit. Über Belohnungs-Coins, die eine Vergütung darstellen (insbesondere Anteile
+        für Kursleiter), erstellen wir je Kalendermonat eine Gutschrift im Gutschriftverfahren (§ 14
+        Abs. 2 UStG), die wir Ihnen nach Ablauf des Monats als PDF zur Verfügung stellen (derzeit
+        auf Anfrage per E-Mail). Sie erklären sich mit diesem Verfahren einverstanden und teilen uns
+        mit, wenn Sie als Unternehmer handeln.
       </p>
       <p>
         6.5 Verwendung: Mit MorphCoins bezahlen Sie ausschließlich Leistungen auf der Plattform
@@ -321,7 +321,8 @@
         nicht. Die erstatteten MorphCoins ziehen wir von Ihrem Guthaben ab. Stellen Sie die Anfrage
         möglichst, bevor Sie Ihr Konto löschen. Besteht bei der Löschung Ihres Kontos ein nicht
         verbrauchter Anteil gekaufter MorphCoins, halten wir ihn in einer Schlussabrechnung fest,
-        die Ihren Namen und Ihre E-Mail-Adresse enthält und die wir zusammen mit Ihren Rechnungen
+        die Ihren Namen, Ihre Anschrift, Ihre E-Mail-Adresse und gegebenenfalls Ihre
+        Umsatzsteuer-Identifikationsnummer enthält und die wir zusammen mit Ihren Rechnungen
         aufbewahren (Ziffer 11.5); auf dieser Grundlage erstatten wir auch nach der Löschung, wenn
         Sie die Erstattung per E-Mail verlangen und wir Sie der Schlussabrechnung zuordnen können
         (in der Regel über die E-Mail-Adresse Ihres früheren Kontos). Jede Schlussabrechnung wird
@@ -395,14 +396,14 @@
         8.4 Automatische Verlängerung (optional): Bei der Bestellung und jederzeit danach auf der
         Seite „Abonnement“ in Ihrem Konto können Sie die automatische Verlängerung ein- oder
         ausschalten. Ist sie bei Ablauf der gebuchten Laufzeit eingeschaltet, verlängert sich
-        Premium auf unbestimmte Zeit: Wir buchen dann – spätestens bei Ihrer nächsten Nutzung der
-        Plattform nach dem Ablauf – für jeden weiteren Monat 1.000 MorphCoins (10,00 €) von Ihrem
-        Guthaben ab; der Monat beginnt mit der Abbuchung. Ein Jahreszeitraum verlängert sich also
-        nicht um ein weiteres Jahr, sondern monatlich zum Monatspreis; ein neues Jahr können Sie
-        jederzeit gesondert buchen (Ziffer 8.2). Reicht Ihr Guthaben nicht aus, findet keine
-        Verlängerung statt: Premium endet, die automatische Verlängerung wird abgeschaltet, und es
-        entstehen keine Kosten. Sie sind nicht verpflichtet, MorphCoins für eine Verlängerung
-        nachzukaufen.
+        Premium auf unbestimmte Zeit: Wir buchen dann – bei Ablauf der Laufzeit, spätestens am
+        folgenden Tag oder bei Ihrer nächsten Nutzung der Plattform – für jeden weiteren Monat 1.000
+        MorphCoins (10,00 €) von Ihrem Guthaben ab; der Monat beginnt mit der Abbuchung. Ein
+        Jahreszeitraum verlängert sich also nicht um ein weiteres Jahr, sondern monatlich zum
+        Monatspreis; ein neues Jahr können Sie jederzeit gesondert buchen (Ziffer 8.2). Reicht Ihr
+        Guthaben nicht aus, findet keine Verlängerung statt: Premium endet, die automatische
+        Verlängerung wird abgeschaltet, und es entstehen keine Kosten. Sie sind nicht verpflichtet,
+        MorphCoins für eine Verlängerung nachzukaufen.
       </p>
       <p>
         8.5 Kündigung: Sie können Premium jederzeit kündigen – während der gebuchten Laufzeit zu
@@ -410,11 +411,14 @@
         Schaltfläche „Verträge hier kündigen“ im Fußbereich jeder Seite und die dortige
         Bestätigungsseite unter bootstrap.academy/vertrag-kuendigen (§ 312k BGB), auf der Seite
         „Abonnement“ in Ihrem Konto durch Ausschalten der automatischen Verlängerung oder per E-Mail
-        an hallo@bootstrap.academy. Den Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs
-        sowie den Zeitpunkt, zu dem Premium endet, bestätigen wir Ihnen sofort per E-Mail. Für den
-        laufenden, bereits bezahlten Zeitraum erfolgt bei Ihrer Kündigung keine Erstattung. Das
-        Recht zur außerordentlichen Kündigung aus wichtigem Grund, Ihr Widerrufsrecht (siehe
-        Widerrufsbelehrung) und Ihre Rechte bei Mängeln (Ziffer 16.2) bleiben unberührt.
+        an hallo@bootstrap.academy. Kündigen Sie über die Kündigungsseite, bestätigen wir Ihnen den
+        Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs sowie den Zeitpunkt, zu dem Premium
+        endet, sofort per E-Mail (§ 312k Abs. 4 BGB). Schalten Sie die automatische Verlängerung auf
+        der Seite „Abonnement“ aus, zeigt Ihnen diese Seite das Ende der Laufzeit an; eine Kündigung
+        per E-Mail bestätigen wir Ihnen in Textform. Für den laufenden, bereits bezahlten Zeitraum
+        erfolgt bei Ihrer Kündigung keine Erstattung. Das Recht zur außerordentlichen Kündigung aus
+        wichtigem Grund, Ihr Widerrufsrecht (siehe Widerrufsbelehrung) und Ihre Rechte bei Mängeln
+        (Ziffer 16.2) bleiben unberührt.
       </p>
       <p>
         8.6 Wir können Premium ordentlich nur zum Ende der laufenden Laufzeit kündigen. Stellen wir
@@ -452,9 +456,9 @@
         Coachings (Einzeltermine) zu festen Terminen angeboten. Vertragspartner für die Buchung ist
         der Anbieter. Durchgeführt werden Events von Kursleitern; das sind Nutzer der Plattform, die
         die auf der Plattform genannten Voraussetzungen für das Anbieten von Events erfüllen, sowie
-        unser Team. Welche Preise ein Kursleiter verlangen darf, hängt von seinen Bewertungen durch
-        Teilnehmer ab. Termin, Dauer, Inhalt, Kursleiter und Preis ergeben sich aus der jeweiligen
-        Beschreibung.
+        unser Team. Welche Preise ein Kursleiter für Webinare verlangen darf, hängt von seinen
+        Bewertungen durch Teilnehmer ab. Termin, Dauer, Inhalt, Kursleiter und Preis ergeben sich
+        aus der jeweiligen Beschreibung.
       </p>
       <p>
         10.2 Buchung: Kostenpflichtige Termine buchen Sie mit MorphCoins nach Ziffer 11; der Preis
@@ -504,9 +508,11 @@
         Ersatztermin an, können Sie diesen wahrnehmen oder die Erstattung wählen.
       </p>
       <p>
-        10.5 Löschen Sie Ihr Konto, werden gebuchte Termine storniert; Ziffer 10.3 gilt
-        entsprechend. Beantragen Sie in diesem Fall die Erstattung gekaufter MorphCoins nach Ziffer
-        6.7 vor der Löschung.
+        10.5 Löschen Sie Ihr Konto, werden Ihre gebuchten Termine storniert, ohne dass wir den Preis
+        erstatten, weil Ihr Guthaben mit dem Konto gelöscht wird. Stornieren Sie Termine, die Sie
+        nicht mehr wahrnehmen möchten, deshalb vor der Löschung nach Ziffer 10.3, und beantragen Sie
+        die Erstattung gekaufter MorphCoins nach Ziffer 6.7 vor der Löschung. Termine, die Sie als
+        Kursleiter anbieten, werden abgesagt; für die Teilnehmer gilt Ziffer 10.4.
       </p>
       <p>
         10.6 Während eines Events dürfen Sie keine Aufzeichnungen anfertigen, es sei denn, alle
@@ -703,10 +709,12 @@
           15).
         </li>
         <li>
-          Dauer von Funktionssperren: Die Dauer wird nicht im Einzelfall festgelegt, sondern folgt
-          einer festen Staffel nach der Zahl Ihrer bisherigen Sperren derselben Art: 3 Tage, dann 7
-          Tage, dann 30 Tage, danach unbefristet. Ob eine Sperre verhängt wird, entscheidet ein
-          Mensch; auf Ihre Beschwerde hin prüft ein Mensch auch die Dauer.
+          Dauer von Funktionssperren: Verhängen wir eine Sperre bei der Bearbeitung einer Meldung,
+          folgt ihre Dauer einer festen Staffel nach der Zahl Ihrer bisherigen Sperren derselben
+          Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach unbefristet. In allen anderen Fällen legen
+          wir die Dauer nach Schwere und Wiederholung des Verstoßes fest (Ziffer 15.2). Ob eine
+          Sperre verhängt wird, entscheidet ein Mensch; auf Ihre Beschwerde hin prüft ein Mensch
+          auch die Dauer.
         </li>
       </ul>
       <p>

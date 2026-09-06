@@ -461,7 +461,7 @@
     "SearchCourses": "Kurse suchen",
     "SearchCertificates": "Zertifikate suchen",
     "AddTags": "Drück Leertaste, um ein neues Tag hinzuzufügen",
-    "DeleteAccount": "Dein Konto und alle deine Daten auf der Plattform werden gelöscht; die Löschung ist innerhalb von 30 Tagen abgeschlossen und kann nicht rückgängig gemacht werden. Dein Morphcoin-Guthaben verfällt dabei – eine Erstattung gekaufter, nicht verbrauchter Morphcoins beantragst du vorher per E-Mail an %%%. Eine laufende Premium-Mitgliedschaft endet sofort und wird für die Restlaufzeit nicht erstattet.",
+    "DeleteAccount": "Dein Konto und alle deine Daten auf der Plattform werden gelöscht; die Löschung ist innerhalb von 30 Tagen abgeschlossen und kann nicht rückgängig gemacht werden. Dein Morphcoin-Guthaben verfällt dabei – eine Erstattung gekaufter, nicht verbrauchter Morphcoins beantragst du vorher per E-Mail an %%%. Gebuchte Webinare und Coachings werden ohne Erstattung storniert – storniere sie vorher im Kalender. Eine laufende Premium-Mitgliedschaft endet sofort und wird für die Restlaufzeit nicht erstattet.",
     "LinkedLogins": "Über diese Konten bei anderen Anbietern kannst du dich anmelden. Wir speichern dazu nur die Kennung und den Anzeigenamen deines dortigen Kontos, keine Zugriffstoken.",
     "LinkedLoginsEmpty": "Du hast noch kein Konto eines anderen Anbieters verknüpft.",
     "LinkedLoginsLoading": "Verknüpfte Logins werden geladen",
