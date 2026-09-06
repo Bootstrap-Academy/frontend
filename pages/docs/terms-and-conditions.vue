@@ -117,7 +117,9 @@
         2.1 Mit einem Nutzerkonto können Sie kostenlos nutzen: den Skilltree mit kostenlosen Kursen,
         Quizze und Zuordnungsaufgaben („Matchings“), Coding-Challenges, bei denen Ihr Code auf
         unseren Servern ausgeführt und geprüft wird, das Erstellen eigener Aufgaben, die Bestenliste
-        und die Herzen. Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse erforderlich.
+        (in der Sie nur erscheinen, solange Sie das in den Profileinstellungen nicht abgewählt
+        haben) und die Herzen. Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse
+        erforderlich.
       </p>
       <p>
         2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – das einmalige
@@ -149,7 +151,9 @@
         3.1 Für die Nutzung der Plattform legen Sie ein Nutzerkonto an. Die Registrierung ist
         kostenlos. Erforderlich sind ein Nickname (Anmeldename; ein Pseudonym ist zulässig), ein
         Anzeigename, Ihre E-Mail-Adresse und ein Passwort. Statt eines Passworts können Sie sich mit
-        einem bestehenden Konto bei GitHub, Discord oder Google registrieren und anmelden.
+        einem bestehenden Konto bei GitHub, Discord oder Google registrieren und anmelden;
+        Verknüpfungen mit diesen Anbietern können Sie in den Kontoeinstellungen hinzufügen und
+        entfernen, die letzte verbleibende Anmeldemethode jedoch nicht entfernen.
       </p>
       <p>
         3.2 Sie müssen mindestens 16 Jahre alt sein; das bestätigen Sie bei der Registrierung. Für
@@ -168,9 +172,10 @@
       <p>
         3.4 Diese AGB können Sie jederzeit unter bootstrap.academy/docs/terms-and-conditions
         abrufen, speichern und ausdrucken. Welche Fassung Sie akzeptiert haben und wann, speichern
-        wir mit Ihrem Nutzerkonto und teilen es Ihnen auf Anfrage mit; frühere Fassungen stellen wir
-        Ihnen auf Anfrage zur Verfügung. Ihre Registrierungsdaten speichern wir in Ihrem
-        Nutzerkonto, wo Sie sie einsehen und ändern können.
+        wir mit Ihrem Nutzerkonto; Sie finden diese Angaben in Ihrem Datenexport (Ziffer 17.3), und
+        wir teilen sie Ihnen auf Anfrage mit. Frühere Fassungen stellen wir Ihnen auf Anfrage zur
+        Verfügung. Ihre Registrierungsdaten speichern wir in Ihrem Nutzerkonto, wo Sie sie einsehen
+        und ändern können.
       </p>
       <p>
         3.5 Jede Person darf nur ein Nutzerkonto haben. Das Nutzerkonto ist nicht übertragbar.
@@ -217,8 +222,8 @@
       </ul>
       <p>
         4.5 Nach der Beendigung löschen wir Ihre Daten nach Ziffer 17.2. Sichern Sie Inhalte, die
-        Sie behalten möchten (zum Beispiel eigenen Code), vor der Beendigung; auf Anfrage stellen
-        wir Ihnen Ihre Daten vorher in einem maschinenlesbaren Format bereit (Ziffer 17.3).
+        Sie behalten möchten (zum Beispiel eigenen Code), vor der Beendigung; Ihre Daten können Sie
+        vorher in den Kontoeinstellungen als Datei herunterladen (Ziffer 17.3).
       </p>
     </article>
 
@@ -280,14 +285,16 @@
         erhalten.
       </p>
       <p>
-        6.4 Belohnungs-Coins werden Ihrem Guthaben erst gutgeschrieben, wenn Ihre Rechnungsdaten
-        (Name, Anschrift, Land; bei Unternehmern zusätzlich die Umsatzsteuer-Identifikationsnummer)
-        vollständig sind. Bis dahin halten wir sie für Sie zurück; die Höhe zurückgehaltener
-        MorphCoins teilen wir Ihnen auf Anfrage mit. Über Belohnungs-Coins, die eine Vergütung
-        darstellen (insbesondere Anteile für Kursleiter), erstellen wir je Kalendermonat eine
-        Gutschrift im Gutschriftverfahren (§ 14 Abs. 2 UStG), die wir Ihnen nach Ablauf des Monats
-        als PDF zur Verfügung stellen (derzeit auf Anfrage per E-Mail). Sie erklären sich mit diesem
-        Verfahren einverstanden und teilen uns mit, wenn Sie als Unternehmer handeln.
+        6.4 Belohnungs-Coins werden Ihrem Guthaben erst gutgeschrieben, wenn Ihre E-Mail-Adresse
+        bestätigt ist und Ihre Rechnungsdaten (Name, Anschrift, Land; bei Unternehmern zusätzlich
+        die Umsatzsteuer-Identifikationsnummer) vollständig sind; die Gutschrift erfolgt, sobald Sie
+        vollständige Rechnungsdaten speichern. Bis dahin halten wir sie für Sie zurück; die Höhe
+        zurückgehaltener MorphCoins teilen wir Ihnen auf Anfrage mit. Über Belohnungs-Coins, die
+        eine Vergütung darstellen (insbesondere Anteile für Kursleiter), erstellen wir je
+        Kalendermonat eine Gutschrift im Gutschriftverfahren (§ 14 Abs. 2 UStG), die wir Ihnen nach
+        Ablauf des Monats als PDF zur Verfügung stellen (derzeit auf Anfrage per E-Mail). Sie
+        erklären sich mit diesem Verfahren einverstanden und teilen uns mit, wenn Sie als
+        Unternehmer handeln.
       </p>
       <p>
         6.5 Verwendung: Mit MorphCoins bezahlen Sie ausschließlich Leistungen auf der Plattform
@@ -312,10 +319,14 @@
         erstellen eine Gutschrift und zahlen den Betrag innerhalb von 14 Tagen nach Eingang Ihrer
         Anfrage auf das PayPal-Konto zurück, mit dem Sie bezahlt haben; Kosten berechnen wir dafür
         nicht. Die erstatteten MorphCoins ziehen wir von Ihrem Guthaben ab. Stellen Sie die Anfrage
-        möglichst, bevor Sie Ihr Konto löschen. Bei der Löschung halten wir den nicht verbrauchten
-        Anteil Ihrer gekauften MorphCoins in einer Schlussabrechnung fest, die wir zusammen mit
-        Ihren Rechnungen aufbewahren (Ziffer 11.5); auf dieser Grundlage erstatten wir auch nach der
-        Löschung. Ihre gesetzlichen Rechte, insbesondere das Widerrufsrecht, bleiben unberührt.
+        möglichst, bevor Sie Ihr Konto löschen. Besteht bei der Löschung Ihres Kontos ein nicht
+        verbrauchter Anteil gekaufter MorphCoins, halten wir ihn in einer Schlussabrechnung fest,
+        die Ihren Namen und Ihre E-Mail-Adresse enthält und die wir zusammen mit Ihren Rechnungen
+        aufbewahren (Ziffer 11.5); auf dieser Grundlage erstatten wir auch nach der Löschung, wenn
+        Sie die Erstattung per E-Mail verlangen und wir Sie der Schlussabrechnung zuordnen können
+        (in der Regel über die E-Mail-Adresse Ihres früheren Kontos). Jede Schlussabrechnung wird
+        nur einmal erstattet. Ihre gesetzlichen Rechte, insbesondere das Widerrufsrecht, bleiben
+        unberührt.
       </p>
       <p>
         6.8 Gesetzliche und in diesen AGB vorgesehene Erstattungen (zum Beispiel nach Widerruf,
@@ -526,9 +537,12 @@
         MorphCoins nach Bestätigung der Zahlung durch PayPal Ihrem Guthaben gutschreiben. Bei
         Leistungen, die Sie mit MorphCoins bezahlen, kommt der Vertrag zustande, wenn wir die
         Leistung freischalten oder die Buchung bestätigen; das geschieht unmittelbar nach der
-        Bestellung. Über jede Bestellung erhalten Sie eine Bestätigung an Ihre hinterlegte
-        E-Mail-Adresse, die den Vertragsinhalt, diese AGB und die Widerrufsbelehrung enthält (§ 312f
-        BGB). Ihre Bestelldaten speichern wir in Ihrem Nutzerkonto.
+        Bestellung. Beim Kauf von MorphCoins erhalten Sie eine Kaufbestätigung an Ihre hinterlegte
+        E-Mail-Adresse, die den Vertragsinhalt, Ihre Erklärungen zum Widerrufsrecht, die Rechnung,
+        diese AGB und die Widerrufsbelehrung enthält (§ 312f BGB). Beim Freischalten eines Kurses
+        und bei der Buchung eines Events erhalten Sie eine Bestätigungs-E-Mail; Premium und das
+        Auffüllen der Herzen werden sofort ausgeführt und in Ihrem Konto angezeigt. Ihre
+        Bestelldaten speichern wir in Ihrem Nutzerkonto.
       </p>
       <p>
         11.3 Preise: Alle Euro-Preise verstehen sich einschließlich der gesetzlichen Umsatzsteuer
@@ -675,9 +689,9 @@
           Aufgabe wieder eingeblendet.
         </li>
         <li>
-          Automatische Maßnahmen: Eine von Nutzern erstellte Aufgabe wird außerdem automatisch
-          ausgeblendet und uns zur Prüfung vorgelegt, wenn sie mindestens zehn negative und mehr
-          negative als positive Bewertungen erhalten hat. Die Ausblendung ist vorläufig; die
+          Automatische Maßnahmen: Eine von Nutzern erstellte Aufgabe kann außerdem automatisch
+          ausgeblendet und uns zur Prüfung vorgelegt werden, wenn sie mindestens zehn negative und
+          mehr negative als positive Bewertungen erhalten hat. Die Ausblendung ist vorläufig; die
           endgültige Entscheidung trifft ein Mensch. Weitere automatisierte Entscheidungen über
           Inhalte oder Konten treffen wir nicht.
         </li>
@@ -758,8 +772,9 @@
         Verlängerung von Premium ruht. Einen laufenden, bezahlten Premium-Zeitraum verlängern wir
         nach Ihrer Wahl um die Dauer der Sperre oder erstatten den auf die Sperre entfallenden
         Anteil nach Ziffer 6.8. Gebuchte Events, an denen Sie wegen der Sperre nicht teilnehmen
-        können, erstatten wir. Auch während einer Sperre stellen wir Ihnen auf Anfrage Ihre Daten in
-        einem maschinenlesbaren Format bereit (Ziffer 17.3), und Sie können Ihr Konto löschen; für
+        können, erstatten wir. Auch während einer Sperre Ihres Kontos, während der Sie sich nicht
+        anmelden können, stellen wir Ihnen auf Anfrage Ihre Daten in einem maschinenlesbaren Format
+        bereit (Ziffer 17.3) und löschen Ihr Konto auf Ihre Anfrage per E-Mail (Ziffer 4.2); für
         gekaufte MorphCoins gilt Ziffer 6.7.
       </p>
       <p>
@@ -827,13 +842,15 @@
       <p>
         17.2 Löschen Sie Ihr Konto selbst, werden Ihre Kontodaten sofort gelöscht. Kündigen Sie per
         E-Mail oder endet der Vertrag auf andere Weise, löschen wir Ihre Daten innerhalb von 30
-        Tagen nach Vertragsende. Rechnungen und Gutschriften bewahren wir wegen gesetzlicher
-        Pflichten acht Jahre auf; Datensicherungen werden nach den in den Datenschutzhinweisen
-        genannten Fristen überschrieben.
+        Tagen nach Vertragsende. Rechnungen und Gutschriften sowie eine Schlussabrechnung nach
+        Ziffer 6.7 bewahren wir wegen gesetzlicher Pflichten acht Jahre auf; Datensicherungen werden
+        nach den in den Datenschutzhinweisen genannten Fristen überschrieben.
       </p>
       <p>
-        17.3 Auf Anfrage stellen wir Ihnen Ihre Daten – auch während einer Sperre – innerhalb eines
-        Monats in einem strukturierten, gängigen und maschinenlesbaren Format (JSON) bereit.
+        17.3 Ihre Daten können Sie jederzeit in den Kontoeinstellungen („Meine Daten herunterladen“)
+        in einem strukturierten, gängigen und maschinenlesbaren Format (JSON) herunterladen. Können
+        Sie sich nicht anmelden, etwa während einer Sperre, stellen wir Ihnen die Datei auf Anfrage
+        innerhalb eines Monats bereit.
       </p>
     </article>
 
