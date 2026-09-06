@@ -93,7 +93,10 @@
       >
         <Accordion :title="dialog.heading" class="w-full">
           <Dialog :dialog="dialog">
-            <template #content> </template>
+            <template #content>
+              <h4 class="text-heading-4 mt-box mb-box">{{ t("Headings.CancellationPolicy") }}</h4>
+              <List :items="cancellationPolicy" id="eventCancellationPolicy" />
+            </template>
           </Dialog>
         </Accordion>
       </CalendarEventSummary>
@@ -219,10 +222,6 @@ const cancellationPolicy = reactive([
   "List.EventCancellationPolicy.3",
 ]);
 
-const todayDate = ref("");
-const startDate = ref("");
-const numberOfDaysUntil = ref(0);
-
 function onclickCancel() {
   confirmCancellation.value = true;
   let btnText = "";
@@ -242,7 +241,7 @@ function onclickCancel() {
       break;
   }
 
-  let refund = getCancellationRefundStatus();
+  const refund = getCancellationRefundStatus();
   let body = t("Body.CancelEvent");
 
   if (refund == 100) {
@@ -250,30 +249,35 @@ function onclickCancel() {
   } else if (refund == 50) {
     body = `${body} ${t("Body.CancelEvent50%")}`;
   } else {
-    body = `${body} ${t("Body.CancelEvent0%")}`;
+    // less than 24 hours before the event there is nothing to confirm anymore
+    body = t("Body.CancelEvent0%");
   }
 
   Object.assign(dialog, {
     type: type,
     heading: headingText,
     body: body,
-    primaryBtn: {
-      label: btnText,
-      onclick: async () => {
-        setLoading(true);
-        const [success, error] = await cancelCalendarEvent(props.id);
-        setLoading(false);
+    // the events service refuses a cancellation within the last 24 hours, so it is not offered here
+    primaryBtn:
+      refund == 0
+        ? {}
+        : {
+            label: btnText,
+            onclick: async () => {
+              setLoading(true);
+              const [success, error] = await cancelCalendarEvent(props.id);
+              setLoading(false);
 
-        openSnackbar(
-          success ? "success" : "error",
-          success ? "Success.EventCancelled" : (error?.detail ?? "")
-        );
+              openSnackbar(
+                success ? "success" : "error",
+                success ? "Success.EventCancelled" : (error?.detail ?? "")
+              );
 
-        if (success) {
-          confirmCancellation.value = false;
-        }
-      },
-    },
+              if (success) {
+                confirmCancellation.value = false;
+              }
+            },
+          },
     secondaryBtn: {
       label: "Buttons.Back",
       onclick: () => {
@@ -283,17 +287,15 @@ function onclickCancel() {
   });
 }
 
+// The tiers of the cancellation policy, mirroring the thresholds the events service applies.
+// `start.date - today.date` used to subtract the days of the month from each other, which is off by
+// a month's length whenever the event is in the next month.
 function getCancellationRefundStatus() {
-  let start = convertTimestampToDate(props.start);
-  let today = convertTimestampToDate(new Date().getTime() / 1000);
+  const hoursUntilStart = (props.start * 1000 - Date.now()) / (60 * 60 * 1000);
 
-  numberOfDaysUntil.value = start.date - today.date;
-  todayDate.value = `${today.date} ${t(today.month.string)}, ${today.year}`;
-  startDate.value = `${start.date} ${t(start.month.string)}, ${start.year}`;
-
-  if (numberOfDaysUntil.value > 7) {
+  if (hoursUntilStart >= 7 * 24) {
     return 100;
-  } else if (numberOfDaysUntil.value > 1 && numberOfDaysUntil.value <= 7) {
+  } else if (hoursUntilStart >= 24) {
     return 50;
   } else {
     return 0;

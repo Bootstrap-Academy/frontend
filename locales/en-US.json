@@ -426,7 +426,7 @@
     "CancelEvent": "Are you sure you want to cancel?",
     "CancelEvent100%": "Your are eligible for 100% refund.",
     "CancelEvent50%": "Your are eligible for 50% refund.",
-    "CancelEvent0%": "You will not get any refund.",
+    "CancelEvent0%": "Less than 24 hours before it starts, the event can no longer be cancelled here. Write to hallo@bootstrap.academy if you cannot attend.",
     "BookedEventsFilterToolTip": "Shows events that are booked by you",
     "MyEventsFilterToolTip": "Shows events that are created by you",
     "ThisIsFirstLecture": "This is the first lecture",
@@ -561,9 +561,9 @@
       "2": "If one or more user(s) have booked this webinar, then you can cancel only in case of emergencies or in case of illness. Otherwise the next webinar has to be free."
     },
     "EventCancellationPolicy": {
-      "1": "7 days before event or earlier: 100% refund",
-      "2": "1 - 7 days before the event: 50% refund",
-      "3": "less than 24 hours: 0% refund"
+      "1": "Up to 7 days before the event: Cancelling is free, we refund the full price.",
+      "2": "Later, but at least 24 hours before the event: We refund 50% of the price.",
+      "3": "Less than 24 hours before the event: Cancelling in the calendar is no longer possible; the price is kept."
     },
     "Contact": {
       "1": {
