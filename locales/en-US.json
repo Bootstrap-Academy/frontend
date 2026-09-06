@@ -462,7 +462,7 @@
     "SearchCourses": "search for courses",
     "SearchCertificates": "search for certificates",
     "AddTags": "Press space to add new tag",
-    "DeleteAccount": "Your account and all of your data on the platform are deleted; the deletion is completed within 30 days and cannot be reversed. Your Morphcoin balance is lost in the process — request a refund of purchased, unused Morphcoins beforehand by email to %%%. A running premium membership ends immediately and is not refunded for the remaining term.",
+    "DeleteAccount": "Your account and all of your data on the platform are deleted; the deletion is completed within 30 days and cannot be reversed. Your Morphcoin balance is lost in the process — request a refund of purchased, unused Morphcoins beforehand by email to %%%. Booked webinars and coachings are cancelled without a refund — cancel them in the calendar beforehand. A running premium membership ends immediately and is not refunded for the remaining term.",
     "LinkedLogins": "You can sign in with these accounts at other providers. All we store is the identifier and the display name of your account there, never an access token.",
     "LinkedLoginsEmpty": "You have not linked an account at another provider yet.",
     "LinkedLoginsLoading": "Loading linked logins",
