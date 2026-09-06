@@ -54,6 +54,20 @@
 
     <article class="mt-card">
       <h2 class="text-heading-2 font-black mb-box">
+        {{ t("Headings.Visibility") }}
+      </h2>
+      <InputCheckbox
+        id="ProfileShowOnLeaderboard"
+        label="Inputs.ShowOnLeaderboard"
+        v-model="showOnLeaderboard"
+      />
+      <p class="text-body-2 text-body mt-box">
+        {{ t("Body.ShowOnLeaderboard") }}
+      </p>
+    </article>
+
+    <article class="mt-card">
+      <h2 class="text-heading-2 font-black mb-box">
         {{ t("Headings.UserType") }}
       </h2>
       <button
@@ -130,6 +144,9 @@ export default defineComponent({
     const { t } = useI18n();
 
     const business = ref(false);
+    // The API stores the opt-out; the form asks the other way round, so that
+    // the box is ticked by default and unticking it hides the user.
+    const showOnLeaderboard = ref(true);
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -271,6 +288,7 @@ export default defineComponent({
       form.first_name.value = data?.first_name ?? "";
       form.last_name.value = data?.last_name ?? "";
       business.value = data?.business ?? false;
+      showOnLeaderboard.value = !(data?.leaderboard_opt_out ?? false);
     }
 
     watch(
@@ -291,6 +309,7 @@ export default defineComponent({
         const [success, error] = await editUser({
           ...form.body(),
           business: business.value,
+          leaderboard_opt_out: !showOnLeaderboard.value,
         });
         form.submitting = false;
 
@@ -352,6 +371,7 @@ export default defineComponent({
       t,
       hintNickname,
       business,
+      showOnLeaderboard,
     };
   },
 });

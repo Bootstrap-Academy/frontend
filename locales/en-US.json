@@ -374,7 +374,8 @@
     "DeclarationReference": "Reference number",
     "CancellationReason": "Reason for the cancellation",
     "OrderDetails": "Order details",
-    "ContractTermination": "Ending a contract"
+    "ContractTermination": "Ending a contract",
+    "Visibility": "Visibility"
   },
   "Body": {
     "CalendarSubscription": "Subscribe to your events in a calendar app with this link. Anyone who knows the link can read your events, so do not share it. Creating a new one cuts off every subscription that uses the old link.",
@@ -527,7 +528,9 @@
     "WithdrawalConsentServicePerformance": "Ich verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.",
     "WithdrawalConsentServiceLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.",
     "WithdrawalConsentDigitalPerformance": "Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen.",
-    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt."
+    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt.",
+    "ShowOnLeaderboard": "While this is ticked, your display name, score and rank appear on the leaderboards that every logged-in user can see. Untick it and you are no longer listed there. Your score still counts and you can still see your own rank.",
+    "LeaderboardOptOut": "Not everyone is listed here: anyone can hide themselves from the leaderboards in their profile settings."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -754,7 +757,8 @@
     "EndAtNextPossibleDate": "At the earliest possible date",
     "EndAtDate": "On the following date",
     "EndDate": "End date",
-    "OrderDetails": "Order number or other details of the order (optional)"
+    "OrderDetails": "Order number or other details of the order (optional)",
+    "ShowOnLeaderboard": "Show me on the leaderboards"
   },
   "Buttons": {
     "Matching": "Matching",
