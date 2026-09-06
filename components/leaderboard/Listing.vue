@@ -21,14 +21,13 @@
 
     <div class="mt-6 flex justify-center">
       <InputBtn
-        v-if="leaderBoardList.length < totalLeaderboardUsers"
+        v-if="hasMore"
         :loading="btnLoading"
         @click="loadMore()"
         :icon="TrophyIcon"
         iconRight
         :class="{
-          'pointer-events-none opacity-70':
-            btnLoading || leaderBoardList.length >= totalLeaderboardUsers,
+          'pointer-events-none opacity-70': btnLoading,
         }"
       >
         <div>
@@ -36,10 +35,7 @@
         </div>
       </InputBtn>
     </div>
-    <p
-      v-if="leaderBoardList.length == totalLeaderboardUsers"
-      class="flex flex-col items-center text-accent"
-    >
+    <p v-if="!hasMore" class="flex flex-col items-center text-accent">
       <component v-if="TrophyIcon" :is="TrophyIcon" class="mb-4 h-10 w-10 bg-primary" />
       {{ t("Headings.NoMoreUser") }}
     </p>
@@ -62,6 +58,10 @@ export default {
     const btnLoading = ref(false);
     const route: any = useRoute();
     const totalLeaderboardUsers = useTotalLeaderboardUsers();
+    // `totalLeaderboardUsers` counts every position on the leaderboard, while
+    // the response omits users who asked not to be listed, so the loaded list
+    // can stay shorter than the total. Page by offset instead of by length.
+    const hasMore = computed(() => offset.value + limit.value < totalLeaderboardUsers.value);
     const topThreeUsers = computed(() => props.leaderBoardList.slice(0, 3));
     const remainingUsers = computed(() =>
       props.leaderBoardList.slice(3).filter((user: any) => user?.rank > 3)
@@ -99,6 +99,7 @@ export default {
       btnLoading,
       offset,
       totalLeaderboardUsers,
+      hasMore,
       topThreeUsers,
       remainingUsers,
     };

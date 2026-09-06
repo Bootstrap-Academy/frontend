@@ -14,6 +14,7 @@ export class User {
   last_login: number = 0;
   last_name: string = "";
   last_name_change: number = 0;
+  leaderboard_opt_out: boolean = false;
   mfa_enabled: boolean = false;
   name: string = "";
   password: boolean = false;

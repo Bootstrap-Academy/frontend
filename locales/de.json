@@ -374,7 +374,8 @@
     "DeclarationReference": "Vorgangsnummer",
     "CancellationReason": "Grund der Kündigung",
     "OrderDetails": "Angaben zur Bestellung",
-    "ContractTermination": "Vertragsbeendigung"
+    "ContractTermination": "Vertragsbeendigung",
+    "Visibility": "Sichtbarkeit"
   },
   "Body": {
     "CalendarSubscription": "Mit diesem Link abonnierst du deine Termine in einer Kalender-App. Wer den Link kennt, kann deine Termine lesen – teile ihn also nicht. Erneuerst du ihn, verlieren alle bisher eingerichteten Abos den Zugriff.",
@@ -526,7 +527,9 @@
     "WithdrawalConsentServicePerformance": "Ich verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.",
     "WithdrawalConsentServiceLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.",
     "WithdrawalConsentDigitalPerformance": "Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen.",
-    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt."
+    "WithdrawalConsentDigitalLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt.",
+    "ShowOnLeaderboard": "Ist der Haken gesetzt, erscheinst du mit Anzeigename, Punktestand und Rang in den Bestenlisten, die alle angemeldeten Nutzer:innen sehen können. Entfernst du ihn, wirst du dort nicht mehr aufgeführt. Deine Punkte werden weiterhin gezählt und deinen eigenen Rang siehst du weiterhin.",
+    "LeaderboardOptOut": "Nicht alle Nutzer:innen werden hier aufgeführt: Wer möchte, kann sich in den Profileinstellungen aus den Bestenlisten ausblenden."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -753,7 +756,8 @@
     "EndAtNextPossibleDate": "Zum nächstmöglichen Zeitpunkt",
     "EndAtDate": "Zum folgenden Datum",
     "EndDate": "Beendigungsdatum",
-    "OrderDetails": "Bestellnummer oder sonstige Angaben zur Bestellung (optional)"
+    "OrderDetails": "Bestellnummer oder sonstige Angaben zur Bestellung (optional)",
+    "ShowOnLeaderboard": "In den Bestenlisten anzeigen"
   },
   "Buttons": {
     "Matching": "Matching",
