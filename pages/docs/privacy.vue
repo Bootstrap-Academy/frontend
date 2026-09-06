@@ -136,8 +136,10 @@
             <td>Registrierung, Anmeldung, Sitzungen, MorphCoins, Premium, Herzen, Rechnungen</td>
             <td>
               Kontodaten, Passwort-Hash, Sitzungen, Zwei-Faktor-Daten, Verknüpfungen mit
-              Drittanbietern, Rechnungsdaten, Guthaben und Transaktionen, PayPal-Bestellreferenzen
-              (Abschnitte 10, 11, 15)
+              Drittanbietern, Rechnungsdaten, Guthaben und Transaktionen, PayPal-Bestellreferenzen,
+              Erklärungen zum Widerrufsrecht, Kündigungs- und Widerrufserklärungen, Datensätze zu
+              Rechnungen, Gutschriften und Schlussabrechnungen, Verwaltungsprotokoll (Abschnitte 10,
+              11, 15)
             </td>
           </tr>
           <tr>
@@ -160,8 +162,8 @@
             <td>Events</td>
             <td>Webinare, Coachings</td>
             <td>
-              Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleiter:innen (Abschnitt
-              14)
+              Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleiter:innen,
+              Kalender-Abo-Kennung (Abschnitt 14)
             </td>
           </tr>
           <tr>
@@ -177,7 +179,7 @@
           <tr>
             <td>Weboberfläche</td>
             <td>Anzeige im Browser</td>
-            <td>Cookies und Local Storage (Abschnitt 9)</td>
+            <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
           </tr>
         </tbody>
       </table>
@@ -209,19 +211,24 @@
           <strong>Art. 6 Abs. 1 lit. b DSGVO</strong> (Vertrag): alles, was zur Bereitstellung der
           Plattform erforderlich ist – Konto, Anmeldung, Kurse, Lernfortschritt, Challenges, Events,
           MorphCoins, Premium, Zahlungen, Anmeldung über Drittanbieter, Kauf- und
-          Buchungsbestätigungen.
+          Buchungsbestätigungen, Bearbeitung von Kündigungen und Widerrufen, Erstattungen nach einer
+          Kontolöschung, Datenexport.
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. c DSGVO</strong> (rechtliche Verpflichtung): Aufbewahrung von
-          Rechnungen und Gutschriften nach Handels- und Steuerrecht, Prüfung von
-          Umsatzsteuer-Identifikationsnummern.
+          Rechnungen, Gutschriften und Schlussabrechnungen nach Handels- und Steuerrecht, Prüfung
+          von Umsatzsteuer-Identifikationsnummern, Nachweis und Bestätigung Ihrer Erklärungen zum
+          Widerrufsrecht sowie von Kündigungen und Widerrufen (§ 312f Abs. 3, § 312k Abs. 4, § 356a
+          BGB), Erfüllung Ihrer Rechte auf Auskunft und Datenübertragbarkeit (Art. 15, 20 DSGVO).
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. f DSGVO</strong> (berechtigte Interessen): Server-Logs und
           Fehlerberichte (sicherer und stabiler Betrieb, Abwehr von Angriffen, Fehlersuche),
           Datensicherungen (Schutz vor Datenverlust), Auslieferung der Weboberfläche über ein
           Content-Delivery-Netz (Verfügbarkeit, Schutz vor Überlastungsangriffen), Moderation und
-          Missbrauchsschutz, Betrieb des Discord-Bots (Abschnitt 17.3), Bestenliste (motivierende
+          Missbrauchsschutz, Begrenzung der Anfragerate der öffentlichen Kündigungs- und
+          Widerrufsformulare (Abschnitt 15.6), Verwaltungsprotokoll über administrative Zugriffe
+          (Abschnitt 10.5), Betrieb des Discord-Bots (Abschnitt 17.3), Bestenliste (motivierende
           Lernumgebung), Beantwortung allgemeiner Anfragen (Abschnitt 17.2). Gegen diese
           Verarbeitungen können Sie Widerspruch einlegen (Abschnitt 23).
         </li>
@@ -289,11 +296,16 @@
             <td>Keine (selbst betriebenes System bei Hetzner)</td>
           </tr>
           <tr>
-            <td>Cookies und Local Storage (Abschnitt 9)</td>
-            <td>Anmeldung, Sitzung, von Ihnen gewählte Einstellungen</td>
-            <td>Sitzungstoken, Nutzerkennung, Nickname, Anzeigename, Einstellungen</td>
+            <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
+            <td>
+              Anmeldung, Sitzung, Anmeldung über Drittanbieter, von Ihnen gewählte Einstellungen
+            </td>
+            <td>
+              Sitzungstoken, Nutzerkennung, Nickname, Anzeigename, Einstellungen, Einmalwerte einer
+              laufenden Anmeldung über einen Drittanbieter
+            </td>
             <td>§ 25 Abs. 2 Nr. 2 TDDDG; Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>Sitzungsende; Local Storage bis zur Löschung durch Sie</td>
+            <td>Sitzungsende; Local Storage und Session Storage siehe Abschnitt 9</td>
             <td>Keine (Cookies werden an Cloudflare mitgesendet, siehe oben)</td>
           </tr>
           <tr>
@@ -301,18 +313,36 @@
             <td>Bereitstellung der Plattform, Sicherheit des Kontos</td>
             <td>
               Nickname, Anzeigename, E-Mail-Adresse, Passwort-Hash, Verifizierungsstatus, Rolle,
-              Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, AGB-Zustimmung
+              Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, Zustimmung zu den AGB
+              oder Aufschub der Entscheidung, Einstellung zur Bestenliste
             </td>
             <td>Art. 6 Abs. 1 lit. b DSGVO</td>
             <td>Bis zur Kontolöschung; Sitzungen bis zum Ablauf</td>
             <td>Keine (Hetzner als Hosting-Anbieter)</td>
           </tr>
           <tr>
+            <td>Verwaltungsprotokoll (Abschnitt 10.5)</td>
+            <td>Nachvollziehbarkeit administrativer Zugriffe auf Konten</td>
+            <td>
+              Kennung der handelnden Administrator:in, Zeitpunkt, Methode und Pfad der Anfrage,
+              Kennung des betroffenen Kontos, Antwortstatus, Anfragekennung
+            </td>
+            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+            <td>Zwölf Monate</td>
+            <td>Keine</td>
+          </tr>
+          <tr>
             <td>Anmeldung über Drittanbieter (Abschnitt 11)</td>
             <td>Alternative Anmeldemethode</td>
-            <td>Anbieter, Nutzerkennung und Nutzername beim Anbieter, Zeitpunkt der Verknüpfung</td>
+            <td>
+              Anbieter, Nutzerkennung und Nutzername beim Anbieter, Zeitpunkt der Verknüpfung;
+              während einer Anmeldung Einmalkennung, Anbieter, Rückkehradresse, Prüfwert
+            </td>
             <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>Bis zur Aufhebung der Verknüpfung oder Kontolöschung</td>
+            <td>
+              Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder Kontolöschung; Daten
+              einer laufenden Anmeldung höchstens zehn Minuten
+            </td>
             <td>
               GitHub, Inc., USA; Discord Netherlands B.V., Niederlande / Discord Inc., USA; Google
               Ireland Limited, Irland / Google LLC, USA (jeweils EU-US Data Privacy Framework)
@@ -368,20 +398,38 @@
             <td>MorphCoins, Premium, Herzen (Abschnitt 15)</td>
             <td>Abwicklung von Käufen und Guthaben</td>
             <td>
-              Guthaben, Transaktionen, Premium-Status, Herzen, PayPal-Bestellkennung, Einwilligung
-              zur sofortigen Vertragsausführung
+              Guthaben, Transaktionen, Premium-Status, Herzen, PayPal-Bestellkennung, Erklärungen
+              zum Widerrufsrecht (Abschnitt 15.5)
             </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO</td>
+            <td>Art. 6 Abs. 1 lit. b DSGVO; Erklärungen zum Widerrufsrecht: auch lit. c</td>
             <td>Bis zur Kontolöschung</td>
             <td>PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg (nur Betrag und Währung)</td>
           </tr>
           <tr>
-            <td>Rechnungen, Gutschriften, USt-IdNr.-Prüfung (Abschnitt 15.3, 15.4)</td>
-            <td>Rechnungsstellung, steuerliche Pflichten</td>
-            <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Rechnungsinhalt</td>
+            <td>
+              Rechnungen, Gutschriften, Schlussabrechnung, USt-IdNr.-Prüfung (Abschnitt 15.3, 15.4)
+            </td>
+            <td>Rechnungsstellung, steuerliche Pflichten, Erstattung nach Kontolöschung</td>
+            <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Inhalt des Dokuments</td>
             <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO</td>
-            <td>Acht Jahre ab Ende des Ausstellungsjahres</td>
+            <td>
+              Acht Jahre ab Ende des Ausstellungsjahres; nach einer Kontolöschung ohne Zuordnung zum
+              Konto und, außer bei der Schlussabrechnung, ohne Kundenangaben im Datensatz
+            </td>
             <td>Europäische Kommission (VIES), nur die USt-IdNr.</td>
+          </tr>
+          <tr>
+            <td>Kündigung und Widerruf über die Plattform (Abschnitt 15.6)</td>
+            <td>Entgegennahme und Bestätigung von Kündigungen und Widerrufen</td>
+            <td>
+              Name, E-Mail-Adresse, Vertrag, Art der Kündigung, Angaben, Eingangszeitpunkt,
+              Vertragsende; Zähler je IP-Adresse und E-Mail-Adresse (nur als Hashwert)
+            </td>
+            <td>Art. 6 Abs. 1 lit. c und lit. b DSGVO; Zähler: lit. f</td>
+            <td>
+              Erklärung als Nachweis, auch nach Kontolöschung (Abschnitt 15.6); Zähler eine Stunde
+            </td>
+            <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
           </tr>
           <tr>
             <td>Kursvideos (Abschnitt 16)</td>
@@ -393,7 +441,10 @@
           </tr>
           <tr>
             <td>E-Mails von uns (Abschnitt 17.1)</td>
-            <td>Verifizierung, Passwort-Zurücksetzung, Kauf- und Buchungsbestätigungen</td>
+            <td>
+              Verifizierung, Passwort-Zurücksetzung, Kauf- und Buchungsbestätigungen, Bestätigungen
+              von Kündigung, Widerruf und Stornierung
+            </td>
             <td>E-Mail-Adresse, Inhalt der Nachricht, Rechnung</td>
             <td>Art. 6 Abs. 1 lit. b DSGVO; Rechnung: lit. c</td>
             <td>Versendete E-Mails speichern wir nicht; Rechnungen acht Jahre</td>
@@ -417,6 +468,14 @@
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
             <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
             <td>Keine (eigener Server bei Hetzner)</td>
+          </tr>
+          <tr>
+            <td>Datenexport (Abschnitt 23)</td>
+            <td>Auskunft und Datenübertragbarkeit</td>
+            <td>Alle in der Exportdatei enthaltenen Daten (Abschnitt 23)</td>
+            <td>Art. 6 Abs. 1 lit. c DSGVO (Art. 15, 20 DSGVO)</td>
+            <td>Wird beim Abruf erzeugt und nicht gespeichert; Abrufsperre zehn Minuten</td>
+            <td>Keine</td>
           </tr>
           <tr>
             <td>Datensicherungen (Abschnitt 7.3)</td>
@@ -456,10 +515,10 @@
         beendet die TLS-Verschlüsselung für diese Hostnamen und verarbeitet dabei zu jeder Anfrage
         an die Weboberfläche IP-Adresse, Zeitpunkt, aufgerufene Adresse (URL), Browserkennung und
         die für bootstrap.academy gesetzten Cookies (Abschnitt 9). In der URL können kurzlebige
-        Einmalcodes enthalten sein, etwa der Rückgabecode einer Anmeldung über GitHub, Discord oder
-        Google oder das Registrierungstoken nach einer solchen Anmeldung. Außerdem sendet Ihr
-        Browser Berichte über Netzwerkfehler (Network Error Logging) an Cloudflare, wenn eine
-        Verbindung zur Weboberfläche fehlschlägt.
+        Einmalwerte enthalten sein, etwa der Rückgabecode und die Einmalkennung (state) einer
+        Anmeldung über GitHub, Discord oder Google (Abschnitt 11). Außerdem sendet Ihr Browser
+        Berichte über Netzwerkfehler (Network Error Logging) an Cloudflare, wenn eine Verbindung zur
+        Weboberfläche fehlschlägt.
       </p>
       <p>
         Anfragen an unsere Programmierschnittstelle api.bootstrap.academy – dazu gehören Anmeldung,
@@ -479,18 +538,18 @@
       </p>
       <h3>7.3 Datensicherungen</h3>
       <p>
-        Wir sichern stündlich die Datenbanken aller Dienste und das Archiv der Rechnungen und
-        Gutschriften. Die Sicherungen sind verschlüsselt (restic). Ziele sind (1) eine Storage Box
-        der Hetzner Online GmbH in Deutschland und (2) ein Server in Deutschland bei einem von uns
-        beauftragten Auftragsverarbeiter (Art. 28 DSGVO) mit Sitz in Deutschland. Aufbewahrt werden
-        die stündlichen Sicherungen der letzten 48 Stunden sowie 14 tägliche, 8 wöchentliche und 12
-        monatliche Sicherungen; ältere Sicherungen werden auf beiden Zielen automatisch gelöscht,
-        eine Sicherung wird also längstens rund ein Jahr aufbewahrt. Daten, die Sie oder wir
-        löschen, verschwinden damit spätestens nach Ablauf dieser Fristen auch aus den Sicherungen.
-        Server-Logs sind nicht Teil der Sicherungen. Sicherungen dienen ausschließlich der
-        Wiederherstellung nach einem Ausfall; wir verwenden sie nicht, um gelöschte Daten einzelner
-        Personen wiederherzustellen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Schutz vor
-        Datenverlust).
+        Wir sichern stündlich die Datenbanken aller Dienste und das Archiv der Rechnungen,
+        Gutschriften und Schlussabrechnungen. Die Sicherungen sind verschlüsselt (restic). Ziele
+        sind (1) eine Storage Box der Hetzner Online GmbH in Deutschland und (2) ein Server in
+        Deutschland bei einem von uns beauftragten Auftragsverarbeiter (Art. 28 DSGVO) mit Sitz in
+        Deutschland. Aufbewahrt werden die stündlichen Sicherungen der letzten 48 Stunden sowie 14
+        tägliche, 8 wöchentliche und 12 monatliche Sicherungen; ältere Sicherungen werden auf beiden
+        Zielen automatisch gelöscht, eine Sicherung wird also längstens rund ein Jahr aufbewahrt.
+        Daten, die Sie oder wir löschen, verschwinden damit spätestens nach Ablauf dieser Fristen
+        auch aus den Sicherungen. Server-Logs sind nicht Teil der Sicherungen. Sicherungen dienen
+        ausschließlich der Wiederherstellung nach einem Ausfall; wir verwenden sie nicht, um
+        gelöschte Daten einzelner Personen wiederherzustellen. Rechtsgrundlage ist Art. 6 Abs. 1
+        lit. f DSGVO (Schutz vor Datenverlust).
       </p>
       <h3>7.4 Weitere Empfänger</h3>
       <p>
@@ -510,8 +569,14 @@
         Referrer. Die Systemprotokolle der Dienste enthalten technische Meldungen, die im Einzelfall
         Nutzerkennungen oder aufgerufene Adressen enthalten können; schlägt die Auswertung einer
         Programmieraufgabe wegen eines Fehlers im Auswertungsskript der Aufgabe fehl, kann die
-        Fehlermeldung auch Ausgaben dieses Skripts enthalten. Zweck ist der sichere und stabile
-        Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten, Fehlersuche.
+        Fehlermeldung auch Ausgaben dieses Skripts enthalten. Namen, E-Mail-Adressen, Anschriften,
+        Passwörter, Token und die Inhalte Ihrer Eingaben schreiben die Dienste nicht in die
+        Systemprotokolle; die IP-Adresse wird dort vermerkt, wenn zu einer Kündigungs- oder
+        Widerrufserklärung (Abschnitt 15.6) die Bestätigungs-E-Mail nicht zugestellt werden kann. In
+        der Testumgebung (Abschnitt 4) laufen die Dienste mit ausführlicherer Protokollierung; dort
+        können die Systemprotokolle auch vollständige Anfrageadressen und die E-Mail-Adressen von
+        Empfänger:innen unserer E-Mails enthalten. Zweck ist der sichere und stabile Betrieb:
+        Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten, Fehlersuche.
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle werden nach 30 Tagen gelöscht
         und sind nicht Teil der Datensicherungen. Aus den Webserver-Protokollen erzeugen wir auf
         einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl der Anfragen,
@@ -538,13 +603,14 @@
     <section id="cookies">
       <h2>9 Cookies und lokale Speichertechnologien</h2>
       <p>
-        Wir verwenden ausschließlich eigene Cookies und Local-Storage-Einträge (First Party) und
-        keine Cookies Dritter. Alle Einträge sind unbedingt erforderlich, um die von Ihnen
-        ausdrücklich gewünschten Funktionen bereitzustellen: Anmeldung, Sitzungsverwaltung und von
-        Ihnen gewählte Einstellungen. Für sie ist nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung
-        erforderlich; deshalb zeigen wir keinen Cookie-Hinweis an. Die Verarbeitung der darin
-        enthaltenen Daten stützt sich auf Art. 6 Abs. 1 lit. b DSGVO. Analyse-, Marketing- oder
-        Tracking-Cookies setzen wir nicht.
+        Wir verwenden ausschließlich eigene Cookies, Local-Storage- und Session-Storage-Einträge
+        (First Party) und keine Cookies Dritter. Alle Einträge sind unbedingt erforderlich, um die
+        von Ihnen ausdrücklich gewünschten Funktionen bereitzustellen: Anmeldung,
+        Sitzungsverwaltung, die Anmeldung über GitHub, Discord oder Google und von Ihnen gewählte
+        Einstellungen. Für sie ist nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung erforderlich;
+        deshalb zeigen wir keinen Cookie-Hinweis an. Die Verarbeitung der darin enthaltenen Daten
+        stützt sich auf Art. 6 Abs. 1 lit. b DSGVO. Analyse-, Marketing- oder Tracking-Cookies
+        setzen wir nicht.
       </p>
       <p>
         Welche Dienste Dritter beim Laden von Videos (Abschnitt 16) und beim Bezahlen (Abschnitt 15)
@@ -587,7 +653,10 @@
           <tr>
             <td><code>locale</code></td>
             <td>Cookie</td>
-            <td>Sprache der Oberfläche (Voreinstellung oder Ihre Auswahl)</td>
+            <td>
+              Ihre Sprachauswahl; wird nur gespeichert, wenn Sie die Sprache umstellen (die
+              Voreinstellung Deutsch wird nicht gespeichert)
+            </td>
             <td>Sitzungsende</td>
           </tr>
           <tr>
@@ -600,12 +669,6 @@
             <td><code>lastViewCourse</code></td>
             <td>Cookie</td>
             <td>Zuletzt geöffneter Kurs</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>showFreeQuizzesOnly</code></td>
-            <td>Cookie</td>
-            <td>Von Ihnen gesetzter Quiz-Filter</td>
             <td>Sitzungsende</td>
           </tr>
           <tr>
@@ -630,28 +693,53 @@
             <td><code>selectedButton</code></td>
             <td>Local Storage</td>
             <td>Gewählter Reiter im Kursplayer</td>
-            <td>Bis Sie die Website-Daten im Browser löschen</td>
+            <td>Bis Sie den Kursplayer verlassen</td>
           </tr>
           <tr>
             <td><code>selectedButtonLeaderBoard</code></td>
             <td>Local Storage</td>
             <td>Gewählter Reiter der Bestenliste</td>
-            <td>Bis Sie die Website-Daten im Browser löschen</td>
+            <td>Bis Sie die Bestenliste verlassen</td>
+          </tr>
+          <tr>
+            <td><code>oauth_flow</code></td>
+            <td>Session Storage</td>
+            <td>
+              Einmalkennung (state), Anbieter und Zweck einer laufenden Anmeldung oder Verknüpfung
+              über GitHub, Discord oder Google, damit die Rückkehr vom Anbieter derselben Anfrage
+              zugeordnet werden kann (Abschnitt 11)
+            </td>
+            <td>Bis zur Rückkehr vom Anbieter, spätestens bis zum Schließen des Browser-Tabs</td>
+          </tr>
+          <tr>
+            <td><code>oauth_register_token</code></td>
+            <td>Session Storage</td>
+            <td>
+              Registrierungstoken nach einer ersten Anmeldung über GitHub, Discord oder Google, bis
+              die Registrierung abgeschlossen ist (Abschnitt 11)
+            </td>
+            <td>
+              Bis zum Abschluss der Registrierung, spätestens bis zum Schließen des Browser-Tabs
+            </td>
           </tr>
         </tbody>
       </table>
       <p>
-        Alle Cookies sind Sitzungscookies: Sie werden gelöscht, wenn Sie den Browser schließen. Der
-        Zugriffstoken ist serverseitig fünf Minuten gültig und wird mit dem Erneuerungstoken
+        Alle Cookies sind Sitzungscookies: Sie werden gelöscht, wenn Sie den Browser schließen. Sie
+        werden mit den Attributen <code>Secure</code> und <code>SameSite=Lax</code> gesetzt, also
+        nur über verschlüsselte Verbindungen und nicht bei Aufrufen aus fremden Websites übertragen.
+        Der Zugriffstoken ist serverseitig fünf Minuten gültig und wird mit dem Erneuerungstoken
         automatisch verlängert; der Erneuerungstoken ist serverseitig 30 Tage gültig und wird beim
-        Abmelden ungültig. Die Local-Storage-Einträge bleiben gespeichert, bis Sie die Website-Daten
-        in Ihrem Browser löschen; sie werden nicht an unsere Server übertragen. Cookies für
-        bootstrap.academy sendet Ihr Browser bei jeder Anfrage an die Weboberfläche mit, also auch
-        an Cloudflare (Abschnitt 7.2).
+        Abmelden ungültig. Die Local-Storage-Einträge werden gelöscht, sobald Sie die jeweilige
+        Seite verlassen, und nicht an unsere Server übertragen. Die Session-Storage-Einträge gelten
+        nur für den jeweiligen Browser-Tab; die Weboberfläche sendet ihre Werte einmal an unsere
+        Programmierschnittstelle, um die Anmeldung oder Registrierung abzuschließen, und löscht sie
+        danach. Cookies für bootstrap.academy sendet Ihr Browser bei jeder Anfrage an die
+        Weboberfläche mit, also auch an Cloudflare (Abschnitt 7.2).
       </p>
       <p>
-        Sie können Cookies und Local Storage jederzeit über Ihren Browser löschen oder blockieren.
-        Ohne die Anmelde-Cookies können Sie sich nicht anmelden.
+        Sie können Cookies, Local Storage und Session Storage jederzeit über Ihren Browser löschen
+        oder blockieren. Ohne die Anmelde-Cookies können Sie sich nicht anmelden.
       </p>
       <p>
         Seit September 2026 nicht mehr verwendet werden das Cookie
@@ -693,9 +781,14 @@
       <p>
         Zusätzlich bestätigen Sie bei der Registrierung, dass Sie mindestens 16 Jahre alt sind
         (Abschnitt 22), und stimmen den Allgemeinen Geschäftsbedingungen zu. Wir speichern die
-        Altersbestätigung sowie die Version der AGB und den Zeitpunkt Ihrer Zustimmung. Zur
+        Altersbestätigung sowie die Version der AGB und den Zeitpunkt Ihrer Zustimmung; die Version
+        gibt dabei unser Server vor. Legen wir Ihnen nach einer Änderung der AGB bei der Anmeldung
+        eine neue Fassung vor und verschieben Sie die Entscheidung („Später entscheiden“), speichern
+        wir den Zeitpunkt dieses Aufschubs; die bisher akzeptierte Fassung bleibt vermerkt. Nehmen
+        Sie die neue Fassung später an, wird der Vermerk über den Aufschub gelöscht. Zur
         Verifizierung der E-Mail-Adresse senden wir Ihnen einen Bestätigungscode; der Code wird
-        kurzzeitig zwischengespeichert und nach der Bestätigung gelöscht.
+        höchstens vier Stunden zwischengespeichert und nach der Bestätigung gelöscht. Dasselbe gilt
+        für den Code zum Zurücksetzen des Passworts.
       </p>
       <h3>10.2 Freiwillige Profilangaben</h3>
       <p>
@@ -712,23 +805,42 @@
         Zwei-Faktor-Authentifizierung das TOTP-Geheimnis und Wiederherstellungscodes, Verknüpfungen
         mit GitHub, Discord oder Google (Abschnitt 11), Ihr MorphCoins-Guthaben mit allen
         Transaktionen, Ihre Herzen, Ihren Premium-Status mit dem Kennzeichen für die automatische
-        Verlängerung, PayPal-Bestellreferenzen und – erst wenn Sie eine kostenpflichtige Leistung
-        erwerben – Ihre Rechnungsdaten sowie Ihre Einwilligung zur sofortigen Ausführung des
-        Vertrags (Abschnitt 15).
+        Verlängerung, PayPal-Bestellreferenzen, Ihre Einstellung, ob Sie in den Bestenlisten
+        angezeigt werden (Abschnitt 12.2), und – erst wenn Sie eine kostenpflichtige Leistung
+        erwerben – Ihre Rechnungsdaten, Ihre Kundennummer sowie Ihre Erklärungen zum Widerrufsrecht
+        (Abschnitt 15).
       </p>
       <h3>10.4 Sitzungen und Zwei-Faktor-Authentifizierung</h3>
       <p>
         Bei der Anmeldung erzeugen wir eine Sitzung mit einem Zugriffstoken (fünf Minuten gültig)
-        und einem Erneuerungstoken (30 Tage gültig). Beim Abmelden wird die Sitzung ungültig;
-        abgelaufene Sitzungen löschen wir automatisch. Optional können Sie eine
-        Zwei-Faktor-Authentifizierung (TOTP) einrichten; dafür speichern wir das TOTP-Geheimnis und
-        Wiederherstellungscodes.
+        und einem Erneuerungstoken (30 Tage gültig). Zu jeder Sitzung speichern wir ihre Kennung,
+        eine aus der Browserkennung abgeleitete Gerätebezeichnung, den Zeitpunkt der Erstellung und
+        der letzten Erneuerung sowie das Kennzeichen, ob die Sitzung mit einem zweiten Faktor
+        bestätigt wurde. Beim Abmelden wird die Sitzung ungültig; abgelaufene Sitzungen löschen wir
+        automatisch. Optional können Sie eine Zwei-Faktor-Authentifizierung (TOTP) einrichten; dafür
+        speichern wir das TOTP-Geheimnis und Wiederherstellungscodes.
       </p>
-      <h3>10.5 Zugriff durch Administrator:innen</h3>
+      <h3>10.5 Zugriff durch Administrator:innen und Verwaltungsprotokoll</h3>
       <p>
-        Administrator:innen können über das Verwaltungs-Dashboard auf Konto- und Lerndaten
-        zugreifen, soweit dies für Support, Abrechnung und Moderation nötig ist. Den Quellcode Ihrer
-        Einreichungen können sie über die Plattform nicht einsehen (Abschnitt 13.1).
+        Administrator:innen können über das Verwaltungs-Dashboard und die Programmierschnittstelle
+        auf Konto- und Lerndaten zugreifen, soweit dies für Support, Abrechnung und Moderation nötig
+        ist; auf Ihre Anfrage können sie auch den Datenexport Ihres Kontos erstellen (Abschnitt 23)
+        oder Ihr Konto löschen (Abschnitt 10.7). Den Quellcode Ihrer Einreichungen können sie über
+        die Plattform nicht einsehen (Abschnitt 13.1). Administrative Zugriffe setzen eine Anmeldung
+        mit Zwei-Faktor-Authentifizierung voraus.
+      </p>
+      <p>
+        Jede verändernde Anfrage einer Administrator:in (Anlegen, Ändern, Löschen) sowie der Abruf
+        eines Datenexports und der Abruf der Liste der Rechnungsdokumente (Abschnitt 15.4) werden in
+        einem Verwaltungsprotokoll festgehalten – auch dann, wenn die Anfrage abgelehnt wurde. Ein
+        Eintrag enthält Zeitpunkt, Kennung der handelnden Administrator:in, HTTP-Methode und Pfad
+        der Anfrage ohne Parameter, Kennung des betroffenen Kontos, Antwortstatus und
+        Anfragekennung; Inhalte der Anfrage werden nicht gespeichert. Zweck ist es, Zugriffe von
+        Administrator:innen auf Ihre Daten nachvollziehen zu können; Rechtsgrundlage ist Art. 6 Abs.
+        1 lit. f DSGVO (Sicherheit der Verarbeitung, Art. 32 DSGVO). Die Einträge werden nach zwölf
+        Monaten automatisch gelöscht. Sie bleiben auch bestehen, wenn das handelnde oder das
+        betroffene Konto gelöscht wird; sie enthalten dann eine Kennung, die keinem Konto mehr
+        zugeordnet werden kann. Das Verwaltungsprotokoll können nur Administrator:innen einsehen.
       </p>
       <h3>10.6 Rechtsgrundlage und Speicherdauer</h3>
       <p>
@@ -739,16 +851,57 @@
       <p>
         Sie können Ihr Konto jederzeit selbst in den Kontoeinstellungen löschen. Dabei werden Ihr
         Konto, Profil, Passwort, Sitzungen, Zwei-Faktor-Daten, Verknüpfungen mit Drittanbietern,
-        Rechnungsdaten, MorphCoins-Guthaben, Transaktionen, Herzen, Premium-Status und
-        PayPal-Bestellreferenzen sofort aus unserer Datenbank gelöscht. Die Löschung wird an die
-        Dienste Skills, Challenges und Events weitergegeben, die Ihre Lern-, Aufgaben- und
-        Eventdaten löschen. Rechnungen und Gutschriften bewahren wir wegen gesetzlicher
-        Aufbewahrungspflichten weiter auf (Abschnitt 15.4); sie enthalten weiterhin die
-        Rechnungsangaben, sind aber keinem Konto mehr zugeordnet. In Datensicherungen verbleiben die
-        Daten bis zum Ablauf der in Abschnitt 7.3 genannten Fristen. Nicht verbrauchte gekaufte
-        MorphCoins erstatten wir auf Anfrage, wenn Sie uns vor der Löschung kontaktieren (Abschnitt
-        15.1). Verlangen Sie die Löschung stattdessen per E-Mail, setzen wir sie innerhalb von 30
-        Tagen um.
+        Rechnungsdaten, Kundennummer, MorphCoins-Guthaben, Transaktionen, Herzen, Premium-Status,
+        PayPal-Bestellreferenzen und Erklärungen zum Widerrufsrecht (Abschnitt 15.5) sofort aus der
+        Datenbank des Kerndienstes gelöscht. Unmittelbar danach weist der Kerndienst die Dienste
+        Skills, Challenges und Events an, Ihre Lern-, Aufgaben- und Eventdaten einschließlich der
+        Kalender-Abo-Kennung zu löschen. Ist einer dieser Dienste in diesem Moment nicht erreichbar,
+        holt er die Löschung in einer nächtlichen Prüfung nach, bei der jeder Dienst die
+        Nutzerkennungen in seiner Datenbank mit den bestehenden Konten abgleicht. Folgende Ausnahmen
+        gelten:
+      </p>
+      <ul>
+        <li>
+          Rechnungen und Gutschriften bewahren wir wegen gesetzlicher Aufbewahrungspflichten weiter
+          auf (Abschnitt 15.4). In unserem Datensatz ersetzen wir dabei Ihre Kundenangaben durch den
+          Vermerk „Gelöschtes Konto“ und entfernen die Zuordnung zum Konto; die PDF-Dateien behalten
+          die Angaben, mit denen sie ausgestellt wurden.
+        </li>
+        <li>
+          Haben Sie MorphCoins gekauft und ist davon bei der Löschung ein Anteil nicht verbraucht,
+          erstellen wir eine Schlussabrechnung, die Ihren Namen und Ihre E-Mail-Adresse enthält
+          (Abschnitt 15.4).
+        </li>
+        <li>
+          Kündigungs- und Widerrufserklärungen (Abschnitt 15.6) bleiben als Nachweis bestehen; die
+          Zuordnung zum Konto wird entfernt.
+        </li>
+        <li>
+          Einträge im Verwaltungsprotokoll (Abschnitt 10.5) bleiben bis zu zwölf Monate bestehen.
+        </li>
+        <li>
+          Haben Sie Aufgaben erstellt, die Teilaufgaben anderer Nutzer:innen enthalten, bleibt die
+          Aufgabe für diese Nutzer:innen erhalten; ihr Datensatz enthält dann weiterhin Ihre frühere
+          Nutzerkennung, die nach der Löschung keinem Konto und keiner Person mehr zugeordnet werden
+          kann. Sperren, die Sie als Administrator:in verhängt haben, bleiben in Kraft; Ihre Kennung
+          wird darin entfernt.
+        </li>
+        <li>
+          Haben Sie als Kursleiter:in Webinare oder Coachings angeboten, die noch nicht
+          stattgefunden haben, werden sie abgesagt und die Teilnehmer:innen erhalten den Preis
+          zurück; Termine, die Sie bei anderen Kursleiter:innen gebucht haben, werden freigegeben.
+        </li>
+        <li>
+          In Datensicherungen verbleiben die Daten bis zum Ablauf der in Abschnitt 7.3 genannten
+          Fristen.
+        </li>
+      </ul>
+      <p>
+        Nicht verbrauchte gekaufte MorphCoins erstatten wir auf Anfrage; stellen Sie die Anfrage
+        möglichst, bevor Sie Ihr Konto löschen (Abschnitt 15.1). Nach der Löschung erstatten wir auf
+        Grundlage der Schlussabrechnung (Abschnitt 15.4). Verlangen Sie die Löschung stattdessen per
+        E-Mail, setzen wir sie innerhalb von 30 Tagen um; eine Administrator:in löscht das Konto
+        dann auf demselben Weg, und der Vorgang wird im Verwaltungsprotokoll festgehalten.
       </p>
     </section>
 
@@ -756,11 +909,15 @@
       <h2>11 Anmeldung über GitHub, Discord oder Google</h2>
       <p>
         Statt eines Passworts können Sie sich mit einem bestehenden Konto bei GitHub, Discord oder
-        Google anmelden oder registrieren. Dabei werden Sie zur Anmeldeseite des Anbieters
-        weitergeleitet; der Anbieter erfährt dadurch, dass Sie sich bei Bootstrap Academy anmelden,
-        und verarbeitet Ihre Verbindungsdaten in eigener Verantwortung. Nach der Anmeldung leitet
-        der Anbieter Sie mit einem Einmalcode zu uns zurück. Mit diesem Code rufen wir einmalig die
-        folgenden Daten ab:
+        Google anmelden oder registrieren. Wenn Sie einen Anbieter auswählen, erzeugt unser Server
+        eine zufällige Einmalkennung (state) und merkt sich dazu für höchstens zehn Minuten den
+        Anbieter, die Rückkehradresse, einen zufälligen Prüfwert (PKCE) und – wenn Sie bereits
+        angemeldet sind und eine Verknüpfung hinzufügen – Ihre Nutzerkennung. Dann werden Sie zur
+        Anmeldeseite des Anbieters weitergeleitet; der Anbieter erfährt dadurch, dass Sie sich bei
+        Bootstrap Academy anmelden, und verarbeitet Ihre Verbindungsdaten in eigener Verantwortung.
+        Nach der Anmeldung leitet der Anbieter Sie mit einem Einmalcode und der Einmalkennung zu uns
+        zurück; die Kennung kann nur einmal eingelöst werden und wird dabei gelöscht. Mit dem Code
+        rufen wir einmalig die folgenden Daten ab:
       </p>
       <table>
         <thead>
@@ -798,10 +955,13 @@
         Wir speichern zur Verknüpfung: den Anbieter, Ihre Nutzerkennung und Ihren Nutzernamen beim
         Anbieter sowie den Zeitpunkt der Verknüpfung. Wir speichern keine Zugriffs- oder
         Erneuerungstoken des Anbieters, keine E-Mail-Adresse, keine Kontakte und keine Repository-
-        oder Organisationsdaten, und wir fragen solche Daten auch nicht an. Die Verknüpfung nutzen
-        wir ausschließlich zur Anmeldung. Bei einer Erstregistrierung über einen Anbieter halten wir
-        Anbieter, Nutzerkennung und Nutzernamen bis zu zehn Minuten in einem Zwischenspeicher vor,
-        bis Sie die Registrierung abgeschlossen haben.
+        oder Organisationsdaten, und wir fragen solche Daten auch nicht an; das Zugriffstoken, das
+        wir vom Anbieter für den Abruf erhalten, verwenden wir nur für diesen einen Abruf und
+        schreiben es nicht in Protokolle. Die Verknüpfung nutzen wir ausschließlich zur Anmeldung.
+        Bei einer Erstregistrierung über einen Anbieter halten wir Anbieter, Nutzerkennung und
+        Nutzernamen bis zu zehn Minuten in einem Zwischenspeicher vor, bis Sie die Registrierung
+        abgeschlossen haben; das zugehörige Registrierungstoken bewahrt Ihr Browser so lange im
+        Session Storage auf (Abschnitt 9), und es kann nur einmal verwendet werden.
       </p>
       <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (die von Ihnen gewählte Anmeldemethode).
@@ -809,13 +969,14 @@
         (Abschnitt 19). Speicherdauer: bis Sie die Verknüpfung aufheben oder Ihr Konto löschen.
       </p>
       <p>
-        Aufheben der Verknüpfung: Eine Schaltfläche dafür gibt es in den Kontoeinstellungen derzeit
-        noch nicht. Bis dahin heben wir die Verknüpfung auf Anfrage an
-        <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
-        auf; Voraussetzung ist, dass Ihr Konto danach noch eine Anmeldemethode hat (Passwort oder
-        eine andere Verknüpfung). Die dem Anbieter erteilte Berechtigung heben Sie zusätzlich in den
-        Kontoeinstellungen von GitHub, Discord bzw. Google auf; wir können sie dort nicht für Sie
-        widerrufen.
+        Verwalten der Verknüpfungen: In den Kontoeinstellungen sehen Sie unter „Verknüpfte Logins“,
+        welche Anbieterkonten Ihr Konto anmelden können, und können eine Verknüpfung dort entfernen
+        oder eine weitere hinzufügen. Die letzte verbleibende Anmeldemethode lässt sich nicht
+        entfernen; legen Sie vorher ein Passwort fest oder verknüpfen Sie ein weiteres Konto. Das
+        Entfernen löscht die Verknüpfung bei uns. Die dem Anbieter erteilte Berechtigung heben Sie
+        zusätzlich in den Kontoeinstellungen von GitHub, Discord bzw. Google auf; wir erhalten kein
+        Token, mit dem wir sie für Sie widerrufen könnten, und verlinken dort die jeweilige Seite
+        des Anbieters.
       </p>
     </section>
 
@@ -848,12 +1009,22 @@
         nicht abrufbar. Ihre XP je Skill sehen nur Sie selbst.
       </p>
       <p>
+        Ob Sie in den Bestenlisten erscheinen, entscheiden Sie selbst: In den Profileinstellungen
+        („Profil bearbeiten“, Abschnitt „Sichtbarkeit“) können Sie den Haken „In den Bestenlisten
+        anzeigen“ entfernen. Sie werden dann in keiner Bestenliste mehr aufgeführt, und andere
+        Nutzer:innen können Ihren Rang nicht mehr abrufen; Ihre XP werden weiterhin gezählt, und
+        Ihren eigenen Rang sehen Sie weiterhin. Administrator:innen können Ihren Rang für
+        Supportzwecke weiterhin abrufen. Neue Konten werden angezeigt, solange der Haken gesetzt
+        ist. Die Änderung wirkt spätestens nach fünf Minuten, weil der Dienst Challenges die Angaben
+        zu Nutzer:innen so lange zwischenspeichert.
+      </p>
+      <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse ist eine
-        motivierende, gemeinschaftliche Lernumgebung. Eine Abwahl in den Kontoeinstellungen gibt es
-        derzeit noch nicht. Sie können der Anzeige jederzeit widersprechen (Abschnitt 23); wir
-        nehmen Sie dann auf Anfrage an
+        motivierende, gemeinschaftliche Lernumgebung. Das Entfernen des Hakens ist Ihr Widerspruch
+        gegen diese Verarbeitung (Abschnitt 23); Gründe müssen Sie dafür nicht angeben. Sie können
+        den Widerspruch auch per E-Mail an
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
-        aus der Bestenliste heraus.
+        erklären; wir setzen die Einstellung dann für Sie.
       </p>
       <h3>12.3 Jobs-Bereich</h3>
       <p>
@@ -875,6 +1046,8 @@
         Auswertung (Verdikt, Begründung, Status von Kompilierung und Ausführung, Fehlerausgaben von
         Compiler und Laufzeit, Laufzeit und Speicherverbrauch). Die Standardausgabe Ihres Programms
         wird nicht gespeichert. Probeläufe an Beispielen werden ausgeführt, aber nicht gespeichert.
+        Auswertungsergebnisse hält der Dienst bis zu fünf Minuten in einem Zwischenspeicher im
+        Arbeitsspeicher vor, damit dieselbe Einreichung nicht mehrfach ausgeführt werden muss.
       </p>
       <p>
         Ihre Einreichungen können über die Plattform nur Sie selbst abrufen; die Schnittstelle gibt
@@ -917,13 +1090,13 @@
         Art, Beginn, Ende, Grund und die entscheidende Person. Die Dauer einer Sperre wird nicht
         individuell festgelegt, sondern folgt einer festen Staffel nach der Zahl Ihrer bisherigen
         Sperren derselben Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach unbefristet. Eine Anzeige
-        Ihrer Sperren in der Oberfläche gibt es derzeit noch nicht; Auskunft darüber erhalten Sie
-        auf Anfrage (Abschnitt 23).
+        Ihrer Sperren in der Oberfläche gibt es nicht; sie sind im Datenexport enthalten (Abschnitt
+        23).
       </p>
       <p>
-        Zusätzlich wird eine nutzererstellte Aufgabe automatisch ausgeblendet und den
-        Administrator:innen zur Prüfung vorgelegt, wenn sie mindestens zehn negative und mehr
-        negative als positive Bewertungen erhalten hat.
+        Zusätzlich ist in der Software vorgesehen, dass eine nutzererstellte Aufgabe automatisch
+        ausgeblendet und den Administrator:innen zur Prüfung vorgelegt wird, wenn sie mindestens
+        zehn negative und mehr negative als positive Bewertungen erhalten hat.
       </p>
       <p>
         Hinweis nach Art. 22 DSGVO: Ob eine Sperre verhängt wird, entscheidet in jedem Fall ein
@@ -945,20 +1118,27 @@
         Im Dienst Events speichern wir Ihre Anmeldungen zu Webinaren, gebuchte Coaching-Termine
         sowie – wenn Sie als Kursleiter:in tätig sind – Ihre angebotenen Webinare, Coachings und
         Terminfenster. Zu Ihrem Konto sind dort Ihre Nutzerkennung und die Termindaten gespeichert;
-        Anzeigename und Nickname ruft der Dienst bei Bedarf aus dem Kerndienst ab und hält sie
-        höchstens fünf Minuten im Zwischenspeicher. Bei Coachings sehen Kursleiter:in und buchende
-        Person gegenseitig Anzeigename und Nickname; bei Webinaren sehen Teilnehmer:innen
-        Anzeigename und Nickname der Kursleiter:in, andere Teilnehmer:innen werden nicht angezeigt,
-        nur ihre Anzahl. Nach einem Webinar können Sie die Kursleiter:in mit einer Note von 1 bis 5
-        bewerten; sobald Sie bewertet haben, entfernen wir den Bezug zwischen der Bewertung und
-        Ihrer Person. Bewertungen, die Sie als Kursleiter:in erhalten, stammen von Teilnehmer:innen.
-        Kostenpflichtige Anmeldungen und Buchungen werden mit MorphCoins bezahlt (Abschnitt 15); zur
-        Buchung erhalten Sie eine Bestätigungs-E-Mail. Prüfungstermine sind in der Software
-        vorgesehen, werden derzeit aber nicht angeboten.
+        Anzeigename und Nickname sowie – für den Versand von E-Mails – Ihre E-Mail-Adresse ruft der
+        Dienst bei Bedarf aus dem Kerndienst ab und hält sie höchstens fünf Minuten im
+        Zwischenspeicher. Bei Coachings sehen Kursleiter:in und buchende Person gegenseitig
+        Anzeigename und Nickname; bei Webinaren sehen Teilnehmer:innen Anzeigename und Nickname der
+        Kursleiter:in, andere Teilnehmer:innen werden nicht angezeigt, nur ihre Anzahl. Nach einem
+        Webinar können Sie die Kursleiter:in mit einer Note von 1 bis 5 bewerten; sobald Sie
+        bewertet haben, entfernen wir den Bezug zwischen der Bewertung und Ihrer Person.
+        Bewertungen, die Sie als Kursleiter:in erhalten, stammen von Teilnehmer:innen; Bewertungen,
+        die älter als zwei Jahre sind, werden gelöscht. Kostenpflichtige Anmeldungen und Buchungen
+        werden mit MorphCoins bezahlt (Abschnitt 15); zur Buchung erhalten Sie eine
+        Bestätigungs-E-Mail. Wird ein Webinar oder Coaching abgesagt oder eine Anmeldung storniert,
+        informieren wir alle Beteiligten – Teilnehmer:innen und Kursleiter:in – per E-Mail über den
+        Termin und den erstatteten Betrag; die E-Mail an die buchende Person eines Coachings nennt
+        den Anzeigenamen der Kursleiter:in. Prüfungstermine sind in der Software vorgesehen, werden
+        derzeit aber nicht angeboten.
       </p>
       <p>
         Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Vergangene Termine werden kurz nach ihrem
-        Ende automatisch gelöscht; die übrigen Daten speichern wir bis zur Kontolöschung.
+        Ende (innerhalb weniger Minuten) automatisch gelöscht; die übrigen Daten speichern wir bis
+        zur Kontolöschung. Löschen Sie Ihr Konto, werden Termine, die Sie als Kursleiter:in
+        anbieten, abgesagt und den Teilnehmer:innen erstattet (Abschnitt 10.7).
       </p>
       <h3>14.2 Videokonferenzen (Jitsi Meet)</h3>
       <p>
@@ -974,14 +1154,18 @@
       </p>
       <h3>14.3 Kalender-Abo (iCal)</h3>
       <p>
-        Sie können Ihre Termine als Kalender-Abo (iCal) in eine Kalender-App übernehmen. Die
-        Abo-Adresse enthält eine persönliche Kennung; wer die Adresse kennt, kann Ihre Termine
-        abrufen. Die Kennung kann derzeit nicht einzeln erneuert werden; geben Sie die Adresse
-        deshalb nicht weiter. Der Kalender wird bei jedem Abruf erzeugt und nicht gespeichert; er
-        enthält Ihre Termine mit Anzeigename und Nickname der jeweils anderen Person. Beim Abruf
-        durch Ihre Kalender-App wird die Adresse in unseren Server-Logs protokolliert (Abschnitt 8),
-        und der Anbieter Ihrer Kalender-App erhält die Termindaten; diesen Anbieter wählen Sie
-        selbst.
+        Sie können Ihre Termine als Kalender-Abo (iCal) in eine Kalender-App übernehmen. Wenn Sie
+        die Kalenderseite zum ersten Mal öffnen, erzeugen wir dafür eine zufällige Abo-Kennung und
+        speichern sie mit dem Zeitpunkt ihrer Erzeugung zu Ihrem Konto im Dienst Events. Die
+        Abo-Adresse enthält diese Kennung; wer die Adresse kennt, kann Ihre Termine abrufen. Mit
+        „Abo-Link erneuern“ auf der Kalenderseite ersetzen Sie die Kennung jederzeit durch eine
+        neue; die bisherige Adresse funktioniert dann sofort nicht mehr. Die Kennung wird mit Ihrem
+        Konto gelöscht. Der Kalender wird bei jedem Abruf erzeugt und nicht gespeichert; er enthält
+        Ihre Termine mit Anzeigename und Nickname der jeweils anderen Person und dem Konferenzlink.
+        Beim Abruf durch Ihre Kalender-App wird die Adresse einschließlich der Kennung in unseren
+        Server-Logs protokolliert (Abschnitt 8), und der Anbieter Ihrer Kalender-App erhält die
+        Termindaten; diesen Anbieter wählen Sie selbst. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
+        DSGVO (die von Ihnen gewünschte Funktion).
       </p>
     </section>
 
@@ -1030,26 +1214,107 @@
         einschließlich USt-IdNr. angeben. Wir erheben diese Daten erst, wenn Sie eine
         kostenpflichtige Leistung erwerben oder MorphCoins als Belohnung gutgeschrieben bekommen
         möchten. MorphCoins, die Sie als Belohnung erhalten, werden Ihnen erst gutgeschrieben, wenn
-        Ihre Rechnungsdaten vollständig sind; bis dahin halten wir sie zurück. Geben Sie eine
-        USt-IdNr. an, prüfen wir sie über das Mehrwertsteuer-Informationsaustauschsystem (VIES) der
-        Europäischen Kommission; übermittelt wird ausschließlich die USt-IdNr., nicht Ihr Name oder
-        Ihre Anschrift. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit den
-        umsatzsteuerrechtlichen Prüfpflichten.
+        Ihre E-Mail-Adresse bestätigt ist und Ihre Rechnungsdaten vollständig sind; bis dahin halten
+        wir sie zurück, und sie werden gutgeschrieben, sobald Sie vollständige Rechnungsdaten
+        speichern. Geben Sie eine USt-IdNr. an, prüfen wir sie über das
+        Mehrwertsteuer-Informationsaustauschsystem (VIES) der Europäischen Kommission; übermittelt
+        wird ausschließlich die USt-IdNr., nicht Ihr Name oder Ihre Anschrift. Rechtsgrundlage dafür
+        ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit den umsatzsteuerrechtlichen Prüfpflichten.
       </p>
-      <h3>15.4 Rechnungen und Gutschriften</h3>
+      <h3>15.4 Rechnungen, Gutschriften und Schlussabrechnung</h3>
       <p>
-        Zu jedem MorphCoins-Kauf erstellen wir eine Rechnung, die wir Ihnen als PDF mit der
-        Kaufbestätigung per E-Mail senden; Gutschriften erstellen wir bei Erstattungen sowie über
-        MorphCoins, die Sie als Belohnung erhalten haben (etwa als Kursleiter:in oder für erstellte
-        Aufgaben). Rechnungen und Gutschriften enthalten Name, Anschrift, E-Mail-Adresse und
-        gegebenenfalls USt-IdNr. Wir erzeugen die PDF-Dateien auf unserem eigenen Server; ein
-        externer Dienst ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die
-        Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und
-        Gutschriften acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG),
-        gerechnet ab dem Ende des Kalenderjahres der Ausstellung – auch nach einer Kontolöschung.
-        Löschen Sie Ihr Konto, halten wir den nicht verbrauchten Anteil Ihrer gekauften MorphCoins
-        in einer Schlussabrechnung fest, die wir wie eine Rechnung aufbewahren, damit wir ihn auch
-        danach erstatten können (Ziffer 6.7 der AGB).
+        Zu jedem MorphCoins-Kauf erstellen wir mit der Zahlungsbestätigung von PayPal eine Rechnung,
+        die wir Ihnen als PDF mit der Kaufbestätigung per E-Mail senden; Gutschriften erstellen wir
+        je Kalendermonat über MorphCoins, die Sie als Belohnung erhalten haben (etwa als
+        Kursleiter:in oder für erstellte Aufgaben), sowie bei Erstattungen. Rechnungen und
+        Gutschriften enthalten Name, Anschrift, E-Mail-Adresse und gegebenenfalls USt-IdNr. Zu jedem
+        Dokument speichern wir außerdem einen Datensatz mit Nummer, Art, Ausstellungsdatum, den
+        gedruckten Kundenangaben, der Zahl der MorphCoins und den Beträgen. Wir erzeugen die
+        PDF-Dateien auf unserem eigenen Server; ein externer Dienst ist nicht beteiligt.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die Erstellung und Art. 6 Abs. 1 lit. c
+        DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und Gutschriften acht Jahre auf (§ 147
+        Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG), gerechnet ab dem Ende des
+        Kalenderjahres der Ausstellung – auch nach einer Kontolöschung; danach löschen wir Datensatz
+        und PDF-Datei automatisch. Nach einer Kontolöschung entfernen wir die Zuordnung des
+        Datensatzes zum Konto und ersetzen darin die Kundenangaben durch den Vermerk „Gelöschtes
+        Konto (Aufbewahrung nach § 147 Abs. 3 AO)“; die PDF-Datei behält die Angaben, mit denen sie
+        ausgestellt wurde, weil eine Rechnung nachträglich nicht verändert werden darf. Die Liste
+        aller Dokumente können Administrator:innen nach Nummer, Name und E-Mail-Adresse durchsuchen;
+        jeder Abruf dieser Liste wird im Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
+      </p>
+      <p>
+        Schlussabrechnung: Löschen Sie Ihr Konto und ist von Ihren gekauften MorphCoins ein Anteil
+        nicht verbraucht (Ziffer 6.7 der AGB), erstellen wir bei der Löschung eine
+        Schlussabrechnung. Sie enthält Ihren Namen, Ihre Anschrift (soweit angegeben) und Ihre
+        E-Mail-Adresse, das Datum der Löschung, die Summe der gekauften MorphCoins, das Guthaben bei
+        der Löschung, den nicht verbrauchten Anteil und den Erstattungsbetrag sowie später den
+        Zeitpunkt, zu dem wir die Erstattung ausgeführt haben. Anders als Rechnungen wird sie bei
+        der Löschung nicht pseudonymisiert, damit wir die Erstattung auch nach der Löschung der
+        Person zuordnen können, die sie verlangt; den festgehaltenen Betrag teilen wir Ihnen auf
+        Anfrage an
+        <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
+        mit. Haben Sie keine MorphCoins gekauft oder alle gekauften MorphCoins verbraucht, wird
+        keine Schlussabrechnung erstellt, und nach der Löschung bleibt nichts zurück, was Ihren
+        Namen oder Ihre E-Mail-Adresse enthält (außer den in Abschnitt 10.7 genannten Fällen).
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Erfüllung Ihres Erstattungsanspruchs nach
+        Ziffer 6.7 der AGB) und für die Aufbewahrung als Beleg über die Erstattung Art. 6 Abs. 1
+        lit. c DSGVO (§ 147 Abs. 1 AO). Wir bewahren die Schlussabrechnung wie eine Rechnung acht
+        Jahre ab dem Ende des Kalenderjahres der Löschung auf und löschen sie danach automatisch;
+        sie weist keine Umsatzsteuer aus.
+      </p>
+      <h3>15.5 Erklärungen zum Widerrufsrecht bei Bestellungen</h3>
+      <p>
+        Bestellen Sie als Verbraucher:in eine kostenpflichtige Leistung, geben Sie vor der
+        Bestellung über zwei Kontrollkästchen die in der
+        <a href="/docs/right-of-withdrawal">Widerrufsbelehrung</a> beschriebenen Erklärungen zur
+        sofortigen Ausführung ab. Wir speichern dazu die Art der Leistung (MorphCoins, Premium,
+        Herzen, Kurs, Webinar oder Coaching), gegebenenfalls die Kennung des Kurses oder Termins,
+        die Fassung der Widerrufsbelehrung, zu der Sie die Erklärungen abgegeben haben, und den
+        Zeitpunkt; beim Kauf von MorphCoins speichern wir Fassung und Zeitpunkt an der Bestellung.
+        Die Fassung gibt unser Server vor; IP-Adresse oder Browserkennung speichern wir dazu nicht.
+        Zweck ist der Nachweis, dass Sie die Erklärungen abgegeben haben, und ihre Wiedergabe in der
+        Kaufbestätigung (§ 312f Abs. 3, § 356 Abs. 5 und 6 BGB): Die Kaufbestätigung beim Kauf von
+        MorphCoins wiederholt Ihre Erklärung mit Fassung und Zeitpunkt und enthält die AGB und die
+        Widerrufsbelehrung als PDF. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
+        § 312f Abs. 3 BGB sowie Art. 6 Abs. 1 lit. b DSGVO. Die Erklärungen sind im Datenexport
+        enthalten (Abschnitt 23) und werden mit Ihrem Konto gelöscht.
+      </p>
+      <h3>15.6 Kündigung und Widerruf über die Plattform</h3>
+      <p>
+        Unter
+        <a href="/vertrag-kuendigen">bootstrap.academy/vertrag-kuendigen</a> und
+        <a href="/vertrag-widerrufen">bootstrap.academy/vertrag-widerrufen</a> (Schaltflächen
+        „Verträge hier kündigen“ und „Vertrag widerrufen“ am Ende jeder Seite) können Sie Verträge
+        kündigen und widerrufen, ohne angemeldet zu sein. Wir speichern die Erklärung mit Name,
+        E-Mail-Adresse, betroffenem Vertrag, bei Kündigungen mit der Art der Kündigung, dem
+        gewünschten Beendigungszeitpunkt und einer etwaigen Begründung, bei Widerrufen mit Ihren
+        Angaben zur Bestellung, sowie mit dem Zeitpunkt des Eingangs und dem ermittelten
+        Vertragsende. Stimmt die E-Mail-Adresse mit einem Konto überein, ordnen wir die Erklärung
+        diesem Konto zu; eine Kündigung von Premium schaltet dann die automatische Verlängerung ab.
+        Sie erhalten sofort eine Bestätigungs-E-Mail mit dem Inhalt der Erklärung, Datum und Uhrzeit
+        des Eingangs (Zeitzone Europe/Berlin) und dem Vertragsende oder dem Hinweis, dass wir es
+        gesondert mitteilen (§ 312k Abs. 4, § 356a BGB). Zugleich geht eine Benachrichtigung mit
+        denselben Angaben an unser Postfach hallo@bootstrap.academy, damit wir die Erklärung
+        bearbeiten und Erstattungen veranlassen können. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c
+        DSGVO (gesetzliche Bestätigungspflicht) und Art. 6 Abs. 1 lit. b DSGVO (Abwicklung des
+        Vertrags).
+      </p>
+      <p>
+        Die Erklärung bewahren wir als Nachweis der Kündigung bzw. des Widerrufs auf, auch nach
+        einer Kontolöschung; die Zuordnung zum Konto wird dann entfernt, Name und E-Mail-Adresse
+        bleiben in der Erklärung. Eine automatische Löschung gibt es dafür nicht; nach Ablauf der
+        regelmäßigen Verjährungsfrist von drei Jahren ab dem Ende des Jahres der Erklärung (§§ 195,
+        199 BGB) löschen wir sie auf Anfrage.
+      </p>
+      <p>
+        Um Missbrauch der öffentlichen Formulare zu begrenzen, zählen wir Erklärungen je IP-Adresse
+        (höchstens 60 je Stunde) und je E-Mail-Adresse (höchstens 5 je Stunde) in einem
+        Zwischenspeicher. Gespeichert wird dort nur ein Hashwert der IP-Adresse bzw. der
+        E-Mail-Adresse mit dem Zähler; der Eintrag wird eine Stunde nach der letzten gezählten
+        Erklärung gelöscht. Wird die Grenze überschritten, lehnen wir die Erklärung mit einer
+        Fehlermeldung ab und speichern nichts; Sie können sie dann per E-Mail an
+        hallo@bootstrap.academy abgeben. Rechtsgrundlage für die Zähler ist Art. 6 Abs. 1 lit. f
+        DSGVO (Schutz der Formulare vor Missbrauch).
       </p>
     </section>
 
@@ -1081,10 +1346,13 @@
       <p>
         Wir senden Ihnen ausschließlich E-Mails, die zur Nutzung der Plattform oder zur
         Vertragsabwicklung nötig sind: Bestätigung Ihrer E-Mail-Adresse, Zurücksetzen des Passworts,
-        Kaufbestätigung mit Rechnung, Bestätigung eines Kurskaufs sowie Bestätigungen von Webinar-
-        und Coaching-Buchungen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, für den
-        Rechnungsversand auch Art. 6 Abs. 1 lit. c DSGVO. Diese E-Mails können nicht abbestellt
-        werden. Einen Newsletter oder Werbe-E-Mails versenden wir nicht.
+        Kaufbestätigung mit Rechnung sowie AGB und Widerrufsbelehrung als PDF (Abschnitt 15.5),
+        Bestätigung eines Kurskaufs, Bestätigungen von Webinar- und Coaching-Buchungen sowie von
+        deren Stornierung oder Absage (Abschnitt 14.1) und Bestätigungen von Kündigungen und
+        Widerrufen (Abschnitt 15.6). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, für den
+        Rechnungsversand und die Bestätigungen nach § 312f, § 312k und § 356a BGB auch Art. 6 Abs. 1
+        lit. c DSGVO. Diese E-Mails können nicht abbestellt werden. Einen Newsletter oder
+        Werbe-E-Mails versenden wir nicht.
       </p>
       <p>
         Der Versand erfolgt über einen Mailserver der Hetzner Online GmbH (Auftragsverarbeiter,
@@ -1213,16 +1481,31 @@
         </thead>
         <tbody>
           <tr>
-            <td>Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung</td>
+            <td>
+              Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung oder -Aufschub,
+              Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
+            </td>
             <td>Bis zur Kontolöschung</td>
           </tr>
           <tr>
+            <td>E-Mail-Bestätigungscode, Code zum Zurücksetzen des Passworts</td>
+            <td>Bis zur Verwendung, höchstens vier Stunden</td>
+          </tr>
+          <tr>
             <td>Verknüpfungen mit GitHub, Discord oder Google</td>
-            <td>Bis zur Aufhebung der Verknüpfung oder bis zur Kontolöschung</td>
+            <td>
+              Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder bis zur
+              Kontolöschung; Daten einer laufenden Anmeldung über einen Anbieter höchstens zehn
+              Minuten
+            </td>
           </tr>
           <tr>
             <td>Sitzungen</td>
             <td>Bis zum Ablauf des Erneuerungstokens (30 Tage) oder bis zur Abmeldung</td>
+          </tr>
+          <tr>
+            <td>Verwaltungsprotokoll</td>
+            <td>Zwölf Monate, auch nach Kontolöschung</td>
           </tr>
           <tr>
             <td>Lern- und Fortschrittsdaten, XP, Lesezeichen</td>
@@ -1241,7 +1524,14 @@
           </tr>
           <tr>
             <td>Event-Daten</td>
-            <td>Vergangene Termine: kurz nach dem Ende; übrige Daten bis zur Kontolöschung</td>
+            <td>
+              Vergangene Termine: kurz nach dem Ende; Bewertungen von Kursleiter:innen: zwei Jahre;
+              übrige Daten bis zur Kontolöschung
+            </td>
+          </tr>
+          <tr>
+            <td>Kalender-Abo-Kennung</td>
+            <td>Bis zur Erneuerung durch Sie oder bis zur Kontolöschung</td>
           </tr>
           <tr>
             <td>MorphCoins, Transaktionen, Herzen, Premium, PayPal-Bestellreferenzen</td>
@@ -1253,7 +1543,29 @@
           </tr>
           <tr>
             <td>Rechnungen und Gutschriften</td>
-            <td>Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung</td>
+            <td>
+              Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung (Datensatz dann
+              ohne Kundenangaben und Kontozuordnung)
+            </td>
+          </tr>
+          <tr>
+            <td>Schlussabrechnung (nur bei nicht verbrauchten gekauften MorphCoins)</td>
+            <td>Acht Jahre ab Ende des Jahres der Kontolöschung</td>
+          </tr>
+          <tr>
+            <td>Kündigungs- und Widerrufserklärungen</td>
+            <td>
+              Als Nachweis, auch nach Kontolöschung; Löschung auf Anfrage nach Verjährung (Abschnitt
+              15.6)
+            </td>
+          </tr>
+          <tr>
+            <td>Zähler zur Begrenzung der Kündigungs- und Widerrufsformulare</td>
+            <td>Eine Stunde nach der letzten gezählten Erklärung</td>
+          </tr>
+          <tr>
+            <td>Datenexport</td>
+            <td>Wird beim Abruf erzeugt und nicht gespeichert</td>
           </tr>
           <tr>
             <td>Server-Logs</td>
@@ -1282,15 +1594,15 @@
             </td>
           </tr>
           <tr>
-            <td>Cookies und Local Storage</td>
+            <td>Cookies, Local Storage und Session Storage</td>
             <td>Abschnitt 9</td>
           </tr>
         </tbody>
       </table>
       <p>
         Bei der Kontolöschung (Abschnitt 10.7) werden Ihre Daten sofort aus den Datenbanken
-        gelöscht. In Datensicherungen verbleiben sie bis zum Ablauf der Sicherungsfristen; wir
-        stellen gelöschte Daten aus Sicherungen nicht wieder her.
+        gelöscht, soweit dort keine Ausnahme genannt ist. In Datensicherungen verbleiben sie bis zum
+        Ablauf der Sicherungsfristen; wir stellen gelöschte Daten aus Sicherungen nicht wieder her.
       </p>
     </section>
 
@@ -1331,8 +1643,10 @@
       <ul>
         <li>
           <strong>Auskunft</strong> (Art. 15 DSGVO) über die zu Ihrer Person gespeicherten Daten.
-          Die meisten Daten sehen Sie direkt in Ihrem Konto; eine vollständige Auskunft erhalten Sie
-          auf Anfrage.
+          Die meisten Daten sehen Sie direkt in Ihrem Konto; eine Datei mit allen zu Ihrem Konto
+          gespeicherten Daten laden Sie jederzeit selbst herunter (siehe Datenübertragbarkeit).
+          Weitergehende Auskünfte – etwa zu Daten, die nicht in der Datei enthalten sind, oder nach
+          einer Kontolöschung – erteilen wir auf Anfrage.
         </li>
         <li>
           <strong>Berichtigung</strong> (Art. 16 DSGVO): Nickname, Anzeigename, E-Mail-Adresse,
@@ -1345,9 +1659,24 @@
         </li>
         <li><strong>Einschränkung der Verarbeitung</strong> (Art. 18 DSGVO).</li>
         <li>
-          <strong>Datenübertragbarkeit</strong> (Art. 20 DSGVO): Eine Export-Funktion in den
-          Kontoeinstellungen gibt es derzeit noch nicht. Auf Anfrage stellen wir Ihnen Ihre Daten
-          innerhalb eines Monats in einem maschinenlesbaren Format (JSON) bereit.
+          <strong>Datenübertragbarkeit</strong> (Art. 20 DSGVO): In den Kontoeinstellungen können
+          Sie unter „Meine Daten herunterladen“ jederzeit eine Datei im JSON-Format abrufen. Sie
+          enthält aus dem Kerndienst Ihre Konto- und Profildaten einschließlich Rechnungsdaten,
+          AGB-Zustimmung und Bestenlisten-Einstellung, Ihre Sitzungen (ohne Token), Verknüpfungen
+          mit GitHub, Discord oder Google, Guthaben, Herzen, Transaktionen, Premium-Status,
+          MorphCoins-Bestellungen, die Datensätze Ihrer Rechnungen, Gutschriften und einer
+          Schlussabrechnung, Ihre Kündigungs- und Widerrufserklärungen und Ihre Erklärungen zum
+          Widerrufsrecht; aus dem Dienst Skills Kurszugriffe, zuletzt angesehene Kurse,
+          abgeschlossene Lektionen, Lesezeichen und XP; aus dem Dienst Challenges Lösungsstand,
+          Versuche, Einreichungen mit Quellcode und Ergebnis, Bewertungen, Meldungen, Sperren und
+          selbst erstellte Aufgaben; aus dem Dienst Events erstellte und gebuchte Webinare,
+          angebotene und gebuchte Coaching-Termine, wöchentliche Terminfenster und Bewertungen.
+          Nicht enthalten sind Passwort-Hash, Zwei-Faktor-Geheimnisse, Sitzungstoken, die
+          Kalender-Abo-Kennung und der Zeitpunkt Ihrer Altersbestätigung; Letzteren teilen wir Ihnen
+          auf Anfrage mit. Ist einer der Dienste beim Abruf nicht erreichbar, erhalten Sie die
+          übrigen Daten, und die Datei nennt den fehlenden Teil. Der Abruf ist auf einmal je zehn
+          Minuten begrenzt. Auf Anfrage erstellen wir die Datei auch für Sie; dieser Abruf durch
+          eine Administrator:in wird im Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
         </li>
         <li>
           <strong>Widerruf von Einwilligungen</strong> (Art. 7 Abs. 3 DSGVO) mit Wirkung für die
@@ -1375,7 +1704,8 @@
           dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Direktwerbung
           betreiben wir nicht. Richten Sie Ihren Widerspruch an
           <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a
-          >.
+          >. Der Anzeige in den Bestenlisten widersprechen Sie am einfachsten, indem Sie in den
+          Profileinstellungen den Haken „In den Bestenlisten anzeigen“ entfernen (Abschnitt 12.2).
         </strong>
       </p>
       <p>
