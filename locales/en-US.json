@@ -288,6 +288,7 @@
     "CertificatesBased": "Certificates Based",
     "WhoWeAre": "Who we are",
     "DeleteAccount": "Delete Account",
+    "DownloadMyData": "Download my data",
     "NewTermsAndConditions": "Updated terms",
     "ResetPassword": "Reset Password",
     "Euros": "Euros",
@@ -493,6 +494,7 @@
     "NotEnoughMorphcoins": "You don't have enough MorphCoins",
     "GetCodeViaEmail": "Receive a code by email",
     "IrreversibleAction": "cannot be reversed",
+    "DownloadMyData": "You receive all data stored for your account as a JSON file: account and profile data, sessions, linked accounts, Morphcoins and invoices as well as your learning progress, your submissions and your bookings.",
     "NewTermsAndConditions": "We have changed our terms and conditions: until you accept the new version, the previous version of the %%% keeps applying to your existing contract, and we may therefore terminate the contract with the four-week notice period set out there.",
     "LooseProgressMorphCoinsAndCourses": "You lose all progress,%%%purchased MorphCoins and courses",
     "NotRecommended": "not recommended",
@@ -871,6 +873,7 @@
     "ViewCertificate": "View Certificate",
     "Logout": "Logout",
     "DeleteAccount": "Yes, Delete Account",
+    "DownloadMyData": "Download my data",
     "AcceptTermsAndConditions": "Accept terms",
     "DecideLater": "Decide later",
     "Cancel": "Cancel",
@@ -1025,6 +1028,7 @@
     "ResendAccountVerificationCode": "Account verification code has been emailed to you.",
     "EditProfile": "Profile Edited successfully.",
     "DeleteAccount": "Your account has been deleted successfully.",
+    "DownloadMyData": "Your data has been downloaded.",
     "DisabledMFA": "Your MFA has been successfully disabled.",
     "InitializeMFA": "Your multi-factor authentication (MFA) has been successfully initiated. To enable your MFA, please enter this TOTP key to your TOTP app e.g Google Authenticator, Authy, etc. You will get short-lived authentication code which you will use to enable your MFA.",
     "EnableMFACode": "Your MFA code has been successfully enabled. From now on in order to login, you will enter your 6-digit MFA code along with your password and email.",
@@ -1152,7 +1156,10 @@
     "InvalidCoinAmount": "Invalid number of Morphcoins. Please start the purchase again.",
     "TooManyRequests": "Too many requests. Please try again later or write to us at hallo{'@'}bootstrap.academy.",
     "DeclarationNotSubmitted": "Your declaration could not be submitted. Please try again or send your declaration to hallo{'@'}bootstrap.academy.",
-    "WithdrawalConsentMissing": "Please give both withdrawal declarations to place the order"
+    "WithdrawalConsentMissing": "Please give both withdrawal declarations to place the order",
+    "DownloadMyDataRateLimit": "You have just downloaded your data. Please try again in a few minutes.",
+    "DownloadMyDataIncomplete": "The file has been saved, but a part of your data could not be collected right now. The file lists the missing part under “services”. Please try again later.",
+    "DownloadMyDataFailed": "Your data could not be downloaded. Please try again later."
   },
   "Months": {
     "January": "January",

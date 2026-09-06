@@ -288,6 +288,7 @@
     "CertificatesBased": "Basierend auf Zertifikaten",
     "WhoWeAre": "Wer wir sind",
     "DeleteAccount": "Konto löschen",
+    "DownloadMyData": "Meine Daten herunterladen",
     "NewTermsAndConditions": "Neue AGB",
     "ResetPassword": "Passwort zurücksetzen",
     "Euros": "Euro",
@@ -492,6 +493,7 @@
     "NotEnoughMorphcoins": "Du hast nicht genügend MorphCoins",
     "GetCodeViaEmail": "Erhalte einen Code per E-Mail",
     "IrreversibleAction": "nicht rückgängig machbar",
+    "DownloadMyData": "Du erhältst alle zu deinem Konto gespeicherten Daten als JSON-Datei: Konto- und Profildaten, Sitzungen, verknüpfte Konten, Morphcoins und Rechnungen sowie deinen Lernfortschritt, deine Einsendungen und deine Buchungen.",
     "NewTermsAndConditions": "Wir haben unsere AGB geändert: Bis du der neuen Fassung zustimmst, gilt für deinen bestehenden Vertrag die bisherige Fassung der %%% weiter, und wir können den Nutzungsvertrag deshalb mit der dort geregelten Frist von vier Wochen ordentlich kündigen.",
     "LooseProgressMorphCoinsAndCourses": "Du verlierst allen Fortschritt,%%%gekaufte MorphCoins und Kurse",
     "NotRecommended": "nicht empfohlen",
@@ -865,6 +867,7 @@
     "ViewCertificate": "Zertifikat ansehen",
     "Logout": "Ausloggen",
     "DeleteAccount": "Ja, Konto löschen",
+    "DownloadMyData": "Meine Daten herunterladen",
     "AcceptTermsAndConditions": "AGB akzeptieren",
     "DecideLater": "Später entscheiden",
     "Cancel": "Abbrechen",
@@ -1022,6 +1025,7 @@
     "ResendAccountVerificationCode": "Der Kontobestätigungscode wurde dir per E-Mail zugeschickt.",
     "EditProfile": "Profil erfolgreich bearbeitet.",
     "DeleteAccount": "Dein Konto wurde erfolgreich gelöscht.",
+    "DownloadMyData": "Deine Daten wurden heruntergeladen.",
     "DisabledMFA": "Deine MFA wurde erfolgreich deaktiviert.",
     "InitializeMFA": "Deine Multi-Faktor-Authentifizierung (MFA) wurde erfolgreich eingerichtet. Um MFA zu aktivieren, gib bitte diesen TOTP-Schlüssel in deine TOTP-App ein, z. B. Google Authenticator oder Authy. Darin wird ein kurzlebiger Authentifizierungscode generiert, mit dem du MFA aktivieren kannst.",
     "EnableMFACode": "Dein MFA-Code wurde erfolgreich aktiviert. Von nun an, gib zur Anmeldung Ihren 6-stelligen MFA-Code zusammen mit deinem Passwort und Ihrer E-Mail-Adresse ein.",
@@ -1150,7 +1154,10 @@
     "InvalidCoinAmount": "Ungültige Anzahl an Morphcoins. Bitte starte den Kauf erneut.",
     "TooManyRequests": "Zu viele Anfragen. Bitte versuchen Sie es später erneut oder schreiben Sie uns an hallo{'@'}bootstrap.academy.",
     "DeclarationNotSubmitted": "Ihre Erklärung konnte nicht übermittelt werden. Bitte versuchen Sie es erneut oder senden Sie Ihre Erklärung an hallo{'@'}bootstrap.academy.",
-    "WithdrawalConsentMissing": "Bitte gib die beiden Erklärungen zum Widerrufsrecht ab, um zu bestellen"
+    "WithdrawalConsentMissing": "Bitte gib die beiden Erklärungen zum Widerrufsrecht ab, um zu bestellen",
+    "DownloadMyDataRateLimit": "Du hast deine Daten gerade erst heruntergeladen. Bitte versuche es in einigen Minuten erneut.",
+    "DownloadMyDataIncomplete": "Die Datei wurde gespeichert, aber ein Teil deiner Daten konnte gerade nicht abgerufen werden. Welcher Teil fehlt, steht in der Datei unter „services“. Bitte versuche es später noch einmal.",
+    "DownloadMyDataFailed": "Deine Daten konnten nicht heruntergeladen werden. Bitte versuche es später erneut."
   },
   "Months": {
     "January": "Januar",
