@@ -28,6 +28,7 @@
       <AccountChangePassword class="md:w-1/2" />
     </div>
     <div class="mb-16 justify-between max-md:space-y-6 md:flex md:space-x-12">
+      <AccountDownloadData class="md:w-1/2" />
       <AccountDelete class="md:w-1/2" />
     </div>
   </main>

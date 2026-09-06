@@ -173,6 +173,35 @@ export async function editUser(body: any) {
   }
 }
 
+/**
+ * Download everything the platform has stored about the authenticated user
+ * (Art. 15 and 20 GDPR). The endpoint is rate limited, so a second call within
+ * a few minutes answers with 429; that case gets its own translated message
+ * because the backend detail is not translatable.
+ */
+export async function exportUserData() {
+  const user = <any>useUser();
+  let user_id = user?.value?.id ?? null;
+
+  try {
+    if (!!!user_id) {
+      throw { data: { detail: "Error.DownloadMyDataFailed" } };
+    }
+
+    const response = await GET(`/auth/users/${user_id}/export`);
+
+    return [response, null];
+  } catch (error: any) {
+    const status = error?.status ?? error?.statusCode ?? null;
+
+    if (status == 429) {
+      return [null, { detail: "Error.DownloadMyDataRateLimit" }];
+    }
+
+    return [null, error?.data ?? { detail: "Error.DownloadMyDataFailed" }];
+  }
+}
+
 export async function deleteUser() {
   const user = <any>useUser();
   let user_id = user?.value?.id ?? null;
