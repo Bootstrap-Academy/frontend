@@ -178,10 +178,11 @@ export default defineComponent({
     });
 
     // ============================================================= OAuth Signup
-    const route = useRoute();
-    const register_token = computed(() => {
-      return route?.query?.register_token ?? "";
-    });
+    // The token is handed over in the session storage, not in the query
+    // string: it is a short lived secret and the address bar ends up in the
+    // browser history and in outgoing `Referer` headers.
+    const register_token = ref(getRegisterToken());
+
     onMounted(() => {
       if (!!register_token.value) {
         openDialog(
@@ -214,7 +215,10 @@ export default defineComponent({
 
         const [success, error] = await signup(updatedBody);
 
-        if (!!success) await requestEmailVerification();
+        if (!!success) {
+          clearRegisterToken();
+          await requestEmailVerification();
+        }
 
         form.submitting = false;
 

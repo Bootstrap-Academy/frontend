@@ -70,14 +70,23 @@
     </article>
 
     <article class="flex flex-wrap justify-center gap-container">
-      <a
-        v-for="{ id, icon, authorize_url } of providers"
+      <button
+        v-for="{ id, name, icon } of providers"
         :key="id"
-        :href="authorize_url"
-        class="cursor-pointer"
+        type="button"
+        :disabled="startingProvider != ''"
+        :aria-label="t('Buttons.LoginWithProvider', { provider: name })"
+        class="cursor-pointer disabled:cursor-wait disabled:opacity-50"
+        @click="onclickProvider(id)"
       >
-        <component :is="icon" lg :color="id == 'github' ? 'fill-heading' : ''"></component>
-      </a>
+        <component
+          v-if="icon"
+          :is="icon"
+          lg
+          :color="id == 'github' ? 'fill-heading' : ''"
+        ></component>
+        <span v-else class="underline">{{ name }}</span>
+      </button>
     </article>
   </form>
 </template>
@@ -147,18 +156,13 @@ export default defineComponent({
 
     // ============================================================= OAuth Providers
     const oauthProviders = useOauthProviders();
-    const config = useRuntimeConfig().public;
 
     const providers = computed(() => {
       if (!!!oauthProviders.value || oauthProviders.value.length <= 0) return [];
 
-      const redirect_uri = `${config.BASE_WEB_URL}/oauth/callback`;
-
-      return oauthProviders.value.map((item: any) => {
-        if (!!item && !!item.id && !!item.authorize_url) {
-          let updated_authorize_url =
-            item.authorize_url + `&state=${item.id}&redirect_uri=${redirect_uri}`;
-
+      return oauthProviders.value
+        .filter((item: any) => !!item && !!item.id)
+        .map((item: any) => {
           let icon = null;
           if (item.id == "google") {
             icon = IconGoogle;
@@ -168,10 +172,32 @@ export default defineComponent({
             icon = IconGithub;
           }
 
-          return { ...item, authorize_url: updated_authorize_url, icon: icon };
-        }
-      });
+          return { ...item, icon };
+        });
     });
+
+    /**
+     * The authorize URL is built by the backend, which puts an unguessable
+     * single use `state` and a PKCE challenge into it. The browser keeps the
+     * `state` until the provider sends it back, so a callback that this
+     * browser did not start is rejected on the callback page.
+     */
+    const startingProvider = ref("");
+
+    async function onclickProvider(provider_id: string) {
+      if (startingProvider.value != "") return;
+
+      startingProvider.value = provider_id;
+      const [success, error] = await startOAuthFlow(provider_id);
+
+      if (!!success?.authorize_url) {
+        window.location.href = success.authorize_url;
+        return;
+      }
+
+      startingProvider.value = "";
+      openSnackbar("error", "Error.UnableToOAuth", error?.detail ?? "");
+    }
 
     // ============================================================= Checks
     const router = useRouter();
@@ -232,6 +258,8 @@ export default defineComponent({
     return {
       form,
       onclickSubmitForm,
+      onclickProvider,
+      startingProvider,
       refForm,
       t,
       providers,

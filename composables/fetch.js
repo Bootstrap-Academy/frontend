@@ -138,8 +138,16 @@ const onResponseError = async (context) => {
     return (response._data.detail = "Error.EmailAlreadyExists");
   } else if (details.includes("invalid email")) {
     return (response._data.detail = "Error.InvalidEmail");
-  } else if (details.includes("invalid OAuth token")) {
+  } else if (details.includes("invalid oauth token")) {
     return (response._data.detail = "Error.InvalidOAuthToken");
+  } else if (details.includes("invalid state")) {
+    return (response._data.detail = "Error.InvalidOAuthState");
+  } else if (details.includes("cannot delete last login method")) {
+    return (response._data.detail = "Error.CannotDeleteLastLoginMethod");
+  } else if (details.includes("connection not found")) {
+    return (response._data.detail = "Error.LinkedLoginNotFound");
+  } else if (details.includes("remote already linked")) {
+    return (response._data.detail = "Error.RemoteAlreadyLinked");
   } else if (details.includes("registration disabled")) {
     return (response._data.detail = "Error.RegistrationDisabled");
   } else if (details.includes("no login method")) {

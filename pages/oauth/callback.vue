@@ -45,15 +45,39 @@ export default {
     const route = useRoute();
 
     const dialog = <any>reactive({});
-    const config = useRuntimeConfig().public;
 
     onMounted(async () => {
       setLoading(true);
-      const [success, error] = await loginViaOAuthProvider({
-        code: route?.query?.code ?? "",
-        provider_id: route?.query?.state ?? "",
-        redirect_uri: `${config.BASE_WEB_URL}/oauth/callback`,
-      });
+
+      // the state the provider sends back has to be the one this browser was
+      // handed when it started the flow; anything else is a callback we did
+      // not ask for
+      const flow = takeOAuthFlow();
+      const state = (route?.query?.state ?? "").toString();
+      const code = (route?.query?.code ?? "").toString();
+
+      if (!!!flow || !!!state || flow.state != state) {
+        setLoading(false);
+        errorHandler({ detail: "Error.OAuthStateMismatch" });
+        return;
+      }
+
+      // a flow started on the account page adds the provider to the account
+      // that is already signed in; every other flow signs the visitor in
+      if (flow.purpose == "link") {
+        const [success, error] = await createOAuthLink({ state, code });
+        setLoading(false);
+
+        if (!!success) {
+          openSnackbar("success", "Success.AddLinkedLogin");
+          router.push("/account");
+        } else {
+          errorHandler(error, "/account");
+        }
+        return;
+      }
+
+      const [success, error] = await loginViaOAuthProvider({ state, code });
       setLoading(false);
 
       success ? successHandler(success) : errorHandler(error);
@@ -63,14 +87,17 @@ export default {
       const register_token = res?.register_token ?? "";
 
       if (!!register_token) {
-        router.push(`/auth/signup?register_token=${register_token}`);
+        // the token is a secret with a short lifetime: keeping it out of the
+        // URL keeps it out of the browser history and out of any `Referer`
+        saveRegisterToken(register_token);
+        router.push("/auth/signup");
       } else {
         setStates(res?.login ?? null);
         router.push(`/profile`);
       }
     }
 
-    function errorHandler(res: any) {
+    function errorHandler(res: any, back: string = "/auth/login") {
       Object.assign(dialog, {
         type: "error",
         heading: "Headings.UnableToOAuth",
@@ -78,7 +105,7 @@ export default {
         primaryBtn: {
           label: "Links.GoBack",
           onclick: () => {
-            router.push("/auth/login");
+            router.push(back);
           },
         },
         secondaryBtn: null,
