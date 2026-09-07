@@ -190,6 +190,11 @@ const onResponseError = async (context) => {
     return (response._data.detail = "Error.WithdrawalConsentMissing");
   } else if (details.includes("cannot start in the past")) {
     return (response._data.detail = "Error.CannotStartInPast");
+  } else if (details.includes("too many failed login attempts")) {
+    // The waiting time only exists in the `Retry-After` header, so it is put
+    // on the payload here - the caller never sees the response itself.
+    response._data.retry_after = retryAfterSeconds(response);
+    return (response._data.detail = "Error.TooManyFailedLoginAttempts");
   } else if (details.includes("too many requests")) {
     return (response._data.detail = "Error.TooManyRequests");
   } else if (details.includes("email not verified")) {
@@ -228,6 +233,18 @@ const onResponseError = async (context) => {
   console.log("end");
   return response;
 };
+
+/**
+ * Whole seconds a refused request asks the client to wait, or `0` if the
+ * server did not say. `Retry-After` is a header and therefore never part of
+ * the body that reaches the caller.
+ */
+function retryAfterSeconds(response) {
+  const header = response?.headers?.get?.("retry-after");
+  const seconds = Number.parseInt(header ?? "", 10);
+
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : 0;
+}
 
 function isAccessTokenExpired() {
   const accessToken = getAccessToken();

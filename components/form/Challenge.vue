@@ -146,7 +146,7 @@ export default {
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Title",
           (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 32 || "Error.InputMinLength_32",
+          (v: string) => v.length <= 32 || "Error.InputMaxLength_32",
         ],
       },
       category: {

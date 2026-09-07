@@ -1,9 +1,15 @@
 <template>
   <form class="flex flex-col gap-3" @submit.prevent="onclickSubmitForm()" ref="formRef">
+    <!--
+      The rate is what `GET /shop/coins/config` publishes, the same value every
+      price on the page is calculated with, so the headline cannot drift away
+      from what is actually charged.
+    -->
     <SectionTitle
       subheading="Subheadings.WebShop"
       heading="Headings.BuyMorphcoins"
       body="Body.MorphcoinRate"
+      :bodyParams="{ coins: formattedRate }"
       center
       class="mb-card"
     />
@@ -160,6 +166,12 @@ export default defineComponent({
       }
     }
 
+    const formattedRate = computed(() =>
+      new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US").format(
+        coinConfig.value.coins_per_euro
+      )
+    );
+
     const coinsToBuy = computed(() => Number(form.morphCoins.value) || 0);
     const totalPrice = computed(() =>
       formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
@@ -231,6 +243,7 @@ export default defineComponent({
       formRef,
       coinsToBuy,
       totalPrice,
+      formattedRate,
       onclickSubmitForm,
 
       oninputValidateEuros,

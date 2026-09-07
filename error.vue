@@ -6,9 +6,9 @@
           {{ error?.statusCode }}
         </div>
 
-        <h1 class="error-message" style="word-break: break-word">{{ error?.message }}</h1>
+        <h1 class="error-message" style="word-break: break-word">{{ t(messageKey) }}</h1>
 
-        <InputBtn class="w-full" @click="navigateTo('/')"> Go Home </InputBtn>
+        <InputBtn class="w-full" @click="navigateTo('/')">{{ t("Links.BackToHome") }}</InputBtn>
       </section>
     </main>
 
@@ -23,10 +23,22 @@
 
 <script setup lang="ts">
 import type { NuxtError } from "#app";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   error: Object as () => NuxtError,
 });
+
+const { t } = useI18n();
+
+/*
+  The message Nuxt puts on the error is written by the framework and is always
+  English, which is the wrong language inside a German interface. The status
+  code is shown above it, so the sentence only has to say what happened.
+*/
+const messageKey = computed(() =>
+  props.error?.statusCode == 404 ? "Body.PageNotFound" : "Body.UnexpectedError"
+);
 </script>
 
 <style scoped>

@@ -14,7 +14,15 @@
         <p class="mt-2"><span class="text-accent">XP:</span> {{ xp }}</p>
       </div>
 
-      <article class="flex flex-wrap gap-card-sm">
+      <article class="flex flex-wrap items-center gap-card-sm">
+        <!--
+          The heart on the button does not say what an attempt costs, so the
+          price is stated in words next to it.
+        -->
+        <p v-if="!isPremium" class="text-xs text-body">
+          {{ t("Body.AttemptCostsOneHeart") }}
+        </p>
+
         <InputBtn
           v-if="!isPremium"
           :icon="HeartIcon"

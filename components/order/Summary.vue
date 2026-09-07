@@ -34,6 +34,22 @@
       </dd>
     </dl>
 
+    <!--
+      What the price buys beyond the moment of the order: for MorphCoins what
+      they can and cannot be turned back into (AGB Ziffer 6), for premium the
+      length of the period and how it renews and ends (AGB Ziffer 8).
+    -->
+    <p v-if="kind == 'coins'" class="text-body-2 m-0 text-body">
+      {{ t("Body.OrderCoinsNote") }}
+    </p>
+
+    <p v-else-if="kind == 'premium'" class="text-body-2 m-0 text-body">
+      {{ t("Body.OrderPremiumNote") }}
+      <NuxtLink to="/vertrag-kuendigen" target="_blank" class="text-accent hover:underline">
+        {{ t("Links.CancelContractsHere") }}
+      </NuxtLink>
+    </p>
+
     <p class="text-body-2 m-0 text-body">
       {{ t("Links.OrderLegalHint") }}
       <NuxtLink
@@ -80,6 +96,12 @@ const props = defineProps({
   heading: { type: String, default: "Headings.OrderSummary" },
   /** Show the net amount and the VAT amount above the total. */
   breakdown: { type: Boolean, default: false },
+  /**
+   * What is being bought, where the terms and conditions say something about
+   * the purchase that outlives the order itself: `coins` or `premium`. Empty
+   * for everything that is simply unlocked and stays unlocked.
+   */
+  kind: { type: String, default: "" },
   disabled: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
   /** Keep the information visible but drop the order button. */

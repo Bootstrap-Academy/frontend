@@ -75,6 +75,21 @@
             v-model="form.contract.value"
           />
 
+          <!--
+            § 312k Abs. 2 S. 2 Nr. 2 BGB asks the form for the designation of
+            the contract in the consumer's own words. It is asked for every
+            kind of cancellation, next to - not instead of - the selection
+            above, which is what finds the premium membership.
+          -->
+          <Input
+            id="contract-designation"
+            label="Inputs.ContractDesignation"
+            hint="Body.ContractDesignationHint"
+            v-model="form.contractDesignation.value"
+            @valid="form.contractDesignation.valid = $event"
+            :rules="form.contractDesignation.rules"
+          />
+
           <fieldset>
             <legend class="text-body-2 mb-2 block text-body font-body">
               {{ t("Inputs.EndOfContract") }}
@@ -95,6 +110,15 @@
             @valid="form.endDate.valid = $event"
             :rules="form.endDate.rules"
           />
+
+          <!--
+            An extraordinary cancellation claims an end before the paid period
+            is over. Whether that holds is decided by a person, so no end date
+            is determined here and the form says so before it is sent.
+          -->
+          <p v-if="isExtraordinary" class="text-body-2 m-0 text-body">
+            {{ t("Body.ExtraordinaryCancellationEndNotice") }}
+          </p>
 
           <InputBtn
             :loading="form.submitting"
@@ -126,6 +150,13 @@
           <dt class="text-body-1 m-0 text-body">{{ t("Inputs.Contract") }}</dt>
           <dd class="text-body-1 m-0 text-heading">{{ t(contractLabel) }}</dd>
 
+          <template v-if="!!declaration.contract_designation">
+            <dt class="text-body-1 m-0 text-body">{{ t("Inputs.ContractDesignation") }}</dt>
+            <dd class="text-body-1 m-0 text-heading">
+              {{ declaration.contract_designation }}
+            </dd>
+          </template>
+
           <dt class="text-body-1 m-0 text-body">{{ t("Inputs.CancellationType") }}</dt>
           <dd class="text-body-1 m-0 text-heading">{{ t(cancellationTypeLabel) }}</dd>
 
@@ -145,7 +176,15 @@
           <dd class="text-body-1 m-0 text-heading">{{ declaration.id }}</dd>
         </dl>
 
+        <!--
+          An extraordinary cancellation is answered without an end date, and
+          for a different reason than a declaration whose contract could not
+          be matched: it is examined, and the end date follows in Textform.
+        -->
         <p v-if="!!effectiveEnd">{{ t("Body.ContractEndsOn", { date: effectiveEnd }) }}</p>
+        <p v-else-if="declaredExtraordinary">
+          {{ t("Body.ExtraordinaryCancellationEndFollows") }}
+        </p>
         <p v-else>{{ t("Body.NoContractFoundForEmail") }}</p>
 
         <p v-if="confirmationEmailSent">
@@ -230,6 +269,11 @@ export default defineComponent({
         valid: true,
         value: "PREMIUM",
       },
+      contractDesignation: {
+        valid: true,
+        value: "",
+        rules: [(v: string) => v.length <= 256 || "Error.InputMaxLength_256"],
+      },
       endType: {
         valid: true,
         value: "NEXT_POSSIBLE",
@@ -261,11 +305,13 @@ export default defineComponent({
       body: () => {
         const extraordinary = form.cancellationType.value == "EXTRAORDINARY";
         const reason = form.reason.value.trim();
+        const designation = form.contractDesignation.value.trim();
 
         return {
           name: form.name.value.trim(),
           email: form.email.value.trim(),
           contract: form.contract.value,
+          contract_designation: !!designation ? designation : null,
           cancellation_type: form.cancellationType.value,
           details: extraordinary && !!reason ? reason : null,
           requested_end: form.endType.value == "DATE" ? toRequestedEnd(form.endDate.value) : null,
@@ -294,6 +340,12 @@ export default defineComponent({
       () =>
         CANCELLATION_TYPE_LABELS[declaration.value?.cancellation_type] ??
         "Inputs.OrdinaryCancellation"
+    );
+
+    // What the stored declaration says, not what the form currently shows -
+    // the record has to describe the declaration that was handed in.
+    const declaredExtraordinary = computed(
+      () => declaration.value?.cancellation_type == "EXTRAORDINARY"
     );
 
     // ============================================================= prefill
@@ -382,6 +434,7 @@ export default defineComponent({
       effectiveEnd,
       contractLabel,
       cancellationTypeLabel,
+      declaredExtraordinary,
       onclickSubmitForm,
       onclickPrint,
     };
