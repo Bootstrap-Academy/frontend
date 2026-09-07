@@ -729,15 +729,17 @@
         nach Ziffer 14.7 überprüfen zu lassen.
       </p>
       <p>
-        14.6 Begründung unserer Entscheidungen: Entfernen oder blenden wir einen Nutzerinhalt aus,
-        sperren wir Funktionen oder Ihr Konto oder kündigen wir außerordentlich, informieren wir Sie
-        spätestens mit der Maßnahme per E-Mail über: die Maßnahme und ihre Dauer; die Tatsachen und
-        Umstände, auf die wir uns stützen, einschließlich einer etwaigen Meldung; ob automatisierte
-        Mittel beteiligt waren; die Rechtsvorschrift oder die Ziffer dieser AGB, gegen die verstoßen
-        wurde, mit einer Erläuterung; sowie Ihre Möglichkeiten, die Entscheidung überprüfen zu
-        lassen (Beschwerde nach Ziffer 14.7 und der Rechtsweg zu den Gerichten). Bei irreführenden
-        kommerziellen Inhalten in großem Umfang (Spam) kann die Begründung entfallen (Art. 17 Abs. 2
-        DSA).
+        14.6 Begründung unserer Entscheidungen: Entfernen oder blenden wir einen Nutzerinhalt nach
+        Prüfung durch einen Menschen aus, sperren wir Funktionen oder Ihr Konto oder kündigen wir
+        außerordentlich, informieren wir Sie spätestens mit der Maßnahme per E-Mail über: die
+        Maßnahme und ihre Dauer; die Tatsachen und Umstände, auf die wir uns stützen, einschließlich
+        einer etwaigen Meldung; ob automatisierte Mittel beteiligt waren; die Rechtsvorschrift oder
+        die Ziffer dieser AGB, gegen die verstoßen wurde, mit einer Erläuterung; sowie Ihre
+        Möglichkeiten, die Entscheidung überprüfen zu lassen (Beschwerde nach Ziffer 14.7 und der
+        Rechtsweg zu den Gerichten). Bei einer vorläufigen Ausblendung nach Ziffer 14.4 erhalten Sie
+        diese Information, sobald ein Mensch entschieden hat, dass die Aufgabe ausgeblendet bleibt
+        oder entfernt wird. Bei irreführenden kommerziellen Inhalten in großem Umfang (Spam) kann
+        die Begründung entfallen (Art. 17 Abs. 2 DSA).
       </p>
       <p>
         14.7 Überprüfung: Gegen jede Maßnahme nach den Ziffern 14.3 bis 14.6 und 15 sowie gegen
