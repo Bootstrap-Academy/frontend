@@ -409,7 +409,10 @@
               zum Widerrufsrecht (Abschnitt 15.5)
             </td>
             <td>Art. 6 Abs. 1 lit. b DSGVO; Erklärungen zum Widerrufsrecht: auch lit. c</td>
-            <td>Bis zur Kontolöschung</td>
+            <td>
+              Bis zur Kontolöschung; Erklärungen beim MorphCoins-Kauf zusätzlich im Datensatz der
+              Rechnung (Abschnitt 15.4)
+            </td>
             <td>PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg (nur Betrag und Währung)</td>
           </tr>
           <tr>
@@ -436,7 +439,8 @@
               Art. 6 Abs. 1 lit. c und lit. b DSGVO; Aufbewahrung als Nachweis und Zähler: lit. f
             </td>
             <td>
-              Erklärung als Nachweis, auch nach Kontolöschung (Abschnitt 15.6); Zähler eine Stunde
+              Erklärung drei Jahre ab Ende des Eingangsjahres, auch nach Kontolöschung (Abschnitt
+              15.6); Zähler eine Stunde
             </td>
             <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
           </tr>
@@ -896,8 +900,10 @@
         <li>
           Rechnungen und Gutschriften bewahren wir wegen gesetzlicher Aufbewahrungspflichten weiter
           auf (Abschnitt 15.4). In unserem Datensatz ersetzen wir dabei Ihre Kundenangaben durch den
-          Vermerk „Gelöschtes Konto“ und entfernen die Zuordnung zum Konto; die PDF-Dateien behalten
-          die Angaben, mit denen sie ausgestellt wurden.
+          Vermerk „Gelöschtes Konto“ und entfernen die Zuordnung zum Konto; Fassung und Zeitpunkt
+          Ihrer Erklärungen zum Widerrufsrecht, die wir in den Datensatz einer Rechnung übernommen
+          haben, bleiben darin erhalten (Abschnitt 15.5). Die PDF-Dateien behalten die Angaben, mit
+          denen sie ausgestellt wurden.
         </li>
         <li>
           Haben Sie MorphCoins gekauft und ist davon bei der Löschung ein Anteil nicht verbraucht,
@@ -905,8 +911,8 @@
           und gegebenenfalls Ihre USt-IdNr. enthält (Abschnitt 15.4).
         </li>
         <li>
-          Kündigungs- und Widerrufserklärungen (Abschnitt 15.6) bleiben als Nachweis bestehen; die
-          Zuordnung zum Konto wird entfernt.
+          Kündigungs- und Widerrufserklärungen (Abschnitt 15.6) bleiben als Nachweis bis zum Ablauf
+          der Verjährungsfrist bestehen; die Zuordnung zum Konto wird entfernt.
         </li>
         <li>
           Einträge im Verwaltungsprotokoll (Abschnitt 10.5) bleiben bis zu zwölf Monate bestehen.
@@ -1144,9 +1150,9 @@
         es nicht; sie sind im Datenexport enthalten (Abschnitt 23).
       </p>
       <p>
-        Zusätzlich ist in der Software vorgesehen, dass eine nutzererstellte Aufgabe automatisch
-        ausgeblendet und den Administrator:innen zur Prüfung vorgelegt wird, wenn sie mindestens
-        zehn negative und mehr negative als positive Bewertungen erhalten hat.
+        Zusätzlich wird eine nutzererstellte Aufgabe automatisch ausgeblendet und den
+        Administrator:innen zur Prüfung vorgelegt, wenn sie mindestens zehn negative und mehr
+        negative als positive Bewertungen erhalten hat.
       </p>
       <p>
         Hinweis nach Art. 22 DSGVO: Ob eine Sperre verhängt wird, entscheidet in jedem Fall ein
@@ -1290,18 +1296,19 @@
         Erstattungen. Rechnungen und Gutschriften enthalten Name, Anschrift, E-Mail-Adresse und
         gegebenenfalls USt-IdNr. Zu jedem Dokument speichern wir außerdem einen Datensatz mit
         Nummer, Art, Ausstellungsdatum, den gedruckten Kundenangaben, der Zahl der MorphCoins und
-        den Beträgen. Wir erzeugen die PDF-Dateien auf unserem eigenen Server; ein externer Dienst
-        ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die Erstellung und
-        Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und Gutschriften
-        acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG), gerechnet ab
-        dem Ende des Kalenderjahres der Ausstellung – auch nach einer Kontolöschung; danach löschen
-        wir Datensatz und PDF-Datei automatisch. Nach einer Kontolöschung entfernen wir die
-        Zuordnung des Datensatzes zum Konto und ersetzen darin die Kundenangaben durch den Vermerk
-        „Gelöschtes Konto (Aufbewahrung nach § 147 Abs. 3 AO)“; die PDF-Datei behält die Angaben,
-        mit denen sie ausgestellt wurde, weil eine Rechnung nachträglich nicht verändert werden
-        darf. Die Liste aller Dokumente können Administrator:innen nach Nummer, Name und
-        E-Mail-Adresse durchsuchen; jeder Abruf dieser Liste wird im Verwaltungsprotokoll
-        festgehalten (Abschnitt 10.5).
+        den Beträgen; bei Rechnungen zusätzlich mit Fassung und Zeitpunkt der Erklärungen zum
+        Widerrufsrecht aus der Bestellung (Abschnitt 15.5). Wir erzeugen die PDF-Dateien auf unserem
+        eigenen Server; ein externer Dienst ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1
+        lit. b DSGVO für die Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir
+        bewahren Rechnungen und Gutschriften acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4
+        HGB, § 14b Abs. 1 UStG), gerechnet ab dem Ende des Kalenderjahres der Ausstellung – auch
+        nach einer Kontolöschung; danach löschen wir Datensatz und PDF-Datei automatisch. Nach einer
+        Kontolöschung entfernen wir die Zuordnung des Datensatzes zum Konto und ersetzen darin die
+        Kundenangaben durch den Vermerk „Gelöschtes Konto (Aufbewahrung nach § 147 Abs. 3 AO)“; die
+        PDF-Datei behält die Angaben, mit denen sie ausgestellt wurde, weil eine Rechnung
+        nachträglich nicht verändert werden darf. Die Liste aller Dokumente können
+        Administrator:innen nach Nummer, Name und E-Mail-Adresse durchsuchen; jeder Abruf dieser
+        Liste wird im Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
       </p>
       <p>
         Schlussabrechnung: Löschen Sie Ihr Konto und ist von Ihren gekauften MorphCoins ein Anteil
@@ -1338,7 +1345,10 @@
         MorphCoins wiederholt Ihre Erklärung mit Fassung und Zeitpunkt und enthält die AGB und die
         Widerrufsbelehrung als PDF. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
         § 312f Abs. 3 BGB sowie Art. 6 Abs. 1 lit. b DSGVO. Die Erklärungen sind im Datenexport
-        enthalten (Abschnitt 23) und werden mit Ihrem Konto gelöscht.
+        enthalten (Abschnitt 23) und werden mit Ihrem Konto gelöscht. Beim Kauf von MorphCoins
+        übernehmen wir Fassung und Zeitpunkt mit der Ausstellung der Rechnung zusätzlich in deren
+        Datensatz; dort bleiben sie acht Jahre ab dem Ende des Ausstellungsjahres erhalten, auch
+        nach einer Kontolöschung (Abschnitt 15.4).
       </p>
       <h3>15.6 Kündigung und Widerruf über die Plattform</h3>
       <p>
@@ -1364,9 +1374,9 @@
         Die Erklärung bewahren wir nach Abschluss der Bearbeitung als Nachweis der Kündigung bzw.
         des Widerrufs auf, auch nach einer Kontolöschung; Rechtsgrundlage dafür ist Art. 6 Abs. 1
         lit. f DSGVO (Nachweis bis zum Ablauf der Verjährung). Die Zuordnung zum Konto wird bei der
-        Kontolöschung entfernt, Name und E-Mail-Adresse bleiben in der Erklärung. Eine automatische
-        Löschung gibt es dafür nicht; nach Ablauf der regelmäßigen Verjährungsfrist von drei Jahren
-        ab dem Ende des Jahres der Erklärung (§§ 195, 199 BGB) löschen wir sie auf Anfrage.
+        Kontolöschung entfernt, Name und E-Mail-Adresse bleiben in der Erklärung. Nach Ablauf der
+        regelmäßigen Verjährungsfrist von drei Jahren, gerechnet ab dem Ende des Kalenderjahres des
+        Eingangs (§§ 195, 199 Abs. 1 BGB), löschen wir sie automatisch.
       </p>
       <p>
         Um Missbrauch der öffentlichen Formulare zu begrenzen, zählen wir Erklärungen je IP-Adresse
@@ -1547,7 +1557,10 @@
               Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung oder -Aufschub,
               Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
             </td>
-            <td>Bis zur Kontolöschung</td>
+            <td>
+              Bis zur Kontolöschung; Erklärungen zum Widerrufsrecht beim Kauf von MorphCoins
+              zusätzlich im Datensatz der Rechnung (acht Jahre, Abschnitt 15.4)
+            </td>
           </tr>
           <tr>
             <td>E-Mail-Bestätigungscode, Code zum Zurücksetzen des Passworts</td>
@@ -1621,10 +1634,7 @@
           </tr>
           <tr>
             <td>Kündigungs- und Widerrufserklärungen</td>
-            <td>
-              Als Nachweis, auch nach Kontolöschung; Löschung auf Anfrage nach Verjährung (Abschnitt
-              15.6)
-            </td>
+            <td>Drei Jahre ab Ende des Eingangsjahres, auch nach Kontolöschung (Abschnitt 15.6)</td>
           </tr>
           <tr>
             <td>Zähler zur Begrenzung der Kündigungs- und Widerrufsformulare</td>
