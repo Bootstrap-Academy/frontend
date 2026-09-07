@@ -865,9 +865,10 @@
       </p>
       <p>
         Jede verändernde Anfrage einer Administrator:in (Anlegen, Ändern, Löschen, Anmelden in einem
-        anderen Konto) sowie der Abruf eines Datenexports und der Abruf der Liste der
-        Rechnungsdokumente (Abschnitt 15.4) werden in einem Verwaltungsprotokoll festgehalten – auch
-        dann, wenn die Anfrage abgelehnt wurde. Ein Eintrag enthält Zeitpunkt, Kennung der
+        anderen Konto) sowie der Abruf eines Datenexports, der Abruf der Nutzerliste, der Abruf der
+        Liste der Rechnungsdokumente (Abschnitt 15.4) und der Abruf der Liste der Kündigungs- und
+        Widerrufserklärungen (Abschnitt 15.6) werden in einem Verwaltungsprotokoll festgehalten –
+        auch dann, wenn die Anfrage abgelehnt wurde. Ein Eintrag enthält Zeitpunkt, Kennung der
         handelnden Administrator:in, HTTP-Methode und Pfad der Anfrage (ohne Abfrageparameter;
         Kennungen im Pfad bleiben enthalten), Kennung des betroffenen Kontos, Antwortstatus und
         Anfragekennung; Inhalte der Anfrage werden nicht gespeichert. Zugriffe von Betreiber:innen
