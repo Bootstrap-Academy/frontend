@@ -237,8 +237,34 @@ export default defineComponent({
     const needMFA = ref(false);
     const needRecoveryCode = ref(false);
 
+    /**
+     * A login refused because too many attempts failed carries the waiting
+     * time in seconds. It is named in the message, in minutes once it is a
+     * minute or more, so that the message is the same one the server sent.
+     */
+    function retryAfterText(seconds: number) {
+      if (seconds >= 60) {
+        const minutes = Math.ceil(seconds / 60);
+        return t("Body.WaitMinutes", { n: minutes }, minutes);
+      }
+
+      return t("Body.WaitSeconds", { n: seconds }, seconds);
+    }
+
     function errorHandler(res: any) {
       let msg = res?.detail ?? "";
+
+      if (msg == "Error.TooManyFailedLoginAttempts") {
+        const seconds = Number(res?.retry_after) || 0;
+
+        // Without a readable `Retry-After` there is no time to name, and a
+        // message that invents one would be worse than one that says "later".
+        if (seconds <= 0) {
+          return openSnackbar("error", "Error.TooManyFailedLoginAttemptsUnknownWait");
+        }
+
+        return openSnackbar("error", msg, "", false, { wait: retryAfterText(seconds) });
+      }
 
       let isMFA = msg == "Error.InvalidCode";
       if (res.detail == "Error.InvalidCredentials") {

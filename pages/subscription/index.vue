@@ -117,6 +117,7 @@
       <div class="w-full max-w-2xl bg-secondary p-8 style-card">
         <OrderSummary
           :coins="order.coins"
+          :kind="order.kind"
           :loading="ordering"
           :disabled="!withdrawalConsent"
           @order="confirmOrder"
@@ -239,6 +240,7 @@ export default {
       withdrawalConsent.value = false;
       order.value = {
         coins: coinsRequired,
+        kind: "premium",
         // Premium is a service (part A of the withdrawal instruction).
         consentKind: "service",
         characteristics: "Body.OrderPremiumCharacteristics",
@@ -298,6 +300,7 @@ export default {
       withdrawalConsent.value = false;
       order.value = {
         coins: refillPrice.value,
+        kind: "",
         // Hearts are digital content (part B of the withdrawal instruction).
         consentKind: "digital",
         characteristics: "Body.OrderHeartsCharacteristics",

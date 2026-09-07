@@ -102,7 +102,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Nickname",
           (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 32 || "Error.InputMinLength_32",
+          (v: string) => v.length <= 32 || "Error.InputMaxLength_32",
           (v: string) => /^[a-zA-Z\d]{3,32}$/.test(v) || "Error.InputNicknameError",
         ],
       },
@@ -112,7 +112,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.DisplayName",
           (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 64 || "Error.InputMinLength_64",
+          (v: string) => v.length <= 64 || "Error.InputMaxLength_64",
         ],
       },
       email: {

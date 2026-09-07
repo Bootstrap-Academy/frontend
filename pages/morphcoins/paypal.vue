@@ -145,6 +145,7 @@
       <article class="max-w-2xl bg-secondary p-6 style-card mb-card">
         <OrderSummary
           :coins="coinsToBuy"
+          kind="coins"
           breakdown
           :disabled="!canBuy || !withdrawalConsent"
           :hide-actions="ordered"

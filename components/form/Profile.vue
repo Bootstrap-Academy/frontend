@@ -177,7 +177,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Name",
           (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 64 || "Error.InputMinLength_64",
+          (v: string) => v.length <= 64 || "Error.InputMaxLength_64",
         ],
       },
       description: {
@@ -200,37 +200,37 @@ export default defineComponent({
       first_name: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 128 || "Error.InputMaxLength_129"],
+        rules: [(v: string) => v.length <= 128 || "Error.InputMaxLength_128"],
       },
       last_name: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 128 || "Error.InputMaxLength_129"],
+        rules: [(v: string) => v.length <= 128 || "Error.InputMaxLength_128"],
       },
       street: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 256 || "Error.InputMaxLength_257"],
+        rules: [(v: string) => v.length <= 256 || "Error.InputMaxLength_256"],
       },
       zip_code: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 16 || "Error.InputMaxLength_17"],
+        rules: [(v: string) => v.length <= 16 || "Error.InputMaxLength_16"],
       },
       city: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_65"],
+        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_64"],
       },
       country: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_65"],
+        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_64"],
       },
       vat_id: {
         value: "",
         valid: true,
-        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_65"],
+        rules: [(v: string) => v.length <= 64 || "Error.InputMaxLength_64"],
       },
       submitting: false,
       validate: () => {

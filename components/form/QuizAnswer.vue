@@ -65,17 +65,26 @@
           {{ t("Buttons.Next") }}
         </InputBtn>
 
-        <InputBtnWithHeart
-          full
-          v-if="!data?.solved && user?.id != subtask?.creator && !isPremium"
-          :loading="formSubmitting"
-          @click="onclickSubmitForm()"
-          iconRight
-          mt
-          :icon="HalfHeart"
-        >
-          {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
-        </InputBtnWithHeart>
+        <!--
+          The half heart is only drawn on the button, which does not say what
+          it costs. The caption states the price of an attempt in words.
+        -->
+        <template v-if="!data?.solved && user?.id != subtask?.creator && !isPremium">
+          <InputBtnWithHeart
+            full
+            :loading="formSubmitting"
+            @click="onclickSubmitForm()"
+            iconRight
+            mt
+            :icon="HalfHeart"
+          >
+            {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
+          </InputBtnWithHeart>
+
+          <p class="mt-2 text-center text-xs text-body">
+            {{ t("Body.AttemptCostsHalfHeart") }}
+          </p>
+        </template>
 
         <InputBtn
           full

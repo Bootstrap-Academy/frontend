@@ -4,7 +4,7 @@
     <NuxtLink v-if="link && link.to && link.text" :to="link?.to ?? ''">
       <Btn secondary sm>{{ t(link.text) }}</Btn>
     </NuxtLink>
-    <p class="text-body-2 col-span-2 hidden md:block">{{ t(body) }}</p>
+    <p class="text-body-2 col-span-2 hidden md:block">{{ t(body, bodyParams) }}</p>
   </header>
 
   <div v-else class="flex justify-center">
@@ -33,12 +33,13 @@
         </strong>
         {{ t(heading) }}
       </h2>
-      <p>{{ t(body) }}</p>
+      <p>{{ t(body, bodyParams) }}</p>
     </header>
   </div>
 </template>
 
 <script lang="ts">
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -49,6 +50,8 @@ export default defineComponent({
     heading: { type: String, default: `` },
     subheading: { type: String, default: `` },
     body: { type: String, default: `` },
+    /** Values interpolated into `body`, e.g. a rate read from the API. */
+    bodyParams: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
     sub: { type: Boolean, default: false },
     noLink: { type: Boolean, default: false },
     link: { default: { to: "", text: "" } },

@@ -321,10 +321,14 @@
             <td>
               Nickname, Anzeigename, E-Mail-Adresse, Passwort-Hash, Verifizierungsstatus, Rolle,
               Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, Zustimmung zu den AGB
-              oder Aufschub der Entscheidung, Einstellung zur Bestenliste
+              oder Aufschub der Entscheidung, Einstellung zur Bestenliste; Zähler fehlgeschlagener
+              Anmeldeversuche je Konto und je IP-Adresse (nur als Hashwert)
             </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>Bis zur Kontolöschung; Sitzungen bis 30 Tage nach der letzten Nutzung</td>
+            <td>Art. 6 Abs. 1 lit. b DSGVO; Zähler: lit. f</td>
+            <td>
+              Bis zur Kontolöschung; Sitzungen bis 30 Tage nach der letzten Nutzung; Zähler 15
+              Minuten nach dem letzten Fehlversuch
+            </td>
             <td>Keine (Hetzner als Hosting-Anbieter)</td>
           </tr>
           <tr>
@@ -846,11 +850,23 @@
         letzten Erneuerung sowie das Kennzeichen, ob die Sitzung mit einem zweiten Faktor bestätigt
         wurde. Beim Abmelden wird die Sitzung ungültig; abgelaufene Sitzungen löschen wir
         automatisch. Optional können Sie eine Zwei-Faktor-Authentifizierung (TOTP) einrichten; dafür
-        speichern wir das TOTP-Geheimnis und Wiederherstellungscodes. Fehlgeschlagene
-        Anmeldeversuche zählen wir je Anmeldename bzw. E-Mail-Adresse in einem Zwischenspeicher, um
-        das Erraten von Passwörtern zu erschweren; gespeichert wird nur ein Hashwert des
-        Anmeldenamens mit dem Zähler, der bei der nächsten erfolgreichen Anmeldung gelöscht wird
-        (Art. 6 Abs. 1 lit. f DSGVO, Sicherheit des Kontos).
+        speichern wir das TOTP-Geheimnis und Wiederherstellungscodes.
+      </p>
+      <p>
+        Um das Erraten von Passwörtern zu erschweren, zählen wir fehlgeschlagene Anmeldeversuche je
+        Konto und je IP-Adresse in einem Zwischenspeicher. Nach fünf Fehlversuchen für ein Konto
+        sperren wir die Anmeldung für dieses Konto zunächst für eine Minute; jeder weitere
+        Fehlversuch verdoppelt die Sperre (zwei, vier, acht Minuten) bis auf höchstens 15 Minuten.
+        Nutzername und E-Mail-Adresse desselben Kontos teilen sich dabei einen Zähler. Nach 30
+        Fehlversuchen von derselben IP-Adresse innerhalb von 15 Minuten lehnen wir weitere
+        Anmeldeversuche von dieser Adresse für den Rest dieses Zeitraums ab; erfolgreiche
+        Anmeldungen werden dabei nicht mitgezählt. Solange eine Sperre besteht, lehnen wir weitere
+        Versuche mit einer Fehlermeldung ab, in der die Wartezeit genannt wird. Gespeichert wird nur
+        ein Hashwert des Anmeldenamens bzw. der IP-Adresse mit dem Zähler. Der Zähler je Konto wird
+        15 Minuten nach dem letzten Fehlversuch oder bei der nächsten erfolgreichen Anmeldung
+        gelöscht; der Zähler je IP-Adresse wird 15 Minuten nach dem letzten gezählten Fehlversuch
+        gelöscht und durch eine erfolgreiche Anmeldung nicht zurückgesetzt. Rechtsgrundlage für die
+        Zähler ist Art. 6 Abs. 1 lit. f DSGVO (Sicherheit des Kontos).
       </p>
       <h3>10.5 Zugriff durch Administrator:innen und Verwaltungsprotokoll</h3>
       <p>
@@ -1580,8 +1596,18 @@
             <td>Bis 30 Tage nach der letzten Nutzung oder bis zur Abmeldung</td>
           </tr>
           <tr>
-            <td>Zähler fehlgeschlagener Anmeldeversuche</td>
-            <td>Bis zur nächsten erfolgreichen Anmeldung</td>
+            <td>Zähler fehlgeschlagener Anmeldeversuche je Konto</td>
+            <td>
+              Bis 15 Minuten nach dem letzten Fehlversuch oder bis zur nächsten erfolgreichen
+              Anmeldung
+            </td>
+          </tr>
+          <tr>
+            <td>Zähler fehlgeschlagener Anmeldeversuche je IP-Adresse</td>
+            <td>
+              Bis 15 Minuten nach dem letzten Fehlversuch; eine erfolgreiche Anmeldung löscht ihn
+              nicht
+            </td>
           </tr>
           <tr>
             <td>Verwaltungsprotokoll</td>

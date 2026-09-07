@@ -13,6 +13,19 @@
         </p>
       </div>
       <Price v-if="price > 0" :coins="price" euro-only class="text-body-2 text-body" />
+
+      <!--
+        A premium membership opens every course of the platform (AGB 8.1), so
+        the coin price is not the only way to get this one. Shown to visitors
+        who are not premium members, because for the others it is the reason
+        the course is already open.
+      -->
+      <p v-if="price > 0 && !isPremium" class="text-body-2 mt-2 text-body">
+        {{ t("Body.PremiumIncludesThisCourse") }}
+        <NuxtLink to="/subscription" class="text-accent hover:underline">
+          {{ t("Links.MorePremium") }}
+        </NuxtLink>
+      </p>
     </article>
 
     <hr class="mb-8 mt-4" />
@@ -191,6 +204,9 @@ async function onclickOrder() {
 const price = computed(() => {
   return props.data?.price ?? 0;
 });
+
+const premiumInfo: any = usePremiumInfo();
+const isPremium = computed(() => !!premiumInfo.value?.premium);
 
 const canOrder = computed(
   () => termsAndConditions.value && (price.value <= 0 || withdrawalConsent.value)

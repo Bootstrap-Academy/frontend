@@ -110,16 +110,25 @@
           {{ t("Buttons.Next") }}
         </InputBtn>
 
-        <InputBtnWithHeart
-          class="mx-auto block w-full max-w-md"
-          v-if="!data?.solved && user?.id != data?.creator && !isPremium"
-          :loading="formSubmitting"
-          @click="onclickSubmitForm()"
-          iconRight
-          :icon="HalfHeart"
-        >
-          {{ t("Buttons.SubmitAnswer") }}
-        </InputBtnWithHeart>
+        <!--
+          The half heart is only drawn on the button, which does not say what
+          it costs. The caption states the price of an attempt in words.
+        -->
+        <template v-if="!data?.solved && user?.id != data?.creator && !isPremium">
+          <InputBtnWithHeart
+            class="mx-auto block w-full max-w-md"
+            :loading="formSubmitting"
+            @click="onclickSubmitForm()"
+            iconRight
+            :icon="HalfHeart"
+          >
+            {{ t("Buttons.SubmitAnswer") }}
+          </InputBtnWithHeart>
+
+          <p class="mx-auto mt-2 max-w-md text-center text-xs text-body">
+            {{ t("Body.AttemptCostsHalfHeart") }}
+          </p>
+        </template>
 
         <InputBtn
           class="mx-auto block w-full max-w-md"
