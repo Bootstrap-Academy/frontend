@@ -569,7 +569,7 @@
     "RenewalAgreementReferenceHint": "Optional: reference from your monthly renewal agreement confirmation. Your declaration is accepted and reviewed without it.",
     "PurchaseOrders": "Orders and contract documents",
     "PurchaseStoredOffer": "Saved offer and declaration text",
-    "PurchaseOfferUnavailable": "This offer is currently unavailable. Please reload.",
+    "PurchaseOfferUnavailable": "This offer is currently unavailable. You can find existing orders in your order overview.",
     "PurchaseProvided": "The ordered access has been provided.",
     "PurchaseRejected": "Order rejected without charge. A new attempt requires a new offer.",
     "PurchasePending": "Order processing or review remains open. Confirmation and provision are recorded here; existing claims remain protected.",

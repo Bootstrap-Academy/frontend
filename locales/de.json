@@ -568,7 +568,7 @@
     "RenewalAgreementReferenceHint": "Optional: Vorgangsnummer aus der Bestätigung Ihrer monatlichen Verlängerungsvereinbarung. Ohne diese Nummer nehmen wir Ihre Erklärung ebenfalls entgegen und prüfen die Zuordnung.",
     "PurchaseOrders": "Bestellungen und Vertragsunterlagen",
     "PurchaseStoredOffer": "Gespeichertes Angebot und Erklärungstext",
-    "PurchaseOfferUnavailable": "Das konkrete Angebot ist zurzeit nicht verfügbar. Bitte erneut laden.",
+    "PurchaseOfferUnavailable": "Das konkrete Angebot ist zurzeit nicht verfügbar. Bestehende Bestellungen finden Sie in Ihrer Bestellübersicht.",
     "PurchaseProvided": "Die bestellte Leistung wurde bereitgestellt.",
     "PurchaseRejected": "Bestellung abgelehnt; keine Abbuchung. Für einen neuen Versuch ist ein neues Angebot erforderlich.",
     "PurchasePending": "Bestellung in Bearbeitung oder zur Klärung offen. Bestätigung und Leistungsbereitstellung werden hier dokumentiert; bestehende Ansprüche bleiben erhalten.",
