@@ -1552,16 +1552,82 @@
         aufgebaut wird. Versendete E-Mails speichern wir mit Ausnahme der Verlängerungsbestätigungen
         nach Abschnitt 15.7 nicht.
       </p>
-      <h3>17.2 Kontaktformular und E-Mail an uns</h3>
+      <h3>17.2 Persönlicher Kontakt und öffentliches Feedback</h3>
       <p>
-        Über das Kontaktformular erheben wir Name, E-Mail-Adresse, Betreff und Nachricht; die
-        Angaben werden als E-Mail an hallo@bootstrap.academy übermittelt und dort bearbeitet.
-        Gleiches gilt für E-Mails, die Sie uns direkt senden. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
-        b DSGVO, wenn Ihre Anfrage Ihr Konto oder einen Vertrag betrifft, sonst Art. 6 Abs. 1 lit. f
-        DSGVO (Beantwortung von Anfragen). Wir speichern die Kommunikation, solange es zur
-        Bearbeitung nötig ist, und löschen sie zwölf Monate nach Abschluss der Anfrage; länger nur,
-        wenn eine gesetzliche Aufbewahrungspflicht besteht oder wir die Kommunikation zur
-        Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen benötigen.
+        Persönliche Anfragen, Konto- und Löschanliegen sowie Sicherheitslücken können Sie direkt an
+        die E-Mail-Adresse im
+        <NuxtLink to="/docs/imprint" class="underline-link">Impressum</NuxtLink>
+        senden. Wir verarbeiten dabei Absender- und Kontaktangaben, Betreff und Nachricht. Auch
+        Nachrichten über die bestehende Kontaktformularschnittstelle werden als E-Mail an
+        hallo@bootstrap.academy übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, wenn
+        Ihre Anfrage Ihr Konto oder einen Vertrag betrifft, sonst Art. 6 Abs. 1 lit. f DSGVO
+        (Beantwortung von Anfragen). Wir speichern diese Kommunikation, solange es zur Bearbeitung
+        nötig ist, und löschen sie zwölf Monate nach Abschluss der Anfrage; länger nur, wenn eine
+        gesetzliche Aufbewahrungspflicht besteht oder wir sie zur Geltendmachung, Ausübung oder
+        Verteidigung von Rechtsansprüchen benötigen.
+      </p>
+      <p>
+        Der Feedback-Button für Fehler und Ideen führt zu einer
+        <strong>öffentlichen Meldung auf GitHub</strong>. Dafür benötigen Sie weder ein
+        Bootstrap-Academy- noch ein GitHub-Konto. Wir übermitteln die gewählte Kategorie, den Titel
+        und Ihre Beschreibung über unseren Server an das öffentliche Repository
+        Bootstrap-Academy/Bootstrap-Academy. Bitte tragen Sie keine persönlichen Daten, Zugangsdaten
+        oder Angaben zu Sicherheitslücken ein. Eine persönliche Antwort oder Umsetzung der Meldung
+        wird nicht zugesagt.
+      </p>
+      <p>
+        Zusätzliche technische Angaben werden erst nach Auswahl der zunächst deaktivierten Option
+        erhoben und vor dem Versand vollständig angezeigt: App-Build, Browserfamilie und verfügbare
+        Version, Betriebssystemfamilie, Fenstergröße, Oberflächensprache, Theme und Einstellung für
+        reduzierte Bewegung. Ohne diese Auswahl wird kein solcher Diagnosedatensatz mitgesendet.
+        Konto- und Nutzerkennungen, E-Mail-Adressen, Cookies, Tokens, Speicherinhalte, Roh-URLs,
+        Lernfortschritt sowie Konsolen- und Netzwerkaufzeichnungen werden nicht automatisch in die
+        Meldung übernommen.
+      </p>
+      <p>
+        Unabhängig davon können Sie ausdrücklich ein Bild auswählen oder, soweit unterstützt, den
+        aktuellen Tab aufnehmen. Aufnahme und Bearbeitung geschehen zunächst auf Ihrem Gerät; es
+        erfolgt kein Bildupload vor dem endgültigen Absenden. Sie können zuschneiden, markieren und
+        Bereiche deckend schwärzen. Bekannte private Bereiche einer verifizierten Tabaufnahme werden
+        zusätzlich maskiert; dies ersetzt nicht Ihre Prüfung des gesamten Bildes. Übertragen wird
+        nur das bestätigte, neu gerasterte Ergebnis, nicht die Originaldatei oder entfernbare
+        Bearbeitungsebenen. Unser Server prüft das Bild und erzeugt es ohne Originalmetadaten neu.
+      </p>
+      <p>
+        Soweit die von Ihnen gewählte Veröffentlichung personenbezogene Daten enthält, erfolgt sie
+        mit Ihrer Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO durch die entsprechend beschriftete
+        Sendeschaltfläche. Die freiwillige Diagnoseauswahl und das ausdrückliche Anhängen eines
+        Bildes bestimmen den Umfang. Sie können diese Auswahl vor dem Senden ändern und die
+        Einwilligung für die Zukunft über hallo@bootstrap.academy widerrufen. Bitte nennen Sie dazu
+        den Link Ihrer Meldung. Freitext und Bilder können trotz der technischen Begrenzungen
+        persönliche Angaben enthalten; wir versprechen deshalb keine vollständige Anonymität.
+      </p>
+      <p>
+        GitHub, Inc., USA, erhält den öffentlichen Meldungstext und gegebenenfalls einen Link auf
+        das öffentlich abrufbare Bild. Angaben zu Drittlandübermittlungen finden Sie in Abschnitt 19
+        und in den
+        <a
+          href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline-link"
+          >Datenschutzhinweisen von GitHub</a
+        >. Öffentliche Meldungen bleiben zur nachvollziehbaren Fehlerbearbeitung auf GitHub
+        erhalten, bis sie dort bearbeitet oder gelöscht werden. Unsere Bilddateien werden nach 90
+        Tagen unzugänglich und spätestens bei der anschließenden stündlichen Bereinigung gelöscht;
+        auf eine berechtigte Anfrage können wir sie vorher entfernen. Eine Löschung bei uns entfernt
+        keine bereits von GitHub oder Dritten angelegten Kopien.
+      </p>
+      <p>
+        Zur Vermeidung doppelter Veröffentlichungen speichern wir eine zufällige Vorgangskennung,
+        einen Prüfwert des Inhalts, den Zeitpunkt, einen Abgleichmarker und gegebenenfalls den
+        Issue-Link und eine zufällige Bildkennung. Der Beleg enthält keine Kopie von Titel,
+        Beschreibung, Diagnosewerten oder IP-Adresse. Diese mengenmäßig begrenzten Belege haben
+        keine automatische Ablauffrist und bleiben erhalten, solange der Dienst die zugehörigen
+        Vorgangskennungen akzeptiert. Für den Missbrauchsschutz werden IP-Adressen und Zeitpunkte
+        bis zu einer Stunde in begrenzten flüchtigen Zählern verarbeitet und nicht an GitHub
+        übermittelt. Grundlage dieser Schutzmaßnahmen ist Art. 6 Abs. 1 lit. f DSGVO (zuverlässige
+        Zustellung und Schutz vor missbräuchlicher Veröffentlichung).
       </p>
       <h3>17.3 Discord-Community</h3>
       <p>
@@ -1621,7 +1687,7 @@
             </tr>
             <tr>
               <td>GitHub, Inc.</td>
-              <td>Anmeldung über GitHub (Abschnitt 11)</td>
+              <td>Anmeldung über GitHub und öffentliches Feedback (Abschnitte 11 und 17.2)</td>
               <td>EU-US Data Privacy Framework</td>
             </tr>
             <tr>

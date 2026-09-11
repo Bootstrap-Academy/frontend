@@ -192,6 +192,7 @@ async function mounted(language, fn, { blocked = false, data = new Map() } = {})
   };
   app.component("LazyClientOnly", slot);
   app.component("Footer", { render: () => null });
+  app.component("FeedbackLauncher", { render: () => null });
   // Nuxt keys the layout provider by layout name. Its slot subtree is recreated
   // on default ↔ inner, while the actual App instance above it survives.
   const provider = {

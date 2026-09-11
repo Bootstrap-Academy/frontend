@@ -1,4 +1,21 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+import { execFileSync } from "node:child_process";
+
+function feedbackBuild() {
+  try {
+    const revision = execFileSync("git", ["rev-parse", "--short=12", "HEAD"], {
+      encoding: "utf8",
+    }).trim();
+    try {
+      execFileSync("git", ["diff", "--quiet", "HEAD"], { stdio: "ignore" });
+      return revision;
+    } catch {
+      return revision + "-dirty";
+    }
+  } catch {
+    return "unavailable";
+  }
+}
 
 export default defineNuxtConfig({
   ssr: false,
@@ -47,6 +64,7 @@ export default defineNuxtConfig({
       BASE_API_URL: "https://api.test.bootstrap.academy",
       BASE_WEB_URL: "https://test.bootstrap.academy",
       NODE_ENV: "production",
+      FEEDBACK_BUILD: feedbackBuild(),
     },
   },
 

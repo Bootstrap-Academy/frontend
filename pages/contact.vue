@@ -1,97 +1,58 @@
-<!--
-✅ Responsive UI
-✅ Page Title
-✅ Translation
-❌ Animation
-
-✅ Tested on chrome
-✅ Tested on firefox
-✅ Tested on safari
-✅ Tested on android mobile
-✅ Tested on apple mobile
-
-✅ Display data
-
-✅ Api implemented
-✅ Form Client Side Error Handling
-✅ Form Submission Process
-✅ Form Post Api Error Handling + ✅ Translation
-✅ Form Post Api Success Handling + ✅ Translation
--->
+<script setup lang="ts">
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+const { locale } = useI18n();
+const de = computed(() => locale.value.startsWith("de"));
+useHead({ title: computed(() => (de.value ? "Feedback und Kontakt" : "Feedback and contact")) });
+</script>
 
 <template>
-  <main
-    class="container-fluid flex flex-col items-center justify-center gap-container mt-container mb-container midXl:flex-row midXl:justify-between"
-  >
-    <section class="grid gap-card midXl:min-w-[350px]" ref="staggeringAOS">
-      <SectionTitle
-        size="lg"
-        :subheading="title.subheading"
-        :heading="title.heading"
-        :body="title.body"
-        class="mb-card"
-      />
-
-      <article
-        v-for="({ icon, body }, i) of contactInfo"
-        :key="i"
-        class="grid grid-cols-[auto_1fr] gap-x-6"
-      >
-        <div class="row-span-2 h-fit w-fit rounded-lg bg-tertiary p-3 lg:p-4">
-          <component class="h-5 w-5 text-accent xl:h-6 xl:w-6" :is="icon"></component>
-        </div>
-        <p class="text-heading-5 text-subheading font-body">
-          {{ t(`List.Contact.${i + 1}.Heading`) }}
-        </p>
-        <h6 class="text-heading-4 font-heading">
-          {{ body }}
-        </h6>
-      </article>
+  <main class="my-container space-y-card container-fluid mx-auto max-w-3xl">
+    <h1 class="text-heading-1">{{ de ? "Feedback und Kontakt" : "Feedback and contact" }}</h1>
+    <section class="border-accent/40 p-card space-y-3 rounded-lg border bg-secondary">
+      <h2 class="text-heading-3">
+        {{ de ? "Fehler melden oder Idee vorschlagen" : "Report a bug or suggest an idea" }}
+      </h2>
+      <p>
+        {{
+          de
+            ? "Nutze den Feedback-Button unten rechts. Deine Meldung wird öffentlich auf GitHub veröffentlicht; ein Konto ist nicht erforderlich. Technische Angaben und ein bearbeitetes Bild kannst du freiwillig ergänzen. Text allein genügt."
+            : "Use the feedback button in the bottom-right corner. Your report is published publicly on GitHub; no account is needed. Technical details and an edited image are optional. Text alone is enough."
+        }}
+      </p>
+      <p>
+        {{
+          de
+            ? "Bitte keine persönlichen Daten oder Zugangsdaten veröffentlichen. Eine persönliche Antwort oder Umsetzung können wir nicht zusagen."
+            : "Please do not publish personal information or credentials. We cannot promise a personal reply or implementation."
+        }}
+      </p>
     </section>
-
-    <section class="container-form h-fit">
-      <FormContact />
+    <section class="space-y-3">
+      <h2 class="text-heading-3">
+        {{
+          de
+            ? "Persönliches Anliegen oder Sicherheitslücke"
+            : "Personal request or security vulnerability"
+        }}
+      </h2>
+      <p>
+        {{
+          de
+            ? "Für direkten Kontakt, Fragen zu deinem Konto, Löschanliegen und Sicherheitslücken nutze bitte die E-Mail-Adresse im Impressum. Diese Angaben gehören nicht in eine öffentliche GitHub-Meldung."
+            : "For direct contact, account questions, deletion requests and security vulnerabilities, please use the email address in our legal notice. These details do not belong in a public GitHub report."
+        }}
+      </p>
+      <NuxtLink
+        to="/docs/imprint"
+        class="inline-flex min-h-12 items-center text-accent underline"
+        >{{ de ? "Zum Impressum und E-Mail-Kontakt" : "Legal notice and email contact" }}</NuxtLink
+      >
+      <p>
+        <NuxtLink to="/docs/privacy#kommunikation" class="underline">{{
+          de ? "Datenschutzhinweise" : "Privacy information"
+        }}</NuxtLink>
+      </p>
     </section>
   </main>
 </template>
-
-<script lang="ts">
-import { MapPinIcon, EnvelopeIcon } from "@heroicons/vue/24/solid";
-import { useI18n } from "vue-i18n";
-
-export default {
-  head: {
-    title: "Contact Us",
-  },
-  setup() {
-    const { t } = useI18n();
-
-    const staggeringAOS = ref<HTMLDivElement | null>(null);
-
-    const title = {
-      subheading: `Subheadings.ContactUs`,
-      heading: `Headings.ContactUs`,
-      body: `Body.ContactUs`,
-    };
-
-    let contactInfo = [
-      {
-        icon: MapPinIcon,
-        body: "Wittelsbacherplatz 1 80333 München",
-      },
-      {
-        icon: EnvelopeIcon,
-        body: "hallo@bootstrap.academy",
-      },
-    ];
-
-    onMounted(() => {
-      setStaggeringAOSViaParent(staggeringAOS.value, "aos", "show", [0]);
-    });
-
-    return { title, contactInfo, staggeringAOS, t };
-  },
-};
-</script>
-
-<style scoped></style>
