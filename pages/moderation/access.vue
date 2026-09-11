@@ -5,6 +5,8 @@ const { t } = useI18n();
 const m = useModeration(),
   busy = ref(false),
   message = ref("");
+const recoveryMessage = ref(""),
+  recoveryError = ref(false);
 const providers = ref<any[]>([]),
   captchaRequired = ref(false);
 let captchaLoading: Promise<void> | undefined;
@@ -82,11 +84,16 @@ async function captchaProof() {
 async function recover() {
   if (busy.value) return;
   busy.value = true;
+  recoveryMessage.value = "";
+  recoveryError.value = false;
   try {
     await m.request("/access/recovery", { method: "POST", body: { ...recovery } }, true);
-    message.value = t("Moderation.RecoveryReceived");
+    if (alive) recoveryMessage.value = t("Moderation.RecoveryReceived");
   } catch {
-    message.value = t("Moderation.RequestFailed");
+    if (alive) {
+      recoveryError.value = true;
+      recoveryMessage.value = t("Moderation.RequestFailed");
+    }
   } finally {
     busy.value = false;
   }
@@ -122,105 +129,119 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="moderation-page mx-auto grid max-w-2xl gap-8 p-6 text-body">
-    <h1>{{ t("Moderation.Title") }}</h1>
-    <p>{{ t("Moderation.AccessExplanation") }}</p>
-    <p v-if="message" role="status">{{ message }}</p>
-    <CommercialAccess
-      :identity="`${m.epoch.value}:${m.recipient.value}`"
-      :personal-proof="m.commercialPersonalProof"
-      :personal-read-context="m.commercialOriginalRead"
-    />
-    <form class="grid gap-4" @submit.prevent="submitPassword">
-      <fieldset :disabled="busy" class="grid gap-4">
-        <label
-          >{{ t("Inputs.EmailOrUsername")
-          }}<input v-model="form.name_or_email" required autocomplete="username"
-        /></label>
-        <label
-          >{{ t("Inputs.Password")
-          }}<input v-model="form.password" required type="password" autocomplete="current-password"
-        /></label>
-        <label
-          >{{ t("Inputs.MFACode")
-          }}<input v-model="form.mfa_code" inputmode="numeric" autocomplete="one-time-code"
-        /></label>
-        <label
-          >{{ t("Inputs.RecoveryCode") }}<input v-model="form.recovery_code" autocomplete="off"
-        /></label>
-        <button type="submit" :disabled="busy">{{ t("Moderation.Prove") }}</button>
-      </fieldset>
-    </form>
-    <section v-if="captchaRequired" class="grid gap-3">
-      <p>{{ t("Moderation.CaptchaNotice") }}</p>
-      <NuxtLink to="/docs/privacy">{{ t("Links.Privacy") }}</NuxtLink
-      ><button type="button" :disabled="busy" @click="captchaProof">
-        {{ t("Moderation.CaptchaProof") }}
-      </button>
+  <main class="moderation-page moderation-surface grid max-w-2xl gap-6">
+    <header class="grid gap-3">
+      <h1>{{ t("Moderation.Title") }}</h1>
+      <p>{{ t("Moderation.AccessExplanation") }}</p>
+    </header>
+    <section class="support-card grid gap-4" aria-labelledby="moderation-login-heading">
+      <h2 id="moderation-login-heading">{{ t("Moderation.LoginHeading") }}</h2>
+      <p class="support-help">{{ t("Moderation.LoginHelp") }}</p>
+      <p v-if="message" role="alert">{{ message }}</p>
+      <form class="grid gap-4" @submit.prevent="submitPassword">
+        <fieldset :disabled="busy" class="grid min-w-0 gap-4">
+          <legend class="sr-only">{{ t("Moderation.LoginHeading") }}</legend>
+          <label
+            >{{ t("Inputs.EmailOrUsername")
+            }}<input v-model="form.name_or_email" required autocomplete="username"
+          /></label>
+          <label
+            >{{ t("Inputs.Password")
+            }}<input
+              v-model="form.password"
+              required
+              type="password"
+              autocomplete="current-password"
+          /></label>
+          <details>
+            <summary>{{ t("Moderation.SecondFactorHeading") }}</summary>
+            <div class="grid gap-3">
+              <p class="support-help">{{ t("Moderation.SecondFactorHelp") }}</p>
+              <label
+                >{{ t("Inputs.MFACode")
+                }}<input v-model="form.mfa_code" inputmode="numeric" autocomplete="one-time-code"
+              /></label>
+              <label
+                >{{ t("Inputs.RecoveryCode")
+                }}<input v-model="form.recovery_code" autocomplete="off"
+              /></label>
+            </div>
+          </details>
+          <button type="submit" :disabled="busy">
+            {{ busy ? t("Moderation.Working") : t("Moderation.Prove") }}
+          </button>
+        </fieldset>
+      </form>
+      <section v-if="captchaRequired" class="grid gap-3">
+        <p class="support-help">{{ t("Moderation.CaptchaNotice") }}</p>
+        <NuxtLink to="/docs/privacy">{{ t("Links.Privacy") }}</NuxtLink>
+        <button type="button" :disabled="busy" @click="captchaProof">
+          {{ t("Moderation.CaptchaProof") }}
+        </button>
+      </section>
+      <div v-if="providers.length" class="grid gap-2">
+        <p class="support-help">{{ t("Moderation.LinkedLogin") }}</p>
+        <div class="flex flex-wrap gap-3">
+          <button
+            v-for="provider in providers"
+            :key="provider.id"
+            type="button"
+            :disabled="busy"
+            @click="oauth(provider.id)"
+          >
+            {{ provider.name }}
+          </button>
+        </div>
+      </div>
+      <NuxtLink to="/auth/forgot-password" class="w-fit">{{ t("Links.ForgotPassword") }}</NuxtLink>
     </section>
-    <div v-if="providers.length" class="flex flex-wrap gap-4">
-      <button
-        v-for="provider in providers"
-        :key="provider.id"
-        type="button"
-        :disabled="busy"
-        @click="oauth(provider.id)"
-      >
-        {{ provider.name }}
-      </button>
-    </div>
-    <NuxtLink to="/auth/forgot-password">{{ t("Links.ForgotPassword") }}</NuxtLink>
-    <form class="grid gap-4" @submit.prevent="recover">
-      <h2>{{ t("Moderation.CaseAccess") }}</h2>
-      <label
-        >{{ t("Moderation.Area")
-        }}<select v-model="recovery.source">
-          <option value="backend">{{ t("Moderation.Account") }}</option>
-          <option value="challenges">{{ t("Moderation.Content") }}</option>
-        </select></label
-      >
-      <label>{{ t("Moderation.Case") }}<input v-model="recovery.case_id" required /></label>
-      <label
-        >{{ t("Moderation.Contact")
-        }}<input v-model="recovery.contact" type="email" required autocomplete="email"
-      /></label>
-      <button type="submit" :disabled="busy">{{ t("Moderation.RequestAccess") }}</button>
-    </form>
-    <p>
+    <details class="case-recovery">
+      <summary>{{ t("Moderation.CaseAccess") }}</summary>
+      <form class="grid gap-4" @submit.prevent="recover">
+        <p id="case-recovery-help" class="support-help">{{ t("Moderation.CaseAccessHelp") }}</p>
+        <fieldset :disabled="busy" class="grid min-w-0 gap-4" aria-describedby="case-recovery-help">
+          <legend class="sr-only">{{ t("Moderation.CaseAccess") }}</legend>
+          <label
+            >{{ t("Moderation.Area")
+            }}<select v-model="recovery.source">
+              <option value="backend">{{ t("Moderation.Account") }}</option>
+              <option value="challenges">{{ t("Moderation.Content") }}</option>
+            </select></label
+          >
+          <label
+            >{{ t("Moderation.Case")
+            }}<input v-model="recovery.case_id" required autocomplete="off"
+          /></label>
+          <label
+            >{{ t("Moderation.Contact")
+            }}<input v-model="recovery.contact" type="email" required autocomplete="email"
+          /></label>
+          <button type="submit" :disabled="busy">
+            {{ busy ? t("Moderation.Working") : t("Moderation.RequestAccess") }}
+          </button>
+        </fieldset>
+        <p
+          v-if="recoveryMessage"
+          :role="recoveryError ? 'alert' : 'status'"
+          :class="{ 'support-success': !recoveryError }"
+        >
+          {{ recoveryMessage }}
+        </p>
+      </form>
+    </details>
+    <details class="retained-access">
+      <summary>{{ t("Moderation.SavedAccess") }}</summary>
+      <p class="support-help mb-4">{{ t("Moderation.SavedAccessHelp") }}</p>
+      <CommercialAccess
+        :identity="`${m.epoch.value}:${m.recipient.value}`"
+        :personal-proof="m.commercialPersonalProof"
+        :personal-read-context="m.commercialOriginalRead"
+      />
+    </details>
+    <p class="support-help">
       {{ t("Moderation.ContactHelp") }}
       <a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a>
     </p>
-    <NuxtLink to="/vertrag-kuendigen">{{ t("Moderation.CancelContract") }}</NuxtLink>
-    <NuxtLink to="/vertrag-widerrufen">{{ t("Moderation.WithdrawContract") }}</NuxtLink>
   </main>
 </template>
-<style scoped>
-label {
-  display: grid;
-  gap: 0.5rem;
-}
-input,
-select {
-  color: #111827;
-  background: white;
-  border: 1px solid #94a3b8;
-  border-radius: 0.3rem;
-  padding: 0.65rem;
-  min-width: 0;
-}
-button {
-  border: 1px solid currentColor;
-  border-radius: 0.3rem;
-  padding: 0.65rem;
-}
-button:disabled {
-  opacity: 0.5;
-}
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-a:focus-visible {
-  outline: 3px solid var(--color-body);
-  outline-offset: 3px;
-}
-</style>
+<style src="../../assets/css/account-support.css"></style>

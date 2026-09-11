@@ -72,9 +72,7 @@ export default defineComponent({
     ];
 
     let usefulLinks = [
-      // The two statutory declaration pages are additionally reachable from
-      // here; the permanent bar in `components/ContractTermination.vue` is
-      // what § 312k Abs. 2 BGB and § 356a BGB actually require.
+      // One permanent entry point for contract declarations across all layouts.
       {
         label: "Links.CancelContractsHere",
         pathname: "/vertrag-kuendigen",

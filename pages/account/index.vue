@@ -28,10 +28,24 @@
       <AccountChangePassword class="md:w-1/2" />
     </div>
     <AccountOAuthLinks />
-    <div class="mb-16 justify-between max-md:space-y-6 md:flex md:space-x-12">
+    <div class="justify-between max-md:space-y-6 md:flex md:space-x-12">
       <AccountDownloadData class="md:w-1/2" />
       <AccountDelete class="md:w-1/2" />
     </div>
+    <section
+      class="mb-12 grid gap-3 border-t border-tertiary pt-6"
+      aria-labelledby="account-documents-heading"
+    >
+      <h2 id="account-documents-heading" class="text-heading-4">
+        {{ t("Moderation.AccountDocuments") }}
+      </h2>
+      <NuxtLink to="/orders" class="w-fit py-2 text-accent underline">{{
+        t("Body.PurchaseOrders")
+      }}</NuxtLink>
+      <NuxtLink to="/moderation" class="w-fit py-2 text-accent underline">{{
+        t("Moderation.Title")
+      }}</NuxtLink>
+    </section>
   </main>
 </template>
 

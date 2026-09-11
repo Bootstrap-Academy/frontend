@@ -164,19 +164,6 @@
           {{ t("Buttons.TryAgain") }}
         </Btn>
       </div>
-
-      <!--
-        Turning automatic renewal off cancels at the paid period end. The statutory
-        route under § 312k BGB, with the confirmation by e-mail, lives on its
-        own page and stays reachable even while no period is currently active -
-        which is exactly when the toggle above is unavailable.
-      -->
-      <div class="mb-20 mt-10 flex flex-col items-center">
-        <NuxtLink to="/vertrag-kuendigen">
-          <Btn class="!normal-case">{{ t("Buttons.CancelPremium") }}</Btn>
-        </NuxtLink>
-        <p class="mt-3 max-w-md text-center">{{ t("Body.CancelPremiumHint") }}</p>
-      </div>
     </section>
 
     <!--
@@ -184,7 +171,6 @@
       § 312j Abs. 2 BGB and the statutory order button are shown before the
       coins are debited.
     -->
-    <NuxtLink to="/orders" class="text-accent underline">{{ t("Body.PurchaseOrders") }}</NuxtLink>
     <Modal
       v-if="order"
       :aria-label="t('Headings.OrderSummary')"

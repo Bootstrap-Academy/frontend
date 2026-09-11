@@ -55,9 +55,12 @@
       {{ t("Buttons.Login") }}
     </InputBtn>
 
-    <NuxtLink to="/moderation/access" class="self-center">{{
-      t("Moderation.RestrictedAccess")
-    }}</NuxtLink>
+    <NuxtLink
+      v-if="restrictedAccess"
+      to="/moderation/access"
+      class="self-center text-accent underline"
+      >{{ t("Moderation.RestrictedAccess") }}</NuxtLink
+    >
 
     <NuxtLink to="/auth/signup" class="self-center">
       {{ t("Links.DontHaveAccount") }}
@@ -240,6 +243,7 @@ export default defineComponent({
 
     const needMFA = ref(false);
     const needRecoveryCode = ref(false);
+    const restrictedAccess = ref(false);
 
     /**
      * A login refused because too many attempts failed carries the waiting
@@ -257,6 +261,7 @@ export default defineComponent({
 
     function errorHandler(res: any) {
       let msg = res?.detail ?? "";
+      restrictedAccess.value = ["Error.UserDisabled", "Error.UserIsBanned"].includes(msg);
 
       if (msg == "Error.TooManyFailedLoginAttempts") {
         const seconds = Number(res?.retry_after) || 0;
@@ -295,6 +300,7 @@ export default defineComponent({
       providers,
       needMFA,
       needRecoveryCode,
+      restrictedAccess,
     };
   },
 });

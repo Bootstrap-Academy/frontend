@@ -11,14 +11,9 @@
         <InputBtn class="w-full" @click="navigateTo('/')">{{ t("Links.BackToHome") }}</InputBtn>
       </section>
     </main>
-
-    <!--
-      `app.vue` is not rendered for the error page, so the permanently
-      available buttons required by § 312k Abs. 2 BGB and § 356a BGB are added
-      here as well.
-    -->
-    <ContractTermination />
   </NuxtLayout>
+  <!-- The error entry replaces app.vue, so it owns the same single footer. -->
+  <LazyClientOnly><Footer /></LazyClientOnly>
 </template>
 
 <script setup lang="ts">
