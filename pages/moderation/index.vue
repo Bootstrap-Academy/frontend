@@ -6,7 +6,8 @@ const { t } = useI18n(),
 const selected = ref(""),
   text = ref(""),
   error = ref(""),
-  busy = ref(false);
+  busy = ref(false),
+  loading = ref(true);
 const invoiceNumber = ref(""),
   creditMonth = ref("");
 const orderId = ref(""),
@@ -70,11 +71,14 @@ function restorePending() {
 }
 watch([m.recipient, m.scope], restorePending);
 async function refresh() {
+  loading.value = true;
   try {
     await m.load();
     if (alive) error.value = "";
   } catch {
     if (alive) error.value = t("Moderation.LoadFailed");
+  } finally {
+    if (alive) loading.value = false;
   }
 }
 function choose(row: ModerationMessage) {
@@ -226,28 +230,39 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <main class="moderation-page mx-auto grid max-w-4xl gap-6 p-6">
+  <main class="moderation-page moderation-surface grid max-w-4xl gap-6">
+    <NuxtLink to="/account" class="w-fit print:hidden">{{ t("Links.MyAccount") }}</NuxtLink>
     <h1>{{ t("Moderation.Title") }}</h1>
-    <p v-if="m.recipient.value">
-      {{ t("Moderation.RecipientIdentity") }} {{ m.recipient.value }} ·
-      {{ m.scope.value === "case" ? t("Moderation.CaseAccess") : t("Moderation.Rights") }}
-    </p>
+    <p>{{ t("Moderation.InboxHelp") }}</p>
+    <details v-if="m.recipient.value" class="print:hidden">
+      <summary>{{ t("Moderation.AccessDetails") }}</summary>
+      <p>
+        {{ t("Moderation.RecipientIdentity") }} {{ m.recipient.value }} ·
+        {{ m.scope.value === "case" ? t("Moderation.CaseAccess") : t("Moderation.Rights") }}
+      </p>
+    </details>
     <p v-if="error" role="alert">{{ error }}</p>
     <NuxtLink to="/moderation/access">{{ t("Moderation.ChangeAccess") }}</NuxtLink>
-    <p v-if="!m.available.value" role="status">{{ t("Moderation.Partial") }}</p>
-    <p v-if="!m.rows.value.length">{{ t("Moderation.Empty") }}</p>
-    <nav class="grid gap-3 print:hidden" :aria-label="t('Moderation.Cases')">
+    <p v-if="!loading && !m.available.value" role="status">{{ t("Moderation.Partial") }}</p>
+    <p v-if="loading" role="status">{{ t("Moderation.Loading") }}</p>
+    <p v-else-if="!error && !m.rows.value.length" class="support-card">
+      {{ t("Moderation.Empty") }}
+    </p>
+    <nav class="support-cases grid gap-3 print:hidden" :aria-label="t('Moderation.Cases')">
       <button
         v-for="row in m.rows.value"
         :key="rowKey(row)"
         type="button"
-        class="text-left"
+        class="grid gap-1 text-left"
+        :aria-pressed="current && rowKey(current) === rowKey(row)"
         @click="choose(row)"
       >
-        {{ row.case_id }} ·
-        {{ row.audience === "author" ? t("Moderation.Author") : t("Moderation.Notifier") }} ·
-        {{ row.statement.outcome || row.statement.status }}
-        <span v-if="!row.informed_at"> · {{ t("Moderation.Unopened") }}</span>
+        <span
+          >{{ row.source === "backend" ? t("Moderation.Account") : t("Moderation.Content") }} ·
+          {{ row.audience === "author" ? t("Moderation.Author") : t("Moderation.Notifier") }}</span
+        >
+        <span class="support-help">{{ t("Moderation.Case") }}: {{ row.case_id }}</span>
+        <span v-if="!row.informed_at" class="support-help">{{ t("Moderation.Unopened") }}</span>
       </button>
     </nav>
     <article
@@ -255,9 +270,10 @@ onMounted(async () => {
       ref="statementElement"
       :data-message="rowKey(current)"
       :key="rowKey(current)"
-      class="grid min-w-0 gap-4 break-words"
+      class="support-card grid min-w-0 gap-4 break-words"
     >
-      <h2>{{ t("Moderation.Case") }} {{ current.case_id }}</h2>
+      <h2>{{ t("Moderation.DecisionHeading") }}</h2>
+      <p class="support-help">{{ t("Moderation.Case") }}: {{ current.case_id }}</p>
       <p>{{ current.current ? t("Moderation.Current") : t("Moderation.History") }}</p>
       <dl class="grid gap-3">
         <template v-for="field in fields" :key="field"
@@ -292,18 +308,25 @@ onMounted(async () => {
         <button type="button" @click="print">{{ t("Moderation.Print") }}</button
         ><button type="button" @click="downloadCase">{{ t("Moderation.DownloadCase") }}</button>
       </div>
-      <form v-if="current.decision_id" class="grid gap-3 print:hidden" @submit.prevent="complain">
+      <form
+        v-if="current.decision_id"
+        class="border-slate-600 grid gap-3 border-t pt-5 print:hidden"
+        @submit.prevent="complain"
+      >
+        <h2>{{ t("Moderation.ReviewHeading") }}</h2>
+        <p id="complaint-help" class="support-help">{{ t("Moderation.ComplaintHelp") }}</p>
         <label
           >{{ t("Moderation.Complaint")
           }}<textarea
             v-model="text"
+            aria-describedby="complaint-help"
             required
             maxlength="16000"
             rows="6"
             :disabled="busy || !!intent"
           />
         </label>
-        <button type="submit" :disabled="busy || !!receipt">
+        <button v-if="!receipt" type="submit" :disabled="busy || !text.trim()">
           {{
             intent?.status === "unconfirmed"
               ? t("Moderation.RetryComplaint")
@@ -313,110 +336,113 @@ onMounted(async () => {
         <p v-if="intent?.status === 'unconfirmed'" role="status">
           {{ t("Moderation.PendingComplaint") }} {{ intent.id }}
         </p>
-        <p v-if="receipt" role="status">{{ t("Moderation.Receipt") }} {{ receipt }}</p>
+        <p v-if="receipt" role="status" class="support-success">
+          {{ t("Moderation.Receipt") }} {{ receipt }}
+        </p>
       </form>
     </article>
-    <section v-if="m.scope.value === 'rights'" class="grid gap-4 print:hidden">
-      <h2>{{ t("Moderation.Rights") }}</h2>
-      <CommercialStatus
-        :identity="`${m.epoch.value}:${m.recipient.value}`"
-        :read="m.commercialSnapshot"
-        :original="m.commercialStatement"
-      />
-      <CommercialAccess
-        :identity="`${m.epoch.value}:${m.recipient.value}`"
-        :personal-proof="m.commercialPersonalProof"
-        :personal-read-context="m.commercialOriginalRead"
-        :ordinary-read-context="m.commercialOrdinaryRead"
-        :show-records="false"
-      />
-      <button
-        type="button"
-        :disabled="busy"
-        @click="action(() => m.download('/export', 'account-and-moderation.json'))"
-      >
-        {{ t("Moderation.Export") }}
-      </button>
-      <label>{{ t("Moderation.Order") }}<input v-model="orderId" /></label>
-      <div class="flex flex-wrap gap-3">
+    <details v-if="m.scope.value === 'rights'" class="account-rights print:hidden">
+      <summary>{{ t("Moderation.Rights") }}</summary>
+      <p class="support-help mb-4">{{ t("Moderation.RightsHelp") }}</p>
+      <section class="grid gap-4">
+        <CommercialStatus
+          :identity="`${m.epoch.value}:${m.recipient.value}`"
+          :read="m.commercialSnapshot"
+          :original="m.commercialStatement"
+        />
+        <CommercialAccess
+          :identity="`${m.epoch.value}:${m.recipient.value}`"
+          :personal-proof="m.commercialPersonalProof"
+          :personal-read-context="m.commercialOriginalRead"
+          :ordinary-read-context="m.commercialOrdinaryRead"
+          :show-records="false"
+        />
         <button
-          v-for="kind in [
-            'terms',
-            'withdrawal',
-            'confirmation',
-            'timing',
-            'timing-original',
-            'fulfillment',
-            'fulfillment-original',
-          ]"
-          :key="kind"
           type="button"
-          :disabled="busy || !orderId"
+          :disabled="busy"
+          @click="action(() => m.download('/export', 'account-and-moderation.json'))"
+        >
+          {{ t("Moderation.Export") }}
+        </button>
+        <label>{{ t("Moderation.Order") }}<input v-model="orderId" /></label>
+        <div class="flex flex-wrap gap-3">
+          <button
+            v-for="kind in [
+              'terms',
+              'withdrawal',
+              'confirmation',
+              'timing',
+              'timing-original',
+              'fulfillment',
+              'fulfillment-original',
+            ]"
+            :key="kind"
+            type="button"
+            :disabled="busy || !orderId"
+            @click="
+              action(() =>
+                m.download(
+                  `/purchases/${encodeURIComponent(orderId)}/documents/${kind}`,
+                  `${orderId}-${kind}.${['terms', 'withdrawal'].includes(kind) ? 'pdf' : 'txt'}`
+                )
+              )
+            "
+          >
+            {{ t(`Body.PurchaseDocument_${kind}`) }}
+          </button>
+        </div>
+        <label
+          >{{ t("Moderation.InvoiceNumber")
+          }}<input v-model="invoiceNumber" inputmode="numeric" /></label
+        ><button
+          type="button"
+          :disabled="busy || !/^[0-9]+$/.test(invoiceNumber)"
+          @click="
+            action(() =>
+              m.download(`/finance/invoice/${invoiceNumber}/0`, `invoice-${invoiceNumber}.pdf`)
+            )
+          "
+        >
+          {{ t("Moderation.DownloadInvoice") }}
+        </button>
+        <label>{{ t("Moderation.CreditMonth") }}<input v-model="creditMonth" type="month" /></label
+        ><button
+          type="button"
+          :disabled="busy || !creditMonth"
           @click="
             action(() =>
               m.download(
-                `/purchases/${encodeURIComponent(orderId)}/documents/${kind}`,
-                `${orderId}-${kind}.${['terms', 'withdrawal'].includes(kind) ? 'pdf' : 'txt'}`
+                `/finance/credit-note/${creditMonth.split('-')[0]}/${Number(creditMonth.split('-')[1])}`,
+                `credit-note-${creditMonth}.pdf`
               )
             )
           "
         >
-          {{ kind }}
+          {{ t("Moderation.DownloadCredit") }}
         </button>
-      </div>
-      <label
-        >{{ t("Moderation.InvoiceNumber")
-        }}<input v-model="invoiceNumber" inputmode="numeric" /></label
-      ><button
-        type="button"
-        :disabled="busy || !/^[0-9]+$/.test(invoiceNumber)"
-        @click="
-          action(() =>
-            m.download(`/finance/invoice/${invoiceNumber}/0`, `invoice-${invoiceNumber}.pdf`)
-          )
-        "
-      >
-        {{ t("Moderation.DownloadInvoice") }}
-      </button>
-      <label>{{ t("Moderation.CreditMonth") }}<input v-model="creditMonth" type="month" /></label
-      ><button
-        type="button"
-        :disabled="busy || !creditMonth"
-        @click="
-          action(() =>
-            m.download(
-              `/finance/credit-note/${creditMonth.split('-')[0]}/${Number(creditMonth.split('-')[1])}`,
-              `credit-note-${creditMonth}.pdf`
-            )
-          )
-        "
-      >
-        {{ t("Moderation.DownloadCredit") }}
-      </button>
-      <label>{{ t("Moderation.Event") }}<input v-model="eventId" /></label
-      ><button
-        type="button"
-        :disabled="busy || !eventId"
-        @click="
-          action(() => m.request(`/events/${encodeURIComponent(eventId)}`, { method: 'DELETE' }))
-        "
-      >
-        {{ t("Moderation.CancelEvent") }}
-      </button>
-      <form class="grid gap-3" @submit.prevent="erase">
-        <label class="flex gap-3"
-          ><input v-model="deletionConfirmed" type="checkbox" required />{{
-            t("Moderation.EraseConfirmation")
-          }}</label
-        ><button type="submit" :disabled="busy || !deletionConfirmed">
-          {{ t("Moderation.Erase") }}
+        <label>{{ t("Moderation.Event") }}<input v-model="eventId" /></label
+        ><button
+          type="button"
+          :disabled="busy || !eventId"
+          @click="
+            action(() => m.request(`/events/${encodeURIComponent(eventId)}`, { method: 'DELETE' }))
+          "
+        >
+          {{ t("Moderation.CancelEvent") }}
         </button>
-      </form>
-    </section>
+        <form class="grid gap-3" @submit.prevent="erase">
+          <label class="flex gap-3"
+            ><input v-model="deletionConfirmed" type="checkbox" required />{{
+              t("Moderation.EraseConfirmation")
+            }}</label
+          ><button type="submit" :disabled="busy || !deletionConfirmed">
+            {{ t("Moderation.Erase") }}
+          </button>
+        </form>
+      </section>
+    </details>
     <div class="grid gap-3 print:hidden">
-      <NuxtLink to="/vertrag-kuendigen">{{ t("Moderation.CancelContract") }}</NuxtLink
-      ><NuxtLink to="/vertrag-widerrufen">{{ t("Moderation.WithdrawContract") }}</NuxtLink
-      ><a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a
+      <a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a
       ><button
         type="button"
         :disabled="busy"
@@ -432,29 +458,4 @@ onMounted(async () => {
     </div>
   </main>
 </template>
-<style scoped>
-label {
-  display: grid;
-  gap: 0.5rem;
-}
-input,
-textarea {
-  color: #111827;
-  background: white;
-  border: 1px solid #94a3b8;
-  border-radius: 0.3rem;
-  padding: 0.65rem;
-  min-width: 0;
-}
-button {
-  border: 1px solid currentColor;
-  border-radius: 0.3rem;
-  padding: 0.65rem;
-}
-button:disabled {
-  opacity: 0.5;
-}
-pre {
-  overflow-wrap: anywhere;
-}
-</style>
+<style src="../../assets/css/account-support.css"></style>

@@ -1,0 +1,129 @@
+/* A single dark-theme treatment for account documents and exceptional access. */
+.moderation-page.moderation-surface {
+  width: 100%;
+  min-width: 0;
+  margin: 2rem auto 4rem;
+  padding: 1rem;
+  color: #cdd7f5;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  color-scheme: dark;
+}
+.moderation-surface h1 {
+  color: #eef2ff;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.moderation-surface h2 {
+  color: #eef2ff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.moderation-surface .support-card,
+.moderation-surface > details {
+  padding: 1rem;
+  border: 1px solid #40516a;
+  border-radius: 0.75rem;
+  background: #12243d;
+}
+.moderation-surface .support-help {
+  color: #b4c2db;
+  font-size: 0.9rem;
+}
+.moderation-surface label {
+  display: grid;
+  gap: 0.4rem;
+}
+.moderation-surface.moderation-page input:not([type="checkbox"]):not([type="radio"]),
+.moderation-surface.moderation-page textarea,
+.moderation-surface.moderation-page select,
+.moderation-surface.moderation-page option {
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #75869f;
+  border-radius: 0.4rem;
+  background: #182b45;
+  color: #eef2ff;
+  font: inherit;
+}
+.moderation-surface.moderation-page input::placeholder,
+.moderation-surface.moderation-page textarea::placeholder {
+  color: #a6b5ce;
+  opacity: 1;
+}
+.moderation-surface input[type="checkbox"],
+.moderation-surface input[type="radio"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #0cc9ab;
+}
+.moderation-surface button {
+  min-height: 44px;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #71849f;
+  border-radius: 0.4rem;
+  background: #182b45;
+  color: #eef2ff;
+}
+.moderation-surface button[type="submit"] {
+  border-color: #0cc9ab;
+  background: #0cc9ab;
+  color: #081b2b;
+  font-weight: 600;
+}
+.moderation-surface button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.moderation-surface a {
+  color: #5eead4;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+.moderation-surface summary {
+  min-height: 44px;
+  padding: 0.45rem 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: #eef2ff;
+}
+.moderation-surface details[open] > summary {
+  margin-bottom: 0.75rem;
+}
+.moderation-surface [role="alert"] {
+  padding: 0.75rem;
+  border: 1px solid #e3b76b;
+  border-radius: 0.4rem;
+  color: #ffe3ad;
+  background: #302719;
+}
+.moderation-surface .support-success {
+  padding: 0.75rem;
+  border: 1px solid #4fc6a9;
+  border-radius: 0.4rem;
+  color: #c2ffed;
+  background: #11372f;
+}
+.moderation-surface :is(button, input, textarea, select, a, summary):focus-visible {
+  outline: 3px solid #5eead4;
+  outline-offset: 3px;
+}
+.moderation-surface .support-cases button[aria-pressed="true"] {
+  border-color: #5eead4;
+  background: #1c3e4a;
+}
+.moderation-surface pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 640px) {
+  .moderation-page.moderation-surface {
+    padding: 1.5rem;
+  }
+  .moderation-surface .support-card,
+  .moderation-surface > details {
+    padding: 1.5rem;
+  }
+}
