@@ -292,6 +292,11 @@ export default {
 </script>
 
 <style scoped>
+main {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 h1 {
   @apply text-heading-1;
 }

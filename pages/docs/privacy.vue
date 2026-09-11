@@ -118,67 +118,69 @@
         Ihrem Konto erfolgt über eine zufällig erzeugte Nutzerkennung (UUID). Welcher Dienst welche
         Daten verarbeitet:
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Dienst</th>
-            <th>Aufgabe</th>
-            <th>Personenbezogene Daten</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Kerndienst (Konto und Shop)</td>
-            <td>Registrierung, Anmeldung, Sitzungen, MorphCoins, Premium, Herzen, Rechnungen</td>
-            <td>
-              Kontodaten, Passwort-Hash, Sitzungen, Zwei-Faktor-Daten, Verknüpfungen mit
-              Drittanbietern, Rechnungsdaten, Guthaben und Transaktionen, PayPal-Bestellreferenzen,
-              Erklärungen zum Widerrufsrecht, Kündigungs- und Widerrufserklärungen, Datensätze zu
-              Rechnungen, Gutschriften und Schlussabrechnungen, Verwaltungsprotokoll (Abschnitte 10,
-              11, 15)
-            </td>
-          </tr>
-          <tr>
-            <td>Skills</td>
-            <td>Kurse, Lernfortschritt, Erfahrungspunkte (XP)</td>
-            <td>
-              Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP je
-              Skill (Abschnitt 12)
-            </td>
-          </tr>
-          <tr>
-            <td>Challenges</td>
-            <td>Quizfragen, Zuordnungs- und Programmieraufgaben</td>
-            <td>
-              Einreichungen mit Quellcode, Ausführungsergebnisse, Lösungsstand, Versuche,
-              Bewertungen, selbst erstellte Aufgaben, Meldungen, Sperren (Abschnitt 13)
-            </td>
-          </tr>
-          <tr>
-            <td>Events</td>
-            <td>Webinare, Coachings</td>
-            <td>
-              Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleiter:innen,
-              Kalender-Abo-Kennung (Abschnitt 14)
-            </td>
-          </tr>
-          <tr>
-            <td>Jobs</td>
-            <td>Stellenanzeigen (derzeit nicht freigeschaltet)</td>
-            <td>keine nutzerbezogenen Datensätze (Abschnitt 12.3)</td>
-          </tr>
-          <tr>
-            <td>Sandkasten</td>
-            <td>Ausführung von eingereichtem Code</td>
-            <td>Quellcode nur während der Ausführung, ohne Nutzerbezug (Abschnitt 13.2)</td>
-          </tr>
-          <tr>
-            <td>Weboberfläche</td>
-            <td>Anzeige im Browser</td>
-            <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Dienst</th>
+              <th>Aufgabe</th>
+              <th>Personenbezogene Daten</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Kerndienst (Konto und Shop)</td>
+              <td>Registrierung, Anmeldung, Sitzungen, MorphCoins, Premium, Herzen, Rechnungen</td>
+              <td>
+                Kontodaten, Passwort-Hash, Sitzungen, Zwei-Faktor-Daten, Verknüpfungen mit
+                Drittanbietern, Rechnungsdaten, Guthaben und Transaktionen,
+                PayPal-Bestellreferenzen, Erklärungen zum Widerrufsrecht, Kündigungs- und
+                Widerrufserklärungen, Datensätze zu Rechnungen, Gutschriften und
+                Schlussabrechnungen, Verwaltungsprotokoll (Abschnitte 10, 11, 15)
+              </td>
+            </tr>
+            <tr>
+              <td>Skills</td>
+              <td>Kurse, Lernfortschritt, Erfahrungspunkte (XP)</td>
+              <td>
+                Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP je
+                Skill (Abschnitt 12)
+              </td>
+            </tr>
+            <tr>
+              <td>Challenges</td>
+              <td>Quizfragen, Zuordnungs- und Programmieraufgaben</td>
+              <td>
+                Einreichungen mit Quellcode, Ausführungsergebnisse, Lösungsstand, Versuche,
+                Bewertungen, selbst erstellte Aufgaben, Meldungen, Sperren (Abschnitt 13)
+              </td>
+            </tr>
+            <tr>
+              <td>Events</td>
+              <td>Webinare, Coachings</td>
+              <td>
+                Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleiter:innen,
+                Kalender-Abo-Kennung (Abschnitt 14)
+              </td>
+            </tr>
+            <tr>
+              <td>Jobs</td>
+              <td>Stellenanzeigen (derzeit nicht freigeschaltet)</td>
+              <td>keine nutzerbezogenen Datensätze (Abschnitt 12.3)</td>
+            </tr>
+            <tr>
+              <td>Sandkasten</td>
+              <td>Ausführung von eingereichtem Code</td>
+              <td>Quellcode nur während der Ausführung, ohne Nutzerbezug (Abschnitt 13.2)</td>
+            </tr>
+            <tr>
+              <td>Weboberfläche</td>
+              <td>Anzeige im Browser</td>
+              <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Alle Anwendungsdienste und Datenbanken laufen auf Servern der Hetzner Online GmbH in
         Deutschland (Abschnitt 7). Die Dienste kommunizieren untereinander über interne
@@ -250,266 +252,272 @@
         Die Übersicht fasst alle Verarbeitungen zusammen. Einzelheiten finden Sie in den jeweils
         genannten Abschnitten.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Verarbeitung</th>
-            <th>Zweck</th>
-            <th>Datenkategorien</th>
-            <th>Rechtsgrundlage</th>
-            <th>Speicherdauer</th>
-            <th>Empfänger</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Auslieferung der Weboberfläche (Abschnitt 7.2)</td>
-            <td>Bereitstellung der Website, Schutz vor Überlastungsangriffen</td>
-            <td>
-              IP-Adresse, Zeitpunkt, aufgerufene URL, Browserkennung, Cookies für bootstrap.academy,
-              Netzwerkfehlerberichte
-            </td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>Keine Speicherung bei uns; bei Cloudflare nach dessen Datenschutzerklärung</td>
-            <td>Cloudflare, Inc., USA (Auftragsverarbeiter, EU-US Data Privacy Framework)</td>
-          </tr>
-          <tr>
-            <td>Server-Logs (Abschnitt 8.1)</td>
-            <td>Sicherer Betrieb, Abwehr von Angriffen, Fehlersuche</td>
-            <td>IP-Adresse, Zeitpunkt, URL, HTTP-Status, Browserkennung, Referrer</td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>
-              30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
-              static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
-            </td>
-            <td>Hetzner Online GmbH, Deutschland (Hosting)</td>
-          </tr>
-          <tr>
-            <td>Fehlerberichte (Abschnitt 8.2)</td>
-            <td>Fehlerbehebung</td>
-            <td>
-              Fehlermeldung, Stacktrace, aufgerufene URL, Nutzerkennung, Kennung und je nach Fehler
-              IP-Adresse der auslösenden Anfrage
-            </td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>90 Tage</td>
-            <td>Keine (selbst betriebenes System bei Hetzner)</td>
-          </tr>
-          <tr>
-            <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
-            <td>
-              Anmeldung, Sitzung, Anmeldung über Drittanbieter, von Ihnen gewählte Einstellungen
-            </td>
-            <td>
-              Sitzungstoken, Nutzerkennung, Nickname, Anzeigename, Einstellungen, Einmalwerte einer
-              laufenden Anmeldung über einen Drittanbieter
-            </td>
-            <td>§ 25 Abs. 2 Nr. 2 TDDDG; Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>Sitzungsende; Local Storage und Session Storage siehe Abschnitt 9</td>
-            <td>
-              Cloudflare, Inc. (Cookies werden bei Anfragen an die Weboberfläche mitgesendet,
-              Abschnitt 7.2)
-            </td>
-          </tr>
-          <tr>
-            <td>Benutzerkonto (Abschnitt 10)</td>
-            <td>Bereitstellung der Plattform, Sicherheit des Kontos</td>
-            <td>
-              Nickname, Anzeigename, E-Mail-Adresse, Passwort-Hash, Verifizierungsstatus, Rolle,
-              Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, Zustimmung zu den AGB
-              oder Aufschub der Entscheidung, Einstellung zur Bestenliste; Zähler fehlgeschlagener
-              Anmeldeversuche je Konto und je IP-Adresse (nur als Hashwert)
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO; Zähler: lit. f</td>
-            <td>
-              Bis zur Kontolöschung; Sitzungen bis 30 Tage nach der letzten Nutzung; Zähler 15
-              Minuten nach dem letzten Fehlversuch
-            </td>
-            <td>Keine (Hetzner als Hosting-Anbieter)</td>
-          </tr>
-          <tr>
-            <td>Verwaltungsprotokoll (Abschnitt 10.5)</td>
-            <td>Nachvollziehbarkeit administrativer Zugriffe auf Konten</td>
-            <td>
-              Kennung der handelnden Administrator:in, Zeitpunkt, Methode und Pfad der Anfrage,
-              Kennung des betroffenen Kontos, Antwortstatus, Anfragekennung
-            </td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>Zwölf Monate</td>
-            <td>Keine</td>
-          </tr>
-          <tr>
-            <td>Anmeldung über Drittanbieter (Abschnitt 11)</td>
-            <td>Alternative Anmeldemethode</td>
-            <td>
-              Anbieter, Nutzerkennung und Nutzername beim Anbieter, Zeitpunkt der Verknüpfung;
-              während einer Anmeldung Einmalkennung, Anbieter, Rückkehradresse, Prüfwert
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>
-              Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder Kontolöschung; Daten
-              einer laufenden Anmeldung höchstens zehn Minuten
-            </td>
-            <td>
-              GitHub, Inc., USA; Discord Netherlands B.V., Niederlande / Discord Inc., USA; Google
-              Ireland Limited, Irland / Google LLC, USA (jeweils EU-US Data Privacy Framework)
-            </td>
-          </tr>
-          <tr>
-            <td>Lernplattform (Abschnitt 12)</td>
-            <td>Kurse, Fortschrittsanzeige, XP, Bestenliste</td>
-            <td>
-              Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP,
-              Skill-Level, Lösungsstand und Versuche bei Aufgaben
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO; Bestenliste: Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>Bis zur Kontolöschung</td>
-            <td>Bestenliste: angemeldete Nutzer:innen (Anzeigename, Nickname, XP, Rang)</td>
-          </tr>
-          <tr>
-            <td>Challenges und Code-Ausführung (Abschnitt 13)</td>
-            <td>Auswertung von Programmieraufgaben, eigene Aufgaben</td>
-            <td>
-              Quellcode, Programmiersprache, Ergebnis, Fehlerausgaben, Laufzeit, Speicherverbrauch,
-              selbst erstellte Aufgaben, Bewertungen
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>
-              Ausführung: höchstens 5 Minuten im Arbeitsspeicher; Einreichung: bis zur Kontolöschung
-            </td>
-            <td>Keine (eigener Code-Ausführungsdienst bei Hetzner)</td>
-          </tr>
-          <tr>
-            <td>Moderation (Abschnitt 13.4)</td>
-            <td>Schutz vor missbräuchlichen Inhalten und Meldungen</td>
-            <td>Meldungen (Grund, Kommentar), Sperren (Art, Beginn, Ende, Grund)</td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>Bis zur Kontolöschung</td>
-            <td>Keine</td>
-          </tr>
-          <tr>
-            <td>Events, Webinare, Coaching (Abschnitt 14)</td>
-            <td>Durchführung von Webinaren und Coachings</td>
-            <td>
-              Anmeldungen, Buchungen, Bewertungen, Kalender-Kennung; im Videocall IP-Adresse, Audio
-              und Video
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-            <td>Vergangene Termine: kurz nach Ende; übrige Daten bis zur Kontolöschung</td>
-            <td>
-              Kursleiter:innen und Teilnehmer:innen (Anzeigename und Nickname); 8x8, Inc., USA
-              (Jitsi Meet, EU-US Data Privacy Framework) beim Beitritt zu einem Videocall
-            </td>
-          </tr>
-          <tr>
-            <td>MorphCoins, Premium, Herzen (Abschnitt 15)</td>
-            <td>Abwicklung von Käufen und Guthaben</td>
-            <td>
-              Guthaben, Transaktionen, Premium-Status, Herzen, PayPal-Bestellkennung, Erklärungen
-              zum Widerrufsrecht (Abschnitt 15.5)
-            </td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO; Erklärungen zum Widerrufsrecht: auch lit. c</td>
-            <td>
-              Bis zur Kontolöschung; Erklärungen beim MorphCoins-Kauf zusätzlich im Datensatz der
-              Rechnung (Abschnitt 15.4)
-            </td>
-            <td>PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg (nur Betrag und Währung)</td>
-          </tr>
-          <tr>
-            <td>
-              Rechnungen, Gutschriften, Schlussabrechnung, USt-IdNr.-Prüfung (Abschnitt 15.3, 15.4)
-            </td>
-            <td>Rechnungsstellung, steuerliche Pflichten, Erstattung nach Kontolöschung</td>
-            <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Inhalt des Dokuments</td>
-            <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO</td>
-            <td>
-              Acht Jahre ab Ende des Ausstellungsjahres. Nach Kontolöschung können erforderliche
-              Kundenangaben und Zuordnungsnachweise für die in Abschnitt 10.7 beschriebenen Zwecke
-              erhalten bleiben.
-            </td>
-            <td>Europäische Kommission (VIES), nur die USt-IdNr.</td>
-          </tr>
-          <tr>
-            <td>Kündigung und Widerruf über die Plattform (Abschnitt 15.6)</td>
-            <td>Entgegennahme und Bestätigung von Kündigungen und Widerrufen</td>
-            <td>
-              Name, E-Mail-Adresse, Vertrag, Art der Kündigung, Angaben, Eingangszeitpunkt,
-              Vertragsende; Zähler je IP-Adresse und E-Mail-Adresse (nur als Hashwert)
-            </td>
-            <td>
-              Art. 6 Abs. 1 lit. c und lit. b DSGVO; Aufbewahrung als Nachweis und Zähler: lit. f
-            </td>
-            <td>
-              Erklärung drei Jahre ab Ende des Eingangsjahres, auch nach Kontolöschung (Abschnitt
-              15.6); Zähler eine Stunde
-            </td>
-            <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
-          </tr>
-          <tr>
-            <td>YouTube-Kursvideos (Abschnitt 16)</td>
-            <td>Wiedergabe von YouTube-Videos nach Klick</td>
-            <td>IP-Adresse, Browserdaten, angesehenes Video, von Google gesetzte Cookies</td>
-            <td>Art. 6 Abs. 1 lit. a DSGVO; § 25 Abs. 1 TDDDG</td>
-            <td>Keine Speicherung bei uns</td>
-            <td>Google Ireland Limited, Irland / Google LLC, USA (EU-US Data Privacy Framework)</td>
-          </tr>
-          <tr>
-            <td>E-Mails von uns (Abschnitt 17.1)</td>
-            <td>
-              Verifizierung, Passwort-Zurücksetzung, Kauf- und Buchungsbestätigungen, Bestätigungen
-              von Kündigung, Widerruf und Stornierung
-            </td>
-            <td>E-Mail-Adresse, Inhalt der Nachricht, Rechnung</td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO; Rechnung: lit. c</td>
-            <td>
-              Verlängerungsbestätigungen und Versandstatus: Abschnitt 15.7; sonst keine Speicherung
-              versendeter E-Mails; Rechnungen acht Jahre
-            </td>
-            <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
-          </tr>
-          <tr>
-            <td>Kontakt und Support (Abschnitt 17.2)</td>
-            <td>Bearbeitung von Anfragen</td>
-            <td>Name, E-Mail-Adresse, Betreff, Nachricht</td>
-            <td>Art. 6 Abs. 1 lit. b DSGVO; sonst lit. f</td>
-            <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
-            <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
-          </tr>
-          <tr>
-            <td>Discord-Bot (Abschnitt 17.3)</td>
-            <td>Moderation und Betrieb des Community-Servers</td>
-            <td>
-              Discord-Nutzerkennung und -Name, Beitritts-, Austritts- und Aktivitätszeitpunkte,
-              Moderationsvorgänge
-            </td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
-            <td>Keine (eigener Server bei Hetzner)</td>
-          </tr>
-          <tr>
-            <td>Datenexport (Abschnitt 23)</td>
-            <td>Auskunft und Datenübertragbarkeit</td>
-            <td>Alle in der Exportdatei enthaltenen Daten (Abschnitt 23)</td>
-            <td>Art. 6 Abs. 1 lit. c DSGVO (Art. 15, 20 DSGVO)</td>
-            <td>Wird beim Abruf erzeugt und nicht gespeichert; Abrufsperre zehn Minuten</td>
-            <td>Keine</td>
-          </tr>
-          <tr>
-            <td>Datensicherungen (Abschnitt 7.3)</td>
-            <td>Schutz vor Datenverlust</td>
-            <td>
-              Alle gespeicherten Daten einschließlich Fehlerberichten und Discord-Bot-Datenbank,
-              verschlüsselt
-            </td>
-            <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-            <td>
-              Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
-              monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
-            </td>
-            <td>Datensicherung in Deutschland (Abschnitt 7.3)</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Verarbeitung</th>
+              <th>Zweck</th>
+              <th>Datenkategorien</th>
+              <th>Rechtsgrundlage</th>
+              <th>Speicherdauer</th>
+              <th>Empfänger</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Auslieferung der Weboberfläche (Abschnitt 7.2)</td>
+              <td>Bereitstellung der Website, Schutz vor Überlastungsangriffen</td>
+              <td>
+                IP-Adresse, Zeitpunkt, aufgerufene URL, Browserkennung, Cookies für
+                bootstrap.academy, Netzwerkfehlerberichte
+              </td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>Keine Speicherung bei uns; bei Cloudflare nach dessen Datenschutzerklärung</td>
+              <td>Cloudflare, Inc., USA (Auftragsverarbeiter, EU-US Data Privacy Framework)</td>
+            </tr>
+            <tr>
+              <td>Server-Logs (Abschnitt 8.1)</td>
+              <td>Sicherer Betrieb, Abwehr von Angriffen, Fehlersuche</td>
+              <td>IP-Adresse, Zeitpunkt, URL, HTTP-Status, Browserkennung, Referrer</td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>
+                30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
+                static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
+              </td>
+              <td>Hetzner Online GmbH, Deutschland (Hosting)</td>
+            </tr>
+            <tr>
+              <td>Fehlerberichte (Abschnitt 8.2)</td>
+              <td>Fehlerbehebung</td>
+              <td>
+                Fehlermeldung, Stacktrace, aufgerufene URL, Nutzerkennung, Kennung und je nach
+                Fehler IP-Adresse der auslösenden Anfrage
+              </td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>90 Tage</td>
+              <td>Keine (selbst betriebenes System bei Hetzner)</td>
+            </tr>
+            <tr>
+              <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
+              <td>
+                Anmeldung, Sitzung, Anmeldung über Drittanbieter, von Ihnen gewählte Einstellungen
+              </td>
+              <td>
+                Sitzungstoken, Nutzerkennung, Nickname, Anzeigename, Einstellungen, Einmalwerte
+                einer laufenden Anmeldung über einen Drittanbieter
+              </td>
+              <td>§ 25 Abs. 2 Nr. 2 TDDDG; Art. 6 Abs. 1 lit. b DSGVO</td>
+              <td>Sitzungsende; Local Storage und Session Storage siehe Abschnitt 9</td>
+              <td>
+                Cloudflare, Inc. (Cookies werden bei Anfragen an die Weboberfläche mitgesendet,
+                Abschnitt 7.2)
+              </td>
+            </tr>
+            <tr>
+              <td>Benutzerkonto (Abschnitt 10)</td>
+              <td>Bereitstellung der Plattform, Sicherheit des Kontos</td>
+              <td>
+                Nickname, Anzeigename, E-Mail-Adresse, Passwort-Hash, Verifizierungsstatus, Rolle,
+                Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, Zustimmung zu den
+                AGB oder Aufschub der Entscheidung, Einstellung zur Bestenliste; Zähler
+                fehlgeschlagener Anmeldeversuche je Konto und je IP-Adresse (nur als Hashwert)
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; Zähler: lit. f</td>
+              <td>
+                Bis zur Kontolöschung; Sitzungen bis 30 Tage nach der letzten Nutzung; Zähler 15
+                Minuten nach dem letzten Fehlversuch
+              </td>
+              <td>Keine (Hetzner als Hosting-Anbieter)</td>
+            </tr>
+            <tr>
+              <td>Verwaltungsprotokoll (Abschnitt 10.5)</td>
+              <td>Nachvollziehbarkeit administrativer Zugriffe auf Konten</td>
+              <td>
+                Kennung der handelnden Administrator:in, Zeitpunkt, Methode und Pfad der Anfrage,
+                Kennung des betroffenen Kontos, Antwortstatus, Anfragekennung
+              </td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>Zwölf Monate</td>
+              <td>Keine</td>
+            </tr>
+            <tr>
+              <td>Anmeldung über Drittanbieter (Abschnitt 11)</td>
+              <td>Alternative Anmeldemethode</td>
+              <td>
+                Anbieter, Nutzerkennung und Nutzername beim Anbieter, Zeitpunkt der Verknüpfung;
+                während einer Anmeldung Einmalkennung, Anbieter, Rückkehradresse, Prüfwert
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO</td>
+              <td>
+                Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder Kontolöschung;
+                Daten einer laufenden Anmeldung höchstens zehn Minuten
+              </td>
+              <td>
+                GitHub, Inc., USA; Discord Netherlands B.V., Niederlande / Discord Inc., USA; Google
+                Ireland Limited, Irland / Google LLC, USA (jeweils EU-US Data Privacy Framework)
+              </td>
+            </tr>
+            <tr>
+              <td>Lernplattform (Abschnitt 12)</td>
+              <td>Kurse, Fortschrittsanzeige, XP, Bestenliste</td>
+              <td>
+                Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP,
+                Skill-Level, Lösungsstand und Versuche bei Aufgaben
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; Bestenliste: Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>Bis zur Kontolöschung</td>
+              <td>Bestenliste: angemeldete Nutzer:innen (Anzeigename, Nickname, XP, Rang)</td>
+            </tr>
+            <tr>
+              <td>Challenges und Code-Ausführung (Abschnitt 13)</td>
+              <td>Auswertung von Programmieraufgaben, eigene Aufgaben</td>
+              <td>
+                Quellcode, Programmiersprache, Ergebnis, Fehlerausgaben, Laufzeit,
+                Speicherverbrauch, selbst erstellte Aufgaben, Bewertungen
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO</td>
+              <td>
+                Ausführung: höchstens 5 Minuten im Arbeitsspeicher; Einreichung: bis zur
+                Kontolöschung
+              </td>
+              <td>Keine (eigener Code-Ausführungsdienst bei Hetzner)</td>
+            </tr>
+            <tr>
+              <td>Moderation (Abschnitt 13.4)</td>
+              <td>Schutz vor missbräuchlichen Inhalten und Meldungen</td>
+              <td>Meldungen (Grund, Kommentar), Sperren (Art, Beginn, Ende, Grund)</td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>Bis zur Kontolöschung</td>
+              <td>Keine</td>
+            </tr>
+            <tr>
+              <td>Events, Webinare, Coaching (Abschnitt 14)</td>
+              <td>Durchführung von Webinaren und Coachings</td>
+              <td>
+                Anmeldungen, Buchungen, Bewertungen, Kalender-Kennung; im Videocall IP-Adresse,
+                Audio und Video
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO</td>
+              <td>Vergangene Termine: kurz nach Ende; übrige Daten bis zur Kontolöschung</td>
+              <td>
+                Kursleiter:innen und Teilnehmer:innen (Anzeigename und Nickname); 8x8, Inc., USA
+                (Jitsi Meet, EU-US Data Privacy Framework) beim Beitritt zu einem Videocall
+              </td>
+            </tr>
+            <tr>
+              <td>MorphCoins, Premium, Herzen (Abschnitt 15)</td>
+              <td>Abwicklung von Käufen und Guthaben</td>
+              <td>
+                Guthaben, Transaktionen, Premium-Status, Herzen, PayPal-Bestellkennung, Erklärungen
+                zum Widerrufsrecht (Abschnitt 15.5)
+              </td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; Erklärungen zum Widerrufsrecht: auch lit. c</td>
+              <td>
+                Bis zur Kontolöschung; Erklärungen beim MorphCoins-Kauf zusätzlich im Datensatz der
+                Rechnung (Abschnitt 15.4)
+              </td>
+              <td>PayPal (Europe) S.à r.l. et Cie, S.C.A., Luxemburg (nur Betrag und Währung)</td>
+            </tr>
+            <tr>
+              <td>
+                Rechnungen, Gutschriften, Schlussabrechnung, USt-IdNr.-Prüfung (Abschnitt 15.3,
+                15.4)
+              </td>
+              <td>Rechnungsstellung, steuerliche Pflichten, Erstattung nach Kontolöschung</td>
+              <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Inhalt des Dokuments</td>
+              <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO</td>
+              <td>
+                Acht Jahre ab Ende des Ausstellungsjahres. Nach Kontolöschung können erforderliche
+                Kundenangaben und Zuordnungsnachweise für die in Abschnitt 10.7 beschriebenen Zwecke
+                erhalten bleiben.
+              </td>
+              <td>Europäische Kommission (VIES), nur die USt-IdNr.</td>
+            </tr>
+            <tr>
+              <td>Kündigung und Widerruf über die Plattform (Abschnitt 15.6)</td>
+              <td>Entgegennahme und Bestätigung von Kündigungen und Widerrufen</td>
+              <td>
+                Name, E-Mail-Adresse, Vertrag, Art der Kündigung, Angaben, Eingangszeitpunkt,
+                Vertragsende; Zähler je IP-Adresse und E-Mail-Adresse (nur als Hashwert)
+              </td>
+              <td>
+                Art. 6 Abs. 1 lit. c und lit. b DSGVO; Aufbewahrung als Nachweis und Zähler: lit. f
+              </td>
+              <td>
+                Erklärung drei Jahre ab Ende des Eingangsjahres, auch nach Kontolöschung (Abschnitt
+                15.6); Zähler eine Stunde
+              </td>
+              <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
+            </tr>
+            <tr>
+              <td>YouTube-Kursvideos (Abschnitt 16)</td>
+              <td>Wiedergabe von YouTube-Videos nach Klick</td>
+              <td>IP-Adresse, Browserdaten, angesehenes Video, von Google gesetzte Cookies</td>
+              <td>Art. 6 Abs. 1 lit. a DSGVO; § 25 Abs. 1 TDDDG</td>
+              <td>Keine Speicherung bei uns</td>
+              <td>
+                Google Ireland Limited, Irland / Google LLC, USA (EU-US Data Privacy Framework)
+              </td>
+            </tr>
+            <tr>
+              <td>E-Mails von uns (Abschnitt 17.1)</td>
+              <td>
+                Verifizierung, Passwort-Zurücksetzung, Kauf- und Buchungsbestätigungen,
+                Bestätigungen von Kündigung, Widerruf und Stornierung
+              </td>
+              <td>E-Mail-Adresse, Inhalt der Nachricht, Rechnung</td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; Rechnung: lit. c</td>
+              <td>
+                Verlängerungsbestätigungen und Versandstatus: Abschnitt 15.7; sonst keine
+                Speicherung versendeter E-Mails; Rechnungen acht Jahre
+              </td>
+              <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
+            </tr>
+            <tr>
+              <td>Kontakt und Support (Abschnitt 17.2)</td>
+              <td>Bearbeitung von Anfragen</td>
+              <td>Name, E-Mail-Adresse, Betreff, Nachricht</td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; sonst lit. f</td>
+              <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
+              <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
+            </tr>
+            <tr>
+              <td>Discord-Bot (Abschnitt 17.3)</td>
+              <td>Moderation und Betrieb des Community-Servers</td>
+              <td>
+                Discord-Nutzerkennung und -Name, Beitritts-, Austritts- und Aktivitätszeitpunkte,
+                Moderationsvorgänge
+              </td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
+              <td>Keine (eigener Server bei Hetzner)</td>
+            </tr>
+            <tr>
+              <td>Datenexport (Abschnitt 23)</td>
+              <td>Auskunft und Datenübertragbarkeit</td>
+              <td>Alle in der Exportdatei enthaltenen Daten (Abschnitt 23)</td>
+              <td>Art. 6 Abs. 1 lit. c DSGVO (Art. 15, 20 DSGVO)</td>
+              <td>Wird beim Abruf erzeugt und nicht gespeichert; Abrufsperre zehn Minuten</td>
+              <td>Keine</td>
+            </tr>
+            <tr>
+              <td>Datensicherungen (Abschnitt 7.3)</td>
+              <td>Schutz vor Datenverlust</td>
+              <td>
+                Alle gespeicherten Daten einschließlich Fehlerberichten und Discord-Bot-Datenbank,
+                verschlüsselt
+              </td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO</td>
+              <td>
+                Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
+                monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
+              </td>
+              <td>Datensicherung in Deutschland (Abschnitt 7.3)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section id="hosting">
@@ -630,130 +638,132 @@
         Welche Dienste Dritter beim Laden von Videos (Abschnitt 16) und beim Bezahlen (Abschnitt 15)
         Informationen in Ihrem Browser speichern, beschreiben wir dort.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Art</th>
-            <th>Zweck</th>
-            <th>Speicherdauer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>accessToken</code></td>
-            <td>Cookie</td>
-            <td>Zugriffstoken für Anfragen an die API</td>
-            <td>Sitzungsende; Token serverseitig 5 Minuten gültig, wird automatisch erneuert</td>
-          </tr>
-          <tr>
-            <td><code>refreshToken</code></td>
-            <td>Cookie</td>
-            <td>Erneuerung des Zugriffstokens</td>
-            <td>
-              Sitzungsende; Token serverseitig 30 Tage ab der letzten Erneuerung gültig, bei
-              Abmeldung ungültig
-            </td>
-          </tr>
-          <tr>
-            <td><code>session</code></td>
-            <td>Cookie</td>
-            <td>Kennung Ihrer aktuellen Sitzung</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>user</code></td>
-            <td>Cookie</td>
-            <td>Nutzerkennung, Nickname und Anzeigename für die Anzeige in der Oberfläche</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>locale</code></td>
-            <td>Cookie</td>
-            <td>
-              Ihre Sprachauswahl; wird nur gespeichert, wenn Sie die Sprache umstellen (die
-              Voreinstellung Deutsch wird nicht gespeichert)
-            </td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>hideAnimationNextTime</code></td>
-            <td>Cookie</td>
-            <td>Erfolgsanimation beim nächsten Mal nicht anzeigen</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>lastViewCourse</code></td>
-            <td>Cookie</td>
-            <td>Zuletzt geöffneter Kurs</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>currentVideo</code>, <code>currentVideoTime</code></td>
-            <td>Cookie</td>
-            <td>Wiedergabeposition, um ein Kursvideo fortzusetzen</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>zoomLevel</code></td>
-            <td>Cookie</td>
-            <td>Von Ihnen gewählte Zoomstufe des Skill-Baums</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>rootTree_nextNode</code>, <code>subTree_nextNode</code></td>
-            <td>Cookie</td>
-            <td>Zuletzt von Ihnen ausgewählte Position im Skill-Baum (Zeile und Spalte)</td>
-            <td>Sitzungsende</td>
-          </tr>
-          <tr>
-            <td><code>selectedButton</code></td>
-            <td>Local Storage</td>
-            <td>Gewählter Reiter im Kursplayer</td>
-            <td>Bis Sie den Kursplayer verlassen</td>
-          </tr>
-          <tr>
-            <td><code>selectedButtonLeaderBoard</code></td>
-            <td>Local Storage</td>
-            <td>Gewählter Reiter der Bestenliste</td>
-            <td>Bis Sie die Bestenliste verlassen</td>
-          </tr>
-          <tr>
-            <td><code>bootstrap-academy:update-notice:…</code></td>
-            <td>Local Storage</td>
-            <td>
-              Merkt erst nach „Verstanden“, dass der Update-Hinweis für Ihre Nutzerkennung und die
-              jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
-              Zustimmung zu Vertrags- oder Datenschutzhinweisen.
-            </td>
-            <td>
-              Bis Sie die Browserdaten löschen; eine neue Hinweisversion kann erneut angezeigt
-              werden
-            </td>
-          </tr>
-          <tr>
-            <td><code>oauth_flow</code></td>
-            <td>Session Storage</td>
-            <td>
-              Einmalkennung (state), Anbieter und Zweck einer laufenden Anmeldung oder Verknüpfung
-              über GitHub, Discord oder Google, damit die Rückkehr vom Anbieter derselben Anfrage
-              zugeordnet werden kann (Abschnitt 11)
-            </td>
-            <td>Bis zur Rückkehr vom Anbieter, spätestens bis zum Schließen des Browser-Tabs</td>
-          </tr>
-          <tr>
-            <td><code>oauth_register_token</code></td>
-            <td>Session Storage</td>
-            <td>
-              Registrierungstoken nach einer ersten Anmeldung über GitHub, Discord oder Google, bis
-              die Registrierung abgeschlossen ist (Abschnitt 11)
-            </td>
-            <td>
-              Bis zum Abschluss der Registrierung, spätestens bis zum Schließen des Browser-Tabs
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Art</th>
+              <th>Zweck</th>
+              <th>Speicherdauer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>accessToken</code></td>
+              <td>Cookie</td>
+              <td>Zugriffstoken für Anfragen an die API</td>
+              <td>Sitzungsende; Token serverseitig 5 Minuten gültig, wird automatisch erneuert</td>
+            </tr>
+            <tr>
+              <td><code>refreshToken</code></td>
+              <td>Cookie</td>
+              <td>Erneuerung des Zugriffstokens</td>
+              <td>
+                Sitzungsende; Token serverseitig 30 Tage ab der letzten Erneuerung gültig, bei
+                Abmeldung ungültig
+              </td>
+            </tr>
+            <tr>
+              <td><code>session</code></td>
+              <td>Cookie</td>
+              <td>Kennung Ihrer aktuellen Sitzung</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>user</code></td>
+              <td>Cookie</td>
+              <td>Nutzerkennung, Nickname und Anzeigename für die Anzeige in der Oberfläche</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>locale</code></td>
+              <td>Cookie</td>
+              <td>
+                Ihre Sprachauswahl; wird nur gespeichert, wenn Sie die Sprache umstellen (die
+                Voreinstellung Deutsch wird nicht gespeichert)
+              </td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>hideAnimationNextTime</code></td>
+              <td>Cookie</td>
+              <td>Erfolgsanimation beim nächsten Mal nicht anzeigen</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>lastViewCourse</code></td>
+              <td>Cookie</td>
+              <td>Zuletzt geöffneter Kurs</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>currentVideo</code>, <code>currentVideoTime</code></td>
+              <td>Cookie</td>
+              <td>Wiedergabeposition, um ein Kursvideo fortzusetzen</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>zoomLevel</code></td>
+              <td>Cookie</td>
+              <td>Von Ihnen gewählte Zoomstufe des Skill-Baums</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>rootTree_nextNode</code>, <code>subTree_nextNode</code></td>
+              <td>Cookie</td>
+              <td>Zuletzt von Ihnen ausgewählte Position im Skill-Baum (Zeile und Spalte)</td>
+              <td>Sitzungsende</td>
+            </tr>
+            <tr>
+              <td><code>selectedButton</code></td>
+              <td>Local Storage</td>
+              <td>Gewählter Reiter im Kursplayer</td>
+              <td>Bis Sie den Kursplayer verlassen</td>
+            </tr>
+            <tr>
+              <td><code>selectedButtonLeaderBoard</code></td>
+              <td>Local Storage</td>
+              <td>Gewählter Reiter der Bestenliste</td>
+              <td>Bis Sie die Bestenliste verlassen</td>
+            </tr>
+            <tr>
+              <td><code>bootstrap-academy:update-notice:…</code></td>
+              <td>Local Storage</td>
+              <td>
+                Merkt erst nach „Verstanden“, dass der Update-Hinweis für Ihre Nutzerkennung und die
+                jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
+                Zustimmung zu Vertrags- oder Datenschutzhinweisen.
+              </td>
+              <td>
+                Bis Sie die Browserdaten löschen; eine neue Hinweisversion kann erneut angezeigt
+                werden
+              </td>
+            </tr>
+            <tr>
+              <td><code>oauth_flow</code></td>
+              <td>Session Storage</td>
+              <td>
+                Einmalkennung (state), Anbieter und Zweck einer laufenden Anmeldung oder Verknüpfung
+                über GitHub, Discord oder Google, damit die Rückkehr vom Anbieter derselben Anfrage
+                zugeordnet werden kann (Abschnitt 11)
+              </td>
+              <td>Bis zur Rückkehr vom Anbieter, spätestens bis zum Schließen des Browser-Tabs</td>
+            </tr>
+            <tr>
+              <td><code>oauth_register_token</code></td>
+              <td>Session Storage</td>
+              <td>
+                Registrierungstoken nach einer ersten Anmeldung über GitHub, Discord oder Google,
+                bis die Registrierung abgeschlossen ist (Abschnitt 11)
+              </td>
+              <td>
+                Bis zum Abschluss der Registrierung, spätestens bis zum Schließen des Browser-Tabs
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Alle Cookies sind Sitzungscookies: Sie werden gelöscht, wenn Sie den Browser schließen. Sie
         werden mit den Attributen <code>Secure</code> und <code>SameSite=Lax</code> gesetzt, also
@@ -975,38 +985,40 @@
         zurück; die Kennung kann nur einmal eingelöst werden und wird dabei gelöscht. Mit dem Code
         rufen wir einmalig die folgenden Daten ab:
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Anbieter</th>
-            <th>Angefragte Berechtigung (Scope)</th>
-            <th>Abgerufene Daten</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>GitHub, Inc., San Francisco, USA</td>
-            <td>keine</td>
-            <td>Nutzerkennung, Anmeldename</td>
-          </tr>
-          <tr>
-            <td>
-              Discord Netherlands B.V., Schiphol, Niederlande (für Nutzer:innen im EWR) / Discord
-              Inc., San Francisco, USA
-            </td>
-            <td><code>identify</code></td>
-            <td>Nutzerkennung, Nutzername</td>
-          </tr>
-          <tr>
-            <td>
-              Google Ireland Limited, Dublin, Irland (für Nutzer:innen im EWR) / Google LLC,
-              Mountain View, USA
-            </td>
-            <td><code>openid profile</code></td>
-            <td>Google-Kennung, Vorname</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Anbieter</th>
+              <th>Angefragte Berechtigung (Scope)</th>
+              <th>Abgerufene Daten</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>GitHub, Inc., San Francisco, USA</td>
+              <td>keine</td>
+              <td>Nutzerkennung, Anmeldename</td>
+            </tr>
+            <tr>
+              <td>
+                Discord Netherlands B.V., Schiphol, Niederlande (für Nutzer:innen im EWR) / Discord
+                Inc., San Francisco, USA
+              </td>
+              <td><code>identify</code></td>
+              <td>Nutzerkennung, Nutzername</td>
+            </tr>
+            <tr>
+              <td>
+                Google Ireland Limited, Dublin, Irland (für Nutzer:innen im EWR) / Google LLC,
+                Mountain View, USA
+              </td>
+              <td><code>openid profile</code></td>
+              <td>Google-Kennung, Vorname</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Wir speichern zur Verknüpfung: den Anbieter, Ihre Nutzerkennung und Ihren Nutzernamen beim
         Anbieter sowie den Zeitpunkt der Verknüpfung. Wir speichern keine Zugriffs- oder
@@ -1592,42 +1604,44 @@
         Unsere Server stehen in Deutschland. In den folgenden Fällen werden personenbezogene Daten
         an Empfänger in den USA übermittelt:
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Empfänger</th>
-            <th>Anlass</th>
-            <th>Grundlage der Übermittlung</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Cloudflare, Inc.</td>
-            <td>Auslieferung der Weboberfläche, DNS (Abschnitt 7.2)</td>
-            <td>EU-US Data Privacy Framework</td>
-          </tr>
-          <tr>
-            <td>GitHub, Inc.</td>
-            <td>Anmeldung über GitHub (Abschnitt 11)</td>
-            <td>EU-US Data Privacy Framework</td>
-          </tr>
-          <tr>
-            <td>Google LLC</td>
-            <td>Anmeldung über Google, YouTube-Videos (Abschnitte 11 und 16)</td>
-            <td>EU-US Data Privacy Framework</td>
-          </tr>
-          <tr>
-            <td>Discord Inc.</td>
-            <td>Anmeldung über Discord (Abschnitt 11)</td>
-            <td>EU-US Data Privacy Framework</td>
-          </tr>
-          <tr>
-            <td>8x8, Inc.</td>
-            <td>Jitsi Meet für Coachings (Abschnitt 14.2)</td>
-            <td>EU-US Data Privacy Framework</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Empfänger</th>
+              <th>Anlass</th>
+              <th>Grundlage der Übermittlung</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cloudflare, Inc.</td>
+              <td>Auslieferung der Weboberfläche, DNS (Abschnitt 7.2)</td>
+              <td>EU-US Data Privacy Framework</td>
+            </tr>
+            <tr>
+              <td>GitHub, Inc.</td>
+              <td>Anmeldung über GitHub (Abschnitt 11)</td>
+              <td>EU-US Data Privacy Framework</td>
+            </tr>
+            <tr>
+              <td>Google LLC</td>
+              <td>Anmeldung über Google, YouTube-Videos (Abschnitte 11 und 16)</td>
+              <td>EU-US Data Privacy Framework</td>
+            </tr>
+            <tr>
+              <td>Discord Inc.</td>
+              <td>Anmeldung über Discord (Abschnitt 11)</td>
+              <td>EU-US Data Privacy Framework</td>
+            </tr>
+            <tr>
+              <td>8x8, Inc.</td>
+              <td>Jitsi Meet für Coachings (Abschnitt 14.2)</td>
+              <td>EU-US Data Privacy Framework</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Alle genannten Unternehmen sind nach dem EU-US Data Privacy Framework zertifiziert.
         Grundlage der Übermittlung ist der Angemessenheitsbeschluss der Europäischen Kommission vom
@@ -1658,174 +1672,176 @@
         Wir speichern personenbezogene Daten nur so lange, wie es für den Zweck oder aufgrund
         gesetzlicher Aufbewahrungspflichten erforderlich ist. Es gelten folgende Fristen:
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Datenkategorie</th>
-            <th>Speicherdauer</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung oder -Aufschub,
-              Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
-            </td>
-            <td>
-              Bis zur Kontolöschung, soweit die Angaben nicht als erforderliche Vertrags- oder
-              Anspruchsnachweise nach Abschnitt 10.7 gesondert erhalten bleiben. Erklärungen zum
-              Widerrufsrecht beim Kauf von MorphCoins bleiben zusätzlich im Datensatz der Rechnung
-              (acht Jahre, Abschnitt 15.4).
-            </td>
-          </tr>
-          <tr>
-            <td>E-Mail-Bestätigungscode, Code zum Zurücksetzen des Passworts</td>
-            <td>Bis zur Verwendung, höchstens vier Stunden</td>
-          </tr>
-          <tr>
-            <td>Verknüpfungen mit GitHub, Discord oder Google</td>
-            <td>
-              Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder bis zur
-              Kontolöschung; Daten einer laufenden Anmeldung über einen Anbieter höchstens zehn
-              Minuten
-            </td>
-          </tr>
-          <tr>
-            <td>Sitzungen</td>
-            <td>Bis 30 Tage nach der letzten Nutzung oder bis zur Abmeldung</td>
-          </tr>
-          <tr>
-            <td>Zähler fehlgeschlagener Anmeldeversuche je Konto</td>
-            <td>
-              Bis 15 Minuten nach dem letzten Fehlversuch oder bis zur nächsten erfolgreichen
-              Anmeldung
-            </td>
-          </tr>
-          <tr>
-            <td>Zähler fehlgeschlagener Anmeldeversuche je IP-Adresse</td>
-            <td>
-              Bis 15 Minuten nach dem letzten Fehlversuch; eine erfolgreiche Anmeldung löscht ihn
-              nicht
-            </td>
-          </tr>
-          <tr>
-            <td>Verwaltungsprotokoll</td>
-            <td>Zwölf Monate, auch nach Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>Lern- und Fortschrittsdaten, XP, Lesezeichen</td>
-            <td>Bis zur Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>
-              Einreichungen, Ausführungsergebnisse, Lösungsstand, Versuche, Bewertungen, eigene
-              Aufgaben
-            </td>
-            <td>
-              Bis zur jeweiligen Löschung beziehungsweise Kontolöschung; erforderliche
-              Moderationsunterlagen gesondert nach Abschnitt 13.4
-            </td>
-          </tr>
-          <tr>
-            <td>
-              Moderationsfälle, Entscheidungen, Sperrennachweise, Beschwerden, Mitteilungen und
-              Versandnachweise
-            </td>
-            <td>
-              Grundsätzlich zwölf Monate nach Fallabschluss; Abschluss und begrenzte Ausnahmen nach
-              Abschnitt 13.4
-            </td>
-          </tr>
-          <tr>
-            <td>Private Moderationsbelege und fallbezogene Kontaktangaben</td>
-            <td>
-              Nur solange erforderlich; gesonderte Prüfung und gegebenenfalls frühere Reduzierung
-              nach Abschnitt 13.4
-            </td>
-          </tr>
-          <tr>
-            <td>Code im Ausführungsdienst</td>
-            <td>Höchstens fünf Minuten nach der letzten Ausführung, nur im Arbeitsspeicher</td>
-          </tr>
-          <tr>
-            <td>Event-Daten</td>
-            <td>
-              Vergangene Termine: kurz nach dem Ende; Bewertungen von Kursleiter:innen: bis zwei
-              Jahre nach der jeweils jüngsten Bewertung (Abschnitt 14.1); übrige Daten bis zur
-              Kontolöschung
-            </td>
-          </tr>
-          <tr>
-            <td>Kalender-Abo-Kennung</td>
-            <td>Bis zur Erneuerung durch Sie oder bis zur Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>MorphCoins, Transaktionen, Herzen, Premium, PayPal-Bestellreferenzen</td>
-            <td>Bis zur Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>Rechnungsdaten im Profil</td>
-            <td>Bis zur Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>Rechnungen und Gutschriften</td>
-            <td>
-              Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung. Erforderliche
-              Kundenangaben und Zuordnungsnachweise können für die in Abschnitt 10.7 beschriebenen
-              Zwecke erhalten bleiben.
-            </td>
-          </tr>
-          <tr>
-            <td>Schlussabrechnung (nur bei nicht verbrauchten gekauften MorphCoins)</td>
-            <td>Acht Jahre ab Ende des Jahres der Kontolöschung</td>
-          </tr>
-          <tr>
-            <td>Kündigungs- und Widerrufserklärungen</td>
-            <td>
-              Drei Jahre ab Ende des maßgeblichen Abschluss-/Beendigungsjahres; offene Fälle und
-              Versandaufträge bleiben bis zur Klärung erhalten (Abschnitt 15.6)
-            </td>
-          </tr>
-          <tr>
-            <td>Zähler zur Begrenzung der Kündigungs- und Widerrufsformulare</td>
-            <td>Eine Stunde nach der letzten gezählten Erklärung</td>
-          </tr>
-          <tr>
-            <td>Datenexport</td>
-            <td>Wird beim Abruf erzeugt und nicht gespeichert</td>
-          </tr>
-          <tr>
-            <td>Server-Logs</td>
-            <td>
-              30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
-              static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
-            </td>
-          </tr>
-          <tr>
-            <td>Fehlerberichte</td>
-            <td>90 Tage</td>
-          </tr>
-          <tr>
-            <td>Kontakt- und Support-Kommunikation</td>
-            <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
-          </tr>
-          <tr>
-            <td>Discord-Bot</td>
-            <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
-          </tr>
-          <tr>
-            <td>Datensicherungen</td>
-            <td>
-              Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
-              monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
-            </td>
-          </tr>
-          <tr>
-            <td>Cookies, Local Storage und Session Storage</td>
-            <td>Abschnitt 9</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="legal-table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Datenkategorie</th>
+              <th>Speicherdauer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung oder -Aufschub,
+                Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
+              </td>
+              <td>
+                Bis zur Kontolöschung, soweit die Angaben nicht als erforderliche Vertrags- oder
+                Anspruchsnachweise nach Abschnitt 10.7 gesondert erhalten bleiben. Erklärungen zum
+                Widerrufsrecht beim Kauf von MorphCoins bleiben zusätzlich im Datensatz der Rechnung
+                (acht Jahre, Abschnitt 15.4).
+              </td>
+            </tr>
+            <tr>
+              <td>E-Mail-Bestätigungscode, Code zum Zurücksetzen des Passworts</td>
+              <td>Bis zur Verwendung, höchstens vier Stunden</td>
+            </tr>
+            <tr>
+              <td>Verknüpfungen mit GitHub, Discord oder Google</td>
+              <td>
+                Bis zur Aufhebung der Verknüpfung in den Kontoeinstellungen oder bis zur
+                Kontolöschung; Daten einer laufenden Anmeldung über einen Anbieter höchstens zehn
+                Minuten
+              </td>
+            </tr>
+            <tr>
+              <td>Sitzungen</td>
+              <td>Bis 30 Tage nach der letzten Nutzung oder bis zur Abmeldung</td>
+            </tr>
+            <tr>
+              <td>Zähler fehlgeschlagener Anmeldeversuche je Konto</td>
+              <td>
+                Bis 15 Minuten nach dem letzten Fehlversuch oder bis zur nächsten erfolgreichen
+                Anmeldung
+              </td>
+            </tr>
+            <tr>
+              <td>Zähler fehlgeschlagener Anmeldeversuche je IP-Adresse</td>
+              <td>
+                Bis 15 Minuten nach dem letzten Fehlversuch; eine erfolgreiche Anmeldung löscht ihn
+                nicht
+              </td>
+            </tr>
+            <tr>
+              <td>Verwaltungsprotokoll</td>
+              <td>Zwölf Monate, auch nach Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>Lern- und Fortschrittsdaten, XP, Lesezeichen</td>
+              <td>Bis zur Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>
+                Einreichungen, Ausführungsergebnisse, Lösungsstand, Versuche, Bewertungen, eigene
+                Aufgaben
+              </td>
+              <td>
+                Bis zur jeweiligen Löschung beziehungsweise Kontolöschung; erforderliche
+                Moderationsunterlagen gesondert nach Abschnitt 13.4
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Moderationsfälle, Entscheidungen, Sperrennachweise, Beschwerden, Mitteilungen und
+                Versandnachweise
+              </td>
+              <td>
+                Grundsätzlich zwölf Monate nach Fallabschluss; Abschluss und begrenzte Ausnahmen
+                nach Abschnitt 13.4
+              </td>
+            </tr>
+            <tr>
+              <td>Private Moderationsbelege und fallbezogene Kontaktangaben</td>
+              <td>
+                Nur solange erforderlich; gesonderte Prüfung und gegebenenfalls frühere Reduzierung
+                nach Abschnitt 13.4
+              </td>
+            </tr>
+            <tr>
+              <td>Code im Ausführungsdienst</td>
+              <td>Höchstens fünf Minuten nach der letzten Ausführung, nur im Arbeitsspeicher</td>
+            </tr>
+            <tr>
+              <td>Event-Daten</td>
+              <td>
+                Vergangene Termine: kurz nach dem Ende; Bewertungen von Kursleiter:innen: bis zwei
+                Jahre nach der jeweils jüngsten Bewertung (Abschnitt 14.1); übrige Daten bis zur
+                Kontolöschung
+              </td>
+            </tr>
+            <tr>
+              <td>Kalender-Abo-Kennung</td>
+              <td>Bis zur Erneuerung durch Sie oder bis zur Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>MorphCoins, Transaktionen, Herzen, Premium, PayPal-Bestellreferenzen</td>
+              <td>Bis zur Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>Rechnungsdaten im Profil</td>
+              <td>Bis zur Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>Rechnungen und Gutschriften</td>
+              <td>
+                Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung. Erforderliche
+                Kundenangaben und Zuordnungsnachweise können für die in Abschnitt 10.7 beschriebenen
+                Zwecke erhalten bleiben.
+              </td>
+            </tr>
+            <tr>
+              <td>Schlussabrechnung (nur bei nicht verbrauchten gekauften MorphCoins)</td>
+              <td>Acht Jahre ab Ende des Jahres der Kontolöschung</td>
+            </tr>
+            <tr>
+              <td>Kündigungs- und Widerrufserklärungen</td>
+              <td>
+                Drei Jahre ab Ende des maßgeblichen Abschluss-/Beendigungsjahres; offene Fälle und
+                Versandaufträge bleiben bis zur Klärung erhalten (Abschnitt 15.6)
+              </td>
+            </tr>
+            <tr>
+              <td>Zähler zur Begrenzung der Kündigungs- und Widerrufsformulare</td>
+              <td>Eine Stunde nach der letzten gezählten Erklärung</td>
+            </tr>
+            <tr>
+              <td>Datenexport</td>
+              <td>Wird beim Abruf erzeugt und nicht gespeichert</td>
+            </tr>
+            <tr>
+              <td>Server-Logs</td>
+              <td>
+                30 Tage (auch für die Zugriffsprotokolle des Webhostings hinter
+                static.bootstrap.academy, dort mit anonymisierter IP-Adresse)
+              </td>
+            </tr>
+            <tr>
+              <td>Fehlerberichte</td>
+              <td>90 Tage</td>
+            </tr>
+            <tr>
+              <td>Kontakt- und Support-Kommunikation</td>
+              <td>Bis zur Erledigung, danach zwölf Monate (Abschnitt 17.2)</td>
+            </tr>
+            <tr>
+              <td>Discord-Bot</td>
+              <td>Bis zur Löschung auf Anfrage (Abschnitt 17.3)</td>
+            </tr>
+            <tr>
+              <td>Datensicherungen</td>
+              <td>
+                Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
+                monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
+              </td>
+            </tr>
+            <tr>
+              <td>Cookies, Local Storage und Session Storage</td>
+              <td>Abschnitt 9</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Bei einer Kontolöschung werden nicht mehr benötigte Daten aus dem gewöhnlichen Konto und den
         beteiligten Diensten entfernt (Abschnitt 10.7). Notwendige Vertrags-, Abrechnungs-,
@@ -1997,6 +2013,16 @@ export default {
 </script>
 
 <style scoped>
+main {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.legal-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 h1 {
   @apply text-heading-1;
 }
@@ -2015,6 +2041,7 @@ h4 {
 
 table {
   @apply w-full mt-card;
+  min-width: 40rem;
   border-collapse: collapse;
 }
 

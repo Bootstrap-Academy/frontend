@@ -61,7 +61,8 @@ const onRequest = async ({ request, options }) => {
     await mutex.waitForUnlock();
     const accessToken = getAccessToken();
 
-    options.headers.Authorization = `Bearer ${accessToken}`;
+    options.headers = normalizeHeaders(options.headers);
+    options.headers.set("Authorization", `Bearer ${accessToken}`);
   } else {
     const release = await mutex.acquire();
     const [success, error] = await refresh();
@@ -69,7 +70,8 @@ const onRequest = async ({ request, options }) => {
     if (success) {
       const accessToken = getAccessToken();
 
-      options.headers.Authorization = `Bearer ${accessToken}`;
+      options.headers = normalizeHeaders(options.headers);
+      options.headers.set("Authorization", `Bearer ${accessToken}`);
     }
   }
 };
@@ -343,7 +345,7 @@ function cloneRequestOptions(options) {
   const headers = normalizeHeaders(baseOptions.headers);
   const accessToken = getAccessToken();
   if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
+    headers.set("Authorization", `Bearer ${accessToken}`);
   }
 
   baseOptions.headers = headers;
@@ -370,13 +372,5 @@ function logoutAfterInvalidToken() {
 }
 
 function normalizeHeaders(headers) {
-  if (!headers) {
-    return {};
-  }
-
-  if (headers instanceof Headers) {
-    return Object.fromEntries(headers.entries());
-  }
-
-  return { ...headers };
+  return new Headers(headers ?? {});
 }
