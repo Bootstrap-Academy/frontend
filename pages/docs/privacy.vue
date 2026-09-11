@@ -722,8 +722,8 @@
             <td><code>bootstrap-academy:update-notice:…</code></td>
             <td>Local Storage</td>
             <td>
-              Merkt erst nach „Verstanden“, dass der Update-Hinweis für Ihre Nutzerkennung und
-              die jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
+              Merkt erst nach „Verstanden“, dass der Update-Hinweis für Ihre Nutzerkennung und die
+              jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
               Zustimmung zu Vertrags- oder Datenschutzhinweisen.
             </td>
             <td>
@@ -762,13 +762,12 @@
         automatisch verlängert; der Erneuerungstoken ist serverseitig 30 Tage ab der letzten
         Erneuerung gültig und wird beim Abmelden ungültig. Die Speicherdauer der
         Local-Storage-Einträge ist in der Tabelle angegeben; sie werden nicht an unsere Server
-        übertragen.
-        Die Session-Storage-Einträge gelten nur für den jeweiligen Browser-Tab; die Weboberfläche
-        sendet ihre Werte einmal an unsere Programmierschnittstelle, um die Anmeldung oder
-        Registrierung abzuschließen, und löscht sie nach deren Erfolg – bricht eine Registrierung
-        ab, bleibt das Registrierungstoken bis zum Schließen des Tabs gespeichert. Cookies für
-        bootstrap.academy sendet Ihr Browser bei jeder Anfrage an die Weboberfläche mit, also auch
-        an Cloudflare (Abschnitt 7.2).
+        übertragen. Die Session-Storage-Einträge gelten nur für den jeweiligen Browser-Tab; die
+        Weboberfläche sendet ihre Werte einmal an unsere Programmierschnittstelle, um die Anmeldung
+        oder Registrierung abzuschließen, und löscht sie nach deren Erfolg – bricht eine
+        Registrierung ab, bleibt das Registrierungstoken bis zum Schließen des Tabs gespeichert.
+        Cookies für bootstrap.academy sendet Ihr Browser bei jeder Anfrage an die Weboberfläche mit,
+        also auch an Cloudflare (Abschnitt 7.2).
       </p>
       <p>
         Sie können Cookies, Local Storage und Session Storage jederzeit über Ihren Browser löschen

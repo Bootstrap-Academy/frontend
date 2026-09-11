@@ -47,18 +47,16 @@ export async function startOAuthFlow(
 ) {
   const ambient = moderationAmbientIdentity();
   try {
-    const response = <any>(
-      (purpose === "moderation"
-        ? await $fetch("/auth/moderation/access/oauth/begin", {
-            baseURL: useRuntimeConfig().public.BASE_API_URL,
-            credentials: "omit",
-            retry: 0,
-            timeout: 20000,
-            method: "POST",
-            body: { provider: provider_id, redirect_uri: oauthRedirectUri() },
-          })
-        : await POST("/auth/oauth/authorize", { provider_id, redirect_uri: oauthRedirectUri() }))
-    );
+    const response = <any>(purpose === "moderation"
+      ? await $fetch("/auth/moderation/access/oauth/begin", {
+          baseURL: useRuntimeConfig().public.BASE_API_URL,
+          credentials: "omit",
+          retry: 0,
+          timeout: 20000,
+          method: "POST",
+          body: { provider: provider_id, redirect_uri: oauthRedirectUri() },
+        })
+      : await POST("/auth/oauth/authorize", { provider_id, redirect_uri: oauthRedirectUri() }));
 
     if (!valid() || (purpose === "moderation" && ambient !== moderationAmbientIdentity()))
       throw new Error("OAuth owner or view changed");

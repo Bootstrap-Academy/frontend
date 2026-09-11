@@ -722,25 +722,148 @@
         Nutzung für Werbung oder zum Training von KI-Modellen, räumen Sie uns nicht ein. Sie
         versichern, dass Sie über die erforderlichen Rechte an Ihren Nutzerinhalten verfügen.
       </p>
-      <p>14.3 Beschränkungen für Nutzerinhalte: Es gelten die Regeln in Ziffer 13.2 und die gesetzlichen Vorschriften. Von Nutzern erstellte Aufgaben und die dazu vorgegebenen Lösungen dürfen außerdem keine wesentlichen sachlichen Fehler aufweisen; Aufgaben müssen einen nachvollziehbaren Bezug zum angegebenen Skill haben. Beanstandungen erläutern wir konkret. Bloßes Missfallen oder eine negative Bewertung belegen keinen Verstoß.</p>
-      <p>Bei behebbaren Qualitätsmängeln berücksichtigen wir eine Korrektur als milderes Mittel. Sie können uns eine Korrektur zur Umsetzung vorschlagen oder die Aufgabe löschen und eine korrigierte Aufgabe neu erstellen. Ein sachlicher Fehler allein rechtfertigt keine Sperre Ihrer Erstellerfunktion. Für weitergehende Maßnahmen gelten insbesondere die Voraussetzungen und die Verhältnismäßigkeit nach Ziffer 15.</p>
-      <p>Eine vertragliche Regel wenden wir nur an, wenn ihre Geltung für den betroffenen Inhalt und den maßgeblichen Zeitpunkt belegt ist. Die Annahme der neuesten AGB-Fassung für ein Konto allein genügt dafür nicht. Wir berücksichtigen Ihre Rechte, insbesondere die Meinungsfreiheit.</p>
-      <p>14.4 So moderieren wir: Meldungen und Entscheidungen werden als zusammengehöriger Fall dokumentiert. Hinreichend bestimmte Meldungen eines wesentlichen sachlichen Fehlers oder eines fehlenden Skill-Bezugs können eine vorläufige automatische Ausblendung auslösen. Dasselbe gilt, wenn eine Aufgabe mindestens zehn negative und mehr negative als positive Bewertungen erhält. Diese automatischen Maßnahmen setzen voraus, dass die einschlägige Regel und das automatische Verfahren für den konkreten Inhalt nachweislich gelten. Fehlt dieser Nachweis, entscheidet zunächst ein Mensch, ob eine Beschränkung gerechtfertigt ist.</p>
-      <p>Andere oder unzureichend bestimmte Meldungen führen zunächst zur menschlichen Prüfung. Dringende Hinweise auf rechtswidrige Inhalte oder Gefahren werden ihrer Dringlichkeit entsprechend behandelt. Eine Meldung oder ein Bewertungsergebnis ist noch keine menschliche Feststellung eines Verstoßes.</p>
-      <p>Jede vorläufige Ausblendung wird menschlich überprüft. Der prüfende Mensch entscheidet über Aufhebung, Fortbestand, Korrektur oder Entfernung und begründet das Ergebnis. Wird die Maßnahme aufgehoben, entfällt die Beschränkung dieses Falls. Andere selbständig begründete Beschränkungen bleiben bestehen; von Ihnen zurückgezogene Inhalte werden nicht gegen Ihren Willen erneut veröffentlicht.</p>
-      <p>Mögliche Maßnahmen sind Hinweise oder Verwarnungen, Ausblenden oder Entfernen von Inhalten, Sperren der Ersteller- oder Meldefunktion, Kontosperren und eine außerordentliche Kündigung nach Ziffer 15. Eine erfolglose Meldung allein rechtfertigt keine Meldesperre. Die öffentlichen Wege für Meldungen rechtswidriger Inhalte und Beschwerden bleiben erreichbar.</p>
-      <p>Über Funktions- und Kontosperren entscheidet ein Mensch. Bei Funktionssperren aus der Bearbeitung einer Meldung gilt grundsätzlich die Staffel von 3, dann 7, dann 30 Tagen und anschließend einer unbefristeten Sperre, abhängig von früheren Sperren derselben Art. Aufgehobene Sperren zählen nicht mit. Eine unklare historische Grundlage wird nicht als nachgewiesen behandelt. Die Staffel ersetzt weder die Prüfung, ob eine Sperre gerechtfertigt ist, noch die Prüfung ihrer Verhältnismäßigkeit und Dauer nach Ziffer 15.2. Soweit Art. 23 DSA anwendbar ist, gelten dessen zusätzliche Anforderungen, insbesondere eine vorherige Warnung, eine angemessene Befristung und eine Einzelfallprüfung von Häufigkeit, Schwere, Folgen und erkennbarer Absicht.</p>
-      <p>14.5 Meldung rechtswidriger Inhalte: Sie können rechtswidrige Inhalte auch ohne Nutzerkonto per E-Mail an hallo@bootstrap.academy melden. Bitte nennen Sie die genaue Fundstelle, insbesondere einen Link, erläutern Sie die vermutete Rechtswidrigkeit und erklären Sie, dass Sie nach bestem Wissen von der Richtigkeit und Vollständigkeit Ihrer Angaben überzeugt sind. Geben Sie Ihren Namen und Ihre E-Mail-Adresse an; dies ist bei Meldungen zu sexuellem Missbrauch von Kindern nicht erforderlich.</p>
-      <p>Soweit geeignete elektronische Kontaktangaben vorliegen, bestätigen wir den Eingang unverzüglich und teilen Ihnen unsere Entscheidung ohne unangemessene Verzögerung mit. Wir bearbeiten Meldungen zeitnah, sorgfältig, objektiv und frei von Willkür. Unsere Mitteilung erläutert das Ergebnis, den Einsatz automatisierter Mittel bei Bearbeitung oder Entscheidung und die verfügbaren Überprüfungsmöglichkeiten nach Ziffer 14.7. Dies gilt auch, wenn wir keine Maßnahme ergreifen.</p>
-      <p>14.6 Begründung unserer Entscheidungen: Für eine Beschränkung erhalten Sie eine klare, auf Ihren Fall bezogene Begründung spätestens mit ihrem Wirksamwerden im Moderationsbereich unter <a href="/moderation">/moderation</a>. Das gilt auch für vorläufige automatische Ausblendungen. An eine uns bekannte geeignete elektronische Kontaktadresse senden wir zusätzlich eine Benachrichtigung.</p>
-      <p>Die Begründung nennt den betroffenen Inhalt, die Maßnahme, ihren Umfang und ihre Dauer oder die Voraussetzungen ihres Endes, die maßgeblichen Tatsachen und Umstände, den Einsatz automatisierter Mittel sowie die einschlägige Rechtsvorschrift oder anwendbare AGB-Regel mit einer fallbezogenen Erläuterung. Bei einer automatischen vorläufigen Maßnahme benennen wir den Auslöser und stellen klar, dass noch keine menschliche Feststellung eines Verstoßes vorliegt. Außerdem erläutern wir Ihre Überprüfungsmöglichkeiten.</p>
-      <p>Angaben meldender Personen und private Unterlagen übernehmen wir nicht ungeprüft in Ihre Begründung. Wir stellen die für Ihre Verteidigung erforderlichen Tatsachen verständlich dar und berücksichtigen dabei die Rechte anderer Personen. Spätere Entscheidungen und Änderungen werden gesondert mitgeteilt; frühere Entscheidungen werden dadurch nicht nachträglich umgeschrieben.</p>
-      <p>Für Maßnahmen aufgrund behördlicher oder gerichtlicher Anordnungen gelten die hierfür vorgeschriebenen Informations- und Rechtsbehelfsregeln. Eine interne Überprüfung kann eine verbindliche Anordnung nicht aufheben.</p>
-      <p>14.7 Überprüfung und Zugang: Gegen Maßnahmen nach den Ziffern 14.3 bis 14.6 und 15 sowie gegen unsere Entscheidung über Ihre Meldung können Sie kostenlos im Moderationsbereich unter <a href="/moderation">/moderation</a> oder per E-Mail an hallo@bootstrap.academy Beschwerde einlegen und Ihren Standpunkt darlegen. Diese Möglichkeit besteht mindestens sechs Kalendermonate ab dem Tag, an dem Sie über die betreffende Entscheidung informiert worden sind. Das bloße Anlegen einer Entscheidung oder ein Versandversuch setzt diese Frist nicht in Gang. Beschwerden werden nicht allein aufgrund eines automatisch berechneten Fristablaufs abgewiesen.</p>
-      <p>Eine fachkundige Person überprüft die Entscheidung und Ihre Einwände; die Beschwerdeentscheidung erfolgt nicht ausschließlich automatisiert. Soweit bei der Größe unseres Teams möglich, ist diese Person an der ursprünglichen Entscheidung nicht beteiligt gewesen. Wir bearbeiten Beschwerden zeitnah, sorgfältig, diskriminierungsfrei und ohne Willkür und teilen Ihnen das begründete Ergebnis ohne unangemessene Verzögerung in Textform mit. Eine nicht gerechtfertigte Maßnahme heben wir ohne unangemessene Verzögerung auf oder passen sie an.</p>
-      <p>Der Moderationsbereich bleibt auch bei einer Kontosperre und ohne Zustimmung zu einer neuen AGB-Fassung erreichbar. Für ein bestehendes Konto können Sie Ihre Berechtigung durch die normale Anmeldung oder einen gesonderten Zugang mit Passwort, gegebenenfalls Zwei-Faktor-Nachweis, oder einem bereits verknüpften Anmeldedienst nachweisen. Der gesonderte Zugang hebt eine Kontosperre nicht auf und legt kein neues Konto an.</p>
-      <p>Nach einer Kontolöschung und als meldende Person ohne Konto können Sie einen Zugang zum jeweiligen Fall an eine aktuelle Kontaktadresse anfordern. Vor der Freigabe prüfen wir Ihre Berechtigung. Ein solcher Fallzugang berechtigt nur zum jeweiligen Fall; für kontobezogene Rechte ist ein entsprechender weitergehender Berechtigungsnachweis erforderlich. Die Rechte nach Ziffer 15.4 bleiben bestehen.</p>
-      <p>Gesetzliche Beschwerde- und Rechtsschutzmöglichkeiten, einschließlich des Rechtswegs zu den Gerichten, bleiben unberührt. Sie müssen unsere interne Überprüfung dafür nicht zuvor ausschöpfen. Soweit Art. 21 DSA anwendbar ist, können Sie sich auch an eine zuständige zertifizierte außergerichtliche Streitbeilegungsstelle wenden; die für Ihren Fall verfügbaren Möglichkeiten nennen wir in der Entscheidung.</p>
+      <p>
+        14.3 Beschränkungen für Nutzerinhalte: Es gelten die Regeln in Ziffer 13.2 und die
+        gesetzlichen Vorschriften. Von Nutzern erstellte Aufgaben und die dazu vorgegebenen Lösungen
+        dürfen außerdem keine wesentlichen sachlichen Fehler aufweisen; Aufgaben müssen einen
+        nachvollziehbaren Bezug zum angegebenen Skill haben. Beanstandungen erläutern wir konkret.
+        Bloßes Missfallen oder eine negative Bewertung belegen keinen Verstoß.
+      </p>
+      <p>
+        Bei behebbaren Qualitätsmängeln berücksichtigen wir eine Korrektur als milderes Mittel. Sie
+        können uns eine Korrektur zur Umsetzung vorschlagen oder die Aufgabe löschen und eine
+        korrigierte Aufgabe neu erstellen. Ein sachlicher Fehler allein rechtfertigt keine Sperre
+        Ihrer Erstellerfunktion. Für weitergehende Maßnahmen gelten insbesondere die Voraussetzungen
+        und die Verhältnismäßigkeit nach Ziffer 15.
+      </p>
+      <p>
+        Eine vertragliche Regel wenden wir nur an, wenn ihre Geltung für den betroffenen Inhalt und
+        den maßgeblichen Zeitpunkt belegt ist. Die Annahme der neuesten AGB-Fassung für ein Konto
+        allein genügt dafür nicht. Wir berücksichtigen Ihre Rechte, insbesondere die
+        Meinungsfreiheit.
+      </p>
+      <p>
+        14.4 So moderieren wir: Meldungen und Entscheidungen werden als zusammengehöriger Fall
+        dokumentiert. Hinreichend bestimmte Meldungen eines wesentlichen sachlichen Fehlers oder
+        eines fehlenden Skill-Bezugs können eine vorläufige automatische Ausblendung auslösen.
+        Dasselbe gilt, wenn eine Aufgabe mindestens zehn negative und mehr negative als positive
+        Bewertungen erhält. Diese automatischen Maßnahmen setzen voraus, dass die einschlägige Regel
+        und das automatische Verfahren für den konkreten Inhalt nachweislich gelten. Fehlt dieser
+        Nachweis, entscheidet zunächst ein Mensch, ob eine Beschränkung gerechtfertigt ist.
+      </p>
+      <p>
+        Andere oder unzureichend bestimmte Meldungen führen zunächst zur menschlichen Prüfung.
+        Dringende Hinweise auf rechtswidrige Inhalte oder Gefahren werden ihrer Dringlichkeit
+        entsprechend behandelt. Eine Meldung oder ein Bewertungsergebnis ist noch keine menschliche
+        Feststellung eines Verstoßes.
+      </p>
+      <p>
+        Jede vorläufige Ausblendung wird menschlich überprüft. Der prüfende Mensch entscheidet über
+        Aufhebung, Fortbestand, Korrektur oder Entfernung und begründet das Ergebnis. Wird die
+        Maßnahme aufgehoben, entfällt die Beschränkung dieses Falls. Andere selbständig begründete
+        Beschränkungen bleiben bestehen; von Ihnen zurückgezogene Inhalte werden nicht gegen Ihren
+        Willen erneut veröffentlicht.
+      </p>
+      <p>
+        Mögliche Maßnahmen sind Hinweise oder Verwarnungen, Ausblenden oder Entfernen von Inhalten,
+        Sperren der Ersteller- oder Meldefunktion, Kontosperren und eine außerordentliche Kündigung
+        nach Ziffer 15. Eine erfolglose Meldung allein rechtfertigt keine Meldesperre. Die
+        öffentlichen Wege für Meldungen rechtswidriger Inhalte und Beschwerden bleiben erreichbar.
+      </p>
+      <p>
+        Über Funktions- und Kontosperren entscheidet ein Mensch. Bei Funktionssperren aus der
+        Bearbeitung einer Meldung gilt grundsätzlich die Staffel von 3, dann 7, dann 30 Tagen und
+        anschließend einer unbefristeten Sperre, abhängig von früheren Sperren derselben Art.
+        Aufgehobene Sperren zählen nicht mit. Eine unklare historische Grundlage wird nicht als
+        nachgewiesen behandelt. Die Staffel ersetzt weder die Prüfung, ob eine Sperre gerechtfertigt
+        ist, noch die Prüfung ihrer Verhältnismäßigkeit und Dauer nach Ziffer 15.2. Soweit Art. 23
+        DSA anwendbar ist, gelten dessen zusätzliche Anforderungen, insbesondere eine vorherige
+        Warnung, eine angemessene Befristung und eine Einzelfallprüfung von Häufigkeit, Schwere,
+        Folgen und erkennbarer Absicht.
+      </p>
+      <p>
+        14.5 Meldung rechtswidriger Inhalte: Sie können rechtswidrige Inhalte auch ohne Nutzerkonto
+        per E-Mail an hallo@bootstrap.academy melden. Bitte nennen Sie die genaue Fundstelle,
+        insbesondere einen Link, erläutern Sie die vermutete Rechtswidrigkeit und erklären Sie, dass
+        Sie nach bestem Wissen von der Richtigkeit und Vollständigkeit Ihrer Angaben überzeugt sind.
+        Geben Sie Ihren Namen und Ihre E-Mail-Adresse an; dies ist bei Meldungen zu sexuellem
+        Missbrauch von Kindern nicht erforderlich.
+      </p>
+      <p>
+        Soweit geeignete elektronische Kontaktangaben vorliegen, bestätigen wir den Eingang
+        unverzüglich und teilen Ihnen unsere Entscheidung ohne unangemessene Verzögerung mit. Wir
+        bearbeiten Meldungen zeitnah, sorgfältig, objektiv und frei von Willkür. Unsere Mitteilung
+        erläutert das Ergebnis, den Einsatz automatisierter Mittel bei Bearbeitung oder Entscheidung
+        und die verfügbaren Überprüfungsmöglichkeiten nach Ziffer 14.7. Dies gilt auch, wenn wir
+        keine Maßnahme ergreifen.
+      </p>
+      <p>
+        14.6 Begründung unserer Entscheidungen: Für eine Beschränkung erhalten Sie eine klare, auf
+        Ihren Fall bezogene Begründung spätestens mit ihrem Wirksamwerden im Moderationsbereich
+        unter <a href="/moderation">/moderation</a>. Das gilt auch für vorläufige automatische
+        Ausblendungen. An eine uns bekannte geeignete elektronische Kontaktadresse senden wir
+        zusätzlich eine Benachrichtigung.
+      </p>
+      <p>
+        Die Begründung nennt den betroffenen Inhalt, die Maßnahme, ihren Umfang und ihre Dauer oder
+        die Voraussetzungen ihres Endes, die maßgeblichen Tatsachen und Umstände, den Einsatz
+        automatisierter Mittel sowie die einschlägige Rechtsvorschrift oder anwendbare AGB-Regel mit
+        einer fallbezogenen Erläuterung. Bei einer automatischen vorläufigen Maßnahme benennen wir
+        den Auslöser und stellen klar, dass noch keine menschliche Feststellung eines Verstoßes
+        vorliegt. Außerdem erläutern wir Ihre Überprüfungsmöglichkeiten.
+      </p>
+      <p>
+        Angaben meldender Personen und private Unterlagen übernehmen wir nicht ungeprüft in Ihre
+        Begründung. Wir stellen die für Ihre Verteidigung erforderlichen Tatsachen verständlich dar
+        und berücksichtigen dabei die Rechte anderer Personen. Spätere Entscheidungen und Änderungen
+        werden gesondert mitgeteilt; frühere Entscheidungen werden dadurch nicht nachträglich
+        umgeschrieben.
+      </p>
+      <p>
+        Für Maßnahmen aufgrund behördlicher oder gerichtlicher Anordnungen gelten die hierfür
+        vorgeschriebenen Informations- und Rechtsbehelfsregeln. Eine interne Überprüfung kann eine
+        verbindliche Anordnung nicht aufheben.
+      </p>
+      <p>
+        14.7 Überprüfung und Zugang: Gegen Maßnahmen nach den Ziffern 14.3 bis 14.6 und 15 sowie
+        gegen unsere Entscheidung über Ihre Meldung können Sie kostenlos im Moderationsbereich unter
+        <a href="/moderation">/moderation</a> oder per E-Mail an hallo@bootstrap.academy Beschwerde
+        einlegen und Ihren Standpunkt darlegen. Diese Möglichkeit besteht mindestens sechs
+        Kalendermonate ab dem Tag, an dem Sie über die betreffende Entscheidung informiert worden
+        sind. Das bloße Anlegen einer Entscheidung oder ein Versandversuch setzt diese Frist nicht
+        in Gang. Beschwerden werden nicht allein aufgrund eines automatisch berechneten Fristablaufs
+        abgewiesen.
+      </p>
+      <p>
+        Eine fachkundige Person überprüft die Entscheidung und Ihre Einwände; die
+        Beschwerdeentscheidung erfolgt nicht ausschließlich automatisiert. Soweit bei der Größe
+        unseres Teams möglich, ist diese Person an der ursprünglichen Entscheidung nicht beteiligt
+        gewesen. Wir bearbeiten Beschwerden zeitnah, sorgfältig, diskriminierungsfrei und ohne
+        Willkür und teilen Ihnen das begründete Ergebnis ohne unangemessene Verzögerung in Textform
+        mit. Eine nicht gerechtfertigte Maßnahme heben wir ohne unangemessene Verzögerung auf oder
+        passen sie an.
+      </p>
+      <p>
+        Der Moderationsbereich bleibt auch bei einer Kontosperre und ohne Zustimmung zu einer neuen
+        AGB-Fassung erreichbar. Für ein bestehendes Konto können Sie Ihre Berechtigung durch die
+        normale Anmeldung oder einen gesonderten Zugang mit Passwort, gegebenenfalls
+        Zwei-Faktor-Nachweis, oder einem bereits verknüpften Anmeldedienst nachweisen. Der
+        gesonderte Zugang hebt eine Kontosperre nicht auf und legt kein neues Konto an.
+      </p>
+      <p>
+        Nach einer Kontolöschung und als meldende Person ohne Konto können Sie einen Zugang zum
+        jeweiligen Fall an eine aktuelle Kontaktadresse anfordern. Vor der Freigabe prüfen wir Ihre
+        Berechtigung. Ein solcher Fallzugang berechtigt nur zum jeweiligen Fall; für kontobezogene
+        Rechte ist ein entsprechender weitergehender Berechtigungsnachweis erforderlich. Die Rechte
+        nach Ziffer 15.4 bleiben bestehen.
+      </p>
+      <p>
+        Gesetzliche Beschwerde- und Rechtsschutzmöglichkeiten, einschließlich des Rechtswegs zu den
+        Gerichten, bleiben unberührt. Sie müssen unsere interne Überprüfung dafür nicht zuvor
+        ausschöpfen. Soweit Art. 21 DSA anwendbar ist, können Sie sich auch an eine zuständige
+        zertifizierte außergerichtliche Streitbeilegungsstelle wenden; die für Ihren Fall
+        verfügbaren Möglichkeiten nennen wir in der Entscheidung.
+      </p>
       <p>
         14.8 Zentrale Kontaktstelle nach Art. 11 und Art. 12 der Verordnung (EU) 2022/2065 (Digital
         Services Act) für Behörden und für Nutzer: hallo@bootstrap.academy. Kommunikation ist auf
@@ -775,8 +898,11 @@
         Anteil nach Ziffer 6.8. Gebuchte Events, an denen Sie wegen der Sperre nicht teilnehmen
         können, erstatten wir. Auch während einer Sperre Ihres Kontos, während der Sie sich nicht
         anmelden können, stellen wir Ihnen auf Anfrage Ihre Daten in einem maschinenlesbaren Format
-        bereit (Ziffer 17.3). Nach entsprechendem Berechtigungsnachweis sind Export, ursprüngliche Bestellunterlagen und Kontolöschung auch über den gesonderten Rechtezugang unter <a href="/moderation">/moderation</a> erreichbar. Die öffentlichen Kündigungs- und Widerrufswege bleiben offen. Wir löschen Ihr Konto auch auf Ihre Anfrage per E-Mail (Ziffer 4.2); für
-        gekaufte MorphCoins gilt Ziffer 6.7.
+        bereit (Ziffer 17.3). Nach entsprechendem Berechtigungsnachweis sind Export, ursprüngliche
+        Bestellunterlagen und Kontolöschung auch über den gesonderten Rechtezugang unter
+        <a href="/moderation">/moderation</a> erreichbar. Die öffentlichen Kündigungs- und
+        Widerrufswege bleiben offen. Wir löschen Ihr Konto auch auf Ihre Anfrage per E-Mail (Ziffer
+        4.2); für gekaufte MorphCoins gilt Ziffer 6.7.
       </p>
       <p>
         15.5 Bei einem schweren Verstoß oder bei wiederholten Verstößen trotz Verwarnung können wir
