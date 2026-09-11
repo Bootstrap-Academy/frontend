@@ -19,15 +19,14 @@
   both actions write the row on the server and reload the profile.
 -->
 <template>
-  <section
+  <StackedDialog
     v-if="show"
-    ref="refGate"
-    class="fixed left-0 top-0 z-[100] flex h-screen w-screen items-center justify-center overflow-y-auto bg-[#0b192edd] p-4"
-    role="dialog"
-    aria-modal="true"
+    as="section"
+    :priority="1"
+    class="fixed left-0 top-0 flex h-screen w-screen items-center justify-center overflow-y-auto bg-[#0b192edd] p-4"
     :aria-label="t('Headings.NewTermsAndConditions')"
   >
-    <article class="card w-full max-w-xl bg-secondary style-card">
+    <DialogPanel as="article" class="card w-full max-w-xl bg-secondary style-card">
       <h2 class="text-heading-2 text-heading font-heading">
         {{ t("Headings.NewTermsAndConditions") }}
       </h2>
@@ -78,22 +77,23 @@
           {{ t("Headings.DeleteAccount") }}
         </NuxtLink>
       </div>
-    </article>
-  </section>
+    </DialogPanel>
+  </StackedDialog>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { DialogPanel } from "@headlessui/vue";
 
 export default defineComponent({
+  components: { DialogPanel },
   setup() {
     const { t } = useI18n();
     const route = useRoute();
     const user = <any>useUser();
     const dismissed = useTermsGateDismissed();
 
-    const refGate = ref<HTMLElement | null>(null);
     const termsAndConditions = ref(false);
     const ageConfirmed = ref(false);
     const submitting = ref(false);
@@ -105,7 +105,6 @@ export default defineComponent({
 
     const show = computed(() => needsTermsAcceptance(route.path));
 
-    useFocusTrap(refGate, show);
     const valid = computed(() => termsAndConditions.value && ageConfirmed.value);
 
     // The link to the terms replaces the `%%%` placeholder in the sentence.
@@ -158,7 +157,6 @@ export default defineComponent({
 
     return {
       t,
-      refGate,
       show,
       bodyParts,
       submitting,

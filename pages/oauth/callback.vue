@@ -45,6 +45,11 @@ export default {
     const route = useRoute();
 
     const dialog = <any>reactive({});
+    const moderation = useModeration();
+    let alive = true;
+    onBeforeUnmount(() => {
+      alive = false;
+    });
 
     onMounted(async () => {
       setLoading(true);
@@ -59,6 +64,19 @@ export default {
       if (!!!flow || !!!state || flow.state != state) {
         setLoading(false);
         errorHandler({ detail: "Error.OAuthStateMismatch" });
+        return;
+      }
+
+      if (flow.purpose === "moderation") {
+        history.replaceState(history.state, "", location.pathname);
+        setLoading(false);
+        try {
+          if (flow.ambient !== moderationAmbientIdentity()) throw new Error("OAuth owner changed");
+          await moderation.finishOAuth({ state, code });
+          if (alive) await router.replace("/moderation");
+        } catch {
+          if (alive) await router.replace("/moderation/access");
+        }
         return;
       }
 

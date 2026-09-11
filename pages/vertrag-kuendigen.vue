@@ -19,6 +19,10 @@
     <div class="mx-auto w-full max-w-2xl">
       <h1 class="text-heading-1 mb-box">{{ t("Headings.CancelContract") }}</h1>
 
+      <div v-if="retained && !declaration" class="mb-box">
+        <p>{{ t("Body.DeclarationRecoveryHint") }}</p>
+        <Btn secondary @click="recoverReceipt()">{{ t("Buttons.RecoverDeclarationReceipt") }}</Btn>
+      </div>
       <!-- ============================================================ FORM -->
       <template v-if="!!!declaration">
         <p class="mb-box">{{ t("Body.CancelContractIntro") }}</p>
@@ -90,6 +94,13 @@
             :rules="form.contractDesignation.rules"
           />
 
+          <Input
+            id="renewal-agreement-id"
+            label="Inputs.RenewalAgreementReference"
+            hint="Body.RenewalAgreementReferenceHint"
+            v-model="renewalReference"
+          />
+
           <fieldset>
             <legend class="text-body-2 mb-2 block text-body font-body">
               {{ t("Inputs.EndOfContract") }}
@@ -122,6 +133,7 @@
 
           <InputBtn
             :loading="form.submitting"
+            :disabled="form.submitting"
             class="self-end !normal-case"
             @click="onclickSubmitForm()"
             mt
@@ -181,20 +193,18 @@
           for a different reason than a declaration whose contract could not
           be matched: it is examined, and the end date follows in Textform.
         -->
-        <p v-if="!!effectiveEnd">{{ t("Body.ContractEndsOn", { date: effectiveEnd }) }}</p>
-        <p v-else-if="declaredExtraordinary">
-          {{ t("Body.ExtraordinaryCancellationEndFollows") }}
-        </p>
-        <p v-else>{{ t("Body.NoContractFoundForEmail") }}</p>
-
         <p v-if="confirmationEmailSent">
           {{ t("Body.ConfirmationEmailSent", { email: declaration.email }) }}
         </p>
         <p v-else>{{ t("Body.ConfirmationEmailNotSent") }}</p>
 
+        <p>{{ t("Body.DeclarationReceiptMeaning") }}</p>
         <Btn class="w-fit print:!hidden" @click="onclickPrint()">
           {{ t("Buttons.SaveAsPdfOrPrint") }}
         </Btn>
+        <Btn secondary class="w-fit print:!hidden" @click="newDeclaration()">{{
+          t("Buttons.NewDeclaration")
+        }}</Btn>
       </section>
     </div>
   </main>
@@ -218,6 +228,21 @@ export default defineComponent({
     // shown, afterwards the record replaces it on the same page.
     const declaration = ref<any>(null);
     const confirmationEmailSent = ref(false);
+    const retained = ref(false);
+    const renewalReference = ref("");
+    onMounted(() => {
+      retained.value = hasRetainedDeclaration("/contracts/cancellations");
+    });
+    async function recoverReceipt() {
+      const [receipt, error] = await recoverDeclarationReceipt("/contracts/cancellations");
+      if (receipt) successHandler(receipt);
+      else openSnackbar("error", declarationErrorKey(error));
+    }
+    function newDeclaration() {
+      forgetRetainedDeclaration("/contracts/cancellations");
+      declaration.value = null;
+      retained.value = false;
+    }
 
     // ============================================================= options
     const cancellationTypes = [
@@ -305,7 +330,9 @@ export default defineComponent({
       body: () => {
         const extraordinary = form.cancellationType.value == "EXTRAORDINARY";
         const reason = form.reason.value.trim();
-        const designation = form.contractDesignation.value.trim();
+        const designation = [form.contractDesignation.value.trim(), renewalReference.value.trim()]
+          .filter(Boolean)
+          .join(" / ");
 
         return {
           name: form.name.value.trim(),
@@ -313,6 +340,11 @@ export default defineComponent({
           contract: form.contract.value,
           contract_designation: !!designation ? designation : null,
           cancellation_type: form.cancellationType.value,
+          ...(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            renewalReference.value.trim()
+          )
+            ? { renewal_agreement_id: renewalReference.value.trim() }
+            : {}),
           details: extraordinary && !!reason ? reason : null,
           requested_end: form.endType.value == "DATE" ? toRequestedEnd(form.endDate.value) : null,
         };
@@ -391,6 +423,7 @@ export default defineComponent({
 
     // ============================================================= functions
     async function onclickSubmitForm() {
+      if (form.submitting || declaration.value) return;
       if (!form.validate()) return openSnackbar("error", "Error.InvalidForm");
 
       form.submitting = true;
@@ -419,6 +452,10 @@ export default defineComponent({
 
     return {
       t,
+      retained,
+      recoverReceipt,
+      newDeclaration,
+      renewalReference,
       refForm,
       form,
       cancellationTypes,

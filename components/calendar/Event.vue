@@ -160,7 +160,7 @@ export default defineComponent({
     }
 
     const price = computed(() => {
-      return props.data.price ?? 0;
+      return props.data.price;
     });
 
     const description = computed(() => {
@@ -170,6 +170,7 @@ export default defineComponent({
     // Coins are a means of payment, so the Euro total incl. VAT is shown next
     // to the coin figure (Art. 246a § 1 Abs. 1 Nr. 5 EGBGB).
     const priceLabel = computed(() => {
+      if (price.value == null) return t("Body.EventPaymentUnconfirmed");
       const n = new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US").format(
         price.value
       );

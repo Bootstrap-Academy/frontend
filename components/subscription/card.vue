@@ -55,7 +55,7 @@
         <div class="mb-8">
           <button
             type="button"
-            :disabled="!hasEnoughCoins"
+            :disabled="disabled || !hasEnoughCoins"
             @click="onclickSubscribe"
             :class="{
               'flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95':
@@ -98,6 +98,7 @@ const props = defineProps({
   yearly: { type: Boolean, default: false },
   monthlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.MONTHLY },
   yearlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.YEARLY },
+  disabled: { type: Boolean, default: false },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";
@@ -128,7 +129,7 @@ const pricePerMonth = computed(() =>
 );
 
 function onclickSubscribe() {
-  if (!hasEnoughCoins.value) return;
+  if (props.disabled || !hasEnoughCoins.value) return;
   if (props.yearly) props.subscribeYearly?.();
   else props.subscribeMonthly?.();
 }

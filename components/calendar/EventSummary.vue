@@ -1,25 +1,25 @@
 <template>
-  <div class="relative max-h-full w-full max-w-3xl overflow-y-scroll bg-secondary p-10 style-card">
+  <div class="relative w-full max-w-3xl bg-secondary p-4 style-card sm:p-10">
     <div class="max-sm:flex max-sm:justify-end">
       <Btn sm icon-right secondary class="sm:absolute sm:end-10" @click="$emit('cancel')">
         {{ t("Buttons.Close") }}
       </Btn>
     </div>
-    <div class="max-h-3xl flex h-full flex-col space-y-4">
+    <div class="flex flex-col space-y-4">
       <div>
         <h4 class="font-bold text-heading">
           {{ t("Headings.Instructor") }}
         </h4>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex flex-wrap items-center gap-4">
           <Rating :rating="event.instructor_rating ?? 0" sm stars />
-          <div class="flex items-center gap-2">
+          <div class="flex min-w-0 items-center gap-2">
             <Avatar
               :name="event.instructor.display_name ?? ''"
               :alt="t('AltAttributes.EventInstructorAvatar')"
               class="h-6 w-6 flex-shrink-0"
             />
-            <p>{{ event.instructor.display_name }}</p>
+            <p class="min-w-0">{{ event.instructor.display_name }}</p>
           </div>
         </div>
       </div>

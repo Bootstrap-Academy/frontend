@@ -33,7 +33,13 @@
         </Btn>
         <Chip v-if="event.booked && !isMine" color="bg-success">
           <IconCheck />
-          {{ t("Headings.Booked") }}
+          {{
+            t(
+              ["pending", "confirmation_pending", "review"].includes(event.payment_state ?? "")
+                ? "Body.EventBookingReserved"
+                : "Headings.Booked"
+            )
+          }}
         </Chip>
         <Chip v-if="isMine" color="bg-success"> <IconMorphcoin /> {{ t("Headings.IsMine") }} </Chip>
       </div>
@@ -49,7 +55,7 @@
       Booking debits Morphcoins, so the summary required by § 312j Abs. 2 BGB
       and the statutory order button are shown before the booking is placed.
     -->
-    <Modal v-if="confirm" class="z-100 overflow-scroll">
+    <Modal v-if="confirm" class="z-100" :aria-label="t(btn)">
       <CalendarEventSummary
         :event="event"
         @cancel="confirm = false"
@@ -57,6 +63,7 @@
         :description="description"
       >
         <OrderSummary
+          exact-offer
           :coins="price"
           :heading="btn"
           :disabled="!canBook"
@@ -69,12 +76,12 @@
           </template>
 
           <template #consent>
-            <!--
-              Webinars and coachings are services, so a paid booking needs the
-              declarations of § 356 Abs. 5 Nr. 2 BGB. A free event is not
-              booked against payment, so they are not asked for.
-            -->
-            <OrderWithdrawalConsent v-if="price > 0" kind="service" v-model="withdrawalConsent" />
+            <OrderContract
+              v-if="purchaseOffer"
+              :key="purchaseOffer.id"
+              :offer="purchaseOffer"
+              v-model="withdrawalConsent"
+            />
           </template>
 
           <template #actions>
@@ -91,14 +98,13 @@
         :stats="stats"
         :description="description"
       >
-        <Accordion :title="dialog.heading" class="w-full">
-          <Dialog :dialog="dialog">
-            <template #content>
-              <h4 class="text-heading-4 mt-box mb-box">{{ t("Headings.CancellationPolicy") }}</h4>
-              <List :items="cancellationPolicy" id="eventCancellationPolicy" />
-            </template>
-          </Dialog>
-        </Accordion>
+        <EventCancellationConfirmation
+          :event-id="id"
+          :kind="type === 'coaching' ? 'coaching' : 'webinar'"
+          scope="auto"
+          @close="closeCancellation"
+          @applied="cancellationApplied = true"
+        />
       </CalendarEventSummary>
     </Modal>
   </div>
@@ -135,23 +141,29 @@ const btn = computed(() => {
 
 const btnMoreInfo = ref("Buttons.MoreEventInfo");
 
-const price = computed(() => props.event?.price ?? 0);
+const purchaseOffer = ref<any>(null);
+const price = computed(() => purchaseOffer.value?.product.coins ?? props.event?.price ?? 0);
 const bookLabel = computed(() =>
   props.type === "coaching" ? "Buttons.YesBookCoaching" : "Buttons.YesBookWebinar"
 );
 
 const isEventBooked = ref(props.booked ?? false);
 
-const dialog = <any>reactive({});
 const confirm = ref(false);
 const withdrawalConsent = ref(false);
 const information = ref(false);
 
-const canBook = computed(() => price.value <= 0 || withdrawalConsent.value);
+const canBook = computed(() => !!purchaseOffer.value && withdrawalConsent.value);
 
-function onclickConfirm() {
+async function onclickConfirm() {
   // The dialog is rebuilt every time it opens, so the boxes start unticked.
   withdrawalConsent.value = false;
+  purchaseOffer.value = await requestPurchaseOffer(
+    props.type === "coaching"
+      ? `/events/coachings/${props.subSkillID}/${props.id}/offer`
+      : `/events/webinars/${props.id}/offer`
+  );
+  if (!purchaseOffer.value) return;
   confirm.value = true;
 }
 
@@ -162,20 +174,6 @@ async function onclickBook() {
   }
 
   setLoading(true);
-
-  // Bookings are placed against the events service, which does not store the
-  // declarations, so they are recorded here first.
-  if (price.value > 0) {
-    const [, consentError] = await recordWithdrawalConsent(
-      props.type === "coaching" ? "coaching" : "webinar",
-      props.id
-    );
-    if (consentError) {
-      setLoading(false);
-      openSnackbar("error", consentError?.detail ?? "Error.WithdrawalConsentMissing");
-      return;
-    }
-  }
 
   switch (props.type) {
     case "coaching":
@@ -191,115 +189,43 @@ async function onclickBook() {
 }
 
 async function bookCoaching() {
-  const [success, error] = await bookCoachingForThisSubSkillWithThisInstructor(
-    props.subSkillID ?? "",
-    props.id ?? ""
-  );
+  const [success, error] = await withPurchaseRecovery(purchaseOffer.value, () =>
+    bookCoachingForThisSubSkillWithThisInstructor(
+      props.subSkillID ?? "",
+      props.id ?? "",
+      purchaseAcceptance(purchaseOffer.value)
+    )
+  ).catch((error) => [null, error]);
 
-  openSnackbar(
-    success ? "success" : "error",
-    success ? "Success.BookedCoaching" : (error?.detail ?? "")
-  );
+  openSnackbar(success ? "success" : "error", success ? "Body.PurchasePending" : eventError(error));
   isEventBooked.value = !!success;
   await getCalendar();
 }
 
 async function bookWebinar() {
-  const [success, error] = await registerForWebinarByID(props.id ?? "");
+  const [success, error] = await withPurchaseRecovery(purchaseOffer.value, () =>
+    registerForWebinarByID(props.id ?? "", purchaseAcceptance(purchaseOffer.value))
+  ).catch((error) => [null, error]);
 
-  openSnackbar(
-    success ? "success" : "error",
-    success ? "Success.BookedWebinar" : (error?.detail ?? "")
-  );
+  openSnackbar(success ? "success" : "error", success ? "Body.PurchasePending" : eventError(error));
   isEventBooked.value = !!success;
   await getCalendar();
 }
 
-const confirmCancellation = ref(false);
-const cancellationPolicy = reactive([
-  "List.EventCancellationPolicy.1",
-  "List.EventCancellationPolicy.2",
-  "List.EventCancellationPolicy.3",
-]);
-
-function onclickCancel() {
-  confirmCancellation.value = true;
-  let btnText = "";
-  let headingText = "";
-  let type = "";
-
-  switch (props.type) {
-    case "coaching":
-      btnText = "Buttons.YesCancelCoaching";
-      headingText = "Headings.CancelCoaching";
-      type = "info";
-      break;
-    default:
-      btnText = "Buttons.YesCancelWebinar";
-      headingText = "Headings.CancelWebinar";
-      type = "warning";
-      break;
-  }
-
-  const refund = getCancellationRefundStatus();
-  let body = t("Body.CancelEvent");
-
-  if (refund == 100) {
-    body = `${body} ${t("Body.CancelEvent100%")}`;
-  } else if (refund == 50) {
-    body = `${body} ${t("Body.CancelEvent50%")}`;
-  } else {
-    // less than 24 hours before the event there is nothing to confirm anymore
-    body = t("Body.CancelEvent0%");
-  }
-
-  Object.assign(dialog, {
-    type: type,
-    heading: headingText,
-    body: body,
-    // the events service refuses a cancellation within the last 24 hours, so it is not offered here
-    primaryBtn:
-      refund == 0
-        ? {}
-        : {
-            label: btnText,
-            onclick: async () => {
-              setLoading(true);
-              const [success, error] = await cancelCalendarEvent(props.id);
-              setLoading(false);
-
-              openSnackbar(
-                success ? "success" : "error",
-                success ? "Success.EventCancelled" : (error?.detail ?? "")
-              );
-
-              if (success) {
-                confirmCancellation.value = false;
-              }
-            },
-          },
-    secondaryBtn: {
-      label: "Buttons.Back",
-      onclick: () => {
-        confirmCancellation.value = false;
-      },
-    },
-  });
+function eventError(error: any) {
+  if (error?.detail?.code === "EventBookingPaymentPending") return "Body.EventBookingReserved";
+  if (error?.detail?.code === "EventSettlementPending") return "Body.EventCancellationPending";
+  return typeof error?.detail === "string" ? error.detail : "Body.EventPaymentUnconfirmed";
 }
 
-// The tiers of the cancellation policy, mirroring the thresholds the events service applies.
-// `start.date - today.date` used to subtract the days of the month from each other, which is off by
-// a month's length whenever the event is in the next month.
-function getCancellationRefundStatus() {
-  const hoursUntilStart = (props.start * 1000 - Date.now()) / (60 * 60 * 1000);
-
-  if (hoursUntilStart >= 7 * 24) {
-    return 100;
-  } else if (hoursUntilStart >= 24) {
-    return 50;
-  } else {
-    return 0;
-  }
+const confirmCancellation = ref(false);
+const cancellationApplied = ref(false);
+async function closeCancellation() {
+  confirmCancellation.value = false;
+  if (cancellationApplied.value) await getCalendar();
+}
+function onclickCancel() {
+  confirmCancellation.value = true;
 }
 </script>
 

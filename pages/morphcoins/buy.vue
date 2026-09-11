@@ -1,7 +1,8 @@
 <template>
   <main class="mt-main mb-main container">
     <section class="container-form mx-auto max-w-3xl">
-      <FormBuyCoins />
+      <PaypalCheckoutStatus v-if="checkout || error" />
+      <FormBuyCoins v-else />
     </section>
   </main>
 </template>
@@ -16,7 +17,8 @@ export default {
     title: "Buy Morphcoins",
   },
   setup() {
-    return {};
+    const { checkout, error } = usePaypalCheckout();
+    return { checkout, error };
   },
 };
 </script>

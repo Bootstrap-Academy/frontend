@@ -11,7 +11,8 @@ export class EventBase {
   skill_id: string = "";
   start: number = 0;
   duration: number = 0;
-  price: number = 0;
+  price: number | null = 0;
+  payment_state: string | null = null;
   instructor: Instructor = new Instructor();
   instructor_rating: null | number = null;
   booked: boolean = false; // "sold-out"?

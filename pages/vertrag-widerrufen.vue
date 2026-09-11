@@ -15,6 +15,10 @@
     <div class="mx-auto w-full max-w-2xl">
       <h1 class="text-heading-1 mb-box">{{ t("Headings.WithdrawContract") }}</h1>
 
+      <div v-if="retained && !declaration" class="mb-box">
+        <p>{{ t("Body.DeclarationRecoveryHint") }}</p>
+        <Btn secondary @click="recoverReceipt()">{{ t("Buttons.RecoverDeclarationReceipt") }}</Btn>
+      </div>
       <!-- ============================================================ FORM -->
       <template v-if="!!!declaration">
         <p class="mb-box">{{ t("Body.WithdrawContractIntro") }}</p>
@@ -62,6 +66,7 @@
 
           <InputBtn
             :loading="form.submitting"
+            :disabled="form.submitting"
             class="self-end !normal-case"
             @click="onclickSubmitForm()"
             mt
@@ -106,9 +111,13 @@
         </p>
         <p v-else>{{ t("Body.ConfirmationEmailNotSent") }}</p>
 
+        <p>{{ t("Body.DeclarationReceiptMeaning") }}</p>
         <Btn class="w-fit print:!hidden" @click="onclickPrint()">
           {{ t("Buttons.SaveAsPdfOrPrint") }}
         </Btn>
+        <Btn secondary class="w-fit print:!hidden" @click="newDeclaration()">{{
+          t("Buttons.NewDeclaration")
+        }}</Btn>
       </section>
     </div>
   </main>
@@ -132,6 +141,20 @@ export default defineComponent({
     // shown, afterwards the record replaces it on the same page.
     const declaration = ref<any>(null);
     const confirmationEmailSent = ref(false);
+    const retained = ref(false);
+    onMounted(() => {
+      retained.value = hasRetainedDeclaration("/contracts/withdrawals");
+    });
+    async function recoverReceipt() {
+      const [receipt, error] = await recoverDeclarationReceipt("/contracts/withdrawals");
+      if (receipt) successHandler(receipt);
+      else openSnackbar("error", declarationErrorKey(error));
+    }
+    function newDeclaration() {
+      forgetRetainedDeclaration("/contracts/withdrawals");
+      declaration.value = null;
+      retained.value = false;
+    }
 
     // ============================================================= options
     const contracts = [
@@ -226,6 +249,7 @@ export default defineComponent({
 
     // ============================================================= functions
     async function onclickSubmitForm() {
+      if (form.submitting || declaration.value) return;
       if (!form.validate()) return openSnackbar("error", "Error.InvalidForm");
 
       form.submitting = true;
@@ -254,6 +278,9 @@ export default defineComponent({
 
     return {
       t,
+      retained,
+      recoverReceipt,
+      newDeclaration,
       refForm,
       form,
       contracts,

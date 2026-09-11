@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
+import { DialogPanel, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { useDialogSlot } from "../composables/dialogSlot";
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
@@ -21,7 +21,7 @@ function close() {
 
 <template>
   <TransitionRoot as="template" :show="open">
-    <Dialog as="div" class="relative z-10" @close="closeDialog()">
+    <StackedDialog :open="open" class="relative z-10" @close="closeDialog()">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -62,6 +62,6 @@ function close() {
           </TransitionChild>
         </div>
       </div>
-    </Dialog>
+    </StackedDialog>
   </TransitionRoot>
 </template>

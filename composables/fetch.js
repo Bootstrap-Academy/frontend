@@ -92,6 +92,18 @@ const onResponseError = async (context) => {
   // }
 
   let details = response?._data?.detail ?? "";
+  if (
+    details &&
+    typeof details === "object" &&
+    [
+      "EventBookingPaymentPending",
+      "EventSettlementPending",
+      "EventBookingProvenanceMissing",
+    ].includes(details.code)
+  ) {
+    // Keep committed reservation/cancellation receipts structured for the caller.
+    return;
+  }
   if (typeof details == "object") {
     console.log("details error as object", details);
     let loc = details[0]?.loc ?? [];
@@ -204,7 +216,7 @@ const onResponseError = async (context) => {
 
   // console.log("before details error", details);
 
-  details = response?._data.error;
+  details = typeof response?._data?.error === "string" ? response._data.error : "";
   console.log("details error", details);
   console.log("response from error", response);
   if (details.toLocaleLowerCase().includes("forbidden")) {
@@ -345,6 +357,7 @@ function logoutAfterInvalidToken() {
   setStates(null);
 
   if (
+    isOnPublicLegalRoute() ||
     route.fullPath.includes("/auth") ||
     route.fullPath === "/" ||
     route.fullPath === "/contact" ||

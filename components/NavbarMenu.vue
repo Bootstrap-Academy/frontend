@@ -61,6 +61,7 @@ export default {
     });
     const router = useRouter();
     let links = [
+      { label: "Moderation.Title", pathname: "/moderation" },
       {
         label: "Links.MyProfile",
         pathname: "/profile",

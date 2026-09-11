@@ -1,5 +1,5 @@
 /** Version of the terms and conditions the platform currently asks for. */
-export const TERMS_VERSION = "2026-09";
+export const TERMS_VERSION = "2026-09-r2";
 
 /**
  * Routes on which the re-acceptance gate stays hidden: the documents the gate
@@ -9,12 +9,9 @@ export const TERMS_VERSION = "2026-09";
  * directly, so nothing may be put in front of them - least of all a dialog
  * about the very terms the user is about to leave behind.
  */
-const TERMS_GATE_EXEMPT_PREFIXES = [
-  "/docs",
-  "/account",
-  "/vertrag-kuendigen",
-  "/vertrag-widerrufen",
-];
+function isTermsGateExemptRoute(path: string) {
+  return isPublicLegalRoute(path) || path === "/account" || path.startsWith("/account/");
+}
 
 /**
  * Whether the gate has been dismissed with "decide later" since the app was
@@ -41,7 +38,7 @@ export function needsTermsAcceptance(path: string) {
   if (!!!isAuth.value || !!!user.value?.id) return false;
   if (!!!useProfileLoaded().value) return false;
   if (useTermsGateDismissed().value) return false;
-  if (TERMS_GATE_EXEMPT_PREFIXES.some((prefix) => path.startsWith(prefix))) return false;
+  if (isTermsGateExemptRoute(path)) return false;
 
   return user.value.terms_version != TERMS_VERSION;
 }

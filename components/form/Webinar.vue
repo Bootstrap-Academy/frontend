@@ -103,29 +103,13 @@
       </div>
     </form>
     <Modal v-if="confirm" class="z-[150]">
-      <Dialog :dialog="dialog">
-        <template #content>
-          <div class="flex gap-box mt-card-sm">
-            <p class="text-body-2">{{ t("Headings.TotalParticipants") }}</p>
-            <h6 class="text-body-1">{{ numberOfUsers }}</h6>
-          </div>
-
-          <hr class="mt-card mb-card" />
-
-          <h4 class="text-heading-4 mb-box">
-            {{ t("Headings.CancellationPolicy") }}
-          </h4>
-          <List :items="cancellationPolicy" id="cancellationPolicy" />
-
-          <hr class="mt-card mb-card" />
-
-          <InputCheckbox
-            id="IHaveReadWebinarDeletePolicy"
-            label="Links.IHaveReadWebinarDeletePolicy"
-            v-model="cancellationConfirmationCheck"
-          />
-        </template>
-      </Dialog>
+      <EventCancellationConfirmation
+        :event-id="data.id"
+        kind="webinar"
+        scope="session"
+        @close="closeCancellation"
+        @applied="cancellationApplied = true"
+      />
     </Modal>
   </div>
 </template>
@@ -372,61 +356,13 @@ export default defineComponent({
 
     // ============================================================= Delete Webinar
     const confirm = ref(false);
-    const dialog = <any>reactive({});
-    const cancellationPolicy = reactive([
-      "List.WebinarCancellationByOwnerPolicy.1",
-      "List.WebinarCancellationByOwnerPolicy.2",
-    ]);
-
-    const numberOfUsers = computed(() => {
-      return props.data?.participants ?? 0;
-    });
-
-    const cancellationConfirmationCheck = ref(false);
-
+    const cancellationApplied = ref(false);
     function onclickDeleteWebinar() {
-      Object.assign(dialog, {
-        type: "warning",
-        heading: "Headings.DeleteWebinar",
-        body:
-          numberOfUsers.value > 0
-            ? "Body.ConfirmDeleteWebinarGreaterThan0"
-            : "Body.ConfirmDeleteWebinarLessThan0",
-        primaryBtn: {
-          label: "Buttons.YesDeleteWebinar",
-          onclick: async () => {
-            if (cancellationConfirmationCheck.value == false) {
-              openSnackbar("error", "Error.MustAgreeBeforeInOrderToDeleteWebinar");
-              return;
-            }
-            setLoading(true);
-
-            let startDate = props.data?.start ?? "";
-
-            const [success, error] = await deleteWebinar(props.data?.id ?? "");
-            setLoading(false);
-            confirm.value = false;
-
-            if (success) {
-              router.push(`/calendar?start=${startDate}`);
-            }
-
-            setTimeout(() => {
-              openSnackbar(
-                success ? "success" : "error",
-                success ? "Success.DeleteWebinar" : (error?.details ?? "")
-              );
-            }, 1000);
-          },
-        },
-        secondaryBtn: {
-          label: "Buttons.Cancel",
-          onclick: () => {
-            confirm.value = false;
-          },
-        },
-      });
       confirm.value = true;
+    }
+    function closeCancellation() {
+      confirm.value = false;
+      if (cancellationApplied.value) router.push(`/calendar?start=${props.data?.start ?? ""}`);
     }
 
     return {
@@ -440,11 +376,9 @@ export default defineComponent({
       time,
       startTime,
       onclickDeleteWebinar,
-      numberOfUsers,
-      dialog,
-      cancellationPolicy,
+      closeCancellation,
+      cancellationApplied,
       confirm,
-      cancellationConfirmationCheck,
       isEdit,
       skill,
       currentDate,

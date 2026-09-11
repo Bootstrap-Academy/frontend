@@ -1,7 +1,18 @@
 <template>
   <div>
-    <InputTextarea :label="'Headings.ReportComment'" v-model="comment" />
-    <article class="flex flex-wrap justify-evenly gap-8">
+    <p v-if="receipt" role="status">
+      {{ t("Moderation.Receipt") }} {{ receipt }}.
+      <NuxtLink to="/moderation">{{ t("Moderation.Title") }}</NuxtLink>
+    </p>
+    <InputTextarea
+      v-if="!receipt && !pending"
+      :label="'Headings.ReportComment'"
+      v-model="comment"
+    />
+    <p v-if="pending && !receipt" role="status">
+      {{ t("Moderation.PendingComplaint") }} {{ pending.request_id }}<br />{{ pending.comment }}
+    </p>
+    <article v-if="!receipt && !pending" class="flex flex-wrap justify-evenly gap-8">
       <Chip
         v-for="(chip, i) of reportValueArray"
         :key="i"
@@ -15,8 +26,12 @@
     </article>
     <article class="mt-12 flex flex-wrap justify-end gap-4">
       <InputBtn @click="closeReportDialog()" secondary> {{ t("Buttons.Cancel") }}</InputBtn>
-      <InputBtn :loading="loading" @click="submitForm()">{{ t("Buttons.Report") }}</InputBtn>
+      <InputBtn v-if="!receipt" :loading="loading" @click="submitForm()">{{
+        t("Buttons.Report")
+      }}</InputBtn>
     </article>
+    <NuxtLink to="/moderation">{{ t("Moderation.Title") }}</NuxtLink> ·
+    <a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a>
   </div>
 </template>
 
@@ -39,8 +54,37 @@ export default defineComponent({
     const reason = ref("");
     const comment = ref("");
     const loading = ref(false);
+    const receipt = ref("");
+    const pending = ref<any>(null);
+    let alive = true;
+    onBeforeUnmount(() => {
+      alive = false;
+    });
+    const identity = () => `${useUser().value?.id || ""}:${props.task_id}:${props.subtask_id}`;
+    const storageKey = () => `moderation-report:${identity()}`;
+    watch(
+      () => [props.task_id, props.subtask_id, useUser().value?.id],
+      () => {
+        reason.value = comment.value = receipt.value = "";
+        pending.value = null;
+        loading.value = false;
+        if (import.meta.client) {
+          try {
+            pending.value = JSON.parse(sessionStorage.getItem(storageKey()) || "null");
+          } catch {
+            /* malformed local draft */
+          }
+        }
+        if (pending.value) {
+          reason.value = pending.value.reason;
+          comment.value = pending.value.comment;
+          receipt.value = pending.value.confirmed ? pending.value.request_id : "";
+        }
+      },
+      { immediate: true }
+    );
     function closeReportDialog() {
-      console.log("closed");
+      if (receipt.value) emit("reportSubmitted", true);
       if (!props.stopDialogSlotFromBeingFalse) {
         dialogSlot.value = false;
       }
@@ -51,31 +95,40 @@ export default defineComponent({
       { key: "Wrong", value: "WRONG" },
       { key: "UnrelatedSkill", value: "UNRELATED_SKILL" },
       { key: "Other", value: "OTHER" },
-      { key: "Dislike", value: "DISLIKE" },
     ];
     async function submitForm() {
-      console.log("submit");
+      if (loading.value || receipt.value) return;
       if (!!!reason.value || !!!comment.value) {
         return openSnackbar("error", "Error.InvalidForm");
       }
-      loading.value = true;
-      const [success, error] = await reportSubtask({
-        task_id: props.task_id ?? "",
-        subtask_id: props.subtask_id ?? "",
+      const owner = identity(),
+        store = storageKey();
+      const intent = pending.value || {
+        request_id: crypto.randomUUID(),
+        task_id: props.task_id,
+        subtask_id: props.subtask_id,
         comment: comment.value,
         reason: reason.value,
-      });
+      };
+      pending.value = intent;
+      sessionStorage.setItem(store, JSON.stringify(intent));
+      loading.value = true;
+      const { confirmed, ...body } = intent;
+      const [success, error] = await reportSubtask(body);
+      if (!alive || identity() !== owner) return;
       loading.value = false;
-
-      if (success) {
-        emit("reportSubmitted", true);
+      if (success && success.id === intent.request_id) {
+        receipt.value = intent.request_id;
+        pending.value = { ...intent, confirmed: true };
+        sessionStorage.setItem(store, JSON.stringify(pending.value));
         openSnackbar("success", "Success.ReportedSubtask");
-        closeReportDialog();
       } else {
-        openSnackbar("error", error);
+        openSnackbar("error", error || "Moderation.ComplaintUnconfirmed");
       }
     }
     return {
+      receipt,
+      pending,
       reportValueArray,
       t,
       closeReportDialog,

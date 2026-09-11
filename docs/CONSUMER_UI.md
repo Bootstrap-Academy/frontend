@@ -4,36 +4,34 @@ Three pieces of the interface exist because consumer law requires them. They are
 easy to break by accident, so this note records where they live and what has to
 be kept true.
 
-## Terms gate
+## Prospective acceptance and update notice
 
-`components/TermsGate.vue`, `composables/terms.ts`
+`components/TermsGate.vue` and `composables/terms.ts` retain the legacy gate
+implementation, but `app.vue` does not mount it. Signing in with an older
+accepted terms version neither blocks access nor submits a terms decision.
+Signup explicitly accepts the current `TERMS_VERSION`; a new order has its own
+explicit declarations and stored documents. Publishing a new version does not
+by itself change an existing account's acceptance.
 
-The version of the terms and conditions the platform currently asks for is the
-constant `TERMS_VERSION` in `composables/terms.ts`. Signup sends it with the
-account (`POST /auth/users`), and `needsTermsAcceptance()` compares it against
-the `terms_version` on the profile that `GET /auth/users/me` returns. Accounts
-created before the acceptance was recorded have no `terms_version` at all and
-are asked as well.
+`components/UpdateNotice.vue` is an informational, dismissible card mounted once
+client-side by `app.vue`. It appears only after a signed-in profile is loaded,
+and stays hidden on public legal, declaration, and retained-access routes. Its
+links and close button do not call a consent or terms endpoint. It does not
+capture focus, block navigation, or prevent use of the page.
 
-The gate is rendered from `app.vue` into the slot of whichever layout is
-active, so it reaches every route except the prefixes in
-`TERMS_GATE_EXEMPT_PREFIXES` (`/docs`, so the linked documents stay readable,
-and `/account`, so the account can be deleted instead of accepting).
+`composables/updateNotice.ts` uses a separate `UPDATE_NOTICE_VERSION`. Only an
+explicit dismissal writes the value `1` to Local Storage under
+`bootstrap-academy:update-notice:<notice-version>:<user-UUID>`. Displaying the
+notice, signing in, and switching accounts never write a marker. A matching
+dismissal from another tab also hides the current notice. Logout and account
+switches invalidate old close actions without adopting another user's marker.
 
-It offers two actions and nothing else closes it — there is no backdrop or
-escape handler:
-
-- **Accept** calls `POST /auth/users/me/terms` with `TERMS_VERSION` and
-  `age_confirmed`, then reloads the profile.
-- **Decide later** calls `POST /auth/users/me/terms/decline`, which records the
-  refusal server-side, and hides the modal for the rest of the app session.
-
-The dismissal is a Nuxt `useState`, not a cookie and not local storage, so the
-gate returns on the next app start while the accepted version still differs.
-Nothing about the decision is kept on the client.
-
-**When a new version of `/docs/terms-and-conditions` is published, bump
-`TERMS_VERSION`.** Everyone is then asked again.
+The App owns the in-memory dismissal set and supplies it to each notice child,
+so a default/inner layout change can remount the child without losing dismissal.
+If Local Storage is unavailable, dismissal lasts for this mounted application,
+including navigation away and back. It can reappear after a reload; browser
+data deletion, another browser, or a new notice version can also show it again.
+There is no server-side or cross-device dismissal state, and no consent record.
 
 ## Order summary and withdrawal declarations
 
@@ -91,3 +89,7 @@ The bar is hidden while printing (`print:hidden`), because the printed sheet has
 to show the declaration record only. The same two links also appear in the
 footer, but the bar is what makes them permanent — do not remove it from
 `app.vue`.
+
+## Prospective terms version 2026-09-r2
+
+The application does not automatically prompt existing accounts to change their terms. The global TermsGate mount is absent; its legacy component/helpers are retained without changing stored acceptance or deferral fields. New registrations explicitly accept r2. New purchase and renewal offers use the r2 terms PDF with the unchanged r1 withdrawal PDF; the new manifest identifies each document version. Historical r1 terms remain accessible at `/docs/terms-and-conditions-2026-09-r1`. Publication alone does not amend existing contracts, revive renewal or change saved offers/receipts.
