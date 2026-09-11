@@ -2,7 +2,8 @@
   <section
     class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
   >
-    <Transition mode="out-in" name="slide-up-down">
+    <PaypalCheckoutStatus v-if="checkout || error" />
+    <Transition v-else mode="out-in" name="slide-up-down">
       <Dialog v-if="dialog && dialog.type" :dialog="dialog" />
     </Transition>
   </section>
@@ -23,6 +24,7 @@ export default {
   setup() {
     const { t } = useI18n();
 
+    const { checkout, error } = usePaypalCheckout();
     const router = useRouter();
     const route = useRoute();
 
@@ -43,7 +45,7 @@ export default {
       secondaryBtn: null,
     });
 
-    return { dialog };
+    return { dialog, checkout, error };
   },
 };
 </script>

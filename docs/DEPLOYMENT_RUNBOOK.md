@@ -1,64 +1,17 @@
-# Deployment Runbook: `develop` -> `latest` -> `prod`
+# Frontend deployment and recovery
 
-Last executed on **February 11, 2026**.
+Select the exact frontend revision together with the compatible backend and service releases. Follow the infrastructure repository's [release and recovery procedure](../../infrastructure/docs/COMPLIANCE-RELEASE.md) and record the selected configuration, source revision, build and Pages deployment ID in the release record.
 
-This workflow ships changes from `origin/develop` to production by first updating `origin/latest`, then merging into `prod/prod`.
+A push to a configured Cloudflare Pages deployment branch can activate the frontend automatically. Verify the actual project and branch mapping before pushing. Admit the compatible backend and service interfaces first; keep public access controlled until the selected frontend and dashboard are ready.
 
-## Prerequisites
+## Source and production configuration
 
-- Remote `origin` points to `https://github.com/Bootstrap-Academy/frontend.git`
-- Remote `prod` points to `https://github.com/Bootstrap-Academy/frontend-prod.git`
+The source repository is `Bootstrap-Academy/frontend`; the separately configured production repository is `Bootstrap-Academy/frontend-prod`. Inspect their actual remote branches and deployment configuration for the release. Do not treat an old branch name, commit hash or previous merge result as the current production selection.
 
-## Exact Steps
+Preserve the intended `BASE_API_URL` and `BASE_WEB_URL` for the deployment environment when integrating source changes. Review configuration conflicts explicitly; do not restore removed integrations or historical configuration keys. Use the release's pinned dependencies and normal build checks, and verify the resulting API/web destinations before activation.
 
-```bash
-# 1) Add the prod remote (one-time setup)
-git remote add prod https://github.com/Bootstrap-Academy/frontend-prod.git
+## Verification and recovery
 
-# 2) Fetch latest refs
-git fetch origin --prune
-git fetch prod --prune
+Record the actual deployed revision and Pages deployment ID, then check the compatible login, purchase, retained-rights and original-document paths. Keep existing saved operation identities and uncertain outcomes intact. Do not restore an older frontend that discards unresolved order IDs or offers replacement purchases; retain the compatible recovery UI or close the affected checkout while investigating.
 
-# 3) Fast-forward latest from origin/develop
-git switch -c latest --track origin/latest   # if local branch does not exist yet
-# otherwise: git switch latest
-git merge --ff-only origin/develop
-git push origin latest:latest
-
-# 4) Merge latest into prod/prod
-git switch -c prod --track prod/prod         # if local branch does not exist yet
-# otherwise: git switch prod
-git merge origin/latest
-```
-
-## Conflict Handling (as seen on 2026-02-11)
-
-During `origin/latest -> prod/prod`, there was one conflict in `nuxt.config.ts`.
-
-Resolution:
-
-- Keep the **production values** (not test values) in `runtimeConfig.public`, especially:
-  - `BASE_API_URL=https://api.bootstrap.academy`
-  - `BASE_WEB_URL=https://bootstrap.academy`
-  - existing `Gleap_API_KEY`
-
-Then continue:
-
-```bash
-git add nuxt.config.ts
-git commit -m "Merge origin/latest into prod/prod"
-git push prod prod:prod
-git switch develop
-```
-
-## Verification
-
-```bash
-git ls-remote --heads origin latest
-git ls-remote --heads prod prod
-```
-
-Result on 2026-02-11:
-
-- `origin/latest` at `200fc0d`
-- `prod/prod` at `5f560c2` (merge commit)
+Repository references and a successful build do not establish that the expected deployment is serving users. Verify the actual deployment separately. This document describes the procedure; each release requires its own selected revisions and operating decision.

@@ -107,13 +107,13 @@ export async function getCourseSummaryByID(id: string) {
   }
 }
 
-export async function enrollIntoCourse(id: string) {
+export async function enrollIntoCourse(id: string, acceptance: any) {
   try {
     if (!!!id) {
       throw { data: { detail: "Invalid course ID" } };
     }
 
-    const response = await POST(`/skills/course_access/${id}`);
+    const response = await POST(`/skills/course_access/${id}`, acceptance);
 
     return [response, null];
   } catch (error: any) {

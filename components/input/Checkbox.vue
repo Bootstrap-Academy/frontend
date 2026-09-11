@@ -113,6 +113,9 @@ input[type="checkbox"]:checked + .tick {
 input[type="checkbox"]:checked + .tick.sm {
   @apply ring-0;
 }
+input[type="checkbox"]:focus-visible + .tick {
+  @apply outline outline-2 outline-offset-4 outline-accent;
+}
 
 input[type="checkbox"] + .tick > .icon {
   @apply stroke-transparent text-transparent;

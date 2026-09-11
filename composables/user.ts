@@ -37,6 +37,7 @@ export function setUser(value: any) {
   const user = <any>useUser();
   const cookie_user = <any>useAppCookie("user");
 
+  moderationAmbientChanged(value?.id);
   user.value = value ?? null;
   cookie_user.value = toCookieUser(value);
 }
@@ -75,6 +76,7 @@ export function restoreStates() {
   const user = <any>useUser();
   const cookie_user = <any>useAppCookie("user");
   user.value = cookie_user.value ?? null;
+  moderationAmbientChanged(user.value?.id);
   // The cookie is not the profile; the plugin loads that right afterwards.
   useProfileLoaded().value = false;
 
@@ -121,7 +123,7 @@ export function setStates(response: any) {
   const lastViewCourse: any = useAppCookie("lastViewCourse");
   if (lastViewCourse.value == undefined) lastViewCourse.value = null;
 
-  if (response == null) {
+  if (response == null && !isOnPublicLegalRoute()) {
     const router = useRouter();
     router.push("/auth/login");
   }

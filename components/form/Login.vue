@@ -55,6 +55,10 @@
       {{ t("Buttons.Login") }}
     </InputBtn>
 
+    <NuxtLink to="/moderation/access" class="self-center">{{
+      t("Moderation.RestrictedAccess")
+    }}</NuxtLink>
+
     <NuxtLink to="/auth/signup" class="self-center">
       {{ t("Links.DontHaveAccount") }}
       <span class="text-accent">{{ t("Links.CreateOne") }}</span>

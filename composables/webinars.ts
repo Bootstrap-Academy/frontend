@@ -23,20 +23,6 @@ export async function getRating(skill_id: string) {
   }
 }
 
-export async function deleteWebinar(id: string) {
-  try {
-    if (!!!id) {
-      throw { data: { detail: "Invalid webinar Id" } };
-    }
-
-    const response = await DELETE(`/events/calendar/${id}`);
-
-    return [response, null];
-  } catch (error: any) {
-    return [null, error.data];
-  }
-}
-
 export async function getWebinar(id: string) {
   try {
     if (!!!id) {
@@ -127,13 +113,13 @@ export async function getAllWebinars() {
   }
 }
 
-export async function registerForWebinarByID(webinarID: string) {
+export async function registerForWebinarByID(webinarID: string, acceptance: any) {
   try {
     if (!!!webinarID) {
       throw { data: "Invalid webinar ID" };
     }
 
-    const response = await POST(`/events/webinars/${webinarID}/participants`);
+    const response = await POST(`/events/webinars/${webinarID}/participants`, acceptance);
     await getBalance();
 
     return [response, null];

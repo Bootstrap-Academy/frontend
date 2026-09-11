@@ -138,14 +138,14 @@
         haben (§ 356 Abs. 5 Nr. 1 BGB).
       </p>
       <p>
-        Was das für Sie bedeutet: Webinare und Coachings, die innerhalb der Widerrufsfrist
-        stattfinden, führen wir nur durch, wenn Sie bei der Buchung die unten genannten Erklärungen
-        abgeben. Nach der vollständigen Durchführung des Termins können Sie den Vertrag nicht mehr
-        widerrufen; widerrufen Sie vorher, zahlen Sie nur den Anteil für bereits erbrachte
-        Leistungen. Premium ist erst mit Ablauf der gebuchten Laufzeit vollständig erbracht;
-        innerhalb der Widerrufsfrist können Sie Premium daher widerrufen und zahlen für die bereits
-        genutzten Tage den anteiligen Preis. Das kostenlose Nutzerkonto können Sie neben dem
-        Widerruf jederzeit löschen (Ziffer 4.2 der AGB).
+        Bei unseren unten beschriebenen Einzelbestellungen verlangen Sie den vorzeitigen Beginn,
+        bestätigen aber nicht Ihre Kenntnis eines vorzeitigen Verlusts des Widerrufsrechts. Deshalb
+        berufen wir uns bei diesen Bestellungen nicht allein wegen der vollständigen Durchführung
+        auf ein vorzeitiges Erlöschen. Eine bloße Buchungsbestätigung ist keine Durchführung des
+        Termins. Premium ist erst mit Ablauf des tatsächlich bereitgestellten Zeitraums vollständig
+        erbracht. Wertersatz für bereits erbrachte Dienstleistungen richtet sich nach den
+        gesetzlichen Voraussetzungen und den Hinweisen zur Erstattung unten. Das kostenlose
+        Nutzerkonto können Sie neben dem Widerruf jederzeit löschen (Ziffer 4.2 der AGB).
       </p>
       <p>
         Digitale Inhalte (Teil B): Das Widerrufsrecht erlischt bei einem Vertrag über die
@@ -157,37 +157,38 @@
         des Vertrags nach § 312f BGB zur Verfügung gestellt haben (§ 356 Abs. 6 Nr. 2 BGB).
       </p>
       <p>
-        Was das für Sie bedeutet: MorphCoins schreiben wir sofort nach der Zahlung gut, Kurse
-        schalten wir sofort frei, Herzen füllen wir sofort auf. Deshalb bitten wir Sie bei jeder
-        dieser Bestellungen um die beiden unten genannten Erklärungen. Haben Sie sie abgegeben und
-        haben Sie unsere Bestätigungs-E-Mail erhalten, erlischt Ihr Widerrufsrecht für diese
-        Bestellung, sobald wir mit der Gutschrift, Freischaltung oder Auffüllung begonnen haben und
-        Ihnen unsere Bestätigungs-E-Mail zugegangen ist – je nachdem, was später eintritt.
-        Unabhängig vom Widerrufsrecht erstatten wir Ihnen nicht verbrauchte gekaufte MorphCoins
-        jederzeit auf Anfrage (Ziffer 6.7 der AGB).
+        Auch bei diesen Einzelbestellungen wird keine Kenntnisbestätigung über den vorzeitigen
+        Verlust des Widerrufsrechts verlangt oder unterstellt. Allein aus Ihrem Verlangen nach
+        frühem Beginn, einer Zahlung, der Vertragsbestätigung oder der Bereitstellung leiten wir
+        deshalb kein vorzeitiges Erlöschen ab. Die Bereitstellung erfolgt nach Vertragsbestätigung
+        innerhalb der im Angebot angegebenen Frist; bei MorphCoins ist zusätzlich nachgewiesener
+        Zahlungseingang erforderlich. Eine ausstehende Bereitstellung wird nicht als bereits
+        erbrachte Leistung behandelt. Unabhängig vom Widerrufsrecht erstatten wir Ihnen nicht
+        verbrauchte gekaufte MorphCoins jederzeit auf Anfrage (Ziffer 6.7 der AGB).
       </p>
     </article>
 
     <article>
       <h2>Erklärungen bei der Bestellung</h2>
       <p>
-        Bei kostenpflichtigen Bestellungen geben Sie als Verbraucher über Kontrollkästchen die
-        folgenden Erklärungen ab. Wir speichern sie mit Datum und Uhrzeit und wiederholen sie in der
-        Bestätigungs-E-Mail zu Ihrer Bestellung.
+        Bei Einzelbestellungen von MorphCoins, Kurszugang, einem Premium-Zeitraum, einer
+        Herzauffüllung oder einem Event nehmen Sie über ein Kontrollkästchen das konkrete Angebot
+        einschließlich seiner AGB und Widerrufsinformationen an. Über ein gesondertes
+        Kontrollkästchen geben Sie folgende Erklärung ab. Wir speichern den tatsächlichen Wortlaut
+        mit der Bestellung und ihrem Eingangszeitpunkt und geben ihn in der Vertragsbestätigung
+        wieder.
       </p>
-      <ul>
-        <li>
-          Dienstleistungen (Webinare, Coachings, Premium): „Ich verlange ausdrücklich und stimme zu,
-          dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen. Mir
-          ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung
-          erlischt.“
-        </li>
-        <li>
-          Digitale Inhalte (MorphCoins, Kurse, Herzen): „Ich stimme ausdrücklich zu, dass Sie vor
-          Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen. Mir ist bekannt, dass
-          mein Widerrufsrecht mit Beginn der Ausführung des Vertrags erlischt.“
-        </li>
-      </ul>
+      <p>
+        „Ich verlange ausdrücklich, dass mit der bestellten Leistung vor Ablauf der Widerrufsfrist
+        begonnen wird. Meine gesetzlichen Widerrufs- und Mängelrechte bleiben unberührt.“
+      </p>
+      <p>
+        Eine automatische Premium-Verlängerung ist eine gesonderte Bestellung. Deren konkrete
+        Erklärungen und Bedingungen zeigen wir Ihnen vor ihrer Bestellung an und bestätigen die
+        tatsächlich abgegebenen Erklärungen. Eine Einzelbestellung schaltet eine automatische
+        Verlängerung nicht ein. Frühere Bestellungen behalten ihre tatsächlich vereinbarten
+        Dokumente und Erklärungen; sie werden durch diese Fassung nicht rückwirkend ersetzt.
+      </p>
     </article>
 
     <article>

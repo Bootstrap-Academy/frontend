@@ -79,23 +79,94 @@
         :yearly="selectedButton === 1"
         :monthlyPrice="monthlyPrice"
         :yearlyPrice="yearlyPrice"
+        :disabled="premiumBusy || !!order || !!renewalOrder"
         class="mb-5 mt-5 px-2"
       />
 
       <div class="mt-10 flex flex-col items-center" v-if="!!isPremium">
-        <p class="font-bold text-accent">{{ t("Body.ChangeAutoPaySubscription") }}</p>
+        <p class="mb-4 max-w-xl text-center">{{ t("Body.RenewalResetNotice") }}</p>
+        <p v-if="premiumInfo?.renewal" class="mb-4 max-w-xl text-center" role="status">
+          {{
+            t(
+              premiumInfo.renewal.confirmation_sent
+                ? "Body.RenewalConfirmed"
+                : "Body.RenewalPending",
+              { coins: premiumInfo.renewal.monthly_price }
+            )
+          }}
+        </p>
+        <p id="premium-renewal-label" class="font-bold text-accent">
+          {{ t("Body.ChangeAutoPaySubscription") }}
+        </p>
 
-        <InputButtonToggle
-          :mobileResponsive="false"
-          secondary
-          :buttonOptions="changeSubscriptionAutopayButtons"
-          v-model="setValueForAutopayButton"
-          class="mt-4"
-        />
+        <div
+          role="group"
+          aria-labelledby="premium-renewal-label"
+          :aria-busy="premiumBusy"
+          class="mt-4 flex w-fit gap-3 rounded-full border border-light p-2"
+        >
+          <button
+            v-for="button in changeSubscriptionAutopayButtons"
+            :key="button.name"
+            type="button"
+            :aria-pressed="premiumStatusKnown && premiumStatusAutoPay === button.plan"
+            :disabled="premiumBusy || !!order || !!renewalOrder"
+            class="rounded-full px-4 py-2 text-xs font-semibold capitalize disabled:opacity-50 sm:px-6 sm:text-sm md:px-8"
+            :class="
+              premiumStatusKnown && premiumStatusAutoPay === button.plan
+                ? 'bg-light text-black'
+                : 'text-white'
+            "
+            @click="fnUpdatePremiumAutoPay(button.plan)"
+          >
+            {{ t(button.name) }}
+          </button>
+        </div>
+      </div>
+
+      <section
+        v-if="renewalOrder"
+        id="premium-renewal-order"
+        class="mx-auto mt-8 max-w-2xl rounded-xl bg-secondary p-6"
+      >
+        <OrderSummary
+          :coins="renewalOrder.monthly_price"
+          :disabled="!renewalAccepted || !renewalWithdrawalConsent"
+          :loading="premiumBusy"
+          @order="confirmRenewal"
+        >
+          <template #characteristics>
+            <p class="whitespace-pre-line">{{ renewalOrder.text }}</p>
+          </template>
+          <template #consent>
+            <InputCheckbox
+              id="RenewalAgreementAccepted"
+              label="Body.RenewalAgreementAccepted"
+              v-model="renewalAccepted"
+            />
+            <OrderWithdrawalConsent
+              :key="renewalOrder.id"
+              kind="service"
+              v-model="renewalWithdrawalConsent"
+            />
+          </template>
+          <template #actions>
+            <Btn secondary :disabled="premiumBusy" @click="renewalOrder = null">{{
+              t("Buttons.Cancel")
+            }}</Btn>
+          </template>
+        </OrderSummary>
+      </section>
+
+      <div v-if="!premiumStatusKnown && !premiumBusy" class="mt-4 text-center" role="alert">
+        <p class="text-error">{{ t("Error.PremiumStatusUnavailable") }}</p>
+        <Btn secondary class="mx-auto mt-3" @click="refreshPremiumStatus">
+          {{ t("Buttons.TryAgain") }}
+        </Btn>
       </div>
 
       <!--
-        Turning the automatic renewal off is not a cancellation. The statutory
+        Turning automatic renewal off cancels at the paid period end. The statutory
         route under § 312k BGB, with the confirmation by e-mail, lives on its
         own page and stays reachable even while no period is currently active -
         which is exactly when the toggle above is unavailable.
@@ -113,9 +184,15 @@
       § 312j Abs. 2 BGB and the statutory order button are shown before the
       coins are debited.
     -->
-    <Modal v-if="order" @backdrop="order = null">
-      <div class="w-full max-w-2xl bg-secondary p-8 style-card">
+    <NuxtLink to="/orders" class="text-accent underline">{{ t("Body.PurchaseOrders") }}</NuxtLink>
+    <Modal
+      v-if="order"
+      :aria-label="t('Headings.OrderSummary')"
+      @backdrop="!ordering && (order = null)"
+    >
+      <div class="w-full max-w-2xl bg-secondary p-4 style-card sm:p-8">
         <OrderSummary
+          exact-offer
           :coins="order.coins"
           :kind="order.kind"
           :loading="ordering"
@@ -127,21 +204,25 @@
 
             <dl
               v-if="order.details.length"
-              class="grid grid-cols-[auto_minmax(0,1fr)] gap-y-1 gap-x-card"
+              class="grid grid-cols-1 gap-y-1 gap-x-card sm:grid-cols-[auto_minmax(0,1fr)]"
             >
               <template v-for="detail of order.details" :key="detail.label">
                 <dt class="text-body-1 m-0 text-body">{{ t(detail.label) }}</dt>
-                <dd class="text-body-1 m-0 text-heading">{{ t(detail.value) }}</dd>
+                <dd class="text-body-1 m-0 text-heading">
+                  {{ t(detail.value, detail.params ?? {}) }}
+                </dd>
               </template>
             </dl>
           </template>
 
           <template #consent>
-            <OrderWithdrawalConsent :kind="order.consentKind" v-model="withdrawalConsent" />
+            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
-            <Btn secondary @click="order = null">{{ t("Buttons.Cancel") }}</Btn>
+            <Btn secondary :disabled="ordering" @click="order = null">{{
+              t("Buttons.Cancel")
+            }}</Btn>
           </template>
         </OrderSummary>
       </div>
@@ -163,12 +244,38 @@ export default {
     const currentCard = ref(1);
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
+    const premiumStatusKnown = usePremiumStatusKnown();
     const premiumPlans = usePremiumPlans();
     const heartConfig = useHeartConfig();
-    const autopay = ref(false);
+    const premiumBusy = ref(false);
+    const renewalOrder = ref<any>(null);
+    const renewalAccepted = ref(false);
+    const renewalWithdrawalConsent = ref(false);
+
+    function renewalKey(status: any) {
+      return JSON.stringify([
+        status.autopay,
+        status.renewal?.id,
+        status.renewal?.monthly_price,
+        status.renewal?.confirmation_sent,
+      ]);
+    }
+    function renewalDescription(status: any) {
+      if (!status.autopay) return { value: "Body.AutomaticRenewalOff" };
+      if (!status.renewal) return { value: "Body.RenewalUnsupported" };
+      return {
+        value: status.renewal.confirmation_sent ? "Body.RenewalConfirmed" : "Body.RenewalPending",
+        params: { coins: status.renewal.monthly_price },
+      };
+    }
 
     onMounted(async () => {
-      await Promise.all([loadCoinConfig(), loadHeartConfig(), getPremiumPlans()]);
+      await Promise.all([
+        loadCoinConfig(),
+        loadHeartConfig(),
+        getPremiumPlans(),
+        refreshPremiumStatus(),
+      ]);
     });
 
     const monthlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "MONTHLY"));
@@ -180,30 +287,7 @@ export default {
     });
 
     const premiumStatusAutoPay = computed(() => {
-      return premiumInfo.value?.autopay ?? "";
-    });
-
-    const setValueForAutopayButton = computed({
-      get() {
-        if (premiumStatusAutoPay.value == "MONTHLY") {
-          return 0;
-        } else if (premiumStatusAutoPay.value == "YEARLY") {
-          return 1;
-        } else if (premiumStatusAutoPay.value == null || !!!premiumStatusAutoPay.value) {
-          return 2;
-        }
-      },
-
-      async set(value: any) {
-        console.log("setting", value);
-        if (value == 0) {
-          fnUpdatePremiumAutoPay("MONTHLY");
-        } else if (value == 1) {
-          fnUpdatePremiumAutoPay("YEARLY");
-        } else if (value == 2) {
-          fnUpdatePremiumAutoPay(null);
-        }
-      },
+      return premiumInfo.value?.autopay ?? null;
     });
 
     const hearts = computed(() => {
@@ -213,34 +297,61 @@ export default {
     const buttonOptions = [{ name: "Buttons.Monthly" }, { name: "Buttons.Yearly" }];
 
     const changeSubscriptionAutopayButtons = [
-      { name: "Buttons.Monthly" },
-      { name: "Buttons.Yearly" },
-      { name: "Buttons.TurnOff" },
+      { name: "Buttons.Monthly", plan: "MONTHLY" },
+      { name: "Buttons.TurnOff", plan: null },
     ];
 
     // The pending order shown in the order summary, or `null`.
     const order = ref<any>(null);
     const ordering = ref(false);
+    let orderOpener: HTMLElement | null = null;
+    watch(order, async (value, previous) => {
+      if (value || !previous) return;
+      // Premium disables its opener during checkout. Restore focus only after
+      // Vue has enabled it again and the modal has released its focus trap.
+      await nextTick();
+      if (orderOpener?.isConnected) orderOpener.focus({ preventScroll: true });
+    });
     // The declarations of § 356 Abs. 5/6 BGB for the pending order.
     const withdrawalConsent = ref(false);
 
-    function subscribe(isYearly: boolean) {
-      const plan = isYearly ? "YEARLY" : "MONTHLY";
-      const coinsRequired = isYearly ? yearlyPrice.value : monthlyPrice.value;
+    async function refreshPremiumStatus() {
+      if (premiumBusy.value) return null;
+      premiumBusy.value = true;
+      try {
+        const [status, error] = await getPremiumStatus();
+        if (error || !status) {
+          openSnackbar("error", "Error.PremiumStatusUnavailable");
+          return null;
+        }
+        return status;
+      } finally {
+        premiumBusy.value = false;
+      }
+    }
 
-      if (coins.value < coinsRequired) {
+    async function subscribe(isYearly: boolean) {
+      if (premiumBusy.value || order.value || renewalOrder.value) return;
+      orderOpener = document.activeElement as HTMLElement | null;
+
+      const status = await refreshPremiumStatus();
+      if (!status) return;
+
+      const offer = await requestPurchaseOffer(
+        `/shop/purchases/offers/${isYearly ? "premium_yearly" : "premium_monthly"}`
+      );
+      if (!offer) return;
+      if (coins.value < offer.product.coins) {
         openSnackbar("error", "Error.NotEnoughCoins");
         return;
       }
-
-      // The renewal is only booked along if the account already has autopay
-      // configured; a first purchase never enables it.
-      const renews = !!premiumStatusAutoPay.value;
-
       withdrawalConsent.value = false;
       order.value = {
-        coins: coinsRequired,
+        offer,
+        coins: offer.product.coins,
         kind: "premium",
+        autopay: status.autopay,
+        renewalKey: renewalKey(status),
         // Premium is a service (part A of the withdrawal instruction).
         consentKind: "service",
         characteristics: "Body.OrderPremiumCharacteristics",
@@ -248,25 +359,18 @@ export default {
         details: [
           {
             label: "Headings.ContractTerm",
-            value: isYearly ? "Body.PremiumTermYearly" : "Body.PremiumTermMonthly",
+            value:
+              offer.product.kind === "premium_yearly"
+                ? "Body.PremiumTermYearly"
+                : "Body.PremiumTermMonthly",
           },
           {
             label: "Headings.AutomaticRenewal",
-            value: renews ? "Body.AutomaticRenewalOn" : "Body.AutomaticRenewalOff",
+            ...renewalDescription(status),
           },
         ],
         submit: async () => {
-          const [success] = await buyPremium({
-            plan,
-            autopay: renews,
-            ...withdrawalConsentBody(),
-          });
-          if (success) {
-            openSnackbar(
-              "success",
-              isYearly ? "Success.SubscribedYearly" : "Success.SubscribedMonthly"
-            );
-          }
+          return acceptPurchase(offer);
         },
       };
     }
@@ -280,11 +384,26 @@ export default {
 
       ordering.value = true;
       try {
-        await order.value.submit();
+        if (order.value.kind === "premium") {
+          const status = await refreshPremiumStatus();
+          if (!status) return;
+          // Another tab or the public cancellation flow may have changed renewal.
+          // Show the new state and require a fresh confirmation before purchase.
+          if (renewalKey(status) !== order.value.renewalKey) {
+            order.value.autopay = status.autopay;
+            order.value.renewalKey = renewalKey(status);
+            Object.assign(order.value.details[1], renewalDescription(status));
+            withdrawalConsent.value = false;
+            openSnackbar("info", "Error.PremiumRenewalChanged");
+            return;
+          }
+        }
+        if (await order.value.submit()) {
+          order.value = null;
+          withdrawalConsent.value = false;
+        }
       } finally {
         ordering.value = false;
-        order.value = null;
-        withdrawalConsent.value = false;
       }
     }
 
@@ -297,9 +416,13 @@ export default {
         });
       }
 
+      orderOpener = document.activeElement as HTMLElement | null;
+      const offer = await requestPurchaseOffer("/shop/purchases/offers/hearts");
+      if (!offer) return;
       withdrawalConsent.value = false;
       order.value = {
-        coins: refillPrice.value,
+        offer,
+        coins: offer.product.coins,
         kind: "",
         // Hearts are digital content (part B of the withdrawal instruction).
         consentKind: "digital",
@@ -307,8 +430,7 @@ export default {
         params: { max: formatHearts(heartConfig.value.hearts_max, locale.value) },
         details: [],
         submit: async () => {
-          const [success] = await refillHearts(withdrawalConsentBody());
-          if (success) openSnackbar("success", "Success.RefilledHearts");
+          return acceptPurchase(offer);
         },
       };
     }
@@ -328,10 +450,69 @@ export default {
     const nextRefill = computed(() => nextHeartRefill());
 
     async function fnUpdatePremiumAutoPay(value: any) {
-      setLoading(true);
-      const [success, error] = await updatePremiumAutoPay({ plan: value });
-      setLoading(false);
-      if (success) openSnackbar("success", "Success.AutopayUpdated");
+      if (premiumBusy.value || order.value || renewalOrder.value) return;
+      premiumBusy.value = true;
+      try {
+        if (value === "MONTHLY") {
+          // Preparing an offer never enables renewal. Every declaration gets a
+          // request id which survives uncertain response retries in this form.
+          const offer = await GET("/shop/premium/renewal-offer");
+          if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
+            throw new Error("Invalid renewal offer");
+          renewalAccepted.value = false;
+          renewalWithdrawalConsent.value = false;
+          renewalOrder.value = { ...offer, request_id: crypto.randomUUID() };
+          return;
+        }
+        const [status, error] = await updatePremiumAutoPay({ plan: null });
+        if (error || !status || status.autopay !== null) {
+          openSnackbar("error", "Error.AutopayUpdateFailed");
+        } else {
+          openSnackbar("success", "Success.AutopayUpdated");
+        }
+      } catch {
+        openSnackbar("error", "Error.AutopayUpdateFailed");
+      } finally {
+        premiumBusy.value = false;
+      }
+    }
+
+    async function confirmRenewal() {
+      if (
+        !renewalOrder.value ||
+        premiumBusy.value ||
+        !renewalAccepted.value ||
+        !renewalWithdrawalConsent.value
+      )
+        return;
+      premiumBusy.value = true;
+      try {
+        const current = await GET("/shop/premium/renewal-offer");
+        if (current?.id !== renewalOrder.value.id) {
+          renewalOrder.value = null;
+          openSnackbar("error", "Error.RenewalOfferChanged");
+          return;
+        }
+        const [status, error] = await updatePremiumAutoPay({
+          plan: "MONTHLY",
+          consent: {
+            request_id: renewalOrder.value.request_id,
+            offer_id: renewalOrder.value.id,
+            accepted: renewalAccepted.value,
+            withdrawal_consent: renewalWithdrawalConsent.value,
+          },
+        });
+        if (error || !status || status.renewal?.id !== renewalOrder.value.request_id) {
+          openSnackbar("error", "Error.AutopayUpdateFailed");
+          return;
+        }
+        renewalOrder.value = null;
+        openSnackbar("success", "Success.AutopayUpdated");
+      } catch {
+        openSnackbar("error", "Error.AutopayUpdateFailed");
+      } finally {
+        premiumBusy.value = false;
+      }
     }
 
     watch(
@@ -348,6 +529,11 @@ export default {
 
     return {
       t,
+      premiumInfo,
+      renewalOrder,
+      renewalAccepted,
+      renewalWithdrawalConsent,
+      confirmRenewal,
       subscribe,
       heartConfig,
       order,
@@ -370,8 +556,10 @@ export default {
       formatTime,
       nextRefill,
       filHearts,
-      setValueForAutopayButton,
-      autopay,
+      fnUpdatePremiumAutoPay,
+      refreshPremiumStatus,
+      premiumStatusKnown,
+      premiumBusy,
       premiumStatusAutoPay,
     };
   },

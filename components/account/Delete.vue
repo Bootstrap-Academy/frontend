@@ -28,8 +28,7 @@ import { TrashIcon } from "@heroicons/vue/24/solid";
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 
-// Address a refund of purchased Morphcoins has to be requested from before the
-// account is deleted; it is named in the confirmation dialog.
+// Rights and separate contract declarations remain available after deletion.
 const CONTACT_EMAIL = "hallo@bootstrap.academy";
 
 export default defineComponent({

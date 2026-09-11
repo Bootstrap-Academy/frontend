@@ -34,22 +34,37 @@ export function oauthRedirectUri() {
  * on the account page adds the provider to the account that is already signed
  * in. The callback page needs to know which of the two it is completing.
  */
-export type OAuthPurpose = "login" | "link";
+export type OAuthPurpose = "login" | "link" | "moderation";
 
 /**
  * Ask the backend for the authorize URL of the given provider and remember the
  * `state` it issued for this browser.
  */
-export async function startOAuthFlow(provider_id: string, purpose: OAuthPurpose = "login") {
+export async function startOAuthFlow(
+  provider_id: string,
+  purpose: OAuthPurpose = "login",
+  valid: () => boolean = () => true
+) {
+  const ambient = moderationAmbientIdentity();
   try {
-    const response = <any>await POST("/auth/oauth/authorize", {
-      provider_id,
-      redirect_uri: oauthRedirectUri(),
-    });
+    const response = <any>(
+      (purpose === "moderation"
+        ? await $fetch("/auth/moderation/access/oauth/begin", {
+            baseURL: useRuntimeConfig().public.BASE_API_URL,
+            credentials: "omit",
+            retry: 0,
+            timeout: 20000,
+            method: "POST",
+            body: { provider: provider_id, redirect_uri: oauthRedirectUri() },
+          })
+        : await POST("/auth/oauth/authorize", { provider_id, redirect_uri: oauthRedirectUri() }))
+    );
 
+    if (!valid() || (purpose === "moderation" && ambient !== moderationAmbientIdentity()))
+      throw new Error("OAuth owner or view changed");
     storage()?.setItem(
       FLOW_KEY,
-      JSON.stringify({ state: response?.state ?? "", provider_id, purpose })
+      JSON.stringify({ state: response?.state ?? "", provider_id, purpose, ambient })
     );
 
     return [response, null];
@@ -66,6 +81,7 @@ export function takeOAuthFlow(): {
   state: string;
   provider_id: string;
   purpose: OAuthPurpose;
+  ambient?: string;
 } | null {
   const raw = storage()?.getItem(FLOW_KEY);
   storage()?.removeItem(FLOW_KEY);
@@ -73,7 +89,8 @@ export function takeOAuthFlow(): {
   if (!!!raw) return null;
 
   try {
-    return JSON.parse(raw);
+    const flow = JSON.parse(raw);
+    return ["login", "link", "moderation"].includes(flow?.purpose) ? flow : null;
   } catch {
     return null;
   }

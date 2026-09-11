@@ -41,7 +41,7 @@ export async function createPaypalOrder(body: any) {
 
     return [response, null];
   } catch (error: any) {
-    return [null, error.data];
+    return [null, error?.data ?? { detail: "Request failed", status: error?.status }];
   }
 }
 
@@ -55,6 +55,6 @@ export async function onApproveCapturePaypalOrder(orderID: string) {
 
     return [response, null];
   } catch (error: any) {
-    return [null, error.data];
+    return [null, error?.data ?? { detail: "Request failed", status: error?.status }];
   }
 }

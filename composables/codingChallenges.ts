@@ -320,7 +320,6 @@ export async function testAgainstCodingExample(
 export async function buySubtask(taskId: any, subTaskId: any) {
   try {
     const response = await POST(`/challenges/tasks/${taskId}/subtasks/${subTaskId}/access`);
-    console.log("access response ", response);
     return [response, null];
   } catch (error: any) {
     let msg = error?.data?.error ?? "";
@@ -335,7 +334,6 @@ export async function buySubtask(taskId: any, subTaskId: any) {
 export async function reportSubtask(body: any) {
   try {
     const response = await POST(`/challenges/subtask_reports`, body);
-    console.log("access response ", response);
     return [response, null];
   } catch (error: any) {
     let msg = error?.data?.error ?? "";

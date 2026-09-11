@@ -27,7 +27,8 @@ export async function getCoachingsForThisSubSkill(subSkillID: string) {
 
 export async function bookCoachingForThisSubSkillWithThisInstructor(
   subSkillID: string,
-  slot_id: string
+  slot_id: string,
+  acceptance: any
 ) {
   try {
     if (!!!subSkillID) {
@@ -38,7 +39,7 @@ export async function bookCoachingForThisSubSkillWithThisInstructor(
       throw { data: { detail: "Invalid instructor ID" } };
     }
 
-    const response = await POST(`/events/coachings/${subSkillID}/${slot_id}`);
+    const response = await POST(`/events/coachings/${subSkillID}/${slot_id}`, acceptance);
     await getBalance();
     return [response, null];
   } catch (error: any) {

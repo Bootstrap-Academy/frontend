@@ -41,7 +41,7 @@
       <li><a href="#challenges">Challenges, Code-Ausführung und Moderation</a></li>
       <li><a href="#events">Events, Webinare und Coaching</a></li>
       <li><a href="#zahlungen">MorphCoins, Premium, Herzen und Zahlungen</a></li>
-      <li><a href="#videos">Kursvideos (YouTube)</a></li>
+      <li><a href="#videos">Kursvideos (MP4 und YouTube)</a></li>
       <li><a href="#kommunikation">E-Mails, Kontakt und Community</a></li>
       <li><a href="#analyse">Keine Analyse, kein Tracking, keine Profilbildung</a></li>
       <li><a href="#drittland">Drittlandübermittlungen</a></li>
@@ -73,10 +73,7 @@
 
     <section id="datenschutz-ansprechstelle">
       <h2>3 Ansprechstelle für den Datenschutz</h2>
-      <p>
-        Eine Datenschutzbeauftragte oder einen Datenschutzbeauftragten haben wir nicht benannt; eine
-        Pflicht dazu besteht für uns nicht (Art. 37 Abs. 1 DSGVO, § 38 Abs. 1 BDSG).
-      </p>
+      <p>Eine Datenschutzbeauftragte oder einen Datenschutzbeauftragten haben wir nicht benannt.</p>
       <p>
         Anfragen zum Datenschutz und zur Ausübung Ihrer Rechte richten Sie bitte an
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
@@ -102,8 +99,7 @@
           >
           und api.test.bootstrap.academy. Sie ist eine eigenständige Installation mit eigener
           Datenbank und eigenen Konten. Wer sich dort registriert, für den gelten diese Hinweise in
-          gleicher Weise. Daten aus der Produktivumgebung werden nicht in die Testumgebung
-          übernommen,
+          gleicher Weise,
         </li>
         <li>den Code-Ausführungsdienst unter sandkasten.bootstrap.academy (Abschnitt 13),</li>
         <li>
@@ -427,8 +423,9 @@
             <td>Name, Anschrift, Land, E-Mail-Adresse, USt-IdNr., Inhalt des Dokuments</td>
             <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO</td>
             <td>
-              Acht Jahre ab Ende des Ausstellungsjahres; nach einer Kontolöschung ohne Zuordnung zum
-              Konto und, außer bei der Schlussabrechnung, ohne Kundenangaben im Datensatz
+              Acht Jahre ab Ende des Ausstellungsjahres. Nach Kontolöschung können erforderliche
+              Kundenangaben und Zuordnungsnachweise für die in Abschnitt 10.7 beschriebenen Zwecke
+              erhalten bleiben.
             </td>
             <td>Europäische Kommission (VIES), nur die USt-IdNr.</td>
           </tr>
@@ -449,7 +446,7 @@
             <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
           </tr>
           <tr>
-            <td>Kursvideos (Abschnitt 16)</td>
+            <td>YouTube-Kursvideos (Abschnitt 16)</td>
             <td>Wiedergabe von YouTube-Videos nach Klick</td>
             <td>IP-Adresse, Browserdaten, angesehenes Video, von Google gesetzte Cookies</td>
             <td>Art. 6 Abs. 1 lit. a DSGVO; § 25 Abs. 1 TDDDG</td>
@@ -464,7 +461,10 @@
             </td>
             <td>E-Mail-Adresse, Inhalt der Nachricht, Rechnung</td>
             <td>Art. 6 Abs. 1 lit. b DSGVO; Rechnung: lit. c</td>
-            <td>Versendete E-Mails speichern wir nicht; Rechnungen acht Jahre</td>
+            <td>
+              Verlängerungsbestätigungen und Versandstatus: Abschnitt 15.7; sonst keine Speicherung
+              versendeter E-Mails; Rechnungen acht Jahre
+            </td>
             <td>Hetzner Online GmbH, Deutschland (Mailserver)</td>
           </tr>
           <tr>
@@ -503,13 +503,10 @@
             </td>
             <td>Art. 6 Abs. 1 lit. f DSGVO</td>
             <td>
-              Stündlich für 48 Stunden, dann 14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen
-              (längstens rund ein Jahr)
+              Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
+              monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
             </td>
-            <td>
-              Hetzner Online GmbH (Storage Box), Deutschland; ein von uns beauftragter
-              Auftragsverarbeiter mit Sitz in Deutschland (Backup-Server)
-            </td>
+            <td>Datensicherung in Deutschland (Abschnitt 7.3)</td>
           </tr>
         </tbody>
       </table>
@@ -520,13 +517,12 @@
       <h3>7.1 Hetzner Online GmbH</h3>
       <p>
         Programmierschnittstelle (API), Datenbanken, Code-Ausführungsdienst, Speicher für Kursvideos
-        und Datensicherungen sowie unser Fehlerberichtssystem laufen auf Servern der Hetzner Online
-        GmbH, Industriestraße 25, 91710 Gunzenhausen, Deutschland, in deren Rechenzentren in
-        Falkenstein und Nürnberg. Unsere E-Mails versenden wir über den Mailserver eines
-        Webhosting-Pakets der Hetzner Online GmbH. Hetzner ist Auftragsverarbeiter nach Art. 28
-        DSGVO und verarbeitet Daten nur nach unserer Weisung. Vorschaubilder der Kurse liefern wir
-        außerdem über static.bootstrap.academy aus einem Webhosting-Paket der Hetzner Online GmbH
-        aus (Abschnitt 8.1).
+        sowie unser Fehlerberichtssystem laufen auf Servern der Hetzner Online GmbH, Industriestraße
+        25, 91710 Gunzenhausen, Deutschland, in deren Rechenzentren in Falkenstein und Nürnberg.
+        Unsere E-Mails versenden wir über den Mailserver eines Webhosting-Pakets der Hetzner Online
+        GmbH. Hetzner ist Auftragsverarbeiter nach Art. 28 DSGVO und verarbeitet Daten nur nach
+        unserer Weisung. Vorschaubilder der Kurse liefern wir außerdem über static.bootstrap.academy
+        aus einem Webhosting-Paket der Hetzner Online GmbH aus (Abschnitt 8.1).
       </p>
       <h3>7.2 Cloudflare, Inc.</h3>
       <p>
@@ -559,26 +555,19 @@
       </p>
       <h3>7.3 Datensicherungen</h3>
       <p>
-        Wir sichern stündlich die Datenbanken aller Dienste – einschließlich des
-        Fehlerberichtssystems (Abschnitt 8.2) und des Discord-Bots (Abschnitt 17.3) – und das Archiv
-        der Rechnungen, Gutschriften und Schlussabrechnungen. Die Sicherungen sind verschlüsselt
-        (restic). Ziele sind (1) eine Storage Box der Hetzner Online GmbH in Deutschland und (2) ein
-        Server in Deutschland bei einem von uns beauftragten Auftragsverarbeiter (Art. 28 DSGVO) mit
-        Sitz in Deutschland. Aufbewahrt werden die stündlichen Sicherungen der letzten 48 Stunden
-        sowie 14 tägliche, 8 wöchentliche und 12 monatliche Sicherungen; ältere Sicherungen werden
-        auf beiden Zielen automatisch gelöscht, eine Sicherung wird also längstens rund ein Jahr
-        aufbewahrt. Daten, die Sie oder wir löschen, verschwinden damit spätestens nach Ablauf
-        dieser Fristen auch aus den Sicherungen. Server-Logs sind nicht Teil der Sicherungen.
-        Sicherungen dienen ausschließlich der Wiederherstellung nach einem Ausfall; wir verwenden
-        sie nicht, um gelöschte Daten einzelner Personen wiederherzustellen. Rechtsgrundlage ist
-        Art. 6 Abs. 1 lit. f DSGVO (Schutz vor Datenverlust).
+        Datensicherungen dienen der Wiederherstellung nach einem Ausfall und enthalten Kopien der
+        hier beschriebenen Daten. Der Sicherungsplan sieht stündliche verschlüsselte Sicherungen in
+        Deutschland vor. Die konfigurierte Aufbewahrung umfasst 48 stündliche, 14 tägliche, 8
+        wöchentliche und 12 monatliche Sicherungsstände. Diese Anzahlen sind keine feste Löschfrist
+        ab der Kontolöschung. Die Löschung im laufenden System bedeutet deshalb nicht zugleich, dass
+        sämtliche Sicherungskopien gelöscht sind. Bereits erfolgte Löschungen und Einschränkungen
+        müssen bei einer Wiederherstellung berücksichtigt werden. Rechtsgrundlage ist Art. 6 Abs. 1
+        lit. f DSGVO (Schutz vor Datenverlust).
       </p>
       <h3>7.4 Weitere Empfänger</h3>
       <p>
-        Neben der Hetzner Online GmbH, Cloudflare, Inc. und dem in Abschnitt 7.3 genannten Betreiber
-        des zweiten Sicherungsziels setzen wir keine Auftragsverarbeiter ein. Die in den Abschnitten
-        11, 14, 15 und 16 genannten Anbieter (GitHub, Discord, Google, 8x8, PayPal) verarbeiten
-        Daten in eigener Verantwortung, wenn Sie deren Dienste über unsere Plattform nutzen.
+        Informationen zu den in den Abschnitten 11, 14, 15 und 16 beschriebenen Diensten finden Sie
+        in den jeweiligen Abschnitten.
       </p>
     </section>
 
@@ -730,6 +719,19 @@
             <td>Bis Sie die Bestenliste verlassen</td>
           </tr>
           <tr>
+            <td><code>bootstrap-academy:update-notice:…</code></td>
+            <td>Local Storage</td>
+            <td>
+              Merkt erst nach „Verstanden“, dass der Update-Hinweis für Ihre Nutzerkennung und
+              die jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
+              Zustimmung zu Vertrags- oder Datenschutzhinweisen.
+            </td>
+            <td>
+              Bis Sie die Browserdaten löschen; eine neue Hinweisversion kann erneut angezeigt
+              werden
+            </td>
+          </tr>
+          <tr>
             <td><code>oauth_flow</code></td>
             <td>Session Storage</td>
             <td>
@@ -758,8 +760,9 @@
         nur über verschlüsselte Verbindungen und nicht bei Aufrufen aus fremden Websites übertragen.
         Der Zugriffstoken ist serverseitig fünf Minuten gültig und wird mit dem Erneuerungstoken
         automatisch verlängert; der Erneuerungstoken ist serverseitig 30 Tage ab der letzten
-        Erneuerung gültig und wird beim Abmelden ungültig. Die Local-Storage-Einträge werden
-        gelöscht, sobald Sie die jeweilige Seite verlassen, und nicht an unsere Server übertragen.
+        Erneuerung gültig und wird beim Abmelden ungültig. Die Speicherdauer der
+        Local-Storage-Einträge ist in der Tabelle angegeben; sie werden nicht an unsere Server
+        übertragen.
         Die Session-Storage-Einträge gelten nur für den jeweiligen Browser-Tab; die Weboberfläche
         sendet ihre Werte einmal an unsere Programmierschnittstelle, um die Anmeldung oder
         Registrierung abzuschließen, und löscht sie nach deren Erfolg – bricht eine Registrierung
@@ -892,8 +895,10 @@
         Administrator:innen auf Ihre Daten nachvollziehen zu können; Rechtsgrundlage ist Art. 6 Abs.
         1 lit. f DSGVO (Sicherheit der Verarbeitung, Art. 32 DSGVO). Die Einträge werden nach zwölf
         Monaten automatisch gelöscht. Sie bleiben auch bestehen, wenn das handelnde oder das
-        betroffene Konto gelöscht wird; sie enthalten dann eine Kennung, die keinem Konto mehr
-        zugeordnet werden kann. Das Verwaltungsprotokoll können nur Administrator:innen einsehen.
+        betroffene Konto gelöscht wird. Eine frühere Nutzerkennung ist nicht allein durch die
+        Kontolöschung anonym. Ob sie weiterhin einer Person zugeordnet werden kann, hängt von den
+        tatsächlich verbleibenden Informationen ab. Das Verwaltungsprotokoll können nur
+        Administrator:innen einsehen.
       </p>
       <h3>10.6 Rechtsgrundlage und Speicherdauer</h3>
       <p>
@@ -902,16 +907,10 @@
       </p>
       <h3>10.7 Kontolöschung</h3>
       <p>
-        Sie können Ihr Konto jederzeit selbst in den Kontoeinstellungen löschen. Dabei werden Ihr
-        Konto, Profil, Passwort, Sitzungen, Zwei-Faktor-Daten, Verknüpfungen mit Drittanbietern,
-        Rechnungsdaten, Kundennummer, MorphCoins-Guthaben, Transaktionen, Herzen, Premium-Status,
-        PayPal-Bestellreferenzen und Erklärungen zum Widerrufsrecht (Abschnitt 15.5) sofort aus der
-        Datenbank des Kerndienstes gelöscht. Unmittelbar danach weist der Kerndienst die Dienste
-        Skills, Challenges und Events an, Ihre Lern-, Aufgaben- und Eventdaten einschließlich der
-        Kalender-Abo-Kennung zu löschen. Ist einer dieser Dienste in diesem Moment nicht erreichbar,
-        holt er die Löschung in einer nächtlichen Prüfung (zwischen 3 und 4 Uhr) nach, bei der jeder
-        Dienst die Nutzerkennungen in seiner Datenbank mit den bestehenden Konten abgleicht.
-        Folgende Ausnahmen und Folgen gelten:
+        Bei der Kontolöschung werden nicht mehr benötigte Daten aus dem gewöhnlichen Konto und den
+        beteiligten Diensten entfernt. Notwendige Vertrags-, Abrechnungs-, Anspruchs- und
+        Moderationsnachweise bleiben davon getrennt erhalten; die Löschung des Kontos ist kein
+        Nachweis, dass alle zugehörigen Unterlagen gelöscht oder anonym sind.
       </p>
       <ul>
         <li>
@@ -937,22 +936,21 @@
         <li>
           Haben Sie Aufgaben erstellt, die Teilaufgaben anderer Nutzer:innen enthalten, bleibt die
           Aufgabe für diese Nutzer:innen erhalten; ihr Datensatz enthält dann weiterhin Ihre frühere
-          Nutzerkennung, die nach der Löschung keinem Konto und keiner Person mehr zugeordnet werden
-          kann. Mit Ihren Teilaufgaben werden auch die Versuche, Einreichungen und Bewertungen
-          anderer Nutzer:innen zu diesen Teilaufgaben gelöscht. Sperren, die Sie als
-          Administrator:in verhängt haben, bleiben in Kraft; Ihre Kennung wird darin entfernt.
+          Nutzerkennung. Ob diese Kennung weiterhin einer Person zugeordnet werden kann, hängt von
+          den tatsächlich verbleibenden Informationen ab. Mit Ihren Teilaufgaben werden auch die
+          Versuche, Einreichungen und Bewertungen anderer Nutzer:innen zu diesen Teilaufgaben
+          gelöscht. Erforderliche Moderationsunterlagen und die dokumentierte Entscheidungshistorie
+          bleiben nach Abschnitt 13.4 gesondert erhalten. Eine frühere Nutzerkennung ist nicht
+          allein durch die Kontolöschung anonym.
         </li>
         <li>
-          Haben Sie als Kursleiter:in Webinare oder Coachings angeboten, die noch nicht
-          stattgefunden haben, werden sie abgesagt und die Teilnehmer:innen erhalten den Preis
-          zurück. Termine, die Sie selbst gebucht haben, werden storniert, ohne dass wir den Preis
-          erstatten, weil Ihr Guthaben mit dem Konto gelöscht wird – stornieren Sie solche Termine
-          vor der Löschung im Kalender (Abschnitt 14.1). Für diese Absagen und Stornierungen
-          versenden wir keine E-Mails.
+          Die Kontolöschung allein ist keine Stornierungs- oder Widerrufserklärung für einzelne
+          bezahlte Leistungen. Bestehende Leistungs- und Erstattungsansprüche bleiben davon
+          getrennt; für Events gilt Ziffer 10.5 der AGB.
         </li>
         <li>
-          In Datensicherungen verbleiben die Daten bis zum Ablauf der in Abschnitt 7.3 genannten
-          Fristen.
+          Die Löschung im laufenden System bedeutet nicht zugleich, dass sämtliche Sicherungskopien
+          gelöscht sind (Abschnitt 7.3).
         </li>
       </ul>
       <p>
@@ -1142,45 +1140,92 @@
       </p>
       <h3>13.3 Eigene Aufgaben, Bewertungen und Meldungen</h3>
       <p>
-        Sie können eigene Quizfragen und Aufgaben erstellen. Wir speichern dazu den Inhalt, Ihre
-        Nutzerkennung als Ersteller:in, den Zeitpunkt und den Status der Aufgabe (aktiv,
-        deaktiviert, zurückgezogen). Andere Nutzer:innen können Ihre Aufgaben bewerten und melden;
-        Bewertungen und Meldungen zu Ihren Aufgaben stammen also von anderen Nutzer:innen. Zu einer
-        Meldung speichern wir die Nutzerkennung der meldenden Person, den Zeitpunkt, den Meldegrund
-        und einen freiwilligen Kommentar; führt eine Meldung zu einer Sperre, wird dieser Kommentar
-        Teil der Begründung, die die gesperrte Person sieht. Löschen Sie eine Teilaufgabe oder Ihr
-        Konto, werden auch die Versuche, Einreichungen und Bewertungen anderer Nutzer:innen zu
-        dieser Teilaufgabe gelöscht. Rechtsgrundlage für das Erstellen und Bewerten ist Art. 6 Abs.
-        1 lit. b DSGVO, für Meldungen und deren Bearbeitung Art. 6 Abs. 1 lit. f DSGVO (Schutz der
-        Plattform vor missbräuchlichen Inhalten). Speicherdauer: bis zur Kontolöschung.
-      </p>
-      <h3>13.4 Moderation, Sperren und automatisierte Entscheidungen</h3>
-      <p>
-        Meldungen prüfen Administrator:innen; eine gemeldete Aufgabe wird bis zu dieser Prüfung
-        vorläufig ausgeblendet. Stellen sie einen Missbrauch fest, können sie eine Sperre verhängen:
-        entweder für das Erstellen von Aufgaben oder für das Melden. Zu einer Sperre speichern wir
-        Art, Beginn, Ende, Grund und die entscheidende Person. Verhängen Administrator:innen eine
-        Sperre bei der Bearbeitung einer Meldung, folgt ihre Dauer einer festen Staffel nach der
-        Zahl Ihrer bisherigen Sperren derselben Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach
-        unbefristet. Daneben können Administrator:innen eine Sperre mit individuell festgelegter
-        Dauer verhängen, verlängern oder aufheben. Eine Anzeige Ihrer Sperren in der Oberfläche gibt
-        es nicht; sie sind im Datenexport enthalten (Abschnitt 23).
+        Wenn Sie Aufgaben oder Quizfragen erstellen, speichern wir deren Inhalt, Ihre Nutzerkennung,
+        den Erstellungszeitpunkt und den jeweiligen Status. Andere Nutzer:innen können diese Inhalte
+        bewerten und melden. Zu einer Meldung verarbeiten wir den betroffenen Inhalt, Zeitpunkt,
+        Meldegrund, freiwillige Erläuterungen und die Nutzerkennung oder übermittelten
+        Kontaktangaben der meldenden Person.
       </p>
       <p>
-        Zusätzlich wird eine nutzererstellte Aufgabe automatisch ausgeblendet und den
-        Administrator:innen zur Prüfung vorgelegt, wenn sie mindestens zehn negative und mehr
-        negative als positive Bewertungen erhalten hat.
+        Meldungen und private Belege sind von den Mitteilungen an betroffene Personen getrennt.
+        Freitext einer Meldung wird nicht automatisch als Begründung an die betroffene Person
+        weitergegeben. Für Entscheidungen erstellen wir gesonderte, verständliche Mitteilungen;
+        meldende Personen erhalten eine eigene Eingangsbestätigung und Ergebnismitteilung.
       </p>
       <p>
-        Hinweis nach Art. 22 DSGVO: Ob eine Sperre verhängt wird, entscheidet in jedem Fall ein
-        Mensch; automatisiert ist allenfalls die Berechnung der Dauer nach der genannten Staffel.
-        Das automatische Ausblenden einer Aufgabe ist eine vorläufige Maßnahme bis zur Prüfung durch
-        einen Menschen. Nach unserer Einschätzung liegt darin keine ausschließlich automatisierte
-        Entscheidung mit rechtlicher Wirkung oder ähnlich erheblicher Beeinträchtigung im Sinne von
-        Art. 22 Abs. 1 DSGVO. Unabhängig davon können Sie jede Sperre und jede Ausblendung per
-        E-Mail an
-        <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
-        anfechten, Ihren Standpunkt darlegen und eine Überprüfung durch einen Menschen verlangen.
+        Rechtsgrundlage für das Erstellen und Bewerten ist Art. 6 Abs. 1 lit. b DSGVO. Meldungen
+        bearbeiten wir zur Erfüllung einschlägiger gesetzlicher Pflichten nach Art. 6 Abs. 1 lit. c
+        DSGVO, insbesondere aus Art. 16 und 17 DSA; soweit keine solche Pflicht besteht, auf
+        Grundlage von Art. 6 Abs. 1 lit. f DSGVO zum Schutz der Plattform und ihrer Nutzer:innen.
+      </p>
+      <p>
+        Für Aufgaben und Lerndaten gelten die beschriebenen Löschwege. Mit einer gelöschten
+        Teilaufgabe werden auch die dazugehörigen Versuche, Einreichungen und Bewertungen gelöscht.
+        Für erforderliche Unterlagen eines Moderationsfalls gelten gesondert Abschnitt 13.4 und die
+        Aufbewahrungsübersicht.
+      </p>
+      <h3>13.4 Moderation, Beschwerden und beschränkter Zugang</h3>
+      <p>
+        Im jeweils zuständigen Dienst speichern wir den Anlass eines Falls, erforderliche Belege zur
+        geprüften Inhaltsfassung, die anwendbare Regel und ihren Geltungsnachweis, Entscheidungen,
+        verantwortliche Personen, Maßnahmen und deren Dauer sowie Beschwerden und Ergebnisse ihrer
+        menschlichen Prüfung. Die Regeln und Voraussetzungen automatischer vorläufiger Ausblendungen
+        sowie die menschliche Prüfung von Sperren und ihrer Dauer beschreibt AGB Ziffer 14.4.
+        Automatische Auslöser und ihre tatsächlichen Auswirkungen werden dokumentiert; eine spätere
+        menschliche Entscheidung entfernt diese Angaben nicht.
+      </p>
+      <p>
+        Wir speichern die an die jeweiligen Empfänger:innen gerichteten Mitteilungen und
+        unterscheiden deren Bereitstellung von Versandversuchen, technischen Versandbestätigungen
+        und Fehlern. Wird eine Entscheidung im Moderationsbereich tatsächlich geöffnet und
+        angezeigt, erfassen wir diesen Zeitpunkt gesondert. Eine technische Versandbestätigung
+        belegt für sich allein weder den tatsächlichen Zugang noch das Lesen einer Nachricht.
+      </p>
+      <p>
+        Für den gesonderten Zugang zu Moderationsfällen prüfen wir vorhandene Zugangsnachweise
+        beziehungsweise die Berechtigung zum konkreten Fall. Dabei verarbeiten wir die
+        erforderlichen Konto- oder Fallkennungen, Kontaktangaben und Angaben zu Umfang, Gültigkeit
+        und Widerruf der Zugangsberechtigung. Der dafür ausgegebene Zugangsschlüssel wird im
+        Sitzungsspeicher des verwendeten Browsertabs gehalten und begründet keine gewöhnliche
+        Kontositzung. Ein Fallzugang eröffnet keinen allgemeinen Zugriff auf Konto-, Kauf- oder
+        Abrechnungsdaten. Meldungen und Beschwerden bleiben mit Text, Kennung und Bestätigungsstand
+        in diesem Browsertab für einen identischen erneuten Versuch und den Eingangsbeleg
+        gespeichert. Meldungen werden nur bei derselben Kontoidentität, Beschwerden nur unter
+        derselben nachgewiesenen Empfängerberechtigung angezeigt.
+      </p>
+      <p>
+        Rechtsgrundlagen sind die Durchführung des Nutzungsvertrags und des zugesagten
+        Beschwerdeverfahrens nach Art. 6 Abs. 1 lit. b DSGVO, die Erfüllung einschlägiger
+        gesetzlicher Pflichten nach Art. 6 Abs. 1 lit. c DSGVO sowie erforderliche Nachweis-,
+        Missbrauchsschutz- und Rechtsverteidigungszwecke nach Art. 6 Abs. 1 lit. f DSGVO. Zugang zu
+        privaten Fallunterlagen erhalten nur Personen, die ihn für die jeweilige Aufgabe benötigen.
+        Betroffene und meldende Personen erhalten die für sie bestimmten Informationen.
+      </p>
+      <p>
+        Erforderliche Fallunterlagen, Beschwerden, Mitteilungen und Versandnachweise löschen wir
+        grundsätzlich zwölf Monate nach Abschluss des Falls. Abschluss setzt das Ende der Maßnahme
+        und den Ablauf der Beschwerdefrist beziehungsweise die Entscheidung über eine noch offene
+        Beschwerde voraus; maßgeblich ist der spätere Zeitpunkt. Bei einer unbefristeten Maßnahme
+        gilt hierfür deren Aufhebung oder die Kontolöschung als Ende der Maßnahme. Eine
+        Kontolöschung beendet eine noch laufende Beschwerdemöglichkeit nicht. Noch erforderliche
+        behördliche oder vertragliche Bearbeitung bleibt gesondert nachvollziehbar.
+      </p>
+      <p>
+        Private Belege und Kontaktangaben prüfen wir gesondert auf ihre weitere Erforderlichkeit und
+        löschen oder reduzieren sie früher, sobald sie nicht mehr benötigt werden. Eine
+        fortbestehende Maßnahme rechtfertigt nicht pauschal die unbegrenzte Speicherung sämtlicher
+        Unterlagen. Eine längere Aufbewahrung erfolgt nur im erforderlichen Umfang wegen konkret
+        einschlägiger gesetzlicher Pflichten oder zur Geltendmachung, Ausübung oder Verteidigung
+        konkreter Rechtsansprüche; Grund, Umfang und weitere Prüfung werden dokumentiert. Die
+        Zwölfmonatsfrist ist keine allgemeine gesetzliche Aufbewahrungsfrist.
+      </p>
+      <p>
+        Nach der Falllöschung bewahren wir eine reduzierte technische Löschbestätigung auf. Sie
+        enthält die Fall- und Bearbeitungskennung, Zeitpunkt und Prüfsumme des Löschauftrags sowie
+        die Bestätigung der Löschung in verbundenen Diensten. Sie enthält weder die ursprüngliche
+        Begründung noch Kontaktadresse oder Fallinhalt und verhindert, dass ein später erneut
+        ausgeführter alter Auftrag gelöschte Daten wieder anlegt. Auch diese Bestätigung wird
+        gesondert auf ihre Erforderlichkeit geprüft.
       </p>
     </section>
 
@@ -1339,13 +1384,12 @@
         festgehaltenen Betrag teilen wir Ihnen auf Anfrage an
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
         mit. Haben Sie keine MorphCoins gekauft oder alle gekauften MorphCoins verbraucht, wird
-        keine Schlussabrechnung erstellt, und nach der Löschung bleibt nichts zurück, was Ihren
-        Namen oder Ihre E-Mail-Adresse enthält (außer den in Abschnitt 10.7 genannten Fällen).
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Erfüllung Ihres Erstattungsanspruchs nach
-        Ziffer 6.7 der AGB) und für die Aufbewahrung als Beleg über die Erstattung Art. 6 Abs. 1
-        lit. c DSGVO (§ 147 Abs. 1 AO). Wir bewahren die Schlussabrechnung wie eine Rechnung acht
-        Jahre ab dem Ende des Kalenderjahres der Löschung auf und löschen sie danach automatisch;
-        sie weist keine Umsatzsteuer aus.
+        keine Schlussabrechnung erstellt. Notwendige Vertrags- und Anspruchsnachweise bleiben davon
+        getrennt nach Abschnitt 10.7 erhalten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO
+        (Erfüllung Ihres Erstattungsanspruchs nach Ziffer 6.7 der AGB) und für die Aufbewahrung als
+        Beleg über die Erstattung Art. 6 Abs. 1 lit. c DSGVO (§ 147 Abs. 1 AO). Wir bewahren die
+        Schlussabrechnung wie eine Rechnung acht Jahre ab dem Ende des Kalenderjahres der Löschung
+        auf und löschen sie danach automatisch; sie weist keine Umsatzsteuer aus.
       </p>
       <h3>15.5 Erklärungen zum Widerrufsrecht bei Bestellungen</h3>
       <p>
@@ -1362,10 +1406,11 @@
         MorphCoins wiederholt Ihre Erklärung mit Fassung und Zeitpunkt und enthält die AGB und die
         Widerrufsbelehrung als PDF. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
         § 312f Abs. 3 BGB sowie Art. 6 Abs. 1 lit. b DSGVO. Die Erklärungen sind im Datenexport
-        enthalten (Abschnitt 23) und werden mit Ihrem Konto gelöscht. Beim Kauf von MorphCoins
-        übernehmen wir Fassung und Zeitpunkt mit der Ausstellung der Rechnung zusätzlich in deren
-        Datensatz; dort bleiben sie acht Jahre ab dem Ende des Ausstellungsjahres erhalten, auch
-        nach einer Kontolöschung (Abschnitt 15.4).
+        enthalten (Abschnitt 23). Erforderliche Vertrags- und Anspruchsnachweise bleiben nach
+        Abschnitt 10.7 gesondert erhalten. Beim Kauf von MorphCoins übernehmen wir Fassung und
+        Zeitpunkt mit der Ausstellung der Rechnung zusätzlich in deren Datensatz; dort bleiben sie
+        acht Jahre ab dem Ende des Ausstellungsjahres erhalten, auch nach einer Kontolöschung
+        (Abschnitt 15.4).
       </p>
       <h3>15.6 Kündigung und Widerruf über die Plattform</h3>
       <p>
@@ -1377,23 +1422,37 @@
         E-Mail-Adresse, betroffenem Vertrag, bei Kündigungen mit der Art der Kündigung, dem
         gewünschten Beendigungszeitpunkt und einer etwaigen Begründung, bei Widerrufen mit Ihren
         Angaben zur Bestellung, sowie mit dem Zeitpunkt des Eingangs und dem ermittelten
-        Vertragsende. Stimmt die E-Mail-Adresse mit einem Konto überein, ordnen wir die Erklärung
-        diesem Konto zu; eine Kündigung von Premium schaltet dann die automatische Verlängerung ab.
-        Sie erhalten sofort eine Bestätigungs-E-Mail mit dem Inhalt der Erklärung, Datum und Uhrzeit
-        des Eingangs (Zeitzone Europe/Berlin) und dem Vertragsende oder dem Hinweis, dass wir es
-        gesondert mitteilen (§ 312k Abs. 4, § 356a BGB). Zugleich geht eine Benachrichtigung mit
-        denselben Angaben an unser Postfach hallo@bootstrap.academy, damit wir die Erklärung
-        bearbeiten und Erstattungen veranlassen können. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c
-        DSGVO (gesetzliche Bestätigungspflicht) und Art. 6 Abs. 1 lit. b DSGVO (Abwicklung des
-        Vertrags).
+        Vertragsende. Ein E-Mail-Treffer wird intern als unverifizierte Zuordnung vermerkt. Dazu
+        speichern wir die beobachtete Verlängerungsvereinbarung und bezahlte Zeiträume sowie deren
+        Änderungen während der Bearbeitung, damit der ursprüngliche Eingang maßgeblich bleibt.
+        Allein Name und E-Mail-Adresse lösen keine Kontoveränderung aus. Eine optional angegebene
+        eindeutige Vereinbarungsnummer oder eine gesonderte Identitätsprüfung ermöglicht die
+        Zuordnung; eine Anmeldung ist für den Eingang nicht erforderlich. Der öffentliche Beleg
+        enthält nur Ihre Angaben und den Eingang. Vertragsbezogene Feststellungen bestätigen wir
+        gesondert über einen verifizierten Kontakt. Die Eingangsbestätigung enthält die Erklärung,
+        Datum und Uhrzeit des Eingangs (Europe/Berlin) sowie bei Kündigungen den gewünschten Termin
+        (§ 312k Abs. 4, § 356a BGB). Wir speichern die genaue Nachricht mit Empfänger,
+        Versandversuchen und Annahme durch den E-Mail-Server für sofortigen Versand und Wiederholung
+        bei Fehlern; die Serverannahme beweist keine Zustellung im Postfach. Eine interne
+        Benachrichtigung ermöglicht uns, die Erklärung bearbeiten und Erstattungen veranlassen
+        können. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO (gesetzliche Bestätigungspflicht) und
+        Art. 6 Abs. 1 lit. b DSGVO (Abwicklung des Vertrags).
       </p>
       <p>
         Die Erklärung bewahren wir nach Abschluss der Bearbeitung als Nachweis der Kündigung bzw.
         des Widerrufs auf, auch nach einer Kontolöschung; Rechtsgrundlage dafür ist Art. 6 Abs. 1
         lit. f DSGVO (Nachweis bis zum Ablauf der Verjährung). Die Zuordnung zum Konto wird bei der
-        Kontolöschung entfernt, Name und E-Mail-Adresse bleiben in der Erklärung. Nach Ablauf der
-        regelmäßigen Verjährungsfrist von drei Jahren, gerechnet ab dem Ende des Kalenderjahres des
-        Eingangs (§§ 195, 199 Abs. 1 BGB), löschen wir sie automatisch.
+        Kontolöschung entfernt; Name, E-Mail-Adresse, ursprüngliche Kennungen und erforderliche
+        Vertragsbeobachtungen bleiben in den Nachweisen. Abgeschlossene Fälle löschen wir regelmäßig
+        drei Jahre nach Ende des Jahres des spätesten Eingangs-, Bearbeitungs- oder
+        Beendigungszeitpunkts (§§ 195, 199 Abs. 1 BGB). Offene Bearbeitungen, ausstehende
+        Bestätigungen und noch laufende Kündigungstermine werden vorher nicht automatisch gelöscht.
+        Im Browser-Tab speichern wir Ihre letzte Erklärung mit einer zufälligen Abrufkennung und dem
+        Beleg für bis zu 24 Stunden, damit Sie bei einem Übertragungsfehler den bereits
+        gespeicherten Eingang abrufen können. Sie können diesen Tab-Speicher über die Schaltfläche
+        am Beleg entfernen; Druck und Speicherung einer eigenen Kopie bleiben möglich. Die
+        Abrufkennung wird auf dem Server nur als Hashwert gespeichert und gibt keinen Zugang zu
+        Kontoinformationen.
       </p>
       <p>
         Um Missbrauch der öffentlichen Formulare zu begrenzen, zählen wir Erklärungen je IP-Adresse
@@ -1405,14 +1464,46 @@
         hallo@bootstrap.academy abgeben. Rechtsgrundlage für die Zähler ist Art. 6 Abs. 1 lit. f
         DSGVO (Schutz der Formulare vor Missbrauch).
       </p>
+      <h3>15.7 Nachweise zur automatischen Premium-Verlängerung</h3>
+      <p>
+        Eine neue monatliche Verlängerung erfordert eine gesonderte ausdrückliche Bestellung. Dafür
+        speichern wir eine eindeutige Vereinbarungsnummer, die Kontokennung, den Namen und die
+        E-Mail-Adresse bei der Bestellung, den Eingangszeitpunkt, den vereinbarten Coin-Preis, den
+        vollständigen Erklärungstext und die vereinbarten AGB und Widerrufsinformationen. Der
+        Nachweis bleibt inhaltlich unverändert. Getrennt erfassen wir Versandversuche, den
+        bestätigten Versand und eine Beendigung der Verlängerung. Die E-Mail-Bestätigung wird aus
+        dem gespeicherten Vertragsinhalt erzeugt; ein fehlgeschlagener Versand wird erneut versucht.
+        Bei der Umstellung abgeschaltete bisherige Verlängerungen dokumentieren wir mit der
+        ursprünglichen Einstellung, den bezahlten Zeiträumen und den damals gespeicherten Angaben
+        zur AGB-Annahme oder -Ablehnung. Diese Angaben gelten nicht als nachträglicher Nachweis
+        einer Zustimmung zum neuen Tarif. Alle diese Daten sind im Kontoexport enthalten.
+      </p>
+      <p>
+        Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO für die Vertragsabwicklung, lit. c für die
+        erforderliche Vertragsbestätigung und lit. f für den Nachweis der Vereinbarung und der
+        Abschaltung. Bei Kontolöschung endet die Verlängerung und werden weitere Versandversuche
+        eingestellt. Die Nachweise einschließlich ihrer Kontozuordnung bleiben zur Bearbeitung
+        vertraglicher Ansprüche erhalten. Nicht mehr aktive Vereinbarungen löschen wir im
+        regelmäßigen Löschlauf nach drei Jahren ab Ende des Jahres, in dem sowohl die Vereinbarung
+        beendet als auch der zuletzt bezahlte Zeitraum abgelaufen ist. Für archivierte frühere
+        Einstellungen beginnt diese Frist mit dem Ende des Jahres der Abschaltung, bei einem
+        späteren Ende des damals bezahlten Zeitraums erst mit dem Ende dieses späteren Jahres. Dies
+        sind Vertragsnachweise; die getrennten Aufbewahrungsregeln für Rechnungen und andere
+        gesetzlich aufzubewahrende Finanzbelege bleiben unberührt.
+      </p>
     </section>
 
     <section id="videos">
-      <h2>16 Kursvideos (YouTube)</h2>
+      <h2>16 Kursvideos (MP4 und YouTube)</h2>
       <p>
-        Kursvideos betten wir von YouTube ein. Beim Aufruf einer Kursseite wird zunächst nur ein
-        Platzhalter angezeigt; es wird keine Verbindung zu Google aufgebaut. Erst wenn Sie das Video
-        durch Klick starten, lädt Ihr Browser das Video von youtube-nocookie.com (erweiterter
+        Je nach Kurs werden Videos als MP4-Dateien oder als eingebettete YouTube-Videos
+        wiedergegeben. MP4-Dateien werden im Videoplayer der Plattform abgespielt; dafür wird kein
+        YouTube-Player eingebettet. Die folgenden Angaben zur Verarbeitung durch Google und zur
+        Entscheidung, ein YouTube-Video zu laden, beziehen sich auf die YouTube-Einbettung.
+      </p>
+      <p>
+        Bei YouTube-Videos zeigen wir zunächst einen Platzhalter. Erst wenn Sie das Video durch
+        Klick starten, lädt Ihr Browser die YouTube-Einbettung von youtube-nocookie.com (erweiterter
         Datenschutzmodus). Dabei erhält Google Ihre IP-Adresse, Browserdaten und die Information,
         welches Video Sie ansehen, und kann Informationen in Ihrem Browser speichern und auslesen.
         Verantwortlich für diese Verarbeitung ist Google Ireland Limited, Gordon House, Barrow
@@ -1447,7 +1538,8 @@
         Der Versand erfolgt über einen Mailserver der Hetzner Online GmbH (Auftragsverarbeiter,
         Abschnitt 7.1). Unsere E-Mails enthalten keine Zählpixel und keine Klick-Verfolgung; das
         Logo ist in die E-Mail eingebettet, sodass beim Öffnen keine Verbindung zu einem Server
-        aufgebaut wird. Versendete E-Mails speichern wir nicht.
+        aufgebaut wird. Versendete E-Mails speichern wir mit Ausnahme der Verlängerungsbestätigungen
+        nach Abschnitt 15.7 nicht.
       </p>
       <h3>17.2 Kontaktformular und E-Mail an uns</h3>
       <p>
@@ -1548,10 +1640,16 @@
           rel="noopener noreferrer"
           >www.dataprivacyframework.gov</a
         >
-        prüfen. Weitere Übermittlungen in Drittländer finden nicht statt: PayPal (Europe) hat seinen
-        Sitz in Luxemburg, die USt-IdNr.-Prüfung erfolgt bei der Europäischen Kommission, Hetzner
-        ist ein deutsches Unternehmen. Übermittlungen, die Sie selbst auslösen – etwa an den
-        Anbieter Ihrer Kalender-App –, liegen in Ihrer Hand.
+        prüfen. Auch bei Anbietern mit Sitz in der Europäischen Union können Daten außerhalb der
+        Europäischen Union verarbeitet werden. PayPal beschreibt solche internationalen
+        Verarbeitungen in seiner
+        <a
+          href="https://www.paypal.com/lu/legalhub/paypal/privacy-full"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Datenschutzerklärung</a
+        >. Übermittlungen, die Sie selbst auslösen – etwa an den Anbieter Ihrer Kalender-App –,
+        liegen in Ihrer Hand.
       </p>
     </section>
 
@@ -1575,8 +1673,10 @@
               Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
             </td>
             <td>
-              Bis zur Kontolöschung; Erklärungen zum Widerrufsrecht beim Kauf von MorphCoins
-              zusätzlich im Datensatz der Rechnung (acht Jahre, Abschnitt 15.4)
+              Bis zur Kontolöschung, soweit die Angaben nicht als erforderliche Vertrags- oder
+              Anspruchsnachweise nach Abschnitt 10.7 gesondert erhalten bleiben. Erklärungen zum
+              Widerrufsrecht beim Kauf von MorphCoins bleiben zusätzlich im Datensatz der Rechnung
+              (acht Jahre, Abschnitt 15.4).
             </td>
           </tr>
           <tr>
@@ -1620,9 +1720,29 @@
           <tr>
             <td>
               Einreichungen, Ausführungsergebnisse, Lösungsstand, Versuche, Bewertungen, eigene
-              Aufgaben, Meldungen, Sperren
+              Aufgaben
             </td>
-            <td>Bis zur Kontolöschung</td>
+            <td>
+              Bis zur jeweiligen Löschung beziehungsweise Kontolöschung; erforderliche
+              Moderationsunterlagen gesondert nach Abschnitt 13.4
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Moderationsfälle, Entscheidungen, Sperrennachweise, Beschwerden, Mitteilungen und
+              Versandnachweise
+            </td>
+            <td>
+              Grundsätzlich zwölf Monate nach Fallabschluss; Abschluss und begrenzte Ausnahmen nach
+              Abschnitt 13.4
+            </td>
+          </tr>
+          <tr>
+            <td>Private Moderationsbelege und fallbezogene Kontaktangaben</td>
+            <td>
+              Nur solange erforderlich; gesonderte Prüfung und gegebenenfalls frühere Reduzierung
+              nach Abschnitt 13.4
+            </td>
           </tr>
           <tr>
             <td>Code im Ausführungsdienst</td>
@@ -1651,8 +1771,9 @@
           <tr>
             <td>Rechnungen und Gutschriften</td>
             <td>
-              Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung (Datensatz dann
-              ohne Kundenangaben und Kontozuordnung)
+              Acht Jahre ab Ende des Ausstellungsjahres, auch nach Kontolöschung. Erforderliche
+              Kundenangaben und Zuordnungsnachweise können für die in Abschnitt 10.7 beschriebenen
+              Zwecke erhalten bleiben.
             </td>
           </tr>
           <tr>
@@ -1661,7 +1782,10 @@
           </tr>
           <tr>
             <td>Kündigungs- und Widerrufserklärungen</td>
-            <td>Drei Jahre ab Ende des Eingangsjahres, auch nach Kontolöschung (Abschnitt 15.6)</td>
+            <td>
+              Drei Jahre ab Ende des maßgeblichen Abschluss-/Beendigungsjahres; offene Fälle und
+              Versandaufträge bleiben bis zur Klärung erhalten (Abschnitt 15.6)
+            </td>
           </tr>
           <tr>
             <td>Zähler zur Begrenzung der Kündigungs- und Widerrufsformulare</td>
@@ -1693,8 +1817,8 @@
           <tr>
             <td>Datensicherungen</td>
             <td>
-              Stündlich für 48 Stunden, dann 14 tägliche, 8 wöchentliche, 12 monatliche Sicherungen
-              (längstens rund ein Jahr)
+              Konfigurierte Sicherungsstände: 48 stündliche, 14 tägliche, 8 wöchentliche und 12
+              monatliche. Keine feste Löschfrist ab der Kontolöschung (Abschnitt 7.3).
             </td>
           </tr>
           <tr>
@@ -1704,9 +1828,10 @@
         </tbody>
       </table>
       <p>
-        Bei der Kontolöschung (Abschnitt 10.7) werden Ihre Daten sofort aus den Datenbanken
-        gelöscht, soweit dort keine Ausnahme genannt ist. In Datensicherungen verbleiben sie bis zum
-        Ablauf der Sicherungsfristen; wir stellen gelöschte Daten aus Sicherungen nicht wieder her.
+        Bei einer Kontolöschung werden nicht mehr benötigte Daten aus dem gewöhnlichen Konto und den
+        beteiligten Diensten entfernt (Abschnitt 10.7). Notwendige Vertrags-, Abrechnungs-,
+        Anspruchs- und Moderationsnachweise bleiben davon getrennt erhalten. Die Löschung im
+        laufenden System bedeutet nicht zugleich, dass sämtliche Sicherungskopien gelöscht sind.
       </p>
     </section>
 
@@ -1772,17 +1897,18 @@
           Kündigungs- und Widerrufserklärungen und Ihre Erklärungen zum Widerrufsrecht; aus dem
           Dienst Skills Kurszugriffe, zuletzt angesehene Kurse, abgeschlossene Lektionen,
           Lesezeichen und XP; aus dem Dienst Challenges Lösungsstand, Versuche, Einreichungen mit
-          Quellcode und Ergebnis, Bewertungen, Meldungen, Sperren und selbst erstellte Aufgaben; aus
-          dem Dienst Events erstellte und gebuchte Webinare, angebotene und gebuchte
-          Coaching-Termine, wöchentliche Terminfenster und Bewertungen. Nicht enthalten sind
-          Passwort-Hash, Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, Ihre
-          Kundennummer (sie ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die
-          Einträge des Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt
-          Ihrer Altersbestätigung; Auskunft dazu erhalten Sie auf Anfrage. Ist einer der Dienste
-          beim Abruf nicht erreichbar, erhalten Sie die übrigen Daten, und die Datei nennt den
-          fehlenden Teil. Der Abruf ist auf einmal je zehn Minuten begrenzt. Auf Anfrage erstellen
-          wir die Datei auch für Sie; dieser Abruf durch eine Administrator:in wird im
-          Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
+          Quellcode und Ergebnis, Bewertungen, selbst erstellte Aufgaben und die für Sie bestimmten
+          Moderationsmitteilungen mit Beschwerde- und Maßnahmenstand; aus dem Dienst Events
+          erstellte und gebuchte Webinare, angebotene und gebuchte Coaching-Termine, wöchentliche
+          Terminfenster und Bewertungen. Nicht enthalten sind Passwort-Hash,
+          Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, Ihre Kundennummer (sie
+          ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die Einträge des
+          Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt Ihrer
+          Altersbestätigung; Auskunft dazu erhalten Sie auf Anfrage. Ist einer der Dienste beim
+          Abruf nicht erreichbar, erhalten Sie die übrigen Daten, und die Datei nennt den fehlenden
+          Teil. Der Abruf ist auf einmal je zehn Minuten begrenzt. Auf Anfrage erstellen wir die
+          Datei auch für Sie; dieser Abruf durch eine Administrator:in wird im Verwaltungsprotokoll
+          festgehalten (Abschnitt 10.5).
         </li>
         <li>
           <strong>Widerruf von Einwilligungen</strong> (Art. 7 Abs. 3 DSGVO) mit Wirkung für die

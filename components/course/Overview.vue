@@ -66,9 +66,14 @@
       statutory order button are shown before the course is unlocked
       (§ 312j Abs. 2 und 3 BGB).
     -->
-    <Modal v-if="confirming" @backdrop="confirming = false">
-      <div class="w-full max-w-2xl bg-secondary p-8 style-card">
+    <Modal
+      v-if="confirming"
+      :aria-label="t('Headings.OrderSummary')"
+      @backdrop="confirming = false"
+    >
+      <div class="w-full max-w-2xl bg-secondary p-4 style-card sm:p-8">
         <OrderSummary
+          exact-offer
           :coins="price"
           :loading="loading"
           :disabled="!canOrder"
@@ -81,23 +86,12 @@
           </template>
 
           <template #consent>
-            <InputCheckbox
-              label="Links.IAgreeTo"
-              id="TermsAndConditions"
-              :link="{
-                to: '/docs/terms-and-conditions',
-                label: 'Links.TermsAndConditions',
-              }"
-              target="_blank"
-              v-model="termsAndConditions"
+            <OrderContract
+              v-if="purchaseOffer"
+              :key="purchaseOffer.id"
+              :offer="purchaseOffer"
+              v-model="withdrawalConsent"
             />
-
-            <!--
-              A paid course is digital content, so the declarations of
-              § 356 Abs. 6 Nr. 2 BGB are required. A free course is not
-              ordered against payment, so they are not asked for.
-            -->
-            <OrderWithdrawalConsent v-if="price > 0" kind="digital" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
@@ -138,18 +132,19 @@ const loading = ref(false);
 const snackbar = useSnackbar();
 const router = useRouter();
 
-const termsAndConditions = ref(false);
+const purchaseOffer = ref<any>(null);
 const withdrawalConsent = ref(false);
 const confirming = ref(false);
 
-function onclickEnroll() {
+async function onclickEnroll() {
   if (props.isCourseAccessible) {
     router.push(`${link.value}`);
     return;
   }
 
   // The dialog is rebuilt every time it opens, so the boxes start unticked.
-  termsAndConditions.value = false;
+  purchaseOffer.value = await requestPurchaseOffer(`/skills/course_access/${props.data?.id}/offer`);
+  if (!purchaseOffer.value) return;
   withdrawalConsent.value = false;
   confirming.value = true;
 }
@@ -167,23 +162,10 @@ async function onclickOrder() {
 
   loading.value = true;
 
-  // Courses are unlocked by the skills service, which does not store the
-  // declarations, so they are recorded here before the order is placed.
-  if (price.value > 0) {
-    const [, consentError] = await recordWithdrawalConsent("course", props.data?.id ?? "");
-    if (consentError) {
-      loading.value = false;
-      snackbar.value = {
-        show: true,
-        type: "error",
-        heading: consentError?.detail ?? "Error.WithdrawalConsentMissing",
-        body: "",
-      };
-      return;
-    }
-  }
-
-  const [success, error] = await enrollIntoCourse(props.data?.id ?? "");
+  const [success, error] = await withPurchaseRecovery(purchaseOffer.value, () =>
+    enrollIntoCourse(props.data?.id ?? "", purchaseAcceptance(purchaseOffer.value))
+  ).catch((error) => [null, error]);
+  if (success) finishPurchaseRecovery(purchaseOffer.value, success);
   if (success) await getCourseByID(props.data?.id ?? "");
   loading.value = false;
   confirming.value = false;
@@ -198,7 +180,8 @@ async function onclickOrder() {
     return;
   }
 
-  router.push(`${link.value}`);
+  if (success?.state === "fulfilled") router.push(`${link.value}`);
+  else await navigateTo("/orders");
 }
 
 const price = computed(() => {
@@ -208,9 +191,7 @@ const price = computed(() => {
 const premiumInfo: any = usePremiumInfo();
 const isPremium = computed(() => !!premiumInfo.value?.premium);
 
-const canOrder = computed(
-  () => termsAndConditions.value && (price.value <= 0 || withdrawalConsent.value)
-);
+const canOrder = computed(() => !!purchaseOffer.value && withdrawalConsent.value);
 
 const totalSections = computed(() => {
   let sections = props.data?.sections ?? 0;

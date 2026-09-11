@@ -32,6 +32,15 @@
       >
     </p>
 
+    <p class="mt-card">
+      Diese Fassung wird für neue Verträge zugrunde gelegt, bei deren Abschluss sie vereinbart wird.
+      Bestehende Verträge werden durch die Veröffentlichung nicht geändert; für sie bleiben die
+      jeweils vereinbarten Vertragsunterlagen maßgeblich.
+    </p>
+    <p class="mt-card">
+      <a href="/docs/terms-and-conditions-2026-09-r1">Historische AGB-Fassung 2026-09-r1</a>
+    </p>
+
     <article>
       <p>
         Diese AGB regeln die Nutzung der Lernplattform Bootstrap Academy (bootstrap.academy) und der
@@ -123,7 +132,7 @@
       </p>
       <p>
         2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – das einmalige
-        Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8), das sofortige Auffüllen der
+        Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8), das zusätzliche Auffüllen der
         Herzen (Ziffer 9) sowie kostenpflichtige Webinare und Coachings (Ziffer 10); Kursleiter
         können Events auch kostenlos anbieten. Den Preis jeder Leistung zeigen wir Ihnen vor der
         Bestellung in MorphCoins und in Euro an (Ziffer 11).
@@ -192,14 +201,17 @@
         Nutzerkonto selbst fallen keine Entgelte an.
       </p>
       <p>
-        4.2 Sie können den Nutzungsvertrag jederzeit ohne Einhaltung einer Frist beenden, indem Sie
-        Ihr Konto in den Kontoeinstellungen löschen oder uns die Kündigung per E-Mail an
-        hallo@bootstrap.academy mitteilen. Bei einer Kündigung per E-Mail löschen wir Ihr Konto
-        innerhalb von 30 Tagen. Vor der Löschung weisen wir Sie auf noch vorhandene gekaufte
-        MorphCoins hin; beantragen Sie deren Erstattung bitte vor der Löschung (Ziffer 6.7). Löschen
-        Sie Ihr Konto während eines laufenden Premium-Zeitraums, erstatten wir den Preis für die
-        restliche Laufzeit nicht; Sie können die Löschung auch erst zum Ende der Laufzeit vornehmen.
-        Für gebuchte Events gilt Ziffer 10.5.
+        4.2 Sie können den kostenlosen Nutzungsvertrag jederzeit ohne Einhaltung einer Frist
+        beenden, indem Sie Ihr Konto in den Kontoeinstellungen löschen oder uns die Kündigung per
+        E-Mail an hallo@bootstrap.academy mitteilen. Bei einer Kündigung per E-Mail veranlassen wir
+        die Kontolöschung innerhalb von 30 Tagen; für noch erforderliche Unterlagen gilt Ziffer
+        17.2. Die Kontolöschung allein ist kein Verzicht auf bestehendes Guthaben,
+        Erstattungsansprüche oder bereits bezahlte Leistungsrechte und keine Stornierung oder
+        Widerrufserklärung für einzelne bezahlte Leistungen. Gesonderte Erklärungen bleiben
+        maßgeblich. Eine weitere automatische Premium-Verlängerung wird nicht veranlasst; bereits
+        bezahlte Zeiträume werden dadurch nicht verkürzt. Für die Wahrnehmung fortbestehender Rechte
+        oder eine gesonderte Vertragserklärung können Sie sich auch nach der Löschung an
+        hallo@bootstrap.academy wenden. Für Events gilt Ziffer 10.5.
       </p>
       <p>
         4.3 Wir können den Nutzungsvertrag mit einer Frist von vier Wochen in Textform (E-Mail an
@@ -243,14 +255,18 @@
         Lizenz nutzen.
       </p>
       <p>
-        5.3 Kursvideos werden von YouTube (Google) eingebettet und erst nach Ihrem Klick geladen.
-        Für die Wiedergabe gelten zusätzlich die Nutzungsbedingungen von YouTube; Einzelheiten
-        stehen in den Datenschutzhinweisen.
+        5.3 Je nach Kurs stellen wir Kursvideos als MP4-Dateien bereit oder betten sie von YouTube
+        (Google) ein. YouTube-Videos werden erst nach Ihrem Klick geladen. Für die Wiedergabe dieser
+        YouTube-Videos gelten zusätzlich die Nutzungsbedingungen von YouTube. Einzelheiten zur
+        Verarbeitung personenbezogener Daten bei der Videowiedergabe stehen in den
+        Datenschutzhinweisen.
       </p>
       <p>
-        5.4 Das Nutzungsrecht besteht, solange der Nutzungsvertrag besteht; für Inhalte, die Sie
-        über Premium nutzen, solange Premium läuft; für kostenpflichtig freigeschaltete Kurse nach
-        Ziffer 7.2.
+        5.4 Das Nutzungsrecht an den kostenlosen Kontofunktionen besteht für die Dauer des
+        Nutzungsvertrags. Für Premium gilt der tatsächlich bereitgestellte, bezahlte Zeitraum. Davon
+        zu unterscheiden ist der weitere Kurszugang nach Ziffern 7.2 und 7.4. Die Löschung
+        personenbezogener Daten allein beendet ein fortbestehendes kostenpflichtiges Nutzungsrecht
+        nicht.
       </p>
     </article>
 
@@ -271,9 +287,10 @@
         bestätigte E-Mail-Adresse und die Angabe Ihrer Rechnungsdaten: Als Verbraucher geben Sie
         mindestens an, dass Sie nicht als Unternehmer handeln, und Ihr Land; als Unternehmer geben
         Sie die vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer an
-        (Ziffer 22.3). Die MorphCoins werden Ihrem Guthaben gutgeschrieben, sobald PayPal uns die
-        Zahlung bestätigt hat; Sie erhalten eine Kaufbestätigung mit Rechnung per E-Mail (Ziffer
-        11).
+        (Ziffer 22.3). Die MorphCoins werden nach nachgewiesenem Zahlungseingang und
+        Vertragsbestätigung Ihrem Guthaben gutgeschrieben. Die Bestätigungs- und
+        Bereitstellungsfrist zeigen wir im konkreten Angebot an. Sie erhalten die
+        Vertragsbestätigung und nach der Gutschrift die Rechnung per E-Mail (Ziffer 11).
       </p>
       <p>
         6.3 Belohnungs-Coins vergeben wir für Beiträge zur Plattform: für von Ihnen erstellte
@@ -303,13 +320,13 @@
         Preis in MorphCoins und den Euro-Gegenwert zum Erwerbskurs an.
       </p>
       <p>
-        6.6 Kein Verfall durch Zeitablauf: MorphCoins verfallen nicht durch Zeitablauf.
-        Belohnungs-Coins werden nicht in Geld ausgezahlt; das gilt auch für Belohnungs-Coins, die
-        eine Vergütung darstellen (Ziffer 6.4). Löschen Sie Ihr Konto oder kündigen wir es
-        außerordentlich nach Ziffer 15.5, entfallen Belohnungs-Coins ersatzlos. Kündigen wir
-        ordentlich (Ziffer 4.3) oder stellen wir die Plattform ein, können Sie Belohnungs-Coins bis
-        zum Vertragsende für Leistungen der Plattform verwenden; darauf weisen wir Sie in der
-        Kündigung hin. Gekaufte MorphCoins behalten ihren Gegenwert nach Ziffer 6.7.
+        6.6 MorphCoins verfallen nicht durch Zeitablauf. Auch eine Kontolöschung oder eine Kündigung
+        lässt bestehendes Guthaben und daraus folgende Ansprüche nicht automatisch entfallen. Für
+        die Erstattung nicht verbrauchter gekaufter MorphCoins gilt Ziffer 6.7, für die Erstattung
+        eines Leistungspreises Ziffer 6.8. Aus der Gewährung von Belohnungs- Coins folgt für sich
+        allein kein Anspruch auf Auszahlung in Euro. Weitergehende vertragliche und gesetzliche
+        Ansprüche bleiben unberührt. Anfragen zur Abwicklung können Sie auch nach der Kontolöschung
+        an hallo@bootstrap.academy richten.
       </p>
       <p>
         6.7 Erstattung gekaufter MorphCoins: Nicht verbrauchte gekaufte MorphCoins erstatten wir
@@ -349,13 +366,16 @@
       <h2>7. Kostenpflichtige Kurse</h2>
       <p>
         7.1 Einzelne Kurse sind kostenpflichtig. Den Preis zeigen wir auf der Kursseite in
-        MorphCoins und in Euro an. Mit der Bestellung (Ziffer 11) schalten wir den Kurs sofort für
-        Ihr Nutzerkonto frei.
+        MorphCoins und in Euro an. Nach der Vertragsbestätigung schalten wir den Kurs innerhalb der
+        im konkreten Angebot angegebenen Bereitstellungsfrist für Ihr Nutzerkonto frei (Ziffer 11).
       </p>
       <p>
-        7.2 Die Freischaltung ist eine einmalige Leistung: Sie erhalten Zugriff auf den Kurs,
-        solange Ihr Nutzerkonto besteht, ohne weitere Kosten. Der Zugriff endet mit der Beendigung
-        des Nutzungsvertrags; bei einer Beendigung durch uns gilt Ziffer 4.4.
+        7.2 Für die Freischaltung eines einzelnen kostenpflichtigen Kurses zahlen Sie einmalig; für
+        den freigeschalteten Kurs entstehen keine weiteren Nutzungsentgelte. Eine Kontolöschung
+        allein entzieht Ihnen ein fortbestehendes Recht auf diesen Kurs nicht. Eine ausdrücklich
+        erklärte Beendigung des betreffenden Kursvertrags und deren Folgen richten sich nach dem
+        vereinbarten Vertrag und den gesetzlichen Vorschriften. Bei einer Beendigung durch uns gilt
+        insbesondere Ziffer 4.4; die Rechte nach Ziffern 7.3 und 16 bleiben unberührt.
       </p>
       <p>
         7.3 Wir dürfen Kursinhalte aktualisieren, verbessern und ergänzen und einzelne Lektionen
@@ -365,9 +385,11 @@
         vollständig ein, erstatten wir Ihnen den gezahlten Preis nach Ziffer 6.8.
       </p>
       <p>
-        7.4 Mit Premium (Ziffer 8) können Sie alle kostenpflichtigen Kurse während der
-        Premium-Laufzeit nutzen, ohne sie freizuschalten. Nach dem Ende von Premium endet dieser
-        Zugriff, sofern Sie den Kurs nicht gesondert freigeschaltet haben.
+        7.4 Mit Premium (Ziffer 8) können Sie alle kostenpflichtigen Kurse während der Premium-
+        Laufzeit nutzen, ohne sie einzeln freizuschalten. Bereits begonnene oder gesondert
+        freigeschaltete Kurse können Sie auch nach dem Ende von Premium weiter nutzen; eine
+        zusätzliche Freischaltung allein wegen des Premium-Endes ist dafür nicht erforderlich.
+        Dadurch verlängert sich der Premium-Zeitraum nicht.
       </p>
     </article>
 
@@ -383,9 +405,13 @@
       <p>
         8.2 Preis und Laufzeit: Premium kostet 1.000 MorphCoins (10,00 €) für einen Monat oder
         10.000 MorphCoins (100,00 €, entsprechend 8,33 € je Monat) für ein Jahr. Der Preis wird bei
-        der Bestellung im Voraus von Ihrem Guthaben abgebucht. Die Laufzeit beginnt mit der
-        Bestellung. Buchen Sie Premium, während ein Premium-Zeitraum läuft, verlängert sich die
-        Laufzeit um den gebuchten Zeitraum.
+        wirksamen Bestellung im Voraus von Ihrem Guthaben abgebucht. Die neue Laufzeit beginnt mit
+        der Bereitstellung nach Vertragsbestätigung, frühestens nach dem Ende eines bereits
+        bezahlten Premium-Zeitraums. Der vollständig gekaufte Kalenderzeitraum wird ab diesem Beginn
+        berechnet. Solange die Bereitstellung aussteht, wird keine neue Laufzeit verbraucht. Bereits
+        bezahlter Zugang und eine gesonderte Verlängerungsvereinbarung bleiben erhalten. Die Frist
+        für Vertragsbestätigung und Bereitstellung ergibt sich aus dem konkreten Angebot; die
+        tatsächlich zugeordnete Laufzeit können Sie in Ihrer Bestellübersicht herunterladen.
       </p>
       <p>
         8.3 Ende der Laufzeit: Premium endet automatisch mit Ablauf der Laufzeit, wenn Sie die
@@ -393,17 +419,31 @@
         Zeitraum hinaus gibt es nicht.
       </p>
       <p>
-        8.4 Automatische Verlängerung (optional): Bei der Bestellung und jederzeit danach auf der
-        Seite „Abonnement“ in Ihrem Konto können Sie die automatische Verlängerung ein- oder
-        ausschalten. Ist sie bei Ablauf der gebuchten Laufzeit eingeschaltet, verlängert sich
-        Premium auf unbestimmte Zeit: Wir buchen dann – bei Ablauf der Laufzeit, spätestens am
-        folgenden Tag oder bei Ihrer nächsten Nutzung der Plattform – für jeden weiteren Monat 1.000
-        MorphCoins (10,00 €) von Ihrem Guthaben ab; der Monat beginnt mit der Abbuchung. Ein
-        Jahreszeitraum verlängert sich also nicht um ein weiteres Jahr, sondern monatlich zum
-        Monatspreis; ein neues Jahr können Sie jederzeit gesondert buchen (Ziffer 8.2). Reicht Ihr
-        Guthaben nicht aus, findet keine Verlängerung statt: Premium endet, die automatische
-        Verlängerung wird abgeschaltet, und es entstehen keine Kosten. Sie sind nicht verpflichtet,
-        MorphCoins für eine Verlängerung nachzukaufen.
+        8.4 Automatische Verlängerung (optional): Nach einer Premium-Bestellung können Sie auf der
+        Seite „Abonnement“ eine monatliche automatische Verlängerung gesondert ausdrücklich
+        bestellen. Vorher zeigen wir Ihnen den Preis, die Verlängerungs- und Kündigungsregeln sowie
+        die geltenden Vertragsbedingungen an. Eine AGB-Zustimmung oder ein manueller Nachkauf
+        schaltet die Verlängerung nicht ein. Bisherige automatische Verlängerungen werden bei der
+        Umstellung auf dieses Verfahren ausgeschaltet; bereits bezahlte Premium-Zeiträume bleiben
+        erhalten. Ohne neue ausdrückliche Bestellung erfolgt keine weitere automatische Abbuchung.
+      </p>
+      <p>
+        Die neu bestellte Verlängerung läuft auf unbestimmte Zeit zum ausdrücklich vereinbarten
+        Monatspreis, derzeit 1.000 MorphCoins (10,00 €). Wir bestätigen die Vereinbarung mit
+        Vertragsbedingungen und Widerrufsbelehrung per E-Mail. Erst nach Versand dieser Bestätigung
+        und nach Ablauf des bereits bezahlten Zeitraums buchen wir für jeden weiteren Kalendermonat
+        den vereinbarten Preis vom vorhandenen Guthaben ab – bei Ablauf der Laufzeit, spätestens am
+        folgenden Tag oder bei Ihrer nächsten Nutzung. Jeder Monat beginnt mit der Abbuchung. Ist
+        vor dem bei Ihrer Verlängerungsbestellung bestehenden Laufzeitende keine Bestätigung
+        versandt, wird die automatische Verlängerung ausgeschaltet und es erfolgt keine spätere
+        Nachbelastung. Ein manueller Nachkauf verschiebt die nächste Abbuchung, verlängert aber
+        diese Versandfrist nicht und aktiviert eine beendete Verlängerung nicht erneut. Dafür ist
+        eine neue ausdrückliche Bestellung erforderlich. Änderungen unserer aktuellen Preise ändern
+        den bereits vereinbarten Verlängerungspreis nicht. Ein Jahreszeitraum wird nicht automatisch
+        erneut gebucht; ein neues Jahr können Sie gesondert bestellen (Ziffer 8.2). Reicht Ihr
+        Guthaben nicht aus, endet Premium, die automatische Verlängerung wird abgeschaltet, und es
+        entstehen keine weiteren Kosten. Sie sind nicht verpflichtet, MorphCoins für eine
+        Verlängerung nachzukaufen.
       </p>
       <p>
         8.5 Kündigung: Sie können Premium jederzeit kündigen – während der gebuchten Laufzeit zu
@@ -412,13 +452,19 @@
         Bestätigungsseite unter bootstrap.academy/vertrag-kuendigen (§ 312k BGB), auf der Seite
         „Abonnement“ in Ihrem Konto durch Ausschalten der automatischen Verlängerung oder per E-Mail
         an hallo@bootstrap.academy. Kündigen Sie über die Kündigungsseite, bestätigen wir Ihnen den
-        Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs sowie den Zeitpunkt, zu dem Premium
-        endet, sofort per E-Mail (§ 312k Abs. 4 BGB). Schalten Sie die automatische Verlängerung auf
-        der Seite „Abonnement“ aus, zeigt Ihnen diese Seite das Ende der Laufzeit an; eine Kündigung
-        per E-Mail bestätigen wir Ihnen in Textform. Für den laufenden, bereits bezahlten Zeitraum
-        erfolgt bei Ihrer Kündigung keine Erstattung. Das Recht zur außerordentlichen Kündigung aus
-        wichtigem Grund, Ihr Widerrufsrecht (siehe Widerrufsbelehrung) und Ihre Rechte bei Mängeln
-        (Ziffer 16.2) bleiben unberührt.
+        Inhalt Ihrer Kündigung, Datum und Uhrzeit ihres Zugangs sowie den von Ihnen gewünschten
+        Beendigungszeitpunkt sofort per E-Mail (§ 312k Abs. 4 BGB). Ohne Terminangabe gilt im
+        Zweifel der frühestmögliche Zeitpunkt. Bei einer ausdrücklich späteren ordentlichen
+        Kündigung endet die Verlängerungsvereinbarung zum ersten vertragsgemäßen Periodenende am
+        gewünschten Kalendertag (Europe/Berlin) oder danach. Ein noch nicht feststehendes
+        tatsächliches Periodenende und die Vertragszuordnung bestätigen wir gesondert über einen
+        verifizierten Kontakt; die rechtliche Wirkung hängt nicht von unserer Bearbeitung ab. Eine
+        ausgeschaltete Verlängerung wird durch die Kündigung nicht erneut aktiviert. Schalten Sie
+        die automatische Verlängerung auf der Seite „Abonnement“ aus, zeigt Ihnen diese Seite das
+        Ende der Laufzeit an; eine Kündigung per E-Mail bestätigen wir Ihnen in Textform. Für den
+        laufenden, bereits bezahlten Zeitraum erfolgt bei Ihrer Kündigung keine Erstattung. Das
+        Recht zur außerordentlichen Kündigung aus wichtigem Grund, Ihr Widerrufsrecht (siehe
+        Widerrufsbelehrung) und Ihre Rechte bei Mängeln (Ziffer 16.2) bleiben unberührt.
       </p>
       <p>
         8.6 Wir können Premium ordentlich nur zum Ende der laufenden Laufzeit kündigen. Stellen wir
@@ -440,12 +486,17 @@
       <p>
         9.2 Ihre Herzen werden täglich um 00:00 Uhr UTC (01:00 Uhr MEZ, 02:00 Uhr MESZ) automatisch
         und kostenlos vollständig aufgefüllt. Sie können die Herzen außerdem jederzeit für 50
-        MorphCoins (0,50 €) sofort vollständig auffüllen; die Bestellung folgt Ziffer 11, die
-        Leistung wird sofort erbracht.
+        MorphCoins (0,50 €) zusätzlich auffüllen. Im konkreten Angebot zeigen wir die bestellte
+        Menge in Herzen, den Höchstbestand und die Bereitstellungsfrist an. Die Auffüllung erfolgt
+        nach Vertragsbestätigung nach Ziffer 11. Passt die bestellte Menge wegen einer inzwischen
+        erfolgten kostenlosen Auffüllung nicht mehr in den Höchstbestand, bleibt die bezahlte, noch
+        nicht erbrachte Bestellung zur Klärung erhalten; Ihre gesetzlichen und vertraglichen
+        Ansprüche werden dadurch nicht eingeschränkt.
       </p>
       <p>
-        9.3 Herzen haben keinen Geldwert, sind nicht übertragbar und werden nicht erstattet oder
-        ausgezahlt. Für Premium gilt Ziffer 8.1.
+        9.3 Herzen haben keinen eigenen Geldwert und sind nicht übertragbar. Ihre Rechte bei
+        Widerruf, nicht erbrachter oder mangelhafter bezahlter Auffüllung bleiben unberührt. Für
+        Premium gilt Ziffer 8.1.
       </p>
     </article>
 
@@ -462,7 +513,10 @@
       </p>
       <p>
         10.2 Buchung: Kostenpflichtige Termine buchen Sie mit MorphCoins nach Ziffer 11; der Preis
-        wird bei der Buchung abgebucht. Sie erhalten eine Buchungsbestätigung per E-Mail. Der Termin
+        wird bei der wirksamen Buchung abgebucht. Sie erhalten eine Vertragsbestätigung per E-Mail.
+        Den Buchungszugang stellen wir nach Vertragsbestätigung vor dem vereinbarten Beginn bereit.
+        Eine ausstehende oder verspätete Bereitstellung gilt nicht als Durchführung des Termins; die
+        ursprüngliche Buchung, Zahlung und Ihre Ansprüche bleiben zur Klärung erhalten. Der Termin
         findet online statt: Coachings in einem Videokonferenzraum bei Jitsi Meet (meet.jit.si,
         betrieben von 8x8, Inc.), Webinare über den vom Kursleiter angegebenen Konferenzlink. Sie
         benötigen dafür ein Gerät mit Kamera, Mikrofon und Internetverbindung.
@@ -508,11 +562,16 @@
         Ersatztermin an, können Sie diesen wahrnehmen oder die Erstattung wählen.
       </p>
       <p>
-        10.5 Löschen Sie Ihr Konto, werden Ihre gebuchten Termine storniert, ohne dass wir den Preis
-        erstatten, weil Ihr Guthaben mit dem Konto gelöscht wird. Stornieren Sie Termine, die Sie
-        nicht mehr wahrnehmen möchten, deshalb vor der Löschung nach Ziffer 10.3, und beantragen Sie
-        die Erstattung gekaufter MorphCoins nach Ziffer 6.7 vor der Löschung. Termine, die Sie als
-        Kursleiter anbieten, werden abgesagt; für die Teilnehmer gilt Ziffer 10.4.
+        10.5 Die Kontolöschung allein ist keine Stornierungs- oder Widerrufserklärung für einzelne
+        gebuchte Events und führt nicht zum Verzicht auf den gezahlten Preis oder fortbestehende
+        Leistungs- und Erstattungsansprüche. Möchten Sie eine Buchung zugleich beenden, teilen Sie
+        uns dies ausdrücklich mit; für eine gewöhnliche Stornierung gilt Ziffer 10.3, für eine
+        Absage durch uns oder den Kursleiter Ziffer 10.4. Ein Widerruf und andere Beendigungsgründe
+        werden nach ihren jeweiligen Voraussetzungen behandelt. Für die weitere Wahrnehmung Ihrer
+        Rechte können Sie sich auch nach der Kontolöschung an hallo@bootstrap.academy wenden. Können
+        von Ihnen als Kursleiter angebotene Termine nicht mehr stattfinden, werden sie abgesagt; für
+        die Teilnehmer gilt Ziffer 10.4. Ihre eigenen bereits entstandenen Ansprüche werden dadurch
+        nicht automatisch aufgehoben.
       </p>
       <p>
         10.6 Während eines Events dürfen Sie keine Aufzeichnungen anfertigen, es sei denn, alle
@@ -532,23 +591,34 @@
         11.1 Ablauf einer Bestellung: Sie wählen die Leistung aus (MorphCoins, Kurs, Premium,
         Auffüllen der Herzen, Event). Vor der Bestellung zeigen wir Ihnen die wesentlichen Merkmale
         der Leistung, den Gesamtpreis in MorphCoins und in Euro einschließlich Umsatzsteuer, bei
-        Premium die Laufzeit und die Einstellung der automatischen Verlängerung sowie die Hinweise
-        zum Widerrufsrecht an. Als Verbraucher geben Sie dort auch die in der Widerrufsbelehrung
-        beschriebenen Erklärungen zur sofortigen Ausführung ab. Ihre Eingaben können Sie bis zum
-        Klick auf die Bestellschaltfläche korrigieren oder die Bestellung abbrechen. Mit dem Klick
-        auf die Schaltfläche „zahlungspflichtig bestellen“ geben Sie ein verbindliches Angebot ab.
+        Premium die Laufzeit und die gesonderte automatische Verlängerung sowie die Hinweise zum
+        Widerrufsrecht und die Bestätigungs- und Bereitstellungsfrist an. Sie nehmen das konkrete
+        Angebot einschließlich seiner AGB und Widerrufsinformationen an und verlangen gesondert den
+        Beginn vor Ablauf der Widerrufsfrist. Der genaue Wortlaut steht im Angebot und in der
+        Widerrufsbelehrung; eine Kenntnisbestätigung über einen vorzeitigen Verlust des
+        Widerrufsrechts wird bei diesen Einzelbestellungen nicht verlangt oder unterstellt. Ihre
+        Eingaben können Sie bis zum Klick auf die Bestellschaltfläche korrigieren oder die
+        Bestellung abbrechen. Mit „zahlungspflichtig bestellen“ übermitteln Sie Ihre verbindliche
+        Annahme des konkreten Angebots.
       </p>
       <p>
-        11.2 Vertragsschluss: Beim Kauf von MorphCoins kommt der Vertrag zustande, wenn wir die
-        MorphCoins nach Bestätigung der Zahlung durch PayPal Ihrem Guthaben gutschreiben. Bei
-        Leistungen, die Sie mit MorphCoins bezahlen, kommt der Vertrag zustande, wenn wir die
-        Leistung freischalten oder die Buchung bestätigen; das geschieht unmittelbar nach der
-        Bestellung. Beim Kauf von MorphCoins erhalten Sie eine Kaufbestätigung an Ihre hinterlegte
-        E-Mail-Adresse, die den Vertragsinhalt, Ihre Erklärungen zum Widerrufsrecht, die Rechnung,
-        diese AGB und die Widerrufsbelehrung enthält (§ 312f BGB). Beim Freischalten eines Kurses
-        und bei der Buchung eines Events erhalten Sie eine Bestätigungs-E-Mail; Premium und das
-        Auffüllen der Herzen werden sofort ausgeführt und in Ihrem Konto angezeigt. Ihre
-        Bestelldaten speichern wir in Ihrem Nutzerkonto.
+        11.2 Vertragsschluss und Bereitstellung: Der Vertrag kommt mit Eingang Ihrer Annahme des
+        noch gültigen konkreten Angebots zustande, sofern dessen Bestellvoraussetzungen erfüllt
+        sind. Eine abgelehnte Bestellung, etwa wegen eines abgelaufenen Angebots oder fehlenden
+        MorphCoin-Guthabens, führt zu keiner Abbuchung oder späteren automatischen Bestellung.
+        Vertragsschluss, Zahlung und Bereitstellung sind getrennte Schritte. Wir senden an Ihre
+        bestätigte E-Mail-Adresse die Vertragsbestätigung mit dem konkreten Vertragsinhalt, Ihren
+        tatsächlich abgegebenen Erklärungen sowie den vereinbarten AGB und Widerrufsinformationen
+        als unveränderlichen Kopien. Diese Dokumente und die tatsächliche Bereitstellung sind auch
+        in Ihrer Bestellübersicht persönlich abrufbar. Die neue Leistung wird erst nach
+        Vertragsbestätigung bereitgestellt; bei MorphCoins ist zusätzlich nachgewiesener
+        Zahlungseingang erforderlich. Die im Angebot vereinbarte Bestätigungs- und
+        Bereitstellungsfrist läuft ab der wirksamen Bestellung, bei Events spätestens bis zum
+        vereinbarten Beginn. Nach Überschreiten dieser Frist wird eine noch nicht bereitgestellte
+        Leistung nicht automatisch nachgeholt. Bestellung, tatsächliche Zahlung und Ihre Ansprüche
+        bleiben zur Klärung erhalten; dies bedeutet weder eine bereits erfolgte Erstattung noch
+        einen Verzicht auf Ihre Rechte. Bei Verbindungsproblemen rufen Sie die ursprüngliche
+        Bestellung in der Bestellübersicht auf; ein erneuter Aufruf bestellt nicht nochmals.
       </p>
       <p>
         11.3 Preise: Alle Euro-Preise verstehen sich einschließlich der gesetzlichen Umsatzsteuer
@@ -679,76 +749,146 @@
         versichern, dass Sie über die erforderlichen Rechte an Ihren Nutzerinhalten verfügen.
       </p>
       <p>
-        14.3 Beschränkungen für Nutzerinhalte: Für Nutzerinhalte gelten die Regeln in Ziffer 13.2.
-        Inhalte, die gegen diese Regeln oder gegen Gesetze verstoßen, entfernen wir oder schränken
-        ihre Sichtbarkeit ein; daneben können Maßnahmen nach Ziffer 15 folgen. Bei allen Maßnahmen
-        gehen wir sorgfältig, objektiv und verhältnismäßig vor und berücksichtigen Ihre Rechte,
-        insbesondere die Meinungsfreiheit.
-      </p>
-      <p>14.4 So moderieren wir:</p>
-      <ul>
-        <li>
-          Meldungen: Andere Nutzer können von Ihnen erstellte Aufgaben über die Meldefunktion
-          melden; jede Person kann uns rechtswidrige Inhalte nach Ziffer 14.5 melden. Eine über die
-          Meldefunktion gemeldete Aufgabe wird bis zur Prüfung vorläufig ausgeblendet. Meldungen
-          prüft ein Mensch aus unserem Team; erweist sich eine Meldung als unbegründet, wird die
-          Aufgabe wieder eingeblendet.
-        </li>
-        <li>
-          Automatische Maßnahmen: Eine von Nutzern erstellte Aufgabe kann außerdem automatisch
-          ausgeblendet und uns zur Prüfung vorgelegt werden, wenn sie mindestens zehn negative und
-          mehr negative als positive Bewertungen erhalten hat. Die Ausblendung ist vorläufig; die
-          endgültige Entscheidung trifft ein Mensch. Weitere automatisierte Entscheidungen über
-          Inhalte oder Konten treffen wir nicht.
-        </li>
-        <li>
-          Maßnahmen: Je nach Schwere und Wiederholung eines Verstoßes kommen in Betracht: ein
-          Hinweis oder eine Verwarnung; das Entfernen oder Ausblenden des Inhalts; die befristete
-          Sperre einzelner Funktionen (derzeit: Erstellen von Aufgaben oder Abgeben von Meldungen);
-          die befristete oder dauerhafte Sperrung des Kontos; die außerordentliche Kündigung (Ziffer
-          15).
-        </li>
-        <li>
-          Dauer von Funktionssperren: Verhängen wir eine Sperre bei der Bearbeitung einer Meldung,
-          folgt ihre Dauer einer festen Staffel nach der Zahl Ihrer bisherigen Sperren derselben
-          Art: 3 Tage, dann 7 Tage, dann 30 Tage, danach unbefristet. In allen anderen Fällen legen
-          wir die Dauer nach Schwere und Wiederholung des Verstoßes fest (Ziffer 15.2). Ob eine
-          Sperre verhängt wird, entscheidet ein Mensch; auf Ihre Beschwerde hin prüft ein Mensch
-          auch die Dauer.
-        </li>
-      </ul>
-      <p>
-        14.5 Meldung rechtswidriger Inhalte: Wenn Sie der Ansicht sind, dass ein Inhalt auf der
-        Plattform rechtswidrig ist, melden Sie ihn per E-Mail an hallo@bootstrap.academy mit
-        folgenden Angaben: eine Begründung, warum der Inhalt rechtswidrig ist; die genaue Fundstelle
-        (Link) des Inhalts; Ihr Name und Ihre E-Mail-Adresse (außer bei Meldungen, die sexuellen
-        Missbrauch von Kindern betreffen); eine Erklärung, dass Sie in gutem Glauben davon überzeugt
-        sind, dass Ihre Angaben richtig und vollständig sind. Wir bestätigen Ihnen den Eingang
-        unverzüglich, prüfen die Meldung zeitnah, sorgfältig, objektiv und frei von Willkür, teilen
-        Ihnen unsere Entscheidung mit und weisen dabei auf die Möglichkeit hin, die Entscheidung
-        nach Ziffer 14.7 überprüfen zu lassen.
+        14.3 Beschränkungen für Nutzerinhalte: Es gelten die Regeln in Ziffer 13.2 und die
+        gesetzlichen Vorschriften. Von Nutzern erstellte Aufgaben und die dazu vorgegebenen Lösungen
+        dürfen außerdem keine wesentlichen sachlichen Fehler aufweisen; Aufgaben müssen einen
+        nachvollziehbaren Bezug zum angegebenen Skill haben. Beanstandungen erläutern wir konkret.
+        Bloßes Missfallen oder eine negative Bewertung belegen keinen Verstoß.
       </p>
       <p>
-        14.6 Begründung unserer Entscheidungen: Entfernen oder blenden wir einen Nutzerinhalt nach
-        Prüfung durch einen Menschen aus, sperren wir Funktionen oder Ihr Konto oder kündigen wir
-        außerordentlich, informieren wir Sie spätestens mit der Maßnahme per E-Mail über: die
-        Maßnahme und ihre Dauer; die Tatsachen und Umstände, auf die wir uns stützen, einschließlich
-        einer etwaigen Meldung; ob automatisierte Mittel beteiligt waren; die Rechtsvorschrift oder
-        die Ziffer dieser AGB, gegen die verstoßen wurde, mit einer Erläuterung; sowie Ihre
-        Möglichkeiten, die Entscheidung überprüfen zu lassen (Beschwerde nach Ziffer 14.7 und der
-        Rechtsweg zu den Gerichten). Bei einer vorläufigen Ausblendung nach Ziffer 14.4 erhalten Sie
-        diese Information, sobald ein Mensch entschieden hat, dass die Aufgabe ausgeblendet bleibt
-        oder entfernt wird. Bei irreführenden kommerziellen Inhalten in großem Umfang (Spam) kann
-        die Begründung entfallen (Art. 17 Abs. 2 DSA).
+        Bei behebbaren Qualitätsmängeln berücksichtigen wir eine Korrektur als milderes Mittel. Sie
+        können uns eine Korrektur zur Umsetzung vorschlagen oder die Aufgabe löschen und eine
+        korrigierte Aufgabe neu erstellen. Ein sachlicher Fehler allein rechtfertigt keine Sperre
+        Ihrer Erstellerfunktion. Für weitergehende Maßnahmen gelten insbesondere die Voraussetzungen
+        und die Verhältnismäßigkeit nach Ziffer 15.
       </p>
       <p>
-        14.7 Überprüfung: Gegen jede Maßnahme nach den Ziffern 14.3 bis 14.6 und 15 sowie gegen
-        unsere Entscheidung über Ihre Meldung können Sie innerhalb von sechs Monaten kostenlos
-        Beschwerde per E-Mail an hallo@bootstrap.academy einlegen und Ihren Standpunkt darlegen.
-        Über die Beschwerde entscheidet ein Mensch, der an der ursprünglichen Entscheidung nicht
-        beteiligt war, soweit dies bei der Größe unseres Teams möglich ist. Wir antworten
-        unverzüglich in Textform und heben die Maßnahme auf, wenn sie nicht gerechtfertigt war. Der
-        Rechtsweg bleibt Ihnen unbenommen.
+        Eine vertragliche Regel wenden wir nur an, wenn ihre Geltung für den betroffenen Inhalt und
+        den maßgeblichen Zeitpunkt belegt ist. Die Annahme der neuesten AGB-Fassung für ein Konto
+        allein genügt dafür nicht. Wir berücksichtigen Ihre Rechte, insbesondere die
+        Meinungsfreiheit.
+      </p>
+      <p>
+        14.4 So moderieren wir: Meldungen und Entscheidungen werden als zusammengehöriger Fall
+        dokumentiert. Hinreichend bestimmte Meldungen eines wesentlichen sachlichen Fehlers oder
+        eines fehlenden Skill-Bezugs können eine vorläufige automatische Ausblendung auslösen.
+        Dasselbe gilt, wenn eine Aufgabe mindestens zehn negative und mehr negative als positive
+        Bewertungen erhält. Diese automatischen Maßnahmen setzen voraus, dass die einschlägige Regel
+        und das automatische Verfahren für den konkreten Inhalt nachweislich gelten. Fehlt dieser
+        Nachweis, entscheidet zunächst ein Mensch, ob eine Beschränkung gerechtfertigt ist.
+      </p>
+      <p>
+        Andere oder unzureichend bestimmte Meldungen führen zunächst zur menschlichen Prüfung.
+        Dringende Hinweise auf rechtswidrige Inhalte oder Gefahren werden ihrer Dringlichkeit
+        entsprechend behandelt. Eine Meldung oder ein Bewertungsergebnis ist noch keine menschliche
+        Feststellung eines Verstoßes.
+      </p>
+      <p>
+        Jede vorläufige Ausblendung wird menschlich überprüft. Der prüfende Mensch entscheidet über
+        Aufhebung, Fortbestand, Korrektur oder Entfernung und begründet das Ergebnis. Wird die
+        Maßnahme aufgehoben, entfällt die Beschränkung dieses Falls. Andere selbständig begründete
+        Beschränkungen bleiben bestehen; von Ihnen zurückgezogene Inhalte werden nicht gegen Ihren
+        Willen erneut veröffentlicht.
+      </p>
+      <p>
+        Mögliche Maßnahmen sind Hinweise oder Verwarnungen, Ausblenden oder Entfernen von Inhalten,
+        Sperren der Ersteller- oder Meldefunktion, Kontosperren und eine außerordentliche Kündigung
+        nach Ziffer 15. Eine erfolglose Meldung allein rechtfertigt keine Meldesperre. Die
+        öffentlichen Wege für Meldungen rechtswidriger Inhalte und Beschwerden bleiben erreichbar.
+      </p>
+      <p>
+        Über Funktions- und Kontosperren entscheidet ein Mensch. Bei Funktionssperren aus der
+        Bearbeitung einer Meldung gilt grundsätzlich die Staffel von 3, dann 7, dann 30 Tagen und
+        anschließend einer unbefristeten Sperre, abhängig von früheren Sperren derselben Art.
+        Aufgehobene Sperren zählen nicht mit. Eine unklare historische Grundlage wird nicht als
+        nachgewiesen behandelt. Die Staffel ersetzt weder die Prüfung, ob eine Sperre gerechtfertigt
+        ist, noch die Prüfung ihrer Verhältnismäßigkeit und Dauer nach Ziffer 15.2. Soweit Art. 23
+        DSA anwendbar ist, gelten dessen zusätzliche Anforderungen, insbesondere eine vorherige
+        Warnung, eine angemessene Befristung und eine Einzelfallprüfung von Häufigkeit, Schwere,
+        Folgen und erkennbarer Absicht.
+      </p>
+      <p>
+        14.5 Meldung rechtswidriger Inhalte: Sie können rechtswidrige Inhalte auch ohne Nutzerkonto
+        per E-Mail an hallo@bootstrap.academy melden. Bitte nennen Sie die genaue Fundstelle,
+        insbesondere einen Link, erläutern Sie die vermutete Rechtswidrigkeit und erklären Sie, dass
+        Sie nach bestem Wissen von der Richtigkeit und Vollständigkeit Ihrer Angaben überzeugt sind.
+        Geben Sie Ihren Namen und Ihre E-Mail-Adresse an; dies ist bei Meldungen zu sexuellem
+        Missbrauch von Kindern nicht erforderlich.
+      </p>
+      <p>
+        Soweit geeignete elektronische Kontaktangaben vorliegen, bestätigen wir den Eingang
+        unverzüglich und teilen Ihnen unsere Entscheidung ohne unangemessene Verzögerung mit. Wir
+        bearbeiten Meldungen zeitnah, sorgfältig, objektiv und frei von Willkür. Unsere Mitteilung
+        erläutert das Ergebnis, den Einsatz automatisierter Mittel bei Bearbeitung oder Entscheidung
+        und die verfügbaren Überprüfungsmöglichkeiten nach Ziffer 14.7. Dies gilt auch, wenn wir
+        keine Maßnahme ergreifen.
+      </p>
+      <p>
+        14.6 Begründung unserer Entscheidungen: Für eine Beschränkung erhalten Sie eine klare, auf
+        Ihren Fall bezogene Begründung spätestens mit ihrem Wirksamwerden im Moderationsbereich
+        unter <a href="/moderation">/moderation</a>. Das gilt auch für vorläufige automatische
+        Ausblendungen. An eine uns bekannte geeignete elektronische Kontaktadresse senden wir
+        zusätzlich eine Benachrichtigung.
+      </p>
+      <p>
+        Die Begründung nennt den betroffenen Inhalt, die Maßnahme, ihren Umfang und ihre Dauer oder
+        die Voraussetzungen ihres Endes, die maßgeblichen Tatsachen und Umstände, den Einsatz
+        automatisierter Mittel sowie die einschlägige Rechtsvorschrift oder anwendbare AGB-Regel mit
+        einer fallbezogenen Erläuterung. Bei einer automatischen vorläufigen Maßnahme benennen wir
+        den Auslöser und stellen klar, dass noch keine menschliche Feststellung eines Verstoßes
+        vorliegt. Außerdem erläutern wir Ihre Überprüfungsmöglichkeiten.
+      </p>
+      <p>
+        Angaben meldender Personen und private Unterlagen übernehmen wir nicht ungeprüft in Ihre
+        Begründung. Wir stellen die für Ihre Verteidigung erforderlichen Tatsachen verständlich dar
+        und berücksichtigen dabei die Rechte anderer Personen. Spätere Entscheidungen und Änderungen
+        werden gesondert mitgeteilt; frühere Entscheidungen werden dadurch nicht nachträglich
+        umgeschrieben.
+      </p>
+      <p>
+        Für Maßnahmen aufgrund behördlicher oder gerichtlicher Anordnungen gelten die hierfür
+        vorgeschriebenen Informations- und Rechtsbehelfsregeln. Eine interne Überprüfung kann eine
+        verbindliche Anordnung nicht aufheben.
+      </p>
+      <p>
+        14.7 Überprüfung und Zugang: Gegen Maßnahmen nach den Ziffern 14.3 bis 14.6 und 15 sowie
+        gegen unsere Entscheidung über Ihre Meldung können Sie kostenlos im Moderationsbereich unter
+        <a href="/moderation">/moderation</a> oder per E-Mail an hallo@bootstrap.academy Beschwerde
+        einlegen und Ihren Standpunkt darlegen. Diese Möglichkeit besteht mindestens sechs
+        Kalendermonate ab dem Tag, an dem Sie über die betreffende Entscheidung informiert worden
+        sind. Das bloße Anlegen einer Entscheidung oder ein Versandversuch setzt diese Frist nicht
+        in Gang. Beschwerden werden nicht allein aufgrund eines automatisch berechneten Fristablaufs
+        abgewiesen.
+      </p>
+      <p>
+        Eine fachkundige Person überprüft die Entscheidung und Ihre Einwände; die
+        Beschwerdeentscheidung erfolgt nicht ausschließlich automatisiert. Soweit bei der Größe
+        unseres Teams möglich, ist diese Person an der ursprünglichen Entscheidung nicht beteiligt
+        gewesen. Wir bearbeiten Beschwerden zeitnah, sorgfältig, diskriminierungsfrei und ohne
+        Willkür und teilen Ihnen das begründete Ergebnis ohne unangemessene Verzögerung in Textform
+        mit. Eine nicht gerechtfertigte Maßnahme heben wir ohne unangemessene Verzögerung auf oder
+        passen sie an.
+      </p>
+      <p>
+        Der Moderationsbereich bleibt auch bei einer Kontosperre und ohne Zustimmung zu einer neuen
+        AGB-Fassung erreichbar. Für ein bestehendes Konto können Sie Ihre Berechtigung durch die
+        normale Anmeldung oder einen gesonderten Zugang mit Passwort, gegebenenfalls
+        Zwei-Faktor-Nachweis, oder einem bereits verknüpften Anmeldedienst nachweisen. Der
+        gesonderte Zugang hebt eine Kontosperre nicht auf und legt kein neues Konto an.
+      </p>
+      <p>
+        Nach einer Kontolöschung und als meldende Person ohne Konto können Sie einen Zugang zum
+        jeweiligen Fall an eine aktuelle Kontaktadresse anfordern. Vor der Freigabe prüfen wir Ihre
+        Berechtigung. Ein solcher Fallzugang berechtigt nur zum jeweiligen Fall; für kontobezogene
+        Rechte ist ein entsprechender weitergehender Berechtigungsnachweis erforderlich. Die Rechte
+        nach Ziffer 15.4 bleiben bestehen.
+      </p>
+      <p>
+        Gesetzliche Beschwerde- und Rechtsschutzmöglichkeiten, einschließlich des Rechtswegs zu den
+        Gerichten, bleiben unberührt. Sie müssen unsere interne Überprüfung dafür nicht zuvor
+        ausschöpfen. Soweit Art. 21 DSA anwendbar ist, können Sie sich auch an eine zuständige
+        zertifizierte außergerichtliche Streitbeilegungsstelle wenden; die für Ihren Fall
+        verfügbaren Möglichkeiten nennen wir in der Entscheidung.
       </p>
       <p>
         14.8 Zentrale Kontaktstelle nach Art. 11 und Art. 12 der Verordnung (EU) 2022/2065 (Digital
@@ -784,8 +924,11 @@
         Anteil nach Ziffer 6.8. Gebuchte Events, an denen Sie wegen der Sperre nicht teilnehmen
         können, erstatten wir. Auch während einer Sperre Ihres Kontos, während der Sie sich nicht
         anmelden können, stellen wir Ihnen auf Anfrage Ihre Daten in einem maschinenlesbaren Format
-        bereit (Ziffer 17.3) und löschen Ihr Konto auf Ihre Anfrage per E-Mail (Ziffer 4.2); für
-        gekaufte MorphCoins gilt Ziffer 6.7.
+        bereit (Ziffer 17.3). Nach entsprechendem Berechtigungsnachweis sind Export, ursprüngliche
+        Bestellunterlagen und Kontolöschung auch über den gesonderten Rechtezugang unter
+        <a href="/moderation">/moderation</a> erreichbar. Die öffentlichen Kündigungs- und
+        Widerrufswege bleiben offen. Wir löschen Ihr Konto auch auf Ihre Anfrage per E-Mail (Ziffer
+        4.2); für gekaufte MorphCoins gilt Ziffer 6.7.
       </p>
       <p>
         15.5 Bei einem schweren Verstoß oder bei wiederholten Verstößen trotz Verwarnung können wir
@@ -850,11 +993,14 @@
         unter bootstrap.academy/docs/privacy. Sie sind nicht Teil dieser AGB.
       </p>
       <p>
-        17.2 Löschen Sie Ihr Konto selbst, werden Ihre Kontodaten sofort gelöscht. Kündigen Sie per
-        E-Mail oder endet der Vertrag auf andere Weise, löschen wir Ihre Daten innerhalb von 30
-        Tagen nach Vertragsende. Rechnungen und Gutschriften sowie eine Schlussabrechnung nach
-        Ziffer 6.7 bewahren wir wegen gesetzlicher Pflichten acht Jahre auf; Datensicherungen werden
-        nach den in den Datenschutzhinweisen genannten Fristen überschrieben.
+        17.2 Bei einer Kontolöschung entfernen wir nicht mehr benötigte Konto-, Profil- und
+        Nutzungsdaten. Soweit Unterlagen für fortbestehende Verträge, eine konkret einschlägige
+        gesetzliche Aufbewahrungspflicht oder die Geltendmachung, Ausübung oder Verteidigung von
+        Rechtsansprüchen noch erforderlich sind, bewahren wir sie zweckgebunden und im
+        erforderlichen Umfang gesondert auf. Dazu können ursprüngliche Erklärungen, Vertrags- und
+        Zahlungsunterlagen sowie notwendige Zuordnungs- und Kontaktangaben gehören. Eine
+        Kontolöschung allein macht diese Unterlagen nicht anonym. Einzelheiten stehen in den
+        Datenschutzhinweisen.
       </p>
       <p>
         17.3 Ihre Daten können Sie jederzeit in den Kontoeinstellungen („Meine Daten herunterladen“)
@@ -890,9 +1036,9 @@
         Erstattungsansprüche nach diesen AGB werden durch diese Ziffer nicht eingeschränkt.
       </p>
       <p>
-        18.5 Für Nutzerinhalte und für Inhalte, die Kursleiter in Events vermitteln, haften wir nach
-        den gesetzlichen Vorschriften für Hostingdienste. Wir prüfen diese Inhalte nicht vorab,
-        sondern nach einer Meldung (Ziffer 14).
+        18.5 Unsere Verantwortung für Nutzerinhalte richtet sich nach den gesetzlichen Vorschriften.
+        Das Melde- und Prüfverfahren beschreibt Ziffer 14. Unsere eigenen vertraglichen Pflichten
+        als Anbieter von Events nach Ziffer 10 bleiben hiervon unberührt.
       </p>
     </article>
 
@@ -918,29 +1064,25 @@
       <p>
         20.1 Wir können diese AGB für die Zukunft ändern. Über jede Änderung informieren wir Sie
         mindestens sechs Wochen vor dem Wirksamwerden per E-Mail an Ihre hinterlegte Adresse und auf
-        der Plattform. In der Mitteilung nennen wir die geänderten Regelungen, den Zeitpunkt des
-        Wirksamwerdens und Ihre Rechte nach dieser Ziffer.
+        der Plattform. In der Mitteilung nennen wir die geänderten Regelungen, den vorgesehenen
+        Zeitpunkt der Änderung und Ihre Rechte nach dieser Ziffer.
       </p>
       <p>
         20.2 Änderungen, die Ihre Zustimmung erfordern: Änderungen, die den Leistungsumfang der
         Plattform oder kostenpflichtiger Leistungen, Preise, den Erwerbskurs, die Regeln für
         MorphCoins, Premium, Herzen oder Events, die Laufzeit- und Kündigungsregeln, die Haftung
-        oder diese Ziffer betreffen, werden nur wirksam, wenn Sie ihnen ausdrücklich zustimmen. Wir
-        legen Ihnen die neue Fassung bei Ihrer nächsten Anmeldung vor; Sie können sie annehmen oder
-        ablehnen. Ihr Schweigen gilt nicht als Zustimmung. Lehnen Sie die neue Fassung ab, gilt für
-        bestehende Verträge die bisherige Fassung weiter; neue kostenpflichtige Leistungen können
-        Sie dann nur zu den bei der Bestellung geltenden Bedingungen erwerben (Ziffer 20.4). Wir
-        können den Nutzungsvertrag in diesem Fall nach Ziffer 4.3 kündigen; Ziffer 4.4 gilt.
+        oder diese Ziffer betreffen, werden nur wirksam, wenn Sie ihnen ausdrücklich zustimmen.
+        Soweit wir Ihnen eine Änderung eines bestehenden Vertrags anbieten, können Sie das Angebot
+        ausdrücklich annehmen oder ablehnen. Ihr Schweigen gilt nicht als Zustimmung. Lehnen Sie die
+        neue Fassung ab, gilt für bestehende Verträge die bisherige Fassung weiter; neue
+        kostenpflichtige Leistungen können Sie dann nur zu den bei der Bestellung geltenden
+        Bedingungen erwerben (Ziffer 20.4). Wir können den Nutzungsvertrag in diesem Fall nach
+        Ziffer 4.3 kündigen; Ziffer 4.4 gilt.
       </p>
       <p>
-        20.3 Änderungen ohne Ihre ausdrückliche Zustimmung: Nur bei rein redaktionellen Änderungen,
-        die den Inhalt nicht verändern, bei Änderungen, die wegen einer Gesetzesänderung oder einer
-        gerichtlichen oder behördlichen Entscheidung erforderlich sind, und bei Änderungen, die
-        ausschließlich zu Ihrem Vorteil sind, gilt: Widersprechen Sie der Änderung nicht bis zum
-        Wirksamwerden in Textform, gilt sie als angenommen. Auf diese Folge weisen wir Sie in der
-        Mitteilung besonders hin. Widersprechen Sie, können Sie den Nutzungsvertrag bis zum
-        Wirksamwerden ohne Frist kündigen; wir können ihn nach Ziffer 4.3 kündigen, wenn uns die
-        Fortsetzung mit der bisherigen Fassung nicht zumutbar ist. Ziffer 4.4 gilt.
+        20.3 Ihr Schweigen oder die bloße weitere Nutzung der Plattform gilt nicht als Annahme einer
+        geänderten Vertragsfassung. Die Veröffentlichung einer neuen Fassung ändert bestehende
+        Verträge nicht.
       </p>
       <p>
         20.4 Für jede kostenpflichtige Bestellung gilt die Fassung dieser AGB, die wir Ihnen bei der
@@ -1002,7 +1144,7 @@
     </article>
 
     <article>
-      <h2>Stand: September 2026</h2>
+      <h2>Fassung: 2026-09-r2</h2>
     </article>
   </main>
 </template>

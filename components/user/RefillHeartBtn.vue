@@ -4,17 +4,19 @@
   instead of debiting the balance on the first click.
 -->
 <template>
-  <section
+  <button
+    type="button"
     @click="fnRefillHearts()"
     class="flex scale-90 cursor-pointer items-center justify-between rounded-full bg-light px-6 text-sm text-white"
   >
     {{ t("Headings.RefillHearts") }}
     <SvgHeart class="-mb-3" />
-  </section>
+  </button>
 
-  <Modal v-if="ordering" @backdrop="ordering = false">
-    <div class="w-full max-w-2xl bg-secondary p-8 style-card">
+  <Modal v-if="ordering" :aria-label="t('Headings.OrderSummary')" @backdrop="ordering = false">
+    <div class="w-full max-w-2xl bg-secondary p-4 style-card sm:p-8">
       <OrderSummary
+        exact-offer
         :coins="refillPrice"
         :loading="loading"
         :disabled="!withdrawalConsent"
@@ -27,7 +29,7 @@
         </template>
 
         <template #consent>
-          <OrderWithdrawalConsent kind="digital" v-model="withdrawalConsent" />
+          <OrderContract v-if="offer" :key="offer.id" :offer="offer" v-model="withdrawalConsent" />
         </template>
 
         <template #actions>
@@ -47,6 +49,7 @@ export default {
     const coins = useCoins();
     const heartInfo: any = useHeartInfo();
     const heartConfig = useHeartConfig();
+    const offer = ref<any>(null);
     const ordering = ref(false);
     const loading = ref(false);
     // Hearts are digital content, so the declarations of § 356 Abs. 6 Nr. 2
@@ -56,12 +59,14 @@ export default {
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
     });
-    const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
+    const refillPrice = computed(
+      () => offer.value?.product.coins ?? heartConfig.value.hearts_refill_price
+    );
     const maxHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
 
     onMounted(loadHeartConfig);
 
-    function fnRefillHearts() {
+    async function fnRefillHearts() {
       if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       }
@@ -72,6 +77,8 @@ export default {
       }
 
       // The dialog is rebuilt every time it opens, so the boxes start unticked.
+      offer.value = await requestPurchaseOffer("/shop/purchases/offers/hearts");
+      if (!offer.value) return;
       withdrawalConsent.value = false;
       ordering.value = true;
     }
@@ -83,14 +90,13 @@ export default {
       }
 
       loading.value = true;
-      const [success] = await refillHearts(withdrawalConsentBody());
+      const success = await acceptPurchase(offer.value);
       loading.value = false;
-      ordering.value = false;
-
-      if (success) openSnackbar("success", "Success.RefilledHearts");
+      if (success) ordering.value = false;
     }
 
     return {
+      offer,
       t,
       fnRefillHearts,
       confirmOrder,

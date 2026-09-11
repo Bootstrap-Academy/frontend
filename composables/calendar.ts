@@ -51,17 +51,3 @@ export async function rotateIcsToken() {
     return [null, error.data];
   }
 }
-
-export async function cancelCalendarEvent(id: string) {
-  try {
-    if (!!!id) {
-      throw { data: "Invalid event ID" };
-    }
-
-    const response = await DELETE(`/events/calendar/${id}`);
-    getCalendar();
-    return [response, null];
-  } catch (error: any) {
-    return [null, error.data];
-  }
-}

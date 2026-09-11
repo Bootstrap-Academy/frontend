@@ -3,7 +3,8 @@
     <NuxtLoadingIndicator />
     <LazyClientOnly>
       <Confetti v-if="showConfetti" />
-      <Loading />
+      <Loading v-if="!publicLegalPage" />
+      <UpdateNotice :dismissed="updateNoticeDismissals" />
     </LazyClientOnly>
     <NuxtPage />
 
@@ -16,19 +17,12 @@
     -->
     <ContractTermination />
 
-    <!--
-      AGB 20.2: a new version of the terms is presented at the next login.
-      Rendered here for the same reason as the bar above - it lands in the slot
-      of every layout and therefore covers every route.
-    -->
-    <TermsGate />
-
-    <Modal v-if="dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
+    <Modal v-if="!publicLegalPage && dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
       <Dialog :dialog="dialog" />
     </Modal>
     <Snackbar class="z-[999]" />
 
-    <div>
+    <div v-if="!publicLegalPage && accessToken">
       <FormWebinarRating
         v-for="unratedWebinar of unratedWebinars"
         :key="unratedWebinar.id"
@@ -46,6 +40,8 @@ import "highlight.js/styles/github-dark.css";
 
 export default {
   setup() {
+    // Layout slots can remount; the fallback must last for this App instance.
+    const updateNoticeDismissals = new Set<string>();
     const dialog = useDialog();
     const showConfetti = useShowConfetti();
     function handleDialogOnBackdrop() {
@@ -58,11 +54,13 @@ export default {
     // The session is restored from the cookies in `plugins/session.client.ts`,
     // which also loads the full profile of the logged in user.
     const accessToken = useAccessToken();
+    const route = useRoute();
+    const publicLegalPage = computed(() => isPublicLegalRoute(route.path));
 
     const nuxtApp = useNuxtApp();
 
     nuxtApp.hook("page:finish", async () => {
-      if (!!accessToken.value) {
+      if (!!accessToken.value && !isOnPublicLegalRoute()) {
         await getUnratedWebinars();
       }
     });
@@ -76,11 +74,14 @@ export default {
     }
 
     return {
+      updateNoticeDismissals,
       dialog,
       handleDialogOnBackdrop,
       unratedWebinars,
       ondoneRmWebinar,
       showConfetti,
+      accessToken,
+      publicLegalPage,
     };
   },
 };

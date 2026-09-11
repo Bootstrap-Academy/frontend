@@ -35,7 +35,7 @@
           :bgColor="theme.bg"
           :borderColor="theme.border"
           secondary
-          @click="onclickCancelWebinarRating"
+          @click="$emit('done', rating_id)"
         >
           {{ t("Buttons.Cancel") }}
         </Btn>
@@ -121,6 +121,7 @@ export default defineComponent({
 
     return {
       rating,
+      rating_id,
       t,
       instructor,
       webinar_name,

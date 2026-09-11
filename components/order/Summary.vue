@@ -10,26 +10,28 @@
   surface.
 -->
 <template>
-  <section class="grid gap-card">
+  <section class="grid min-w-0 grid-cols-1 gap-card">
     <h2 class="text-heading-2 m-0 text-heading">{{ t(heading) }}</h2>
 
     <div class="grid gap-box">
       <slot name="characteristics" />
     </div>
 
-    <dl class="grid grid-cols-[1fr_auto] items-baseline gap-y-1 gap-x-card">
+    <dl
+      class="grid grid-cols-1 items-baseline gap-y-1 gap-x-card sm:grid-cols-[minmax(0,1fr)_auto]"
+    >
       <template v-if="breakdown">
         <dt class="text-body-1 m-0 text-body">{{ t("Headings.NetAmount") }}</dt>
-        <dd class="text-body-1 m-0 text-end">{{ formatEuros(net, locale) }}</dd>
+        <dd class="text-body-1 m-0 sm:text-end">{{ formatEuros(net, locale) }}</dd>
 
         <dt class="text-body-1 m-0 text-body">
           {{ t("Headings.VatAmount", { vat: vatPercent }) }}
         </dt>
-        <dd class="text-body-1 m-0 text-end">{{ formatEuros(vat, locale) }}</dd>
+        <dd class="text-body-1 m-0 sm:text-end">{{ formatEuros(vat, locale) }}</dd>
       </template>
 
       <dt class="text-heading-4 m-0 text-heading">{{ t("Headings.TotalPrice") }}</dt>
-      <dd class="text-heading-4 m-0 text-end text-heading">
+      <dd class="text-heading-4 m-0 text-heading sm:text-end">
         <Price :coins="coins" />
       </dd>
     </dl>
@@ -39,18 +41,18 @@
       they can and cannot be turned back into (AGB Ziffer 6), for premium the
       length of the period and how it renews and ends (AGB Ziffer 8).
     -->
-    <p v-if="kind == 'coins'" class="text-body-2 m-0 text-body">
+    <p v-if="!exactOffer && kind == 'coins'" class="text-body-2 m-0 text-body">
       {{ t("Body.OrderCoinsNote") }}
     </p>
 
-    <p v-else-if="kind == 'premium'" class="text-body-2 m-0 text-body">
+    <p v-else-if="!exactOffer && kind == 'premium'" class="text-body-2 m-0 text-body">
       {{ t("Body.OrderPremiumNote") }}
       <NuxtLink to="/vertrag-kuendigen" target="_blank" class="text-accent hover:underline">
         {{ t("Links.CancelContractsHere") }}
       </NuxtLink>
     </p>
 
-    <p class="text-body-2 m-0 text-body">
+    <p v-if="!exactOffer" class="text-body-2 m-0 text-body">
       {{ t("Links.OrderLegalHint") }}
       <NuxtLink
         to="/docs/terms-and-conditions"
@@ -68,7 +70,7 @@
     </p>
 
     <!-- Terms and the withdrawal declarations (§ 356 Abs. 6 BGB). -->
-    <div v-if="$slots.consent" class="grid gap-box">
+    <div v-if="$slots.consent" class="grid min-w-0 grid-cols-1 gap-box">
       <slot name="consent" />
     </div>
 
@@ -92,6 +94,7 @@ import { useI18n } from "vue-i18n";
 const props = defineProps({
   /** Total price of the order in Morphcoins. */
   coins: { type: Number, default: 0 },
+  exactOffer: { type: Boolean, default: false },
   /** Locale key of the summary heading. */
   heading: { type: String, default: "Headings.OrderSummary" },
   /** Show the net amount and the VAT amount above the total. */
