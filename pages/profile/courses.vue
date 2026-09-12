@@ -69,6 +69,11 @@ export default {
       filters.recent_first = option == "lastSeen";
     }
 
+    onMounted(async () => {
+      await getMyCourses();
+      loading.value = false;
+    });
+
     const filters: any = reactive({
       free: false,
       recent_first: false,

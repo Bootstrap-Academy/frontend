@@ -12,7 +12,7 @@
     "About": "Warum Bootstrap Academy?",
     "Features": "Features",
     "HeroFAQS": "FAQ",
-    "GetMorphcoins": "MorphCoins erhalten",
+    "GetMorphcoins": "MorphCoins kaufen",
     "WebShop": "Webshop"
   },
   "VerdictHint": {
@@ -260,7 +260,7 @@
     "Exam": "Prüfung",
     "Webinar": "Webinar",
     "UpcomingEvents": "Kommende Veranstaltungen",
-    "GetMorphcoins": "Alternativen",
+    "GetMorphcoins": "MorphCoins kaufen",
     "Description": "Beschreibung",
     "LearningGoals": "Lernziele",
     "Requirements": "Requirements",
@@ -446,18 +446,18 @@
     "ComingSoon": "Demnächst!",
     "Copyright": "Bootstrap Academy. Alle Rechte vorbehalten",
     "Login": "Fahre fort mit deiner IT Ausbildung, fang direkt jetzt an.",
-    "Signup": "Hier kannst du Informatik, Programmieren und andere IT Fähigkeiten lernen - komplett kostenlos und das sofort. Worauf wartest du?",
+    "Signup": "Starte mit kostenlosen Kursen und Übungen. Entdecke neue Themen und probiere direkt aus, was du lernst.",
     "ForgotPassword": "Wenn ein Account zu deiner E-Mail Adresse existiert, senden wir dorthin eine Anleitung, um dein Passwort zurückzusetzen.",
     "ResetPassword": "Dein neues Passwort muss sich von dem zuvor verwendeten Passwort unterscheiden.",
     "VerifyAccount": "Gib den Code ein, der dir per E-Mail zugeschickt wurde.",
     "ContactUs": "Fehler oder Idee? Nutze den Feedback-Button unten rechts für eine öffentliche GitHub-Meldung. Persönliche Anliegen und Sicherheitslücken bitte privat an die E-Mail-Adresse im Impressum.",
     "Hero": "Lerne alles, was du als Techie brauchst, werde Teil einer riesigen Community und hol dir den Job, den du immer wolltest - alles auf einer Plattform.",
-    "About": "Mit den Features dieser Seite wollen wir Lernen neu denken: Nicht nur Stoff absorbieren und wieder ausspucken, sondern auch anwenden, nutzen und anderen helfen. Das Ziel: Wir stellen dir alles zur Verfügung, was du brauchst von den Grundlagen bis zum Job - das Beste: Wenn du motiviert bist, ist es komplett gratis!",
+    "About": "Lernen heißt ausprobieren. Entdecke neue Themen, verstehe die Grundlagen und wende dein Wissen direkt an – Schritt für Schritt in deinem Tempo.",
     "HeroFAQS": "Das hier wird erweitert, wenn wir mehr häufige Fragen von euch bekommen.",
     "Subscribe": "Bleib auf dem Laufenden mit all den Änderungen, die es geben wird. Wir versprechen: Hier wird sich noch viel tun. Wir haben Großes vor.",
     "WatchedCourses": "Hier sind deine zuletzt gesehenen Kurse. Setze deine Reise fort!",
     "MyCertificates": "Die Zertifikate, die du aus Prüfungen bekommen hast! Vielleicht sind es ja schon genügend um einen Job zu bekommen? Oder solltest du mehr sammeln?",
-    "GetMorphcoins": "Du willst kein Geld bezahlen? Die Coins kannst du auch auf andere Weise erhalten",
+    "GetMorphcoins": "MorphCoins bekommst du im Shop.",
     "MoreComingSoon": "Mehr folgt bald...",
     "CreatedBy": "Erstellt von",
     "And": "und",
@@ -521,7 +521,7 @@
     "OrderPremiumCharacteristics": "Premium-Mitgliedschaft: Zugriff auf alle Kurse und unbegrenzte Herzen.",
     "OrderPremiumNote": "Die Laufzeit endet am selben Tag des Folgemonats bzw. des Folgejahres; gibt es diesen Tag dort nicht, am letzten Tag des Monats. Ein Nachkauf verlängert deinen bereits bezahlten Zeitraum. Eine gesondert bestellte und rechtzeitig bestätigte automatische Verlängerung erfolgt anschließend monatlich zum vereinbarten Coin-Preis – auch nach einem Jahreszeitraum. Kündigen kannst du jederzeit:",
     "OrderCoinsCharacteristics": "Deine Morphcoins werden nach Zahlung und Vertragsbestätigung innerhalb der angegebenen Frist gutgeschrieben.",
-    "OrderCoinsNote": "MorphCoins kannst du nicht bei Dritten oder außerhalb der Plattform einlösen und nicht in Geld auszahlen lassen. Nicht verbrauchte gekaufte MorphCoins erstatten wir dir jederzeit auf Anfrage an hallo{'@'}bootstrap.academy zum Erwerbskurs; Belohnungs-Coins entfallen mit der Löschung deines Kontos (AGB Ziffer 6).",
+    "OrderCoinsNote": "MorphCoins nutzt du nur auf unserer Plattform. Nicht verbrauchte gekaufte MorphCoins erstatten wir dir jederzeit auf Anfrage an hallo{'@'}bootstrap.academy zum Erwerbskurs.",
     "OrderHeartsCharacteristics": "Einmalig auf bis zu {max} Herzen auffüllen. Die genaue Menge und die Frist stehen in deinem Angebot.",
     "OrderCourseCharacteristics": "Dauerhafter Zugriff auf alle Lektionen dieses Kurses.",
     "PremiumIncludesThisCourse": "Mit Premium ist dieser Kurs enthalten – ohne ihn einzeln freizuschalten.",
@@ -610,79 +610,59 @@
       }
     },
     "About": {
-      "1": "Videokurse in allen Schwierigkeitsgraden.",
-      "2": "Webinare, Coachings.",
-      "3": "Übungen",
-      "4": "Vollständig kostenfrei, wenn du dich engagierst"
+      "1": "Kurse für deinen nächsten Schritt.",
+      "2": "Wissen direkt in Übungen anwenden.",
+      "3": "Deinen Lernfortschritt im Blick.",
+      "4": "Lernen in deinem Tempo."
     },
     "Features": {
       "1": {
-        "Heading": "Videokurse",
-        "Body": "Wir bieten kostenlose und kostenpflichtige Kurse an. Unsere Kurse enthalten fast alles, was ein vollständiges Informatik-Studium beinhaltet. Und wir arbeiten hart daran, das 'fast' loszuwerden."
+        "Heading": "Kurse",
+        "Body": "Entdecke kostenlose und kostenpflichtige Kurse. Ziele und Voraussetzungen helfen dir, den passenden Einstieg zu finden."
       },
       "2": {
-        "Heading": "Webinare",
-        "Body": "Manchmal bleiben Fragen offen, manchmal möchte man Erfahrungsberichte hören. Dafür gibt es Webinare. Von euch, für euch. Gehalten von Experten für die, die es werden wollen."
+        "Heading": "Direkt loslernen",
+        "Body": "Starte eine Lerneinheit, probiere selbst aus und mach mit dem nächsten Schritt weiter."
       },
       "3": {
-        "Heading": "Coachings",
-        "Body": "Du brauchst diese ganz besondere, individuelle Hilfe? Du möchtest ein Mentoring von einem Experten direkt für dich? Dafür gibt's die Coachings."
+        "Heading": "Deine Entwicklung",
+        "Body": "Auf deinem Charakterbogen siehst du, was du schon gelernt hast und wo du weitermachen kannst."
       },
       "4": {
         "Heading": "Übungen",
-        "Body": "Wir lieben Challenges! Deshalb haben wir für dich die Coding Challenges - und noch so viele mehr sind in Arbeit!"
+        "Body": "Löse Aufgaben und teste deinen Code in ausführbaren Übungen. Dein Ergebnis zeigt dir, ob deine Lösung passt."
       },
       "5": {
         "Heading": "Der Skilltree",
-        "Body": "Standest du jemals vor dem großen Wald an Programmiersprachen und Technologien und hattest keine Ahnung, was du lernen sollst? Dafür haben wir nun unsere Roadmap: Den Skilltree!"
-      },
-      "6": {
-        "Heading": "Zertifikate",
-        "Body": "Um sich auf Jobs zu bewerben oder einfach nur um Trophäen zu jagen und es sich selbst zu beweisen, hilft ein echtes Zertifikat - nicht für eine Teilnahme, sondern für eine ordentliche Prüfung. Wir arbeiten mit Hochschulen und Firmen zusammen, um noch einen größeren Mehrwehrt zu liefern."
+        "Body": "Erkunde Themen und finde die Kurse, die dich interessieren."
       }
     },
     "HeroFAQS": {
       "1": {
-        "Heading": "Wie kann ich mitmachen? Wie kann ich MorphCoins bekommen?",
-        "Body": "Es gibt einige Möglichkeiten hier zu helfen - und MorphCoins dafür zu bekommen: Du kannst mir bei den Videos helfen, Webinare halten, Coach werden oder uns Bugs melden und helfen sie zu reparieren. Außerdem kannst du MorphCoins direkt per PayPal, SEPA Lastschrift, giropay und Debit-/Kreditkarte kaufen. Alle Zahlungsmethoden werden durch PayPal abgewickelt. Mehr Informationen findest du"
+        "Heading": "Wie bekomme ich MorphCoins?",
+        "Body": "Du kannst MorphCoins im Shop kaufen. Damit bezahlst du kostenpflichtige Angebote der Academy."
       },
       "2": {
         "Heading": "Sind MorphCoins eine Kryptowährung?",
         "Body": "Nein. MorphCoins gibt es nur hier auf der Seite bzw. in der App."
       },
       "3": {
-        "Heading": "Warum sind deine Vlogs hier noch nicht vertreten?",
-        "Body": "Wir planen einen ganz neuen Seiten-Bereich für security awareness, aber wollten nicht alle warten lassen. Wenn du ein paar tolle Ideen hast, schreib mir gerne."
+        "Heading": "Brauche ich Vorwissen?",
+        "Body": "Bei jedem Kurs findest du die Voraussetzungen. Such dir einen Einstieg aus, der zu dir passt."
       },
       "4": {
-        "Heading": "Ich möchte ein Webinar hosten und weiß nicht, wie.",
-        "Body": "Zuerst musst du den Skill zertifizieren lassen, damit wir sicher sein können, dass du auch weißt, wovon du sprichst. Anschließend brauchst du ein paar Softskills, die du auch hier lernen kannst. Danach - jederzeit!"
+        "Heading": "Wie melde ich einen Fehler?",
+        "Body": "Nutze den Feedback-Button unten rechts. Sicherheitslücken meldest du bitte privat per Mail an die Adresse im Impressum."
       },
       "5": {
-        "Heading": "Ich habe schon studiert. Kann ich die Skills anrechnen lassen?",
-        "Body": "Klar, Schreib uns. Wir müssen das manuell machen, damit man es nicht fälschen kann. Deswegen müssen wir auch ein paar MorphCoins dafür nehmen."
+        "Heading": "Muss ich mit Videos lernen?",
+        "Body": "Unsere neuen Lernwege verbinden kurze Erklärungen mit Übungen. Daneben findest du weiterhin Kurse mit Videos."
       }
     },
     "GetMorphcoins": {
       "1": {
         "Heading": "MorphCoins kaufen",
-        "Body": "Du kannst MorphCoins auch mit Euros im Shop kaufen. Dies ist direkt per PayPal, SEPA Lastschrift, giropay und Debit-/Kreditkarte möglich. Alle Zahlungsmethoden werden durch PayPal abgewickelt."
-      },
-      "2": {
-        "Heading": "Lektionen",
-        "Body": "Schick mir alles, was ich für eine Lektion brauche. Du hast noch den Code eines kleinen Python Projekts, wo du spannende Bibliotheken nutzt? Oder hast gerade etwas auf dem Server installiert und Screenshots oder sogar ein Video von jedem Schritt gemacht? Schick es mir und ich teile es mit der Community. Beachte, dass das danach ein öffentliches Projekt ist und du mir die Rechte abgeben musst! Dazu musst du auch erstmal die Rechte haben! Also bitte nur original work. Wenn ich außerdem noch zu viele Bugs fixen muss, muss ich deine Belohnung reduzieren."
-      },
-      "3": {
-        "Heading": "Webinare",
-        "Body": "Halte Webinare als Dozent. Du kannst etwas schon richtig gut, vielleicht hast du schon gearbeitet und willst dein Wissen in Webinaren teilen? Wenn du Level 15 in einem Skill erreicht hast, bekommst du die Fähigkeit selbst Webinare zu halten! Das Beste: Den Großteil der MorphCoin darfst du behalten!"
-      },
-      "4": {
-        "Heading": "Coachings",
-        "Body": "Bewirb dich und werde Coach. Du möchtest den Menschen direkt und individuell helfen? Dazu brauchst du nur den Skill - auf Level 42 - und ein paar Softskills. Was du verlangst, liegt ganz bei dir (und deinem Rating)!"
-      },
-      "5": {
-        "Heading": "Bug Bounty",
-        "Body": "Melde Sicherheitslücken bitte privat per Mail; die Adresse steht im Impressum. Normale Fehler kannst du über den Feedback-Button melden. Teste nur auf unserer Plattform und mit deinen eigenen Konten. Störe keine Dienste, greife keine anderen Nutzer oder Drittanbieter an und verändere keine fremden Daten. Falls du versehentlich fremde Daten siehst, bewahre keine Kopien auf und melde uns den Fund vertraulich. Für die erste hilfreiche Meldung können wir Morphcoins vergeben; die Höhe hängt von der Lücke und deinem Bericht ab. Eine Auszahlung in Euro braucht eine Vereinbarung mit uns, bevor du mit der Suche beginnst."
+        "Body": "Im Shop wählst du die gewünschte Menge. Die verfügbaren Zahlungsmethoden siehst du beim Bezahlen."
       }
     },
     "Filter": {
@@ -1009,7 +989,7 @@
     "GotResetCode": "Reset-Code erhalten?",
     "Here": "Hier",
     "GoToSignup": "Zur Anmeldung",
-    "GetMorphcoins": "Erhalte Morphcoins",
+    "GetMorphcoins": "MorphCoins kaufen",
     "Calendar": "Kalender",
     "BackToDetails": "Zurück zu den Details",
     "MyAccount": "Mein Konto",

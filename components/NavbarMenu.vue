@@ -73,10 +73,6 @@ export default {
         label: "Links.LeaderBoard",
         pathname: "/challenges/leader-board",
       },
-      {
-        label: "Links.GetMorphcoins",
-        pathname: "/morphcoins",
-      },
     ];
 
     const validTill = computed(() => {

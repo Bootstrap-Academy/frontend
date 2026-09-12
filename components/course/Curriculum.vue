@@ -1,248 +1,158 @@
 <template>
-  <div class="grid gap-card">
-    <section v-for="(section, i) of sections" :key="section.id">
-      <hr v-if="i > 0" class="mb-card" />
-
-      <header class="cursor-pointer" @click="activeSection = section.id">
-        <div>
-          <p class="mb-1 text-xs uppercase tracking-[2px]">
-            {{ t("Headings.Section", { n: " " }, 1) }} {{ i + 1 }}
-          </p>
-          <h3 class="text-heading-4">{{ section.title }}</h3>
-        </div>
-
-        <p
-          v-if="!!section.duration"
-          class="mb-1 h-fit w-fit flex-shrink-0 rounded px-2 py-1 text-xs text-warning bg-warning-light"
+  <div class="curriculum">
+    <details
+      v-for="(section, index) in sections"
+      :key="section.id || index"
+      :open="index === initialSection"
+    >
+      <summary>
+        <span class="section-label">{{ copy.section }} {{ index + 1 }}</span>
+        <span class="section-title">{{ section.title }}</span>
+        <ChevronDownIcon class="section-chevron" aria-hidden="true" />
+      </summary>
+      <p v-if="section.description" class="section-description">{{ section.description }}</p>
+      <ol>
+        <li
+          v-for="(lecture, lectureIndex) in section.lectures || []"
+          :key="lecture.id || lectureIndex"
         >
-          {{ section.duration }}
-        </p>
-
-        <ChevronDownIcon
-          class="h-5 w-5"
-          :class="
-            activeSection == section.id ? 'rotate-0 text-accent' : 'rotate-180 text-subheading'
-          "
-        />
-      </header>
-
-      <article
-        class="grid pt-box gap-card-sm xl:gap-box"
-        v-if="activeSection == section.id"
-        :class="{ 'pointer-events-none': !isCourseAccessible }"
-      >
-        <CourseCurriculumLecture
-          v-for="lecture of getLecturesOfThisSection(section.id)"
-          :key="lecture.id"
-          :data="lecture"
-          :activeSection="activeSection"
-          :activeLecture="activeLecture"
-          @click="onclickWatchThisLecture(lecture.id)"
-        />
-      </article>
-
-      <article class="pt-box" v-if="getLecturesOfThisSection(section.id).length <= 0">
-        <p class="text-sm text-subheading">
-          {{ t("Error.NoLecturesAvailable") }}
-        </p>
-      </article>
-    </section>
+          <button
+            type="button"
+            :disabled="!isCourseAccessible || !section.id || !lecture.id"
+            :aria-current="activeLecture === lecture.id ? 'step' : undefined"
+            @click="emit('watch', { sectionID: section.id, lectureID: lecture.id })"
+          >
+            <span class="lecture-number" aria-hidden="true">{{
+              lecture.completed ? "✓" : lectureIndex + 1
+            }}</span>
+            <span class="lecture-title">{{ lecture.title }}</span>
+            <span v-if="lecture.completed" class="lecture-status">{{ copy.done }}</span>
+            <span v-else-if="lecture.duration > 0" class="lecture-status"
+              >{{ Math.ceil(lecture.duration / 60) }} min</span
+            >
+          </button>
+        </li>
+      </ol>
+    </details>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType, Ref } from "vue";
-import { useI18n } from "vue-i18n";
+<script setup lang="ts">
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
-
-export default defineComponent({
-  components: { ChevronDownIcon },
-  props: {
-    isCourseAccessible: { type: Boolean, default: true },
-    data: { type: Object as PropType<any>, default: null },
-  },
-  emits: ["watch"],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-
-    const skillID = computed(() => {
-      return <string>(route.query?.skillID ?? "");
-    });
-
-    const subSkillID = computed(() => {
-      return <string>(route.query?.subSkillID ?? "");
-    });
-
-    const sections: Ref<any[]> = computed(() => {
-      return (props.data?.sections ?? []).map((section: any, i: number) => {
-        // if section has no id, then a custom id is made using title and index
-
-        return !!!section.id && !!section.title
-          ? {
-              ...section,
-              id: `${section.title.replace(/ /g, "_")}-${i}`,
-              duration: getTotalDurationOfThisSection(section),
-            }
-          : { ...section, duration: getTotalDurationOfThisSection(section) };
-      });
-    });
-
-    function getLecturesOfThisSection(sectionID: string): any[] {
-      const thisSection = sections.value.find((section) => section.id == sectionID);
-      if (!!!thisSection) return [];
-
-      let lectures: any[] = thisSection.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return [];
-
-      return lectures.map((lecture, i) => {
-        // if lecture has no id, then a custom id is made using title and index
-        return !!!lecture.id && !!lecture.title
-          ? { ...lecture, id: `${lecture.title.replace(/ /g, "_")}-${i}` }
-          : { ...lecture };
-      });
-    }
-
-    const router = useRouter();
-    const route = useRoute();
-
-    const activeSection = computed({
-      get(): string {
-        return <string>(route?.query?.section ?? "");
-      },
-      set(id: string) {
-        if (!id) {
-          router.replace({
-            path: route.path,
-          });
-        } else if (getLecturesOfThisSection(id).length > 0) {
-          router.replace({
-            path: route.path,
-            query: {
-              section: id,
-              lecture: getActiveLectureForThisSection(id),
-              skillID: skillID?.value ?? "a",
-              subSkillID: subSkillID?.value ?? "a",
-            },
-          });
-        }
-      },
-    });
-
-    const activeLecture = computed({
-      get(): string {
-        return <string>(route?.query?.lecture ?? "");
-      },
-      set(id: string) {
-        if (!id) {
-          router.replace({
-            path: route.path,
-          });
-        } else {
-          router.replace({
-            path: route.path,
-            query: {
-              section: activeSection.value,
-              lecture: id,
-              skillID: skillID?.value ?? "a",
-              subSkillID: subSkillID?.value ?? "a",
-            },
-          });
-        }
-      },
-    });
-
-    function getTotalDurationOfThisSection(section: any) {
-      if (!!!section) return "";
-
-      const lectures = section.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return "";
-
-      const totalDuration = lectures.reduce(
-        (previousValue: number, currentValue: any) => previousValue + currentValue.duration ?? 0,
-        0
-      );
-
-      const { minutes, hours } = convertTimestampToDate(totalDuration);
-
-      let roundedHours = Math.round(hours);
-      let minutesLeftInHours = hours - roundedHours;
-      minutesLeftInHours = Math.round(minutesLeftInHours * 60);
-
-      let hoursString =
-        roundedHours > 0
-          ? t("Headings.Hours", { n: roundedHours }, roundedHours).toLocaleLowerCase()
-          : "";
-      let minsString =
-        minutesLeftInHours > 0
-          ? t("Headings.Mins", { n: minutesLeftInHours }, minutesLeftInHours).toLocaleLowerCase()
-          : "";
-
-      return `${hoursString} ${
-        !!hoursString && !!minsString ? t("Headings.And").toLocaleLowerCase() : ""
-      } ${minsString}`;
-    }
-
-    function getActiveLectureForThisSection(sectionID: string) {
-      let lectures: any[] = getLecturesOfThisSection(sectionID);
-      if (!!!lectures || lectures.length <= 0) return "";
-
-      let firstLectureID = lectures[0]?.id ?? "";
-      let lastCompletedLecture = lectures.reverse().find((lecture) => lecture.completed == true);
-
-      return lastCompletedLecture?.id ?? firstLectureID;
-    }
-
-    function onclickWatchThisLecture(lectureID: string) {
-      activeLecture.value = lectureID;
-
-      emit("watch", {
-        sectionID: activeSection.value,
-        lectureID: lectureID,
-      });
-    }
-
-    onMounted(() => {
-      if (!!!activeSection.value || !!!activeLecture.value) {
-        activeSection.value = sections.value[0]?.id ?? "";
-      }
-    });
-    return {
-      t,
-      sections,
-      activeSection,
-      activeLecture,
-      getLecturesOfThisSection,
-      onclickWatchThisLecture,
-      getTotalDurationOfThisSection,
-    };
-  },
+import type { Course } from "~/types/courseTypes";
+const props = withDefaults(defineProps<{ data: Course | null; isCourseAccessible?: boolean }>(), {
+  isCourseAccessible: true,
+});
+const emit = defineEmits<{ watch: [{ sectionID: string; lectureID: string }] }>();
+const { copy } = useCourseExperienceCopy();
+const route = useRoute();
+const sections = computed(() => (Array.isArray(props.data?.sections) ? props.data.sections : []));
+const activeLecture = computed(() =>
+  typeof route.query.lecture === "string" ? route.query.lecture : ""
+);
+const initialSection = computed(() => {
+  const active = sections.value.findIndex((section) => section.id === route.query.section);
+  if (active >= 0) return active;
+  const unfinished = sections.value.findIndex((section) =>
+    section.lectures?.some((lecture) => !lecture.completed)
+  );
+  return unfinished >= 0 ? unfinished : 0;
 });
 </script>
 
 <style scoped>
-header {
-  @apply grid grid-cols-[1fr_auto] gap-2;
-  grid-template-areas:
-    "duration arrow"
-    "title arrow";
+.curriculum {
+  display: grid;
+  gap: 0.75rem;
 }
-header > *:nth-child(1) {
-  grid-area: title;
+details {
+  border-bottom: 1px solid var(--color-tertiary);
+  padding-bottom: 0.75rem;
 }
-header > *:nth-child(2) {
-  grid-area: duration;
+details:last-child {
+  border-bottom: 0;
 }
-header > *:nth-child(3) {
-  grid-area: arrow;
-  @apply justify-self-end;
+summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.3rem 1rem;
+  cursor: pointer;
+  padding: 0.75rem 0;
+  list-style: none;
 }
-
-@media screen and (min-width: 768px) {
-  header {
-    grid-template-areas:
-      "title duration"
-      "title arrow";
+summary::-webkit-details-marker {
+  display: none;
+}
+.section-label {
+  color: var(--color-subheading);
+  font-size: 0.75rem;
+}
+.section-title {
+  color: var(--color-heading);
+  font-size: 1rem;
+  grid-column: 1;
+}
+.section-chevron {
+  width: 1.2rem;
+  height: 1.2rem;
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+}
+details[open] .section-chevron {
+  transform: rotate(180deg);
+}
+.section-description {
+  padding: 0.5rem 0 1rem;
+  font-size: 0.9rem;
+}
+ol {
+  display: grid;
+  gap: 0.35rem;
+}
+button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  padding: 0.8rem 0.6rem;
+  border-radius: 0.65rem;
+  color: var(--color-body);
+}
+button:enabled:hover,
+button[aria-current] {
+  background: var(--color-tertiary);
+  color: var(--color-heading);
+}
+button:disabled {
+  cursor: default;
+}
+.lecture-number {
+  min-width: 1.5rem;
+  text-align: center;
+  color: var(--color-accent);
+  font-size: 0.85rem;
+}
+.lecture-title {
+  flex: 1;
+  line-height: 1.4;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.lecture-status {
+  font-size: 0.75rem;
+  color: var(--color-subheading);
+  flex-shrink: 0;
+}
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+@media (max-width: 420px) {
+  .lecture-status {
+    display: none;
   }
 }
 </style>

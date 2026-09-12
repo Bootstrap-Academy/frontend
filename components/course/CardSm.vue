@@ -3,8 +3,9 @@
     class="relative flex h-full min-h-[175px] min-w-[175px] max-w-[150px] items-end overflow-hidden rounded-lg bg-secondary shadow-lg md:min-w-[150px] md:max-w-none"
   >
     <img
+      v-if="image"
       :src="image"
-      :alt="t('AltAttributes.CourseCover')"
+      alt=""
       class="absolute left-0 top-0 h-full w-full object-cover"
     />
     <div
@@ -29,17 +30,19 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
+    const { localizeCourse } = useCourseExperienceCopy();
+    const translated = computed(() => (props.data ? localizeCourse(props.data) : null));
 
     const image = computed(() => {
-      return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
+      return props.data?.image || "";
     });
 
     const title = computed(() => {
-      return props.data?.title ?? "";
+      return translated.value?.title || "";
     });
 
     const description = computed(() => {
-      return props.data?.description ?? "";
+      return translated.value?.description || "";
     });
 
     return { t, image, title, description };

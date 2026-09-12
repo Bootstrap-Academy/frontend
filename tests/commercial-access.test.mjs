@@ -907,7 +907,7 @@ test("actual app keeps public rights access and ordinary authentication without 
             );
             await session();
             middleware(route, route);
-            await hooks["page:finish"]();
+            await hooks["page:finish"]?.();
             await flush();
             assert.equal(terms.needsTermsAcceptance(path), false, `${path}/${mode}`);
             assert.equal(ui.all().filter((n) => n.props["data-blocker"]).length, 0);
@@ -2238,7 +2238,7 @@ test("mounted explicit creation in both languages requires saved-file acknowledg
   }
 });
 
-test("new signup requires explicit form confirmation and sends the current r2 version", async () => {
+test("new signup requires explicit form confirmation and sends the current r4 version", async () => {
   await components();
   const terms = await moduleFrom("../composables/terms.ts"),
     Signup = await compileComponent("../components/form/Signup.vue"),
@@ -2287,7 +2287,7 @@ test("new signup requires explicit form confirmation and sends the current r2 ve
         }
         await vm.onclickSubmitForm();
         assert.equal(requests.length, 1);
-        assert.equal(requests[0].terms_version, "2026-09-r3");
+        assert.equal(requests[0].terms_version, "2026-09-r4");
         assert.equal(requests[0].age_confirmed, true);
         assert.equal(requests[0].email, "synthetic@example.invalid");
         assert(!Object.hasOwn(requests[0], "termsAndConditions"));

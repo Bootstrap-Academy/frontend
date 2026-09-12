@@ -1,396 +1,355 @@
-<!--
-❌ Responsive UI
-✅ Page Title
-❌ Translation
-❌ Animation
-✅ middleware
-
-❌ Tested on chrome
-❌ Tested on firefox
-❌ Tested on safari
-❌ Tested on android mobile
-❌ Tested on apple mobile
-
-❌ Handle loading if data already exists
-❌ Handle loading if data is empty
-❌ Display data
-❌ Handle empty state
-
-❌ Api implemented
--->
-
 <template>
-  <div class="relative">
-    <Head>
-      <Title>Watch Course - {{ course?.title ?? "" }}</Title>
-    </Head>
-    <section>
-      <main
-        v-if="course"
-        class="container-fluid relative mb-20 grid h-fit gap-card pt-card pb-container midXl:grid-cols-[1fr_350px]"
-      >
-        <CourseVideoMeta
-          :skillID="skillID"
-          :subSkillID="subSkillID"
-          class="midXl:col-span-2"
-          :course="course"
-          :activeSection="activeSection"
-          :activeLecture="activeLecture"
-          v-model="showCurriculum"
-          v-if="!!activeSection && !!activeLecture"
-        />
-
-        <div class="mt-10">
-          <InputButtonToggle
-            :mobileResponsive="false"
-            :buttonOptions="buttonOptions"
-            v-model="selectedButton"
-            class="mb-5"
-            sm-in-mobile
-          />
-          <CourseVideo
-            :course="course"
-            :activeSection="activeSection"
-            :activeLecture="activeLecture"
-            v-if="!!activeSection && !!activeLecture && selectedButton == 0"
-          />
-          <section v-if="selectedButton == 1" class="h-[71vh] w-full overflow-scroll">
-            <CourseSolveMcqInsideLectureView
-              :total-quizzes="allQuizzes"
-              :quizzes-in-this-lecture="quizzesInLecture"
-            />
-            <div v-if="quizzesInLecture.length">
-              <QuizList :quizzes="quizzesInLecture" />
-            </div>
-            <p
-              class="w-full text-center text-xl"
-              v-if="!quizzesInLecture.length && !allQuizzes.length"
-            >
-              {{ t("Headings.EmptySubtasks") }}
-            </p>
-            <div v-if="allQuizzes.length" class="mt-10"></div>
-
-            <div v-if="!quizzesInLecture.length && !unseenLectureQuizzes.length">
-              <p class="w-full text-center text-xl">
-                {{ t("Headings.NoMoreSubTasksInThisCourse") }}
-              </p>
-            </div>
-          </section>
-          <section class="h-[71vh] w-full overflow-scroll px-6" v-else-if="selectedButton == 2">
-            <div v-if="codingChallenges.length">
-              <CodingChallengeCard
-                @click="solveCodingChallenge(codingChallenge)"
-                v-for="(codingChallenge, i) of codingChallenges"
-                :codingChallenge="codingChallenge"
-                :key="i"
-              />
-            </div>
-            <p v-if="!codingChallenges.length" class="w-full text-center text-xl">
-              {{ t("Headings.EmptyCodingChallenge") }}
-            </p>
-          </section>
-          <section class="h-[71vh] w-full overflow-scroll md:px-6" v-else-if="selectedButton == 3">
-            <div v-if="currentMatches.length">
-              <MatchingSolveInsideCourse :matchings="currentMatches" />
-            </div>
-            <p v-if="!currentMatches.length" class="w-full text-center text-xl">
-              {{ t("Headings.EmptyMatchings") }}
-            </p>
-          </section>
-        </div>
-
-        <div class="aside sticky mt-16 hidden self-start top-container midXl:block">
-          <article class="flex justify-end">
-            <CourseVideoControls
-              class="-mt-3 mb-7 hidden midXl:block"
-              :skillID="skillID"
-              :subSkillID="subSkillID"
-              :course="course"
-              :activeLecture="activeLecture"
-              v-if="!!activeSection && !!activeLecture"
-            />
-          </article>
-
-          <CourseCurriculum
-            :data="course"
-            @watch="watchThisLecture($event)"
-            class="card h-[60vh] overflow-y-scroll bg-secondary style-card"
-          />
-        </div>
-      </main>
+  <main class="course-player">
+    <NuxtLink :to="overviewLink" class="back-link">← {{ course?.title || copy.back }}</NuxtLink>
+    <p v-if="loading" class="player-state" role="status">{{ copy.loading }}</p>
+    <section v-else-if="error || !course" class="player-state" role="alert">
+      <p>{{ copy.loadError }}</p>
+      <button type="button" @click="load">{{ copy.retry }}</button>
     </section>
-
-    <Transition class="block midXl:hidden" name="fade-in" mode="in-out">
-      <section
-        v-if="showCurriculum"
-        @click.self="showCurriculum = false"
-        class="fixed left-0 top-0 z-[99999] flex h-screen w-screen justify-end overflow-y-scroll bg-[#0b192edd]"
+    <template v-else-if="active">
+      <header class="player-heading">
+        <p>
+          {{ active.sectionTitle }} · {{ copy.step }} {{ activeIndex + 1 }} {{ copy.of }}
+          {{ steps.length }}
+        </p>
+        <h1>{{ active.title }}</h1>
+        <progress
+          :value="progress.completed"
+          :max="progress.total || 1"
+          :aria-label="copy.progress"
+        />
+      </header>
+      <div class="player-content">
+        <article class="lesson-content">
+          <p v-if="active.description" class="lesson-description">{{ active.description }}</p>
+          <CourseVideo
+            v-if="hasVideo"
+            :key="active.id"
+            :course="course"
+            :active-section="activeSection"
+            :active-lecture="active"
+          />
+          <CoursePractice
+            :key="`${id}:${active.id}`"
+            class="lesson-practice"
+            source="course"
+            :source-id="id"
+            :section="active.sectionID"
+            :lecture="active.id"
+            :skill-i-d="skillID"
+            :sub-skill-i-d="subSkillID"
+            :heading="copy.practice"
+            hide-empty
+          />
+          <p v-if="saveError" class="save-error" role="alert">{{ copy.saveError }}</p>
+          <footer class="lesson-actions">
+            <button
+              v-if="activeIndex > 0"
+              type="button"
+              class="secondary-action"
+              :disabled="saving"
+              @click="go(steps[activeIndex - 1])"
+            >
+              ← {{ copy.previous }}
+            </button>
+            <button
+              v-if="!active.completed"
+              type="button"
+              class="primary-action"
+              :disabled="saving"
+              @click="finishLecture"
+            >
+              {{ saving ? copy.loading : copy.complete }}
+            </button>
+            <button
+              v-else-if="activeIndex < steps.length - 1"
+              type="button"
+              class="primary-action"
+              @click="go(steps[activeIndex + 1])"
+            >
+              {{ copy.next }} →
+            </button>
+            <NuxtLink v-else :to="overviewLink" class="primary-action">{{ copy.finish }}</NuxtLink>
+          </footer>
+        </article>
+        <aside class="player-curriculum">
+          <details open>
+            <summary>{{ copy.contents }}</summary>
+            <CourseCurriculum :data="course" @watch="openLecture" />
+          </details>
+        </aside>
+      </div>
+    </template>
+    <section v-else class="player-state">
+      <NuxtLink
+        v-if="course?.learning_path_id"
+        :to="{ path: '/learn', query: { path: course.learning_path_id } }"
+        class="primary-action"
+        >{{ copy.continue }}</NuxtLink
       >
-        <XCircleIcon
-          @click="showCurriculum = false"
-          class="slide-right fixed right-[285px] h-10 w-10 cursor-pointer text-accent top-card"
-        />
-
-        <CourseCurriculum
-          class="slide-right card m-0 h-fit max-w-[300px] bg-secondary style-card sm:max-w-[350px]"
-          :data="course"
-          @watch="watchThisLecture($event)"
-        />
-      </section>
-    </Transition>
-  </div>
+      <p v-else>{{ copy.noLesson }}</p>
+    </section>
+  </main>
 </template>
 
-<script lang="ts">
-import { useI18n } from "vue-i18n";
-import { XCircleIcon } from "@heroicons/vue/24/solid";
-import { QuizInUnseenLecture } from "~/types/courseTypes";
-import { useMatchingsForLectures, useMatchingsInLecture } from "~/composables/matching";
+<script setup lang="ts">
+import type { Course } from "~/types/courseTypes";
+import {
+  courseSteps,
+  courseResumeStep,
+  courseProgress,
+  courseWatchLocation,
+  lectureHasVideo,
+  type CourseStep,
+} from "~/utils/courseJourney";
 
-definePageMeta({
-  middleware: ["auth"],
+definePageMeta({ middleware: ["auth"] });
+const route = useRoute();
+const router = useRouter();
+const user = useUser();
+const session = useSession();
+const { copy } = useCourseExperienceCopy();
+const course = ref<Course | null>(null);
+const loading = ref(true);
+const error = ref(false);
+const saving = ref(false);
+const saveError = ref(false);
+const id = computed(() => String(route.params.id || ""));
+const skillID = computed(() =>
+  typeof route.query.skillID === "string" ? route.query.skillID : ""
+);
+const subSkillID = computed(() =>
+  typeof route.query.subSkillID === "string" ? route.query.subSkillID : ""
+);
+const overviewLink = computed(() => ({
+  path: `/courses/${encodeURIComponent(id.value)}`,
+  query: {
+    ...(skillID.value ? { skillID: skillID.value } : {}),
+    ...(subSkillID.value ? { subSkillID: subSkillID.value } : {}),
+  },
+}));
+const steps = computed(() => courseSteps(course.value));
+const active = computed(
+  () =>
+    steps.value.find(
+      (step) => step.id === route.query.lecture && step.sectionID === route.query.section
+    ) || courseResumeStep(course.value)
+);
+const activeIndex = computed(() => steps.value.findIndex((step) => step.id === active.value?.id));
+const activeSection = computed(() =>
+  course.value?.sections.find((section) => section.id === active.value?.sectionID)
+);
+const progress = computed(() => courseProgress(course.value));
+const hasVideo = computed(() => lectureHasVideo(active.value));
+useHead(() => ({ title: active.value?.title || course.value?.title || copy.value.course }));
+let generation = 0;
+let alive = true;
+async function load() {
+  const ticket = ++generation;
+  const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
+  const current = () =>
+    alive &&
+    ticket === generation &&
+    owner === `${user.value?.id || ""}:${session.value?.id || ""}`;
+  loading.value = true;
+  error.value = false;
+  course.value = null;
+  try {
+    const result = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
+    if (!current()) return;
+    course.value = result;
+    if (active.value) await go(active.value);
+    if (!current()) return;
+    // This visit starts an existing entitled course; it does not buy or re-enrol it.
+    await POST(`/skills/courses/${encodeURIComponent(id.value)}/watch`);
+  } catch {
+    if (current()) error.value = true;
+  } finally {
+    if (current()) loading.value = false;
+  }
+}
+async function go(step: CourseStep) {
+  saveError.value = false;
+  await router.replace(
+    courseWatchLocation(id.value, step, { skillID: skillID.value, subSkillID: subSkillID.value })
+  );
+}
+function openLecture({ sectionID, lectureID }: { sectionID: string; lectureID: string }) {
+  if (saving.value) return;
+  const step = steps.value.find((step) => step.sectionID === sectionID && step.id === lectureID);
+  if (step) go(step);
+}
+async function finishLecture() {
+  if (!active.value || saving.value) return;
+  const step = active.value;
+  const ticket = generation;
+  const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
+  const current = () =>
+    alive &&
+    ticket === generation &&
+    owner === `${user.value?.id || ""}:${session.value?.id || ""}`;
+  saving.value = true;
+  saveError.value = false;
+  try {
+    await PUT(
+      `/skills/courses/${encodeURIComponent(id.value)}/lectures/${encodeURIComponent(step.id)}/complete`
+    );
+    if (!current()) return;
+    const stored = course.value?.sections
+      .flatMap((section) => section.lectures)
+      .find((lecture) => lecture.id === step.id);
+    if (stored) stored.completed = true;
+    const next = steps.value[steps.value.findIndex((item) => item.id === step.id) + 1];
+    if (next && active.value?.id === step.id) await go(next);
+  } catch {
+    // A lost response may still have recorded completion. Re-read before offering a retry;
+    // never automatically repeat a reward-bearing mutation.
+    if (!current()) return;
+    try {
+      const refreshed = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
+      if (!current()) return;
+      const recorded = courseSteps(refreshed).find((item) => item.id === step.id)?.completed;
+      course.value = refreshed;
+      saveError.value = !recorded;
+    } catch {
+      if (current()) saveError.value = true;
+    }
+  } finally {
+    if (current()) saving.value = false;
+  }
+}
+onMounted(load);
+watch([id, () => user.value?.id, () => session.value?.id], load, { flush: "sync" });
+onBeforeRouteLeave(() => !saving.value);
+onBeforeUnmount(() => {
+  alive = false;
+  generation++;
 });
-
-export default {
-  components: {
-    XCircleIcon,
-  },
-  head: {
-    title: "Watch Course",
-  },
-  setup() {
-    const { t } = useI18n();
-    const loading = ref(true);
-    const callActive = ref(false);
-
-    const route = useRoute();
-    const router = useRouter();
-
-    const course = useCourse();
-    const taskId = ref();
-    const subtasks = useSubTasksInQuiz();
-    const codingChallenges = useAllCodingChallengesInATask();
-
-    const allQuizzesInfo = useQuizzes();
-    const allQuizzes = useQuizzesInCourse();
-    const quizzesInLecture = useQuizzesInLecture();
-    const unseenLectureQuizzes = ref<QuizInUnseenLecture[]>([]);
-    const matches = useMatchingsForLectures();
-
-    const currentMatches = computed(() =>
-      matches.value.filter((match) => match.lectureId === activeLecture?.value?.id)
-    );
-
-    const showCurriculum = ref(false);
-
-    const premiumInfo: any = usePremiumInfo();
-    const isPremium: any = computed(() => {
-      return premiumInfo.value?.premium;
-    });
-
-    const heartsInfo: any = useHeartInfo();
-    const hearts: any = computed(() => {
-      return heartsInfo.value?.hearts ?? 0;
-    });
-
-    const selectedButton = ref(0);
-    const buttonOptions = computed(() => [
-      { name: "Buttons.Video", disabled: false },
-      { name: "Buttons.Quiz", disabled: !quizzesInLecture.value.length },
-      { name: "Buttons.Challenge", disabled: !codingChallenges.value.length },
-      { name: "Buttons.Matching", disabled: !currentMatches.value.length },
-    ]);
-
-    const activeSection = computed(() => {
-      const sectionID = <string>(route.query?.section ?? "");
-      let sections: any[] = course.value?.sections ?? [];
-      if (!!!sections || sections.length <= 0) return null;
-      let section = sections.find((sec) => sec.id == sectionID);
-      return !!section ? section : null;
-    });
-    const activeLecture = computed(() => {
-      const lectureID = <string>(route.query?.lecture ?? "");
-      let lectures: any[] = activeSection.value?.lectures ?? [];
-      if (!!!lectures || lectures.length <= 0) return null;
-
-      let lecture = lectures.find((lec) => lec.id == lectureID);
-
-      return !!lecture ? lecture : null;
-    });
-    const courseId: any = computed(() => {
-      return route.params.id;
-    });
-    const skillID = computed(() => {
-      return <string>(route.query?.skillID ?? "");
-    });
-    const subSkillID = computed(() => {
-      return <string>(route.query?.subSkillID ?? "");
-    });
-
-    function solveCodingChallenge(codingChallenge: any) {
-      if (!isPremium.value && hearts.value < 2) {
-        return openSnackbar("info", "Error.NotEnoughHearts");
-      } else if (isPremium.value || hearts.value >= 2) {
-        router.push(
-          `/challenges/QuizCodingChallenge-${codingChallenge?.task_id}?codingChallenge=${codingChallenge?.id}&solveFrom=${"course"}`
-        );
-        if (!isPremium.value) return openSnackbar("info", "Body.BuyCodingChallnge");
-      }
-    }
-
-    async function fnGetCodingChallengeInQuiz(quizId: any) {
-      const [success, error] = await getAllCodingChallengesInATask(quizId);
-      if (error) {
-        setLoading(false);
-        openSnackbar("error", error);
-      }
-    }
-
-    async function fnGetSubtasksInQuiz(quizId: any) {
-      const [success, error] = await getSubTasksInQuiz(quizId);
-      if (error) {
-        setLoading(false);
-        openSnackbar("error", error);
-      }
-    }
-
-    async function fnGetMatchingsInQuiz(quizId: any) {
-      const [success, error] = await getMatchingsInTask(quizId);
-      if (error) {
-        setLoading(false);
-        openSnackbar("error", error);
-      }
-    }
-
-    watch(
-      () => selectedButton.value,
-      (newValue) => {
-        localStorage.setItem("selectedButton", newValue.toString());
-      }
-    );
-
-    onMounted(async () => {
-      loading.value = true;
-      const courseID = <string>(route.params?.id ?? "");
-
-      let a = localStorage.getItem("selectedButton");
-      selectedButton.value = Number(a);
-
-      if (!!!courseID) {
-        loading.value = false;
-        return;
-      }
-      await Promise.all([getCourseByID(courseID), watchCourse(courseID)]);
-
-      loading.value = false;
-    });
-
-    onBeforeUnmount(() => {
-      localStorage.removeItem("selectedButton");
-    });
-
-    function watchThisLecture({ sectionID, lectureID }: any) {
-      router.replace({
-        path: route.path,
-        query: {
-          section: sectionID,
-          lecture: lectureID,
-          skillID: skillID.value,
-          subSkillID: subSkillID.value,
-        },
-      });
-
-      showCurriculum.value = false;
-    }
-    watch(
-      () => [activeLecture.value, activeSection.value],
-      async () => {
-        loading.value = true;
-        if (!callActive.value) {
-          callActive.value = true;
-          await getQuizzes(course.value.id, activeSection.value.id, activeLecture.value.id);
-          await getQuizzesInUnfinishedLectures();
-        }
-
-        callActive.value = false;
-        loading.value = false;
-      }
-    );
-
-    const getQuizzesInUnfinishedLectures = async () => {
-      let testSections: QuizInUnseenLecture[] = [];
-      allQuizzesInfo.value.forEach((info) => {
-        course.value.sections.find((section) => {
-          section.lectures.forEach((lecture) => {
-            if (lecture.id == info.lecture_id) {
-              testSections.push({
-                section: section.id ?? "",
-                sectionTitle: section.title,
-                lectureId: lecture.id,
-                lecture: lecture.title,
-                lectureFinished: lecture.completed,
-              });
-            }
-          });
-        });
-      });
-      unseenLectureQuizzes.value = testSections.filter((section) => !section.lectureFinished);
-    };
-
-    function getSectionNumber(sectionString: string): number {
-      if (sectionString === "section") {
-        return 1; // Return 1 for "section"
-      }
-
-      const sectionRegex = /^section(\d+)$/;
-      const match = sectionRegex.exec(sectionString);
-
-      if (match) {
-        return parseInt(match[1]); // Add 1 to the parsed section number
-      } else {
-        throw new Error(`Invalid section string: ${sectionString}`);
-      }
-    }
-
-    return {
-      t,
-      loading,
-      course,
-      activeSection,
-      activeLecture,
-      showCurriculum,
-      watchThisLecture,
-      courseId,
-      selectedButton,
-      buttonOptions,
-      solveCodingChallenge,
-      subtasks,
-      codingChallenges,
-      skillID,
-      subSkillID,
-      allQuizzes,
-      quizzesInLecture,
-      unseenLectureQuizzes,
-      getSectionNumber,
-      currentMatches,
-    };
-  },
-};
 </script>
 
 <style scoped>
-.slide-right {
-  animation: slideRight 0.25s ease-out forwards;
+.course-player {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  max-width: 1440px;
+  margin: auto;
+  padding: 2rem clamp(1rem, 3vw, 3rem) 5rem;
+  display: grid;
+  gap: 2rem;
+  color: var(--color-body);
 }
-
-@keyframes slideRight {
-  0% {
-    opacity: 0;
-    transform: translateX(30px);
+.course-player :deep(:is(p, h1, h2, h3, li, button, summary, span, a)) {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+.back-link {
+  width: fit-content;
+  color: var(--color-subheading);
+}
+.player-heading p {
+  font-size: 0.85rem;
+  color: var(--color-subheading);
+  margin: 0 0 0.75rem;
+}
+h1 {
+  color: var(--color-heading);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.2;
+  margin: 0 0 1.3rem;
+}
+progress {
+  width: min(100%, 34rem);
+  height: 0.35rem;
+  accent-color: var(--color-accent);
+}
+.player-content {
+  display: grid;
+  gap: 2rem;
+}
+.lesson-content {
+  min-width: 0;
+  display: grid;
+  gap: 2rem;
+  align-content: start;
+}
+.lesson-description {
+  white-space: pre-line;
+  max-width: 75ch;
+  line-height: 1.8;
+}
+.lesson-practice {
+  padding: 1.5rem;
+  border: 1px solid var(--color-tertiary);
+  border-radius: 1rem;
+}
+h2 {
+  font-size: 1.25rem;
+  color: var(--color-heading);
+  margin-bottom: 1rem;
+}
+.player-curriculum {
+  border: 1px solid var(--color-tertiary);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  align-self: start;
+}
+.player-curriculum > details > summary {
+  color: var(--color-heading);
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+.lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.primary-action {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  border-radius: 0.7rem;
+  padding: 0.85rem 1.3rem;
+  font-weight: 650;
+  text-align: center;
+}
+.secondary-action {
+  padding: 0.85rem 0;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.save-error {
+  color: var(--color-error);
+}
+.player-state {
+  padding: 2rem 0;
+}
+.player-state button {
+  color: var(--color-accent);
+  padding: 0.75rem 0;
+}
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+@media (min-width: 1100px) {
+  .player-content {
+    grid-template-columns: minmax(0, 1fr) 310px;
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+  .player-curriculum {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .lesson-practice {
+    padding: 1rem;
+  }
+  .lesson-actions .primary-action {
+    flex: 1;
   }
 }
 </style>

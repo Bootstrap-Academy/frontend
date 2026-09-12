@@ -86,11 +86,6 @@
     >
       {{ t("Buttons.ContinueToOrderSummary") }}
     </Btn>
-
-    <NuxtLink to="/morphcoins" class="mx-auto mt-card">
-      <span class="text-accent">{{ t("Links.GetMorphCoins") }}</span>
-      {{ t("Links.OtherWays") }}
-    </NuxtLink>
   </form>
 </template>
 

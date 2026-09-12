@@ -26,12 +26,6 @@
       </p>
     </header>
 
-    <NuxtLink :to="`/challenges/${data?.id ?? ''}/create`" v-if="user?.admin">
-      <Btn :icon="PlusIcon" class="mt-box" sm>
-        {{ t("Buttons.AddChallenge") }}
-      </Btn>
-    </NuxtLink>
-
     <div class="grid grid-cols-1 gap-box pt-box" v-show="showChallenges">
       <div v-if="loading" class="box bg-secondary px-4 style-box xl:px-5">
         <header
@@ -65,7 +59,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import { PlusIcon, TrophyIcon } from "@heroicons/vue/24/outline";
+import { TrophyIcon } from "@heroicons/vue/24/outline";
 import type { PropType } from "vue";
 
 export default defineComponent({
@@ -73,7 +67,7 @@ export default defineComponent({
     data: { type: Object as PropType<any>, default: null },
     xp: { type: Object, default: null },
   },
-  components: { TrophyIcon, PlusIcon },
+  components: { TrophyIcon },
 
   setup(props) {
     const { t } = useI18n();
@@ -116,10 +110,6 @@ export default defineComponent({
       return activeCategory.value == category.value;
     });
 
-    const canCreate = computed(() => {
-      return props.xp?.total_level >= 20;
-    });
-
     function toggleShowChallenges() {
       router.replace({
         path: route.path,
@@ -137,8 +127,6 @@ export default defineComponent({
       challenges,
       showChallenges,
       toggleShowChallenges,
-      canCreate,
-      PlusIcon,
       user,
       categoryStats,
       progress,

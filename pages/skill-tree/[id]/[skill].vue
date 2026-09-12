@@ -1,203 +1,282 @@
 <template>
-  <main
-    class="h-screen-main min container-fluid relative grid grid-cols-1 grid-rows-[auto_auto_auto_1fr] place-content-start place-items-center gap-container pb-container lg:grid-cols-[300px_1fr_300px] lg:grid-rows-[auto_1fr] lg:place-content-center"
-  >
-    <Head>
-      <Title>Skill Details - {{ skillName }}</Title>
-    </Head>
-
-    <SkillTreeHeader
-      class="h-fit justify-self-start pt-card lg:col-span-3"
-      :absolute="false"
-      no-zoom-level
-      :breadcrumbs="breadcrumbs"
-    />
-
-    <SkillTreeNodeDetailsStepper
-      class="h-fit"
-      :subSkillID="subSkillID"
-      :skillID="rootSkillID"
-      :activeStepper="activeStepper"
-      @activeStepper="activeStepper = $event"
-      :courses="courses"
-      :coachings="coachings"
-      :webinars="webinars"
-      :quizzes="quizzes"
-      :matchings="matchings"
-    />
-    <div class="h-fit">
-      <SkillTreeNodeSvg
-        :size="nodeSize"
-        :node="subSkill"
-        :active="true"
-        :completed="subSkill?.completed ?? false"
-        class="mx-auto"
-        :navigate="false"
-        :isBookmarked="isNodeBookmarked"
-        @bookmarked="toggleBookmark"
-      />
-      <h6 class="text-heading-4 text-center mt-card-sm lg:text-heading-3 xl:text-heading-2">
-        {{ subSkill?.name ?? "" }}
-      </h6>
-    </div>
-
-    <SkillTreeNodeDetailsStepperContent
-      class="h-fit"
-      :activeStepper="activeStepper"
-      :subSkillID="subSkillID"
-      :skillID="rootSkillID"
-      :courses="courses"
-      :coachings="coachings"
-      :webinars="webinars"
-      :quizzes="quizzes"
-      :matchings="matchings"
-    />
+  <main class="skill-learning-page">
+    <SkillTreeHeader :absolute="false" no-zoom-level :breadcrumbs="breadcrumbs" />
+    <p v-if="loading" class="skill-state" role="status">{{ copy.loading }}</p>
+    <section v-else-if="error" class="skill-state" role="alert">
+      <p>{{ copy.loadError }}</p>
+      <button type="button" @click="load">{{ copy.retry }}</button>
+    </section>
+    <template v-else>
+      <header class="skill-hero">
+        <div>
+          <p class="eyebrow">{{ copy.learning }}</p>
+          <h1>{{ skill?.name || skillName }}</h1>
+          <p>{{ copy.topicIntro }}</p>
+        </div>
+        <SkillTreeNodeSvg
+          v-if="skill"
+          :size="140"
+          :node="skill"
+          :active="true"
+          :completed="skill?.completed || false"
+          :navigate="false"
+          :is-bookmarked="bookmarked"
+          @bookmarked="toggleBookmark"
+        />
+      </header>
+      <section v-if="courses.length" aria-labelledby="skill-courses-title">
+        <h2 id="skill-courses-title">{{ copy.topicCourses }}</h2>
+        <div class="topic-courses">
+          <NuxtLink
+            v-for="course in courses"
+            :key="course.id"
+            :to="courseLink(course.id)"
+            class="topic-course"
+            @click="rememberCourse(course.id)"
+          >
+            <img v-if="course.image" :src="course.image" alt="" />
+            <div>
+              <h3>{{ course.title }}</h3>
+              <p v-if="course.learning_goals?.[0]">{{ course.learning_goals[0] }}</p>
+              <p v-else-if="course.description" class="course-preview">{{ course.description }}</p>
+              <span class="course-open">{{ copy.open }} <span aria-hidden="true">→</span></span>
+            </div>
+          </NuxtLink>
+        </div>
+      </section>
+      <p v-else class="skill-state">{{ copy.topicEmpty }}</p>
+      <section v-if="courseError" class="skill-state" role="alert">
+        <p>{{ copy.loadError }}</p>
+        <button type="button" @click="load">{{ copy.retry }}</button>
+      </section>
+      <details
+        class="topic-practice"
+        @toggle="practiceOpened ||= ($event.target as HTMLDetailsElement).open"
+      >
+        <summary>{{ copy.browsePractice }}</summary>
+        <CoursePractice
+          v-if="practiceOpened"
+          source="skill"
+          :source-id="subSkillID"
+          :skill-i-d="rootSkillID"
+          :sub-skill-i-d="subSkillID"
+        />
+      </details>
+    </template>
   </main>
 </template>
 
-<script lang="ts">
-import { useI18n } from "vue-i18n";
-import { getQuizzesInSkill, useQuizzes } from "~~/composables/quizzes";
-
-definePageMeta({
-  middleware: ["auth"],
+<script setup lang="ts">
+import type { Course } from "~/types/courseTypes";
+definePageMeta({ middleware: ["auth"] });
+const { copy, localizeCourse } = useCourseExperienceCopy();
+const route = useRoute();
+const user = useUser();
+const session = useSession();
+const rootSkillID = computed(() => String(route.params.id || ""));
+const subSkillID = computed(() => String(route.params.skill || ""));
+const skillName = computed(() => subSkillID.value.replaceAll("_", " "));
+const skill = ref<any>(null);
+const originalCourses = ref<Course[]>([]);
+const courses = computed(() => originalCourses.value.map(localizeCourse));
+const bookmarked = ref(false);
+const loading = ref(true);
+const error = ref(false);
+const courseError = ref(false);
+const practiceOpened = ref(false);
+const breadcrumbs = computed(() => [
+  { label: "Headings.RootSkillTree", to: "/skill-tree" },
+  {
+    label: rootSkillID.value.replaceAll("_", " "),
+    to: `/skill-tree/${encodeURIComponent(rootSkillID.value)}`,
+  },
+  { label: skill.value?.name || skillName.value },
+]);
+useHead(() => ({ title: skill.value?.name || skillName.value }));
+let generation = 0;
+let alive = true;
+async function load() {
+  const ticket = ++generation;
+  const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
+  const current = () =>
+    alive &&
+    ticket === generation &&
+    owner === `${user.value?.id || ""}:${session.value?.id || ""}`;
+  loading.value = true;
+  error.value = courseError.value = false;
+  practiceOpened.value = false;
+  originalCourses.value = [];
+  skill.value = null;
+  try {
+    const tree = await GET(`/skills/skilltree/${encodeURIComponent(rootSkillID.value)}`);
+    if (!current()) return;
+    const selected = tree.skills?.find((item: any) => item.id === subSkillID.value);
+    if (!selected) throw new Error("Unknown skill");
+    skill.value = selected;
+    bookmarked.value = !!selected.is_bookmarked;
+    const responses = await Promise.allSettled(
+      (selected.courses || []).map((id: string) =>
+        GET(`/skills/courses/${encodeURIComponent(id)}/summary`)
+      )
+    );
+    if (!current()) return;
+    courseError.value = responses.some((response) => response.status === "rejected");
+    originalCourses.value = responses
+      .flatMap((response) =>
+        response.status === "fulfilled" && response.value ? [response.value as Course] : []
+      )
+      .sort((a, b) => Number(!!b.learning_path_id) - Number(!!a.learning_path_id));
+  } catch {
+    if (current()) error.value = true;
+  } finally {
+    if (current()) loading.value = false;
+  }
+}
+async function toggleBookmark(value: boolean) {
+  const ticket = generation;
+  try {
+    if (value) await createBookmark(rootSkillID.value, subSkillID.value);
+    else await deleteBookmark(rootSkillID.value, subSkillID.value);
+    if (alive && ticket === generation) bookmarked.value = value;
+  } catch {
+    openSnackbar("error", copy.value.errorTitle);
+  }
+}
+const courseLink = (id: string) => ({
+  path: `/courses/${encodeURIComponent(id)}`,
+  query: { skillID: rootSkillID.value, subSkillID: subSkillID.value },
 });
-
-export default defineComponent({
-  head: {
-    title: "Sub Skill Details",
-  },
-  setup() {
-    const { t } = useI18n();
-
-    const activeStepper = ref(0);
-
-    const subSkillTree: Ref<any> = useSubSkillTree();
-
-    const isNodeBookmarked = ref(false);
-
-    const courses = useCourses();
-    const coachings = useCoachings();
-    const webinars = useWebinars();
-    const quizzes = useQuizzes();
-    const matchings = useMatchings();
-    const route = useRoute();
-
-    const rootSkillID = computed(() => <string>(route?.params?.id ?? ""));
-    const subTreeName = computed(() => rootSkillID.value.replace(/_/g, " "));
-    const subSkillID = computed(() => <string>(route?.params?.skill ?? ""));
-    const skillName = computed(() => subSkillID.value.replace(/_/g, " "));
-
-    const subSkill = computed(() => {
-      let skills: any[] = subSkillTree.value?.skills ?? [];
-      let sub_skill = skills.find((skill) => skill.id == subSkillID.value);
-      isNodeBookmarked.value = sub_skill?.is_bookmarked ?? false;
-      return sub_skill;
-    });
-
-    const courseIDs = computed(() => subSkill.value?.courses ?? []);
-
-    const breadcrumbs = computed(() => {
-      return [
-        {
-          label: "Headings.RootSkillTree",
-          to: "/skill-tree",
-        },
-        {
-          label: subTreeName.value,
-          to: `/skill-tree/${rootSkillID.value}`,
-        },
-        {
-          label: skillName.value,
-        },
-      ];
-    });
-
-    const loading = ref(true);
-
-    const windowWidth = ref(process.client && window ? window.innerWidth : 0);
-
-    function updateWindowWidth() {
-      windowWidth.value = window?.innerWidth ?? 0;
-
-      if (windowWidth.value >= 1440) {
-        nodeSize.value = 300;
-      } else if (windowWidth.value >= 1024 && windowWidth.value < 1440) {
-        nodeSize.value = 250;
-      } else if (windowWidth.value >= 524 && windowWidth.value < 1024) {
-        nodeSize.value = 200;
-      } else {
-        nodeSize.value = 150;
-      }
-    }
-
-    const nodeSize = ref(150);
-
-    async function toggleBookmark(isBookmarked: boolean) {
-      isNodeBookmarked.value = isBookmarked;
-
-      try {
-        if (isBookmarked) {
-          await createBookmark(subSkill.value.parent_id, subSkill.value.id);
-        } else {
-          await deleteBookmark(subSkill.value.parent_id, subSkill.value.id);
-        }
-
-        isNodeBookmarked.value = isBookmarked;
-      } catch (error) {
-        isNodeBookmarked.value = !isBookmarked;
-        console.error(`Bookmark ${isBookmarked ? "creation" : "deletion"} failed!`);
-      }
-    }
-
-    onMounted(async () => {
-      if (window) {
-        updateWindowWidth();
-        window.addEventListener("resize", updateWindowWidth);
-      }
-
-      courses.value = [];
-
-      const [success, error] = await getSubSkillTree(rootSkillID.value);
-
-      if (!!success) {
-        await Promise.all([
-          getTheseCourses(courseIDs.value),
-          getCoachingsForThisSubSkill(subSkillID.value),
-          getWebinarsForThisSubSkill(subSkillID.value),
-          getQuizzesInSkill(subSkillID.value),
-          getMatchingsInSkill(subSkillID.value),
-        ]);
-      }
-
-      loading.value = false;
-    });
-
-    onUnmounted(() => {
-      if (window) {
-        window.removeEventListener("resize", updateWindowWidth);
-      }
-    });
-
-    return {
-      t,
-      activeStepper,
-      loading,
-      courses,
-      coachings,
-      webinars,
-      subSkill,
-      nodeSize,
-      rootSkillID,
-      subTreeName,
-      subSkillID,
-      skillName,
-      breadcrumbs,
-      quizzes,
-      matchings,
-      toggleBookmark,
-      isNodeBookmarked,
-    };
-  },
+function rememberCourse(courseId: string) {
+  useAppCookie("lastViewCourse").value = {
+    courseId,
+    skillID: rootSkillID.value,
+    subSkillID: subSkillID.value,
+  };
+}
+onMounted(load);
+watch([rootSkillID, subSkillID, () => user.value?.id, () => session.value?.id], load);
+onBeforeUnmount(() => {
+  alive = false;
+  generation++;
 });
 </script>
+
+<style scoped>
+.skill-learning-page {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 4vw, 3rem) 5rem;
+  display: grid;
+  gap: 2.5rem;
+  color: var(--color-body);
+}
+.skill-learning-page :deep(:is(p, h1, h2, h3, li, button, summary)) {
+  font-family: inherit;
+}
+.skill-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.skill-hero > div {
+  max-width: 60ch;
+}
+.eyebrow {
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  margin: 0 0 0.65rem;
+}
+h1 {
+  color: var(--color-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin: 0 0 1rem;
+  overflow-wrap: anywhere;
+}
+h2 {
+  color: var(--color-heading);
+  font-size: 1.4rem;
+  margin-bottom: 1.1rem;
+}
+.topic-courses {
+  display: grid;
+  gap: 1rem;
+}
+.topic-course {
+  display: flex;
+  gap: 1.3rem;
+  padding: 1.4rem;
+  align-items: center;
+  border: 1px solid var(--color-tertiary);
+  border-radius: 1.15rem;
+  background: var(--color-secondary);
+}
+.topic-course:hover {
+  border-color: var(--color-accent);
+}
+.topic-course img {
+  width: 100px;
+  height: 100px;
+  border-radius: 0.75rem;
+  object-fit: cover;
+}
+.topic-course h3 {
+  color: var(--color-heading);
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+.topic-course p {
+  margin: 0.6rem 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.course-preview {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.course-open {
+  display: inline-flex;
+  gap: 0.5rem;
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  margin-top: 0.7rem;
+}
+.topic-practice {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-tertiary);
+}
+.topic-practice summary {
+  color: var(--color-subheading);
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+}
+.skill-state button {
+  padding: 0.75rem 0;
+  color: var(--color-accent);
+}
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 5px;
+}
+@media (max-width: 600px) {
+  .skill-hero > :last-child:not(:first-child) {
+    display: none;
+  }
+  .topic-course img {
+    width: 64px;
+    height: 64px;
+  }
+  .topic-course {
+    padding: 1rem;
+    align-items: start;
+    gap: 1rem;
+  }
+}
+</style>

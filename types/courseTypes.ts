@@ -10,6 +10,16 @@ export class Course {
   id: string = "";
   image: string = "";
   language: string = "";
+  learning_path_id: string | null = null;
+  translations: Record<
+    string,
+    {
+      title?: string | null;
+      description?: string | null;
+      learning_goals?: string[] | null;
+      requirements?: string[] | null;
+    }
+  > = {};
   last_update: number = 0;
   learning_goals: unknown[] = [];
   price: number = 0;
@@ -70,4 +80,25 @@ export class QuizInUnseenLecture {
   lecture: string = "";
   lectureId: string = "";
   lectureFinished: boolean = false;
+}
+
+export interface CourseLearningPlan {
+  path: {
+    id: string;
+    title: { de: string; en: string };
+    direction_id?: string | null;
+    chapters?: import("./learningRooms").LearningChapter[];
+  };
+  units: {
+    id: string;
+    chapter_id?: string | null;
+    title: { de: string; en: string };
+    room: string;
+    status: "new" | "in_progress" | "completed" | "skipped";
+    result: { kind: "introduced" | "solved" } | null;
+    available: boolean;
+  }[];
+  next: import("./learningRooms").RoomEnvelope | null;
+  completed: boolean;
+  empty_reason: "completed" | "unavailable" | "prerequisites" | null;
 }

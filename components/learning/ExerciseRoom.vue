@@ -4,7 +4,7 @@
     <template v-else-if="view.data">
       <div
         class="exercise-description prose-invert"
-        v-html="$md.render(view.data.question || view.data.description || '')"
+        v-html="$md.render(presentation.question || presentation.description || '')"
       />
       <fieldset v-if="reference.type === 'multiple_choice'" :disabled="locked">
         <legend>
@@ -13,7 +13,7 @@
           }}
         </legend>
         <label
-          v-for="(answer, index) in view.data.answers || []"
+          v-for="(answer, index) in presentation.answers || []"
           :key="index"
           class="answer-option"
         >
@@ -28,7 +28,7 @@
       </fieldset>
       <fieldset v-else-if="reference.type === 'matching'" :disabled="locked">
         <legend>{{ t("LearningRooms.MatchPairs") }}</legend>
-        <div v-for="(left, index) in view.data.left || []" :key="index" class="matching-pair">
+        <div v-for="(left, index) in presentation.left || []" :key="index" class="matching-pair">
           <label :for="`${inputId}-${index}`">{{ left }}</label>
           <select
             :id="`${inputId}-${index}`"
@@ -37,7 +37,7 @@
           >
             <option :value="-1">{{ t("LearningRooms.ChooseMatch") }}</option>
             <option
-              v-for="(right, rightIndex) in view.data.right || []"
+              v-for="(right, rightIndex) in presentation.right || []"
               :key="rightIndex"
               :value="rightIndex"
             >
@@ -74,6 +74,29 @@
           </div>
         </details>
       </template>
+      <aside
+        v-if="hints.length && !['correct', 'pending', 'uncertain'].includes(view.phase)"
+        class="exercise-hints"
+      >
+        <p v-for="(hint, index) in hints.slice(0, hintLevel)" :key="index">{{ hint }}</p>
+        <button
+          v-if="hintLevel < hints.length"
+          type="button"
+          class="skip-exercise"
+          :disabled="disabled || view.posting"
+          @click="update({ hint_level: hintLevel + 1 })"
+        >
+          {{
+            locale.startsWith("en")
+              ? hintLevel
+                ? "Another hint"
+                : "Give me a hint"
+              : hintLevel
+                ? "Noch ein Tipp"
+                : "Gib mir einen Tipp"
+          }}
+        </button>
+      </aside>
       <div v-if="view.phase === 'correct'" class="exercise-result correct" role="status">
         <p>{{ t("LearningRooms.Correct") }}</p>
         <button
@@ -185,7 +208,7 @@ const emit = defineEmits<{
   skip: [];
   posting: [active: boolean];
 }>();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const inputId = useId();
 const view = shallowRef<ExerciseView>({
   data: null,
@@ -199,6 +222,34 @@ const view = shallowRef<ExerciseView>({
   posting: false,
 });
 const draft = ref<ExerciseDraft>({ code: props.content?.initial_code || "", ...props.state });
+const presentation = computed(() => {
+  const original = view.value.data || {};
+  const copy = props.content || {};
+  const translated = { ...original };
+  for (const field of ["question", "description"] as const) {
+    if (typeof copy[field] === "string") translated[field] = copy[field];
+  }
+  for (const field of ["answers", "left", "right"] as const) {
+    if (
+      Array.isArray(copy[field]) &&
+      copy[field].length === original[field]?.length &&
+      copy[field].every((item: unknown) => typeof item === "string")
+    ) {
+      translated[field] = copy[field];
+    }
+  }
+  return translated;
+});
+const hints = computed<string[]>(() =>
+  Array.isArray(props.content?.hints)
+    ? props.content.hints.filter((item: unknown) => typeof item === "string")
+    : []
+);
+const hintLevel = computed(() =>
+  Number.isInteger(draft.value.hint_level)
+    ? Math.min(hints.value.length, Math.max(0, draft.value.hint_level || 0))
+    : 0
+);
 const preparing = ref(false);
 const heartInfo = useHeartInfo();
 let alive = true;
@@ -347,6 +398,14 @@ onBeforeUnmount(() => {
   gap: 22px;
   min-width: 0;
 }
+.exercise-hints {
+  display: grid;
+  gap: 12px;
+  padding: 16px 20px;
+  border-left: 3px solid #36dfbe;
+  background: #142940;
+  line-height: 1.7;
+}
 .exercise-description {
   overflow-wrap: anywhere;
   line-height: 1.65;
@@ -354,6 +413,11 @@ onBeforeUnmount(() => {
 .exercise-description :deep(pre) {
   overflow-x: auto;
   max-width: 100%;
+  margin: 16px 0;
+  padding: 18px 20px;
+  border: 1px solid #344c67;
+  border-radius: 12px;
+  background: #0c1b2c;
 }
 fieldset {
   display: grid;

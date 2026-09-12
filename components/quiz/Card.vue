@@ -7,14 +7,6 @@
       v-if="data?.solved"
       class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
     />
-    <PencilSquareIcon
-      v-else-if="user?.id == data?.creator && user.admin"
-      class="absolute -right-1 -top-1.5 h-8 w-8 rounded-full bg-light p-1 text-accent"
-    />
-    <EyeIcon
-      v-else-if="user?.id == data?.creator && !user.admin"
-      class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
-    />
     <h3 class="text-heading-4">Q). <span v-html="$md.render(data?.question ?? '')"></span></h3>
 
     <div class="flex items-center justify-between gap-box">
@@ -45,8 +37,7 @@
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { CheckIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { LockClosedIcon } from "@heroicons/vue/24/outline";
+import { CheckIcon } from "@heroicons/vue/24/outline";
 import Tooltip from "@/components/Tooltip.vue";
 export default defineComponent({
   props: {
@@ -56,7 +47,6 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    const user: any = useUser();
 
     const rootSkillID = computed(() => {
       return <string>(route?.params?.id ?? "");
@@ -92,9 +82,9 @@ export default defineComponent({
         `/quizzes/solve-${solveId}?quizzesFrom=${quizzesFrom}&querySubTaskId=${id}&taskId=${task_id}&rootSkillID=${_skillID}&subSkillID=${_subSkillID}`
       );
     }
-    return { t, solveThis, user };
+    return { t, solveThis };
   },
-  components: { CheckIcon, LockClosedIcon, PencilSquareIcon, EyeIcon },
+  components: { CheckIcon },
 });
 </script>
 
