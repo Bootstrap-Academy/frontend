@@ -41,7 +41,7 @@ const deferred = () => {
   return { promise, resolve };
 };
 
-function fixture(t, get) {
+function fixture(t, get, roomsEnabled = false) {
   const user = vue.ref({ id: "A", name: "Person A" });
   const session = vue.ref({ id: "session-A" });
   const accessToken = vue.ref("token-A");
@@ -94,6 +94,8 @@ function fixture(t, get) {
         watch: vue.watch,
         ...authBindings,
         useState,
+        useRuntimeConfig: () => ({ public: { learningRoomsEnabled: roomsEnabled } }),
+        $fetch: async () => ({ enabled: roomsEnabled }),
         useI18n: () => ({ t: (key) => key, locale: vue.ref("de") }),
         definePageMeta: () => {},
         useHead: () => {},
@@ -106,7 +108,7 @@ function fixture(t, get) {
           return get ? get(path, token, response) : response(path, token);
         },
       },
-      ["view", "focus", "details", "practiceMessage", "startPractice", "reload"]
+      ["view", "focus", "details", "practiceMessage", "practiceLabel", "startPractice", "reload"]
     )
   );
   t.after(() => {
@@ -204,4 +206,44 @@ test("a removed focus is cleared when the catalogue arrives before the remaining
   await settle();
   assert.equal(f.page.view.value.status, "ready");
   assert.equal(f.page.focus.value, "");
+});
+
+test("enabled learning rooms preserve an explicit focus and label the selected destination", async (t) => {
+  const f = fixture(
+    t,
+    (path, token, response) => {
+      if (path === "/skills/skilltree")
+        return { skills: [{ id: "topic-a", name: "Topic A", skills: ["subtopic-a"] }] };
+      if (path === "/challenges/skills/subtopic-a/tasks") return [{ id: "task-a" }];
+      if (path.startsWith("/challenges/subtasks?"))
+        return [
+          {
+            id: "question-a",
+            task_id: "task-a",
+            creator: "another-user",
+            type: "MULTIPLE_CHOICE_QUESTION",
+            coins: 0,
+            enabled: true,
+            retired: false,
+            solved: false,
+          },
+        ];
+      return response(path, token);
+    },
+    true
+  );
+  await settle();
+  f.page.focus.value = "topic-a";
+  assert.equal(f.page.practiceLabel.value, "CharacterDashboard.Practice");
+  await f.page.startPractice();
+  assert.deepEqual(f.navigation, [
+    "/quizzes/solve-task-a?quizzesFrom=quiz&taskId=task-a&querySubTaskId=question-a",
+  ]);
+  assert.ok(f.calls.some(({ path }) => path === "/challenges/skills/subtopic-a/tasks"));
+  const previousReads = f.calls.length;
+  f.page.focus.value = "";
+  assert.equal(f.page.practiceLabel.value, "LearningRooms.ContinueLearning");
+  await f.page.startPractice();
+  assert.equal(f.navigation.at(-1), "/learn");
+  assert.equal(f.calls.length, previousReads);
 });
