@@ -37,8 +37,9 @@
       Verträge gelten weiterhin die damals vereinbarten Unterlagen.
     </p>
     <p class="mt-card">
-      <a href="/docs/terms-and-conditions-2026-09-r2">Historische AGB-Fassung 2026-09-r2</a>
-      · <a href="/docs/terms-and-conditions-2026-09-r1">Historische AGB-Fassung 2026-09-r1</a>
+      <a href="/docs/terms-and-conditions-2026-09-r3">AGB-Fassung 2026-09-r3</a>
+      · <a href="/docs/terms-and-conditions-2026-09-r2">Historische AGB-Fassung 2026-09-r2</a> ·
+      <a href="/docs/terms-and-conditions-2026-09-r1">Historische AGB-Fassung 2026-09-r1</a>
     </p>
 
     <article>
@@ -60,7 +61,7 @@
         <li><a href="#ziffer-7">7. Kostenpflichtige Kurse</a></li>
         <li><a href="#ziffer-8">8. Premium</a></li>
         <li><a href="#ziffer-9">9. Herzen</a></li>
-        <li><a href="#ziffer-10">10. Webinare und Coachings (Events)</a></li>
+        <li><a href="#ziffer-10">10. Frühere Webinare und Coachings</a></li>
         <li><a href="#ziffer-11">11. Bestellvorgang, Preise, Zahlung und Rechnungen</a></li>
         <li><a href="#ziffer-12">12. Minderjährige</a></li>
         <li><a href="#ziffer-13">13. Pflichten der Nutzer</a></li>
@@ -87,9 +88,9 @@
       <p>
         1.1 Diese AGB gelten für alle Verträge zwischen dem Anbieter und dir als Nutzer über die
         Nutzung der Plattform und über die dort angebotenen Leistungen: das kostenlose Nutzerkonto,
-        MorphCoins, kostenpflichtige Kurse, Premium, Herzen sowie Webinare und Coachings.
-        Abweichende oder ergänzende Bedingungen von dir werden nicht Vertragsbestandteil, es sei
-        denn, wir stimmen ihnen ausdrücklich in Textform zu.
+        MorphCoins, kostenpflichtige Kurse, Premium und Herzen. Abweichende oder ergänzende
+        Bedingungen von dir werden nicht Vertragsbestandteil, es sei denn, wir stimmen ihnen
+        ausdrücklich in Textform zu.
       </p>
       <p>
         1.2 Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt,
@@ -107,14 +108,14 @@
         <li>„Nutzerkonto“: dein persönliches, kostenloses Konto auf der Plattform;</li>
         <li>
           „MorphCoins“: das Zahlungsmittel innerhalb der Plattform. Wir unterscheiden „gekaufte
-          MorphCoins“ (gegen Geld erworben) und „Belohnungs-Coins“ (von uns als Belohnung
+          MorphCoins“ (gegen Geld erworben) und „Belohnungs-Coins“ (früher von uns als Belohnung
           gutgeschrieben), siehe Ziffer 6;
         </li>
         <li>
           „Premium“: die im Voraus bezahlte, zeitlich befristete Mitgliedschaft nach Ziffer 8;
         </li>
         <li>„Herzen“: das Spielelement nach Ziffer 9;</li>
-        <li>„Events“: Webinare und Coachings nach Ziffer 10;</li>
+        <li>„Events“: früher angebotene Webinare und Coachings (Ziffer 10);</li>
         <li>„Nutzerinhalte“: alle Inhalte, die du auf der Plattform einstellst (Ziffer 14).</li>
       </ul>
       <p>1.4 Vertragssprache ist Deutsch. Maßgeblich ist die deutsche Fassung dieser AGB.</p>
@@ -123,24 +124,28 @@
     <article id="ziffer-2">
       <h2>2. Leistungen der Plattform</h2>
       <p>
-        2.1 Mit einem Nutzerkonto kannst du kostenlos nutzen: den Skilltree mit kostenlosen Kursen,
-        Quizze und Zuordnungsaufgaben („Matchings“), Coding-Challenges, bei denen dein Code auf
-        unseren Servern ausgeführt und geprüft wird, das Erstellen eigener Aufgaben, die Bestenliste
-        (in der du nur erscheinst, solange du das in den Profileinstellungen nicht abgewählt hast)
-        und die Herzen. Für einzelne Funktionen ist eine bestätigte E-Mail-Adresse erforderlich.
+        2.1 Mit einem Nutzerkonto kannst du den Skilltree, kostenlose Kurse und Lernwege, Quizze,
+        Zuordnungsaufgaben („Matchings“) und Coding-Challenges nutzen. Bei Coding-Challenges wird
+        dein Code auf unseren Servern ausgeführt und geprüft. Dazu kommen dein Charakterbogen mit
+        deinem Lernfortschritt, die Bestenliste und die Herzen. In der Bestenliste erscheinst du
+        nur, solange du das in den Profileinstellungen nicht abgewählt hast. Für einzelne Funktionen
+        ist eine bestätigte E-Mail-Adresse erforderlich. Kurse können Erklärungen, interaktive
+        Lerneinheiten, Übungen und Videos enthalten; ein Video ist kein notwendiger Bestandteil
+        jedes Kurses. Ziele, Voraussetzungen und Inhalte findest du auf der jeweiligen Kursseite.
       </p>
       <p>
         2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – das einmalige
-        Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8), das zusätzliche Auffüllen der
-        Herzen (Ziffer 9) sowie kostenpflichtige Webinare und Coachings (Ziffer 10); Kursleiter
-        können Events auch kostenlos anbieten. Den Preis jeder Leistung zeigen wir dir vor der
-        Bestellung in MorphCoins und in Euro an (Ziffer 11).
+        Freischalten einzelner Kurse (Ziffer 7), Premium (Ziffer 8) und das zusätzliche Auffüllen
+        der Herzen (Ziffer 9). Den Preis jeder Leistung zeigen wir dir vor der Bestellung in
+        MorphCoins und in Euro an (Ziffer 11).
       </p>
       <p>
-        2.3 Die Inhalte der Plattform stammen von uns, von Kursleitern, die Webinare und Coachings
-        durchführen, und von anderen Nutzern (Nutzerinhalte). Wir schulden die Bereitstellung der
-        Plattform und der von dir erworbenen Leistungen, nicht einen bestimmten Lernerfolg oder ein
-        bestimmtes Prüfungsergebnis.
+        2.3 Neue Kurs- und Aufgabeninhalte stellen wir zentral bereit. Eine Funktion zum
+        Veröffentlichen eigener Kurse oder Aufgaben bieten wir Nutzern nicht mehr an. Bereits
+        vorhandene Nutzeraufgaben bleiben im Angebot, soweit sie nicht nach den dafür geltenden
+        Regeln entfernt werden. Deine eigenen Lernlösungen und dein eingereichter Code sind davon
+        getrennt. Wir schulden die Bereitstellung der Plattform und der von dir erworbenen
+        Leistungen, nicht einen bestimmten Lernerfolg oder ein bestimmtes Prüfungsergebnis.
       </p>
       <p>
         2.4 Wir entwickeln die Plattform weiter. Kostenlose Funktionen dürfen wir aus triftigem
@@ -208,7 +213,7 @@
         oder widerrufen; dafür gilt deine gesonderte Erklärung. Premium wird nicht weiter
         automatisch verlängert. Bereits bezahlte Zeiträume bleiben vollständig erhalten. Auch nach
         der Löschung kannst du deine Rechte ausüben und Vertragserklärungen abgeben. Schreib dafür
-        an hallo@bootstrap.academy wenden. Für Events gilt Ziffer 10.5.
+        an hallo@bootstrap.academy. Für frühere Eventverträge gilt Ziffer 10.
       </p>
       <p>
         4.3 Wir können den Nutzungsvertrag mit einer Frist von vier Wochen in Textform (E-Mail an
@@ -270,12 +275,11 @@
     <article id="ziffer-6">
       <h2>6. MorphCoins</h2>
       <p>
-        6.1 MorphCoins sind das Zahlungsmittel innerhalb der Plattform. Du kannst MorphCoins kaufen
-        (gekaufte MorphCoins) oder von uns als Belohnung erhalten (Belohnungs-Coins). Beide Arten
-        werden in einem gemeinsamen Guthaben geführt und angezeigt. Den nicht verbrauchten Anteil
-        gekaufter MorphCoins ermitteln wir aus deinen Käufen (Rechnungen), bereits erfolgten
-        Erstattungen und deinem aktuellen Guthaben; dabei gelten Belohnungs-Coins als zuerst
-        verbraucht (Ziffer 6.7).
+        6.1 MorphCoins sind das Zahlungsmittel innerhalb der Plattform. Neue MorphCoins kannst du
+        ausschließlich kaufen. Früher gutgeschriebene Belohnungs-Coins und gekaufte MorphCoins
+        führen wir weiterhin in einem gemeinsamen Guthaben. Den nicht verbrauchten Anteil gekaufter
+        MorphCoins ermitteln wir aus deinen Käufen (Rechnungen), bereits erfolgten Erstattungen und
+        deinem aktuellen Guthaben; dabei gelten Belohnungs-Coins als zuerst verbraucht (Ziffer 6.7).
       </p>
       <p>
         6.2 Kauf: 100 MorphCoins kosten 1,00 € einschließlich der gesetzlichen Umsatzsteuer. Je Kauf
@@ -290,25 +294,18 @@
         und nach der Gutschrift die Rechnung per E-Mail (Ziffer 11).
       </p>
       <p>
-        6.3 Belohnungs-Coins vergeben wir für Beiträge zur Plattform: für von dir erstellte
-        Aufgaben, die andere Nutzer positiv bewerten; an Kursleiter als Anteil am Preis der von
-        ihnen durchgeführten Webinare und Coachings (derzeit 70 % des Preises); sowie im Einzelfall
-        für weitere Beiträge, die wir mit dir vereinbaren, zum Beispiel das Erstellen von
-        Kursinhalten oder das Melden von Sicherheitslücken. Die Höhe der Belohnung legen wir fest
-        und können sie für die Zukunft ändern. Bereits gutgeschriebene Belohnungs-Coins bleiben
-        erhalten.
+        6.3 Für neu erstellte Inhalte, Bewertungen, andere Aktivitäten oder Meldungen vergeben wir
+        keine neuen MorphCoins. Bereits vorhandenes Guthaben und bereits entstandene
+        Vergütungsansprüche bleiben erhalten. Berechtigte Erstattungen und Rückbuchungen sind
+        weiterhin möglich; sie sind kein neuer Erwerbsweg für MorphCoins.
       </p>
       <p>
-        6.4 Belohnungs-Coins werden deinem Guthaben erst gutgeschrieben, wenn deine E-Mail-Adresse
-        bestätigt ist und deine Rechnungsdaten (Name, Anschrift, Land; bei Unternehmern zusätzlich
-        die Umsatzsteuer-Identifikationsnummer) vollständig sind; die Gutschrift erfolgt, wenn du
-        deine Rechnungsdaten bei bestätigter E-Mail-Adresse (gegebenenfalls erneut) speicherst. Bis
-        dahin halten wir sie für dich zurück; die Höhe zurückgehaltener MorphCoins teilen wir dir
-        auf Anfrage mit. Über Belohnungs-Coins, die eine Vergütung darstellen (insbesondere Anteile
-        für Kursleiter), erstellen wir je Kalendermonat eine Gutschrift im Gutschriftverfahren (§ 14
-        Abs. 2 UStG), die wir dir nach Ablauf des Monats als PDF zur Verfügung stellen (derzeit auf
-        Anfrage per E-Mail). Du erklärst dich mit diesem Verfahren einverstanden und teilst uns mit,
-        wenn du als Unternehmer handelst.
+        6.4 Für bereits entstandene Vergütungsansprüche gelten weiterhin die damals vereinbarten
+        Voraussetzungen und Abrechnungsregeln. Das gilt auch für berechtigt zurückgehaltene
+        MorphCoins, die noch nicht deinem verfügbaren Guthaben gutgeschrieben wurden. Welche
+        Ansprüche und notwendigen Rechnungsdaten dazu bei uns vorliegen, teilen wir dir auf Anfrage
+        an hallo@bootstrap.academy mit. Bereits ausgestellte Rechnungen und Gutschriften bleiben
+        unverändert.
       </p>
       <p>
         6.5 Verwendung: Mit MorphCoins bezahlst du ausschließlich Leistungen auf der Plattform
@@ -394,9 +391,8 @@
       <p>
         8.1 Leistungsumfang: Premium umfasst für die gebuchte Laufzeit den Zugriff auf alle Kurse
         der Plattform, auch auf kostenpflichtige Kurse (Ziffer 7.4), sowie die Nutzung von Quizzen,
-        Zuordnungsaufgaben und Coding-Challenges ohne Verbrauch von Herzen (Ziffer 9.1). Nicht
-        enthalten sind Webinare und Coachings (Ziffer 10). Der Kurskatalog kann sich während der
-        Laufzeit ändern (Ziffer 16.4).
+        Zuordnungsaufgaben und Coding-Challenges ohne Verbrauch von Herzen (Ziffer 9.1). Der
+        Kurskatalog kann sich während der Laufzeit ändern (Ziffer 16.4).
       </p>
       <p>
         8.2 Preis und Laufzeit: Premium kostet 1.000 MorphCoins (10,00 €) für einen Monat oder
@@ -504,87 +500,17 @@
     </article>
 
     <article id="ziffer-10">
-      <h2>10. Webinare und Coachings (Events)</h2>
+      <h2>10. Frühere Webinare und Coachings</h2>
       <p>
-        10.1 Auf der Plattform werden Webinare (Online-Seminare für mehrere Teilnehmer) und
-        Coachings (Einzeltermine) zu festen Terminen angeboten. Vertragspartner für die Buchung ist
-        der Anbieter. Durchgeführt werden Events von Kursleitern; das sind Nutzer der Plattform, die
-        die auf der Plattform genannten Voraussetzungen für das Anbieten von Events erfüllen, sowie
-        unser Team. Welche Preise ein Kursleiter für Webinare verlangen darf, hängt von seinen
-        Bewertungen durch Teilnehmer ab. Termin, Dauer, Inhalt, Kursleiter und Preis ergeben sich
-        aus der jeweiligen Beschreibung.
+        10.1 Webinare und Coachings bieten wir nicht mehr an. Neue Termine, Buchungen und
+        Kalender-Abos sind nicht möglich.
       </p>
       <p>
-        10.2 Buchung: Kostenpflichtige Termine buchst du mit MorphCoins nach Ziffer 11; der Preis
-        wird bei der wirksamen Buchung abgebucht. Du erhältst eine Vertragsbestätigung per E-Mail.
-        Den Buchungszugang stellen wir nach Vertragsbestätigung vor dem vereinbarten Beginn bereit.
-        Fehlt der Zugang oder kommt er zu spät, gilt der Termin dadurch nicht als durchgeführt.
-        Deine Buchung, Zahlung und Ansprüche bleiben erhalten, bis der Fall geklärt ist. Der Termin
-        findet online statt: Coachings in einem Videokonferenzraum bei Jitsi Meet (meet.jit.si,
-        betrieben von 8x8, Inc.), Webinare über den vom Kursleiter angegebenen Konferenzlink. Du
-        brauchst dafür ein Gerät mit Kamera, Mikrofon und Internetverbindung.
-      </p>
-      <p>
-        10.3 Stornierung durch dich: Du kannst einen gebuchten Termin vor seinem Beginn in deinem
-        Kalender auf der Plattform (bis 24 Stunden vor Beginn) oder per E-Mail an
-        hallo@bootstrap.academy stornieren. Maßgeblich ist der Zeitpunkt, zu dem uns deine
-        Stornierung zugeht. Es gilt:
-      </p>
-      <ul>
-        <li>
-          a) Stornierst du bis sieben Tage vor Beginn des Termins, ist die Stornierung kostenlos;
-          wir erstatten den vollen Preis.
-        </li>
-        <li>
-          b) Stornierst du später, aber mindestens 24 Stunden vor Beginn, behalten wir als pauschale
-          Entschädigung 50 % des Preises ein und erstatten die übrigen 50 %.
-        </li>
-        <li>
-          c) Stornierst du weniger als 24 Stunden vor Beginn oder nimmst du ohne Stornierung nicht
-          teil, behalten wir den vollen Preis als pauschale Entschädigung ein.
-        </li>
-      </ul>
-      <p>
-        Die Pauschalen nach b) und c) entsprechen dem Ausfall, der uns und dem Kursleiter bei einer
-        so kurzfristigen Absage nach dem gewöhnlichen Lauf der Dinge entsteht, weil der Termin für
-        dich freigehalten wurde und in dieser Zeit regelmäßig nicht mehr anderweitig vergeben werden
-        kann. Dir bleibt ausdrücklich der Nachweis gestattet, dass uns kein Schaden oder ein
-        wesentlich geringerer Schaden als die Pauschale entstanden ist; in diesem Fall erstatten wir
-        den entsprechend höheren Betrag. Konnten wir den Platz oder den Termin anderweitig vergeben,
-        erstatten wir den vollen Preis. Mehr als den Preis des Termins schuldest du uns wegen einer
-        Stornierung oder Nichtteilnahme in keinem Fall. Erstattungen leisten wir nach Ziffer 6.8 in
-        der Art von MorphCoins, mit der du bezahlt hast. Dein Widerrufsrecht als Verbraucher (siehe
-        Widerrufsbelehrung) und das Recht zur Kündigung aus wichtigem Grund bleiben unberührt;
-        widerrufst du innerhalb der Widerrufsfrist, bevor der Termin begonnen hat, erstatten wir den
-        vollen Preis.
-      </p>
-      <p>
-        10.4 Absage durch uns oder den Kursleiter: Fällt ein Termin aus Gründen aus, die nicht bei
-        dir liegen (zum Beispiel Erkrankung des Kursleiters, technische Störung auf unserer Seite,
-        zu wenige Teilnehmer), erstatten wir den vollen Preis nach Ziffer 6.8. Bieten wir einen
-        Ersatztermin an, kannst du diesen wahrnehmen oder die Erstattung wählen.
-      </p>
-      <p>
-        10.5 Wenn du dein Konto löschst, stornierst oder widerrufst du damit keine gebuchten Events.
-        Du verzichtest auch nicht auf den gezahlten Preis oder deine weiterhin bestehenden Ansprüche
-        auf Leistung und Erstattung. Möchtest du eine Buchung zugleich beenden, teile uns dies
-        ausdrücklich mit; für eine gewöhnliche Stornierung gilt Ziffer 10.3, für eine Absage durch
-        uns oder den Kursleiter Ziffer 10.4. Ein Widerruf und andere Beendigungsgründe werden nach
-        ihren jeweiligen Voraussetzungen behandelt. Für die weitere Wahrnehmung deiner Rechte kannst
-        du dich auch nach der Kontolöschung an hallo@bootstrap.academy wenden. Können von dir als
-        Kursleiter angebotene Termine nicht mehr stattfinden, werden sie abgesagt; für die
-        Teilnehmer gilt Ziffer 10.4. Deine eigenen bereits entstandenen Ansprüche werden dadurch
-        nicht automatisch aufgehoben.
-      </p>
-      <p>
-        10.6 Während eines Events darfst du keine Aufzeichnungen anfertigen, es sei denn, alle
-        Beteiligten stimmen zu. Wer einen Termin nachhaltig stört, kann vom Kursleiter
-        ausgeschlossen werden; ein Anspruch auf Erstattung besteht dann nicht, wenn du die Störung
-        zu vertreten hast.
-      </p>
-      <p>
-        10.7 Wir schulden die ordnungsgemäße Durchführung des Events, nicht einen bestimmten Lern-
-        oder Prüfungserfolg.
+        10.2 Bestehende Verträge, bereits entstandene Ansprüche und Originalunterlagen bleiben davon
+        unberührt. Für sie gelten weiterhin die damals vereinbarten Bedingungen und deine
+        gesetzlichen Rechte. Eine Kontolöschung ist auch hier keine Stornierung oder
+        Widerrufserklärung. Bei Fragen zu einem früheren Vertrag oder einer Erstattung erreichst du
+        uns unter hallo@bootstrap.academy.
       </p>
     </article>
 
@@ -592,9 +518,9 @@
       <h2>11. Bestellvorgang, Preise, Zahlung und Rechnungen</h2>
       <p>
         11.1 Ablauf einer Bestellung: Du wählst die Leistung aus (MorphCoins, Kurs, Premium,
-        Auffüllen der Herzen, Event). Vor der Bestellung zeigen wir dir die wesentlichen Merkmale
-        der Leistung, den Gesamtpreis in MorphCoins und in Euro einschließlich Umsatzsteuer, bei
-        Premium die Laufzeit und die gesonderte automatische Verlängerung sowie die Hinweise zum
+        Auffüllen der Herzen). Vor der Bestellung zeigen wir dir die wesentlichen Merkmale der
+        Leistung, den Gesamtpreis in MorphCoins und in Euro einschließlich Umsatzsteuer, bei Premium
+        die Laufzeit und die gesonderte automatische Verlängerung sowie die Hinweise zum
         Widerrufsrecht und die Bestätigungs- und Bereitstellungsfrist an. Du nimmst das konkrete
         Angebot einschließlich seiner AGB und Widerrufsinformationen an und verlangst gesondert den
         Beginn vor Ablauf der Widerrufsfrist. Der genaue Wortlaut steht im Angebot und in der
@@ -618,8 +544,7 @@
         diese Dokumente und siehst, ob die Leistung bereitgestellt wurde. Die neue Leistung wird
         erst nach Vertragsbestätigung bereitgestellt; bei MorphCoins ist zusätzlich nachgewiesener
         Zahlungseingang erforderlich. Die im Angebot vereinbarte Bestätigungs- und
-        Bereitstellungsfrist läuft ab der wirksamen Bestellung, bei Events spätestens bis zum
-        vereinbarten Beginn.
+        Bereitstellungsfrist läuft ab der wirksamen Bestellung.
       </p>
       <p>
         Ist die Frist abgelaufen, holen wir eine fehlende Bereitstellung nicht automatisch nach. Die
@@ -657,7 +582,7 @@
       <p>
         12.2 Nutzer, die 16 oder 17 Jahre alt sind, dürfen die kostenlosen Leistungen ohne
         Zustimmung ihrer gesetzlichen Vertreter nutzen. Für kostenpflichtige Leistungen (MorphCoins,
-        Kurse, Premium, Auffüllen der Herzen, Events) gelten die §§ 107 bis 110 BGB: Der Vertrag ist
+        Kurse, Premium, Auffüllen der Herzen) gelten die §§ 107 bis 110 BGB: Der Vertrag ist
         wirksam, wenn die gesetzlichen Vertreter vorher eingewilligt haben oder ihn nachträglich
         genehmigen (§§ 107, 108 BGB) oder wenn der Minderjährige den Preis mit Mitteln bezahlt, die
         ihm zu diesem Zweck oder zur freien Verfügung von den gesetzlichen Vertretern oder mit deren
@@ -738,21 +663,23 @@
     <article id="ziffer-14">
       <h2>14. Nutzerinhalte, Moderation und Meldeverfahren</h2>
       <p>
-        14.1 Nutzerinhalte sind alle Inhalte, die du auf der Plattform einstellst: von dir erstellte
-        Aufgaben und Quizfragen, eingereichter Code, Bewertungen und Meldungen, dein Nickname und
-        dein Anzeigename sowie Kurzbeschreibung und Schlagwörter in deinem Profil; bei Kursleitern
-        auch die Beschreibungen ihrer Events. Für deine Nutzerinhalte bist du verantwortlich. Wir
-        prüfen Nutzerinhalte nicht vorab.
+        14.1 Nutzerinhalte sind dein eingereichter Code, deine Antworten, Bewertungen und Meldungen,
+        dein Nickname und Anzeigename sowie Kurzbeschreibung und Schlagwörter in deinem Profil. Dazu
+        gehören auch früher von dir veröffentlichte Aufgaben, Quizfragen und Eventbeschreibungen,
+        soweit sie noch gespeichert sind. Neue öffentliche Lerninhalte veröffentlichen wir selbst
+        (Ziffer 2.3). Für deine Nutzerinhalte bist du verantwortlich. Wir prüfen sie nicht vorab.
       </p>
       <p>
         14.2 Du räumst uns an deinen Nutzerinhalten das einfache, räumlich unbeschränkte,
         unentgeltliche Recht ein, sie zum Betrieb der Plattform zu speichern, zu vervielfältigen,
         anderen Nutzern anzuzeigen, eingereichten Code auszuführen und Aufgaben, die du für andere
-        Nutzer erstellt hast, diesen zugänglich zu machen. Das Recht endet, wenn du den Inhalt oder
-        dein Konto löschst; Kopien in Datensicherungen werden nach den in den Datenschutzhinweisen
-        genannten Fristen gelöscht. Weitergehende Rechte, insbesondere zur Nutzung für Werbung oder
-        zum Training von KI-Modellen, räumst du uns nicht ein. Du versicherst, dass du über die
-        erforderlichen Rechte an deinen Nutzerinhalten verfügst.
+        Nutzer erstellt hast, diesen zugänglich zu machen, soweit dies für die von dir genutzte
+        Funktion nötig ist. Deine privaten Lösungen und Lernraumstände werden anderen Nutzern nicht
+        angezeigt. Das Recht endet, wenn du den Inhalt oder dein Konto löschst; Kopien in
+        Datensicherungen werden nach den in den Datenschutzhinweisen genannten Fristen gelöscht.
+        Weitergehende Rechte, insbesondere zur Nutzung für Werbung oder zum Training von
+        KI-Modellen, räumst du uns nicht ein. Du versicherst, dass du über die erforderlichen Rechte
+        an deinen Nutzerinhalten verfügst.
       </p>
       <p>
         14.3 Beschränkungen für Nutzerinhalte: Es gelten die Regeln in Ziffer 13.2 und die
@@ -763,10 +690,10 @@
       </p>
       <p>
         Bei behebbaren Qualitätsmängeln berücksichtigen wir eine Korrektur als milderes Mittel. Du
-        kannst uns eine Korrektur zur Umsetzung vorschlagen oder die Aufgabe löschen und eine
-        korrigierte Aufgabe neu erstellen. Ein sachlicher Fehler allein rechtfertigt keine Sperre
-        deiner Erstellerfunktion. Für weitergehende Maßnahmen gelten insbesondere die
-        Voraussetzungen und die Verhältnismäßigkeit nach Ziffer 15.
+        kannst uns eine Korrektur zur Umsetzung vorschlagen oder die Löschung deiner Aufgabe
+        verlangen. Ein sachlicher Fehler allein rechtfertigt keine Kontosperre. Für weitergehende
+        Maßnahmen gelten insbesondere die Voraussetzungen und die Verhältnismäßigkeit nach Ziffer
+        15.
       </p>
       <p>
         Eine vertragliche Regel wenden wir nur an, wenn ihre Geltung für den betroffenen Inhalt und
@@ -798,9 +725,9 @@
       </p>
       <p>
         Mögliche Maßnahmen sind Hinweise oder Verwarnungen, Ausblenden oder Entfernen von Inhalten,
-        Sperren der Ersteller- oder Meldefunktion, Kontosperren und eine außerordentliche Kündigung
-        nach Ziffer 15. Eine erfolglose Meldung allein rechtfertigt keine Meldesperre. Die
-        öffentlichen Wege für Meldungen rechtswidriger Inhalte und Beschwerden bleiben erreichbar.
+        Sperren der Meldefunktion, Kontosperren und eine außerordentliche Kündigung nach Ziffer 15.
+        Eine erfolglose Meldung allein rechtfertigt keine Meldesperre. Die öffentlichen Wege für
+        Meldungen rechtswidriger Inhalte und Beschwerden bleiben erreichbar.
       </p>
       <p>
         Über Funktions- und Kontosperren entscheidet ein Mensch. Bei Funktionssperren aus der
@@ -1078,14 +1005,14 @@
       <p>
         20.2 Änderungen, die deine Zustimmung erfordern: Änderungen, die den Leistungsumfang der
         Plattform oder kostenpflichtiger Leistungen, Preise, den Erwerbskurs, die Regeln für
-        MorphCoins, Premium, Herzen oder Events, die Laufzeit- und Kündigungsregeln, die Haftung
-        oder diese Ziffer betreffen, werden nur wirksam, wenn du ihnen ausdrücklich zustimmst.
-        Soweit wir dir eine Änderung eines bestehenden Vertrags anbieten, kannst du das Angebot
-        ausdrücklich annehmen oder ablehnen. Dein Schweigen gilt nicht als Zustimmung. Lehnst du die
-        neue Fassung ab, gilt für bestehende Verträge die bisherige Fassung weiter; neue
-        kostenpflichtige Leistungen kannst du dann nur zu den bei der Bestellung geltenden
-        Bedingungen erwerben (Ziffer 20.4). Wir können den Nutzungsvertrag in diesem Fall nach
-        Ziffer 4.3 kündigen; Ziffer 4.4 gilt.
+        MorphCoins, Premium oder Herzen, die Laufzeit- und Kündigungsregeln, die Haftung oder diese
+        Ziffer betreffen, werden nur wirksam, wenn du ihnen ausdrücklich zustimmst. Soweit wir dir
+        eine Änderung eines bestehenden Vertrags anbieten, kannst du das Angebot ausdrücklich
+        annehmen oder ablehnen. Dein Schweigen gilt nicht als Zustimmung. Lehnst du die neue Fassung
+        ab, gilt für bestehende Verträge die bisherige Fassung weiter; neue kostenpflichtige
+        Leistungen kannst du dann nur zu den bei der Bestellung geltenden Bedingungen erwerben
+        (Ziffer 20.4). Wir können den Nutzungsvertrag in diesem Fall nach Ziffer 4.3 kündigen;
+        Ziffer 4.4 gilt.
       </p>
       <p>
         20.3 Dein Schweigen oder die bloße weitere Nutzung der Plattform gilt nicht als Annahme
@@ -1135,8 +1062,8 @@
         Anschrift, Land) und ihre Umsatzsteuer-Identifikationsnummer angegeben haben (Ziffer 6.2);
         die Umsatzsteuer-Identifikationsnummer prüfen wir über das
         Mehrwertsteuer-Informationsaustauschsystem der Europäischen Kommission. Die Umsatzsteuer
-        weisen wir in der Rechnung gesondert aus. Für Belohnungs-Coins, die eine Vergütung
-        darstellen, rechnen wir im Gutschriftverfahren ab (Ziffer 6.4).
+        weisen wir in der Rechnung gesondert aus. Für bereits entstandene Vergütungsansprüche gelten
+        die bisherigen Abrechnungsregeln nach Ziffer 6.4.
       </p>
       <p>
         22.4 Unternehmer können nur mit Forderungen aufrechnen, die unbestritten, rechtskräftig
@@ -1152,7 +1079,7 @@
     </article>
 
     <article>
-      <h2>Fassung: 2026-09-r3</h2>
+      <h2>Fassung: 2026-09-r4</h2>
     </article>
   </main>
 </template>

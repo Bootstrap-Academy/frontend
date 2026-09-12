@@ -94,30 +94,8 @@
         >
           {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
         </InputBtn>
-
-        <InputBtn
-          :icon="PencilSquareIcon"
-          iconRight
-          full
-          mt
-          secondary
-          v-else-if="user?.id == subtask?.creator && !!user?.admin"
-          @click="openDialogEditTask(subtask)"
-        >
-          {{ t("Buttons.Edit") }}
-        </InputBtn>
       </div>
       <InputQuizRating :data="data" :subtask="subtask" @rated="fnRated($event)" />
-
-      <DialogSlot
-        v-if="dialogCreateSubtask"
-        :label="'Headings.Quiz'"
-        :propClass="'modal-width-lg lg:modal-width-md'"
-        :show="dialogEditTask"
-        @closeFunction="closeEditTaskDialog()"
-      >
-        <LazyFormQuiz :data="propData" :taskId="subtask.task_id" />
-      </DialogSlot>
     </form>
   </div>
 </template>
@@ -126,9 +104,8 @@
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
-import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
-import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { FlagIcon } from "@heroicons/vue/24/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
 import FullHeart from "../svg/FullHeart.vue";
 
@@ -139,7 +116,7 @@ export default defineComponent({
     amountQuestionsLeft: { type: Number, default: 0 },
   },
   emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
-  components: { FlagIcon, ChevronDoubleRightIcon, FullHeart, PencilSquareIcon },
+  components: { FlagIcon, ChevronDoubleRightIcon, FullHeart },
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -155,10 +132,6 @@ export default defineComponent({
     const secondsForTryAgain = ref(0);
     const interval: any = ref();
     const premiumInfo: any = usePremiumInfo();
-    // edit quiz dialog variable
-    const dialogEditTask = useDialogSlot();
-    const dialogCreateSubtask = useDialogCreateSubtask();
-    const propData = ref();
     const wasOptionsCorrect = ref("waiting");
     // ============================================================= refs
 
@@ -255,17 +228,6 @@ export default defineComponent({
       emit("nextQuestion", props.data.id);
     }
 
-    function openDialogEditTask(data: any) {
-      propData.value = data;
-      dialogEditTask.value = true;
-      dialogCreateSubtask.value = true;
-    }
-
-    async function closeEditTaskDialog() {
-      dialogCreateSubtask.value = false;
-      await setData();
-    }
-
     async function setData() {
       arrayOfAnswers.value = [];
       if (props?.data == null) return;
@@ -339,14 +301,8 @@ export default defineComponent({
       arrayOfAnswers,
       setArrayOfAnswers,
       setSelected,
-      openDialogEditTask,
-      propData,
       feedback,
       FlagIcon,
-      PencilSquareIcon,
-      dialogCreateSubtask,
-      dialogEditTask,
-      closeEditTaskDialog,
       user,
       FullHeart,
       showMaxAttemptsError,

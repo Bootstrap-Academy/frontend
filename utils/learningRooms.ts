@@ -4,7 +4,17 @@ const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 function envelope(value: any): RoomEnvelope {
   if (
     !value?.unit?.id ||
-    !["loop-explorer", "percentage-explorer", "exercise"].includes(value.unit.room) ||
+    ![
+      "loop-explorer",
+      "percentage-explorer",
+      "guided-lesson",
+      "exercise",
+      "io-machine",
+      "bit-lab",
+      "file-workspace",
+      "step-machine",
+      "network-lab",
+    ].includes(value.unit.room) ||
     !Number.isInteger(value?.progress?.revision) ||
     !value?.progress?.state ||
     typeof value.progress.state !== "object"

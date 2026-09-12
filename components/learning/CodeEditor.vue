@@ -32,8 +32,9 @@ let monaco: typeof Monaco | undefined;
 let alive = true;
 const language = () => props.language.split("-")[0];
 onMounted(async () => {
-  // Native editing remains usable with mobile keyboards and if Monaco cannot load.
-  if (window.matchMedia("(pointer: coarse)").matches) return;
+  // Keep native editing on small screens as well as touch devices. Some mobile
+  // browsers report a fine pointer when an external pointer is connected.
+  if (window.matchMedia("(pointer: coarse), (max-width: 640px)").matches) return;
   try {
     monaco = await import("monaco-editor");
     if (!alive || !container.value) return;

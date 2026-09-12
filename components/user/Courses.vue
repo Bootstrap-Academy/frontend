@@ -23,7 +23,7 @@
               'md:col-span-2 md:row-span-2': i == 0 && courses.length > 3,
             }"
             class="flex-shrink-0 cursor-pointer snap-center"
-            @click="watchUnseenLecture(course)"
+            :to="`/courses/${encodeURIComponent(course.id)}`"
           >
             <CourseCardSm :data="course" />
           </NuxtLink>
@@ -38,12 +38,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import type { Course, GetUnseenLectureResponse, Section } from "~/types/courseTypes";
+import type { Course } from "~/types/courseTypes";
 
 export default defineComponent({
   setup() {
     const { t } = useI18n();
-    const router = useRouter();
     const loading = ref(true);
 
     const myCourses = useMyCourses();
@@ -70,19 +69,7 @@ export default defineComponent({
       }
     });
 
-    const watchUnseenLecture = async (course: Course) => {
-      const unseenLectureResponse = await getUnseenLecture(course.id);
-      if (unseenLectureResponse)
-        router.push({
-          path: `/courses/${course.id}/watch`,
-          query: {
-            section: unseenLectureResponse.section.id,
-            lecture: unseenLectureResponse.lecture.id,
-          },
-        });
-    };
-
-    return { t, loading, courses, header, watchUnseenLecture };
+    return { t, loading, courses, header };
   },
 });
 </script>

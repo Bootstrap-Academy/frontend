@@ -101,6 +101,9 @@
       </section>
       <article v-else-if="view.room" class="learning-room">
         <div class="room-heading">
+          <p v-if="activeChapter" class="text-sm text-subheading">
+            {{ localized(activeChapter.title) }}
+          </p>
           <h1>{{ localized(view.room.unit.title) }}</h1>
         </div>
         <div v-if="finished" class="finished-room" role="status">
@@ -137,6 +140,30 @@
           @change="edit"
           @complete="complete"
         />
+        <LearningGuidedLesson
+          v-else-if="view.room.unit.room === 'guided-lesson'"
+          :key="roomKey"
+          :content="content"
+          :locale="locale"
+          :state="view.draft"
+          :disabled="locked"
+          @change="edit"
+          @complete="complete"
+        />
+        <LearningItLabRoom
+          v-else-if="
+            ['io-machine', 'bit-lab', 'file-workspace', 'step-machine', 'network-lab'].includes(
+              view.room.unit.room
+            )
+          "
+          :key="roomKey"
+          :content="content"
+          :locale="locale"
+          :state="view.draft"
+          :disabled="locked"
+          @change="edit"
+          @complete="complete"
+        />
         <LearningExerciseRoom
           ref="exerciseComponent"
           v-else-if="view.room.unit.room === 'exercise' && view.room.unit.exercise"
@@ -154,7 +181,10 @@
           @complete="completeExercise"
           @skip="advance"
         />
-        <footer v-if="!finished && view.room.unit.room !== 'exercise'" class="room-footer">
+        <footer
+          v-if="!finished && view.room.unit.room !== 'exercise' && !projectLab"
+          class="room-footer"
+        >
           <button
             type="button"
             class="quiet-button"
@@ -198,6 +228,14 @@ const language = computed(() => (locale.value.startsWith("de") ? "de" : "en"));
 const localized = (value?: LocalizedText) => value?.[language.value] || value?.en || "";
 const content = computed(
   () => view.value?.room?.unit.content?.[language.value] || view.value?.room?.unit.content || {}
+);
+const activeChapter = computed(() =>
+  view.value?.path?.chapters?.find((chapter) => chapter.id === view.value?.room?.unit.chapter_id)
+);
+const projectLab = computed(() =>
+  ["itf-project-recover", "itf-project-generator", "itf-project-publish"].includes(
+    view.value?.room?.unit.id || ""
+  )
 );
 const finished = computed(() =>
   ["completed", "skipped"].includes(view.value?.room?.progress.status || "")
@@ -280,6 +318,9 @@ onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));
   color: inherit;
   font-family: inherit;
   line-height: 1.6;
+}
+.learning-page :deep(:is(p, h2, h3, legend, label, button, li, dt, dd)) {
+  font-family: inherit;
 }
 .learning-heading {
   display: flex;

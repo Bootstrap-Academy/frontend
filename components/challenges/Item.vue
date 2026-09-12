@@ -22,13 +22,6 @@
         <Btn @click="propId = challenge" class="w-fit" :icon="CodeBracketIcon">
           {{ t("Buttons.Solve") }}
         </Btn>
-
-        <!-- <NuxtLink :to="editTo" v-if="data?.creator == user.id || !!user.admin"> -->
-        <NuxtLink :to="editTo" v-if="!!user.admin">
-          <Btn secondary class="w-fit" :icon="PencilIcon">
-            {{ t("Buttons.EditChallenge") }}
-          </Btn>
-        </NuxtLink>
       </div>
       <LazyCodingChallengeList
         :showInnerBorder="true"
@@ -49,13 +42,12 @@ import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, TrophyIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import type { PropType } from "vue";
-import { PencilIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
   },
-  components: { TrophyIcon, CodeBracketIcon, PencilIcon, TrashIcon },
+  components: { TrophyIcon, CodeBracketIcon, TrashIcon },
   setup(props) {
     const user: any = useUser();
     const { t } = useI18n();
@@ -82,10 +74,6 @@ export default defineComponent({
       return {
         category: route.query?.category ?? "",
       };
-    });
-
-    const editTo = computed(() => {
-      return `/challenges/edit-${activeChallenge.value}?category=${baseQuery.value.category}`;
     });
 
     function toggleShowChallengeContent() {
@@ -122,8 +110,6 @@ export default defineComponent({
       showChallengeContent,
       toggleShowChallengeContent,
       CodeBracketIcon,
-      PencilIcon,
-      editTo,
       user,
       baseQuery,
       TrashIcon,

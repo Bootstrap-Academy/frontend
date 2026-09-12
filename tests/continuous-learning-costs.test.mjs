@@ -118,7 +118,7 @@ test("a delayed legacy coding balance cannot update a different signed-in owner"
   assert.deepEqual(f.submissions.value, [{ id: "b" }]);
 });
 
-test("the r2 contractual original is byte-preserved while only the current terms move to r3", async () => {
+test("the r2 contractual original is byte-preserved while the current terms retain the released heart rule", async () => {
   const archive = await read("components/legal/TermsAndConditionsR2.vue");
   assert.equal(
     createHash("sha256").update(archive).digest("hex"),
@@ -126,8 +126,8 @@ test("the r2 contractual original is byte-preserved while only the current terms
   );
   assert(archive.includes("Fassung: 2026-09-r2"));
   const current = await read("pages/docs/terms-and-conditions.vue");
-  assert(current.includes("Fassung: 2026-09-r3"));
+  assert(current.includes("Fassung: 2026-09-r4"));
   assert.match(current, /Nur bei einer falschen Lösung[\s\S]*Richtige\s+Lösungen sind kostenlos/);
   assert(!current.includes("unabhängig davon, ob die Lösung richtig ist"));
-  assert((await read("composables/terms.ts")).includes('TERMS_VERSION = "2026-09-r3"'));
+  assert((await read("composables/terms.ts")).includes('TERMS_VERSION = "2026-09-r4"'));
 });

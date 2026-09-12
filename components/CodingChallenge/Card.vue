@@ -26,7 +26,6 @@
 
       <article class="flex gap-3">
         <p class="text-sm">{{ t("Headings.XP") }}:{{ codingChallenge?.xp ?? "" }}</p>
-        <p class="text-sm">{{ t("Headings.Coins") }}:{{ codingChallenge?.coins ?? "" }}</p>
       </article>
 
       <section v-if="codingChallenge?.solved" class="absolute -right-1 -top-1">

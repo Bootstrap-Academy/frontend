@@ -12,7 +12,7 @@
     "About": "Why to use bootstrap academy",
     "Features": "Features",
     "HeroFAQS": "FAQs",
-    "GetMorphcoins": "Get MorphCoins",
+    "GetMorphcoins": "Buy MorphCoins",
     "WebShop": "Web Shop"
   },
   "VerdictHint": {
@@ -259,7 +259,7 @@
     "Exam": "Exam",
     "Webinar": "Webinar",
     "UpcomingEvents": "Upcoming Events",
-    "GetMorphcoins": "Alternative Ways",
+    "GetMorphcoins": "Buy MorphCoins",
     "Description": "Description",
     "LearningGoals": "Learning Goals",
     "Requirements": "Requirements",
@@ -447,18 +447,18 @@
     "ComingSoon": "Coming Soon!",
     "Copyright": "by Bootstrap Academy. All rights reserved",
     "Login": "Continue establishing your IT skills, go take some lessons right away.",
-    "Signup": "You can learn computer science, coding and other IT skills for free here. Right now. So what are you waiting for?",
+    "Signup": "Start with free courses and exercises. Explore new topics and try out what you learn.",
     "ForgotPassword": "If it exists, we will send an email with instructions on how to reset your password",
     "ResetPassword": "Your new password must be different from previously used password.",
     "VerifyAccount": "Enter the code that was emailed to you.",
     "ContactUs": "Bug or idea? Use the feedback button in the bottom-right corner for a public GitHub report. Please send personal requests and security vulnerabilities privately to the email address in our legal notice.",
     "Hero": "Learn all the skills you need in tech, become part of a large tech community and get the job you always wanted - all on one platform.",
-    "About": "With the features you can use on this site we want to innovate learning: Not only absorbing knowledge, but also using it and helping others to learn new things. We provide you with everything from basic to job - if you want, it's completely free!",
+    "About": "Learning means trying things out. Explore new topics, understand the foundations and put your knowledge into practice, step by step at your own pace.",
     "HeroFAQS": "This will be extended when we get more common questions.",
     "Subscribe": "Stay on track with every changes we make. We promise there will be a lot of things we'll tackle here.",
     "WatchedCourses": "Here are your previously watched courses. Continue your journey!",
     "MyCertificates": "The certificates you got by doing an exam! Maybe they are already good to get a job? Or should you get more?",
-    "GetMorphcoins": "Don't want to pay? You can get coins by other ways",
+    "GetMorphcoins": "You can buy MorphCoins in the shop.",
     "MoreComingSoon": "More coming soon...",
     "CreatedBy": "Created by",
     "And": "and",
@@ -522,7 +522,7 @@
     "OrderPremiumCharacteristics": "Premium membership: access to all courses and unlimited hearts.",
     "OrderPremiumNote": "The period ends on the same day of the following month or year, or the last day of that month if necessary. A manual extension adds to your paid period. Separately ordered renewal, confirmed in time, then continues monthly at the agreed coin price, including after a yearly period. You can cancel at any time:",
     "OrderCoinsCharacteristics": "Your Morphcoins are credited after payment and contract confirmation, within the stated deadline.",
-    "OrderCoinsNote": "MorphCoins cannot be redeemed with third parties or outside the platform and are not paid out in money. Unused purchased MorphCoins are refunded at any time on request to hallo{'@'}bootstrap.academy at the rate they were bought at; reward coins lapse when your account is deleted (terms and conditions, section 6).",
+    "OrderCoinsNote": "MorphCoins are for use on our platform. We refund unused purchased MorphCoins at any time on request to hallo{'@'}bootstrap.academy at the rate you bought them.",
     "OrderHeartsCharacteristics": "Refill once, up to {max} hearts. Your offer shows the exact amount and deadline.",
     "OrderCourseCharacteristics": "Permanent access to all lectures of this course.",
     "PremiumIncludesThisCourse": "Premium includes this course, without unlocking it separately.",
@@ -611,79 +611,59 @@
       }
     },
     "About": {
-      "1": "Full-time video-based courses in every difficulty",
-      "2": "Webinars, coaching",
-      "3": "Exercises",
-      "4": "Completely for free, if you're helping"
+      "1": "Courses for your next step.",
+      "2": "Put your knowledge into practice.",
+      "3": "Keep track of your progress.",
+      "4": "Learn at your own pace."
     },
     "Features": {
       "1": {
-        "Heading": "Video-based courses",
-        "Body": "We offer free and paid courses. Our courses contain almost everything that is taught when studying computer science. And we're working hard to erase the 'almost'."
+        "Heading": "Courses",
+        "Body": "Explore free and paid courses. Goals and prerequisites help you find the right place to start."
       },
       "2": {
-        "Heading": "Webinars",
-        "Body": "Sometimes, there are questions, sometimes, we need someone to tell us about their work. That's why we have webinars. Held by you for you. Held by experts for those who want to become one."
+        "Heading": "Jump into learning",
+        "Body": "Start a lesson, try things for yourself and move on to the next step."
       },
       "3": {
-        "Heading": "Coaching",
-        "Body": "You do want that individual help, you want an expert mentoring just you? Here you go!"
+        "Heading": "Your progress",
+        "Body": "Your character sheet shows what you have learned and where you can continue."
       },
       "4": {
         "Heading": "Exercises",
-        "Body": "We all love a challenges. That's why we already have a lot of coding challenges for you. But there's a lot more to come!"
+        "Body": "Solve problems and run your code in practical exercises. Check the result to see how your solution works."
       },
       "5": {
-        "Heading": "The Skill Tree",
-        "Body": "Have you ever stood before the vast amount of coding languages and technologies and did not have the slightest idea what to learn next? That's why we designed a roadmap: The skilltree!"
-      },
-      "6": {
-        "Heading": "Certificates",
-        "Body": "To apply for jobs or just for trophy hunting, there are real certificates. You don't get those for participating but for a real exam. We're working with colleges and companies to larger the benefit - and our network is growing."
+        "Heading": "The skill tree",
+        "Body": "Explore topics and find courses that interest you."
       }
     },
     "HeroFAQS": {
       "1": {
-        "Heading": "How can I participate? How can I get MorphCoins?",
-        "Body": "There are several possibilities to help us - and get coins: You can help me with a certain video, you can host a webinar, become a coach or you can help us with finding and repairing bugs. Additionally, you can buy MorphCoins directly via PayPal, SEPA direct debit, giropay, and debit/credit card. All payment methods are processed through PayPal. More details are"
+        "Heading": "How do I get MorphCoins?",
+        "Body": "You can buy MorphCoins in the shop and use them for paid Academy offers."
       },
       "2": {
         "Heading": "Is MorphCoin a cryptocurrency?",
         "Body": "No. It is a pure site-internal currency."
       },
       "3": {
-        "Heading": "Your vlogs are not a skill here. Why?",
-        "Body": "We're planning for integrating a whole new part for learning security awareness, but we did not want to keep everyone waiting. If you have some cool ideas, feel free to contact me."
+        "Heading": "Do I need prior knowledge?",
+        "Body": "Each course lists its prerequisites. Choose a starting point that suits you."
       },
       "4": {
-        "Heading": "I want to host a webinar. How?",
-        "Body": "You first need to get that skill certified, so we can be sure, you actually know, what you're talking about. Then you need a certificate for some soft skills. After that, you can at any time you like."
+        "Heading": "How do I report a bug?",
+        "Body": "Use the feedback button in the bottom right. Please report security vulnerabilities privately by email using the address in our legal notice."
       },
       "5": {
-        "Heading": "I already studied computer science. Can I get my skills certified?",
-        "Body": "Sure. Contact us! We need to do that manually so we know, it's true. That's why we need a few MorphCoins for it."
+        "Heading": "Do I have to learn through videos?",
+        "Body": "Our new learning paths combine short explanations with exercises. Courses with videos are still available too."
       }
     },
     "GetMorphcoins": {
       "1": {
-        "Heading": "Buy MorphCoins ",
-        "Body": "You can buy MorphCoins using euros in the shop. This is possible directly via PayPal, SEPA direct debit, giropay, and debit/credit card. All payment methods are processed through PayPal."
-      },
-      "2": {
-        "Heading": "Lectures",
-        "Body": "Provide everything for a lecture. You still have that code of your last python project where you use cool libs? Or you just installed something on your server and created screenshots or even a video of every step you took? Send it over and I'll share it with the community. However, please be aware that this info will be public then! So you're transferring rights to me, meaning you first have to have those! So please, only original work. And if I have to fix too many bugs, I'll have to reduce your reward."
-      },
-      "3": {
-        "Heading": "Webinars",
-        "Body": "Host webinars as an instructor. You're an expert and want to share your knowledge in webinars? Contact me, if you've got the skills, I'm happy to have you. You yourself decide about the prices you take from the participants. You keep 80%! Only limitation: The webinar may not be for free - you know, we do want to keep developing this site."
-      },
-      "4": {
-        "Heading": "Coach",
-        "Body": "Apply and become a coach. Want to help people individually? You only need the skills you want to coach, some soft skills and you can start. Rates are totally up to you!"
-      },
-      "5": {
-        "Heading": "Bug Bounty",
-        "Body": "Please report security vulnerabilities privately by email; the address is in our legal notice. Use the feedback button for ordinary bugs. Test only our platform using your own accounts. Don’t disrupt services, attack other users or third parties, or change anyone else’s data. If you accidentally see someone else’s data, don’t keep copies and report the finding privately. We may award Morphcoins for the first helpful report; the amount depends on the vulnerability and your report. A reward in euros requires an agreement with us before you start testing."
+        "Heading": "Buy MorphCoins",
+        "Body": "Choose how many coins you want in the shop. The available payment methods are shown at checkout."
       }
     },
     "Filter": {
@@ -1011,7 +991,7 @@
     "GoBack": "Go Back",
     "GotResetCode": "Got Reset Code?",
     "Here": "Here",
-    "GetMorphcoins": "Get Morphcoins",
+    "GetMorphcoins": "Buy MorphCoins",
     "Calendar": "Calendar",
     "BackToDetails": "Back To Details",
     "MyAccount": "My Account",

@@ -21,10 +21,6 @@ export default {
               pathname: "/dashboard",
             },
             {
-              label: "Links.Calendar",
-              pathname: "/calendar",
-            },
-            {
               label: "Links.SkillTree",
               pathname: "/skill-tree",
             },

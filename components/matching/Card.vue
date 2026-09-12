@@ -28,14 +28,6 @@ const props = defineProps({
       v-if="data?.solved"
       class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
     />
-    <PencilSquareIcon
-      v-else-if="user?.id == data?.creator && user.admin"
-      class="absolute -right-1 -top-1.5 h-8 w-8 rounded-full bg-light p-1 text-accent"
-    />
-    <EyeIcon
-      v-else-if="user?.id == data?.creator && !user.admin"
-      class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
-    />
   </article>
 </template>
 
@@ -43,8 +35,7 @@ const props = defineProps({
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
-import { CheckIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { LockClosedIcon } from "@heroicons/vue/24/outline";
+import { CheckIcon } from "@heroicons/vue/24/outline";
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
@@ -53,7 +44,6 @@ export default defineComponent({
     const { t } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    const user: any = useUser();
 
     const rootSkillID = computed(() => {
       return <string>(route?.params?.id ?? "");
@@ -90,9 +80,9 @@ export default defineComponent({
       );
     }
 
-    return { t, solveThis, user };
+    return { t, solveThis };
   },
-  components: { CheckIcon, LockClosedIcon, PencilSquareIcon, EyeIcon },
+  components: { CheckIcon },
 });
 </script>
 

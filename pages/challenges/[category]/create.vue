@@ -1,31 +1,13 @@
 <template>
-  <section
-    class="h-screen-inner min container-fluid grid place-items-center pt-container pb-container"
-  >
-    <section class="container-form max-w-3xl">
-      <SectionTitle center heading="Headings.CreateChallenge" size="sm" class="mx-auto mb-card" />
-      <FormChallenge />
-    </section>
-  </section>
+  <div />
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 definePageMeta({
-  layout: "inner",
-  middleware: ["auth"],
+  middleware: (to) =>
+    navigateTo(
+      { path: "/challenges/all", query: { category: String(to.params.category || "") } },
+      { replace: true }
+    ),
 });
-
-export default {
-  head: {
-    title: "Create Challenge",
-  },
-  setup() {
-    onMounted(() => {
-      console.log("in create page");
-    });
-    return {};
-  },
-};
 </script>
-
-<style scoped></style>

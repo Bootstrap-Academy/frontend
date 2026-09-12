@@ -14,6 +14,7 @@ export interface ExerciseDraft {
   submission_id?: string;
   submission_unknown?: boolean;
   attempt_id?: string;
+  hint_level?: number;
 }
 
 export interface ExerciseData {
@@ -61,11 +62,26 @@ export interface ExerciseView {
 }
 
 export type LocalizedText = { de: string; en: string };
+export interface LearningChapter {
+  id: string;
+  title: LocalizedText;
+}
+
 export interface LearningUnit {
+  chapter_id?: string | null;
   id: string;
   path_id: string;
   title: LocalizedText;
-  room: "loop-explorer" | "percentage-explorer" | "exercise";
+  room:
+    | "loop-explorer"
+    | "percentage-explorer"
+    | "guided-lesson"
+    | "exercise"
+    | "io-machine"
+    | "bit-lab"
+    | "file-workspace"
+    | "step-machine"
+    | "network-lab";
   content: Record<string, any>;
   teaches: string[];
   practices: string[];
@@ -85,8 +101,18 @@ export interface RoomEnvelope {
 }
 export interface LearningRoomsView {
   status: "idle" | "loading" | "ready" | "disabled" | "error";
-  paths: { id: string; title: LocalizedText }[];
-  path: { id: string; title: LocalizedText } | null;
+  paths: {
+    id: string;
+    title: LocalizedText;
+    direction_id?: string | null;
+    chapters?: LearningChapter[];
+  }[];
+  path: {
+    id: string;
+    title: LocalizedText;
+    direction_id?: string | null;
+    chapters?: LearningChapter[];
+  } | null;
   room: RoomEnvelope | null;
   draft: Record<string, any>;
   dirty: boolean;

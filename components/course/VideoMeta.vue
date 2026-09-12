@@ -20,17 +20,12 @@
     </div>
 
     <div class="mt-0.5 flex h-fit flex-shrink-0 flex-wrap gap-box">
-      <template
-        v-if="
-          activeLecture.completed || listOfCompletedCourses.find((lec) => lec == activeLecture.id)
-        "
+      <Btn
+        sm
+        v-if="!activeLecture.completed && !listOfCompletedCourses.includes(activeLecture.id)"
+        secondary
+        @click="markLectureAsComplete()"
       >
-        <Btn i-if="user?.admin || canCreate" :icon="PlusCircleIcon" secondary sm @click="addTask">{{
-          t("Buttons.AddTask")
-        }}</Btn>
-      </template>
-
-      <Btn sm v-else-if="!activeLecture.completed" secondary @click="markLectureAsComplete()">
         {{ t("Buttons.MarkCompleted") }}
       </Btn>
     </div>
@@ -50,26 +45,18 @@
       :activeLecture="activeLecture"
       v-if="!!activeSection && !!activeLecture"
     />
-
-    <SkillSelectionModal
-      :show="showSkillSelection"
-      :skills="possibleRootSkills"
-      @close="showSkillSelection = false"
-      @select="handleSkillSelection"
-    />
   </header>
 </template>
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent, ref, computed, onMounted } from "vue";
-import { CheckIcon, CheckBadgeIcon, PlusCircleIcon } from "@heroicons/vue/24/solid";
+import { defineComponent, computed } from "vue";
+import { CheckIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 
 export default defineComponent({
   components: {
     CheckIcon,
     CheckBadgeIcon,
-    PlusCircleIcon,
   },
   props: {
     course: { type: Object as PropType<any>, default: null },
@@ -81,53 +68,11 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
-    const user: any = useUser();
     const { t } = useI18n();
     const showConfetti = useShowConfetti();
-    const xp: any = useXP();
     const listOfCompletedCourses = useListOfCompletedCourses();
-    const totalLevel = ref(0);
-    const router = useRouter();
-    const showSkillSelection = ref(false);
-    const selectedSkillID = ref(props.skillID);
-    const rootSkillTree = useRootSkillTree();
-
-    const possibleRootSkills: any = computed(() => {
-      const results: { id: string; name: string }[] = [];
-
-      rootSkillTree.value.skills.forEach((skill: any) => {
-        if (skill.skills) {
-          skill.skills.forEach((subskill: any) => {
-            if (subskill === "medienkompetenz") {
-              results.push({ id: skill.id, name: skill.name });
-            }
-          });
-        }
-      });
-
-      return results;
-    });
-
     const courseID: any = computed(() => {
       return props.course?.id ?? "";
-    });
-
-    const canCreate: any = computed(() => {
-      let eligible = false;
-      xp?.value?.skills.forEach((skill: any) => {
-        if (props.skillID == skill.skill) {
-          skill.skills.forEach((subSkill: any) => {
-            if (props.subSkillID == subSkill.skill && subSkill.level >= 5) {
-              totalLevel.value = subSkill.level;
-              eligible = true;
-            }
-            if (props.subSkillID == subSkill.skill && subSkill.level >= 20) {
-              totalLevel.value = subSkill.level;
-            }
-          });
-        }
-      });
-      return eligible;
     });
 
     const activeSectionID = computed(() => {
@@ -148,23 +93,6 @@ export default defineComponent({
       }
     });
 
-    function addTask() {
-      const subSkillID = props.subSkillID || courseID.value;
-      let skillID = selectedSkillID.value || props.skillID;
-
-      if (possibleRootSkills.value.length == 1) {
-        skillID = possibleRootSkills.value[0].id;
-      }
-
-      if (skillID) {
-        return router.push(
-          `/quizzes/${skillID}/${subSkillID}/create?course=${courseID.value}&section=${activeSectionID.value}&lecture=${activeLectureID.value}&skillID=${skillID}&subSkillID=${subSkillID}&level=${totalLevel.value}`
-        );
-      }
-
-      showSkillSelection.value = true;
-    }
-
     async function markLectureAsComplete() {
       setLoading(true);
       const [success, error] = await completeLecture(courseID.value, activeLectureID.value);
@@ -179,36 +107,17 @@ export default defineComponent({
       }
     }
 
-    function handleSkillSelection(skillID: string) {
-      selectedSkillID.value = skillID;
-      showSkillSelection.value = false;
-      addTask();
-    }
-
-    onMounted(async () => {
-      await getRootSkillTree();
-      await getXP();
-    });
-
     return {
       t,
       emit,
       path,
       listOfCompletedCourses,
       CheckIcon,
-      PlusCircleIcon,
       markLectureAsComplete,
       activeLectureID,
       courseID,
       activeSectionID,
       showConfetti,
-      user,
-      canCreate,
-      totalLevel,
-      addTask,
-      showSkillSelection,
-      handleSkillSelection,
-      possibleRootSkills,
     };
   },
 });

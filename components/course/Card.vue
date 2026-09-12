@@ -1,6 +1,6 @@
 <template>
   <article class="overflow-hidden bg-secondary style-card">
-    <img :src="image" :alt="t('AltAttributes.CourseCover')" class="h-32 w-full object-cover" />
+    <img v-if="image" :src="image" alt="" class="h-32 w-full object-cover" />
     <div class="card-sm">
       <h3 class="clamp tight line-2 text-heading-3">{{ title }}</h3>
       <p class="clamp line-2 text-body-2 mt-2">{{ description }}</p>
@@ -18,8 +18,11 @@
       </Chip>
       <Chip v-else xs color="bg-info">{{ t("Headings.Free") }}</Chip>
 
-      <IconText :highlightIcon="false" sm :icon="lectures.icon">
-        {{ t("Headings.Lectures", { n: lectures.value }, lectures.value) }}
+      <span v-if="data?.learning_path_id" class="text-body-2 text-subheading">{{
+        copy.course
+      }}</span>
+      <IconText v-else-if="lectures.value > 0" :highlightIcon="false" sm :icon="lectures.icon">
+        {{ lectures.value }} {{ copy.lessons }}
       </IconText>
     </div>
   </article>
@@ -39,17 +42,19 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
+    const { copy, localizeCourse } = useCourseExperienceCopy();
+    const translated = computed(() => (props.data ? localizeCourse(props.data) : null));
 
     const image = computed(() => {
-      return props.data?.image ?? `/images/about-${getRandomNumber(1, 5)}.webp`;
+      return props.data?.image || "";
     });
 
     const title = computed(() => {
-      return props.data?.title ?? "";
+      return translated.value?.title || "";
     });
 
     const description = computed(() => {
-      return props.data?.description ?? "";
+      return translated.value?.description || "";
     });
 
     const price = computed(() => {
@@ -88,7 +93,7 @@ export default defineComponent({
       return props.data?.completed ?? false;
     });
 
-    return { image, title, description, price, lectures, completed, t };
+    return { image, title, description, price, lectures, completed, t, copy };
   },
 });
 </script>

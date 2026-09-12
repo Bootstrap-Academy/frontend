@@ -14,7 +14,7 @@
       :key="i"
       :heading="`List.HeroFAQS.${i + 1}.Heading`"
       :body="`List.HeroFAQS.${i + 1}.Body`"
-      :link="i + 1 == 1 ? { to: '/morphcoins', text: 'Links.Here' } : null"
+      :link="i + 1 == 1 ? { to: '/morphcoins/buy', text: 'Buttons.GoToShop' } : null"
       :expand="expand"
       @expand="setExpand(i)"
     />

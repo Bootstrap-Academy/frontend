@@ -16,10 +16,10 @@
         Zugriff auf Informationen in deinem Browser sowie das Digitale-Dienste-Gesetz (DDG).
       </p>
       <p>
-        Wir setzen keine Analyse- oder Tracking-Dienste ein, versenden keinen Newsletter und werten
-        dein Lernverhalten weder für Profilbildung noch für Empfehlungen aus. Dienste Dritter, die
-        bei der Nutzung der Plattform Daten erhalten, benennen wir in diesen Hinweisen mit Name,
-        Sitz und Rechtsgrundlage.
+        Wir setzen keine Analyse- oder Tracking-Dienste ein und versenden keinen Newsletter. Deinen
+        gespeicherten Lernstand nutzen wir, damit du an der passenden Stelle weiterlernen kannst
+        (Abschnitt 12). Dienste Dritter, die bei der Nutzung der Plattform Daten erhalten, benennen
+        wir in diesen Hinweisen mit Name, Sitz und Rechtsgrundlage.
       </p>
     </section>
 
@@ -38,11 +38,11 @@
       <li><a href="#oauth">Anmeldung über GitHub, Discord oder Google</a></li>
       <li><a href="#lernen">Lernplattform, Lernfortschritt und Bestenliste</a></li>
       <li><a href="#challenges">Challenges, Code-Ausführung und Moderation</a></li>
-      <li><a href="#events">Events, Webinare und Coaching</a></li>
+      <li><a href="#events">Frühere Webinare und Coachings</a></li>
       <li><a href="#zahlungen">MorphCoins, Premium, Herzen und Zahlungen</a></li>
       <li><a href="#videos">Kursvideos (MP4 und YouTube)</a></li>
       <li><a href="#kommunikation">E-Mails, Kontakt und Community</a></li>
-      <li><a href="#analyse">Keine Analyse, kein Tracking, keine Profilbildung</a></li>
+      <li><a href="#analyse">Keine Webanalyse und kein Werbetracking</a></li>
       <li><a href="#drittland">Drittlandübermittlungen</a></li>
       <li><a href="#speicherung">Speicherdauer und Löschung</a></li>
       <li><a href="#pflichtangaben">Pflichtangaben und Freiwilligkeit</a></li>
@@ -143,7 +143,8 @@
               <td>Kurse, Lernfortschritt, Erfahrungspunkte (XP)</td>
               <td>
                 Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP je
-                Skill (Abschnitt 12)
+                Skill sowie private Bearbeitungsstände, Antworten und Ergebnisse der Lernräume
+                (Abschnitt 12)
               </td>
             </tr>
             <tr>
@@ -156,10 +157,10 @@
             </tr>
             <tr>
               <td>Events</td>
-              <td>Webinare, Coachings</td>
+              <td>Abwicklung früherer Angebote</td>
               <td>
-                Anmeldungen, Buchungen, Coaching-Angebote, Bewertungen von Kursleitern,
-                Kalender-Abo-Kennung (Abschnitt 14)
+                Noch vorhandene Buchungs-, Bewertungs- und Vertragsdaten sowie alte, nicht mehr
+                nutzbare Kalenderkennungen (Abschnitt 14)
               </td>
             </tr>
             <tr>
@@ -205,8 +206,8 @@
       <ul>
         <li>
           <strong>Art. 6 Abs. 1 lit. b DSGVO</strong> (Vertrag): alles, was zur Bereitstellung der
-          Plattform erforderlich ist – Konto, Anmeldung, Kurse, Lernfortschritt, Challenges, Events,
-          MorphCoins, Premium, Zahlungen, Anmeldung über Drittanbieter, Kauf- und
+          Plattform erforderlich ist – Konto, Anmeldung, Kurse, Lernfortschritt, Challenges, frühere
+          Eventverträge, MorphCoins, Premium, Zahlungen, Anmeldung über Drittanbieter, Kauf- und
           Buchungsbestätigungen, Bearbeitung von Kündigungen und Widerrufen, Erstattungen nach einer
           Kontolöschung.
         </li>
@@ -361,7 +362,7 @@
               <td>Kurse, Fortschrittsanzeige, XP, Bestenliste</td>
               <td>
                 Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP,
-                Skill-Level, Lösungsstand und Versuche bei Aufgaben
+                Skill-Level, Lösungsstand, Versuche und private Zwischenstände in Lernräumen
               </td>
               <td>Art. 6 Abs. 1 lit. b DSGVO; Bestenliste: Art. 6 Abs. 1 lit. f DSGVO</td>
               <td>Bis zur Kontolöschung</td>
@@ -369,7 +370,7 @@
             </tr>
             <tr>
               <td>Challenges und Code-Ausführung (Abschnitt 13)</td>
-              <td>Auswertung von Programmieraufgaben, eigene Aufgaben</td>
+              <td>Auswertung von Programmieraufgaben, vorhandene Nutzeraufgaben</td>
               <td>
                 Quellcode, Programmiersprache, Ergebnis, Fehlerausgaben, Laufzeit,
                 Speicherverbrauch, selbst erstellte Aufgaben, Bewertungen
@@ -390,18 +391,17 @@
               <td>Keine</td>
             </tr>
             <tr>
-              <td>Events, Webinare, Coaching (Abschnitt 14)</td>
-              <td>Durchführung von Webinaren und Coachings</td>
+              <td>Frühere Eventdaten (Abschnitt 14)</td>
+              <td>Auskunft, Löschung und Abwicklung bestehender Rechte</td>
               <td>
-                Anmeldungen, Buchungen, Bewertungen, Kalender-Kennung; im Videocall IP-Adresse,
-                Audio und Video
+                Noch vorhandene Buchungs-, Bewertungs- und Vertragsdaten; alte Kalenderkennungen
               </td>
-              <td>Art. 6 Abs. 1 lit. b DSGVO</td>
-              <td>Vergangene Termine: kurz nach Ende; übrige Daten bis zur Kontolöschung</td>
+              <td>Art. 6 Abs. 1 lit. b und lit. c DSGVO; Rechtsansprüche: lit. f</td>
               <td>
-                Kursleiter und Teilnehmer (Anzeigename und Nickname); 8x8, Inc., USA (Jitsi Meet,
-                EU-US Data Privacy Framework) beim Beitritt zu einem Videocall
+                Abschnitt 14; notwendige Vertrags- und Abrechnungsunterlagen nach Abschnitten 10.7
+                und 15.4
               </td>
+              <td>Keine neuen Konferenz- oder Kalenderanbieter</td>
             </tr>
             <tr>
               <td>MorphCoins, Premium, Herzen (Abschnitt 15)</td>
@@ -804,8 +804,8 @@
         </li>
         <li>
           <strong>Anzeigename</strong>: der Name, den andere angemeldete Nutzer sehen, etwa in der
-          Bestenliste, bei Webinaren und Coachings. Auch hier ist ein Pseudonym zulässig. Der
-          Anzeigename kann jederzeit geändert werden.
+          Bestenliste. Für gegebenenfalls noch vorhandene frühere Eventdaten gilt Abschnitt 14. Auch
+          hier ist ein Pseudonym zulässig. Der Anzeigename kann jederzeit geändert werden.
         </li>
         <li>
           <strong>E-Mail-Adresse</strong>: für die Verifizierung des Kontos, das Zurücksetzen des
@@ -951,7 +951,7 @@
         <li>
           Die Kontolöschung allein ist keine Stornierungs- oder Widerrufserklärung für einzelne
           bezahlte Leistungen. Bestehende Leistungs- und Erstattungsansprüche bleiben davon
-          getrennt; für Events gilt Ziffer 10.5 der AGB.
+          getrennt; für frühere Eventverträge gilt Ziffer 10 der AGB.
         </li>
         <li>
           Die Löschung im laufenden System bedeutet nicht zugleich, dass sämtliche Sicherungskopien
@@ -1048,22 +1048,51 @@
       <h2>12 Lernplattform, Lernfortschritt und Bestenliste</h2>
       <h3>12.1 Lern- und Fortschrittsdaten</h3>
       <p>
-        Im Dienst Skills speichern wir zu deinem Konto: welche Kurse du freigeschaltet oder mit
-        MorphCoins gekauft hast, welche Lektionen du abgeschlossen hast (Lektion, Zeitpunkt), den
-        zuletzt angesehenen Kurs, gesetzte Lesezeichen und deine Erfahrungspunkte (XP) je Skill, aus
-        denen sich dein Skill-Level ergibt. Im Dienst Challenges speichern wir zu Quizfragen,
-        Zuordnungsaufgaben und Programmieraufgaben, ob und wann du sie gelöst hast, die Anzahl
-        deiner Versuche und deine Bewertung der Aufgabe (positiv, neutral, negativ). Die von dir
-        gewählten Antworten auf Quizfragen speichern wir nicht. Die Wiedergabeposition in Kursvideos
-        wird nur in deinem Browser gespeichert (Abschnitt 9), nicht auf unseren Servern. Für die
-        Bestätigungs-E-Mail zu einem Kurskauf ruft der Dienst Skills deine E-Mail-Adresse aus dem
-        Kerndienst ab und hält sie höchstens fünf Minuten im Zwischenspeicher.
+        Im Dienst Skills speichern wir, welche Kurse du freigeschaltet oder gekauft hast,
+        abgeschlossene Lektionen mit Zeitpunkt, deinen zuletzt angesehenen Kurs, Lesezeichen und
+        Erfahrungspunkte (XP) je Skill. Daraus zeigen wir dir deinen Fortschritt und deinen
+        Skill-Level auf dem Charakterbogen an.
       </p>
       <p>
-        Zweck ist die Bereitstellung der Kurse und Aufgaben, die Anzeige deines Fortschritts und die
-        Vergabe von XP. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Wir speichern diese Daten,
-        bis du dein Konto löschst. Eine Auswertung für Empfehlungen, Profilbildung oder
-        Produktentwicklung findet nicht statt (Abschnitt 18).
+        In den Lernräumen speichern wir außerdem zur jeweiligen Einheit deinen privaten
+        Bearbeitungsstand. Dazu können Antworten, ausgewählte Optionen, eingegebener Code und andere
+        Entwürfe gehören. Wir speichern, ob du eine Einheit begonnen, abgeschlossen oder
+        übersprungen hast, ihr Ergebnis, den letzten Speicherzeitpunkt sowie Beginn und Stand einer
+        Wiederholung. „Kennengelernt“ und „gelöst“ bezeichnen das Ergebnis der jeweiligen Einheit;
+        sie sind keine allgemeine Bewertung deiner Fähigkeiten.
+      </p>
+      <p>
+        Damit Speichern und Wiederholen auch nach einer unterbrochenen Verbindung zuverlässig
+        funktionieren, merken wir uns eine Bearbeitungsnummer und die letzten vier Speicher- oder
+        Abschlussbestätigungen je Einheit. Diese enthalten eine zufällige Anfragekennung, einen
+        Prüfwert, den Zeitpunkt und den bestätigten Bearbeitungsstand einschließlich darin
+        enthaltener Entwürfe. Ältere Bestätigungen ersetzen wir beim nächsten Speichern; den
+        aktuellen Lernstand behalten wir.
+      </p>
+      <p>
+        Der nächste Lernschritt richtet sich nach deinem gewählten Kurs oder Thema, verfügbaren
+        Inhalten, deren Voraussetzungen und deinem gespeicherten Lernstand. Begonnene Einheiten
+        kannst du fortsetzen. Nach einem Abschluss folgen weitere passende Einheiten oder eine
+        Wiederholung. Überspringen werten wir nicht als falsche Lösung. Du kannst auch selbst einen
+        anderen verfügbaren Kurs wählen. Wir zeichnen dafür keine Mausbewegungen, Lesedauer oder
+        sonstige allgemeine Nutzungsaktivität auf und erstellen kein Werbeprofil.
+      </p>
+      <p>
+        Im Dienst Challenges speichern wir zu Quizfragen, Zuordnungsaufgaben und Programmieraufgaben
+        deinen Lösungsstand, Versuche, Zeitpunkte und Bewertungen. Deine gewählten Antworten können
+        auch Bestandteil eines gespeicherten Lernraums sein. Für Code-Einreichungen gilt zusätzlich
+        Abschnitt 13. Die Wiedergabeposition von Kursvideos speichern wir nur in deinem Browser
+        (Abschnitt 9). Für eine notwendige Kaufbestätigung ruft der Dienst Skills deine
+        E-Mail-Adresse aus dem Kerndienst ab und hält sie höchstens fünf Minuten im
+        Zwischenspeicher.
+      </p>
+      <p>
+        Zweck ist, dir Kurse und Aufgaben bereitzustellen, deinen Fortschritt anzuzeigen, XP zu
+        vergeben und dich an der passenden Stelle weiterlernen zu lassen. Rechtsgrundlage ist Art. 6
+        Abs. 1 lit. b DSGVO. Deine privaten Lernraumdaten sind für andere Nutzer nicht abrufbar. Sie
+        gehören zu deinem Datenexport und werden mit deinem Konto gelöscht; notwendige
+        Vertragsnachweise bleiben davon getrennt (Abschnitt 10.7). Für die Bestenliste gilt
+        Abschnitt 12.2.
       </p>
       <h3>12.2 Bestenliste</h3>
       <p>
@@ -1144,13 +1173,14 @@
         das Programm spätestens fünf Minuten nach der letzten Ausführung. Er protokolliert weder
         Quelltext noch Ausgaben; seine Kennzahlen sind Zähler je Programmiersprache.
       </p>
-      <h3>13.3 Eigene Aufgaben, Bewertungen und Meldungen</h3>
+      <h3>13.3 Vorhandene Nutzeraufgaben, Bewertungen und Meldungen</h3>
       <p>
-        Wenn du Aufgaben oder Quizfragen erstellst, speichern wir deren Inhalt, deine Nutzerkennung,
-        den Erstellungszeitpunkt und den jeweiligen Status. Andere Nutzer können diese Inhalte
-        bewerten und melden. Zu einer Meldung verarbeiten wir den betroffenen Inhalt, Zeitpunkt,
-        Meldegrund, freiwillige Erläuterungen und die Nutzerkennung oder übermittelten
-        Kontaktangaben der meldenden Person.
+        Neue öffentliche Lerninhalte stellen wir zentral bereit. Frühere Nutzeraufgaben und
+        Quizfragen können weiter vorhanden sein; dazu speichern wir Inhalt, Nutzerkennung des
+        Erstellers, Erstellungszeitpunkt und Status. Andere Nutzer können diese Inhalte bewerten und
+        melden. Zu einer Meldung verarbeiten wir den betroffenen Inhalt, Zeitpunkt, Meldegrund,
+        freiwillige Erläuterungen und die Nutzerkennung oder übermittelten Kontaktangaben der
+        meldenden Person.
       </p>
       <p>
         Meldungen und private Belege sind von den Mitteilungen an betroffene Personen getrennt.
@@ -1160,10 +1190,11 @@
         App. Gewöhnliche Eingänge und Statusmeldungen versenden wir nicht per E-Mail.
       </p>
       <p>
-        Rechtsgrundlage für das Erstellen und Bewerten ist Art. 6 Abs. 1 lit. b DSGVO. Meldungen
-        bearbeiten wir zur Erfüllung einschlägiger gesetzlicher Pflichten nach Art. 6 Abs. 1 lit. c
-        DSGVO, insbesondere aus Art. 16 und 17 DSA; soweit keine solche Pflicht besteht, auf
-        Grundlage von Art. 6 Abs. 1 lit. f DSGVO zum Schutz der Plattform und ihrer Nutzer.
+        Rechtsgrundlage für die Bereitstellung vorhandener Aufgaben und das Bewerten ist Art. 6 Abs.
+        1 lit. b DSGVO. Meldungen bearbeiten wir zur Erfüllung einschlägiger gesetzlicher Pflichten
+        nach Art. 6 Abs. 1 lit. c DSGVO, insbesondere aus Art. 16 und 17 DSA; soweit keine solche
+        Pflicht besteht, auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO zum Schutz der Plattform und
+        ihrer Nutzer.
       </p>
       <p>
         Für Aufgaben und Lerndaten gelten die beschriebenen Löschwege. Mit einer gelöschten
@@ -1243,68 +1274,34 @@
     </section>
 
     <section id="events">
-      <h2>14 Events, Webinare und Coaching</h2>
-      <h3>14.1 Teilnahme und Buchung</h3>
+      <h2>14 Frühere Webinare und Coachings</h2>
       <p>
-        Im Dienst Events speichern wir deine Anmeldungen zu Webinaren, gebuchte Coaching-Termine
-        sowie – wenn du als Kursleiter tätig bist – deine angebotenen Webinare, Coachings und
-        Terminfenster. Zu deinem Konto sind dort deine Nutzerkennung und die Termindaten
-        gespeichert; Anzeigename und Nickname sowie – für den Versand von E-Mails – deine
-        E-Mail-Adresse ruft der Dienst bei Bedarf aus dem Kerndienst ab und hält sie höchstens fünf
-        Minuten im Zwischenspeicher. Bei Coachings sehen Kursleiter und buchende Person gegenseitig
-        Anzeigename und Nickname; bei Webinaren sehen Teilnehmer Anzeigename und Nickname des
-        Kursleiters, andere Teilnehmer werden ihnen nicht angezeigt, nur ihre Anzahl; der Kursleiter
-        und Administratoren können die Nutzerkennungen der Teilnehmer abrufen. Die durchschnittliche
-        Bewertung eines Kursleiters je Skill sehen alle angemeldeten Nutzer. Nach einem Webinar
-        kannst du den Kursleiter mit einer Note von 1 bis 5 bewerten; bis du bewertet hast,
-        speichern wir dafür eine Bewertungsanfrage mit deiner Nutzerkennung und dem Namen des
-        Webinars, und sobald du bewertet hast, entfernen wir den Bezug zwischen der Bewertung und
-        deiner Person. Bewertungen, die du als Kursleiter erhältst, stammen von Teilnehmern; eine
-        Bewertung, die mehr als zwei Jahre älter ist als deine jüngste Bewertung im selben Skill,
-        löschen wir beim nächsten Abruf deiner Bewertung. Kostenpflichtige Anmeldungen und Buchungen
-        werden mit MorphCoins bezahlt (Abschnitt 15); zur Buchung erhältst du eine
-        Bestätigungs-E-Mail. Wird ein Webinar oder Coaching abgesagt oder eine Anmeldung storniert,
-        informieren wir alle Beteiligten – Teilnehmer und Kursleiter – per E-Mail über den Termin
-        und den erstatteten Betrag; die E-Mail an die buchende Person eines Coachings nennt den
-        Anzeigenamen des Kursleiters. Absagen und Stornierungen infolge einer Kontolöschung
-        (Abschnitt 10.7) werden nicht per E-Mail mitgeteilt. Prüfungstermine sind in der Software
-        vorgesehen, werden derzeit aber nicht angeboten.
+        Webinare, Coachings und der zugehörige Kalender werden nicht mehr angeboten. Neue Angebote,
+        Buchungen, Bewertungen und Kalender-Abos sind geschlossen. Wir erstellen dafür keine neuen
+        Konferenzräume und liefern keine Kalenderfeeds mehr aus.
       </p>
       <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Vergangene Termine werden kurz nach ihrem
-        Ende (innerhalb weniger Minuten) automatisch gelöscht; die übrigen Daten speichern wir bis
-        zur Kontolöschung. Löschst du dein Konto, werden Termine, die du als Kursleiter anbietest,
-        abgesagt und den Teilnehmern erstattet (Abschnitt 10.7).
+        Der bisherige Eventdienst bleibt für Auskunft, Löschung und die Abwicklung bestehender
+        Rechte erreichbar. Soweit noch Daten zu deinem Konto vorhanden sind, können dazu frühere
+        Angebote, Buchungen, Zeitfenster, Bewertungen, Nutzerkennungen, Zahlungs- und
+        Vertragsnachweise gehören. Wir nutzen sie nur noch für diese bestehenden Vorgänge.
+        Notwendige Kontaktangaben rufen wir dafür aus dem Kerndienst ab; der Zwischenspeicher dafür
+        läuft nach höchstens fünf Minuten ab. Für wichtige Nachrichten zu einem bestehenden Vertrag
+        gilt Abschnitt 17.1.
       </p>
-      <h3>14.2 Videokonferenzen (Jitsi Meet)</h3>
       <p>
-        Für gebuchte Coaching-Termine erzeugen wir Konferenzräume auf der öffentlichen
-        Jitsi-Meet-Instanz meet.jit.si, betrieben von 8x8, Inc., Campbell, Kalifornien, USA. Der
-        Raumname ist eine zufällige Zeichenfolge. Wenn du einem Raum beitrittst, übermittelt dein
-        Browser IP-Adresse, Browserdaten sowie deine Audio- und Videodaten an 8x8; 8x8 verarbeitet
-        diese in eigener Verantwortung nach seinen Datenschutzhinweisen. Wir speichern keine Inhalte
-        der Gespräche. Rechtsgrundlage für die Bereitstellung des Raums ist Art. 6 Abs. 1 lit. b
-        DSGVO (Durchführung des gebuchten Termins). 8x8, Inc. nimmt am EU-US Data Privacy Framework
-        teil (Abschnitt 19). Für Webinare hinterlegen Kursleiter den Konferenzlink selbst; welcher
-        Anbieter dort verwendet wird, erkennst du an der Adresse des Links.
+        Noch vorhandene alte Kalenderkennungen ermöglichen keinen Abruf mehr und werden mit dem
+        Konto gelöscht. Frühere Bewertungen und übrige gewöhnliche Eventdaten werden über die
+        bestehenden Löschwege entfernt; Bewertungen, die mehr als zwei Jahre älter als die jüngste
+        Bewertung desselben Kursleiters im selben Skill sind, werden beim nächsten Bewertungsabruf
+        gelöscht. Erforderliche Vertrags-, Zahlungs- und Anspruchsnachweise bleiben nach den
+        Abschnitten 10.7 und 15.4 getrennt erhalten.
       </p>
-      <h3>14.3 Kalender-Abo (iCal)</h3>
       <p>
-        Du kannst deine Termine als Kalender-Abo (iCal) in eine Kalender-App übernehmen. Wenn du die
-        Kalenderseite zum ersten Mal öffnest, erzeugen wir dafür eine zufällige Abo-Kennung und
-        speichern sie mit dem Zeitpunkt ihrer Erzeugung zu deinem Konto im Dienst Events. Die
-        Abo-Adresse enthält diese Kennung; wer die Adresse kennt, kann deine Termine abrufen. Mit
-        „Abo-Link erneuern“ auf der Kalenderseite ersetzt du die Kennung jederzeit durch eine neue;
-        die bisherige Adresse funktioniert dann sofort nicht mehr. Die Kennung wird mit deinem Konto
-        gelöscht. Der Kalender wird bei jedem Abruf erzeugt und nicht gespeichert; er enthält nicht
-        nur deine Buchungen, sondern alle künftigen Webinare und angebotenen Coaching-Termine der
-        Plattform, jeweils mit Titel, Skill und Beschreibung sowie – bei Coachings – Anzeigename,
-        Nickname und durchschnittlicher Bewertung des Kursleiters; bei deinen gebuchten Coachings
-        zusätzlich Anzeigename und Nickname der jeweils anderen Person und den Konferenzlink. Beim
-        Abruf durch deine Kalender-App wird die Adresse einschließlich der Kennung in unseren
-        Server-Logs protokolliert (Abschnitt 8), und der Anbieter deiner Kalender-App erhält die
-        Termindaten; diesen Anbieter wählst du selbst. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
-        DSGVO (die von dir gewünschte Funktion).
+        Rechtsgrundlagen sind Art. 6 Abs. 1 lit. b DSGVO für die Abwicklung bestehender Verträge,
+        lit. c für gesetzliche Auskunfts-, Lösch- und Aufbewahrungspflichten sowie lit. f für die
+        Geltendmachung oder Abwehr von Rechtsansprüchen. Eine Kontolöschung gilt nicht als
+        Stornierung oder Verzicht auf bestehende Ansprüche.
       </p>
     </section>
 
@@ -1314,14 +1311,16 @@
       <p>
         MorphCoins sind das Zahlungsmittel innerhalb der Plattform. Du kannst MorphCoins über PayPal
         kaufen (100 MorphCoins = 1,00 € inkl. 19 % USt., mindestens 500, höchstens 1.000.000 je
-        Kauf) oder als Belohnung erhalten. Mit MorphCoins bezahlst du Premium (1.000 je Monat oder
-        10.000 je Jahr, auf Wunsch mit automatischer Verlängerung), das Auffüllen der Herzen (50),
-        kostenpflichtige Kurse und Events. Zu deinem Konto speichern wir dein Guthaben und jede
-        Transaktion (Betrag, Beschreibung, Zeitpunkt), deinen Premium-Status mit dem Kennzeichen für
-        die automatische Verlängerung sowie deine Herzen mit dem Zeitpunkt der letzten Auffüllung;
-        Herzen werden täglich um 00:00 Uhr UTC aufgefüllt. Nicht verbrauchte gekaufte MorphCoins
-        erstatten wir auf Anfrage per Gutschrift. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO;
-        Speicherdauer bis zur Kontolöschung, für Rechnungen und Gutschriften wie in Abschnitt 15.4.
+        Kauf). Neue MorphCoins gibt es ausschließlich durch Kauf; vorhandene Guthaben und
+        berechtigte Erstattungen oder Rückbuchungen bleiben erhalten. Mit MorphCoins bezahlst du
+        Premium (1.000 je Monat oder 10.000 je Jahr, auf Wunsch mit automatischer Verlängerung), das
+        Auffüllen der Herzen (50), kostenpflichtige Kurse. Zu deinem Konto speichern wir dein
+        Guthaben und jede Transaktion (Betrag, Beschreibung, Zeitpunkt), deinen Premium-Status mit
+        dem Kennzeichen für die automatische Verlängerung sowie deine Herzen mit dem Zeitpunkt der
+        letzten Auffüllung; Herzen werden täglich um 00:00 Uhr UTC aufgefüllt. Nicht verbrauchte
+        gekaufte MorphCoins erstatten wir auf Anfrage per Gutschrift. Rechtsgrundlage ist Art. 6
+        Abs. 1 lit. b DSGVO; Speicherdauer bis zur Kontolöschung, für Rechnungen und Gutschriften
+        wie in Abschnitt 15.4.
       </p>
       <h3>15.2 Zahlung über PayPal</h3>
       <p>
@@ -1350,39 +1349,38 @@
         und bei Unternehmen die Umsatzsteuer-Identifikationsnummer. Für den Kauf von MorphCoins als
         Privatperson sind mindestens die Angabe, dass du nicht als Unternehmen handelst, und dein
         Land erforderlich (Umsatzsteuer); Unternehmen müssen die vollständigen Rechnungsdaten
-        einschließlich USt-IdNr. angeben. Wir erheben diese Daten erst, wenn du eine
-        kostenpflichtige Leistung erwirbst oder MorphCoins als Belohnung gutgeschrieben bekommen
-        möchtest. MorphCoins, die du als Belohnung erhältst, werden dir erst gutgeschrieben, wenn
-        deine E-Mail-Adresse bestätigt ist und deine Rechnungsdaten vollständig sind; bis dahin
-        halten wir sie zurück. Gutgeschrieben werden sie, wenn du deine Rechnungsdaten bei
-        bestätigter E-Mail-Adresse (gegebenenfalls erneut) speicherst. Gibst du eine USt-IdNr. an,
-        prüfen wir sie über das Mehrwertsteuer-Informationsaustauschsystem (VIES) der Europäischen
-        Kommission; übermittelt wird ausschließlich die USt-IdNr., nicht dein Name oder deine
-        Anschrift. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit den
-        umsatzsteuerrechtlichen Prüfpflichten.
+        einschließlich USt-IdNr. angeben. Wir benötigen diese Daten für Käufe, die dazugehörigen
+        Unterlagen und gegebenenfalls die Abwicklung bereits entstandener Vergütungs- oder
+        Erstattungsansprüche. Das Ausfüllen von Rechnungsdaten führt nicht zu einer neuen
+        Coinbelohnung. Bereits entstandene Ansprüche richten sich weiter nach den damals
+        vereinbarten Bedingungen. Gibst du eine USt-IdNr. an, prüfen wir sie über das
+        Mehrwertsteuer-Informationsaustauschsystem (VIES) der Europäischen Kommission; übermittelt
+        wird ausschließlich die USt-IdNr., nicht dein Name oder deine Anschrift. Rechtsgrundlage
+        dafür ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit den umsatzsteuerrechtlichen
+        Prüfpflichten.
       </p>
       <h3>15.4 Rechnungen, Gutschriften und Schlussabrechnung</h3>
       <p>
         Zu jedem MorphCoins-Kauf erstellen wir mit der Zahlungsbestätigung von PayPal eine Rechnung,
-        die wir dir als PDF mit der Kaufbestätigung per E-Mail senden; Gutschriften erstellen wir je
-        Kalendermonat über MorphCoins, die du als Belohnung erhalten hast (etwa als Kursleiter oder
-        für erstellte Aufgaben) – derzeit auf Anfrage –, sowie von Hand bei Erstattungen. Rechnungen
-        und Gutschriften enthalten Name, Anschrift, E-Mail-Adresse und gegebenenfalls USt-IdNr. Zu
-        jedem Dokument speichern wir außerdem einen Datensatz mit Nummer, Art, Ausstellungsdatum,
-        den gedruckten Kundenangaben, der Zahl der MorphCoins und den Beträgen; bei Rechnungen
-        zusätzlich mit Fassung und Zeitpunkt der Erklärungen zum Widerrufsrecht aus der Bestellung
-        (Abschnitt 15.5). Wir erzeugen die PDF-Dateien auf unserem eigenen Server; ein externer
-        Dienst ist nicht beteiligt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die
-        Erstellung und Art. 6 Abs. 1 lit. c DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und
-        Gutschriften acht Jahre auf (§ 147 Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG),
-        gerechnet ab dem Ende des Kalenderjahres der Ausstellung – auch nach einer Kontolöschung;
-        danach löschen wir Datensatz und PDF-Datei automatisch. Nach einer Kontolöschung entfernen
-        wir die Zuordnung des Datensatzes zum Konto und ersetzen darin die Kundenangaben durch den
-        Vermerk „Gelöschtes Konto (Aufbewahrung nach § 147 Abs. 3 AO)“; die PDF-Datei behält die
-        Angaben, mit denen sie ausgestellt wurde, weil eine Rechnung nachträglich nicht verändert
-        werden darf. Die Liste aller Dokumente können Administratoren nach Nummer, Name und
-        E-Mail-Adresse durchsuchen; jeder Abruf dieser Liste wird im Verwaltungsprotokoll
-        festgehalten (Abschnitt 10.5).
+        die wir dir als PDF mit der Kaufbestätigung per E-Mail senden; Bereits entstandene
+        Vergütungsansprüche und Erstattungen rechnen wir weiterhin nach den dafür geltenden Regeln
+        ab und erstellen die nötigen Gutschriften. Für neue Nutzerbeiträge vergeben wir keine
+        Vergütung in MorphCoins. Rechnungen und Gutschriften enthalten Name, Anschrift,
+        E-Mail-Adresse und gegebenenfalls USt-IdNr. Zu jedem Dokument speichern wir außerdem einen
+        Datensatz mit Nummer, Art, Ausstellungsdatum, den gedruckten Kundenangaben, der Zahl der
+        MorphCoins und den Beträgen; bei Rechnungen zusätzlich mit Fassung und Zeitpunkt der
+        Erklärungen zum Widerrufsrecht aus der Bestellung (Abschnitt 15.5). Wir erzeugen die
+        PDF-Dateien auf unserem eigenen Server; ein externer Dienst ist nicht beteiligt.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO für die Erstellung und Art. 6 Abs. 1 lit. c
+        DSGVO für die Aufbewahrung. Wir bewahren Rechnungen und Gutschriften acht Jahre auf (§ 147
+        Abs. 3 Satz 1 AO, § 257 Abs. 4 HGB, § 14b Abs. 1 UStG), gerechnet ab dem Ende des
+        Kalenderjahres der Ausstellung – auch nach einer Kontolöschung; danach löschen wir Datensatz
+        und PDF-Datei automatisch. Nach einer Kontolöschung entfernen wir die Zuordnung des
+        Datensatzes zum Konto und ersetzen darin die Kundenangaben durch den Vermerk „Gelöschtes
+        Konto (Aufbewahrung nach § 147 Abs. 3 AO)“; die PDF-Datei behält die Angaben, mit denen sie
+        ausgestellt wurde, weil eine Rechnung nachträglich nicht verändert werden darf. Die Liste
+        aller Dokumente können Administratoren nach Nummer, Name und E-Mail-Adresse durchsuchen;
+        jeder Abruf dieser Liste wird im Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
       </p>
       <p>
         Schlussabrechnung: Löschst du dein Konto und ist von deinen gekauften MorphCoins ein Anteil
@@ -1409,20 +1407,19 @@
         über zwei Kontrollkästchen die in der
         <a href="/docs/right-of-withdrawal">Widerrufsbelehrung</a> beschriebenen Erklärungen zur
         sofortigen Ausführung ab. Wir speichern dazu die Art der Leistung (MorphCoins, Premium,
-        Herzen, Kurs, Webinar oder Coaching), gegebenenfalls die Kennung des Kurses oder Termins,
-        die Fassung der Widerrufsbelehrung, zu der du die Erklärungen abgegeben hast, und den
-        Zeitpunkt; beim Kauf von MorphCoins speichern wir Fassung und Zeitpunkt an der Bestellung.
-        Die Fassung gibt unser Server vor; IP-Adresse oder Browserkennung speichern wir dazu nicht.
-        Zweck ist der Nachweis, dass du die Erklärungen abgegeben hast, und ihre Wiedergabe in der
-        Kaufbestätigung (§ 312f Abs. 3, § 356 Abs. 5 und 6 BGB): Die Kaufbestätigung beim Kauf von
-        MorphCoins wiederholt deine Erklärung mit Fassung und Zeitpunkt und enthält die AGB und die
-        Widerrufsbelehrung als PDF. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
-        § 312f Abs. 3 BGB sowie Art. 6 Abs. 1 lit. b DSGVO. Die Erklärungen sind im Datenexport
-        enthalten (Abschnitt 23). Erforderliche Vertrags- und Anspruchsnachweise bleiben nach
-        Abschnitt 10.7 gesondert erhalten. Beim Kauf von MorphCoins übernehmen wir Fassung und
-        Zeitpunkt mit der Ausstellung der Rechnung zusätzlich in deren Datensatz; dort bleiben sie
-        acht Jahre ab dem Ende des Ausstellungsjahres erhalten, auch nach einer Kontolöschung
-        (Abschnitt 15.4).
+        Herzen oder Kurs), gegebenenfalls die Kennung des Kurses, die Fassung der
+        Widerrufsbelehrung, zu der du die Erklärungen abgegeben hast, und den Zeitpunkt; beim Kauf
+        von MorphCoins speichern wir Fassung und Zeitpunkt an der Bestellung. Die Fassung gibt unser
+        Server vor; IP-Adresse oder Browserkennung speichern wir dazu nicht. Zweck ist der Nachweis,
+        dass du die Erklärungen abgegeben hast, und ihre Wiedergabe in der Kaufbestätigung (§ 312f
+        Abs. 3, § 356 Abs. 5 und 6 BGB): Die Kaufbestätigung beim Kauf von MorphCoins wiederholt
+        deine Erklärung mit Fassung und Zeitpunkt und enthält die AGB und die Widerrufsbelehrung als
+        PDF. Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit § 312f Abs. 3 BGB
+        sowie Art. 6 Abs. 1 lit. b DSGVO. Die Erklärungen sind im Datenexport enthalten (Abschnitt
+        23). Erforderliche Vertrags- und Anspruchsnachweise bleiben nach Abschnitt 10.7 gesondert
+        erhalten. Beim Kauf von MorphCoins übernehmen wir Fassung und Zeitpunkt mit der Ausstellung
+        der Rechnung zusätzlich in deren Datensatz; dort bleiben sie acht Jahre ab dem Ende des
+        Ausstellungsjahres erhalten, auch nach einer Kontolöschung (Abschnitt 15.4).
       </p>
       <h3>15.6 Kündigung und Widerruf über die Plattform</h3>
       <p>
@@ -1540,9 +1537,9 @@
         Wir senden dir E-Mails nur bei wichtigen Anlässen oder auf deine ausdrückliche Anfrage. Dazu
         gehören nötige Nachrichten zur Kontosicherheit und Vertragsabwicklung: Bestätigung deiner
         E-Mail-Adresse, Zurücksetzen des Passworts, Kaufbestätigung mit Rechnung sowie AGB und
-        Widerrufsbelehrung als PDF (Abschnitt 15.5), Bestätigung eines Kurskaufs, Bestätigungen von
-        Webinar- und Coaching-Buchungen sowie von deren Stornierung oder Absage (Abschnitt 14.1) und
-        Bestätigungen von Kündigungen und Widerrufen (Abschnitt 15.6). Rechtsgrundlage ist Art. 6
+        Widerrufsbelehrung als PDF (Abschnitt 15.5), Bestätigung eines Kurskaufs und Bestätigungen
+        von Kündigungen und Widerrufen (Abschnitt 15.6). Bei noch offenen früheren Verträgen können
+        notwendige Abwicklungsnachrichten hinzukommen (Abschnitt 14). Rechtsgrundlage ist Art. 6
         Abs. 1 lit. b DSGVO, für den Rechnungsversand und die Bestätigungen nach § 312f, § 312k und
         § 356a BGB auch Art. 6 Abs. 1 lit. c DSGVO. Diese E-Mails können nicht abbestellt werden.
         Einen Newsletter oder Werbe-E-Mails versenden wir nicht.
@@ -1661,16 +1658,20 @@
     </section>
 
     <section id="analyse">
-      <h2>18 Keine Analyse, kein Tracking, keine Profilbildung</h2>
+      <h2>18 Keine Webanalyse und kein Werbetracking</h2>
       <p>
-        Wir setzen keine Webanalyse, keine Werbenetzwerke, keine Tracking-Pixel und keine Dienste
-        zur Reichweitenmessung ein – weder auf der Website noch in E-Mails. Wir bilden keine
-        Nutzerprofile, geben keine Lernempfehlungen auf Basis deines Verhaltens und werten Lern-,
-        Leistungs- oder Code-Daten nicht für Produktentwicklung, Werbung oder das Training von
-        KI-Modellen aus. Die einzigen Auswertungen sind aggregierte Betriebskennzahlen und
-        Fehlerberichte auf selbst betriebenen Systemen (Abschnitt 8). Die einzigen Verwendungen von
-        Lerndaten außerhalb der jeweiligen Kursfunktion sind die Bestenliste (Abschnitt 12.2) und
-        die Skill-Level-Prüfung im derzeit nicht freigeschalteten Jobs-Bereich (Abschnitt 12.3).
+        Wir setzen keine Webanalyse, Werbenetzwerke, Tracking-Pixel oder Dienste zur
+        Reichweitenmessung ein – weder auf der Website noch in E-Mails. Wir verwenden Lern-,
+        Leistungs- und Code-Daten nicht für Produktentwicklung, Werbung oder das Training von
+        KI-Modellen. Zur Bereitstellung der Lernfunktion werten wir deinen gespeicherten Lernstand
+        wie in Abschnitt 12.1 beschrieben aus. Ein laufender KI-Chat oder eine KI-Auswertung deiner
+        Eingaben gehört derzeit nicht zur Plattform.
+      </p>
+      <p>
+        Für den technischen Betrieb verwenden wir aggregierte Betriebskennzahlen und Fehlerberichte
+        auf selbst betriebenen Systemen (Abschnitt 8). Die weitere Verwendung von Lerndaten in der
+        Bestenliste und im derzeit nicht freigeschalteten Jobs-Bereich ist in den Abschnitten 12.2
+        und 12.3 beschrieben. Daraus entsteht kein Profil für Werbezwecke.
       </p>
     </section>
 
@@ -1710,11 +1711,6 @@
               <td>Anmeldung über Discord (Abschnitt 11)</td>
               <td>EU-US Data Privacy Framework</td>
             </tr>
-            <tr>
-              <td>8x8, Inc.</td>
-              <td>Jitsi Meet für Coachings (Abschnitt 14.2)</td>
-              <td>EU-US Data Privacy Framework</td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -1737,8 +1733,7 @@
           target="_blank"
           rel="noopener noreferrer"
           >Datenschutzerklärung</a
-        >. Übermittlungen, die du selbst auslöst – etwa an den Anbieter deiner Kalender-App –,
-        liegen in deiner Hand.
+        >.
       </p>
     </section>
 
@@ -1804,8 +1799,11 @@
               <td>Zwölf Monate, auch nach Kontolöschung</td>
             </tr>
             <tr>
-              <td>Lern- und Fortschrittsdaten, XP, Lesezeichen</td>
-              <td>Bis zur Kontolöschung</td>
+              <td>Lern- und Fortschrittsdaten, XP, Lesezeichen, private Lernraumstände</td>
+              <td>
+                Bis zur Kontolöschung; je Lerneinheit nur die vier jüngsten Speicher- oder
+                Abschlussbestätigungen (Abschnitt 12.1)
+              </td>
             </tr>
             <tr>
               <td>
@@ -1839,16 +1837,15 @@
               <td>Höchstens fünf Minuten nach der letzten Ausführung, nur im Arbeitsspeicher</td>
             </tr>
             <tr>
-              <td>Event-Daten</td>
+              <td>Noch vorhandene frühere Eventdaten</td>
               <td>
-                Vergangene Termine: kurz nach dem Ende; Bewertungen von Kursleitern: bis zwei Jahre
-                nach der jeweils jüngsten Bewertung (Abschnitt 14.1); übrige Daten bis zur
-                Kontolöschung
+                Bestehende Löschwege nach Abschnitt 14; notwendige Vertrags- und Anspruchsnachweise
+                getrennt nach Abschnitt 10.7
               </td>
             </tr>
             <tr>
-              <td>Kalender-Abo-Kennung</td>
-              <td>Bis zur Erneuerung durch dich oder bis zur Kontolöschung</td>
+              <td>Alte, nicht mehr nutzbare Kalenderkennungen</td>
+              <td>Bis zur Kontolöschung</td>
             </tr>
             <tr>
               <td>MorphCoins, Transaktionen, Herzen, Premium, PayPal-Bestellreferenzen</td>
@@ -1933,11 +1930,11 @@
         über GitHub, Discord oder Google: die Verknüpfung statt des Passworts) sowie die Bestätigung
         des Mindestalters und die Zustimmung zu den AGB erforderlich. Ohne diese Angaben können wir
         kein Konto anlegen; die Pflicht ergibt sich aus dem Nutzungsvertrag. Kurzbeschreibung und
-        Tags im Profil sind freiwillig. Rechnungsdaten sind nur erforderlich, wenn du MorphCoins
-        kaufst oder MorphCoins als Belohnung gutgeschrieben bekommen möchtest; ohne sie kannst du
-        keine MorphCoins kaufen, und verdiente MorphCoins werden zurückgehalten (Abschnitt 15.3);
-        alle übrigen Funktionen bleiben nutzbar. Alle weiteren Verarbeitungen ergeben sich aus
-        Funktionen, die du selbst nutzt (Kurse, Aufgaben, Events, Videos).
+        Tags im Profil sind freiwillig. Für den Kauf von MorphCoins brauchen wir die
+        Rechnungsangaben aus Abschnitt 15.3. Für einen bereits entstandenen Vergütungs- oder
+        Erstattungsanspruch können ebenfalls Abrechnungsangaben nötig sein. Das reine Lernen ist
+        nicht davon abhängig. Weitere Daten verarbeiten wir für die Funktionen, die du selbst nutzt,
+        etwa Kurse, Aufgaben und Videos.
       </p>
     </section>
 
@@ -1987,11 +1984,12 @@
           MorphCoins-Bestellungen, die Datensätze deiner Rechnungen und Gutschriften, deine
           Kündigungs- und Widerrufserklärungen und deine Erklärungen zum Widerrufsrecht; aus dem
           Dienst Skills Kurszugriffe, zuletzt angesehene Kurse, abgeschlossene Lektionen,
-          Lesezeichen und XP; aus dem Dienst Challenges Lösungsstand, Versuche, Einreichungen mit
-          Quellcode und Ergebnis, Bewertungen, selbst erstellte Aufgaben und die für dich bestimmten
-          Moderationsmitteilungen mit Beschwerde- und Maßnahmenstand; aus dem Dienst Events
-          erstellte und gebuchte Webinare, angebotene und gebuchte Coaching-Termine, wöchentliche
-          Terminfenster und Bewertungen. Nicht enthalten sind Passwort-Hash,
+          Lesezeichen, XP sowie private Lernraumstände, Wiederholungen und die noch gespeicherten
+          Bestätigungen zu Speicher- und Abschlussanfragen; aus dem Dienst Challenges Lösungsstand,
+          Versuche, Einreichungen mit Quellcode und Ergebnis, Bewertungen, selbst erstellte Aufgaben
+          und die für dich bestimmten Moderationsmitteilungen mit Beschwerde- und Maßnahmenstand;
+          aus dem früheren Eventangebot noch vorhandene eigene Angebots-, Buchungs-, Zeitfenster-,
+          Bewertungs- und Anspruchsdaten. Nicht enthalten sind Passwort-Hash,
           Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, deine Kundennummer (sie
           ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die Einträge des
           Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt deiner
@@ -2072,7 +2070,7 @@
         Seit September 2026 nicht mehr eingesetzt: Google reCAPTCHA, Gravatar, der Cookie-Hinweis
         und die Newsletter-Funktion.
       </p>
-      <p><strong>Stand:</strong> September 2026</p>
+      <p><strong>Fassung:</strong> 2026-09-r4</p>
     </section>
   </main>
 </template>
