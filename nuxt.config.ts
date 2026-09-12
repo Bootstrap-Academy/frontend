@@ -65,6 +65,7 @@ export default defineNuxtConfig({
       BASE_WEB_URL: "https://test.bootstrap.academy",
       NODE_ENV: "production",
       FEEDBACK_BUILD: feedbackBuild(),
+      learningRoomsEnabled: true,
     },
   },
 

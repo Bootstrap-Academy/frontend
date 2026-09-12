@@ -86,9 +86,7 @@
             :aria-busy="practiceBusy"
             @click="startPractice"
           >
-            <span>{{
-              t(practiceBusy ? "CharacterDashboard.FindingPractice" : "CharacterDashboard.Practice")
-            }}</span>
+            <span>{{ t(practiceLabel) }}</span>
             <ArrowRightIcon aria-hidden="true" />
           </button>
           <p v-if="practiceMessage" class="practice-message" role="status">{{ practiceMessage }}</p>
@@ -275,6 +273,8 @@ const router = useRouter();
 const user = useUser();
 const session = useSession();
 const accessToken = useAccessToken();
+const roomConfig = useRuntimeConfig().public;
+const roomsAvailable = ref(false);
 const owner = computed(() =>
   accessToken.value && user.value?.id ? `${user.value.id}:${session.value?.id || "session"}` : null
 );
@@ -298,6 +298,14 @@ const focus = computed({
 const showAllSkills = ref(false);
 const practiceMessage = ref("");
 const practiceBusy = computed(() => view.value?.practiceStatus === "loading");
+const usesLearningRoom = computed(() => roomsAvailable.value && !focus.value);
+const practiceLabel = computed(() =>
+  practiceBusy.value
+    ? "CharacterDashboard.FindingPractice"
+    : usesLearningRoom.value
+      ? "LearningRooms.ContinueLearning"
+      : "CharacterDashboard.Practice"
+);
 const activeSkills = computed(() => {
   const catalogue = new Map((view.value?.skills || []).map((skill) => [skill.id, skill]));
   return (view.value?.xp?.skills || [])
@@ -325,6 +333,7 @@ watch(
     if (preference.value.owner !== next) preference.value = { owner: next || "", skill: "" };
     showAllSkills.value = false;
     practiceMessage.value = "";
+    roomsAvailable.value = false;
     // Clear private data immediately. setStates updates user/session before its
     // token cookie, so wait for that synchronous batch before making new reads.
     void data.select(null);
@@ -335,8 +344,26 @@ watch(
         generation === ownerGeneration &&
         owner.value === next &&
         accessToken.value === token
-      )
+      ) {
         void data.select(next);
+        if (String(roomConfig.learningRoomsEnabled) === "true") {
+          void $fetch<{ enabled: boolean }>("/skills/rooms/capabilities", {
+            baseURL: roomConfig.BASE_API_URL,
+            retry: 0,
+            timeout: 10000,
+          })
+            .then((capability) => {
+              if (
+                alive &&
+                generation === ownerGeneration &&
+                owner.value === next &&
+                accessToken.value === token
+              )
+                roomsAvailable.value = capability?.enabled === true;
+            })
+            .catch(() => {});
+        }
+      }
     });
   },
   { immediate: true, flush: "sync" }
@@ -359,6 +386,10 @@ function reload() {
 }
 async function startPractice() {
   if (!owner.value || practiceBusy.value) return;
+  if (usesLearningRoom.value) {
+    await router.push("/learn");
+    return;
+  }
   const requestedOwner = owner.value;
   const generation = ownerGeneration;
   const requestedFocus = focus.value;
