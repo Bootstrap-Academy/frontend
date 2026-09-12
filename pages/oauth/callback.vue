@@ -111,7 +111,7 @@ export default {
         router.push("/auth/signup");
       } else {
         setStates(res?.login ?? null);
-        router.push(`/profile`);
+        router.push(`/dashboard`);
       }
     }
 

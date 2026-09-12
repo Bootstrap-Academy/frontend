@@ -23,7 +23,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const cookie_accessToken = useAppCookie("accessToken");
 
   if (to.path.includes("/auth/login") && !!cookie_accessToken.value) {
-    console.log("he", cookie_accessToken.value);
-    return navigateTo("/profile");
+    return navigateTo("/dashboard");
   }
 });

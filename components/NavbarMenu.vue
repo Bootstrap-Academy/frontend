@@ -62,10 +62,6 @@ export default {
     const router = useRouter();
     let links = [
       {
-        label: "Links.MyProfile",
-        pathname: "/profile",
-      },
-      {
         label: "Links.MyAccount",
         pathname: "/account",
       },

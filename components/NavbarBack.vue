@@ -67,28 +67,28 @@ export default defineComponent({
         name == "account-mfa-enable" ||
         name == "account-mfa-initialize"
       ) {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // profile-quizzes
       else if (name == "profile-quizzes") {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // profile-challenges
       else if (name == "profile-challenges") {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // challenges-leader-board
       else if (name == "challenges-leader-board") {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // ! Profile
       else if (name == "profile-edit") {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // ! Morphcoins
       else if (name == "morphcoins-paypal") {
@@ -97,8 +97,8 @@ export default defineComponent({
       }
       // ! Courses
       else if (name == "profile-courses") {
-        pathname = "/profile";
-        label = "Links.GoToProfile";
+        pathname = "/dashboard";
+        label = "CharacterDashboard.Nav";
       }
       // ! Challenges
       else if (name == "challenges-category-create") {
