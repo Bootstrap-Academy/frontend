@@ -141,8 +141,12 @@ async function importRecovery() {
     <button type="button" :disabled="!client || busy" @click="act(() => client!.loadSubjects())">
       {{ t("LearningAccess.Find") }}
     </button>
-    <div v-for="subject in client?.subjects.value ?? []" :key="subject" class="grid gap-2">
-      <p class="break-all">{{ t("LearningAccess.Subject") }}: {{ subject }}</p>
+    <div v-for="(subject, index) in client?.subjects.value ?? []" :key="subject" class="grid gap-2">
+      <p>{{ t("AccessCopy.LearningArea", { n: index + 1 }) }}</p>
+      <details>
+        <summary>{{ t("AccessCopy.Reference") }}</summary>
+        <p class="break-all">{{ subject }}</p>
+      </details>
       <button
         v-if="
           !client?.pending.value || ['recorded', 'refused'].includes(client.pending.value.state)
@@ -180,10 +184,22 @@ async function importRecovery() {
       </form>
     </details>
     <template v-if="client?.pending.value">
-      <p v-if="client.pending.value.version === 1" class="break-all">
-        {{ t("LearningAccess.Subject") }}: {{ client.pending.value.body.expected_subject }}
-      </p>
-      <p v-else>{{ t("LearningAccess.StartChoice") }}</p>
+      <template v-if="client.pending.value.version === 1">
+        <p>
+          {{
+            client.subjects.value.includes(client.pending.value.body.expected_subject)
+              ? t("AccessCopy.SelectedLearningArea", {
+                  n: client.subjects.value.indexOf(client.pending.value.body.expected_subject) + 1,
+                })
+              : t("AccessCopy.SelectedAccess")
+          }}
+        </p>
+        <details>
+          <summary>{{ t("AccessCopy.Reference") }}</summary>
+          <p class="break-all">{{ client.pending.value.body.expected_subject }}</p>
+        </details>
+      </template>
+      <p v-if="client.pending.value.version === 2">{{ t("LearningAccess.StartChoice") }}</p>
       <p v-if="client.pending.value.state === 'refused'" role="status">
         {{
           t(
@@ -215,9 +231,6 @@ async function importRecovery() {
     </template>
     <div v-if="client?.resources.value" class="grid gap-2">
       <p role="status">{{ t("LearningAccess.Available") }}</p>
-      <p class="break-all">
-        {{ t("LearningAccess.Subject") }}: {{ client.pending.value?.receipt?.subject }}
-      </p>
       <p>{{ t("LearningAccess.Expires") }}: {{ client.pending.value?.receipt?.expires_at }}</p>
       <p>{{ t("LearningAccess.Coins") }}: {{ client.resources.value.coins }}</p>
       <p>{{ t("LearningAccess.Withheld") }}: {{ client.resources.value.withheld_coins }}</p>
@@ -266,7 +279,6 @@ async function importRecovery() {
     />
     <p v-if="inactive" role="status">{{ t("LearningAccess.Expired") }}</p>
     <p v-if="notice" role="alert">{{ notice }}</p>
-    <p>{{ t("LearningAccess.IntegrationLimit") }}</p>
   </section>
 </template>
 

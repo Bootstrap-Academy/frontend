@@ -164,9 +164,6 @@ function download(opening = false) {
       </button>
     </section>
     <div v-if="client?.caseOpening.value" class="grid gap-2">
-      <p class="break-all">
-        {{ t("CaseOpen.Reference") }}: {{ client.caseOpening.value.body.command_id }}
-      </p>
       <p role="status">{{ t(`CaseOpen.State.${client.caseOpening.value.state}`) }}</p>
     </div>
     <details v-if="hasPersonalProof || client?.caseOpening.value">
@@ -221,8 +218,6 @@ function download(opening = false) {
     </details>
     <p v-if="busy" role="status">{{ t("ClaimAccess.Working") }}</p>
     <template v-if="client?.owner.value">
-      <p class="break-all">{{ t("ClaimAccess.Owner") }}: {{ client.owner.value.subject }}</p>
-      <p class="break-all">{{ t("ClaimAccess.Case") }}: {{ client.owner.value.case_id }}</p>
       <p>{{ t("ClaimAccess.RotationEffect") }}</p>
       <button
         v-if="!client.pending.value || ['active', 'inactive'].includes(client.pending.value.state)"
@@ -280,8 +275,10 @@ function download(opening = false) {
         {{ t("ClaimAccess.Close") }}
       </button>
     </template>
-    <p>{{ t("ClaimAccess.MissingProof") }}</p>
-    <NuxtLink to="/moderation/access">{{ t("ClaimAccess.PersonalAccess") }}</NuxtLink>
+    <template v-if="!client?.owner.value">
+      <p>{{ t("ClaimAccess.MissingProof") }}</p>
+      <NuxtLink to="/moderation/access">{{ t("ClaimAccess.PersonalAccess") }}</NuxtLink>
+    </template>
     <p>
       {{ t("ClaimAccess.ContactLimit") }}
       <a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a>

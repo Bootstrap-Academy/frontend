@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 definePageMeta({ layout: "inner" });
-const { t } = useI18n(),
+const { t, locale } = useI18n(),
   m = useModeration();
 const selected = ref(""),
   text = ref(""),
@@ -16,6 +16,46 @@ const orderId = ref(""),
   statementElement = ref<HTMLElement>();
 const rowKey = (row: ModerationMessage) => `${row.source}:${row.id}`;
 const current = computed(() => m.rows.value.find((row) => rowKey(row) === selected.value));
+const outcomeKeys = new Set([
+  "provisional",
+  "remove",
+  "retire",
+  "restrict",
+  "uphold",
+  "restore",
+  "warn",
+  "authority_start",
+  "authority_change",
+  "authority_end",
+  "legacy_observed",
+]);
+function outcomeLabel(value: unknown) {
+  return t(
+    `Moderation.Outcome.${typeof value === "string" && outcomeKeys.has(value) ? value : "unknown"}`
+  );
+}
+function messageTitle(row: ModerationMessage) {
+  if (row.audience === "notifier") return t("Moderation.Notifier");
+  const kind = row.statement.target_kind;
+  const area = ["account", "subtask", "create", "report"].includes(kind)
+    ? t(`Moderation.Target.${kind}`)
+    : t(row.source === "backend" ? "Moderation.Account" : "Moderation.Content");
+  return `${area} · ${outcomeLabel(row.statement.outcome)}`;
+}
+function displayDate(value: unknown) {
+  return typeof value === "string" && Number.isFinite(Date.parse(value))
+    ? new Date(value).toLocaleString(locale.value)
+    : t("Moderation.DateUnknown");
+}
+function fieldValue(field: string, value: unknown) {
+  if (field === "outcome") return outcomeLabel(value);
+  if (field === "ends_at") return displayDate(value);
+  if (field === "article23_applicability")
+    return t(
+      `Moderation.Applicability.${["applies", "does_not_apply"].includes(String(value)) ? value : "undetermined"}`
+    );
+  return value;
+}
 const fields = [
   "outcome",
   "rationale",
@@ -234,13 +274,6 @@ onMounted(async () => {
     <NuxtLink to="/account" class="w-fit print:hidden">{{ t("Links.MyAccount") }}</NuxtLink>
     <h1>{{ t("Moderation.Title") }}</h1>
     <p>{{ t("Moderation.InboxHelp") }}</p>
-    <details v-if="m.recipient.value" class="print:hidden">
-      <summary>{{ t("Moderation.AccessDetails") }}</summary>
-      <p>
-        {{ t("Moderation.RecipientIdentity") }} {{ m.recipient.value }} ·
-        {{ m.scope.value === "case" ? t("Moderation.CaseAccess") : t("Moderation.Rights") }}
-      </p>
-    </details>
     <p v-if="error" role="alert">{{ error }}</p>
     <NuxtLink to="/moderation/access">{{ t("Moderation.ChangeAccess") }}</NuxtLink>
     <p v-if="!loading && !m.available.value" role="status">{{ t("Moderation.Partial") }}</p>
@@ -257,11 +290,8 @@ onMounted(async () => {
         :aria-pressed="current && rowKey(current) === rowKey(row)"
         @click="choose(row)"
       >
-        <span
-          >{{ row.source === "backend" ? t("Moderation.Account") : t("Moderation.Content") }} ·
-          {{ row.audience === "author" ? t("Moderation.Author") : t("Moderation.Notifier") }}</span
-        >
-        <span class="support-help">{{ t("Moderation.Case") }}: {{ row.case_id }}</span>
+        <span>{{ messageTitle(row) }}</span>
+        <span class="support-help">{{ displayDate(row.available_at) }}</span>
         <span v-if="!row.informed_at" class="support-help">{{ t("Moderation.Unopened") }}</span>
       </button>
     </nav>
@@ -272,14 +302,18 @@ onMounted(async () => {
       :key="rowKey(current)"
       class="support-card grid min-w-0 gap-4 break-words"
     >
-      <h2>{{ t("Moderation.DecisionHeading") }}</h2>
-      <p class="support-help">{{ t("Moderation.Case") }}: {{ current.case_id }}</p>
+      <h2>{{ messageTitle(current) }}</h2>
       <p>{{ current.current ? t("Moderation.Current") : t("Moderation.History") }}</p>
       <dl class="grid gap-3">
         <template v-for="field in fields" :key="field"
-          ><div v-if="current.statement[field] != null">
+          ><div
+            v-if="
+              current.statement[field] != null &&
+              !(field === 'outcome' && current.audience === 'author')
+            "
+          >
             <dt class="font-bold">{{ t(`Moderation.Field.${field}`) }}</dt>
-            <dd class="whitespace-pre-wrap">{{ current.statement[field] }}</dd>
+            <dd class="whitespace-pre-wrap">{{ fieldValue(field, current.statement[field]) }}</dd>
           </div></template
         >
       </dl>
@@ -301,9 +335,15 @@ onMounted(async () => {
       </details>
       <p v-if="current.complaint_until">
         {{ t("Moderation.MinimumReview") }}
-        {{ new Date(current.complaint_until).toLocaleString() }}. {{ t("Moderation.LaterReview") }}
+        {{ displayDate(current.complaint_until) }}. {{ t("Moderation.LaterReview") }}
       </p>
-      <p v-else>{{ t("Moderation.NoClock") }}</p>
+      <details>
+        <summary>{{ t("Moderation.References") }}</summary>
+        <p class="break-all">{{ t("Moderation.Case") }}: {{ current.case_id }}</p>
+        <p v-if="receipt" class="break-all">
+          {{ t("Moderation.ComplaintReference") }}: {{ receipt }}
+        </p>
+      </details>
       <div class="flex flex-wrap gap-3 print:hidden">
         <button type="button" @click="print">{{ t("Moderation.Print") }}</button
         ><button type="button" @click="downloadCase">{{ t("Moderation.DownloadCase") }}</button>
@@ -334,10 +374,10 @@ onMounted(async () => {
           }}
         </button>
         <p v-if="intent?.status === 'unconfirmed'" role="status">
-          {{ t("Moderation.PendingComplaint") }} {{ intent.id }}
+          {{ t("Moderation.PendingComplaint") }}
         </p>
         <p v-if="receipt" role="status" class="support-success">
-          {{ t("Moderation.Receipt") }} {{ receipt }}
+          {{ t("Moderation.Receipt") }}
         </p>
       </form>
     </article>

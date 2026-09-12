@@ -90,7 +90,6 @@ function observation(value: unknown) {
     aria-labelledby="original-documents-title"
   >
     <h3 id="original-documents-title">{{ t("Originals.Title") }}</h3>
-    <p>{{ t("Originals.Explanation") }}</p>
     <div class="flex flex-wrap gap-3">
       <button type="button" :disabled="reader.state.value === 'loading'" @click="load()">
         {{ t("Originals.Load") }}
@@ -110,11 +109,6 @@ function observation(value: unknown) {
     </p>
     <p v-if="reader.state.value === 'error'" role="alert">{{ t("Originals.ReadFailed") }}</p>
     <template v-if="reader.inventory.value">
-      <p>{{ t("Originals.Observed") }}: {{ date(reader.inventory.value.observed_at) }}</p>
-      <p class="break-all">
-        {{ t("Originals.Claimant") }}: {{ reader.inventory.value.claimant_subject }}
-      </p>
-      <p>{{ t("Originals.Scope") }}</p>
       <p v-if="!reader.inventory.value.scope.historical_owner_inventory_complete">
         {{ t("Originals.HistoryIncomplete") }}
       </p>
@@ -132,20 +126,13 @@ function observation(value: unknown) {
             :key="`${row.kind}:${row.offer_id ?? row.printed_number}`"
             :value="String(index)"
           >
-            {{ t(`Originals.Kind.${row.kind}`) }} — {{ row.printed_number ?? row.offer_id }}
+            {{ t(`Originals.Kind.${row.kind}`) }} —
+            {{ row.printed_number ?? t("AccessCopy.ItemNumber", { n: index + 1 }) }}
           </option>
         </select>
       </label>
     </template>
     <div v-if="reader.selected.value" class="grid gap-2">
-      <p class="break-all">
-        {{ t("Originals.OriginalOwner") }}: {{ reader.selected.value.source_subject }}
-      </p>
-      <p>{{ t(`Originals.Relation.${reader.selected.value.owner_relation}`) }}</p>
-      <p v-if="reader.selected.value.purchase_source">
-        {{ t("Originals.Source") }}: {{ reader.selected.value.purchase_source }}
-      </p>
-      <p>{{ t(`Originals.Reader.${reader.selected.value.reader_state}`) }}</p>
       <p v-if="reader.selected.value.reason">
         {{ t(`Originals.Reason.${reader.selected.value.reason}`) }}
       </p>
@@ -170,10 +157,6 @@ function observation(value: unknown) {
       </label>
       <template v-if="reader.artifact.value">
         <p>{{ t(`Originals.Reader.${reader.artifact.value.reader_state}`) }}</p>
-        <p>
-          {{ t("Originals.Selection") }}:
-          {{ t(`Originals.SelectionSource.${reader.artifact.value.selection_source}`) }}
-        </p>
         <p v-if="reader.artifact.value.reason">
           {{ t(`Originals.Reason.${reader.artifact.value.reason}`) }}
         </p>
@@ -225,11 +208,6 @@ function observation(value: unknown) {
       aria-labelledby="original-order-status-title"
     >
       <h4 id="original-order-status-title">{{ t("Originals.StatusTitle") }}</h4>
-      <p>{{ t("Originals.StatusLimit") }}</p>
-      <p class="break-all">
-        {{ reader.status.value.offer.id }} · {{ reader.status.value.offer.user_id }} ·
-        {{ reader.status.value.offer.source }}
-      </p>
       <p>{{ reader.status.value.offer.product.title }}</p>
       <p>{{ reader.status.value.offer.product.description }}</p>
       <p>
@@ -242,13 +220,7 @@ function observation(value: unknown) {
       </p>
       <p>{{ t(`Originals.State.${reader.status.value.state}`) }}</p>
       <p>{{ t("Originals.Accepted") }}: {{ date(reader.status.value.accepted_at) }}</p>
-      <p>
-        {{ t("Originals.Mail") }}: {{ date(reader.status.value.confirmation_smtp_accepted_at) }}
-      </p>
       <p>{{ t("Originals.Deadline") }}: {{ date(reader.status.value.provision_deadline) }}</p>
-      <p v-if="reader.status.value.review_reason">
-        {{ t("Originals.Review") }}: {{ reader.status.value.review_reason }}
-      </p>
       <details>
         <summary>{{ t("Originals.OfferText") }}</summary>
         <pre class="whitespace-pre-wrap break-words">{{ reader.status.value.offer.text }}</pre>
@@ -259,16 +231,24 @@ function observation(value: unknown) {
           reader.status.value.offer.declaration
         }}</pre>
       </details>
-      <details
-        v-for="field in ['facts', 'fulfillment', 'financial_evidence', 'provision_timing']"
-        :key="field"
-      >
-        <summary>{{ t(`Originals.Observation.${field}`) }}</summary>
-        <pre class="whitespace-pre-wrap break-words">{{
-          observation(
-            field === "facts" ? reader.status.value.offer.product.facts : reader.status.value[field]
-          )
-        }}</pre>
+      <details>
+        <summary>{{ t("AccessCopy.Details") }}</summary>
+        <p class="break-all">
+          {{ t("Body.PurchaseReference") }}: {{ reader.status.value.offer.id }}
+        </p>
+        <details
+          v-for="field in ['facts', 'fulfillment', 'financial_evidence', 'provision_timing']"
+          :key="field"
+        >
+          <summary>{{ t(`Originals.Observation.${field}`) }}</summary>
+          <pre class="whitespace-pre-wrap break-words">{{
+            observation(
+              field === "facts"
+                ? reader.status.value.offer.product.facts
+                : reader.status.value[field]
+            )
+          }}</pre>
+        </details>
       </details>
       <p>
         {{ t("Originals.Corrections") }}:

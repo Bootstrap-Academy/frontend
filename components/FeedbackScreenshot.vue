@@ -119,7 +119,7 @@ async function fileSelected(file?: File) {
   } catch {
     if (owner === generation)
       message.value = text(
-        "Bitte ein PNG- oder JPEG-Bild bis 12 MB auswählen.",
+        "Wähle bitte ein PNG- oder JPEG-Bild mit höchstens 12 MB.",
         "Choose a PNG or JPEG image up to 12 MB."
       );
   } finally {
@@ -220,14 +220,14 @@ async function capture() {
     await load(frame, frame.width, frame.height, owner);
     if (owner === generation)
       message.value = text(
-        "Bekannte private Bereiche sind geschwärzt. Bitte das gesamte Bild prüfen.",
-        "Known private areas are masked. Please inspect the entire image."
+        "Wir haben erkannte private Bereiche geschwärzt. Prüfe bitte, ob noch persönliche Angaben sichtbar sind.",
+        "We’ve masked the private areas we detected. Please check whether any personal details are still visible."
       );
   } catch {
     if (owner === generation)
       message.value = text(
-        "Keine Aufnahme übernommen. Bitte diesen Tab auswählen oder ein Bild hochladen.",
-        "No capture was accepted. Select this tab or upload an image."
+        "Die Aufnahme hat nicht geklappt. Wähle diesen Tab aus oder lade ein Bild hoch.",
+        "The capture didn’t work. Select this tab or upload an image."
       );
   } finally {
     clearTimeout(playbackTimeout);
@@ -324,8 +324,8 @@ function attach() {
     <p class="text-sm">
       {{
         text(
-          "Bis zum Absenden bleibt das Bild auf diesem Gerät. Persönliche Angaben bitte zuschneiden oder deckend schwärzen.",
-          "The image stays on this device until you submit. Crop out or cover personal information with opaque redaction."
+          "Schneide persönliche Angaben aus oder schwärze sie. Das Bild bleibt bis zum Absenden auf deinem Gerät.",
+          "Crop out or cover personal details. The image stays on your device until you submit."
         )
       }}
     </p>
@@ -364,8 +364,8 @@ function attach() {
     >
       {{
         text(
-          "Hier ein PNG/JPEG mit Strg+V / ⌘V einfügen. Große Bilder werden verkleinert; fertiges PNG höchstens 3 MB.",
-          "Paste a PNG/JPEG here with Ctrl+V / ⌘V. Large images are resized; final PNG up to 3 MB."
+          "Oder füge hier ein Bild mit Strg+V / ⌘V ein.",
+          "Or paste an image here with Ctrl+V / ⌘V."
         )
       }}
     </div>
@@ -374,17 +374,17 @@ function attach() {
       <label class="block text-sm"
         >{{ text("Werkzeug", "Tool") }}
         <select v-model="tool" :disabled="disabled || busy" class="feedback-input mt-1">
-          <option value="redact">{{ text("Deckend schwärzen", "Opaque redaction") }}</option>
-          <option value="mark">{{ text("Rahmen markieren", "Mark rectangle") }}</option>
-          <option value="arrow">{{ text("Pfeil markieren", "Draw arrow") }}</option>
+          <option value="redact">{{ text("Schwärzen", "Redact") }}</option>
+          <option value="mark">{{ text("Rahmen zeichnen", "Mark rectangle") }}</option>
+          <option value="arrow">{{ text("Pfeil zeichnen", "Draw arrow") }}</option>
           <option value="crop">{{ text("Auf Bereich zuschneiden", "Crop to region") }}</option>
         </select>
       </label>
       <p class="text-sm">
         {{
           text(
-            "Einen Bereich im Bild ziehen oder die Koordinaten darunter eingeben. Danach „Dieses Bild anhängen“ wählen.",
-            "Drag a region in the image or enter coordinates below. Then choose “Attach this image”."
+            "Ziehe im Bild über den Bereich, den du bearbeiten möchtest. Klicke danach auf „Dieses Bild anhängen“.",
+            "Drag over the area you want to edit. Then choose “Attach this image”."
           )
         }}
       </p>
@@ -403,12 +403,7 @@ function attach() {
           v-if="attached"
           :src="attachedPreview"
           class="max-h-80 max-w-full"
-          :alt="
-            text(
-              'Genau dieses fertige Bild wird veröffentlicht',
-              'This exact final image will be published'
-            )
-          "
+          :alt="text('Bild für deine Meldung', 'Image for your report')"
         />
       </div>
       <details>
@@ -496,12 +491,12 @@ function attach() {
         {{
           attached
             ? text(
-                "Nur dieses fertige Bild wird mit der Meldung veröffentlicht.",
-                "Only this final image will be published with your report."
+                "Dieses Bild wird mit deiner Meldung veröffentlicht.",
+                "This image will be published with your report."
               )
             : text(
-                "Das Bild ist noch nicht angehängt und wird nicht mitgesendet.",
-                "This image is not attached and will not be sent."
+                "Klicke auf „Dieses Bild anhängen“, wenn du es mitsenden möchtest.",
+                "Choose “Attach this image” if you want to include it."
               )
         }}
       </p>

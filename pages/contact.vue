@@ -16,15 +16,15 @@ useHead({ title: computed(() => (de.value ? "Feedback und Kontakt" : "Feedback a
       <p>
         {{
           de
-            ? "Nutze den Feedback-Button unten rechts. Deine Meldung wird öffentlich auf GitHub veröffentlicht; ein Konto ist nicht erforderlich. Technische Angaben und ein bearbeitetes Bild kannst du freiwillig ergänzen. Text allein genügt."
-            : "Use the feedback button in the bottom-right corner. Your report is published publicly on GitHub; no account is needed. Technical details and an edited image are optional. Text alone is enough."
+            ? "Nutze den Feedback-Button unten rechts. Dort kannst du uns einen Fehler oder eine Idee schicken – auch ohne Konto."
+            : "Use the feedback button in the bottom-right corner to share a bug or idea. You don’t need an account."
         }}
       </p>
       <p>
         {{
           de
-            ? "Bitte keine persönlichen Daten oder Zugangsdaten veröffentlichen. Eine persönliche Antwort oder Umsetzung können wir nicht zusagen."
-            : "Please do not publish personal information or credentials. We cannot promise a personal reply or implementation."
+            ? "Dein Feedback ist öffentlich auf GitHub zu sehen. Wir nutzen es für die Entwicklung und antworten dort nicht persönlich."
+            : "Your feedback is public on GitHub. We use it to improve the platform and don’t send personal replies there."
         }}
       </p>
     </section>
@@ -39,8 +39,8 @@ useHead({ title: computed(() => (de.value ? "Feedback und Kontakt" : "Feedback a
       <p>
         {{
           de
-            ? "Für direkten Kontakt, Fragen zu deinem Konto, Löschanliegen und Sicherheitslücken nutze bitte die E-Mail-Adresse im Impressum. Diese Angaben gehören nicht in eine öffentliche GitHub-Meldung."
-            : "For direct contact, account questions, deletion requests and security vulnerabilities, please use the email address in our legal notice. These details do not belong in a public GitHub report."
+            ? "Bei Fragen zu deinem Konto, Löschwünschen oder Sicherheitslücken schreib uns bitte per Mail."
+            : "For account questions, deletion requests or security vulnerabilities, please email us."
         }}
       </p>
       <NuxtLink

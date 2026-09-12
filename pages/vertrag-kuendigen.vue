@@ -94,12 +94,17 @@
             :rules="form.contractDesignation.rules"
           />
 
-          <Input
-            id="renewal-agreement-id"
-            label="Inputs.RenewalAgreementReference"
-            hint="Body.RenewalAgreementReferenceHint"
-            v-model="renewalReference"
-          />
+          <details>
+            <summary class="cursor-pointer text-accent">
+              {{ t("Body.AddRenewalReference") }}
+            </summary>
+            <Input
+              id="renewal-agreement-id"
+              label="Inputs.RenewalAgreementReference"
+              hint="Body.RenewalAgreementReferenceHint"
+              v-model="renewalReference"
+            />
+          </details>
 
           <fieldset>
             <legend class="text-body-2 mb-2 block text-body font-body">
@@ -147,7 +152,9 @@
       <section v-else class="declaration-record flex flex-col gap-box">
         <h2 class="text-heading-2">{{ t("Headings.CancellationReceived") }}</h2>
 
-        <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-y-1 gap-x-card">
+        <dl
+          class="grid grid-cols-1 gap-y-1 gap-x-card [overflow-wrap:anywhere] sm:grid-cols-[auto_minmax(0,1fr)] [&>dd]:mb-3 sm:[&>dd]:mb-0"
+        >
           <dt class="text-body-1 m-0 text-body">{{ t("Headings.DeclarationReceivedAt") }}</dt>
           <dd class="text-body-1 m-0 text-heading">
             {{ t("Body.DeclarationReceivedAtValue", { datetime: receivedAt }) }}
@@ -439,7 +446,6 @@ export default defineComponent({
       declaration.value = res?.declaration ?? res ?? null;
       confirmationEmailSent.value = !!res?.confirmation_email_sent;
 
-      openSnackbar("success", "Success.CancellationDeclared");
     }
 
     function errorHandler(res: any) {

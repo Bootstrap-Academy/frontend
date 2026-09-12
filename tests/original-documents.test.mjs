@@ -652,7 +652,7 @@ const flush = async () => {
   }
 };
 for (const lang of ["en-US", "de"])
-  test(`mounted originals ${lang}: no auto read, unavailable selector, original S/status, escaped text and URL disposal`, async () => {
+  test(`mounted originals ${lang}: no auto read, unavailable selector, order reference, escaped text and URL disposal`, async () => {
     const f = fixture(),
       h = host(),
       downloaded = [],
@@ -723,7 +723,8 @@ for (const lang of ["en-US", "de"])
         .find((n) => n.type === "form")
         .props.onSubmit({ preventDefault() {} });
       await flush();
-      assert(h.text().includes(S));
+      assert(!h.text().includes(S));
+      assert(h.text().includes(O));
       assert(h.text().includes("<img src=x onerror=bad()> original offer"));
       assert.equal(h.all().filter((n) => n.type === "img").length, 0);
       props.identity = "two";

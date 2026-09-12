@@ -177,22 +177,22 @@ async function submit() {
 const errorText = computed(() => {
   if (uncertain.value)
     return text(
-      "Die Veröffentlichung ist noch nicht bestätigt. Dein Entwurf bleibt unverändert. „Status prüfen“ prüft denselben Vorgang und legt nicht blind eine neue Meldung an.",
-      "Publication is not yet confirmed. Your draft stays unchanged. “Check status” checks the same request without blindly creating a new report."
+      "Wir wissen noch nicht, ob deine Meldung angekommen ist. Klicke auf „Status prüfen“. Dein Entwurf bleibt erhalten.",
+      "We don’t yet know whether your report arrived. Choose “Check status”. Your draft is saved."
     );
   if (error.value === "rate_limited")
     return text(
-      "Zu viele Meldungen in kurzer Zeit. Bitte später erneut versuchen; dein Entwurf bleibt erhalten.",
+      "Das waren viele Meldungen auf einmal. Versuch es später noch einmal; dein Entwurf bleibt erhalten.",
       "Too many reports in a short time. Please try later; your draft is preserved."
     );
   if (error.value === "invalid_request")
     return text(
-      "Die Meldung konnte nicht angenommen werden. Bitte Eingaben und Bildgröße prüfen.",
-      "The report was not accepted. Please check the fields and image size."
+      "Prüfe bitte deine Angaben und die Bildgröße.",
+      "Please check your details and the image size."
     );
   return text(
-    "Die Meldung konnte gerade nicht angenommen werden. Bitte später erneut versuchen. Dein Entwurf bleibt erhalten.",
-    "The report could not be accepted right now. Please try again later. Your draft is preserved."
+    "Das Senden klappt gerade nicht. Versuch es später noch einmal; dein Entwurf bleibt erhalten.",
+    "We can’t send your report right now. Try again later; your draft is saved."
   );
 });
 </script>
@@ -265,8 +265,8 @@ const errorText = computed(() => {
               <p>
                 {{
                   text(
-                    "Wir nutzen Hinweise zur Verbesserung der Plattform. Eine persönliche Antwort oder Umsetzung können wir nicht zusagen.",
-                    "We use feedback to improve the platform. We cannot promise a personal reply or implementation."
+                    "Dein Feedback hilft uns, die Plattform zu verbessern.",
+                    "Your feedback helps us improve the platform."
                   )
                 }}
               </p>
@@ -297,8 +297,8 @@ const errorText = computed(() => {
               <p class="text-sm">
                 {{
                   text(
-                    "Fehler oder Idee? Kein Konto nötig. Sicherheitslücken und persönliche Konto- oder Löschanliegen bitte privat an die E-Mail-Adresse im",
-                    "Bug or idea? No account needed. For security vulnerabilities and personal account or deletion requests, please use the private email contact in our"
+                    "Hier sammeln wir Fehler und Ideen. Für persönliche Anliegen oder Sicherheitslücken schreib uns bitte per Mail – die Adresse steht im",
+                    "Share bugs and ideas here. For personal requests or security vulnerabilities, email us at the address in our"
                   )
                 }}
                 <NuxtLink to="/docs/imprint" class="underline" @click="opened = false">{{
@@ -354,7 +354,7 @@ const errorText = computed(() => {
                 </label>
                 <template v-if="kind === 'bug'">
                   <label class="block text-sm"
-                    >{{ text("Erwartetes Verhalten (optional)", "Expected behavior (optional)")
+                    >{{ text("Was sollte passieren? (optional)", "What should happen? (optional)")
                     }}<textarea
                       v-model="expected"
                       maxlength="2048"
@@ -364,7 +364,10 @@ const errorText = computed(() => {
                   </label>
                   <label class="block text-sm"
                     >{{
-                      text("Schritte zum Nachstellen (optional)", "Steps to reproduce (optional)")
+                      text(
+                        "Wie lässt sich der Fehler nachstellen? (optional)",
+                        "Steps to reproduce (optional)"
+                      )
                     }}<textarea
                       v-model="steps"
                       maxlength="2048"
@@ -393,8 +396,8 @@ const errorText = computed(() => {
                   <p class="text-sm">
                     {{
                       text(
-                        "Ohne Auswahl senden wir keine zusätzlichen Browser-, System- oder Einstellungsangaben. Du kannst auch ohne Bild und technische Angaben melden.",
-                        "Without this selection, we send no additional browser, system or settings details. You can report using text alone."
+                        "Browser, System und App-Version können uns helfen, den Fehler zu finden.",
+                        "Your browser, system and app version can help us find the bug."
                       )
                     }}
                   </p>
@@ -402,8 +405,8 @@ const errorText = computed(() => {
                     <p class="text-sm font-semibold">
                       {{
                         text(
-                          "Genau diese Angaben werden öffentlich mitgesendet:",
-                          "Exactly these details will be published:"
+                          "Diese Angaben werden mit veröffentlicht:",
+                          "These details will be published:"
                         )
                       }}
                     </p>
@@ -440,8 +443,8 @@ const errorText = computed(() => {
               <p class="border-accent/50 rounded-lg border bg-secondary p-3 text-sm">
                 {{
                   text(
-                    "Diese Meldung wird öffentlich auf GitHub veröffentlicht. Bitte keine persönlichen Daten oder Zugangsdaten eintragen. Eine persönliche Antwort oder Umsetzung können wir nicht zusagen.",
-                    "This report will be published publicly on GitHub. Please do not include personal information or credentials. We cannot promise a personal reply or implementation."
+                    "Deine Meldung ist öffentlich auf GitHub zu sehen. Lass persönliche Daten und Zugangsdaten bitte weg. Wir nutzen dein Feedback für die Entwicklung, antworten hier aber nicht persönlich.",
+                    "Your report will be public on GitHub. Please leave out personal information and credentials. We use your feedback to improve the platform, but don’t send personal replies here."
                   )
                 }}
                 <NuxtLink

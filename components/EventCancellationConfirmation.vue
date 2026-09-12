@@ -9,7 +9,6 @@
       <h4 class="text-heading-4">{{ target.title }}</h4>
       <p>{{ formatDate(target.start) }} – {{ formatDate(target.end) }}</p>
       <p>{{ t(`EventCancellation.Scope.${target.scope}`, { count: target.affected_orders }) }}</p>
-      <p>{{ t(`EventCancellation.Role.${target.role}`) }}</p>
       <p>
         {{
           target.recorded_paid_coins === null
@@ -39,24 +38,17 @@
         </button>
       </template>
       <template v-else>
-        <p>{{ t("EventCancellation.Reference", { id: attempt.command }) }}</p>
         <template v-if="attempt.receipt">
           <p>
             {{ t("EventCancellation.Received", { time: formatDate(attempt.receipt.received_at) }) }}
           </p>
           <p>{{ t(`EventCancellation.State.${attempt.receipt.state}`) }}</p>
           <p>{{ t(`EventCancellation.Financial.${attempt.receipt.financial_state}`) }}</p>
-          <p>{{ t("EventCancellation.PaymentSeparate") }}</p>
-          <p>
-            {{
-              t(
-                attempt.receipt.notice_state === "smtp_accepted"
-                  ? "EventCancellation.NoticeAccepted"
-                  : "EventCancellation.NoticePending"
-              )
-            }}
-          </p>
-          <p>{{ attempt.receipt.declaration.original_text }}</p>
+          <details>
+            <summary>{{ t("AccessCopy.Declaration") }}</summary>
+            <p>{{ attempt.receipt.declaration.original_text }}</p>
+            <p>{{ t("EventCancellation.Reference", { id: attempt.command }) }}</p>
+          </details>
         </template>
         <p v-else>{{ t("EventCancellation.ResponseUnknown") }}</p>
         <button

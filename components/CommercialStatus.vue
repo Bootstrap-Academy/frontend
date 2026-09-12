@@ -73,7 +73,6 @@ async function download() {
 <template>
   <section class="grid gap-4 text-body" aria-labelledby="commercial-status-title">
     <h3 id="commercial-status-title">{{ t("Claims.Title") }}</h3>
-    <p>{{ t("Claims.Limit") }}</p>
     <button type="button" :disabled="reader.state.value === 'loading'" @click="reader.load">
       {{ t("Claims.Load") }}
     </button>
@@ -84,10 +83,8 @@ async function download() {
       <dl v-if="reader.data.value.erasure_intake" class="grid gap-1">
         <dt>{{ t("Claims.Received") }}</dt>
         <dd>{{ date(reader.data.value.erasure_intake.received_at) }}</dd>
-        <dt>{{ t("Claims.Receipt") }}</dt>
-        <dd class="break-all">{{ reader.data.value.erasure_intake.id }}</dd>
       </dl>
-      <p>{{ t("Claims.ReceiptLimit") }}</p>
+      <p v-if="reader.data.value.erasure_intake">{{ t("Claims.ReceiptLimit") }}</p>
       <p v-if="!reader.data.value.obligations.length">{{ t("Claims.NoRecords") }}</p>
       <ul v-else class="grid gap-3">
         <li
@@ -95,7 +92,6 @@ async function download() {
           :key="String(item.id ?? index)"
           class="grid gap-1 rounded border p-3"
         >
-          <p class="break-all">{{ t("Claims.Record") }}: {{ item.id }}</p>
           <p>{{ t(`Claims.State.${commercialState(item.status)}`) }}</p>
           <p>{{ t("Claims.Units") }}: {{ commercialUnits(item.units) ?? t("Claims.Unknown") }}</p>
           <p>{{ t("Claims.Recorded") }}: {{ date(item.created_at) }}</p>
@@ -110,11 +106,6 @@ async function download() {
             :key="String(item.id ?? index)"
             class="grid gap-1 rounded border p-3"
           >
-            <p class="break-all">{{ t("Claims.Record") }}: {{ item.obligation_id }}</p>
-            <p class="break-all">{{ t("Claims.SettlementReference") }}: {{ item.id }}</p>
-            <p v-if="item.parent_id" class="break-all">
-              {{ t("Claims.ParentReference") }}: {{ item.parent_id }}
-            </p>
             <p>
               {{ t("Claims.Mode") }}:
               {{
@@ -137,7 +128,6 @@ async function download() {
             :key="String(item.id ?? index)"
             class="grid gap-1 rounded border p-3"
           >
-            <p class="break-all">{{ t("Claims.PaymentReference") }}: {{ item.id }}</p>
             <p class="break-all">
               {{ t("Claims.ExternalReference") }}: {{ item.external_reference }}
             </p>
@@ -154,7 +144,6 @@ async function download() {
                 :key="String(allocation.reservation_id)"
                 class="break-all"
               >
-                {{ t("Claims.SettlementReference") }}: {{ allocation.reservation_id }};
                 {{ t("Claims.Units") }}:
                 {{ commercialUnits(allocation.units) ?? t("Claims.Unknown") }}
               </li>

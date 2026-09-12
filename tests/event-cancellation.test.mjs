@@ -251,22 +251,30 @@ test("actual confirmation component renders exact scope and pending/applied/unkn
     await flush();
     const confirm = ui
       .all()
-      .find((n) => n.type === "button" && ui.text(n).includes("Declare this cancellation"));
+      .find(
+        (n) =>
+          n.type === "button" && ui.text(n).trim() === messages["en-US"].EventCancellation.Confirm
+      );
     await confirm.props.onClick();
     await flush();
     assert.match(ui.text(), /stable-command/);
-    assert.match(ui.text(), /Processing of the selected scope is still pending/);
-    assert.match(ui.text(), /not confirm a completed refund/);
+    assert(ui.text().includes(messages["en-US"].EventCancellation.State.received));
+    assert(ui.text().includes(messages["en-US"].EventCancellation.Financial.not_assessed));
+    assert.equal(
+      f.calls.filter((r) => r.path.includes("/cancellations/")).length,
+      1,
+      "one original cancellation was submitted"
+    );
     f.setOutcome("applied");
     await flow.refresh();
     await flush();
-    assert.match(ui.text(), /capacity released/);
+    assert(ui.text().includes(messages["en-US"].EventCancellation.State.applied));
     flow.attempt.value.receipt.financial_state = "amount_unknown";
     await flush();
-    assert.match(ui.text(), /original payment evidence/);
+    assert(ui.text().includes(messages["en-US"].EventCancellation.Financial.amount_unknown));
     i18n.global.locale.value = "de";
     await flush();
-    assert.match(ui.text(), /ursprüngliche Zahlungsnachweise/);
+    assert(ui.text().includes(messages.de.EventCancellation.Financial.amount_unknown));
     user.value = { id: "owner-b" };
     await flush();
     assert.doesNotMatch(ui.text(), /stable-command|Original scheduled session/);

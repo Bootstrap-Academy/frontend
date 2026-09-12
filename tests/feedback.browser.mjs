@@ -364,7 +364,7 @@ try {
   assert.equal(await evaluate("!!document.querySelector('.feedback-image img')"), false);
   await button("Diesen Tab aufnehmen|Capture this tab");
   await until(
-    "document.querySelector('.feedback-image').textContent.includes('Keine Aufnahme') || document.querySelector('.feedback-image').textContent.includes('No capture')"
+    "document.querySelector('.feedback-image').textContent.includes('Die Aufnahme hat nicht geklappt') || document.querySelector('.feedback-image').textContent.includes('The capture didn’t work')"
   );
   assert.equal(await evaluate("!!document.querySelector('.feedback-image canvas')"), false);
   await evaluate("window.feedbackCaptureFixture.mode='wrong'");

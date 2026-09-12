@@ -37,7 +37,6 @@ function mediaUnavailable() {
     :aria-busy="client.busy.value"
   >
     <h4 id="retained-courses-title">{{ t("RetainedCourses.Title") }}</h4>
-    <p>{{ t("RetainedCourses.Scope") }}</p>
     <button type="button" :disabled="client.busy.value" @click="act(client.load)">
       {{ t("RetainedCourses.List") }}
     </button>

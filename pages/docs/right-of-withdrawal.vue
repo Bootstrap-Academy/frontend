@@ -27,13 +27,13 @@
     </p>
 
     <p>
-      Als Verbraucher steht Ihnen bei Verträgen, die Sie über bootstrap.academy mit der bootstrap
-      academy GmbH schließen, das folgende Widerrufsrecht zu. Teil A gilt für Dienstleistungen:
+      Als Verbraucher steht dir bei Verträgen, die du über bootstrap.academy mit der bootstrap
+      academy GmbH schließt, das folgende Widerrufsrecht zu. Teil A gilt für Dienstleistungen:
       Webinare, Coachings, Premium und das kostenlose Nutzerkonto. Teil B gilt für digitale Inhalte:
       den Kauf von MorphCoins, das Freischalten kostenpflichtiger Kurse und das Auffüllen der
       Herzen. Im Anschluss erklären wir, wann das Widerrufsrecht vorzeitig erlischt, welche
-      Erklärungen Sie bei der Bestellung abgeben und wie wir erstatten. Das Muster-Widerrufsformular
-      finden Sie am Ende dieser Seite.
+      Erklärungen du bei der Bestellung abgibst und wie wir erstatten. Das Muster-Widerrufsformular
+      findest du am Ende dieser Seite.
     </p>
 
     <article>
@@ -119,9 +119,9 @@
     <article>
       <h2>Ende der Widerrufsbelehrung – ergänzende Hinweise</h2>
       <p>
-        Die folgenden Hinweise sind nicht Teil der gesetzlichen Muster-Widerrufsbelehrung. Sie
-        informieren Sie nach Art. 246a § 1 Abs. 3 EGBGB darüber, unter welchen Umständen Sie Ihr
-        Widerrufsrecht vorzeitig verlieren, und erläutern die Abwicklung.
+        Die folgenden Hinweise sind nicht Teil der gesetzlichen Muster-Widerrufsbelehrung. Hier
+        erklären wir dir nach Art. 246a § 1 Abs. 3 EGBGB, wann dein Widerrufsrecht vorzeitig endet
+        und wie wir deinen Widerruf abwickeln.
       </p>
     </article>
 
@@ -130,40 +130,40 @@
       <p>
         Dienstleistungen (Teil A): Das Widerrufsrecht erlischt bei einem Vertrag über die Erbringung
         einer Dienstleistung gegen Zahlung eines Preises mit der vollständigen Erbringung der
-        Dienstleistung, wenn Sie vor Beginn der Erbringung ausdrücklich zugestimmt haben, dass wir
-        mit der Erbringung der Dienstleistung vor Ablauf der Widerrufsfrist beginnen, und Sie Ihre
-        Kenntnis davon bestätigt haben, dass Ihr Widerrufsrecht mit vollständiger Vertragserfüllung
+        Dienstleistung, wenn du vor Beginn der Erbringung ausdrücklich zugestimmt hast, dass wir mit
+        der Erbringung der Dienstleistung vor Ablauf der Widerrufsfrist beginnen, und du deine
+        Kenntnis davon bestätigt hast, dass dein Widerrufsrecht mit vollständiger Vertragserfüllung
         durch uns erlischt (§ 356 Abs. 5 Nr. 2 BGB). Bei einem Vertrag über eine kostenlose
         Dienstleistung erlischt das Widerrufsrecht, wenn wir die Dienstleistung vollständig erbracht
         haben (§ 356 Abs. 5 Nr. 1 BGB).
       </p>
       <p>
-        Bei unseren unten beschriebenen Einzelbestellungen verlangen Sie den vorzeitigen Beginn,
-        bestätigen aber nicht Ihre Kenntnis eines vorzeitigen Verlusts des Widerrufsrechts. Deshalb
-        berufen wir uns bei diesen Bestellungen nicht allein wegen der vollständigen Durchführung
-        auf ein vorzeitiges Erlöschen. Eine bloße Buchungsbestätigung ist keine Durchführung des
-        Termins. Premium ist erst mit Ablauf des tatsächlich bereitgestellten Zeitraums vollständig
-        erbracht. Wertersatz für bereits erbrachte Dienstleistungen richtet sich nach den
-        gesetzlichen Voraussetzungen und den Hinweisen zur Erstattung unten. Das kostenlose
-        Nutzerkonto können Sie neben dem Widerruf jederzeit löschen (Ziffer 4.2 der AGB).
+        Bei unseren unten beschriebenen Einzelbestellungen verlangst du einen frühen Beginn. Du
+        bestätigst dabei nicht, dass du vom vorzeitigen Verlust deines Widerrufsrechts weißt.
+        Deshalb behandeln wir dein Widerrufsrecht nicht allein deshalb als erloschen, weil die
+        Leistung vollständig erbracht wurde. Eine bloße Buchungsbestätigung ist keine Durchführung
+        des Termins. Premium ist erst mit Ablauf des tatsächlich bereitgestellten Zeitraums
+        vollständig erbracht. Wertersatz für bereits erbrachte Dienstleistungen richtet sich nach
+        den gesetzlichen Voraussetzungen und den Hinweisen zur Erstattung unten. Das kostenlose
+        Nutzerkonto kannst du neben dem Widerruf jederzeit löschen (Ziffer 4.2 der AGB).
       </p>
       <p>
         Digitale Inhalte (Teil B): Das Widerrufsrecht erlischt bei einem Vertrag über die
         Bereitstellung von nicht auf einem körperlichen Datenträger befindlichen digitalen Inhalten
-        gegen Zahlung eines Preises, wenn wir mit der Vertragserfüllung begonnen haben, nachdem Sie
-        ausdrücklich zugestimmt haben, dass wir mit der Vertragserfüllung vor Ablauf der
-        Widerrufsfrist beginnen, Sie Ihre Kenntnis davon bestätigt haben, dass durch Ihre Zustimmung
-        mit Beginn der Vertragserfüllung Ihr Widerrufsrecht erlischt, und wir Ihnen eine Bestätigung
+        gegen Zahlung eines Preises, wenn wir mit der Vertragserfüllung begonnen haben, nachdem du
+        ausdrücklich zugestimmt hast, dass wir mit der Vertragserfüllung vor Ablauf der
+        Widerrufsfrist beginnen, du deine Kenntnis davon bestätigt hast, dass durch deine Zustimmung
+        mit Beginn der Vertragserfüllung dein Widerrufsrecht erlischt, und wir dir eine Bestätigung
         des Vertrags nach § 312f BGB zur Verfügung gestellt haben (§ 356 Abs. 6 Nr. 2 BGB).
       </p>
       <p>
-        Auch bei diesen Einzelbestellungen wird keine Kenntnisbestätigung über den vorzeitigen
-        Verlust des Widerrufsrechts verlangt oder unterstellt. Allein aus Ihrem Verlangen nach
-        frühem Beginn, einer Zahlung, der Vertragsbestätigung oder der Bereitstellung leiten wir
-        deshalb kein vorzeitiges Erlöschen ab. Die Bereitstellung erfolgt nach Vertragsbestätigung
+        Auch bei diesen Einzelbestellungen verlangen wir keine Bestätigung, dass du vom vorzeitigen
+        Verlust deines Widerrufsrechts weißt, und setzen sie nicht voraus. Dein Wunsch nach frühem
+        Beginn, deine Zahlung, die Vertragsbestätigung oder die Bereitstellung allein beenden dein
+        Widerrufsrecht deshalb nicht vorzeitig. Die Bereitstellung erfolgt nach Vertragsbestätigung
         innerhalb der im Angebot angegebenen Frist; bei MorphCoins ist zusätzlich nachgewiesener
         Zahlungseingang erforderlich. Eine ausstehende Bereitstellung wird nicht als bereits
-        erbrachte Leistung behandelt. Unabhängig vom Widerrufsrecht erstatten wir Ihnen nicht
+        erbrachte Leistung behandelt. Unabhängig vom Widerrufsrecht erstatten wir dir nicht
         verbrauchte gekaufte MorphCoins jederzeit auf Anfrage (Ziffer 6.7 der AGB).
       </p>
     </article>
@@ -172,9 +172,9 @@
       <h2>Erklärungen bei der Bestellung</h2>
       <p>
         Bei Einzelbestellungen von MorphCoins, Kurszugang, einem Premium-Zeitraum, einer
-        Herzauffüllung oder einem Event nehmen Sie über ein Kontrollkästchen das konkrete Angebot
+        Herzauffüllung oder einem Event nimmst du über ein Kontrollkästchen das konkrete Angebot
         einschließlich seiner AGB und Widerrufsinformationen an. Über ein gesondertes
-        Kontrollkästchen geben Sie folgende Erklärung ab. Wir speichern den tatsächlichen Wortlaut
+        Kontrollkästchen gibst du folgende Erklärung ab. Wir speichern den tatsächlichen Wortlaut
         mit der Bestellung und ihrem Eingangszeitpunkt und geben ihn in der Vertragsbestätigung
         wieder.
       </p>
@@ -184,7 +184,7 @@
       </p>
       <p>
         Eine automatische Premium-Verlängerung ist eine gesonderte Bestellung. Deren konkrete
-        Erklärungen und Bedingungen zeigen wir Ihnen vor ihrer Bestellung an und bestätigen die
+        Erklärungen und Bedingungen zeigen wir dir vor ihrer Bestellung an und bestätigen die
         tatsächlich abgegebenen Erklärungen. Eine Einzelbestellung schaltet eine automatische
         Verlängerung nicht ein. Frühere Bestellungen behalten ihre tatsächlich vereinbarten
         Dokumente und Erklärungen; sie werden durch diese Fassung nicht rückwirkend ersetzt.
@@ -195,24 +195,24 @@
       <h2>Erstattung nach einem Widerruf</h2>
       <ul>
         <li>
-          Digitale Inhalte: Sie schulden keinen Wertersatz (§ 357a Abs. 3 BGB). Wir erstatten den
-          vollen Preis, auch wenn Sie die MorphCoins bereits teilweise verwendet haben.
+          Digitale Inhalte: Du schuldest keinen Wertersatz (§ 357a Abs. 3 BGB). Wir erstatten den
+          vollen Preis, auch wenn du die MorphCoins bereits teilweise verwendet hast.
         </li>
         <li>
-          Dienstleistungen, die auf Ihr Verlangen vor Ablauf der Widerrufsfrist begonnen haben: Sie
-          zahlen den Anteil, der den bis zum Widerruf erbrachten Leistungen entspricht (§ 357a Abs.
+          Dienstleistungen, die auf dein Verlangen vor Ablauf der Widerrufsfrist begonnen haben: Du
+          zahlst den Anteil, der den bis zum Widerruf erbrachten Leistungen entspricht (§ 357a Abs.
           2 BGB); den Rest erstatten wir.
         </li>
         <li>
-          Zahlungsmittel: Den Kauf von MorphCoins erstatten wir auf das PayPal-Konto, mit dem Sie
-          bezahlt haben. Leistungen, die Sie mit gekauften MorphCoins bezahlt haben, erstatten wir
-          nach Ihrer Wahl in MorphCoins oder in Euro zum Erwerbskurs (100 MorphCoins = 1,00 €);
-          Leistungen, die Sie mit Belohnungs-Coins bezahlt haben, in Belohnungs-Coins (Ziffer 6.8
-          der AGB).
+          Zahlungsmittel: Den Kauf von MorphCoins erstatten wir auf das PayPal-Konto, mit dem du
+          bezahlt hast. Leistungen, die du mit gekauften MorphCoins bezahlt hast, erstatten wir nach
+          deiner Wahl in MorphCoins oder in Euro zum Erwerbskurs (100 MorphCoins = 1,00 €);
+          Leistungen, die du mit Belohnungs-Coins bezahlt hast, in Belohnungs-Coins (Ziffer 6.8 der
+          AGB).
         </li>
         <li>
           Die Erstattung erfolgt unverzüglich, spätestens innerhalb von vierzehn Tagen nach Eingang
-          Ihres Widerrufs.
+          deines Widerrufs.
         </li>
       </ul>
     </article>

@@ -268,7 +268,7 @@ test("actual Vue component renders recorded states, errors and original download
     app.mount(root);
     const load = async () => {
       all()
-        .find((item) => item.type === "button" && text(item).includes("Load recorded"))
+        .find((item) => item.type === "button" && text(item).includes(messages.Claims.Load))
         .props.onClick();
       await flush();
     };
@@ -278,7 +278,7 @@ test("actual Vue component renders recorded states, errors and original download
       "opening the component does not call a transaction or even load automatically"
     );
     await load();
-    assert.match(text(), /No accounting case/);
+    assert(text().includes(messages.Claims.NoCase));
     response = {
       case: { id: "case-a", closed_at: "2026-09-01" },
       erasure_intake: { id: "receipt-a", received_at: "2026-09-01T10:00:00Z" },
@@ -295,14 +295,16 @@ test("actual Vue component renders recorded states, errors and original download
       ],
     };
     await load();
-    assert.match(text(), /receipt-a/);
-    assert.match(text(), /Evidence or assessment still pending/);
-    assert.match(text(), /Settlement outcome uncertain/);
-    assert.match(text(), /payment evidence is separate/);
-    assert.match(text(), /reserve-a/);
-    assert.match(text(), /Cash refund/);
-    assert.match(text(), /Wallet credit/);
-    assert.match(text(), /Not established/);
+    assert(text().includes(messages.Claims.Received));
+    assert.doesNotMatch(text(), /receipt-a/);
+    assert(text().includes(messages.Claims.State.pending_evidence));
+    assert(text().includes(messages.Claims.State.uncertain));
+    assert(text().includes(messages.Claims.ReservationLimit));
+    assert.doesNotMatch(text(), /reserve-a/);
+    assert.match(text(), /700/);
+    assert(text().includes(messages.Claims.Method.cash));
+    assert(text().includes(messages.Claims.Method.wallet));
+    assert(text().includes(messages.Claims.Unknown));
     assert.doesNotMatch(text(), /Paid in full|No claims exist/);
     response.reservations = [
       { id: "parent-700", obligation_id: "item-a", units: 700, state: "split", mode: "cash" },
@@ -330,25 +332,28 @@ test("actual Vue component renders recorded states, errors and original download
       { reservation_id: "child-200", payment_id: "payment-200", units: 200 },
     ];
     await load();
-    assert.match(text(), /parent is history, not an additional amount held or paid/);
-    assert.match(text(), /Original partitioned reservation: parent-700/);
-    assert.match(text(), /Recorded payment in euro cents: 200/);
+    assert(text().includes(messages.Claims.State.split));
+    assert.doesNotMatch(text(), /parent-700/);
+    assert.match(text(), /700/);
+    assert.match(text(), /500/);
+    assert(text().includes(messages.Claims.CashUnits + ": 200"));
     assert.match(text(), /provider-reference-200/);
-    assert.match(text(), /other parts can remain open/);
+    assert(text().includes(messages.Claims.PaymentLimit));
+    assert(text().includes(messages.Claims.State.uncertain));
     assert.doesNotMatch(text(), /Paid in full|No claims exist/);
     fail = true;
     await load();
-    assert.match(text(), /could not be loaded/);
-    assert.doesNotMatch(text(), /receipt-a/);
+    assert(text().includes(messages.Claims.Error));
+    assert.doesNotMatch(text(), /provider-reference-200/);
     fail = false;
     held = deferred();
     await load();
-    assert.match(text(), /Loading/);
+    assert(text().includes(messages.Claims.Loading));
     props.identity = "owner-b";
     await flush();
     held.resolve(response);
     await flush();
-    assert.doesNotMatch(text(), /receipt-a/);
+    assert.doesNotMatch(text(), /provider-reference-200/);
 
     globalThis.document = {
       createElement: () => ({
@@ -373,7 +378,7 @@ test("actual Vue component renders recorded states, errors and original download
     await flush();
     form.props.onSubmit({ preventDefault() {} });
     await flush();
-    assert.match(text(), /No replacement file was generated/);
+    assert(text().includes(messages.Claims.DocumentError));
     assert.equal(downloaded.length, 1);
     for (const blob of [
       new Blob(["Unavailable"], { type: "text/plain" }),
@@ -383,7 +388,7 @@ test("actual Vue component renders recorded states, errors and original download
       await flush();
       form.props.onSubmit({ preventDefault() {} });
       await flush();
-      assert.match(text(), /No replacement file was generated/);
+      assert(text().includes(messages.Claims.DocumentError));
       assert.equal(downloaded.length, 1);
     }
     const pendingOriginal = deferred();
@@ -401,9 +406,9 @@ test("actual Vue component renders recorded states, errors and original download
     await load();
     i18n.global.locale.value = "de";
     await flush();
-    assert.match(text(), /Abrechnung und offene Ansprüche/);
-    assert.match(text(), /Ergebnis der Abwicklung ungewiss/);
-    assert.match(text(), /zum Beispiel S123/);
+    assert(text().includes(german.Claims.Title));
+    assert(text().includes(german.Claims.State.uncertain));
+    assert(text().includes(german.Claims.StatementFormat));
     const afterUnmount = deferred();
     props.original = () => afterUnmount.promise;
     input.props["onUpdate:modelValue"]("S234");

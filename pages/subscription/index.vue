@@ -84,7 +84,6 @@
       />
 
       <div class="mt-10 flex flex-col items-center" v-if="!!isPremium">
-        <p class="mb-4 max-w-xl text-center">{{ t("Body.RenewalResetNotice") }}</p>
         <p v-if="premiumInfo?.renewal" class="mb-4 max-w-xl text-center" role="status">
           {{
             t(

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-wrap items-center gap-card-sm">
-      <label v-if="!noLabel" class="text-body-2 mb-2 block text-body font-body" :for="id ?? label">
+      <label v-if="!noLabel" class="text-body-2 mb-2 block text-body font-body" :for="id || label">
         {{ t(label) }}
       </label>
       <p

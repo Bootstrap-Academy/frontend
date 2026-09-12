@@ -2,7 +2,6 @@
   <main class="moderation-page moderation-surface grid max-w-4xl gap-5">
     <NuxtLink to="/account" class="w-fit">{{ $t("Links.MyAccount") }}</NuxtLink>
     <h1>{{ $t("Body.PurchaseOrders") }}</h1>
-    <p>{{ $t("Body.PurchaseStateNote") }}</p>
     <button type="button" class="w-fit" :disabled="loading" @click="refresh">
       {{ $t("Body.PurchaseRefresh") }}
     </button>
@@ -11,7 +10,6 @@
     <p v-if="error" role="alert">{{ $t("Body.PurchaseDocumentUnavailable") }}</p>
     <article v-for="order in orders" :key="order.offer.id" class="support-card grid min-w-0 gap-3">
       <h2>{{ order.offer.product.title }}</h2>
-      <p class="break-all">{{ order.offer.id }}</p>
       <p role="status">
         {{
           $t(
@@ -30,6 +28,7 @@
       <details class="order-documents">
         <summary>{{ $t("Body.PurchaseDetails") }}</summary>
         <div class="grid gap-4">
+          <p class="break-all">{{ $t("Body.PurchaseReference") }}: {{ order.offer.id }}</p>
           <details data-purchase-original lang="de">
             <summary class="cursor-pointer">{{ $t("Body.PurchaseStoredOffer") }}</summary>
             <p class="whitespace-pre-wrap break-words">{{ order.offer.text }}</p>
@@ -37,16 +36,6 @@
           </details>
           <p v-if="order.provision_deadline">
             {{ $t("Body.PurchaseDeadline") }} {{ order.provision_deadline }}
-          </p>
-          <p
-            v-if="
-              order.provision_timing && !order.provision_timing.committed_before_deadline_proven
-            "
-          >
-            {{ $t("Body.PurchaseTimingUncertain") }}
-          </p>
-          <p v-if="order.confirmation_smtp_accepted_at">
-            {{ $t("Body.PurchaseSmtpAccepted") }} {{ order.confirmation_smtp_accepted_at }}
           </p>
           <p v-if="order.fulfillment?.purchased_since">
             {{ order.fulfillment.purchased_since }} – {{ order.fulfillment.purchased_until }}

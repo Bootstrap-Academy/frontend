@@ -1,8 +1,7 @@
 <template>
   <div>
     <p v-if="receipt" role="status">
-      {{ t("Moderation.Receipt") }} {{ receipt }}.
-      <NuxtLink to="/moderation">{{ t("Moderation.Title") }}</NuxtLink>
+      {{ t("ReportCopy.Received") }}
     </p>
     <InputTextarea
       v-if="!receipt && !pending"
@@ -10,7 +9,7 @@
       v-model="comment"
     />
     <p v-if="pending && !receipt" role="status">
-      {{ t("Moderation.PendingComplaint") }} {{ pending.request_id }}<br />{{ pending.comment }}
+      {{ t("ReportCopy.Unconfirmed") }}<br />{{ pending.comment }}
     </p>
     <article v-if="!receipt && !pending" class="flex flex-wrap justify-evenly gap-8">
       <Chip
@@ -25,13 +24,14 @@
       </Chip>
     </article>
     <article class="mt-12 flex flex-wrap justify-end gap-4">
-      <InputBtn @click="closeReportDialog()" secondary> {{ t("Buttons.Cancel") }}</InputBtn>
+      <InputBtn @click="closeReportDialog()" secondary>
+        {{ t(receipt ? "Buttons.Close" : "Buttons.Cancel") }}
+      </InputBtn>
       <InputBtn v-if="!receipt" :loading="loading" @click="submitForm()">{{
-        t("Buttons.Report")
+        t(pending ? "ReportCopy.Check" : "ReportCopy.Submit")
       }}</InputBtn>
     </article>
-    <NuxtLink to="/moderation">{{ t("Moderation.Title") }}</NuxtLink> ·
-    <a href="mailto:hallo@bootstrap.academy">hallo@bootstrap.academy</a>
+    <NuxtLink v-if="receipt || pending" to="/moderation">{{ t("ReportCopy.Open") }}</NuxtLink>
   </div>
 </template>
 
@@ -121,7 +121,6 @@ export default defineComponent({
         receipt.value = intent.request_id;
         pending.value = { ...intent, confirmed: true };
         sessionStorage.setItem(store, JSON.stringify(pending.value));
-        openSnackbar("success", "Success.ReportedSubtask");
       } else {
         openSnackbar("error", error || "Moderation.ComplaintUnconfirmed");
       }

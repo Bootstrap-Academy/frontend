@@ -358,20 +358,20 @@ try {
   await a.release();
   await pause(500);
   assert(
-    !(await ev(
-      `document.querySelector('article form').innerText.includes(${JSON.stringify(a.entry.body.id)})`
-    )),
+    !(await ev(`!!document.querySelector('article .support-success')`)),
     "B falsely acknowledged A"
   );
   assert(
-    !(await ev(`document.querySelector('article form button').disabled`)),
+    !(await ev(`document.querySelector('article textarea').disabled`)),
     "B falsely disabled by A receipt"
   );
   await selectRow(0);
+  assert(await ev(`!!document.querySelector('article .support-success')`));
   assert(
     await ev(
-      `document.querySelector('article form').innerText.includes(${JSON.stringify(a.entry.body.id)})`
-    )
+      `[...document.querySelectorAll('article details')].some(e=>e.textContent.includes(${JSON.stringify(a.entry.body.id)}))`
+    ),
+    "the exact complaint reference remains available in details"
   );
   await selectRow(1);
   await input("article textarea", "Exact complaint B survives navigation");
@@ -502,7 +502,7 @@ try {
   );
   dropReport = true;
   await ev(
-    `[...document.querySelectorAll('[role=dialog] button')].find(e=>e.textContent.trim()==='Report').click()`
+    `[...document.querySelectorAll('[role=dialog] button')].find(e=>e.textContent.trim()==='Meldung senden').click()`
   );
   await pause(400);
   const reportIntent = requests
@@ -513,7 +513,7 @@ try {
   assert.equal(reportIntent.subtask_id, messages[0].id);
   assert(
     await ev(
-      `document.querySelector('[role=dialog]').innerText.includes(${JSON.stringify(reportIntent.request_id)})`
+      `document.querySelector('[role=dialog] [role=status]').innerText.includes('Der Eingang konnte noch nicht bestätigt werden.')`
     ),
     JSON.stringify(await ev(`[...document.querySelectorAll('[role=dialog]')].map(e=>e.innerText)`))
   );
@@ -533,7 +533,7 @@ try {
     )
   );
   await ev(
-    `[...document.querySelectorAll('[role=dialog] button')].find(e=>e.textContent.trim()==='Report').click()`
+    `[...document.querySelectorAll('[role=dialog] button')].find(e=>e.textContent.trim()==='Status prüfen').click()`
   );
   await pause(400);
   assert.deepEqual(
@@ -542,12 +542,12 @@ try {
   );
   assert(
     await ev(
-      `document.querySelector('[role=dialog]').innerText.includes(${JSON.stringify(reportIntent.request_id)})`
+      `document.querySelector('[role=dialog] [role=status]').innerText.includes('Deine Meldung ist eingegangen.')`
     )
   );
   assert(
     !(await ev(
-      `[...document.querySelectorAll('[role=dialog] button')].some(e=>e.textContent.trim()==='Report')`
+      `[...document.querySelectorAll('[role=dialog] button')].some(e=>['Meldung senden','Status prüfen'].includes(e.textContent.trim()))`
     ))
   );
   console.log(

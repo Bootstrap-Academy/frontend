@@ -37,13 +37,15 @@ const message = {
   decision_id: "44000000-0000-4000-8000-000000000001",
   audience: "author",
   statement: {
-    outcome: "Synthetic restriction",
+    outcome: "restrict",
+    target_kind: "account",
     rationale: "Synthetic reason for the notice",
     scope: "Synthetic task",
     redress: "Human review available",
   },
   effective: { enabled: false, withdrawn: false },
   current: true,
+  available_at: "2026-09-12T00:00:00Z",
   informed_at: null,
   complaint_until: null,
 };
@@ -136,11 +138,11 @@ ws.onmessage = ({ data }) => {
     waiting.delete(m.id);
     m.error ? p?.reject(m.error) : p?.resolve(m.result);
   } else if (m.method === "Fetch.requestPaused")
-    intercept(m.params).catch((e) => exceptions.push(String(e)));
-  else if (m.method === "Runtime.exceptionThrown")
-    exceptions.push(
-      m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text
+    intercept(m.params).catch((e) =>
+      exceptions.push(JSON.stringify({ phase: "intercept", url: m.params.request.url, error: e }))
     );
+  else if (m.method === "Runtime.exceptionThrown")
+    exceptions.push(JSON.stringify({ phase: "runtime", detail: m.params.exceptionDetails }));
 };
 async function ev(expression) {
   const r = await cmd("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
@@ -249,6 +251,30 @@ try {
   assert.equal(await ev(`document.querySelector('.account-rights').open`), false);
   await click("main nav button");
   await until(`!!document.querySelector('article[data-message] textarea')`);
+  assert.equal(
+    await ev(`document.querySelector('article[data-message] h2').textContent.includes('Account')`),
+    true
+  );
+  assert.equal(
+    await ev(
+      `document.querySelector('article[data-message]').innerText.includes(${JSON.stringify(message.case_id)})`
+    ),
+    false
+  );
+  assert.equal(
+    await ev(
+      `document.querySelector('article[data-message]').innerText.includes(${JSON.stringify(message.statement.rationale)})`
+    ),
+    true
+  );
+  await click("article[data-message] details summary");
+  assert.equal(
+    await ev(
+      `document.querySelector('article[data-message] details').innerText.includes(${JSON.stringify(message.case_id)})`
+    ),
+    true
+  );
+  await click("article[data-message] details summary");
   await contrast();
   await fill("article textarea", "Synthetic complaint with new information.");
   await ev(`document.querySelector('article form').requestSubmit()`);
@@ -264,6 +290,10 @@ try {
   await click(".account-rights summary");
   await contrast();
   await shot("case-mobile");
+  await ev(`document.querySelector('img[src="/images/de.webp"]').click()`);
+  await until(`document.querySelector('article[data-message] h2').textContent.includes('Konto')`);
+  await ev(`document.querySelector('article[data-message]').scrollIntoView({block:'start'})`);
+  await shot("case-mobile-de");
   await nav("/auth/login");
   assert.equal(await ev(`!!document.querySelector('a[href="/moderation/access"]')`), false);
   await footer();
@@ -283,7 +313,27 @@ try {
   await nav("/orders");
   await until(`document.querySelectorAll('main article').length===1`);
   assert.equal(await ev(`document.querySelector('.order-documents').open`), false);
+  assert.equal(
+    await ev(
+      `document.querySelector('main').innerText.includes(${JSON.stringify(order.offer.id)})`
+    ),
+    false
+  );
   await click(".order-documents summary");
+  await click("[data-purchase-original] summary");
+  assert.equal(
+    await ev(
+      `document.querySelector('[data-purchase-original]').innerText.includes(${JSON.stringify(order.offer.text)})`
+    ),
+    true
+  );
+  assert.equal(
+    await ev(
+      `document.querySelector('[data-purchase-original]').innerText.includes(${JSON.stringify(order.offer.declaration)})`
+    ),
+    true
+  );
+  await shot("orders-original-de");
   assert.equal(
     await ev(`document.querySelector('main').innerText.includes('Body.PurchaseDocument_')`),
     false
@@ -361,6 +411,10 @@ try {
     controls_with_verified_contrast: controlCount,
     recovery_error_success: true,
     exact_complaint_retry: true,
+    meaningful_case_heading: true,
+    original_reason_retained: true,
+    unchanged_order_original_retained: true,
+    reference_only_in_expandable_details: true,
     deep_link_preserved: true,
     english: true,
     mobile320: geometry,
