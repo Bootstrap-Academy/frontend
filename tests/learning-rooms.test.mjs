@@ -47,12 +47,13 @@ const selection = (next = room()) => ({
   path: { id: "python-loops", title: { de: "Python", en: "Python" } },
   next,
 });
-function fixture(handler) {
+function fixture(handler, options = {}) {
   let view;
   let sequence = 0;
   const calls = [];
   const controller = createLearningRooms({
     id: () => `request-${++sequence}`,
+    checkpoint: options.checkpoint,
     request: async (path, method = "GET", body) => {
       calls.push({ path, method, body: body && structuredClone(body) });
       if (handler) return handler(path, method, body);
@@ -130,7 +131,10 @@ test("neutral exercise jump saves work and requests the next candidate without m
   await f.controller.next("python-loops", "loops-intro");
   assert.equal(f.calls.filter(({ method }) => method === "PUT").length, 1);
   assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
-  assert.equal(f.calls.at(-1).path, "/skills/rooms?path=python-loops&after=loops-intro");
+  assert.equal(
+    f.calls.at(-1).path,
+    "/skills/rooms?continuous=true&path=python-loops&after=loops-intro"
+  );
 });
 
 test("edits made during save remain local and use the returned revision for the next write", async () => {
@@ -281,7 +285,11 @@ function exerciseFixture(handler, options = {}) {
       if (path.startsWith("/shop/")) return { premium: false };
       if (path.endsWith("/environments")) return { python: {} };
       if (path.endsWith("/examples")) return [];
-      if (!path.endsWith("/submissions") && !path.endsWith("/attempts"))
+      if (
+        !path.endsWith("/submissions") &&
+        !path.endsWith("/attempts") &&
+        !path.includes("/attempts/")
+      )
         return {
           id: "code-a",
           task_id: "task-a",
@@ -385,7 +393,7 @@ test("quiz and matching refresh server hearts after incorrect and correct attemp
       heartsRequest: (path, method) => {
         assert.equal(path, "/shop/hearts/learner");
         assert.equal(method, "GET");
-        return { hearts: solved ? 4 : 5, next_heart: 1234 };
+        return { hearts: 4, next_heart: 1234 };
       },
     });
     await f.controller.load({ ...reference, type }, "learner");
@@ -397,7 +405,7 @@ test("quiz and matching refresh server hearts after incorrect and correct attemp
       assert.equal(f.view.phase, correct ? "correct" : "incorrect", type);
     }
     assert.deepEqual(updates, [
-      { hearts: 5, next_heart: 1234 },
+      { hearts: 4, next_heart: 1234 },
       { hearts: 4, next_heart: 1234 },
     ]);
     assert.deepEqual(
@@ -463,7 +471,7 @@ test("coding saves its submission before awaiting hearts and ignores another att
   await submitted;
   assert.equal(f.view.phase, "correct");
   assert.equal(f.calls.filter(({ method }) => method === "POST").length, 1);
-  assert.equal(f.calls.filter(({ path }) => path.startsWith("/shop/hearts/")).length, 1);
+  assert.equal(f.calls.filter(({ path }) => path.startsWith("/shop/hearts/")).length, 2);
 });
 
 test("heart refresh errors stay separate from confirmed and uncertain submission outcomes", async () => {
@@ -682,4 +690,222 @@ test("navigation can cancel preparation without dispatching a late paid attempt"
   assert.equal(f.view.phase, "ready");
   assert.equal(f.view.posting, false);
   assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
+});
+
+test("continuous selection crosses paths and a new review checkpoints before its explicit POST", async () => {
+  const finished = {
+    ...room(8, { old: "answer" }, "completed", "exercise"),
+    review_available: true,
+  };
+  const started = {
+    ...room(9, {}, "in_progress", "exercise"),
+    progress: { ...room(9).progress, review_id: "review-a" },
+  };
+  const events = [];
+  const f = fixture(
+    (path, method, body) => {
+      if (path.endsWith("capabilities")) return { enabled: true };
+      if (method === "POST") {
+        events.push("post");
+        assert.equal(path, "/skills/rooms/loops-intro/review");
+        assert.deepEqual(body, { request_id: "request-1", expected_revision: 8 });
+        return started;
+      }
+      assert.equal(new URL(path, "https://fixture.invalid").searchParams.get("continuous"), "true");
+      return { ...selection(finished), path: { id: "other-path", title: { de: "Anderes Thema" } } };
+    },
+    {
+      checkpoint: () => {
+        events.push("checkpoint");
+        return true;
+      },
+    }
+  );
+  await f.controller.start(true, "python-loops");
+  assert.equal(f.view.path.id, "other-path");
+  assert.equal(f.view.room.progress.review_id, "review-a");
+  assert.deepEqual(f.view.draft, {});
+  assert.deepEqual(events, ["checkpoint", "post", "checkpoint"]);
+  assert.equal(f.controller.recovery(), null);
+});
+
+test("a lost review-start response survives reload and retries the exact request before another review", async () => {
+  const candidate = { ...room(4, {}, "completed"), review_available: true };
+  const active = { ...room(5), progress: { ...room(5).progress, review_id: "review-a" } };
+  const writes = [];
+  let first = true;
+  const handler = (path, method, body) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "POST") {
+      writes.push(structuredClone(body));
+      if (first) {
+        first = false;
+        throw new Error("response lost after commit");
+      }
+      return active;
+    }
+    if (path === "/skills/rooms/loops-intro") return active;
+    return selection(candidate);
+  };
+  const old = fixture(handler);
+  await old.controller.start(true);
+  assert.equal(old.view.reviewPending, true);
+  const recovery = old.controller.recovery();
+  old.controller.dispose();
+  const restored = fixture(handler);
+  await restored.controller.start(true, undefined, true);
+  assert.equal(writes.length, 1, "the preliminary GET must not start another review");
+  assert.equal(await restored.controller.restore(recovery), true);
+  assert.equal(writes.length, 2);
+  assert.deepEqual(writes[1], writes[0]);
+  assert.equal(restored.view.room.progress.review_id, "review-a");
+  assert.equal(restored.view.reviewPending, false);
+});
+
+test("unavailable recovery storage prevents review dispatch and account reset discards a late review", async () => {
+  const candidate = { ...room(2, {}, "completed"), review_available: true };
+  const blocked = fixture(
+    (path) => (path.endsWith("capabilities") ? { enabled: true } : selection(candidate)),
+    { checkpoint: () => false }
+  );
+  await blocked.controller.start(true);
+  assert.equal(blocked.view.reviewPending, true);
+  assert.equal(blocked.calls.filter((call) => call.method === "POST").length, 0);
+  const pending = deferred();
+  const old = fixture((path, method) =>
+    method === "POST"
+      ? pending.promise
+      : path.endsWith("capabilities")
+        ? { enabled: true }
+        : selection(candidate)
+  );
+  const loading = old.controller.start(true);
+  await new Promise(setImmediate);
+  old.controller.reset();
+  pending.resolve({ ...room(3), progress: { ...room(3).progress, review_id: "old-review" } });
+  await loading;
+  assert.equal(old.view.status, "idle");
+  assert.equal(old.view.room, null);
+});
+
+test("review saves and completion bind the current review and exact current attempt", async () => {
+  const active = (revision) => ({
+    ...room(revision, {}, "in_progress", "exercise"),
+    progress: { ...room(revision).progress, review_id: "review-a" },
+  });
+  const f = fixture((path, method, body) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "PUT") {
+      assert.equal(body.review_id, "review-a");
+      return active(2);
+    }
+    if (method === "POST") {
+      assert.equal(body.review_id, "review-a");
+      assert.equal(body.attempt_id, "attempt-new");
+      assert.equal(body.expected_revision, 2);
+      assert.equal(body.answer, undefined);
+      return {
+        ...active(3),
+        progress: { ...active(3).progress, status: "completed", result: { kind: "solved" } },
+      };
+    }
+    return selection(active(1));
+  });
+  await f.controller.start(true);
+  f.controller.edit({ answers: [true], attempt_id: "attempt-new" });
+  assert.equal(await f.controller.complete("complete", undefined, "attempt-new"), true);
+  assert.equal(f.view.room.progress.status, "completed");
+});
+
+test("review ignores historical solved, saves the new attempt ID and resumes only its own proof", async () => {
+  const saved = [];
+  const f = exerciseFixture(
+    (path, method) => {
+      if (method === "POST")
+        return { solved: true, attempt_id: "new-attempt", hearts_pending: false };
+      assert.ok(path.endsWith("/attempts/new-attempt"));
+      return {
+        id: "new-attempt",
+        task_id: "task-a",
+        subtask_id: "code-a",
+        solved: true,
+        hearts_pending: false,
+      };
+    },
+    {
+      solved: () => true,
+      persistSubmission: async (...args) => {
+        saved.push(args);
+        return true;
+      },
+    }
+  );
+  const ref = { ...reference, type: "multiple_choice" };
+  await f.controller.load(ref, "learner", undefined, false, "review-a");
+  assert.equal(f.view.phase, "ready");
+  await f.controller.submit({ answers: [true] });
+  assert.equal(f.view.phase, "correct");
+  assert.deepEqual(saved.at(-1), [false, undefined, "new-attempt"]);
+  await f.controller.load(ref, "learner", undefined, false, "review-a", "new-attempt");
+  assert.equal(f.view.phase, "correct");
+  assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
+  await f.controller.load(ref, "learner", undefined, true, "review-a");
+  await f.controller.check();
+  assert.equal(f.view.phase, "uncertain");
+  assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
+});
+
+test("pending heart settlement polls only the accepted attempt and refreshes after settlement", async () => {
+  for (const type of ["multiple_choice", "coding"]) {
+    let polls = 0;
+    const updates = [];
+    const f = exerciseFixture(
+      (path, method) => {
+        if (method === "POST")
+          return type === "coding"
+            ? { id: "mine" }
+            : { solved: false, attempt_id: "mine", hearts_pending: true };
+        polls++;
+        const pending = polls < 2;
+        return type === "coding"
+          ? [{ id: "mine", result: { verdict: "WRONG_ANSWER" }, hearts_pending: pending }]
+          : {
+              id: "mine",
+              task_id: "task-a",
+              subtask_id: "code-a",
+              solved: false,
+              hearts_pending: pending,
+            };
+      },
+      {
+        heartsChanged: (info) => updates.push(info),
+        heartsRequest: () => ({ hearts: polls >= 2 ? 4 : 6 }),
+      }
+    );
+    await f.controller.load({ ...reference, type }, "learner");
+    await f.controller.submit(type === "coding" ? { code: "wrong" } : { answers: [false] });
+    assert.equal(f.view.phase, "incorrect");
+    assert.equal(polls, 2);
+    assert.deepEqual(updates, [{ hearts: 6 }, { hearts: 4 }]);
+    assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
+  }
+});
+
+test("an unsettled final result stays bounded and is checked without another submission", async () => {
+  const f = exerciseFixture((path, method) =>
+    method === "POST"
+      ? { id: "mine" }
+      : [{ id: "mine", result: { verdict: "WRONG_ANSWER" }, hearts_pending: true }]
+  );
+  await f.controller.load(reference, "learner");
+  await f.controller.submit({ code: "wrong" });
+  assert.equal(f.view.phase, "pending");
+  assert.equal(f.view.error, "HeartsPending");
+  assert.equal(f.view.result.verdict, "WRONG_ANSWER");
+  await f.controller.check();
+  assert.equal(
+    f.calls.filter((c) => c.method === "GET" && c.path.endsWith("/submissions")).length,
+    6
+  );
+  assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
 });

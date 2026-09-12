@@ -26,6 +26,7 @@ export function createLearningRooms(options: {
   request: LearningRequest;
   changed: (view: LearningRoomsView) => void;
   id?: () => string;
+  checkpoint?: () => boolean;
 }) {
   const empty = (): LearningRoomsView => ({
     status: "idle",
@@ -37,6 +38,8 @@ export function createLearningRooms(options: {
     saving: false,
     completing: false,
     completionPending: false,
+    reviewStarting: false,
+    reviewPending: false,
     conflict: false,
     error: "",
     emptyReason: null,
@@ -48,6 +51,7 @@ export function createLearningRooms(options: {
   let savePromise: Promise<boolean> | null = null;
   let pendingSave: any = null;
   let pendingComplete: any = null;
+  let pendingReviewStart: any = null;
   let completionRequested = false;
   const id = options.id || (() => crypto.randomUUID());
   const publish = () => options.changed({ ...view, draft: copy(view.draft) });
@@ -70,6 +74,9 @@ export function createLearningRooms(options: {
               request_id: id(),
               expected_revision: view.room!.progress.revision,
               state: copy(view.draft),
+              ...(view.room!.progress.review_id
+                ? { review_id: view.room!.progress.review_id }
+                : {}),
             },
             version,
           };
@@ -105,8 +112,60 @@ export function createLearningRooms(options: {
     return operation;
   }
 
-  async function next(path?: string, after?: string) {
-    if (!alive || view.saving || view.completing || view.completionPending || view.conflict)
+  async function startReview() {
+    if (!alive || !view.room || view.reviewStarting || view.conflict) return false;
+    if (!pendingReviewStart && !view.room.review_available) return true;
+    const ticket = generation;
+    pendingReviewStart ||= {
+      unitId: view.room.unit.id,
+      body: { request_id: id(), expected_revision: view.room.progress.revision },
+    };
+    view.reviewStarting = true;
+    view.reviewPending = true;
+    view.error = "";
+    publish();
+    try {
+      if (options.checkpoint && !options.checkpoint()) throw new Error("Recovery unavailable");
+      const response = envelope(
+        await options.request(
+          `/skills/rooms/${encodeURIComponent(pendingReviewStart.unitId)}/review`,
+          "POST",
+          pendingReviewStart.body
+        )
+      );
+      if (!current(ticket)) return false;
+      if (!response.progress.review_id) throw new Error("Missing review identity");
+      view.room = response;
+      view.draft = copy(response.progress.state);
+      view.dirty = false;
+      pendingReviewStart = null;
+      view.reviewPending = false;
+      editVersion = 0;
+      return true;
+    } catch (error) {
+      if (current(ticket)) {
+        view.error = errorKey(error) === "Session" ? "Session" : "ReviewStartError";
+        view.conflict = errorKey(error) === "Conflict";
+      }
+      return false;
+    } finally {
+      if (current(ticket)) {
+        view.reviewStarting = false;
+        publish();
+        options.checkpoint?.();
+      }
+    }
+  }
+
+  async function next(path?: string, after?: string, autoReview = true) {
+    if (
+      !alive ||
+      view.saving ||
+      view.completing ||
+      view.completionPending ||
+      view.reviewPending ||
+      view.conflict
+    )
       return false;
     if (view.dirty && !(await save())) return false;
     const ticket = ++generation;
@@ -114,6 +173,7 @@ export function createLearningRooms(options: {
     view.error = "";
     publish();
     const query = new URLSearchParams();
+    query.set("continuous", "true");
     if (path) query.set("path", path);
     if (after) query.set("after", after);
     try {
@@ -133,6 +193,7 @@ export function createLearningRooms(options: {
       pendingComplete = null;
       editVersion = 0;
       publish();
+      if (autoReview && view.room?.review_available) return await startReview();
       return true;
     } catch {
       if (current(ticket)) {
@@ -148,18 +209,27 @@ export function createLearningRooms(options: {
     recovery() {
       if (
         !view.room ||
-        !(view.dirty || view.saving || view.completing || pendingSave || pendingComplete)
+        !(
+          view.dirty ||
+          view.saving ||
+          view.completing ||
+          pendingSave ||
+          pendingComplete ||
+          pendingReviewStart
+        )
       )
         return null;
       return copy({
         unitId: view.room.unit.id,
         pathId: view.room.unit.path_id,
         revision: view.room.progress.revision,
+        reviewId: view.room.progress.review_id || null,
         draft: view.draft,
         dirty: view.dirty,
         editVersion,
         pendingSave,
         pendingComplete,
+        pendingReviewStart,
       });
     },
     async restore(recovery: any) {
@@ -179,10 +249,25 @@ export function createLearningRooms(options: {
         if (!current(ticket)) return false;
         view.room = response;
         view.path = view.paths.find((path) => path.id === response.unit.path_id) || view.path;
+        if (recovery.pendingReviewStart) {
+          pendingReviewStart = copy(recovery.pendingReviewStart);
+          if (pendingReviewStart.unitId !== recovery.unitId || !pendingReviewStart.body?.request_id)
+            throw new Error("Invalid pending review");
+          view.status = "ready";
+          view.conflict = false;
+          view.reviewPending = true;
+          view.draft = copy(response.progress.state);
+          publish();
+          return await startReview();
+        }
         if (!["completed", "skipped"].includes(response.progress.status)) {
           view.room = {
             ...response,
-            progress: { ...response.progress, revision: recovery.revision },
+            progress: {
+              ...response.progress,
+              revision: recovery.revision,
+              review_id: recovery.reviewId || null,
+            },
           };
           view.draft = copy(recovery.draft);
           view.dirty = recovery.dirty === true;
@@ -196,7 +281,7 @@ export function createLearningRooms(options: {
         }
         view.status = "ready";
         view.error = "";
-        view.conflict = false;
+        view.conflict = (recovery.reviewId || null) !== (response.progress.review_id || null);
         publish();
         return true;
       } catch {
@@ -212,12 +297,13 @@ export function createLearningRooms(options: {
       editVersion = 0;
       pendingSave = null;
       pendingComplete = null;
+      pendingReviewStart = null;
       savePromise = null;
       completionRequested = false;
       view = empty();
       publish();
     },
-    async start(enabled: boolean, path?: string) {
+    async start(enabled: boolean, path?: string, recovering = false) {
       const ticket = generation;
       if (!enabled) {
         view.status = "disabled";
@@ -234,7 +320,7 @@ export function createLearningRooms(options: {
           publish();
           return;
         }
-        await next(path);
+        await next(path, undefined, !recovering);
       } catch (error: any) {
         if (current(ticket)) {
           view.status =
@@ -252,6 +338,7 @@ export function createLearningRooms(options: {
         !view.room ||
         view.completing ||
         pendingComplete ||
+        pendingReviewStart ||
         ["completed", "skipped"].includes(view.room.progress.status)
       )
         return;
@@ -262,8 +349,16 @@ export function createLearningRooms(options: {
     },
     save,
     next,
-    async complete(action: "complete" | "skip", answer?: Record<string, any>) {
-      if (!alive || !view.room || completionRequested || view.conflict || view.completing)
+    retryReview: startReview,
+    async complete(action: "complete" | "skip", answer?: Record<string, any>, attemptId?: string) {
+      if (
+        !alive ||
+        !view.room ||
+        completionRequested ||
+        view.conflict ||
+        view.completing ||
+        pendingReviewStart
+      )
         return false;
       if (["completed", "skipped"].includes(view.room.progress.status)) return true;
       if (action === "skip" && view.room.unit.room === "exercise") return false;
@@ -277,6 +372,8 @@ export function createLearningRooms(options: {
           request_id: id(),
           expected_revision: view.room.progress.revision,
           action,
+          ...(view.room.progress.review_id ? { review_id: view.room.progress.review_id } : {}),
+          ...(attemptId ? { attempt_id: attemptId } : {}),
           ...(answer ? { answer: copy(answer) } : {}),
         };
         view.completionPending = true;
@@ -292,6 +389,8 @@ export function createLearningRooms(options: {
         view.room = response;
         view.draft = copy(response.progress.state);
         pendingComplete = null;
+        pendingReviewStart = null;
+        view.reviewPending = false;
         view.completionPending = false;
         view.dirty = false;
         return true;
@@ -325,13 +424,21 @@ export function createLearningRooms(options: {
           await options.request(`/skills/rooms/${encodeURIComponent(view.room.unit.id)}`)
         );
         if (!current(ticket)) return;
+        const sameReview =
+          (view.room.progress.review_id || null) === (response.progress.review_id || null);
         view.room = response;
         view.conflict = false;
         view.error = "";
         pendingSave = null;
         pendingComplete = null;
+        pendingReviewStart = null;
+        view.reviewPending = false;
         view.completionPending = false;
-        if (!keepDraft || ["completed", "skipped"].includes(response.progress.status)) {
+        if (
+          !keepDraft ||
+          !sameReview ||
+          ["completed", "skipped"].includes(response.progress.status)
+        ) {
           view.draft = copy(response.progress.state);
           view.dirty = false;
         } else view.dirty = true;

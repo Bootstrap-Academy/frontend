@@ -76,23 +76,40 @@
       </template>
       <div v-if="view.phase === 'correct'" class="exercise-result correct" role="status">
         <p>{{ t("LearningRooms.Correct") }}</p>
-        <button type="button" :disabled="disabled" @click="emit('complete', {})">
+        <button
+          type="button"
+          :disabled="disabled"
+          @click="emit('complete', draft.attempt_id || draft.submission_id)"
+        >
           {{ t("LearningRooms.Continue") }}
         </button>
       </div>
       <template v-else>
-        <div v-if="view.phase === 'incorrect'" class="exercise-result" role="status">
-          <p>{{ resultTitle || t("LearningRooms.Incorrect") }}</p>
+        <div
+          v-if="view.phase === 'incorrect' || (view.phase === 'pending' && view.result)"
+          class="exercise-result"
+          role="status"
+        >
+          <p>
+            {{
+              resultTitle ||
+              t(view.result?.solved === true ? "LearningRooms.Correct" : "LearningRooms.Incorrect")
+            }}
+          </p>
           <p v-if="resultBody">{{ resultBody }}</p>
           <details v-if="resultDetails">
             <summary>{{ t("LearningRooms.Details") }}</summary>
             <pre>{{ resultDetails }}</pre>
           </details>
         </div>
-        <p v-if="view.phase === 'pending'" role="status">{{ t("LearningRooms.Running") }}</p>
+        <p v-if="view.phase === 'pending'" role="status">
+          {{ t(view.result ? "LearningRooms.BalanceUpdating" : "LearningRooms.Running") }}
+        </p>
         <p v-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
         <button
-          v-if="view.phase === 'uncertain' || (view.phase === 'pending' && view.error)"
+          v-if="
+            (view.phase === 'uncertain' && !reviewId) || (view.phase === 'pending' && view.error)
+          "
           type="button"
           :disabled="disabled"
           @click="controller.check()"
@@ -112,9 +129,7 @@
         </div>
         <div v-if="!['pending', 'uncertain'].includes(view.phase)" class="submit-action">
           <p v-if="view.premium === false">
-            {{
-              t(reference.type === "coding" ? "LearningRooms.OneHeart" : "LearningRooms.HalfHeart")
-            }}
+            {{ t("Body.WrongAnswerCostsOneHeart") }}
           </p>
           <button type="button" :disabled="locked || !valid" @click="submit">
             {{
@@ -162,10 +177,11 @@ const props = defineProps<{
   disabled: boolean;
   save: () => Promise<boolean>;
   content?: Record<string, any>;
+  reviewId?: string;
 }>();
 const emit = defineEmits<{
   change: [state: Record<string, any>];
-  complete: [answer: Record<string, any>];
+  complete: [attemptId?: string];
   skip: [];
   posting: [active: boolean];
 }>();
@@ -195,9 +211,13 @@ const controller = createLearningExercise({
     view.value = next;
     emit("posting", next.posting);
   },
-  persistSubmission: async (unknown, id) => {
+  persistSubmission: async (unknown, id, attemptId) => {
     if (!alive) return false;
-    update({ submission_unknown: unknown ? true : undefined, submission_id: id });
+    update({
+      submission_unknown: unknown ? true : undefined,
+      submission_id: id,
+      attempt_id: attemptId,
+    });
     return await props.save();
   },
 });
@@ -289,7 +309,9 @@ function load() {
     props.reference,
     props.userId,
     draft.value.submission_id,
-    draft.value.submission_unknown === true
+    draft.value.submission_unknown === true,
+    props.reviewId,
+    draft.value.attempt_id
   );
 }
 defineExpose({ cancelPreparation: () => controller.cancelPreparation() });
@@ -305,6 +327,7 @@ watch(
     () => `${props.reference.type}:${props.reference.task_id}:${props.reference.subtask_id}`,
     () => props.userId,
     () => props.request,
+    () => props.reviewId,
   ],
   () => {
     controller.reset();

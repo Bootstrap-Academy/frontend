@@ -1,5 +1,5 @@
 /** Version of the terms and conditions the platform currently asks for. */
-export const TERMS_VERSION = "2026-09-r2";
+export const TERMS_VERSION = "2026-09-r3";
 
 /**
  * Routes on which the re-acceptance gate stays hidden: the documents the gate

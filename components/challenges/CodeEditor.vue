@@ -16,11 +16,10 @@
 
       <article class="flex flex-wrap items-center gap-card-sm">
         <!--
-          The heart on the button does not say what an attempt costs, so the
-          price is stated in words next to it.
+          The caption explains when a whole heart is charged.
         -->
         <p v-if="!isPremium" class="text-xs text-body">
-          {{ t("Body.AttemptCostsOneHeart") }}
+          {{ t("Body.WrongAnswerCostsOneHeart") }}
         </p>
 
         <InputBtn

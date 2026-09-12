@@ -285,7 +285,7 @@ test("the actual composable preserves drafts and its editor request binding thro
   assert.equal(f.api.view.value.draft.submission_unknown, true);
   assert.equal(f.api.view.value.draft.submission_id, "pending-id");
   assert.equal(f.api.request.value, request);
-  assert.equal(f.calls.filter(({ path }) => path === "/skills/rooms").length, 1);
+  assert.equal(f.calls.filter(({ path }) => path === "/skills/rooms?continuous=true").length, 1);
   assert.equal(f.calls.filter(({ path }) => path === "/auth/session").length, 1);
 });
 
