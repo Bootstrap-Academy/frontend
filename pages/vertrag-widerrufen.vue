@@ -266,7 +266,7 @@ export default defineComponent({
     function successHandler(res: any) {
       declaration.value = res?.declaration ?? res ?? null;
       confirmationEmailSent.value = !!res?.confirmation_email_sent;
-
+      closeSnackbar();
     }
 
     function errorHandler(res: any) {
