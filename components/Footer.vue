@@ -109,6 +109,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+footer {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+
 footer a {
   @apply text-base text-body font-body transition-basic;
 }
