@@ -13,7 +13,10 @@
     </main>
   </NuxtLayout>
   <!-- The error entry replaces app.vue, so it owns the same single footer. -->
-  <LazyClientOnly><Footer /></LazyClientOnly>
+  <LazyClientOnly>
+    <Footer />
+    <FeedbackLauncher />
+  </LazyClientOnly>
 </template>
 
 <script setup lang="ts">

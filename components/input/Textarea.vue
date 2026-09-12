@@ -1,7 +1,7 @@
 <template>
   <div class="relative">
     <div class="flex flex-wrap items-center gap-card-sm">
-      <label v-if="!noLabel" class="text-body-1 mb-3 block text-body font-body" :for="id ?? label">
+      <label v-if="!noLabel" class="text-body-1 mb-3 block text-body font-body" :for="id || label">
         {{ t(label) }}
       </label>
       <p v-if="hint" class="relative z-0 pb-2 text-right text-xs text-body">

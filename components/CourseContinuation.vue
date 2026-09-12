@@ -129,8 +129,12 @@ function existing(right: string, target: string) {
     </button>
     <template v-if="client?.loaded.value">
       <p v-if="!client.sources.value.length">{{ t("CourseContinuation.NoSources") }}</p>
-      <div v-for="subject in client.sources.value" :key="subject" class="grid gap-2">
-        <p class="break-all">{{ t("CourseContinuation.Source") }}: {{ subject }}</p>
+      <div v-for="(subject, index) in client.sources.value" :key="subject" class="grid gap-2">
+        <p>{{ t("AccessCopy.PreviousAccess", { n: index + 1 }) }}</p>
+        <details>
+          <summary>{{ t("AccessCopy.Reference") }}</summary>
+          <p class="break-all">{{ subject }}</p>
+        </details>
         <button type="button" :disabled="busy" @click="act(() => client!.loadRights(subject))">
           {{ t("CourseContinuation.LoadRights") }}
         </button>
@@ -138,7 +142,6 @@ function existing(right: string, target: string) {
       <p v-if="!client.targets.value.length">{{ t("CourseContinuation.NoTarget") }}</p>
     </template>
     <template v-if="client?.source.value">
-      <p class="break-all">{{ t("CourseContinuation.Source") }}: {{ client.source.value }}</p>
       <p v-if="client.rightsLoaded.value && !client.rights.value.length">
         {{ t("CourseContinuation.NoRights") }}
       </p>
@@ -148,7 +151,6 @@ function existing(right: string, target: string) {
         class="grid gap-2 rounded border p-3"
       >
         <h4 class="break-all">{{ t("CourseContinuation.Course") }}: {{ right.course_id }}</h4>
-        <p class="break-all">{{ t("CourseContinuation.Right") }}: {{ right.id }}</p>
         <p>
           {{
             t(
@@ -158,12 +160,13 @@ function existing(right: string, target: string) {
             )
           }}
         </p>
-        <p>{{ t("CourseContinuation.ObservationLimit") }}</p>
-        <p v-if="right.current_subject" class="break-all">
-          {{ t("CourseContinuation.CurrentOwner") }}: {{ right.current_subject }}
-        </p>
-        <div v-for="target in client.targets.value" :key="target" class="grid gap-2">
-          <p class="break-all">{{ t("CourseContinuation.Target") }}: {{ target }}</p>
+        <p v-if="right.current_subject">{{ t("AccessCopy.CourseAssigned") }}</p>
+        <div v-for="(target, index) in client.targets.value" :key="target" class="grid gap-2">
+          <p>{{ t("AccessCopy.LearningArea", { n: index + 1 }) }}</p>
+          <details>
+            <summary>{{ t("AccessCopy.Reference") }}</summary>
+            <p class="break-all">{{ target }}</p>
+          </details>
           <button
             v-if="existing(right.id, target)"
             type="button"
@@ -230,15 +233,19 @@ function existing(right: string, target: string) {
       <p class="break-all">
         {{ t("CourseContinuation.Course") }}: {{ client.pending.value.original.course_id }}
       </p>
-      <p class="break-all">
-        {{ t("CourseContinuation.Source") }}: {{ client.pending.value.body.source_subject }}
+      <p>
+        {{
+          client.targets.value.includes(client.pending.value.body.successor)
+            ? t("AccessCopy.SelectedLearningArea", {
+                n: client.targets.value.indexOf(client.pending.value.body.successor) + 1,
+              })
+            : t("AccessCopy.SelectedAccess")
+        }}
       </p>
-      <p class="break-all">
-        {{ t("CourseContinuation.Right") }}: {{ client.pending.value.body.right_id }}
-      </p>
-      <p class="break-all">
-        {{ t("CourseContinuation.Target") }}: {{ client.pending.value.body.successor }}
-      </p>
+      <details>
+        <summary>{{ t("AccessCopy.SelectedReference") }}</summary>
+        <p class="break-all">{{ client.pending.value.body.successor }}</p>
+      </details>
       <p>{{ t("CourseContinuation.Keep") }}</p>
       <button type="button" :disabled="busy" @click="saveFile">
         {{ t("CourseContinuation.Save") }}
@@ -267,7 +274,6 @@ function existing(right: string, target: string) {
           )
         }}
       </p>
-      <p>{{ t("CourseContinuation.CurrentAccessLimit") }}</p>
       <details v-if="client.pending.value.receipts.length">
         <summary>{{ t("CourseContinuation.Receipts") }}</summary>
         <div

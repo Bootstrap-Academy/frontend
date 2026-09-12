@@ -155,12 +155,6 @@ function existing(evidence: string, target: string) {
         :key="observation.id"
         class="grid gap-2 rounded border p-3"
       >
-        <p class="break-all">
-          {{ t("PremiumContinuation.Source") }}: {{ observation.evidence.subject }}
-        </p>
-        <p class="break-all">
-          {{ t("PremiumContinuation.Period") }}: {{ observation.evidence.id }}
-        </p>
         <p>
           {{ t("PremiumContinuation.OriginalDates") }}:
           <time :datetime="observation.evidence.since">{{ observation.evidence.since }}</time> –
@@ -171,8 +165,12 @@ function existing(evidence: string, target: string) {
             t(`PremiumContinuation.PeriodState.${premiumPeriodState(observation.evidence, now)}`)
           }}
         </p>
-        <div v-for="target in client.targets.value" :key="target" class="grid gap-2">
-          <p class="break-all">{{ t("PremiumContinuation.Target") }}: {{ target }}</p>
+        <div v-for="(target, index) in client.targets.value" :key="target" class="grid gap-2">
+          <p>{{ t("AccessCopy.LearningArea", { n: index + 1 }) }}</p>
+          <details>
+            <summary>{{ t("AccessCopy.Reference") }}</summary>
+            <p class="break-all">{{ target }}</p>
+          </details>
           <button
             v-if="existing(observation.id, target)"
             type="button"
@@ -204,8 +202,14 @@ function existing(evidence: string, target: string) {
     <details v-if="client?.continuations.value.length">
       <summary>{{ t("PremiumContinuation.Recorded") }}</summary>
       <div v-for="row in client.continuations.value" :key="row.id" class="grid gap-2 py-3">
-        <p class="break-all">{{ t("PremiumContinuation.Period") }}: {{ row.original.id }}</p>
-        <p class="break-all">{{ t("PremiumContinuation.Target") }}: {{ row.subject }}</p>
+        <p>
+          {{ t("PremiumContinuation.OriginalDates") }}: {{ row.original.since }} –
+          {{ row.original.until }}
+        </p>
+        <details>
+          <summary>{{ t("AccessCopy.SelectedReference") }}</summary>
+          <p class="break-all">{{ row.subject }}</p>
+        </details>
         <p>{{ t(`PremiumContinuation.State.${row.state}`) }}</p>
         <button
           type="button"
@@ -220,21 +224,24 @@ function existing(evidence: string, target: string) {
       </div>
     </details>
     <template v-if="client?.pending.value">
-      <p class="break-all">
-        {{ t("PremiumContinuation.Reference") }}: {{ client.pending.value.body.command_id }}
-      </p>
-      <p class="break-all">
-        {{ t("PremiumContinuation.Period") }}: {{ client.pending.value.observation.evidence.id }}
-      </p>
       <p>
         {{ t("PremiumContinuation.OriginalDates") }}:
         {{ client.pending.value.observation.evidence.since }} –
         {{ client.pending.value.observation.evidence.until }}
       </p>
-      <p class="break-all">
-        {{ t("PremiumContinuation.Target") }}: {{ client.pending.value.body.successor }}
+      <p>
+        {{
+          client.targets.value.includes(client.pending.value.body.successor)
+            ? t("AccessCopy.SelectedLearningArea", {
+                n: client.targets.value.indexOf(client.pending.value.body.successor) + 1,
+              })
+            : t("AccessCopy.SelectedAccess")
+        }}
       </p>
-      <p>{{ t("PremiumContinuation.Choice") }}</p>
+      <details>
+        <summary>{{ t("AccessCopy.SelectedReference") }}</summary>
+        <p class="break-all">{{ client.pending.value.body.successor }}</p>
+      </details>
       <button type="button" :disabled="busy" @click="act(() => client!.submit())">
         {{
           t(
@@ -285,7 +292,6 @@ function existing(evidence: string, target: string) {
       </div>
     </details>
     <div v-if="resources" class="grid gap-2">
-      <p class="break-all">{{ t("PremiumContinuation.CurrentTarget") }}: {{ resources.subject }}</p>
       <p>
         {{
           t(
@@ -299,7 +305,6 @@ function existing(evidence: string, target: string) {
         {{ t("PremiumContinuation.CurrentDates") }}: {{ resources.premium.since }} –
         {{ resources.premium.until }}
       </p>
-      <p>{{ t("PremiumContinuation.CurrentLimit") }}</p>
       <button
         v-if="checkResources"
         type="button"

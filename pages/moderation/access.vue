@@ -136,7 +136,6 @@ onMounted(async () => {
     </header>
     <section class="support-card grid gap-4" aria-labelledby="moderation-login-heading">
       <h2 id="moderation-login-heading">{{ t("Moderation.LoginHeading") }}</h2>
-      <p class="support-help">{{ t("Moderation.LoginHelp") }}</p>
       <p v-if="message" role="alert">{{ message }}</p>
       <form class="grid gap-4" @submit.prevent="submitPassword">
         <fieldset :disabled="busy" class="grid min-w-0 gap-4">
@@ -231,7 +230,6 @@ onMounted(async () => {
     </details>
     <details class="retained-access">
       <summary>{{ t("Moderation.SavedAccess") }}</summary>
-      <p class="support-help mb-4">{{ t("Moderation.SavedAccessHelp") }}</p>
       <CommercialAccess
         :identity="`${m.epoch.value}:${m.recipient.value}`"
         :personal-proof="m.commercialPersonalProof"

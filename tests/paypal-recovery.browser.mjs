@@ -357,9 +357,7 @@ try {
   const beforeLostCreate = Object.keys(await records()).length;
   dropCreate = true;
   await click(button("Zahlungspflichtig bestellen"));
-  await until(
-    `document.body.innerText.includes('Der PayPal-Vorgang konnte nicht abgeschlossen werden')`
-  );
+  await until(`document.body.innerText.includes('Die PayPal-Zahlung hat nicht geklappt')`);
   const lostCreate = requests.filter((r) => r.path === "/shop/coins/paypal/orders").at(-1);
   assert(lostCreate.lost && lostCreate.status === 200);
   assert.equal(await saved(), null);
@@ -460,9 +458,7 @@ try {
   await click(`document.querySelector('[data-purchase-acceptance]')`);
   await click(`document.querySelector('[data-purchase-early]')`);
   await click(button("Zahlungspflichtig bestellen"));
-  await until(
-    `document.body.innerText.includes('Der PayPal-Vorgang konnte nicht abgeschlossen werden')`
-  );
+  await until(`document.body.innerText.includes('Die PayPal-Zahlung hat nicht geklappt')`);
   assert.equal(await saved(), null);
   createFailure = false;
   console.log("PASS genuine pre-capture validation error stays retryable without pending payment");

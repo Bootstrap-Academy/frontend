@@ -78,7 +78,10 @@ function fixture() {
       if (fault === "no-case") return { case: null };
       return {
         case: { id: caseId, subject, access_epoch: epoch },
-        obligations: [{ id: "original-claim", units: null }],
+        obligations: [
+          { id: "original-claim", units: null },
+          { id: "second-claim", units: 9876 },
+        ],
       };
     }
     if (path.includes("/documents/"))
@@ -629,7 +632,8 @@ for (const language of ["de", "en-US"])
         );
         assert(!ui.all().some((n) => n.props["aria-labelledby"] === "retained-courses-title"));
         assert(ui.text().includes(texts.LearningAccess.Expired));
-        assert(ui.text().includes(subject), "personal owner stays mounted");
+        assert(ui.text().includes(texts.ClaimAccess.Prepare), "personal access remains usable");
+        assert(!ui.text().includes(subject), "raw owner ID is not a user-facing label");
         assert.equal(f.data.get("commercial-learning-refresh-v1"), saved);
         assert(cancelled, "nonawaited original-body cancellation was requested");
         held.resolve(structuredClone(details));
@@ -687,18 +691,19 @@ test("mounted commercial panel saves/retries exact replacement in both languages
       app.mount(ui.root);
       try {
         await flush();
-        assert.match(ui.text(), /do not need a new account or contract/);
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.Explanation));
         const input = ui.all().find((n) => n.props.id === "commercial-current-key");
         input.props["onUpdate:modelValue"](originalKey);
         await input.parent.props.onSubmit({ preventDefault() {} });
         await flush();
-        assert.match(ui.text(), new RegExp(subject));
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.Prepare));
+        assert(!ui.text().includes(subject));
         const button = (label) =>
           ui.all().find((n) => n.type === "button" && ui.text(n).trim() === label);
-        await button("Prepare a new key").props.onClick();
+        await button(messages["en-US"].ClaimAccess.Prepare).props.onClick();
         await flush();
         assert(button("Replace key now").props.disabled);
-        button("Save key and recovery material").props.onClick();
+        button(messages["en-US"].ClaimAccess.Save).props.onClick();
         const backup = JSON.parse(await downloaded[0].text());
         assert.equal(f.journal.size, 0);
         assert.equal(backup.owner.subject, subject);
@@ -708,16 +713,16 @@ test("mounted commercial panel saves/retries exact replacement in both languages
         f.fault("after");
         await button("Replace key now").props.onClick();
         await flush();
-        assert.match(ui.text(), /outcome is unconfirmed/);
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.State.unconfirmed));
         await button("Check this replacement again").props.onClick();
         await flush();
-        assert.match(ui.text(), /currently valid/);
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.State.active));
         assert.equal(f.journal.size, 1);
         i18n.global.locale.value = "de";
         await flush();
-        assert.match(ui.text(), /aktuell gültig geprüft/);
-        assert.match(ui.text(), /kein neues Konto/);
-        const staleDownload = button("Schlüssel und Wiederherstellung speichern").props.onClick;
+        assert(ui.text().includes(messages.de.ClaimAccess.State.active));
+        assert(ui.text().includes(messages.de.ClaimAccess.Explanation));
+        const staleDownload = button(messages.de.ClaimAccess.Save).props.onClick;
         f.changeOwner();
         props.identity = "view-b";
         await flush();
@@ -779,13 +784,14 @@ test("both existing public parent pages mount the actual commercial panel withou
       app.mount(ui.root);
       try {
         await flush();
-        assert.match(ui.text(), /Access to existing claims/);
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.Title));
         assert.deepEqual(meta, [{ layout: "inner" }]);
         const input = ui.all().find((n) => n.props.id === "commercial-current-key");
         input.props["onUpdate:modelValue"](originalKey);
         await input.parent.props.onSubmit({ preventDefault() {} });
         await flush();
-        assert.match(ui.text(), new RegExp(caseId));
+        assert(ui.text().includes(messages["en-US"].ClaimAccess.Prepare));
+        assert(!ui.text().includes(caseId), "case ID is not exposed as the panel title");
         assert.deepEqual(navigations, []);
         assert(f.calls.every((r) => r.path.startsWith("/shop/claims/")));
       } finally {
@@ -1188,7 +1194,7 @@ test("CA2 actual panel removes cached records and blocks held document download 
         input.props["onUpdate:modelValue"](originalKey);
         await input.parent.props.onSubmit({ preventDefault() {} });
         await flush();
-        await button("Prepare a new key").props.onClick();
+        await button(messages["en-US"].ClaimAccess.Prepare).props.onClick();
         await flush();
         ui.all()
           .find((n) => n.type === "input" && n.props.type === "checkbox")
@@ -1198,7 +1204,7 @@ test("CA2 actual panel removes cached records and blocks held document download 
         await flush();
         await button(messages["en-US"].Claims.Load).props.onClick();
         await flush();
-        assert.match(ui.text(), /original-claim/);
+        assert.match(ui.text(), /9876/);
         const stored = f.data.get("commercial-access-rotations-v1"),
           barrier = deferred();
         const number = ui.all().find((n) => n.props.id === "commercial-statement-number");
@@ -1208,9 +1214,9 @@ test("CA2 actual panel removes cached records and blocks held document download 
         const loadingDocument = number.parent.props.onSubmit({ preventDefault() {} });
         await flush();
         f.displace();
-        await button("Prepare a new key").props.onClick();
+        await button(messages["en-US"].ClaimAccess.Prepare).props.onClick();
         await flush();
-        const cachedVisibleAfter401 = /original-claim/.test(ui.text());
+        const cachedVisibleAfter401 = /9876/.test(ui.text());
         barrier.resolve();
         f.wait(null);
         await loadingDocument;
@@ -1218,7 +1224,7 @@ test("CA2 actual panel removes cached records and blocks held document download 
         assert.deepEqual(
           {
             cachedVisibleAfter401,
-            staleVisibleAfter200: /original-claim/.test(ui.text()),
+            staleVisibleAfter200: /9876/.test(ui.text()),
             downloads: downloaded.length,
           },
           { cachedVisibleAfter401: false, staleVisibleAfter200: false, downloads: 0 }
@@ -1302,7 +1308,7 @@ for (const page of ["../pages/moderation/access.vue", "../pages/moderation/index
           if (page.endsWith("access.vue")) {
             assert.equal(ordinaryReads, 0);
             assert.equal(f.calls.filter((r) => r.path.endsWith("/export")).length, claimReads + 1);
-            assert.match(ui.text(), /original-claim/);
+            assert.match(ui.text(), /9876/);
           } else {
             assert.equal(ordinaryReads, 1);
             assert.equal(f.calls.filter((r) => r.path.endsWith("/export")).length, claimReads);
@@ -1793,14 +1799,20 @@ test("mounted commercial panel exposes actual learning refresh, resource recheck
         await flush();
         assert.match(ui.text(), new RegExp(texts.LearningAccess.Available));
         assert.match(ui.text(), /123/);
-        assert.match(ui.text(), new RegExp(texts.LearningAccess.IntegrationLimit));
+        assert(
+          ui.all().some((n) => n.props["aria-labelledby"] === "retained-courses-title"),
+          "current courses remain reachable without a technical disclaimer"
+        );
         const key = [...f.keys.keys()][0];
         f.keys.get(key).revoked = true;
         await button(texts.LearningAccess.Check).props.onClick();
         await flush();
         assert(!ui.text().includes(texts.LearningAccess.Available));
         assert(ui.text().includes(texts.LearningAccess.Expired));
-        assert(ui.text().includes(subject), "learning loss keeps personal owner visible");
+        assert(
+          ui.text().includes(texts.ClaimAccess.Prepare),
+          "learning loss keeps personal access usable"
+        );
         f.invalidatePersonal();
         await button(texts.LearningAccess.Find).props.onClick();
         await flush();

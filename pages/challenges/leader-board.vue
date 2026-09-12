@@ -29,13 +29,6 @@
       </div>
 
       <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" />
-
-      <p class="text-body-2 max-w-2xl text-center text-body mt-box">
-        {{ t("Body.LeaderboardOptOut") }}
-        <NuxtLink to="/profile/edit" class="text-accent hover:underline">
-          {{ t("Headings.EditProfile") }}
-        </NuxtLink>
-      </p>
     </div>
 
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />

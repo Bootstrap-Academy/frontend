@@ -22,7 +22,10 @@
       />
     </div>
   </NuxtLayout>
-  <LazyClientOnly><Footer /></LazyClientOnly>
+  <LazyClientOnly>
+    <Footer />
+    <FeedbackLauncher />
+  </LazyClientOnly>
 </template>
 
 <script lang="ts">

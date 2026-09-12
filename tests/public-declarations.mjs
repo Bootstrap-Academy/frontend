@@ -374,9 +374,11 @@ try {
   await setup();
   ratingCount = 2;
   await navigate("/subscription");
-  await until(`document.querySelectorAll('[role=dialog]').length===3`);
+  await until(`document.querySelectorAll('[role=dialog]').length===2`);
   assert(
-    await ev(`document.activeElement.closest('[role=dialog]')?.innerText.includes('Neue AGB')`)
+    await ev(
+      `!!document.activeElement.closest('[role=dialog]') && !document.body.innerText.includes('Neue AGB')`
+    )
   );
   await ev(`${state}.$router.push('/vertrag-kuendigen')`);
   await pause(900);
@@ -388,12 +390,14 @@ try {
   await assertPublic("/vertrag-widerrufen");
   assert.equal(ratings().length, beforeCached);
   await routeTo("/subscription");
-  await until(`document.querySelectorAll('[role=dialog]').length===3`);
+  await until(`document.querySelectorAll('[role=dialog]').length===2`);
   assert(
-    await ev(`document.activeElement.closest('[role=dialog]')?.innerText.includes('Neue AGB')`)
+    await ev(
+      `!!document.activeElement.closest('[role=dialog]') && !document.body.innerText.includes('Neue AGB')`
+    )
   );
   console.log(
-    "PASS cached ratings and terms hide on forms and restore coordinated focus on ordinary route"
+    "PASS ratings hide on forms and restore focus on ordinary route; old terms do not create a consent gate"
   );
   // Optional Cancel works without the rating API. Explicit non-participation still reports errors.
   profile.terms_version = "2026-09";
@@ -414,7 +418,7 @@ try {
     `[...document.querySelector('[role=dialog]:not([inert])').querySelectorAll('button')].find(b=>b.innerText==='ABBRECHEN')`
   );
   await until(`!document.querySelector('[role=dialog]')`);
-  await click(`document.querySelector('nav[aria-label] a[href="/vertrag-kuendigen"] button')`);
+  await click(`document.querySelector('footer a[href="/vertrag-kuendigen"]')`);
   await until(`location.pathname==='/vertrag-kuendigen'`);
   await pause(800);
   await assertPublic("/vertrag-kuendigen");

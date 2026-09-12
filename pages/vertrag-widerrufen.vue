@@ -80,7 +80,9 @@
       <section v-else class="declaration-record flex flex-col gap-box">
         <h2 class="text-heading-2">{{ t("Headings.WithdrawalReceived") }}</h2>
 
-        <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-y-1 gap-x-card">
+        <dl
+          class="grid grid-cols-1 gap-y-1 gap-x-card [overflow-wrap:anywhere] sm:grid-cols-[auto_minmax(0,1fr)] [&>dd]:mb-3 sm:[&>dd]:mb-0"
+        >
           <dt class="text-body-1 m-0 text-body">{{ t("Headings.DeclarationReceivedAt") }}</dt>
           <dd class="text-body-1 m-0 text-heading">
             {{ t("Body.DeclarationReceivedAtValue", { datetime: receivedAt }) }}
@@ -264,8 +266,7 @@ export default defineComponent({
     function successHandler(res: any) {
       declaration.value = res?.declaration ?? res ?? null;
       confirmationEmailSent.value = !!res?.confirmation_email_sent;
-
-      openSnackbar("success", "Success.WithdrawalDeclared");
+      closeSnackbar();
     }
 
     function errorHandler(res: any) {
