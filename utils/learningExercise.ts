@@ -30,7 +30,7 @@ export function learningError(error: any) {
 export function createLearningExercise(options: {
   request: LearningRequest;
   changed: (view: ExerciseView) => void;
-  persistSubmission: (unknown: boolean, id?: string) => Promise<boolean>;
+  persistSubmission: (unknown: boolean, id?: string, attemptId?: string) => Promise<boolean>;
   heartsChanged?: (info: any) => void;
   wait?: () => Promise<void>;
   maxPolls?: number;
@@ -55,6 +55,8 @@ export function createLearningExercise(options: {
   let dispatched = false;
   let checking = false;
   let userId = "";
+  let reviewId: string | undefined;
+  let currentAttemptId: string | undefined;
   let heartRefresh = 0;
   const publish = () => options.changed({ ...view });
   const current = (ticket: number) => alive && ticket === generation;
@@ -74,22 +76,46 @@ export function createLearningExercise(options: {
   }
 
   async function poll(ticket: number) {
-    if (!current(ticket) || polling || !reference || !view.submissionId) return;
+    if (!current(ticket) || polling || !reference) return;
+    const coding = reference.type === "coding";
+    const attemptId = coding ? view.submissionId : currentAttemptId;
+    if (!attemptId) return;
     polling = true;
-    const submissionId = view.submissionId;
     // The detail endpoint returns source code only. Verdicts are exposed in the
     // current user's list; never infer success from its first/latest entry.
-    const path = `${exercisePath(reference)}/submissions`;
+    const path = `${exercisePath(reference)}/${coding ? "submissions" : `attempts/${segment(attemptId)}`}`;
     try {
       for (let i = 0; i < maxPolls; i++) {
         if (!current(ticket)) return;
-        const submissions = await options.request(path);
+        const data = await options.request(path);
         if (!current(ticket)) return;
-        if (!Array.isArray(submissions)) throw new Error("Invalid submissions");
-        const response = submissions.find((submission) => submission?.id === submissionId);
-        if (response?.result?.verdict) {
-          view.result = response.result;
-          view.phase = response.result.verdict === "OK" ? "correct" : "incorrect";
+        if (coding && !Array.isArray(data)) throw new Error("Invalid submissions");
+        const response = coding
+          ? data.find((submission: any) => submission?.id === attemptId)
+          : data;
+        if (
+          !coding &&
+          (response?.id !== attemptId ||
+            response.task_id !== reference.task_id ||
+            response.subtask_id !== reference.subtask_id ||
+            typeof response.solved !== "boolean")
+        )
+          throw new Error("Invalid attempt");
+        if (coding ? response?.result?.verdict : typeof response?.solved === "boolean") {
+          view.result = coding ? response.result : { solved: response.solved };
+          if (response.hearts_pending === true) {
+            view.phase = "pending";
+            publish();
+            if (i + 1 < maxPolls) await wait();
+            continue;
+          }
+          view.posting = true;
+          publish();
+          await refreshHearts(ticket);
+          if (!current(ticket)) return;
+          view.posting = false;
+          const correct = coding ? response.result.verdict === "OK" : response.solved;
+          view.phase = correct ? "correct" : "incorrect";
           view.error = "";
           publish();
           return;
@@ -98,7 +124,7 @@ export function createLearningExercise(options: {
       }
       if (current(ticket)) {
         view.phase = "pending";
-        view.error = "StillRunning";
+        view.error = view.result ? "HeartsPending" : "StillRunning";
         publish();
       }
     } catch (error) {
@@ -108,7 +134,11 @@ export function createLearningExercise(options: {
         publish();
       }
     } finally {
-      if (current(ticket)) polling = false;
+      if (current(ticket)) {
+        polling = false;
+        view.posting = false;
+        publish();
+      }
     }
   }
 
@@ -120,6 +150,7 @@ export function createLearningExercise(options: {
       dispatched = false;
       checking = false;
       reference = null;
+      currentAttemptId = undefined;
       view = empty();
       publish();
     },
@@ -127,7 +158,9 @@ export function createLearningExercise(options: {
       next: ExerciseReference,
       nextUserId: string,
       submissionId?: string,
-      submissionUnknown = false
+      submissionUnknown = false,
+      nextReviewId?: string,
+      attemptId?: string
     ) {
       const ticket = ++generation;
       polling = false;
@@ -136,6 +169,8 @@ export function createLearningExercise(options: {
       checking = false;
       reference = next;
       userId = nextUserId;
+      reviewId = nextReviewId;
+      currentAttemptId = attemptId;
       view = { ...empty(), phase: "loading" };
       publish();
       try {
@@ -161,11 +196,17 @@ export function createLearningExercise(options: {
         view.premium = premium.premium;
         view.environments = Object.keys(environments || {});
         view.examples = Array.isArray(examples) ? examples : [];
-        view.phase = data.solved ? "correct" : submissionUnknown ? "uncertain" : "ready";
-        view.error = submissionUnknown && !data.solved ? "Uncertain" : "";
+        const alreadySolved = data.solved && !reviewId;
+        view.phase = alreadySolved ? "correct" : submissionUnknown ? "uncertain" : "ready";
+        view.error = submissionUnknown && !alreadySolved ? "Uncertain" : "";
         view.submissionId = submissionUnknown ? null : submissionId || null;
         publish();
-        if (submissionId && !submissionUnknown && next.type === "coding" && !data.solved) {
+        if (attemptId && !submissionUnknown && !alreadySolved && next.type !== "coding") {
+          view.phase = "pending";
+          publish();
+          await poll(ticket);
+        }
+        if (submissionId && !submissionUnknown && next.type === "coding" && !alreadySolved) {
           view.phase = "pending";
           publish();
           await poll(ticket);
@@ -202,6 +243,7 @@ export function createLearningExercise(options: {
         }
         if (!current(ticket)) return;
         view.submissionId = null;
+        currentAttemptId = undefined;
         view.phase = "submitting";
         view.posting = true;
         dispatched = true;
@@ -237,12 +279,24 @@ export function createLearningExercise(options: {
           await poll(ticket);
         } else {
           if (typeof response?.solved !== "boolean") throw new Error("Unknown result");
+          if (reviewId && typeof response.attempt_id !== "string")
+            throw new Error("Unknown attempt");
+          currentAttemptId = response.attempt_id;
           view.phase = "preparing";
           publish();
-          await options.persistSubmission(false);
+          if (!(await options.persistSubmission(false, undefined, response.attempt_id)))
+            throw new Error("Attempt was not saved");
           await heartsRefreshed;
           if (!current(ticket)) return;
           view.posting = false;
+          if (response.hearts_pending === true) {
+            if (!currentAttemptId) throw new Error("Unknown pending attempt");
+            view.phase = "pending";
+            view.result = { solved: response.solved };
+            publish();
+            await poll(ticket);
+            return;
+          }
           view.phase = response.solved ? "correct" : "incorrect";
           publish();
         }
@@ -277,6 +331,8 @@ export function createLearningExercise(options: {
         await poll(ticket);
         return;
       }
+      // An old solved flag cannot confirm a new review whose response was lost.
+      if (reviewId) return;
       checking = true;
       try {
         const response = await options.request(exercisePath(reference));

@@ -94,8 +94,7 @@ export function formatEuros(amount: number, locale: string): string {
 /**
  * Hearts are counted in half hearts by the API (`hearts_max` is 6), while the
  * terms and conditions and the whole interface use whole hearts drawn in
- * halves (three hearts, half a heart per quiz or matching attempt, one heart
- * per coding challenge). Every heart figure shown to a user goes through this
+ * halves (three hearts, one heart per incorrect solution). Every heart figure shown to a user goes through this
  * conversion so that the interface never states the raw API number.
  */
 export function displayHearts(hearts: number): number {

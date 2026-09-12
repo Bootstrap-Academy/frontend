@@ -66,23 +66,22 @@
         </InputBtn>
 
         <!--
-          The half heart is only drawn on the button, which does not say what
-          it costs. The caption states the price of an attempt in words.
+          The caption explains when a whole heart is charged.
         -->
         <template v-if="!data?.solved && user?.id != subtask?.creator && !isPremium">
-          <InputBtnWithHeart
+          <InputBtn
             full
             :loading="formSubmitting"
             @click="onclickSubmitForm()"
             iconRight
             mt
-            :icon="HalfHeart"
+            :icon="FullHeart"
           >
             {{ subtask?.single_choice ? t("Buttons.SubmitAnswer") : t("Buttons.SubmitAnswers") }}
-          </InputBtnWithHeart>
+          </InputBtn>
 
           <p class="mt-2 text-center text-xs text-body">
-            {{ t("Body.AttemptCostsHalfHeart") }}
+            {{ t("Body.WrongAnswerCostsOneHeart") }}
           </p>
         </template>
 
@@ -131,7 +130,7 @@ import { useDialogReportTask, useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
 import { FlagIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
-import HalfHeart from "../svg/HalfHeart.vue";
+import FullHeart from "../svg/FullHeart.vue";
 
 export default defineComponent({
   props: {
@@ -140,7 +139,7 @@ export default defineComponent({
     amountQuestionsLeft: { type: Number, default: 0 },
   },
   emits: ["solved", "updateQuestion", "rated", "nextQuestion"],
-  components: { FlagIcon, ChevronDoubleRightIcon, HalfHeart, PencilSquareIcon },
+  components: { FlagIcon, ChevronDoubleRightIcon, FullHeart, PencilSquareIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
 
@@ -349,7 +348,7 @@ export default defineComponent({
       dialogEditTask,
       closeEditTaskDialog,
       user,
-      HalfHeart,
+      FullHeart,
       showMaxAttemptsError,
       secondsForTryAgain,
       nextQuestion,

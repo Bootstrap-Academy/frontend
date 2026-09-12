@@ -13,6 +13,7 @@ export interface ExerciseDraft {
   environment?: string;
   submission_id?: string;
   submission_unknown?: boolean;
+  attempt_id?: string;
 }
 
 export interface ExerciseData {
@@ -73,8 +74,10 @@ export interface LearningUnit {
 }
 export interface RoomEnvelope {
   unit: LearningUnit;
+  review_available?: boolean;
   progress: {
     revision: number;
+    review_id?: string | null;
     state: Record<string, any>;
     status: "new" | "in_progress" | "completed" | "skipped";
     result: null | { kind: "introduced" | "solved" };
@@ -90,6 +93,8 @@ export interface LearningRoomsView {
   saving: boolean;
   completing: boolean;
   completionPending: boolean;
+  reviewStarting: boolean;
+  reviewPending: boolean;
   conflict: boolean;
   error: string;
   emptyReason: "completed" | "unavailable" | "prerequisites" | null;

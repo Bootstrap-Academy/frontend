@@ -2287,7 +2287,7 @@ test("new signup requires explicit form confirmation and sends the current r2 ve
         }
         await vm.onclickSubmitForm();
         assert.equal(requests.length, 1);
-        assert.equal(requests[0].terms_version, "2026-09-r2");
+        assert.equal(requests[0].terms_version, "2026-09-r3");
         assert.equal(requests[0].age_confirmed, true);
         assert.equal(requests[0].email, "synthetic@example.invalid");
         assert(!Object.hasOwn(requests[0], "termsAndConditions"));

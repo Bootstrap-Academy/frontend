@@ -1,8 +1,7 @@
 <!--
   The heart counter in the navigation bar. The API counts half hearts
   (`hearts_max` is 6), the interface shows whole hearts drawn in halves, which
-  is the unit the terms and conditions use: three hearts, half a heart per quiz
-  or matching attempt, one heart per coding challenge.
+  is the unit the interface uses: three hearts, one heart per incorrect solution.
 -->
 <template>
   <div class="group flex items-center gap-2" @click="gotoSubscription()">

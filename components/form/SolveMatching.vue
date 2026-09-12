@@ -111,22 +111,21 @@
         </InputBtn>
 
         <!--
-          The half heart is only drawn on the button, which does not say what
-          it costs. The caption states the price of an attempt in words.
+          The caption explains when a whole heart is charged.
         -->
         <template v-if="!data?.solved && user?.id != data?.creator && !isPremium">
-          <InputBtnWithHeart
+          <InputBtn
             class="mx-auto block w-full max-w-md"
             :loading="formSubmitting"
             @click="onclickSubmitForm()"
             iconRight
-            :icon="HalfHeart"
+            :icon="FullHeart"
           >
             {{ t("Buttons.SubmitAnswer") }}
-          </InputBtnWithHeart>
+          </InputBtn>
 
           <p class="mx-auto mt-2 max-w-md text-center text-xs text-body">
-            {{ t("Body.AttemptCostsHalfHeart") }}
+            {{ t("Body.WrongAnswerCostsOneHeart") }}
           </p>
         </template>
 
@@ -153,7 +152,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
-import HalfHeart from "../svg/HalfHeart.vue";
+import FullHeart from "../svg/FullHeart.vue";
 
 const props = defineProps({
   data: { type: Object as PropType<any>, default: null },

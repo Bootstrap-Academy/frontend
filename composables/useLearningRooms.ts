@@ -62,6 +62,7 @@ export function useLearningRooms() {
     changed: (value) => {
       view.value = value;
     },
+    checkpoint: () => preserve(lastUserId, true),
   });
   function preserve(userId: string, required = false) {
     const saved = data.recovery();
@@ -109,7 +110,8 @@ export function useLearningRooms() {
         if (!alive || ticket !== epoch || next !== owner.value) return;
         await data.start(
           enabled.value,
-          typeof route.query.path === "string" ? route.query.path : undefined
+          typeof route.query.path === "string" ? route.query.path : undefined,
+          !!saved
         );
         if (!alive || ticket !== epoch || next !== owner.value) return;
         if (view.value?.status !== "ready") {

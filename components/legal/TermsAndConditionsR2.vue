@@ -37,8 +37,7 @@
       Verträge gelten weiterhin die damals vereinbarten Unterlagen.
     </p>
     <p class="mt-card">
-      <a href="/docs/terms-and-conditions-2026-09-r2">Historische AGB-Fassung 2026-09-r2</a>
-      · <a href="/docs/terms-and-conditions-2026-09-r1">Historische AGB-Fassung 2026-09-r1</a>
+      <a href="/docs/terms-and-conditions-2026-09-r1">Historische AGB-Fassung 2026-09-r1</a>
     </p>
 
     <article>
@@ -479,10 +478,10 @@
       <h2>9. Herzen</h2>
       <p>
         9.1 Herzen sind ein Spielelement. Jedes Nutzerkonto hat höchstens drei Herzen; angezeigt
-        werden sie in halben und ganzen Herzen. Nur bei einer falschen Lösung in einem Quiz, einer
-        Zuordnungsaufgabe oder einer Coding-Challenge wird ein ganzes Herz abgezogen. Richtige
-        Lösungen sind kostenlos. Bei Coding-Challenges erfolgt der Abzug erst nach der Auswertung.
-        Für Aufgaben, die du selbst erstellt hast, und mit Premium (Ziffer 8.1) werden keine Herzen
+        werden sie in halben und ganzen Herzen. Für jeden Lösungsversuch bei einem Quiz oder einer
+        Zuordnungsaufgabe wird ein halbes Herz abgezogen, für jeden Lösungsversuch bei einer
+        Coding-Challenge ein ganzes Herz – unabhängig davon, ob die Lösung richtig ist. Für
+        Aufgaben, die du selbst erstellt hast, und mit Premium (Ziffer 8.1) werden keine Herzen
         abgezogen. Ohne ausreichende Herzen kannst du diese Aufgaben erst wieder bearbeiten, wenn
         deine Herzen aufgefüllt sind.
       </p>
@@ -1152,7 +1151,7 @@
     </article>
 
     <article>
-      <h2>Fassung: 2026-09-r3</h2>
+      <h2>Fassung: 2026-09-r2</h2>
     </article>
   </main>
 </template>

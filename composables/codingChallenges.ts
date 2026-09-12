@@ -258,11 +258,40 @@ export async function createSubmission(challengeId: any, codingChallengeId: any,
 }
 
 export async function getSubmissions(challengeId: any, codingChallengeId: any) {
+  const user = useUser();
+  const session = useSession();
+  const owner = user.value?.id;
+  const sessionId = session.value?.id;
+  const current = () => user.value?.id === owner && session.value?.id === sessionId;
   try {
     const res = await GET(
       `/challenges/tasks/${challengeId}/coding_challenges/${codingChallengeId}/submissions`
     );
+    if (!current()) return [null, new Error("Session changed")];
     const submissions = useCodingSubmissions();
+    const previous = new Map(
+      (submissions.value || []).map((item: any) => [
+        item.id,
+        { verdict: item.result?.verdict, pending: item.hearts_pending },
+      ])
+    );
+    const newVerdict =
+      Array.isArray(res) &&
+      res.some(
+        (item: any) =>
+          item.result?.verdict &&
+          (previous.get(item.id)?.verdict !== item.result.verdict ||
+            (previous.get(item.id)?.pending === true && item.hearts_pending === false))
+      );
+    if (newVerdict && owner) {
+      try {
+        const hearts: any = await GET(`/shop/hearts/${encodeURIComponent(owner)}`);
+        if (current() && Number.isFinite(hearts?.hearts)) useHeartInfo().value = hearts;
+      } catch {
+        // A failed balance read cannot hide or repeat a confirmed code result.
+      }
+    }
+    if (!current()) return [null, new Error("Session changed")];
     submissions.value = res ?? [];
     return [res, null];
   } catch (error: any) {

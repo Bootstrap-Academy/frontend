@@ -48,6 +48,8 @@
             exercisePosting ||
             view.saving ||
             view.completing ||
+            view.reviewStarting ||
+            view.reviewPending ||
             view.conflict ||
             view.completionPending
           "
@@ -69,7 +71,11 @@
           </button>
         </div>
       </section>
-      <section v-else-if="view.error && !reauthRequired" class="room-message" role="alert">
+      <section
+        v-else-if="view.error && !reauthRequired && !view.reviewPending"
+        class="room-message"
+        role="alert"
+      >
         <p>{{ t(`LearningRooms.${view.error}`) }}</p>
         <button v-if="view.error === 'Session'" type="button" @click="reauthenticate">
           {{ t("LearningRooms.SignIn") }}
@@ -81,7 +87,19 @@
           {{ t("LearningRooms.SaveAgain") }}
         </button>
       </section>
-      <article v-if="view.room" class="learning-room">
+      <section v-if="view.reviewStarting || view.reviewPending" class="room-state" role="status">
+        <p>
+          {{ t(view.reviewStarting ? "LearningRooms.Loading" : "LearningRooms.ReviewStartError") }}
+        </p>
+        <button
+          v-if="!view.reviewStarting && !view.conflict"
+          type="button"
+          @click="data.retryReview()"
+        >
+          {{ t("LearningRooms.Retry") }}
+        </button>
+      </section>
+      <article v-else-if="view.room" class="learning-room">
         <div class="room-heading">
           <h1>{{ localized(view.room.unit.title) }}</h1>
         </div>
@@ -127,12 +145,13 @@
           :content="content"
           :state="view.draft"
           :request="request"
+          :review-id="view.room.progress.review_id || undefined"
           :save="data.save"
           :user-id="user?.id || ''"
           :disabled="locked"
           @change="edit"
           @posting="exercisePosting = $event"
-          @complete="complete"
+          @complete="completeExercise"
           @skip="advance"
         />
         <footer v-if="!finished && view.room.unit.room !== 'exercise'" class="room-footer">
@@ -147,17 +166,9 @@
         </footer>
       </article>
       <section v-else class="room-state">
-        <h1>
-          {{
-            t(
-              view.emptyReason === "completed"
-                ? "LearningRooms.PathDone"
-                : "LearningRooms.NoNextExercise"
-            )
-          }}
-        </h1>
+        <h1>{{ t("LearningRooms.NoNextExercise") }}</h1>
         <p>{{ t("LearningRooms.PathDoneBody") }}</p>
-        <NuxtLink to="/dashboard" class="primary-link">{{ t("LearningRooms.Back") }}</NuxtLink>
+        <button type="button" @click="data.next()">{{ t("LearningRooms.Retry") }}</button>
       </section>
     </template>
   </main>
@@ -205,7 +216,10 @@ watch(
   },
   { flush: "sync" }
 );
-const roomKey = computed(() => `${sessionRevision.value}:${view.value?.room?.unit.id || ""}`);
+const roomKey = computed(
+  () =>
+    `${sessionRevision.value}:${view.value?.room?.unit.id || ""}:${view.value?.room?.progress.review_id || "initial"}`
+);
 watch(
   roomKey,
   () => {
@@ -215,6 +229,9 @@ watch(
 );
 async function complete(answer: Record<string, any>) {
   await data.complete("complete", answer);
+}
+async function completeExercise(attemptId?: string) {
+  await data.complete("complete", undefined, attemptId);
 }
 async function advance() {
   if (exercisePosting.value) return;
@@ -228,7 +245,7 @@ async function changePath(path: string) {
 }
 onBeforeRouteLeave(async () => {
   if (!owner.value) return true;
-  if (exercisePosting.value) return false;
+  if (exercisePosting.value || view.value?.reviewStarting) return false;
   exerciseComponent.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict) return false;
   if (view.value?.dirty || view.value?.saving) return await data.save();
@@ -237,6 +254,8 @@ onBeforeRouteLeave(async () => {
 function beforeUnload(event: BeforeUnloadEvent) {
   if (
     !exercisePosting.value &&
+    !view.value?.reviewStarting &&
+    !view.value?.reviewPending &&
     !view.value?.dirty &&
     !view.value?.saving &&
     !view.value?.completionPending
