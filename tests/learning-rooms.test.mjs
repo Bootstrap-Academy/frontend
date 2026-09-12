@@ -270,11 +270,14 @@ function exerciseFixture(handler, options = {}) {
     maxPolls: 3,
     wait: async () => {},
     persistSubmission: options.persistSubmission || (async () => true),
+    heartsChanged: options.heartsChanged,
     changed: (next) => {
       view = next;
     },
     request: async (path, method = "GET", body) => {
       calls.push({ path, method, body });
+      if (path.startsWith("/shop/hearts/"))
+        return options.heartsRequest?.(path, method, body) ?? { hearts: 6 };
       if (path.startsWith("/shop/")) return { premium: false };
       if (path.endsWith("/environments")) return { python: {} };
       if (path.endsWith("/examples")) return [];
@@ -368,6 +371,192 @@ test("MC uses the existing boolean answer contract and keeps backend correctness
   await f.controller.submit({ answers: [true, false] });
   assert.equal(f.view.phase, "incorrect");
   assert.equal(f.view.result, null);
+});
+
+test("quiz and matching refresh server hearts after incorrect and correct attempts", async () => {
+  for (const [type, body] of [
+    ["multiple_choice", { answers: [true, false] }],
+    ["matching", { answer: [1, 0] }],
+  ]) {
+    let solved = false;
+    const updates = [];
+    const f = exerciseFixture(() => ({ solved }), {
+      heartsChanged: (info) => updates.push(info),
+      heartsRequest: (path, method) => {
+        assert.equal(path, "/shop/hearts/learner");
+        assert.equal(method, "GET");
+        return { hearts: solved ? 4 : 5, next_heart: 1234 };
+      },
+    });
+    await f.controller.load({ ...reference, type }, "learner");
+    assert.deepEqual(updates, []);
+    for (const correct of [false, true]) {
+      solved = correct;
+      await f.controller.submit(body);
+      await new Promise(setImmediate);
+      assert.equal(f.view.phase, correct ? "correct" : "incorrect", type);
+    }
+    assert.deepEqual(updates, [
+      { hearts: 5, next_heart: 1234 },
+      { hearts: 4, next_heart: 1234 },
+    ]);
+    assert.deepEqual(
+      f.calls
+        .filter(({ path, method }) => method === "POST" || path.startsWith("/shop/hearts/"))
+        .map(({ method }) => method),
+      ["POST", "GET", "POST", "GET"]
+    );
+  }
+});
+
+test("coding saves its submission before awaiting hearts and ignores another attempt until polling", async () => {
+  const hearts = deferred();
+  const verdict = deferred();
+  const updates = [];
+  const saved = [];
+  const f = exerciseFixture(
+    (path, method) => (method === "POST" ? { id: "mine" } : verdict.promise),
+    {
+      heartsChanged: (info) => updates.push(info),
+      heartsRequest: () => hearts.promise,
+      persistSubmission: async (unknown, id) => {
+        saved.push({ unknown, id });
+        return true;
+      },
+    }
+  );
+  await f.controller.load(reference, "learner");
+  let settled = false;
+  const submitted = f.controller.submit({ code: "print(1)", environment: "python" }).then(() => {
+    settled = true;
+  });
+  await new Promise(setImmediate);
+  assert.deepEqual(saved, [
+    { unknown: true, id: undefined },
+    { unknown: false, id: "mine" },
+  ]);
+  assert.equal(f.view.submissionId, "mine");
+  assert.equal(f.view.posting, true);
+  assert.notEqual(f.view.phase, "pending");
+  assert.equal(settled, false);
+  assert.deepEqual(updates, []);
+  await f.controller.submit({ code: "print(2)", environment: "python" });
+  assert.deepEqual(
+    f.calls.slice(-2).map(({ path, method }) => [path, method]),
+    [
+      ["/challenges/tasks/task-a/coding_challenges/code-a/submissions", "POST"],
+      ["/shop/hearts/learner", "GET"],
+    ]
+  );
+  hearts.resolve({ hearts: 4 });
+  await new Promise(setImmediate);
+  assert.deepEqual(updates, [{ hearts: 4 }]);
+  assert.equal(f.view.phase, "pending");
+  assert.equal(f.view.posting, false);
+  assert.equal(settled, false);
+  assert.equal(
+    f.calls.at(-1).path,
+    "/challenges/tasks/task-a/coding_challenges/code-a/submissions"
+  );
+  assert.equal(f.calls.at(-1).method, "GET");
+  verdict.resolve([{ id: "mine", result: { verdict: "OK" } }]);
+  await submitted;
+  assert.equal(f.view.phase, "correct");
+  assert.equal(f.calls.filter(({ method }) => method === "POST").length, 1);
+  assert.equal(f.calls.filter(({ path }) => path.startsWith("/shop/hearts/")).length, 1);
+});
+
+test("heart refresh errors stay separate from confirmed and uncertain submission outcomes", async () => {
+  for (const outcome of ["confirmed", "lost-response", "save-failed"]) {
+    const updates = [];
+    const markers = [];
+    const f = exerciseFixture(
+      () => {
+        if (outcome === "lost-response") throw new Error("lost POST response");
+        return { solved: true };
+      },
+      {
+        heartsChanged: (info) => updates.push(info),
+        heartsRequest: () => {
+          if (outcome === "confirmed") throw { statusCode: 503 };
+          return { hearts: 5 };
+        },
+        persistSubmission: async (unknown) => {
+          markers.push(unknown);
+          return outcome !== "save-failed";
+        },
+      }
+    );
+    await f.controller.load({ ...reference, type: "multiple_choice" }, "learner");
+    await f.controller.submit({ answers: [true] });
+    await new Promise(setImmediate);
+    assert.equal(f.view.phase, outcome === "confirmed" ? "correct" : "uncertain", outcome);
+    assert.equal(
+      f.view.error,
+      outcome === "confirmed" ? "" : outcome === "save-failed" ? "SaveError" : "Uncertain"
+    );
+    assert.deepEqual(markers, outcome === "confirmed" ? [true, false] : [true]);
+    assert.deepEqual(updates, outcome === "lost-response" ? [{ hearts: 5 }] : []);
+    await f.controller.submit({ answers: [true] });
+    assert.equal(
+      f.calls.filter(({ method }) => method === "POST").length,
+      outcome === "save-failed" ? 0 : 1
+    );
+    assert.equal(
+      f.calls.filter(({ path }) => path.startsWith("/shop/hearts/")).length,
+      outcome === "save-failed" ? 0 : 1
+    );
+  }
+});
+
+test("late heart responses are discarded after dispose or loading another session", async () => {
+  for (const change of ["dispose", "load"]) {
+    const hearts = deferred();
+    const updates = [];
+    const f = exerciseFixture(() => ({ solved: false }), {
+      heartsChanged: (info) => updates.push(info),
+      heartsRequest: () => hearts.promise,
+    });
+    const quiz = { ...reference, type: "multiple_choice" };
+    await f.controller.load(quiz, "learner");
+    const submitted = f.controller.submit({ answers: [true] });
+    await new Promise(setImmediate);
+    assert.equal(f.calls.filter(({ path }) => path === "/shop/hearts/learner").length, 1);
+    if (change === "dispose") {
+      f.controller.dispose();
+    } else {
+      await f.controller.load(quiz, "another-learner");
+      await f.controller.load(quiz, "learner");
+    }
+    hearts.resolve({ hearts: 5 });
+    await submitted;
+    assert.deepEqual(updates, [], change);
+  }
+});
+
+test("overlapping heart refreshes across loads preserve the newer attempt's balance", async () => {
+  const responses = [deferred(), deferred()];
+  const updates = [];
+  let requests = 0;
+  const f = exerciseFixture(() => ({ solved: false }), {
+    heartsChanged: (info) => updates.push(info),
+    heartsRequest: () => responses[requests++].promise,
+  });
+  const matching = { ...reference, type: "matching" };
+  await f.controller.load(matching, "learner");
+  const first = f.controller.submit({ answer: [1, 0] });
+  await new Promise(setImmediate);
+  await f.controller.load(matching, "learner");
+  const second = f.controller.submit({ answer: [0, 1] });
+  await new Promise(setImmediate);
+  assert.equal(requests, 2);
+  assert.equal(f.calls.filter(({ method }) => method === "POST").length, 2);
+  responses[1].resolve({ hearts: 4 });
+  await second;
+  assert.deepEqual(updates, [{ hearts: 4 }]);
+  responses[0].resolve({ hearts: 5 });
+  await first;
+  assert.deepEqual(updates, [{ hearts: 4 }]);
 });
 
 test("an unknown submission survives reload and requires an explicit new attempt", async () => {
