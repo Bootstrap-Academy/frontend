@@ -364,7 +364,7 @@ async function startPractice() {
   const requestedFocus = focus.value;
   practiceMessage.value = "";
   try {
-    const exercise = await data.loadPractice(requestedFocus || undefined);
+    const exercise = await data.loadPractice(requestedFocus || undefined, user.value?.id);
     if (
       !alive ||
       generation !== ownerGeneration ||

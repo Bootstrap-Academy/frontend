@@ -191,9 +191,10 @@ test("practice only uses available unsolved supported tasks and preserves awarde
     task({ type: "MATCHING" }),
     task({ type: "QUESTION" }),
     task({ task_id: "another-topic" }),
+    task({ id: "own-question", creator: "current-user" }),
     task(),
   ];
-  const selected = dashboardPractice(choices, new Set(["task-a"]));
+  const selected = dashboardPractice(choices, new Set(["task-a"]), "current-user");
   assert.equal(selected.id, "question-a");
   assert.equal(
     selected.route,
@@ -203,6 +204,10 @@ test("practice only uses available unsolved supported tasks and preserves awarde
   assert.equal(coding.route, "/challenges/QuizCodingChallenge-task-a?codingChallenge=question-a");
   assert.equal(dashboardPractice([task()], new Set(["another-topic"])), null);
   assert.equal(dashboardPractice([task({ enabled: undefined })]), null);
+  assert.equal(
+    dashboardPractice([task({ creator: "current-user" })], undefined, "current-user"),
+    null
+  );
 });
 
 test("explicit focus selects matching tasks and never silently changes the subject", async () => {
@@ -219,8 +224,10 @@ test("explicit focus selects matching tasks and never silently changes the subje
   assert.equal(await f.controller.loadPractice("programming"), null);
   assert.equal(f.view.practiceStatus, "ready");
   assert.equal(f.view.errors.practice, false);
-  candidates = [task()];
-  assert.equal((await f.controller.loadPractice("programming")).taskId, "task-a");
+  candidates = [task({ id: "own-question", creator: "current-user" }), task()];
+  const practice = await f.controller.loadPractice("programming", "current-user");
+  assert.equal(practice.taskId, "task-a");
+  assert.equal(practice.id, "question-a");
   assert.equal(await f.controller.loadPractice("missing"), null);
   assert.equal(f.view.practiceStatus, "error");
 });

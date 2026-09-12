@@ -143,12 +143,14 @@ function parseCourses(value: unknown): DashboardCourse[] {
 /** Existing solvers support these two direct routes without global skill state. */
 export function dashboardPractice(
   value: unknown,
-  taskIds?: ReadonlySet<string>
+  taskIds?: ReadonlySet<string>,
+  excludeCreatorId?: string
 ): DashboardPractice | null {
   const candidates = array(value);
   for (const value of candidates) {
     const row = object(value);
     if (row.enabled !== true || row.retired !== false || row.solved !== false) continue;
+    if (excludeCreatorId && row.creator === excludeCreatorId) continue;
     if (row.type !== "MULTIPLE_CHOICE_QUESTION" && row.type !== "CODING_CHALLENGE") continue;
     const id = text(row.id);
     const taskId = text(row.task_id);
@@ -242,7 +244,10 @@ export function createDashboardData(options: {
       return owner ? reload() : Promise.resolve();
     },
     reload,
-    async loadPractice(focusRootId?: string): Promise<DashboardPractice | null> {
+    async loadPractice(
+      focusRootId?: string,
+      excludeCreatorId?: string
+    ): Promise<DashboardPractice | null> {
       if (!alive || !owner || view.practiceStatus === "loading") return null;
       const ticket = generation;
       const practiceTicket = ++practiceGeneration;
@@ -278,7 +283,8 @@ export function createDashboardData(options: {
           taskIds?.size === 0
             ? []
             : await options.get("/challenges/subtasks?enabled=true&retired=false&solved=false"),
-          taskIds
+          taskIds,
+          excludeCreatorId
         );
         if (!alive || ticket !== generation || practiceTicket !== practiceGeneration) return null;
         view.practice = result;
