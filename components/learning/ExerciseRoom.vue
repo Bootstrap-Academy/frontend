@@ -184,9 +184,13 @@ const view = shallowRef<ExerciseView>({
 });
 const draft = ref<ExerciseDraft>({ code: props.content?.initial_code || "", ...props.state });
 const preparing = ref(false);
+const heartInfo = useHeartInfo();
 let alive = true;
 const controller = createLearningExercise({
   request: (...args) => props.request(...args),
+  heartsChanged: (info) => {
+    heartInfo.value = info;
+  },
   changed: (next) => {
     view.value = next;
     emit("posting", next.posting);

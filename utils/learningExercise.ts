@@ -31,6 +31,7 @@ export function createLearningExercise(options: {
   request: LearningRequest;
   changed: (view: ExerciseView) => void;
   persistSubmission: (unknown: boolean, id?: string) => Promise<boolean>;
+  heartsChanged?: (info: any) => void;
   wait?: () => Promise<void>;
   maxPolls?: number;
 }) {
@@ -53,10 +54,24 @@ export function createLearningExercise(options: {
   let sending = false;
   let dispatched = false;
   let checking = false;
+  let userId = "";
+  let heartRefresh = 0;
   const publish = () => options.changed({ ...view });
   const current = (ticket: number) => alive && ticket === generation;
   const wait = options.wait || (() => new Promise<void>((resolve) => setTimeout(resolve, 2000)));
   const maxPolls = options.maxPolls ?? 30;
+
+  async function refreshHearts(ticket: number) {
+    if (!current(ticket) || !options.heartsChanged) return;
+    const refresh = ++heartRefresh;
+    try {
+      const info = await options.request(`/shop/hearts/${segment(userId)}`);
+      if (current(ticket) && refresh === heartRefresh && Number.isFinite(info?.hearts))
+        options.heartsChanged(info);
+    } catch {
+      // A failed display refresh must not affect or repeat the submitted attempt.
+    }
+  }
 
   async function poll(ticket: number) {
     if (!current(ticket) || polling || !reference || !view.submissionId) return;
@@ -110,7 +125,7 @@ export function createLearningExercise(options: {
     },
     async load(
       next: ExerciseReference,
-      userId: string,
+      nextUserId: string,
       submissionId?: string,
       submissionUnknown = false
     ) {
@@ -120,6 +135,7 @@ export function createLearningExercise(options: {
       dispatched = false;
       checking = false;
       reference = next;
+      userId = nextUserId;
       view = { ...empty(), phase: "loading" };
       publish();
       try {
@@ -167,6 +183,7 @@ export function createLearningExercise(options: {
       const ticket = generation;
       const path = exercisePath(reference);
       const coding = reference.type === "coding";
+      let heartsRefreshed = Promise.resolve();
       sending = true;
       dispatched = false;
       view.phase = "preparing";
@@ -190,13 +207,21 @@ export function createLearningExercise(options: {
         dispatched = true;
         publish();
         // Exactly one mutation. Network failure must never replay a paid attempt.
-        const response = await options.request(
-          `${path}/${coding ? "submissions" : "attempts"}`,
-          "POST",
-          body
-        );
+        let response;
+        try {
+          response = await options.request(
+            `${path}/${coding ? "submissions" : "attempts"}`,
+            "POST",
+            body
+          );
+        } finally {
+          // Start immediately, but persist the submission ID before waiting.
+          // A lost response may still have cost hearts; read the server balance.
+          heartsRefreshed = refreshHearts(ticket);
+        }
         if (!current(ticket)) return;
-        view.posting = false;
+        // Keep room navigation locked until its shared counter is synchronized.
+        if (!options.heartsChanged) view.posting = false;
         if (coding) {
           if (!response?.id || typeof response.id !== "string")
             throw new Error("Unknown submission");
@@ -204,7 +229,9 @@ export function createLearningExercise(options: {
           view.phase = "preparing";
           publish();
           await options.persistSubmission(false, response.id);
+          await heartsRefreshed;
           if (!current(ticket)) return;
+          view.posting = false;
           view.phase = "pending";
           publish();
           await poll(ticket);
@@ -213,11 +240,14 @@ export function createLearningExercise(options: {
           view.phase = "preparing";
           publish();
           await options.persistSubmission(false);
+          await heartsRefreshed;
           if (!current(ticket)) return;
+          view.posting = false;
           view.phase = response.solved ? "correct" : "incorrect";
           publish();
         }
       } catch (error: any) {
+        await heartsRefreshed;
         if (!current(ticket)) return;
         view.posting = false;
         // A known 4xx refusal did not create an attempt; a lost/5xx response may have.
