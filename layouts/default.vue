@@ -17,7 +17,7 @@ export default {
       return authorized.value
         ? [
             {
-              label: "Links.Dashboard",
+              label: "CharacterDashboard.Nav",
               pathname: "/dashboard",
             },
             {

@@ -37,8 +37,8 @@
           class="mb-7 mt-10 md:mb-10 md:mt-14"
         />
 
-        <NuxtLink to="/profile">
-          <Btn>{{ $t("Links.GoToProfile") }}</Btn>
+        <NuxtLink to="/dashboard">
+          <Btn>{{ $t("CharacterDashboard.Nav") }}</Btn>
         </NuxtLink>
       </article>
 

@@ -237,7 +237,7 @@ export default defineComponent({
       } else if (!hasEmail.value) {
         router.push("/profile/edit");
       } else {
-        router.push(`/profile`);
+        router.push(`/dashboard`);
       }
     }
 

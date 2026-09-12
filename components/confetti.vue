@@ -28,8 +28,8 @@
               {{ t("Headings.CongratsAnimateText") }}
             </h6>
             <div class="flex w-full justify-end">
-              <NuxtLink @click="navigateToProfile()">
-                <Btn sm> Go To profile </Btn>
+              <NuxtLink to="/dashboard" @click="fnHideAnimation()">
+                <Btn sm>{{ t("CharacterDashboard.Nav") }}</Btn>
               </NuxtLink>
             </div>
           </section>
@@ -61,11 +61,6 @@ const { t } = useI18n();
 function fnHideAnimation() {
   showConfetti.value = false;
   boxInfo.value = false;
-}
-
-function navigateToProfile() {
-  navigateTo("/profile");
-  fnHideAnimation();
 }
 
 watch(

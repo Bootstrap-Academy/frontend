@@ -13,7 +13,7 @@
       </h1>
       <p class="text-heading-4 font-body mb-card">{{ t("Body.Hero") }}</p>
 
-      <NuxtLink :to="!!user ? '/profile' : '/auth/signup'">
+      <NuxtLink :to="!!user ? '/dashboard' : '/auth/signup'">
         <Btn :icon="ArrowRightIcon" icon-right secondary>
           {{ t("Buttons.GetStarted") }}
         </Btn>
