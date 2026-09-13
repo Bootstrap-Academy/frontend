@@ -22,20 +22,20 @@
       <div class="player-content">
         <article class="lesson-content">
           <p v-if="active.description" class="lesson-description">{{ active.description }}</p>
-          <CourseVideo
-            v-if="hasVideo"
+          <LearningLessonPlayer
+            v-if="hasVideo && lesson"
             :key="active.id"
-            :course="course"
-            :active-section="activeSection"
-            :active-lecture="active"
+            :lesson="lesson"
+            :locale="locale"
+            :legacy-video="{ course, lecture: active, section: activeSection }"
           />
           <CoursePractice
             :key="`${id}:${active.id}`"
             class="lesson-practice"
             source="course"
-            :source-id="id"
-            :section="active.sectionID"
-            :lecture="active.id"
+            :source-id="lesson?.legacy_practice?.course_id || id"
+            :section="lesson?.legacy_practice?.section_id || active.sectionID"
+            :lecture="lesson?.legacy_practice?.lecture_id || active.id"
             :skill-i-d="skillID"
             :sub-skill-i-d="subSkillID"
             :heading="copy.practice"
@@ -94,6 +94,8 @@
 
 <script setup lang="ts">
 import type { Course } from "~/types/courseTypes";
+import { useI18n } from "vue-i18n";
+import { legacyLectureLesson } from "~/utils/learningActivityAdapters";
 import {
   courseSteps,
   courseResumeStep,
@@ -109,6 +111,7 @@ const router = useRouter();
 const user = useUser();
 const session = useSession();
 const { copy } = useCourseExperienceCopy();
+const { locale } = useI18n();
 const course = ref<Course | null>(null);
 const loading = ref(true);
 const error = ref(false);
@@ -141,11 +144,18 @@ const activeSection = computed(() =>
 );
 const progress = computed(() => courseProgress(course.value));
 const hasVideo = computed(() => lectureHasVideo(active.value));
+const lesson = computed(() =>
+  course.value && active.value
+    ? legacyLectureLesson(course.value, active.value, activeSection.value)
+    : null
+);
 useHead(() => ({ title: active.value?.title || course.value?.title || copy.value.course }));
 let generation = 0;
 let alive = true;
 async function load() {
   const ticket = ++generation;
+  saving.value = false;
+  saveError.value = false;
   const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
   const current = () =>
     alive &&

@@ -182,7 +182,7 @@ function fixture(t, options = {}) {
   };
   const envelope = (revision = 0, state = {}) => ({
     unit: {
-      id: "unit",
+      id: options.unitId || "unit",
       path_id: "python-loops",
       room: "exercise",
       title: { de: "Code", en: "Code" },
@@ -258,7 +258,7 @@ function fixture(t, options = {}) {
         remote = envelope(init.body.expected_revision + 1, init.body.state);
         return remote;
       }
-      if (path.split("?")[0] === "/skills/rooms/unit") return remote;
+      if (path.split("?")[0] === `/skills/rooms/${options.unitId || "unit"}`) return remote;
       return {
         paths: [{ id: "python-loops", title: { de: "Python", en: "Python" } }],
         path: { id: "python-loops", title: { de: "Python", en: "Python" } },
@@ -267,7 +267,7 @@ function fixture(t, options = {}) {
     },
   };
   const api = scope.run(() =>
-    evaluate(composableSource, bindings, ["useLearningRooms"]).useLearningRooms()
+    evaluate(composableSource, bindings, ["useLearningRooms"]).useLearningRooms(options.roomOptions)
   );
   const dispose = () => {
     cleanups.splice(0).forEach((fn) => fn());
@@ -290,6 +290,48 @@ test("the actual composable preserves drafts and its editor request binding thro
   assert.equal(f.api.request.value, request);
   assert.equal(f.calls.filter(({ path }) => path === "/skills/rooms?continuous=true").length, 1);
   assert.equal(f.calls.filter(({ path }) => path === "/auth/session").length, 1);
+});
+
+test("composed activities keep pending A through a direct visit to B without touching legacy recovery", async (t) => {
+  const storage = new Map();
+  const legacy = fixture(t, { storage });
+  await settle();
+  legacy.api.edit({ code: "legacy draft", submission_unknown: true });
+  legacy.dispose();
+  const legacySaved = storage.get("academy-learning-recovery:A");
+  assert.ok(legacySaved);
+  const options = (unitId) => ({
+    storage,
+    unitId,
+    roomOptions: { selection: { courseId: "course-a", unitId }, syncLocation: false },
+  });
+  const a = fixture(t, options("activity-a"));
+  await settle();
+  assert.equal(a.api.view.value.room.unit.id, "activity-a");
+  a.api.edit({ code: "pending activity A", submission_unknown: true });
+  a.dispose();
+  const aKey = "academy-learning-recovery:activity:course-a:activity-a:A";
+  const pendingA = storage.get(aKey);
+  assert.ok(pendingA);
+  const b = fixture(t, options("activity-b"));
+  await settle();
+  assert.equal(b.api.view.value.room.unit.id, "activity-b");
+  assert.deepEqual(b.api.view.value.draft, {});
+  b.dispose();
+  assert.equal(storage.get(aKey), pendingA);
+  assert.equal(storage.get("academy-learning-recovery:A"), legacySaved);
+  const restored = fixture(t, options("activity-a"));
+  await settle();
+  await settle();
+  assert.equal(restored.api.view.value.draft.code, "pending activity A");
+  assert.equal(restored.api.view.value.draft.submission_unknown, true);
+  assert.deepEqual(restored.navigation, []);
+  const beforeParent = [...storage];
+  const parent = fixture(t, { storage, roomOptions: { loadRoom: false, syncLocation: false } });
+  await settle();
+  assert.equal(parent.calls.length, 0);
+  parent.dispose();
+  assert.deepEqual([...storage], beforeParent);
 });
 
 test("failed refresh keeps a recoverable owned draft, clears stale login cookies, and hides it from another account", async (t) => {

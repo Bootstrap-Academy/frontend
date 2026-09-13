@@ -13,6 +13,8 @@ function envelope(value: any): RoomEnvelope {
       "file-workspace",
       "step-machine",
       "network-lab",
+      "video",
+      "custom",
     ].includes(value.unit.room) ||
     !Number.isInteger(value?.progress?.revision) ||
     !value?.progress?.state ||
