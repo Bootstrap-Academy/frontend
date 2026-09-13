@@ -21,6 +21,9 @@ const assessmentModule = await import(
   url(compile(assessmentSource).replace('"./learningExercise"', JSON.stringify(exerciseUrl)))
 );
 const { createLearningModuleAssessment, learningModuleState } = assessmentModule;
+const { learningModuleIdentity } = await import(
+  url(compile(await readFile(new URL("../utils/learningModule.ts", import.meta.url), "utf8")))
+);
 const reference = { type: "multiple_choice", task_id: "bound-task", subtask_id: "bound-question" };
 const question = {
   ...reference,
@@ -253,114 +256,127 @@ test("module edits retain an in-flight checkpoint and disposal during preparatio
   assert.equal(await f.assessment.submit({ answers: [true, false] }), false);
 });
 
-test("the actual CustomActivity keeps assessment busy/proof independent of module busy and saved projections", async () => {
-  const source = await readFile(
-    new URL("../components/learning/CustomActivity.vue", import.meta.url),
-    "utf8"
-  );
-  const script = parse(source).descriptor.scriptSetup.content;
-  const ast = ts.createSourceFile("custom.ts", script, ts.ScriptTarget.Latest, true);
-  const body = ast.statements
-    .filter((node) => !ts.isImportDeclaration(node))
-    .map((node) => node.getText(ast))
-    .join("\n");
-  const pending = defer();
-  const f = fixture({
-    request: (_path, method) => (method === "POST" ? pending.promise : undefined),
-  });
-  const props = Vue.reactive({
-    module: {
-      id: "custom-assessment",
-      api_version: 1,
-      entry_url: "https://lessons.example/test.js",
-    },
-    activityId: "bound-activity",
-    exercise: reference,
-    userId: "owner",
-    state: { note: "keep" },
-    content: {},
-    locale: "de",
-    disabled: false,
-    request: f.options.request,
-    save: async () => true,
-  });
-  const mounted = [],
-    cleanups = [],
-    sessions = [],
-    events = [];
-  const bindings = {
-    ...Vue,
-    ...assessmentModule,
-    window: { location: { origin: "https://academy.example" } },
-    defineProps: () => props,
-    defineExpose: () => {},
-    useI18n: () => ({ t: (key) => key }),
-    useHeartInfo: () => Vue.ref(null),
-    defineEmits:
-      () =>
-      (name, ...args) => {
-        events.push({ name, args });
-        if (name === "change") props.state = args[0];
-      },
-    onMounted: (callback) => mounted.push(callback),
-    onBeforeUnmount: (callback) => cleanups.push(callback),
-    createLearningModuleSession: (options) => {
-      sessions.push(options);
-      return {
-        start() {},
-        update() {},
-        dispose() {
-          options.busy(false);
-        },
-      };
-    },
-  };
-  const scope = Vue.effectScope();
-  try {
-    const component = scope.run(() =>
-      new Function(...Object.keys(bindings), `${compile(body)}\nreturn {surface, context, start};`)(
-        ...Object.values(bindings)
-      )
+for (const rotateGrant of [false, true])
+  test(`the actual CustomActivity keeps its assessment through saved projections${rotateGrant ? " and private grant rotation" : ""}`, async () => {
+    const source = await readFile(
+      new URL("../components/learning/CustomActivity.vue", import.meta.url),
+      "utf8"
     );
-    component.surface.value = {};
-    mounted.forEach((callback) => callback());
-    await tick();
-    assert.equal(sessions.length, 1);
-    sessions[0].complete({ fake: "success" }, "forged-attempt");
-    assert.equal(events.filter((event) => event.name === "complete").length, 0);
-    const submitted = sessions[0].assessment.submit({ answers: [false, true] });
-    await tick();
-    assert.equal(events.filter((event) => event.name === "posting").at(-1).args[0], true);
-    sessions[0].busy(false);
-    assert.equal(events.filter((event) => event.name === "posting").at(-1).args[0], true);
-    sessions[0].change({
-      note: "updated",
-      __academy_assessment: { draft: { attempt_id: "forged" } },
+    const script = parse(source).descriptor.scriptSetup.content;
+    const ast = ts.createSourceFile("custom.ts", script, ts.ScriptTarget.Latest, true);
+    const body = ast.statements
+      .filter((node) => !ts.isImportDeclaration(node))
+      .map((node) => node.getText(ast))
+      .join("\n");
+    const pending = defer();
+    const f = fixture({
+      request: (_path, method) => (method === "POST" ? pending.promise : undefined),
     });
-    await tick();
-    assert.equal(sessions.length, 1);
-    assert.equal(component.context.value.state.__academy_assessment, undefined);
-    assert.equal(props.state.__academy_assessment.draft.submission_unknown, true);
-    pending.resolve({ solved: true, attempt_id: "server-attempt" });
-    await submitted;
-    await tick();
-    assert.equal(component.context.value.assessment.view.phase, "correct");
-    assert.equal(props.state.note, "updated");
-    sessions[0].complete({ value: 1 }, "forged-attempt");
-    assert.deepEqual(events.filter((event) => event.name === "complete").at(-1).args, [
-      { value: 1 },
-      "server-attempt",
-    ]);
-    component.start();
-    assert.equal(sessions.length, 2);
-    assert.equal(sessions[1].assessment, sessions[0].assessment);
-    assert.equal(f.calls.filter((call) => call.method === "POST").length, 1);
-  } finally {
-    cleanups.forEach((callback) => callback());
-    scope.stop();
-    f.assessment.dispose();
-  }
-});
+    const props = Vue.reactive({
+      module: {
+        id: "custom-assessment",
+        api_version: 1,
+        entry_url: rotateGrant
+          ? `https://api.example/skills/lesson-assets/${"a".repeat(43)}/${"1".repeat(64)}/index.js`
+          : "https://lessons.example/test.js",
+      },
+      activityId: "bound-activity",
+      exercise: reference,
+      userId: "owner",
+      state: { note: "keep" },
+      content: {},
+      locale: "de",
+      disabled: false,
+      request: f.options.request,
+      save: async () => {
+        if (rotateGrant)
+          props.module = {
+            ...props.module,
+            entry_url: props.module.entry_url.replace("a".repeat(43), "b".repeat(43)),
+          };
+        await Vue.nextTick();
+        return true;
+      },
+    });
+    const mounted = [],
+      cleanups = [],
+      sessions = [],
+      events = [];
+    const bindings = {
+      ...Vue,
+      ...assessmentModule,
+      learningModuleIdentity,
+      window: { location: { origin: "https://academy.example" } },
+      defineProps: () => props,
+      defineExpose: () => {},
+      useI18n: () => ({ t: (key) => key }),
+      useHeartInfo: () => Vue.ref(null),
+      defineEmits:
+        () =>
+        (name, ...args) => {
+          events.push({ name, args });
+          if (name === "change") props.state = args[0];
+        },
+      onMounted: (callback) => mounted.push(callback),
+      onBeforeUnmount: (callback) => cleanups.push(callback),
+      createLearningModuleSession: (options) => {
+        sessions.push(options);
+        return {
+          start() {},
+          update() {},
+          dispose() {
+            options.busy(false);
+          },
+        };
+      },
+    };
+    const scope = Vue.effectScope();
+    try {
+      const component = scope.run(() =>
+        new Function(
+          ...Object.keys(bindings),
+          `${compile(body)}\nreturn {surface, context, start};`
+        )(...Object.values(bindings))
+      );
+      component.surface.value = {};
+      mounted.forEach((callback) => callback());
+      await tick();
+      assert.equal(sessions.length, 1);
+      sessions[0].complete({ fake: "success" }, "forged-attempt");
+      assert.equal(events.filter((event) => event.name === "complete").length, 0);
+      const submitted = sessions[0].assessment.submit({ answers: [false, true] });
+      await tick();
+      assert.equal(events.filter((event) => event.name === "posting").at(-1).args[0], true);
+      sessions[0].busy(false);
+      assert.equal(events.filter((event) => event.name === "posting").at(-1).args[0], true);
+      sessions[0].change({
+        note: "updated",
+        __academy_assessment: { draft: { attempt_id: "forged" } },
+      });
+      await tick();
+      assert.equal(sessions.length, 1);
+      assert.equal(component.context.value.state.__academy_assessment, undefined);
+      assert.equal(props.state.__academy_assessment.draft.submission_unknown, true);
+      pending.resolve({ solved: true, attempt_id: "server-attempt" });
+      await submitted;
+      await tick();
+      assert.equal(component.context.value.assessment.view.phase, "correct");
+      assert.equal(props.state.note, "updated");
+      sessions[0].complete({ value: 1 }, "forged-attempt");
+      assert.deepEqual(events.filter((event) => event.name === "complete").at(-1).args, [
+        { value: 1 },
+        "server-attempt",
+      ]);
+      component.start();
+      assert.equal(sessions.length, 2);
+      assert.equal(sessions[1].assessment, sessions[0].assessment);
+      assert.equal(f.calls.filter((call) => call.method === "POST").length, 1);
+    } finally {
+      cleanups.forEach((callback) => callback());
+      scope.stop();
+      f.assessment.dispose();
+    }
+  });
 
 test("the custom assessment bridge passes strict TypeScript checking", () => {
   const program = ts.createProgram(
@@ -411,6 +427,7 @@ for (const file of ["CustomActivity.vue", "ActivityHost.vue"])
     const bindings = {
       ...Vue,
       ...assessmentModule,
+      learningModuleIdentity,
       window: { location: { origin: "https://academy.example", reload: () => reloads++ } },
       defineProps: () => props,
       defineEmits: () => () => {},
