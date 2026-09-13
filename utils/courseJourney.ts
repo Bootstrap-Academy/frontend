@@ -46,3 +46,9 @@ export function courseProgress(course: Pick<Course, "sections"> | null | undefin
     percent: steps.length ? Math.round((completed / steps.length) * 100) : 0,
   };
 }
+export function courseRoomLocation(courseId: string, pathId: string, unitId?: string) {
+  return {
+    path: "/learn",
+    query: { course: courseId, path: pathId, ...(unitId ? { unit: unitId } : {}) },
+  };
+}

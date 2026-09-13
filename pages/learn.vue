@@ -1,7 +1,7 @@
 <template>
   <main class="learning-page">
     <header class="learning-heading">
-      <NuxtLink to="/dashboard" class="back-link">← {{ t("LearningRooms.Back") }}</NuxtLink>
+      <NuxtLink :to="backLink" class="back-link">← {{ backLabel }}</NuxtLink>
       <p v-if="view?.status === 'ready'" class="save-status" aria-live="polite">
         {{
           t(
@@ -34,7 +34,7 @@
     </section>
     <section v-else-if="view.status === 'error'" class="room-state" role="alert">
       <p>{{ t("LearningRooms.LoadError") }}</p>
-      <button type="button" @click="data.next(view.path?.id)">
+      <button type="button" @click="retry">
         {{ t("LearningRooms.Retry") }}
       </button>
     </section>
@@ -130,16 +130,6 @@
           @change="edit"
           @complete="complete"
         />
-        <LearningPercentageExplorer
-          v-else-if="view.room.unit.room === 'percentage-explorer'"
-          :key="roomKey"
-          :content="content"
-          :locale="locale"
-          :state="view.draft"
-          :disabled="locked"
-          @change="edit"
-          @complete="complete"
-        />
         <LearningGuidedLesson
           v-else-if="view.room.unit.room === 'guided-lesson'"
           :key="roomKey"
@@ -223,9 +213,23 @@ const {
   reauthenticate,
   recoveryError,
   recovering,
+  matchesLocation,
+  openLocation,
+  syncLocation,
+  retry,
 } = useLearningRooms();
 const language = computed(() => (locale.value.startsWith("de") ? "de" : "en"));
 const localized = (value?: LocalizedText) => value?.[language.value] || value?.en || "";
+const backLink = computed(() =>
+  view.value?.courseId ? `/courses/${encodeURIComponent(view.value.courseId)}` : "/dashboard"
+);
+const backLabel = computed(() =>
+  view.value?.courseId
+    ? language.value === "de"
+      ? "Zum Kurs"
+      : "Back to the course"
+    : t("LearningRooms.Back")
+);
 const content = computed(
   () => view.value?.room?.unit.content?.[language.value] || view.value?.room?.unit.content || {}
 );
@@ -274,20 +278,29 @@ async function completeExercise(attemptId?: string) {
 async function advance() {
   if (exercisePosting.value) return;
   exerciseComponent.value?.cancelPreparation();
-  if (view.value?.room) await data.next(view.value.path?.id, view.value.room.unit.id);
+  if (view.value?.room && (await data.next(view.value.path?.id, view.value.room.unit.id)))
+    await syncLocation();
 }
 async function changePath(path: string) {
   if (exercisePosting.value) return;
   exerciseComponent.value?.cancelPreparation();
-  if (await data.next(path)) await router.replace({ path: "/learn", query: { path } });
+  if (await data.next(path, undefined, true, { courseId: null }))
+    await router.replace({ path: "/learn", query: { path } });
 }
-onBeforeRouteLeave(async () => {
+async function canLeave() {
   if (!owner.value) return true;
   if (exercisePosting.value || view.value?.reviewStarting) return false;
   exerciseComponent.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict) return false;
   if (view.value?.dirty || view.value?.saving) return await data.save();
   return true;
+}
+onBeforeRouteLeave(canLeave);
+onBeforeRouteUpdate(async (to) => {
+  // Updating the URL after a successful selection is not another room load.
+  if (matchesLocation(to.query)) return true;
+  if (!(await canLeave())) return false;
+  return await openLocation(to.query);
 });
 function beforeUnload(event: BeforeUnloadEvent) {
   if (

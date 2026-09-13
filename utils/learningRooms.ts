@@ -6,7 +6,6 @@ function envelope(value: any): RoomEnvelope {
     !value?.unit?.id ||
     ![
       "loop-explorer",
-      "percentage-explorer",
       "guided-lesson",
       "exercise",
       "io-machine",
@@ -40,6 +39,7 @@ export function createLearningRooms(options: {
 }) {
   const empty = (): LearningRoomsView => ({
     status: "idle",
+    courseId: null,
     paths: [],
     path: null,
     room: null,
@@ -63,9 +63,19 @@ export function createLearningRooms(options: {
   let pendingComplete: any = null;
   let pendingReviewStart: any = null;
   let completionRequested = false;
+  let lastSelection: {
+    path?: string;
+    after?: string;
+    courseId?: string | null;
+    unitId?: string;
+  } = {};
   const id = options.id || (() => crypto.randomUUID());
   const publish = () => options.changed({ ...view, draft: copy(view.draft) });
   const current = (ticket: number) => alive && ticket === generation;
+  const unitUrl = (unitId: string, action = "", courseId = view.courseId) =>
+    `/skills/rooms/${encodeURIComponent(unitId)}${action}${
+      courseId ? `?course=${encodeURIComponent(courseId)}` : ""
+    }`;
 
   async function save(): Promise<boolean> {
     if (!alive || view.conflict || !view.room || view.status !== "ready") return false;
@@ -91,11 +101,7 @@ export function createLearningRooms(options: {
             version,
           };
           const response = envelope(
-            await options.request(
-              `/skills/rooms/${encodeURIComponent(unitId)}/state`,
-              "PUT",
-              pendingSave.body
-            )
+            await options.request(unitUrl(unitId, "/state"), "PUT", pendingSave.body)
           );
           if (!current(ticket)) return false;
           view.room = response;
@@ -138,7 +144,7 @@ export function createLearningRooms(options: {
       if (options.checkpoint && !options.checkpoint()) throw new Error("Recovery unavailable");
       const response = envelope(
         await options.request(
-          `/skills/rooms/${encodeURIComponent(pendingReviewStart.unitId)}/review`,
+          unitUrl(pendingReviewStart.unitId, "/review"),
           "POST",
           pendingReviewStart.body
         )
@@ -167,7 +173,12 @@ export function createLearningRooms(options: {
     }
   }
 
-  async function next(path?: string, after?: string, autoReview = true) {
+  async function next(
+    path?: string,
+    after?: string,
+    autoReview = true,
+    selection?: { courseId?: string | null; unitId?: string }
+  ) {
     if (
       !alive ||
       view.saving ||
@@ -178,6 +189,12 @@ export function createLearningRooms(options: {
     )
       return false;
     if (view.dirty && !(await save())) return false;
+    const courseId = selection
+      ? selection.courseId || null
+      : !path || path === view.path?.id
+        ? view.courseId
+        : null;
+    lastSelection = { path, after, courseId, unitId: selection?.unitId };
     const ticket = ++generation;
     view.status = "loading";
     view.error = "";
@@ -186,13 +203,21 @@ export function createLearningRooms(options: {
     query.set("continuous", "true");
     if (path) query.set("path", path);
     if (after) query.set("after", after);
+    if (courseId) query.set("course", courseId);
+    if (selection?.unitId) query.set("unit", selection.unitId);
     try {
       const response = await options.request(`/skills/rooms${query.size ? `?${query}` : ""}`);
       if (!current(ticket)) return false;
       if (!Array.isArray(response?.paths) || !response?.path?.id)
         throw new Error("Invalid learning paths");
+      if (
+        (courseId && path && response.path.id !== path) ||
+        (selection?.unitId && response.next?.unit?.id !== selection.unitId)
+      )
+        throw new Error("Selected course room was not returned");
       view.paths = response.paths;
       view.path = response.path;
+      view.courseId = courseId;
       view.room = response.next === null ? null : envelope(response.next);
       view.emptyReason = response.next === null ? response.empty_reason || "unavailable" : null;
       view.draft = copy(view.room?.progress.state || {});
@@ -232,6 +257,7 @@ export function createLearningRooms(options: {
       return copy({
         unitId: view.room.unit.id,
         pathId: view.room.unit.path_id,
+        courseId: view.courseId,
         revision: view.room.progress.revision,
         reviewId: view.room.progress.review_id || null,
         draft: view.draft,
@@ -254,10 +280,11 @@ export function createLearningRooms(options: {
       const ticket = generation;
       try {
         const response = envelope(
-          await options.request(`/skills/rooms/${encodeURIComponent(recovery.unitId)}`)
+          await options.request(unitUrl(recovery.unitId, "", recovery.courseId || null))
         );
         if (!current(ticket)) return false;
         view.room = response;
+        view.courseId = recovery.courseId || null;
         view.path = view.paths.find((path) => path.id === response.unit.path_id) || view.path;
         if (recovery.pendingReviewStart) {
           pendingReviewStart = copy(recovery.pendingReviewStart);
@@ -310,10 +337,16 @@ export function createLearningRooms(options: {
       pendingReviewStart = null;
       savePromise = null;
       completionRequested = false;
+      lastSelection = {};
       view = empty();
       publish();
     },
-    async start(enabled: boolean, path?: string, recovering = false) {
+    async start(
+      enabled: boolean,
+      path?: string,
+      recovering = false,
+      selection?: { courseId?: string | null; unitId?: string }
+    ) {
       const ticket = generation;
       if (!enabled) {
         view.status = "disabled";
@@ -330,7 +363,7 @@ export function createLearningRooms(options: {
           publish();
           return;
         }
-        await next(path, undefined, !recovering);
+        await next(path, undefined, !recovering, selection);
       } catch (error: any) {
         if (current(ticket)) {
           view.status =
@@ -359,6 +392,7 @@ export function createLearningRooms(options: {
     },
     save,
     next,
+    retry: () => next(lastSelection.path, lastSelection.after, true, lastSelection),
     retryReview: startReview,
     async complete(action: "complete" | "skip", answer?: Record<string, any>, attemptId?: string) {
       if (
@@ -389,11 +423,7 @@ export function createLearningRooms(options: {
         view.completionPending = true;
         publish();
         const response = envelope(
-          await options.request(
-            `/skills/rooms/${encodeURIComponent(view.room.unit.id)}/complete`,
-            "POST",
-            pendingComplete
-          )
+          await options.request(unitUrl(view.room.unit.id, "/complete"), "POST", pendingComplete)
         );
         if (!current(ticket)) return false;
         view.room = response;
@@ -430,9 +460,7 @@ export function createLearningRooms(options: {
       if (!view.room || !view.conflict) return;
       const ticket = generation;
       try {
-        const response = envelope(
-          await options.request(`/skills/rooms/${encodeURIComponent(view.room.unit.id)}`)
-        );
+        const response = envelope(await options.request(unitUrl(view.room.unit.id)));
         if (!current(ticket)) return;
         const sameReview =
           (view.room.progress.review_id || null) === (response.progress.review_id || null);

@@ -17,29 +17,13 @@
         }}
       </p>
       <ol>
-        <li
-          v-for="unit in chapter.units"
-          :key="unit.id"
-          :aria-current="plan.next?.unit.id === unit.id ? 'step' : undefined"
-        >
-          <span class="unit-symbol" aria-hidden="true">{{
-            unit.status === "completed" ? "✓" : unit.status === "skipped" ? "↷" : "·"
-          }}</span
-          ><span
-            >{{ localized(unit.title)
-            }}<small v-if="unit.result">{{
-              unit.result.kind === "solved"
-                ? en
-                  ? "Solved"
-                  : "Gelöst"
-                : en
-                  ? "Introduction completed"
-                  : "Einführung abgeschlossen"
-            }}</small
-            ><small v-else-if="unit.status === 'in_progress'">{{
-              en ? "In progress" : "In Arbeit"
-            }}</small></span
-          >
+        <li v-for="unit in chapter.units" :key="unit.id">
+          <CourseLearningUnit
+            :unit="unit"
+            :course-id="courseId"
+            :path-id="plan.path.id"
+            :current="plan.next?.unit.id === unit.id"
+          />
         </li>
       </ol>
     </details>
@@ -50,7 +34,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import type { CourseLearningPlan } from "~/types/courseTypes";
 import { learningChapterGroups } from "~/utils/learningChapters";
-const props = defineProps<{ plan: CourseLearningPlan }>();
+const props = defineProps<{ plan: CourseLearningPlan; courseId: string }>();
 const { locale } = useI18n();
 const en = computed(() => !locale.value.startsWith("de"));
 const localized = (title: { de: string; en: string }) => (en.value ? title.en : title.de);
@@ -90,25 +74,6 @@ ol {
   display: grid;
   gap: 0.5rem;
   padding-bottom: 1rem;
-}
-li {
-  display: flex;
-  gap: 0.65rem;
-  padding: 0.5rem 0;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-li[aria-current] {
-  color: var(--color-accent);
-}
-.unit-symbol {
-  width: 1rem;
-  flex-shrink: 0;
-}
-small {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--color-subheading);
 }
 summary:focus-visible {
   outline: 3px solid var(--color-accent);

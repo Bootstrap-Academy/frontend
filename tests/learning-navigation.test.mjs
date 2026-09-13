@@ -20,6 +20,9 @@ const setup = file.statements
 
 test("the actual room shell blocks an in-flight POST but allows a saved unknown or known pending result", async (t) => {
   let leave;
+  let update;
+  let locationMatches = false;
+  let locationOpens = 0;
   let nextCalls = 0;
   let cancelCalls = 0;
   let canSave = true;
@@ -61,9 +64,18 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
       owner,
       user: vue.ref({ id: "user-a" }),
       accessToken,
+      syncLocation: async () => {},
+      matchesLocation: () => locationMatches,
+      openLocation: async () => {
+        locationOpens++;
+        return true;
+      },
     }),
     onBeforeRouteLeave: (guard) => {
       leave = guard;
+    },
+    onBeforeRouteUpdate: (guard) => {
+      update = guard;
     },
     onMounted: () => {},
     onBeforeUnmount: () => {},
@@ -84,6 +96,12 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
   };
   page.exercisePosting.value = true;
   assert.equal(await leave({ path: "/dashboard" }), false);
+  assert.equal(await update({ query: { unit: "later" } }), false);
+  assert.equal(locationOpens, 0);
+  locationMatches = true;
+  assert.equal(await update({ query: { unit: "unit-a" } }), true);
+  assert.equal(locationOpens, 0);
+  locationMatches = false;
   await page.changePath("other-path");
   await page.advance();
   assert.equal(nextCalls, 0);
@@ -97,6 +115,8 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
   assert.equal(warned, true);
   page.exercisePosting.value = false;
   assert.equal(await leave({ path: "/dashboard" }), true);
+  assert.equal(await update({ query: { unit: "later" } }), true);
+  assert.equal(locationOpens, 1);
   assert.ok(cancelCalls > 0);
   warned = false;
   page.beforeUnload({
@@ -115,6 +135,8 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
   view.value.dirty = true;
   canSave = false;
   assert.equal(await leave({ path: "/auth/login" }), false);
+  assert.equal(await update({ query: { unit: "later" } }), false);
+  assert.equal(locationOpens, 1);
   page.exercisePosting.value = true;
   owner.value = null;
   assert.equal(await leave({ path: "/auth/login" }), true);
