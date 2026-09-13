@@ -3,7 +3,13 @@ import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
 import { mutex } from "~/composables/fetch";
 
-export function useLearningRooms() {
+export function useLearningRooms(
+  options: {
+    selection?: { path?: string; courseId: string; unitId: string };
+    syncLocation?: boolean;
+    loadRoom?: boolean;
+  } = {}
+) {
   const config = useRuntimeConfig().public;
   const user = useUser();
   const session = useSession();
@@ -23,13 +29,19 @@ export function useLearningRooms() {
   let alive = true;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let lastUserId = "";
+  const recoveryNamespace = options.selection
+    ? `activity:${encodeURIComponent(options.selection.courseId)}:${encodeURIComponent(options.selection.unitId)}`
+    : "";
   let recovery: ReturnType<typeof createLearningRecovery> | null = null;
   try {
-    recovery = createLearningRecovery(window.sessionStorage);
+    recovery = createLearningRecovery(window.sessionStorage, recoveryNamespace);
   } catch {
     /* Keep drafts mounted when tab storage is unavailable. */
   }
-  const memoryRecovery = useState<Record<string, any>>("learning-room-recovery", () => ({}));
+  const memoryRecovery = useState<Record<string, any>>(
+    `learning-room-recovery${recoveryNamespace ? `:${recoveryNamespace}` : ""}`,
+    () => ({})
+  );
   const snapshot = () => ({
     identity: owner.value,
     epoch,
@@ -81,6 +93,7 @@ export function useLearningRooms() {
     );
   }
   async function syncLocation() {
+    if (options.syncLocation === false) return;
     if (!view.value?.room || view.value.status !== "ready") return;
     const query = {
       path: view.value.room.unit.path_id,
@@ -135,9 +148,15 @@ export function useLearningRooms() {
       reauthRequired.value = false;
       recoveryError.value = false;
       lastUserId = user.value?.id || "";
-      if (!next) return;
+      if (!next || options.loadRoom === false) return;
       const requestedUser = lastUserId;
-      const saved = memoryRecovery.value[requestedUser] || recovery?.read(requestedUser);
+      const previous = memoryRecovery.value[requestedUser] || recovery?.read(requestedUser);
+      const saved =
+        !options.selection ||
+        (previous?.unitId === options.selection.unitId &&
+          previous?.courseId === options.selection.courseId)
+          ? previous
+          : null;
       recovering.value = !!saved;
       queueMicrotask(async () => {
         if (!alive || ticket !== epoch || next !== owner.value) return;
@@ -147,7 +166,7 @@ export function useLearningRooms() {
               courseId: saved.courseId || null,
               unitId: saved.courseId ? saved.unitId : undefined,
             }
-          : selection(route.query);
+          : options.selection || selection(route.query);
         await data.start(enabled.value, target.path, !!saved, target);
         if (!alive || ticket !== epoch || next !== owner.value) return;
         if (view.value?.status !== "ready") {

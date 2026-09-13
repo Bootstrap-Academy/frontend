@@ -151,9 +151,11 @@ export function createLearningTransport(options: {
 }
 
 export function createLearningRecovery(
-  storage: Pick<Storage, "getItem" | "setItem" | "removeItem">
+  storage: Pick<Storage, "getItem" | "setItem" | "removeItem">,
+  namespace = ""
 ) {
-  const key = (user: string) => `academy-learning-recovery:${user}`;
+  const key = (user: string) =>
+    `academy-learning-recovery:${namespace ? `${namespace}:` : ""}${user}`;
   return {
     save(user: string, state: unknown) {
       if (!user) throw new Error("Missing recovery owner");

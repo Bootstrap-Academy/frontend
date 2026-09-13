@@ -11,6 +11,7 @@ export class Course {
   image: string = "";
   language: string = "";
   learning_path_id: string | null = null;
+  has_explicit_curriculum: boolean = false;
   translations: Record<
     string,
     {

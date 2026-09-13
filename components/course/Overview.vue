@@ -28,6 +28,7 @@
 
     <InputBtn
       :loading="loading"
+      :disabled="isCourseAccessible && data?.has_explicit_curriculum && !curriculum"
       full
       @click="onclickEnroll"
       :class="{ 'pointer-events-none opacity-70': loading }"
@@ -82,6 +83,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import type { CourseLearningPlan } from "~/types/courseTypes";
+import type { CourseCurriculum } from "~/types/learningActivities";
 import {
   courseProgress,
   courseResumeStep,
@@ -91,6 +93,7 @@ import {
 
 const props = defineProps({
   learningPlan: { type: Object as PropType<CourseLearningPlan | null>, default: null },
+  curriculum: { type: Object as PropType<CourseCurriculum | null>, default: null },
   isCourseAccessible: { type: Boolean, default: false },
   data: { type: Object as PropType<any>, default: null },
   skillID: { type: String, default: null },
@@ -100,20 +103,33 @@ const { t } = useI18n();
 const { copy } = useCourseExperienceCopy();
 
 const link = computed(() =>
-  props.data?.learning_path_id
-    ? courseRoomLocation(props.data.id, props.data.learning_path_id)
-    : courseWatchLocation(props.data?.id || "", courseResumeStep(props.data), {
-        skillID: props.skillID || undefined,
-        subSkillID: props.subSkillID || undefined,
-      })
+  props.data?.has_explicit_curriculum
+    ? (() => {
+        const lesson =
+          props.curriculum?.lessons.find((item) => !item.completed) || props.curriculum?.lessons[0];
+        return lesson
+          ? `/courses/${encodeURIComponent(props.data.id)}/lessons/${encodeURIComponent(lesson.id)}`
+          : `/courses/${encodeURIComponent(props.data.id)}`;
+      })()
+    : props.data?.learning_path_id
+      ? courseRoomLocation(props.data.id, props.data.learning_path_id)
+      : courseWatchLocation(props.data?.id || "", courseResumeStep(props.data), {
+          skillID: props.skillID || undefined,
+          subSkillID: props.subSkillID || undefined,
+        })
 );
 const progress = computed(() =>
-  props.learningPlan
+  props.curriculum
     ? {
-        total: props.learningPlan.units.length,
-        completed: props.learningPlan.units.filter((unit) => unit.status === "completed").length,
+        total: props.curriculum.lessons.length,
+        completed: props.curriculum.lessons.filter((lesson) => lesson.completed).length,
       }
-    : courseProgress(props.data)
+    : props.learningPlan
+      ? {
+          total: props.learningPlan.units.length,
+          completed: props.learningPlan.units.filter((unit) => unit.status === "completed").length,
+        }
+      : courseProgress(props.data)
 );
 
 const loading = ref(false);

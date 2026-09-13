@@ -184,6 +184,7 @@ async function pageFixture(file, request) {
     computed: Vue.computed,
     useUser: () => user,
     useSession: () => session,
+    useI18n: () => ({ locale: Vue.ref("de") }),
     useRoute: () => route,
     useRouter: () => ({
       push: async (next) => navigation.push(next),

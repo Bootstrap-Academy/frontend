@@ -20,6 +20,7 @@
         <CourseOverview
           :data="course"
           :learning-plan="learningPlan"
+          :curriculum="curriculum"
           :is-course-accessible="accessible"
           :skill-i-d="skillID"
           :sub-skill-i-d="subSkillID"
@@ -36,7 +37,11 @@
           </ul>
         </section>
 
-        <section v-if="learningPlan" class="course-plan" aria-labelledby="course-plan-title">
+        <section v-if="curriculum" class="course-plan" aria-labelledby="course-plan-title">
+          <h2 id="course-plan-title">{{ copy.contents }}</h2>
+          <CourseCurriculumLessons :curriculum="curriculum" />
+        </section>
+        <section v-else-if="learningPlan" class="course-plan" aria-labelledby="course-plan-title">
           <h2 id="course-plan-title">{{ copy.contents }}</h2>
           <CourseLearningChapters
             v-if="learningPlan.path.chapters?.length"
@@ -60,7 +65,7 @@
         </section>
 
         <section
-          v-if="course.sections?.length"
+          v-if="course.sections?.length && !curriculum"
           class="course-plan"
           aria-labelledby="course-materials-title"
         >
@@ -71,10 +76,15 @@
             @watch="openLecture"
           />
         </section>
-        <p v-else-if="!course.learning_path_id" class="course-state">{{ copy.noLesson }}</p>
+        <p
+          v-else-if="!course.learning_path_id && !course.has_explicit_curriculum"
+          class="course-state"
+        >
+          {{ copy.noLesson }}
+        </p>
 
         <CoursePractice
-          v-if="accessible && course.sections?.length"
+          v-if="accessible && course.sections?.length && !curriculum"
           source="course"
           :source-id="id"
           :exclude-lecture-ids="courseSteps(course).map((step) => step.id)"
@@ -98,6 +108,7 @@
 
 <script setup lang="ts">
 import type { Course, CourseLearningPlan } from "~/types/courseTypes";
+import type { CourseCurriculum } from "~/types/learningActivities";
 import { courseSteps, courseWatchLocation } from "~/utils/courseJourney";
 
 definePageMeta({ middleware: ["auth"] });
@@ -109,6 +120,7 @@ const session = useSession();
 const originalCourse = ref<Course | null>(null);
 const course = computed(() => (originalCourse.value ? localizeCourse(originalCourse.value) : null));
 const learningPlan = ref<CourseLearningPlan | null>(null);
+const curriculum = ref<CourseCurriculum | null>(null);
 const loading = ref(true);
 const error = ref(false);
 const learningError = ref(false);
@@ -141,6 +153,7 @@ async function load() {
   error.value = learningError.value = false;
   originalCourse.value = null;
   learningPlan.value = null;
+  curriculum.value = null;
   accessible.value = false;
   try {
     let detail: Course;
@@ -156,7 +169,20 @@ async function load() {
     if (!current()) return;
     originalCourse.value = detail;
     accessible.value = owns;
-    if (owns && detail.learning_path_id) {
+    if (owns && detail.has_explicit_curriculum) {
+      try {
+        const outline = await GET(`/skills/courses/${encodeURIComponent(id.value)}/curriculum`);
+        if (
+          outline?.course_id !== id.value ||
+          outline.explicit !== true ||
+          !Array.isArray(outline.lessons)
+        )
+          throw new Error("Invalid curriculum");
+        if (current()) curriculum.value = outline;
+      } catch {
+        if (current()) learningError.value = true;
+      }
+    } else if (owns && detail.learning_path_id) {
       try {
         const plan = await GET(`/skills/courses/${encodeURIComponent(id.value)}/learning`);
         if (current()) learningPlan.value = plan;

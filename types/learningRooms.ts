@@ -80,12 +80,17 @@ export interface LearningUnit {
     | "bit-lab"
     | "file-workspace"
     | "step-machine"
-    | "network-lab";
+    | "network-lab"
+    | "video"
+    | "custom";
   content: Record<string, any>;
   teaches: string[];
   practices: string[];
   requires: string[];
   exercise?: ExerciseReference;
+  module?: import("./learningModule").LearningModuleDescriptor;
+  presentation?: { allow_skip?: boolean };
+  skip_allowed?: boolean;
 }
 export interface RoomEnvelope {
   unit: LearningUnit;

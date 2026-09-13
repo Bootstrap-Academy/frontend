@@ -2,6 +2,7 @@
   <component
     :is="unit.selectable === true ? NuxtLink : 'div'"
     :to="unit.selectable === true ? courseRoomLocation(courseId, pathId, unit.id) : undefined"
+    :prefetch="false"
     :class="['course-unit', { 'course-unit-link': unit.selectable === true }]"
     :aria-current="current ? 'step' : undefined"
   >

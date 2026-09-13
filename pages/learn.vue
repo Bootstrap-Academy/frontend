@@ -120,46 +120,12 @@
           </p>
           <button type="button" @click="advance">{{ t("LearningRooms.Next") }}</button>
         </div>
-        <LearningLoopExplorer
-          v-else-if="view.room.unit.room === 'loop-explorer'"
-          :key="roomKey"
-          :content="content"
-          :locale="locale"
-          :state="view.draft"
-          :disabled="locked"
-          @change="edit"
-          @complete="complete"
-        />
-        <LearningGuidedLesson
-          v-else-if="view.room.unit.room === 'guided-lesson'"
-          :key="roomKey"
-          :content="content"
-          :locale="locale"
-          :state="view.draft"
-          :disabled="locked"
-          @change="edit"
-          @complete="complete"
-        />
-        <LearningItLabRoom
-          v-else-if="
-            ['io-machine', 'bit-lab', 'file-workspace', 'step-machine', 'network-lab'].includes(
-              view.room.unit.room
-            )
-          "
-          :key="roomKey"
-          :content="content"
-          :locale="locale"
-          :state="view.draft"
-          :disabled="locked"
-          @change="edit"
-          @complete="complete"
-        />
-        <LearningExerciseRoom
+        <LearningLessonPlayer
           ref="exerciseComponent"
-          v-else-if="view.room.unit.room === 'exercise' && view.room.unit.exercise"
+          v-else-if="lesson"
           :key="roomKey"
-          :reference="view.room.unit.exercise"
-          :content="content"
+          :lesson="lesson"
+          :locale="locale"
           :state="view.draft"
           :request="request"
           :review-id="view.room.progress.review_id || undefined"
@@ -168,11 +134,11 @@
           :disabled="locked"
           @change="edit"
           @posting="exercisePosting = $event"
-          @complete="completeExercise"
+          @complete="completeActivity"
           @skip="advance"
         />
         <footer
-          v-if="!finished && view.room.unit.room !== 'exercise' && !projectLab"
+          v-if="!finished && lesson?.activities[0]?.presentation?.allow_skip"
           class="room-footer"
         >
           <button
@@ -197,6 +163,8 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import type { LocalizedText } from "~/types/learningRooms";
+import type { LearningActivityCompletion } from "~/types/learningActivities";
+import { roomLesson } from "~/utils/learningActivityAdapters";
 
 definePageMeta({ middleware: ["auth"] });
 const { t, locale } = useI18n();
@@ -230,16 +198,11 @@ const backLabel = computed(() =>
       : "Back to the course"
     : t("LearningRooms.Back")
 );
-const content = computed(
-  () => view.value?.room?.unit.content?.[language.value] || view.value?.room?.unit.content || {}
+const lesson = computed(() =>
+  view.value?.room ? roomLesson(view.value.room, view.value.courseId) : null
 );
 const activeChapter = computed(() =>
   view.value?.path?.chapters?.find((chapter) => chapter.id === view.value?.room?.unit.chapter_id)
-);
-const projectLab = computed(() =>
-  ["itf-project-recover", "itf-project-generator", "itf-project-publish"].includes(
-    view.value?.room?.unit.id || ""
-  )
 );
 const finished = computed(() =>
   ["completed", "skipped"].includes(view.value?.room?.progress.status || "")
@@ -269,11 +232,8 @@ watch(
   },
   { flush: "sync" }
 );
-async function complete(answer: Record<string, any>) {
-  await data.complete("complete", answer);
-}
-async function completeExercise(attemptId?: string) {
-  await data.complete("complete", undefined, attemptId);
+async function completeActivity(result: LearningActivityCompletion) {
+  await data.complete("complete", result.answer, result.attempt_id);
 }
 async function advance() {
   if (exercisePosting.value) return;
