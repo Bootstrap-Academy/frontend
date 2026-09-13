@@ -106,9 +106,14 @@ export function scrollMapToNode(
 
     if (rect) {
       const scale = panzoomInstance.getScale();
-      // Panzoom scales translation too. The early native scroll fallback may still be active.
-      const targetX = (rect.width * 0.5 + (mapRef.scrollLeft ?? 0)) / scale - cx;
-      const targetY = (rect.height * 0.5 + (mapRef.scrollTop ?? 0)) / scale - cy;
+      // Panzoom treats the outer SVG like HTML: a 50% origin and scaled translation.
+      const originX = (ref.ownerSVGElement?.clientWidth ?? 0) * 0.5;
+      const originY = (ref.ownerSVGElement?.clientHeight ?? 0) * 0.5;
+      // Keep the native scroll offset retained while Panzoom was still initializing.
+      const targetX =
+        (rect.width * 0.5 + (mapRef.scrollLeft ?? 0) - originX) / scale + originX - cx;
+      const targetY =
+        (rect.height * 0.5 + (mapRef.scrollTop ?? 0) - originY) / scale + originY - cy;
       panzoomInstance.pan(targetX, targetY, { animate: smooth });
       return;
     }

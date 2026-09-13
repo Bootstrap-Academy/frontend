@@ -17,7 +17,10 @@ const { scrollMapToNode } = await import(
 
 function fixture(width = 390, height = 820) {
   const calls = [];
-  const node = { getAttribute: (name) => ({ x: "840", y: "1260" })[name] };
+  const node = {
+    getAttribute: (name) => ({ x: "840", y: "1260" })[name],
+    ownerSVGElement: { clientWidth: 2700, clientHeight: 3300 },
+  };
   const map = [[node]];
   const viewport = {
     clientWidth: width,
@@ -41,9 +44,9 @@ for (const scale of [0.4, 1, 1.7, 3]) {
     scrollMapToNode(map, viewport, 120, 0, 0, true, panzoom);
     assert.equal(calls.length, 1);
     const { x, y, options } = calls[0];
-    // Its SVG transform is scale(s) translate(x,y), with origin 0 0.
-    assert(Math.abs((840 + 60 + x) * scale - viewport.clientWidth / 2) < 1e-9);
-    assert(Math.abs((1260 + 60 + y) * scale - viewport.clientHeight / 2) < 1e-9);
+    // The outer SVG is treated like HTML: scale(s) translate(x,y), origin 50% 50%.
+    assert(Math.abs((900 - 1350 + x) * scale + 1350 - viewport.clientWidth / 2) < 1e-9);
+    assert(Math.abs((1320 - 1650 + y) * scale + 1650 - viewport.clientHeight / 2) < 1e-9);
     assert.deepEqual(options, { animate: true });
   });
 }
@@ -58,8 +61,8 @@ for (const scale of [0.4, 1, 1.7, 3]) {
       pan: (x, y) => calls.push({ x, y }),
     });
     const { x, y } = calls[0];
-    assert(Math.abs((900 + x) * scale - viewport.scrollLeft - 195) < 1e-9);
-    assert(Math.abs((1320 + y) * scale - viewport.scrollTop - 410) < 1e-9);
+    assert(Math.abs((900 - 1350 + x) * scale + 1350 - viewport.scrollLeft - 195) < 1e-9);
+    assert(Math.abs((1320 - 1650 + y) * scale + 1650 - viewport.scrollTop - 410) < 1e-9);
     assert.equal(calls.length, 1);
   });
 }
