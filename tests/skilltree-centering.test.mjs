@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { parse } from "@vue/compiler-sfc";
+import { ref } from "vue";
 import ts from "typescript";
 
 const source = await readFile(new URL("../composables/skilltree.ts", import.meta.url), "utf8");
@@ -89,3 +91,77 @@ test("missing node or viewport during setup causes no movement", () => {
   scrollMapToNode(map, null, 120, 0, 0, true);
   assert.deepEqual(calls, []);
 });
+
+for (const page of ["pages/skill-tree/index.vue", "pages/skill-tree/[id]/index.vue"]) {
+  const sfc = parse(await readFile(new URL(`../${page}`, import.meta.url), "utf8"));
+  const tree = ts.createSourceFile(
+    "page.ts",
+    sfc.descriptor.script.content,
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let initialize;
+  function find(node) {
+    if (ts.isFunctionDeclaration(node) && node.name?.text === "initializePanzoom")
+      initialize = node;
+    ts.forEachChild(node, find);
+  }
+  find(tree);
+  const script = ts.transpileModule(initialize.getText(tree), {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  function setup() {
+    const timers = [];
+    const calls = [];
+    const instance = {};
+    const current = ref(null);
+    const schedule = (run) => timers.push(run);
+    const start = new Function(
+      "Panzoom",
+      "svgRef",
+      "mainRef",
+      "panzoomInstance",
+      "pendingTarget",
+      "setTimeout",
+      "nextTick",
+      "scrollToNode",
+      "handleWheel",
+      "MAX_SCALE",
+      "MIN_SCALE",
+      `${script}; return initializePanzoom;`
+    )(
+      () => {
+        schedule(() => calls.push("library initial reset"));
+        return instance;
+      },
+      { value: {} },
+      { value: { style: {}, addEventListener() {} } },
+      current,
+      { value: { row: 10, column: 10 } },
+      schedule,
+      (run) => run(),
+      (row, column, smooth) => calls.push({ row, column, smooth }),
+      () => {},
+      3,
+      0.4
+    );
+    return { start, current, instance, timers, calls };
+  }
+  test(`${page}: center only after the library has reset its initial pan`, () => {
+    const f = setup();
+    f.start();
+    assert.deepEqual(f.calls, []);
+    assert.equal(f.timers.length, 2);
+    for (const run of f.timers) run();
+    assert.deepEqual(f.calls, ["library initial reset", { row: 10, column: 10, smooth: false }]);
+  });
+  for (const replacement of [null, {}]) {
+    test(`${page}: a disposed or replaced instance cannot recenter later (${replacement === null ? "disposed" : "replaced"})`, () => {
+      const f = setup();
+      f.start();
+      f.current.value = replacement;
+      for (const run of f.timers) run();
+      assert.deepEqual(f.calls, ["library initial reset"]);
+    });
+  }
+}
