@@ -105,9 +105,10 @@ export function scrollMapToNode(
       typeof mapRef.getBoundingClientRect === "function" ? mapRef.getBoundingClientRect() : null;
 
     if (rect) {
-      const { scale } = panzoomInstance.getTransform();
-      const targetX = rect.width * 0.5 - cx * scale;
-      const targetY = rect.height * 0.5 - cy * scale;
+      const scale = panzoomInstance.getScale();
+      // Panzoom scales translation too. The early native scroll fallback may still be active.
+      const targetX = (rect.width * 0.5 + (mapRef.scrollLeft ?? 0)) / scale - cx;
+      const targetY = (rect.height * 0.5 + (mapRef.scrollTop ?? 0)) / scale - cy;
       panzoomInstance.pan(targetX, targetY, { animate: smooth });
       return;
     }
