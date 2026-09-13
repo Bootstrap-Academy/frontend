@@ -154,6 +154,8 @@ let generation = 0;
 let alive = true;
 async function load() {
   const ticket = ++generation;
+  saving.value = false;
+  saveError.value = false;
   const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
   const current = () =>
     alive &&

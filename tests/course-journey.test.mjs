@@ -165,7 +165,7 @@ for (const file of [
   });
 }
 
-async function pageFixture(file, request) {
+async function pageFixture(file, request, { reactiveWatches = false } = {}) {
   const Vue = await import("vue");
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
   const script = parse(source).descriptor.scriptSetup.content;
@@ -200,7 +200,7 @@ async function pageFixture(file, request) {
     }),
     useHead: () => {},
     definePageMeta: () => {},
-    watch: () => {},
+    watch: reactiveWatches ? Vue.watch : () => {},
     onMounted: () => {},
     onBeforeUnmount: () => {},
     onBeforeRouteLeave: () => {},
@@ -214,10 +214,15 @@ async function pageFixture(file, request) {
   const exports = file.endsWith("watch.vue")
     ? "{ load, course, error, saving, saveError, finishLecture, active }"
     : "{ load, course, error, accessible, learningPlan }";
-  return {
-    ...new Function(...Object.keys(bindings), `${compiled}\nreturn ${exports}`)(
+  const scope = Vue.effectScope();
+  const page = scope.run(() =>
+    new Function(...Object.keys(bindings), `${compiled}\nreturn ${exports}`)(
       ...Object.values(bindings)
-    ),
+    )
+  );
+  return {
+    ...page,
+    dispose: () => scope.stop(),
     user,
     session,
     route,
@@ -300,6 +305,44 @@ test("lost completion response is reconciled by a read, without a second award r
   assert.equal(writes, 1);
   assert.equal(f.saveError.value, false);
   assert.equal(f.course.value.sections[0].lectures[1].completed, true);
+});
+
+test("legacy watch releases an old owner's pending save without clearing the new owner's save", async (t) => {
+  const pending = [];
+  let owner = "user-a";
+  const f = await pageFixture(
+    "pages/courses/[id]/watch.vue",
+    async (path, method) => {
+      if (method === "GET") return { id: "python", title: owner, ...structuredClone(course) };
+      if (method === "PUT") return new Promise((resolve) => pending.push(resolve));
+      return true;
+    },
+    { reactiveWatches: true }
+  );
+  t.after(f.dispose);
+  await f.load();
+  const previousSave = f.finishLecture();
+  assert.equal(f.saving.value, true);
+  f.saveError.value = true;
+  owner = "user-b";
+  f.user.value = { id: owner };
+  f.session.value = { id: "session-b" };
+  await new Promise(setImmediate);
+  assert.equal(f.course.value.title, owner);
+  assert.equal(f.saving.value, false, "new owner does not inherit the old request's busy state");
+  assert.equal(f.saveError.value, false);
+
+  const currentSave = f.finishLecture();
+  assert.equal(f.saving.value, true);
+  pending[0](true);
+  await previousSave;
+  assert.equal(f.saving.value, true, "late old response cannot release the new owner's request");
+  assert.equal(f.active.value.id, "variables");
+  assert.equal(f.active.value.completed, false);
+  pending[1](true);
+  await currentSave;
+  assert.equal(f.saving.value, false);
+  assert.equal(f.active.value.id, "solution");
 });
 
 test("unattached historical course exercises stay accessible without duplicating lecture exercises", async () => {
