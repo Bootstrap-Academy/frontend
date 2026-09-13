@@ -75,6 +75,42 @@ export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
   return arr;
 }
 
+export function resolveInitialSkilltreeTarget(
+  nodes: { row: number; column: number }[],
+  preferred: { row: number; column: number } | null | undefined,
+  rows: number,
+  columns: number
+) {
+  const occupied = nodes.filter(
+    (node) =>
+      Number.isInteger(node.row) &&
+      Number.isInteger(node.column) &&
+      node.row >= 0 &&
+      node.column >= 0 &&
+      node.row < rows &&
+      node.column < columns
+  );
+  if (!occupied.length) return null;
+
+  const saved = occupied.find(
+    (node) => node.row === preferred?.row && node.column === preferred?.column
+  );
+  if (saved) return { row: saved.row, column: saved.column };
+
+  const centerRow =
+    (Math.min(...occupied.map((node) => node.row)) +
+      Math.max(...occupied.map((node) => node.row))) /
+    2;
+  const centerColumn =
+    (Math.min(...occupied.map((node) => node.column)) +
+      Math.max(...occupied.map((node) => node.column))) /
+    2;
+  const distance = (node: { row: number; column: number }) =>
+    (node.row - centerRow) ** 2 + (node.column - centerColumn) ** 2;
+  occupied.sort((a, b) => distance(a) - distance(b) || a.row - b.row || a.column - b.column);
+  return { row: occupied[0].row, column: occupied[0].column };
+}
+
 export function scrollMapToNode(
   map: any,
   mapRef: any,

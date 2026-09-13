@@ -372,10 +372,13 @@ export default {
           nextTick(() => {
             createPathways();
 
-            let row = nextNode.value.row;
-            let column = nextNode.value.column;
-
-            scrollToNode(row, column, false);
+            const target = resolveInitialSkilltreeTarget(
+              nodes,
+              nextNode.value,
+              totalRows.value,
+              totalColumns.value
+            );
+            if (target) scrollToNode(target.row, target.column, false);
             setupComplete.value = true;
           });
         }
