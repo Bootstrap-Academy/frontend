@@ -351,13 +351,17 @@ export default {
       });
 
       panzoomInstance.value = instance;
+      const initializedInstance = panzoomInstance.value;
       mainRef.value.addEventListener("wheel", handleWheel, { passive: false });
       mainRef.value.style.touchAction = "none";
 
       if (pendingTarget.value) {
         const { row, column } = pendingTarget.value;
         pendingTarget.value = null;
-        nextTick(() => scrollToNode(row, column, false));
+        // Panzoom first resets its initial pan in a timer; center after that reset.
+        setTimeout(() => {
+          if (panzoomInstance.value === initializedInstance) scrollToNode(row, column, false);
+        }, 0);
       }
     }
 
