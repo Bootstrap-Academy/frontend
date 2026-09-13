@@ -105,9 +105,15 @@ export function scrollMapToNode(
       typeof mapRef.getBoundingClientRect === "function" ? mapRef.getBoundingClientRect() : null;
 
     if (rect) {
-      const { scale } = panzoomInstance.getTransform();
-      const targetX = rect.width * 0.5 - cx * scale;
-      const targetY = rect.height * 0.5 - cy * scale;
+      const scale = panzoomInstance.getScale();
+      // Panzoom treats the outer SVG like HTML: a 50% origin and scaled translation.
+      const originX = (ref.ownerSVGElement?.clientWidth ?? 0) * 0.5;
+      const originY = (ref.ownerSVGElement?.clientHeight ?? 0) * 0.5;
+      // Keep the native scroll offset retained while Panzoom was still initializing.
+      const targetX =
+        (rect.width * 0.5 + (mapRef.scrollLeft ?? 0) - originX) / scale + originX - cx;
+      const targetY =
+        (rect.height * 0.5 + (mapRef.scrollTop ?? 0) - originY) / scale + originY - cy;
       panzoomInstance.pan(targetX, targetY, { animate: smooth });
       return;
     }
