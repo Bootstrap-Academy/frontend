@@ -21,6 +21,9 @@ const adapterUrl = url(
   compile(adapterSource).replaceAll('"./courseJourney"', JSON.stringify(journeyUrl))
 );
 const adapters = await import(adapterUrl);
+const { learningModuleIdentity } = await import(
+  url(compile(await readFile(new URL("../utils/learningModule.ts", import.meta.url), "utf8")))
+);
 const room = (id = "old-unit", kind = "loop-explorer") => ({
   unit: {
     id,
@@ -146,6 +149,7 @@ test("shared activity, room and module contracts pass strict TypeScript checking
 });
 
 function evaluateScript(source, bindings, exports) {
+  bindings = { learningModuleIdentity, ...bindings };
   const script = parse(source).descriptor.scriptSetup.content;
   const ast = ts.createSourceFile("component.ts", script, ts.ScriptTarget.Latest, true);
   const body = ast.statements
@@ -222,6 +226,91 @@ test("saving a room projection keeps the active renderer and its submission prep
     await tick();
     assert.equal(loads.length, 3);
     assert.equal(cancellations, 2);
+  } finally {
+    scope.stop();
+  }
+});
+
+test("the actual activity host retains private code across grant rotation but remounts changed artifacts", async () => {
+  const source = await readFile(
+    new URL("../components/learning/ActivityHost.vue", import.meta.url),
+    "utf8"
+  );
+  const original = room("custom-unit", "custom");
+  original.unit.module = {
+    id: "custom-module",
+    api_version: 1,
+    entry_url: `https://api.example/skills/lesson-assets/${"a".repeat(43)}/${"1".repeat(64)}/index.js`,
+  };
+  const props = Vue.reactive({
+    activity: adapters.roomActivity(original),
+    state: { own: "saved" },
+    locale: "de",
+    disabled: false,
+    userId: "owner-a",
+  });
+  const scope = Vue.effectScope();
+  const loads = [],
+    changes = [];
+  let cancelled = 0;
+  try {
+    const component = scope.run(() =>
+      evaluateScript(
+        source,
+        {
+          ...Vue,
+          ...adapters,
+          defineProps: () => props,
+          defineEmits: () => (name, value) => {
+            if (name === "change") changes.push(value);
+          },
+          defineExpose: () => {},
+          onErrorCaptured: () => {},
+          onBeforeUnmount: () => {},
+          loadActivityRenderer: async (name) => {
+            loads.push(name);
+            return { name };
+          },
+        },
+        "renderer,instance,generation,listeners"
+      )
+    );
+    await tick();
+    const previous = component.listeners.value;
+    component.instance.value = { cancelPreparation: () => cancelled++ };
+    props.activity = {
+      ...props.activity,
+      module: {
+        ...props.activity.module,
+        entry_url: original.unit.module.entry_url.replace("a".repeat(43), "b".repeat(43)),
+      },
+    };
+    props.state = { own: "checkpoint" };
+    await tick();
+    assert.equal(component.listeners.value, previous);
+    assert.equal(component.generation.value, 1);
+    assert.equal(cancelled, 0);
+    assert.deepEqual(loads, ["custom"]);
+    previous.change({ own: "still current" });
+    assert.equal(changes.length, 1);
+    props.activity = {
+      ...props.activity,
+      module: {
+        ...props.activity.module,
+        entry_url: props.activity.module.entry_url.replace("1".repeat(64), "2".repeat(64)),
+      },
+    };
+    await tick();
+    assert.equal(component.generation.value, 2);
+    assert.equal(cancelled, 1);
+    previous.change({ foreign: "old code" });
+    assert.equal(changes.length, 1);
+    props.userId = "owner-b";
+    await tick();
+    assert.equal(component.generation.value, 3);
+    props.reviewId = "another-review";
+    await tick();
+    assert.equal(component.generation.value, 4);
   } finally {
     scope.stop();
   }

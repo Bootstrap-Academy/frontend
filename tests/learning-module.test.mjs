@@ -9,7 +9,7 @@ const source = await readFile(new URL("../utils/learningModule.ts", import.meta.
 const compiled = ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
 }).outputText;
-const { createLearningModuleSession, learningModuleUrl } = await import(
+const { createLearningModuleSession, learningModuleUrl, learningModuleIdentity } = await import(
   `data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`
 );
 const assessmentSource = await readFile(
@@ -65,6 +65,7 @@ test("a saved room projection updates the mounted custom module without restarti
   const bindings = {
     ...Vue,
     ...assessmentModule,
+    learningModuleIdentity,
     window: { location: { origin: "https://bootstrap.example" } },
     defineProps: () => props,
     defineEmits: () => () => {},
@@ -106,15 +107,56 @@ test("a saved room projection updates the mounted custom module without restarti
     assert.equal(sessions.length, 1);
     assert.equal(sessions[0].disposed, false);
     assert.equal(sessions[0].updates.at(-1).state.answer, "saved");
-    props.reviewId = "new-review";
+    props.module = { ...descriptor, entry_url: "https://lessons.example/replaced.js" };
     await Vue.nextTick();
     assert.equal(sessions.length, 2);
     assert.equal(sessions[0].disposed, true);
+    props.reviewId = "new-review";
+    await Vue.nextTick();
+    assert.equal(sessions.length, 3);
+    assert.equal(sessions[1].disposed, true);
   } finally {
     cleanups.forEach((callback) => callback());
     scope.stop();
   }
 });
+
+test("only canonical private grant rotation preserves module identity", () => {
+  const grant = "a".repeat(43),
+    artifact = "1".repeat(64);
+  const entry = `https://api.example/skills/lesson-assets/${grant}/${artifact}/nested/index.js`;
+  const identity = (entry_url, extra = {}) =>
+    learningModuleIdentity({ ...descriptor, entry_url, ...extra });
+  assert.equal(identity(entry), identity(entry.replace(grant, "b".repeat(43))));
+  for (const changed of [
+    entry.replace(artifact, "2".repeat(64)),
+    entry.replace("api.example", "other.example"),
+    entry.replace("index.js", "other.js"),
+  ])
+    assert.notEqual(identity(entry), identity(changed));
+  assert.notEqual(identity(entry), identity(entry, { id: "other-module" }));
+  assert.notEqual(identity(entry), identity(entry, { api_version: 2 }));
+  for (const transform of [
+    (value) => value.replace("https:", "http:"),
+    (value) => value.replace("/skills/", "/other/"),
+    (value) => value.replace(grant, grant.slice(1)),
+    (value) => value.replace(artifact, "invalid"),
+    (value) => value + "?version=1",
+    (value) => value + "#part",
+    (value) => value.replace("/nested/", "/%2F/"),
+    (value) => value.replace("/nested/", "/%00/"),
+    (value) => value.replace("api.example", "name@api.example"),
+  ]) {
+    const original = transform(entry);
+    const changed = original.replace(/a{42,43}/, "b".repeat(43));
+    assert.notEqual(identity(original), identity(changed));
+  }
+  assert.notEqual(
+    identity("https://modules.example/one.js"),
+    identity("https://modules.example/two.js")
+  );
+});
+
 const deferred = () => {
   let resolve;
   const promise = new Promise((done) => (resolve = done));

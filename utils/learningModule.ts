@@ -19,6 +19,36 @@ function dataSnapshot(value: LearningModuleData): LearningModuleData {
   return snapshot(value);
 }
 
+/** A private asset grant authorizes transport; it does not identify different module code. */
+export function learningModuleIdentity(descriptor?: LearningModuleDescriptor): string {
+  if (!descriptor) return "";
+  let entry: string | string[] = descriptor.entry_url;
+  try {
+    const url = new URL(descriptor.entry_url);
+    const match = url.pathname.match(
+      /^\/skills\/lesson-assets\/[A-Za-z0-9_-]{43}\/([a-f0-9]{64})\/(.+)$/
+    );
+    if (
+      url.protocol === "https:" &&
+      url.href === descriptor.entry_url &&
+      !url.username &&
+      !url.password &&
+      !url.search &&
+      !url.hash &&
+      match &&
+      match[2].split("/").every((part) => {
+        const decoded = decodeURIComponent(part);
+        return decoded && !decoded.startsWith(".") && !/[\\/\u0000-\u001f\u007f]/.test(decoded);
+      })
+    ) {
+      entry = [url.origin, match[1], match[2]];
+    }
+  } catch {
+    // Unrecognized URLs retain their existing exact identity and loader validation.
+  }
+  return JSON.stringify([descriptor.id, descriptor.api_version, entry]);
+}
+
 /** Registry descriptors are server-issued. Never accept a URL from route/query input. */
 export function learningModuleUrl(descriptor: LearningModuleDescriptor, origin: string): string {
   if (descriptor.api_version !== 1 || !/^[a-z0-9][a-z0-9-]{0,79}$/.test(descriptor.id)) {

@@ -22,7 +22,11 @@ import type {
   LearningModuleDescriptor,
 } from "~/types/learningModule";
 import type { ExerciseReference, LearningRequest } from "~/types/learningRooms";
-import { createLearningModuleSession, type LearningModuleStatus } from "~/utils/learningModule";
+import {
+  createLearningModuleSession,
+  learningModuleIdentity,
+  type LearningModuleStatus,
+} from "~/utils/learningModule";
 import {
   createLearningModuleAssessment,
   learningModuleState,
@@ -154,9 +158,7 @@ function initialize() {
 
 watch(
   [
-    () => props.module.id,
-    () => props.module.entry_url,
-    () => props.module.api_version,
+    () => learningModuleIdentity(props.module),
     () => props.activityId,
     () => props.reviewId,
     () => props.userId,

@@ -25,6 +25,7 @@ import type {
 } from "~/types/learningActivities";
 import type { LearningRequest } from "~/types/learningRooms";
 import { activityContent, activityRenderer } from "~/utils/learningActivityAdapters";
+import { learningModuleIdentity } from "~/utils/learningModule";
 import { loadActivityRenderer } from "./activityRegistry";
 
 const props = defineProps<{
@@ -182,9 +183,7 @@ watch(
   [
     () => props.activity.id,
     () => kind.value,
-    () => props.activity.module?.id,
-    () => props.activity.module?.api_version,
-    () => props.activity.module?.entry_url,
+    () => learningModuleIdentity(props.activity.module),
     () => props.userId,
     () => props.reviewId,
   ],
