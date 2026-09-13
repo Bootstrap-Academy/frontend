@@ -38,22 +38,19 @@
 
         <section v-if="learningPlan" class="course-plan" aria-labelledby="course-plan-title">
           <h2 id="course-plan-title">{{ copy.contents }}</h2>
-          <CourseLearningChapters v-if="learningPlan.path.chapters?.length" :plan="learningPlan" />
+          <CourseLearningChapters
+            v-if="learningPlan.path.chapters?.length"
+            :plan="learningPlan"
+            :course-id="id"
+          />
           <ol v-else class="unit-list">
-            <li
-              v-for="(unit, index) in learningPlan.units"
-              :key="unit.id"
-              :class="{ 'unit-done': unit.status === 'completed' }"
-            >
-              <span class="unit-number" aria-hidden="true">{{
-                unit.status === "completed" ? "✓" : index + 1
-              }}</span>
-              <div>
-                <h3>{{ localized(unit.title) }}</h3>
-                <p v-if="unit.result">
-                  {{ unit.result.kind === "solved" ? copy.solved : copy.introduction }}
-                </p>
-              </div>
+            <li v-for="unit in learningPlan.units" :key="unit.id">
+              <CourseLearningUnit
+                :unit="unit"
+                :course-id="id"
+                :path-id="learningPlan.path.id"
+                :current="learningPlan.next?.unit.id === unit.id"
+              />
             </li>
           </ol>
         </section>
@@ -277,38 +274,6 @@ h2 {
 .unit-list {
   display: grid;
   gap: 0;
-}
-.unit-list li {
-  display: flex;
-  gap: 1rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--color-tertiary);
-}
-.unit-list li:first-child {
-  border: 0;
-  padding-top: 0;
-}
-.unit-number {
-  width: 2.2rem;
-  height: 2.2rem;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--color-tertiary);
-  display: grid;
-  place-items: center;
-}
-.unit-done .unit-number {
-  color: var(--color-accent);
-}
-.unit-list h3 {
-  font-size: 1rem;
-  color: var(--color-heading);
-  line-height: 1.5;
-}
-.unit-list p {
-  margin: 0.2rem 0 0;
-  font-size: 0.85rem;
-  color: var(--color-subheading);
 }
 .course-requirements summary {
   cursor: pointer;

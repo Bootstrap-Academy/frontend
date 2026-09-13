@@ -201,7 +201,7 @@ test("revision conflict preserves local draft until an explicit reconciliation",
   assert.equal(await f.controller.save(), false);
   assert.equal(f.view.conflict, true);
   assert.equal(f.view.draft.repetitions, 7);
-  assert.equal(await f.controller.next("everyday-math"), false);
+  assert.equal(await f.controller.next("it-foundations"), false);
   await f.controller.resolveConflict(true);
   assert.equal(f.view.conflict, false);
   assert.equal(f.view.draft.repetitions, 7);
@@ -908,4 +908,89 @@ test("an unsettled final result stays bounded and is checked without another sub
     6
   );
   assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
+});
+
+test("direct course selection resumes one later room and preserves course context through save, recovery and completion", async () => {
+  let remote = room(4, { repetitions: 5 }, "in_progress");
+  const f = fixture((path, method, body) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    const url = new URL(path, "https://fixture.invalid");
+    assert.equal(url.searchParams.get("course"), "python-foundations");
+    if (method === "PUT") remote = room(body.expected_revision + 1, body.state, "in_progress");
+    if (method === "POST")
+      remote = room(body.expected_revision + 1, remote.progress.state, "completed");
+    if (url.pathname === "/skills/rooms") return selection(remote);
+    return remote;
+  });
+  await f.controller.start(true, "python-loops", false, {
+    courseId: "python-foundations",
+    unitId: "loops-intro",
+  });
+  assert.equal(f.view.room.unit.id, "loops-intro");
+  assert.deepEqual(f.view.draft, { repetitions: 5 });
+  assert(f.calls.every((c) => c.method === "GET"));
+  assert.equal(
+    f.calls[1].path,
+    "/skills/rooms?continuous=true&path=python-loops&course=python-foundations&unit=loops-intro"
+  );
+  f.controller.edit({ repetitions: 7 });
+  const backup = f.controller.recovery();
+  assert.equal(backup.courseId, "python-foundations");
+  assert.equal(await f.controller.restore(backup), true);
+  assert.deepEqual(f.view.draft, { repetitions: 7 });
+  assert.equal(await f.controller.complete("complete", { repetitions: 7 }), true);
+  assert.equal(f.calls.filter((c) => c.method === "POST").length, 1);
+  assert(f.calls.filter((c) => c.method !== "GET").every((c) => c.path.includes("/loops-intro/")));
+  assert.equal(await f.controller.next("python-loops", "loops-intro"), true);
+  assert.equal(
+    f.calls.at(-1).path,
+    "/skills/rooms?continuous=true&path=python-loops&after=loops-intro&course=python-foundations"
+  );
+});
+
+test("failed direct selection retries the exact requested unit instead of falling back to the queue", async () => {
+  let reads = 0;
+  const f = fixture((path) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (++reads === 1) throw { statusCode: 503 };
+    return selection();
+  });
+  await f.controller.start(true, "python-loops", false, {
+    courseId: "python-foundations",
+    unitId: "loops-intro",
+  });
+  assert.equal(f.view.status, "error");
+  assert.equal(await f.controller.retry(), true);
+  assert.equal(f.calls[1].path, f.calls[2].path);
+  assert(f.calls.every((c) => c.method === "GET"));
+});
+
+test("leaving a freely selected course clears its access context for the normal queue", async () => {
+  const f = fixture();
+  await f.controller.start(true, "python-loops", false, {
+    courseId: "python-foundations",
+    unitId: "loops-intro",
+  });
+  assert.equal(f.view.courseId, "python-foundations");
+  assert.equal(await f.controller.next("python-loops", undefined, true, { courseId: null }), true);
+  assert.equal(f.calls.at(-1).path, "/skills/rooms?continuous=true&path=python-loops");
+  assert.equal(f.view.courseId, null);
+});
+
+test("a refused or mismatched course selection never silently opens a different unit", async () => {
+  for (const status of [403, 404, null]) {
+    const f = fixture((path) => {
+      if (path.endsWith("capabilities")) return { enabled: true };
+      if (status) throw { statusCode: status };
+      return selection();
+    });
+    await f.controller.start(true, "python-loops", false, {
+      courseId: "python-foundations",
+      unitId: "different-later-unit",
+    });
+    assert.equal(f.view.status, "error");
+    assert.equal(f.view.room, null);
+    assert.equal(f.calls.length, 2);
+    assert(f.calls.every((c) => c.method === "GET"));
+  }
 });

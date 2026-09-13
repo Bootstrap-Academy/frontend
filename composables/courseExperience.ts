@@ -53,6 +53,7 @@ const messages = {
     free: "Kostenlos",
     errorTitle: "Das hat gerade nicht geklappt",
     saved: "Gespeichert",
+    inProgress: "Angefangen",
   },
   en: {
     back: "Back to overview",
@@ -104,6 +105,7 @@ const messages = {
     free: "Free",
     errorTitle: "Something went wrong",
     saved: "Saved",
+    inProgress: "In progress",
   },
 };
 

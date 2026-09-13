@@ -207,8 +207,11 @@ function fixture(t, options = {}) {
     useSession: () => session,
     useAccessToken: () => access,
     useRefreshToken: () => refresh,
-    useRoute: () => ({ query: {} }),
+    useRoute: () => ({ query: options.query || {}, fullPath: options.fullPath }),
     useRouter: () => ({
+      replace: async (to) => {
+        navigation.push(to);
+      },
       push: async (to) => {
         navigation.push(to);
       },
@@ -255,7 +258,7 @@ function fixture(t, options = {}) {
         remote = envelope(init.body.expected_revision + 1, init.body.state);
         return remote;
       }
-      if (path === "/skills/rooms/unit") return remote;
+      if (path.split("?")[0] === "/skills/rooms/unit") return remote;
       return {
         paths: [{ id: "python-loops", title: { de: "Python", en: "Python" } }],
         path: { id: "python-loops", title: { de: "Python", en: "Python" } },
@@ -362,4 +365,35 @@ test("clean exit removes only owned recovery and the next visit uses the latest 
   assert.deepEqual(second.api.view.value.draft, latest);
   assert.equal(second.api.view.value.room.progress.revision, 2);
   assert.equal(second.api.data.recovery(), null);
+});
+
+test("course login recovery retains the exact chosen lesson and all room writes stay in that course", async (t) => {
+  const query = { path: "python-loops", course: "python-foundations", unit: "unit" };
+  const fullPath = "/learn?path=python-loops&course=python-foundations&unit=unit";
+  const options = { query, fullPath, refreshFailure: true };
+  const f = fixture(t, options);
+  await settle();
+  assert.equal(f.api.view.value.courseId, query.course);
+  assert(f.calls.some((c) => c.path.includes("course=python-foundations&unit=unit")));
+  f.api.edit({ code: "private resumed draft" });
+  f.access.value = token(1);
+  assert.equal(await f.api.data.save(), false);
+  assert.equal(await f.api.reauthenticate(), true);
+  assert.equal(f.navigation.at(-1).query.redirect, fullPath);
+  options.refreshFailure = false;
+  f.auth({
+    user: { id: "A" },
+    session: { id: "new-session" },
+    access_token: fresh(),
+    refresh_token: "new-refresh",
+  });
+  await settle();
+  assert.equal(f.api.view.value.courseId, query.course);
+  assert.equal(f.api.view.value.draft.code, "private resumed draft");
+  assert.equal(await f.api.data.save(), true);
+  assert(
+    f.calls
+      .filter((c) => c.path.includes("/rooms/unit") && c.method === "PUT")
+      .every((c) => c.path.endsWith("?course=python-foundations"))
+  );
 });

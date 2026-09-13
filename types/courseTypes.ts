@@ -97,6 +97,7 @@ export interface CourseLearningPlan {
     status: "new" | "in_progress" | "completed" | "skipped";
     result: { kind: "introduced" | "solved" } | null;
     available: boolean;
+    selectable?: boolean;
   }[];
   next: import("./learningRooms").RoomEnvelope | null;
   completed: boolean;

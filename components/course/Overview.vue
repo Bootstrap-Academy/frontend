@@ -82,7 +82,12 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import type { CourseLearningPlan } from "~/types/courseTypes";
-import { courseProgress, courseResumeStep, courseWatchLocation } from "~/utils/courseJourney";
+import {
+  courseProgress,
+  courseResumeStep,
+  courseRoomLocation,
+  courseWatchLocation,
+} from "~/utils/courseJourney";
 
 const props = defineProps({
   learningPlan: { type: Object as PropType<CourseLearningPlan | null>, default: null },
@@ -96,7 +101,7 @@ const { copy } = useCourseExperienceCopy();
 
 const link = computed(() =>
   props.data?.learning_path_id
-    ? { path: "/learn", query: { path: props.data.learning_path_id } }
+    ? courseRoomLocation(props.data.id, props.data.learning_path_id)
     : courseWatchLocation(props.data?.id || "", courseResumeStep(props.data), {
         skillID: props.skillID || undefined,
         subSkillID: props.subSkillID || undefined,

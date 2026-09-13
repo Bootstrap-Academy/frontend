@@ -74,7 +74,6 @@ export interface LearningUnit {
   title: LocalizedText;
   room:
     | "loop-explorer"
-    | "percentage-explorer"
     | "guided-lesson"
     | "exercise"
     | "io-machine"
@@ -101,6 +100,7 @@ export interface RoomEnvelope {
 }
 export interface LearningRoomsView {
   status: "idle" | "loading" | "ready" | "disabled" | "error";
+  courseId: string | null;
   paths: {
     id: string;
     title: LocalizedText;

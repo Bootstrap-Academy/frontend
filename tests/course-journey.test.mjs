@@ -152,6 +152,8 @@ for (const file of [
   "pages/skill-tree/[id]/[skill].vue",
   "components/course/Curriculum.vue",
   "components/course/Overview.vue",
+  "components/course/LearningUnit.vue",
+  "components/course/LearningChapters.vue",
   "components/course/Practice.vue",
   "components/course/Video.vue",
 ]) {

@@ -64,6 +64,39 @@ export function useLearningRooms() {
     },
     checkpoint: () => preserve(lastUserId, true),
   });
+  function selection(query: Record<string, unknown>) {
+    return {
+      path: typeof query.path === "string" ? query.path : undefined,
+      courseId: typeof query.course === "string" ? query.course : null,
+      unitId: typeof query.unit === "string" ? query.unit : undefined,
+    };
+  }
+  function matchesLocation(query: Record<string, unknown>) {
+    const target = selection(query);
+    return (
+      view.value?.status === "ready" &&
+      target.courseId === view.value.courseId &&
+      target.path === view.value.path?.id &&
+      target.unitId === (view.value.courseId ? view.value.room?.unit.id : undefined)
+    );
+  }
+  async function syncLocation() {
+    if (!view.value?.room || view.value.status !== "ready") return;
+    const query = {
+      path: view.value.room.unit.path_id,
+      ...(view.value.courseId
+        ? { course: view.value.courseId, unit: view.value.room.unit.id }
+        : {}),
+    };
+    if (!matchesLocation(route.query)) await router.replace({ path: "/learn", query });
+  }
+  async function openLocation(query: Record<string, unknown>) {
+    const target = selection(query);
+    return await data.next(target.path, undefined, true, target);
+  }
+  async function retry() {
+    if (await data.retry()) await syncLocation();
+  }
   function preserve(userId: string, required = false) {
     const saved = data.recovery();
     if (!userId) return true;
@@ -108,11 +141,14 @@ export function useLearningRooms() {
       recovering.value = !!saved;
       queueMicrotask(async () => {
         if (!alive || ticket !== epoch || next !== owner.value) return;
-        await data.start(
-          enabled.value,
-          typeof route.query.path === "string" ? route.query.path : undefined,
-          !!saved
-        );
+        const target = saved
+          ? {
+              path: saved.pathId,
+              courseId: saved.courseId || null,
+              unitId: saved.courseId ? saved.unitId : undefined,
+            }
+          : selection(route.query);
+        await data.start(enabled.value, target.path, !!saved, target);
         if (!alive || ticket !== epoch || next !== owner.value) return;
         if (view.value?.status !== "ready") {
           recovering.value = false;
@@ -127,6 +163,7 @@ export function useLearningRooms() {
             preserve(requestedUser);
           }
         }
+        if (view.value?.courseId) await syncLocation();
       });
     },
     { immediate: true, flush: "sync" }
@@ -150,6 +187,7 @@ export function useLearningRooms() {
   async function reauthenticate() {
     if (!owner.value || !preserve(user.value?.id || "", true)) return false;
     clearTimeout(timer);
+    const redirect = route.fullPath || "/learn";
     // Clear the stale cookie before navigation so the global login guard cannot
     // send this request back to the dashboard. No server logout/write is needed.
     useAppCookie("accessToken").value = null;
@@ -160,7 +198,7 @@ export function useLearningRooms() {
     refreshToken.value = "";
     session.value = null;
     setUser(null);
-    await router.push({ path: "/auth/login", query: { redirect: "/learn" } });
+    await router.push({ path: "/auth/login", query: { redirect } });
     return true;
   }
   onBeforeUnmount(() => {
@@ -183,5 +221,9 @@ export function useLearningRooms() {
     reauthenticate,
     recoveryError,
     recovering,
+    matchesLocation,
+    openLocation,
+    syncLocation,
+    retry,
   };
 }
