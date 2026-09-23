@@ -73,7 +73,8 @@
           {{ copy.alreadyKnow }}
         </button>
       </template>
-      <div v-if="saveError || view?.error" role="alert">
+      <p v-if="answerRejected" role="status">{{ t("LearningRooms.Incorrect") }}</p>
+      <div v-else-if="saveError || view?.error" role="alert">
         <p>{{ copy.saveError }}</p>
         <button v-if="view?.completionPending" type="button" :disabled="busy" @click="complete({})">
           {{ copy.retry }}
@@ -86,6 +87,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import type { Course, Lecture } from "~/types/courseTypes";
 import type {
   LearningActivity,
@@ -122,6 +124,7 @@ const {
   syncLocation: false,
   loadRoom: !!roomSource,
 });
+const { t } = useI18n();
 const host = ref<LearningActivityHandle | null>(null);
 const draft = ref<Record<string, any>>({});
 const posting = ref(false);
@@ -147,6 +150,9 @@ const locked = computed(
     !!view.value?.conflict ||
     !!view.value?.completionPending
 );
+// The server rejects a completed answer that does not match with 422. That is
+// feedback on the answer, not a failed save: the work is kept and can be changed.
+const answerRejected = computed(() => view.value?.error === "CheckIntroduction");
 const finished = computed(() =>
   roomSource
     ? ["completed", "skipped"].includes(view.value?.room?.progress.status || "")
