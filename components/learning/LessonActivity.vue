@@ -73,8 +73,8 @@
           {{ copy.alreadyKnow }}
         </button>
       </template>
-      <p v-if="answerRejected" role="status">{{ t("LearningRooms.Incorrect") }}</p>
-      <div v-else-if="saveError || view?.error" role="alert">
+      <p v-if="answerRejected" ref="outcome" role="status">{{ t("LearningRooms.Incorrect") }}</p>
+      <div v-else-if="saveError || view?.error" ref="outcome" role="alert">
         <p>{{ copy.saveError }}</p>
         <button v-if="view?.completionPending" type="button" :disabled="busy" @click="complete({})">
           {{ copy.retry }}
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import type { Course, Lecture } from "~/types/courseTypes";
 import type {
@@ -126,6 +126,7 @@ const {
 });
 const { t } = useI18n();
 const host = ref<LearningActivityHandle | null>(null);
+const outcome = ref<HTMLElement | null>(null);
 const draft = ref<Record<string, any>>({});
 const posting = ref(false);
 const completing = ref(false);
@@ -252,7 +253,16 @@ async function save() {
     return false;
   }
 }
+// A hand-in that does not complete answers below the activity ("not quite right yet" or a
+// save error). On a phone that line is usually below the fold, and scrolling to it brings it
+// in under the floating feedback button. Show it right away; the page's bottom scroll padding
+// for that button makes "nearest" stop above it.
 async function complete(result: LearningActivityCompletion) {
+  await handIn(result);
+  await nextTick();
+  if (alive) outcome.value?.scrollIntoView({ block: "nearest" });
+}
+async function handIn(result: LearningActivityCompletion) {
   if (!alive || completing.value || view.value?.completing) return;
   if (roomSource) {
     if (await data.complete("complete", result.answer, result.attempt_id)) {

@@ -493,6 +493,16 @@ const errorText = computed(() => {
 </template>
 
 <style>
+/*
+  The launcher floats over the bottom-right corner of every page (1rem offset plus a 50px
+  button). On a phone that corner is part of the content column. Keeping the band (with a
+  small gap) out of the area the browser scrolls content into means a focused control, a
+  message a page brings into view or a find-in-page hit stops above the launcher instead of
+  under it. The footer keeps the same band free at the end of the page.
+*/
+html {
+  scroll-padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+}
 .feedback-primary,
 .feedback-secondary {
   min-height: 44px;
