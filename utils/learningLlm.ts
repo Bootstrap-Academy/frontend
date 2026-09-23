@@ -137,7 +137,7 @@ export function llmError(
 ): LlmError {
   const retryable = RETRY.has(code);
   const fallback = !retryable && !EDIT.has(code);
-  const text = messages[code] || messages[retryable ? "retry" : "fallback"];
+  const text = messages[code] || messages[retryable ? "retry" : "fallback"]!;
   return {
     code,
     fallback,
@@ -346,12 +346,13 @@ export function createLearningLlm(options: {
   const id = options.id || (() => crypto.randomUUID());
   const wait = options.wait || defaultWait;
   const now = options.now || Date.now;
-  let grant: { value: string; profiles: string[]; expires: number } | null = null;
-  let granting: Promise<NonNullable<typeof grant>> | null = null;
+  type Grant = { value: string; profiles: string[]; expires: number };
+  let grant: Grant | null = null;
+  let granting: Promise<Grant> | null = null;
   let grader: Promise<string | null> | null = null;
   let proof: { text: string; verdict: string } | null = null;
 
-  function currentGrant(stale?: string) {
+  function currentGrant(stale?: string): Promise<Grant> {
     if (grant && grant.value !== stale && grant.expires - 60000 > now())
       return Promise.resolve(grant);
     granting ||= (async () => {
@@ -370,8 +371,13 @@ export function createLearningLlm(options: {
           !Number.isFinite(expires)
         )
           throw new HostError("llm_unavailable");
-        grant = { value: response.grant, profiles: response.profiles.map(String), expires };
-        return grant;
+        const issued: Grant = {
+          value: response.grant,
+          profiles: response.profiles.map(String),
+          expires,
+        };
+        grant = issued;
+        return issued;
       } catch (error) {
         throw error instanceof HostError ? error : grantError(error);
       } finally {
@@ -593,7 +599,7 @@ export function createLearningLlm(options: {
       }
       // Remember only a complete answer; a network hiccup is asked again next time.
       if (unanswered && found.length !== 1) grader = null;
-      return found.length === 1 ? found[0] : null;
+      return found.length === 1 ? (found[0] ?? null) : null;
     })().catch((error) => {
       grader = null;
       throw error;
