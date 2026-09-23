@@ -584,3 +584,22 @@ test("respond never passes a signed verdict on and the AI label is localized", a
   const en = fixture({ locale: "en", llm: () => json(200, result("x")) });
   assert.equal(en.client.label("live").textContent, "AI answer");
 });
+
+test("a grading profile lookup that failed on the network is asked again", async () => {
+  let down = true;
+  const f = fixture({
+    llm: (call) => {
+      if (call.path.startsWith("/llm/v1/profiles/")) {
+        if (down) throw new TypeError("fetch failed");
+        return json(200, { output: { type: call.path.endsWith("grader") ? "grading" : "text" } });
+      }
+      return json(200, graded(call.body.request_id, "pass", RECEIPT));
+    },
+  });
+  const first = await f.client.grade("Antwort");
+  assert.deepEqual([first.error.code, first.error.fallback], ["llm_unavailable", true]);
+  down = false;
+  const second = await f.client.grade("Antwort");
+  assert.equal(second.ok, true);
+  assert.equal(f.calls.at(-1).body.profile, "grader");
+});

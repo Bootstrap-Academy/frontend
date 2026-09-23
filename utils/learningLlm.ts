@@ -386,7 +386,7 @@ export function createLearningLlm(options: {
     request: LlmRequest,
     signal: AbortSignal,
     onDelta?: (delta: { sample: number; text: string }) => void
-  ): Promise<{ result: ServerResult; raw: any }> {
+  ): Promise<ServerResult> {
     if (
       !request ||
       typeof request.profile !== "string" ||
@@ -479,10 +479,9 @@ export function createLearningLlm(options: {
           throw new HostError(error.code === "unauthenticated" ? "session" : error.code, error);
         }
         if (!(response.headers.get("content-type") || "").includes("text/event-stream")) {
-          const raw = await response.json();
-          const result = serverResult(raw);
+          const result = serverResult(await response.json());
           catchUp(result.outputs, delivered, deliver);
-          return { result, raw };
+          return result;
         }
         if (!response.body) throw new HostError("invalid_response");
         for await (const event of readSse(response.body)) {
@@ -501,10 +500,9 @@ export function createLearningLlm(options: {
             if (text.length > already.length && text.startsWith(already))
               deliver(sample, text.slice(already.length));
           } else if (event.event === "done") {
-            const raw = { request_id: requestId, ...data };
-            const result = serverResult(raw);
+            const result = serverResult({ request_id: requestId, ...data });
             catchUp(result.outputs, delivered, deliver);
-            return { result, raw };
+            return result;
           } else if (event.event === "error") {
             throw new HostError(
               typeof data?.code === "string" ? data.code : "provider_unavailable",
@@ -587,10 +585,14 @@ export function createLearningLlm(options: {
     grader ||= (async () => {
       const { profiles } = await currentGrant();
       const found: string[] = [];
+      let unanswered = false;
       for (const profile of profiles) {
         const value: any = await info(profile);
-        if (value?.output?.type === "grading") found.push(profile);
+        if (!value) unanswered = true;
+        else if (value.output?.type === "grading") found.push(profile);
       }
+      // Remember only a complete answer; a network hiccup is asked again next time.
+      if (unanswered && found.length !== 1) grader = null;
       return found.length === 1 ? found[0] : null;
     })().catch((error) => {
       grader = null;
@@ -620,7 +622,7 @@ export function createLearningLlm(options: {
             }
           : undefined;
       try {
-        const { result } = await call(request, listen.signal, onDelta);
+        const result = await call(request, listen.signal, onDelta);
         if (listen.signal.aborted) throw new HostError("cancelled");
         return {
           ok: true,
@@ -652,7 +654,7 @@ export function createLearningLlm(options: {
         if (typeof answer !== "string" || !answer.trim()) throw new HostError("input_empty");
         const profile = gradeOptions.profile ?? (await gradingProfile());
         if (!profile) throw new HostError("llm_unavailable");
-        const { result } = await call(
+        const result = await call(
           { profile, input: [{ role: "user", content: answer }] },
           listen.signal
         );
