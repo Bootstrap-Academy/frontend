@@ -114,7 +114,10 @@ export function createLearningRooms(options: {
         return current(ticket);
       } catch (error) {
         if (current(ticket)) {
-          view.error = errorKey(error);
+          // Only a completion checks the answer. A refused save (e.g. an oversized
+          // state) is a technical failure and must stay a retryable save error.
+          const key = errorKey(error);
+          view.error = key === "CheckIntroduction" ? "SaveError" : key;
           view.conflict = view.error === "Conflict";
         }
         return false;

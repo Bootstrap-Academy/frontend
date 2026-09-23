@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { compileScript, parse } from "@vue/compiler-sfc";
 import * as Vue from "vue";
+import { renderToString } from "@vue/server-renderer";
+import { createI18n } from "vue-i18n";
 import ts from "typescript";
 
 const url = (code) => `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`;
@@ -412,6 +414,7 @@ async function activityFixture(
     defineEmits: () => (name, value) => events.push({ name, value }),
     defineExpose: () => {},
     onBeforeUnmount: (callback) => callbacks.push(callback),
+    useI18n: () => ({ t: (key) => key }),
     useLearningRooms: (value) => {
       options = value;
       return {
@@ -477,6 +480,119 @@ test("a composed room delegates the exact native selection, save and completion 
   assert.deepEqual(calls, [["complete", undefined, "real-attempt"]]);
   assert.equal(fixture.events.filter((event) => event.name === "completed").length, 1);
   fixture.stop();
+});
+
+// Renders the actual LessonActivity template with the real locale files; only the
+// nested renderer and the room composable are stand-ins.
+const locales = Object.fromEntries(
+  await Promise.all(
+    [
+      ["de", "de"],
+      ["en", "en-US"],
+    ].map(async ([locale, file]) => [
+      locale,
+      JSON.parse(await readFile(new URL(`../locales/${file}.json`, import.meta.url), "utf8")),
+    ])
+  )
+);
+const escapeHtml = (text) =>
+  text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+async function renderLessonActivity(view, locale) {
+  const vueUrl = JSON.stringify(import.meta.resolve("vue"));
+  const hostStub = url(
+    `import { h } from ${vueUrl};
+export default { inheritAttrs: false, props: ["state", "disabled"], setup: (props) => () =>
+  h("div", { "data-state": JSON.stringify(props.state), "data-disabled": String(props.disabled) }) };`
+  );
+  const file = "components/learning/LessonActivity.vue";
+  const { descriptor } = parse(await readFile(new URL(`../${file}`, import.meta.url), "utf8"), {
+    filename: file,
+  });
+  const code = compile(compileScript(descriptor, { id: file, inlineTemplate: true }).content)
+    .replace(/from ["']vue["']/g, `from ${vueUrl}`)
+    .replace(/from ["']vue-i18n["']/g, `from ${JSON.stringify(import.meta.resolve("vue-i18n"))}`)
+    .replace(
+      /from ["']~\/utils\/learningActivityAdapters["']/,
+      `from ${JSON.stringify(adapterUrl)}`
+    )
+    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`);
+  const LessonActivity = (await import(url(code))).default;
+  globalThis.useLearningRooms = () => ({
+    view: Vue.ref(view),
+    data: {},
+    edit: () => {},
+    request: Vue.ref(async () => ({})),
+    owner: Vue.ref("user-a:session-a"),
+    user: Vue.ref({ id: "user-a" }),
+    reauthRequired: Vue.ref(false),
+    reauthenticate: async () => {},
+    recovering: Vue.ref(false),
+    retry: () => {},
+  });
+  try {
+    const app = Vue.createSSRApp(LessonActivity, {
+      activity: adapters.roomActivity(room()),
+      course: { id: "course-a", learning_path_id: "old-path", sections: [] },
+      locale,
+    });
+    app.component("CoursePractice", { render: () => null });
+    app.use(createI18n({ legacy: false, locale, messages: locales }));
+    return await renderToString(app);
+  } finally {
+    delete globalThis.useLearningRooms;
+  }
+}
+const readyRoom = (extra) => ({
+  status: "ready",
+  room: room(),
+  draft: { labels: "SAASNN" },
+  dirty: false,
+  saving: false,
+  completing: false,
+  completionPending: false,
+  reviewStarting: false,
+  reviewPending: false,
+  conflict: false,
+  error: "",
+  ...extra,
+});
+
+test("a rejected completion answer is shown as not yet right, keeps the work editable and offers no save retry", async () => {
+  const technical = {
+    de: ["Dein Stand konnte noch nicht gespeichert werden.", "Nochmal versuchen"],
+    en: ["Your work hasn't been saved yet.", "Try again"],
+  };
+  for (const locale of ["de", "en"]) {
+    const html = await renderLessonActivity(readyRoom({ error: "CheckIntroduction" }), locale);
+    const message = escapeHtml(locales[locale].LearningRooms.Incorrect);
+    assert.match(
+      html,
+      new RegExp(`<p[^>]*role="status"[^>]*>${message.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</p>`)
+    );
+    for (const text of technical[locale]) assert.ok(!html.includes(escapeHtml(text)), text);
+    assert.ok(!html.includes('role="alert"'));
+    assert.ok(html.includes(`data-state="${escapeHtml(JSON.stringify({ labels: "SAASNN" }))}"`));
+    assert.ok(html.includes('data-disabled="false"'));
+  }
+});
+
+test("technical save and completion errors in the lesson player keep the retryable save error", async () => {
+  for (const view of [
+    readyRoom({ error: "SaveError", completionPending: true }),
+    readyRoom({ error: "SaveError", dirty: true }),
+  ]) {
+    const html = await renderLessonActivity(view, "de");
+    assert.match(
+      html,
+      /role="alert"[^>]*><p>Dein Stand konnte noch nicht gespeichert werden\.<\/p><button[^>]*>Nochmal versuchen<\/button>/
+    );
+    assert.ok(!html.includes(escapeHtml(locales.de.LearningRooms.Incorrect)));
+  }
 });
 
 test("legacy completion uncertainty is reconciled with a read and never automatically sent twice", async () => {

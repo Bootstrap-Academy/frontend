@@ -266,6 +266,79 @@ test("incorrect introduction can be edited and exercise units cannot be skipped"
   assert.ok(exercise.calls.every(({ method }) => method === "GET"));
 });
 
+test("a rejected answer stays saved as feedback and a changed answer completes with a new request", async () => {
+  let posts = 0;
+  const f = fixture((path, method, body) => {
+    if (method === "PUT") return room(body.expected_revision + 1, body.state, "in_progress");
+    if (method === "POST") {
+      if (++posts === 1) throw { statusCode: 422 };
+      return room(body.expected_revision + 1, body.answer, "completed");
+    }
+    return path.endsWith("capabilities") ? { enabled: true } : selection();
+  });
+  await f.controller.start(true);
+  f.controller.edit({ labels: "SAASNN" });
+  assert.equal(await f.controller.complete("complete", { labels: "SAASNN" }), false);
+  assert.equal(f.view.error, "CheckIntroduction");
+  assert.equal(f.view.completionPending, false);
+  assert.equal(f.view.dirty, false);
+  assert.deepEqual(f.view.draft, { labels: "SAASNN" });
+  assert.equal(f.view.room.progress.revision, 1);
+  // The work is already saved, so a plain save has nothing to send.
+  const before = f.calls.length;
+  assert.equal(await f.controller.save(), true);
+  assert.equal(f.calls.length, before);
+
+  f.controller.edit({ labels: "SAASNS" });
+  assert.equal(await f.controller.complete("complete", { labels: "SAASNS" }), true);
+  const saves = f.calls.filter(({ method }) => method === "PUT");
+  const completions = f.calls.filter(({ method }) => method === "POST");
+  assert.deepEqual(
+    saves.map(({ body }) => body.state),
+    [{ labels: "SAASNN" }, { labels: "SAASNS" }]
+  );
+  assert.equal(completions.length, 2);
+  assert.notEqual(completions[0].body.request_id, completions[1].body.request_id);
+  assert.deepEqual(completions[1].body.answer, { labels: "SAASNS" });
+  assert.equal(completions[1].body.expected_revision, 2);
+  assert.equal(f.view.error, "");
+  assert.equal(f.view.room.progress.status, "completed");
+});
+
+test("refused saves, server errors and network failures stay retryable save errors", async () => {
+  let refuseSave = true;
+  let failure = { statusCode: 503 };
+  const f = fixture((path, method, body) => {
+    if (method === "PUT") {
+      if (refuseSave) {
+        refuseSave = false;
+        throw { statusCode: 422 };
+      }
+      return room(body.expected_revision + 1, body.state, "in_progress");
+    }
+    if (method === "POST") throw failure;
+    return path.endsWith("capabilities") ? { enabled: true } : selection();
+  });
+  await f.controller.start(true);
+  f.controller.edit({ labels: "SAASNS" });
+  assert.equal(await f.controller.complete("complete", { labels: "SAASNS" }), false);
+  assert.equal(f.view.error, "SaveError");
+  assert.equal(f.view.dirty, true);
+  assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
+
+  assert.equal(await f.controller.complete("complete", { labels: "SAASNS" }), false);
+  assert.equal(f.view.error, "SaveError");
+  assert.equal(f.view.completionPending, true);
+  failure = new TypeError("Failed to fetch");
+  assert.equal(await f.controller.complete("complete"), false);
+  assert.equal(f.view.error, "SaveError");
+  assert.equal(f.view.completionPending, true);
+  assert.deepEqual(f.view.draft, { labels: "SAASNS" });
+  const completions = f.calls.filter(({ method }) => method === "POST");
+  assert.equal(completions.length, 2);
+  assert.deepEqual(completions[0].body, completions[1].body);
+});
+
 const reference = { task_id: "task-a", subtask_id: "code-a", type: "coding" };
 function exerciseFixture(handler, options = {}) {
   let view;

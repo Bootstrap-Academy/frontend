@@ -11,6 +11,7 @@ for (const file of [
   "pages/learn.vue",
   "components/learning/ExerciseRoom.vue",
   "components/learning/CodeEditor.vue",
+  "components/learning/LessonActivity.vue",
 ]) {
   test(`${file}: compiled SFC resolves i18n from the installed module, without a global hook`, async () => {
     const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
