@@ -1067,3 +1067,73 @@ test("a refused or mismatched course selection never silently opens a different 
     assert(f.calls.every((c) => c.method === "GET"));
   }
 });
+
+test("a graded completion sends its verdict; an outdated verdict asks for a new grade, not a conflict", async () => {
+  let refusal = {
+    statusCode: 409,
+    data: { detail: "This grading is out of date. Check your answer again." },
+  };
+  const f = fixture((path, method, body) => {
+    if (method === "PUT")
+      return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+    if (method === "POST") {
+      if (refusal) throw refusal;
+      return room(body.expected_revision + 1, {}, "completed", "custom");
+    }
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await f.controller.start(true);
+  f.controller.edit({ draft: "Hallo Frau Berg" });
+  assert.equal(
+    await f.controller.complete(
+      "complete",
+      { text: "Hallo Frau Berg" },
+      undefined,
+      "signed.verdict.value"
+    ),
+    false
+  );
+  const [first] = f.calls.filter(({ method }) => method === "POST");
+  assert.deepEqual(first.body.answer, { text: "Hallo Frau Berg" });
+  assert.equal(first.body.verdict, "signed.verdict.value");
+  assert.equal(f.view.error, "GradeAgain");
+  assert.equal(f.view.conflict, false);
+  assert.equal(f.view.completionPending, false, "a stale verdict is never resent");
+
+  // A room that changed elsewhere stays a normal revision conflict.
+  refusal = { statusCode: 409, data: { detail: "Your room has changed in another session" } };
+  assert.equal(await f.controller.complete("complete", { text: "x" }, undefined, "v.w.x"), false);
+  assert.equal(f.view.error, "Conflict");
+  assert.equal(f.view.conflict, true);
+});
+
+test("a fresh passing verdict completes the graded room", async () => {
+  const f = fixture((path, method, body) => {
+    if (method === "POST") return room(body.expected_revision + 1, {}, "completed", "custom");
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await f.controller.start(true);
+  assert.equal(
+    await f.controller.complete("complete", { text: "x" }, undefined, "fresh.verdict.v"),
+    true
+  );
+  const post = f.calls.find(({ method }) => method === "POST");
+  assert.deepEqual([post.body.answer, post.body.verdict], [{ text: "x" }, "fresh.verdict.v"]);
+  assert.equal(f.view.room.progress.status, "completed");
+});
+
+test("an ungraded completion never carries a verdict field", async () => {
+  const f = fixture((path, method, body) => {
+    if (method === "PUT") return room(body.expected_revision + 1, body.state, "in_progress");
+    if (method === "POST") return room(body.expected_revision + 1, body.answer, "completed");
+    return path.endsWith("capabilities") ? { enabled: true } : selection();
+  });
+  await f.controller.start(true);
+  assert.equal(await f.controller.complete("complete", { labels: "A" }), true);
+  const post = f.calls.find(({ method }) => method === "POST");
+  assert.equal("verdict" in post.body, false);
+});

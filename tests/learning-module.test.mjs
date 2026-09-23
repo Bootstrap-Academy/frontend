@@ -72,6 +72,9 @@ test("a saved room projection updates the mounted custom module without restarti
     defineExpose: () => {},
     useI18n: () => ({ t: (key) => key }),
     useHeartInfo: () => Vue.ref(null),
+    useLearningGateway: () => ({ send: async () => Promise.reject(new Error("offline")) }),
+    createLearningLlm: () => ({ takeProof: () => null }),
+    createLearningProject: () => ({}),
     onMounted: (callback) => mounts.push(callback),
     onBeforeUnmount: (callback) => cleanups.push(callback),
     createLearningModuleSession: () => {
@@ -408,4 +411,200 @@ test("load or update failure releases busy state and leaves saved work available
   });
   await broken.session.start();
   assert.equal(broken.events.status.at(-1), "error");
+});
+
+test("optional platform features are flagged, and a v1 host without them is unchanged", async () => {
+  const plain = setup();
+  await plain.session.start();
+  assert.deepEqual(plain.host.capabilities, []);
+  assert.equal(plain.host.llm, undefined);
+  assert.equal(plain.host.project, undefined);
+
+  const llm = {
+    info: async () => ({ id: "chat" }),
+    respond: async () => ({ ok: true, outputs: [] }),
+    grade: async () => ({ ok: true, passed: true }),
+    label: () => ({ label: true }),
+  };
+  const project = { get: async () => ({ revision: 0, state: {} }), save: async () => ({}) };
+  const full = setup({ llm, project });
+  await full.session.start();
+  assert.deepEqual(full.host.capabilities, ["llm", "project"]);
+  assert.equal(Object.isFrozen(full.host.capabilities), true);
+  assert.deepEqual(Object.keys(full.host.llm).sort(), ["grade", "info", "label", "respond"]);
+  assert.deepEqual(Object.keys(full.host.project).sort(), ["get", "save"]);
+});
+
+test("LLM and project results are copies and nothing arrives after the activity closed", async () => {
+  const deltas = [];
+  let release;
+  const shared = { ok: true, outputs: [{ type: "text", text: "host copy" }] };
+  const llm = {
+    info: async () => ({ output: { type: "grading" } }),
+    respond: async (request, options) => {
+      options.onDelta({ sample: 0, text: "early" });
+      await new Promise((resolve) => (release = resolve));
+      options.onDelta({ sample: 0, text: "late" });
+      return shared;
+    },
+    grade: async () => ({ ok: true, passed: true, counts: true }),
+    label: () => ({}),
+  };
+  const saved = [];
+  const project = {
+    get: async () => ({ revision: 2, state: { bot: "Klingel" } }),
+    save: async (state, revision) => {
+      saved.push({ state, revision });
+      return { revision: revision + 1, state };
+    },
+  };
+  const f = setup({ llm, project });
+  await f.session.start();
+  const request = { profile: "chat", input: [{ role: "user", content: "hi" }] };
+  const pending = f.host.llm.respond(request, { onDelta: (delta) => deltas.push(delta.text) });
+  await new Promise(setImmediate);
+  release();
+  const answer = await pending;
+  answer.outputs[0].text = "module mutation";
+  assert.equal(shared.outputs[0].text, "host copy");
+  assert.deepEqual(deltas, ["early", "late"]);
+
+  const state = { bot: "Klingel", step: 1 };
+  const stored = await f.host.project.save(state, 2);
+  state.step = 99;
+  assert.deepEqual(saved, [{ state: { bot: "Klingel", step: 1 }, revision: 2 }]);
+  assert.deepEqual(stored, { revision: 3, state: { bot: "Klingel", step: 1 } });
+  assert.deepEqual(await f.host.project.get(), { revision: 2, state: { bot: "Klingel" } });
+
+  // A late answer after navigation reaches neither the callback nor the caller.
+  const late = f.host.llm.respond(request, { onDelta: (delta) => deltas.push(delta.text) });
+  await new Promise(setImmediate);
+  f.session.dispose();
+  release();
+  const closed = await late;
+  assert.equal(closed.ok, false);
+  assert.equal(closed.error.code, "cancelled");
+  assert.deepEqual(deltas, ["early", "late", "early"]);
+  assert.equal((await f.host.llm.grade("answer")).error.code, "cancelled");
+  assert.equal(await f.host.llm.info("chat"), null);
+  await assert.rejects(f.host.project.get(), (error) => error.code === "offline");
+  await assert.rejects(f.host.project.save({}, 0), (error) => error.code === "offline");
+});
+
+test("a disabled activity cannot grade or save project state; bad requests never throw", async () => {
+  const calls = [];
+  const f = setup({
+    llm: {
+      info: async () => null,
+      respond: async (request) => {
+        calls.push(request);
+        return { ok: false, error: { code: "invalid_request" } };
+      },
+      grade: async () => assert.fail("disabled"),
+      label: () => ({}),
+    },
+    project: { get: async () => ({}), save: async () => assert.fail("disabled") },
+  });
+  await f.session.start();
+  const circular = {};
+  circular.self = circular;
+  assert.equal((await f.host.llm.respond(circular)).ok, false);
+  assert.equal((await f.host.llm.respond(undefined)).ok, false);
+  assert.deepEqual(calls, [null, null]);
+  f.session.update({ ...context, disabled: true });
+  assert.equal((await f.host.llm.grade("answer")).error.code, "cancelled");
+  await assert.rejects(f.host.project.save({}, 0), (error) => error.code === "offline");
+});
+
+test("the real custom activity completes a counting grade with its exact text and verdict", async () => {
+  const source = await readFile(
+    new URL("../components/learning/CustomActivity.vue", import.meta.url),
+    "utf8"
+  );
+  const script = parse(source).descriptor.scriptSetup.content;
+  const ast = ts.createSourceFile("custom.ts", script, ts.ScriptTarget.Latest, true);
+  const body = ast.statements
+    .filter((node) => !ts.isImportDeclaration(node))
+    .map((node) => node.getText(ast))
+    .join("\n");
+  const compiled = ts.transpileModule(body, {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  const props = Vue.reactive({
+    module: { ...descriptor },
+    ...context,
+    unitId: "llm-unit",
+    courseId: "llm-course",
+    request: async () => ({}),
+  });
+  const events = [];
+  const sessions = [];
+  const created = { llm: [], project: [] };
+  let proof = { text: "Hallo Frau Berg", verdict: "signed.verdict.value" };
+  const mounts = [];
+  const cleanups = [];
+  const bindings = {
+    ...Vue,
+    ...assessmentModule,
+    learningModuleIdentity,
+    window: { location: { origin: "https://bootstrap.example" } },
+    defineProps: () => props,
+    defineEmits:
+      () =>
+      (name, ...args) =>
+        events.push([name, ...args]),
+    defineExpose: () => {},
+    useI18n: () => ({ t: (key) => key }),
+    useHeartInfo: () => Vue.ref(null),
+    useLearningGateway: () => ({ send: "gateway-send" }),
+    createLearningLlm: (options) => {
+      created.llm.push(options);
+      return {
+        takeProof: () => {
+          const taken = proof;
+          proof = null;
+          return taken;
+        },
+      };
+    },
+    createLearningProject: (options) => {
+      created.project.push(options);
+      return { project: true };
+    },
+    onMounted: (callback) => mounts.push(callback),
+    onBeforeUnmount: (callback) => cleanups.push(callback),
+    createLearningModuleSession: (options) => {
+      sessions.push(options);
+      return { start() {}, update() {}, dispose() {} };
+    },
+  };
+  const scope = Vue.effectScope();
+  try {
+    const fixture = scope.run(() =>
+      new Function(...Object.keys(bindings), `${compiled}\nreturn {surface};`)(
+        ...Object.values(bindings)
+      )
+    );
+    fixture.surface.value = { ownerDocument: "document" };
+    mounts.forEach((callback) => callback());
+    const [session] = sessions;
+    assert.ok(session.llm && session.project);
+    assert.deepEqual(
+      [created.llm[0].unitId, created.llm[0].courseId, created.llm[0].send],
+      ["llm-unit", "llm-course", "gateway-send"]
+    );
+    assert.equal(created.project[0].courseId, "llm-course");
+    session.complete({ anything: "the module sent" });
+    session.complete({ other: "answer" });
+    assert.deepEqual(events, [
+      ["complete", { text: "Hallo Frau Berg" }, undefined, "signed.verdict.value"],
+      ["complete", { other: "answer" }],
+    ]);
+    // Leaving the activity ends the grant's lifetime.
+    session.status("disposed");
+    assert.equal(created.llm[0].signal.aborted, true);
+  } finally {
+    cleanups.forEach((callback) => callback());
+    scope.stop();
+  }
 });

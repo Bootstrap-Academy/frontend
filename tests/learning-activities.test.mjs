@@ -477,7 +477,7 @@ test("a composed room delegates the exact native selection, save and completion 
   assert.equal(await fixture.canLeave(), true);
   assert.deepEqual(calls, []);
   await fixture.complete({ attempt_id: "real-attempt" });
-  assert.deepEqual(calls, [["complete", undefined, "real-attempt"]]);
+  assert.deepEqual(calls, [["complete", undefined, "real-attempt", undefined]]);
   assert.equal(fixture.events.filter((event) => event.name === "completed").length, 1);
   fixture.stop();
 });
