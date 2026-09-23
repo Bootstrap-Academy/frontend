@@ -449,5 +449,6 @@ try {
   browser.kill();
   await new Promise((resolve) => browser.once("exit", resolve));
   server.close();
-  await rm(profile, { recursive: true, force: true });
+  // Chromium helpers may still write into the profile for a moment after exit.
+  await rm(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 }
