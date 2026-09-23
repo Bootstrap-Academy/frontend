@@ -164,6 +164,35 @@ async function footerControls() {
   assert.deepEqual(result.obscuredLinks, [], "footer controls remain clear of the launcher");
   return result;
 }
+// Content a page scrolls into view (such as a lesson's "not quite right yet" line) or the
+// browser brings into view must stop above the floating launcher, not under it.
+async function revealedContentClear() {
+  const result = await evaluate(`(async () => {
+    const frames = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await document.fonts.ready;
+    await frames();
+    const launcher = document.querySelector('.feedback-open').getBoundingClientRect();
+    const targets = Array.from(document.querySelectorAll('main p, footer a')).filter(element => {
+      const rect = element.getBoundingClientRect();
+      return rect.top + scrollY > innerHeight && rect.height > 0 && rect.height < innerHeight / 2;
+    });
+    const covered = [];
+    for (const target of targets) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      target.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      await frames();
+      const rect = target.getBoundingClientRect();
+      if (rect.left < launcher.right && rect.right > launcher.left &&
+          rect.top < launcher.bottom && rect.bottom > launcher.top)
+        covered.push(target.textContent.trim().slice(0, 40));
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    return { width: innerWidth, targets: targets.length, covered };
+  })()`);
+  assert.ok(result.targets > 0, "the page has content below the fold");
+  assert.deepEqual(result.covered, [], "revealed content stops above the launcher");
+  return result;
+}
 try {
   await command("Runtime.enable");
   await command("Page.enable");
@@ -206,6 +235,7 @@ try {
   });
   await command("Page.navigate", { url: app + "/docs/imprint" });
   await until("document.querySelector('.feedback-open')", 30000);
+  const mobileRevealed = await revealedContentClear();
   await open();
   await form();
   assert.equal(
@@ -485,6 +515,7 @@ try {
         cropped_final_raster: pixels,
         close_reopen_attachment: true,
         mobile_320: geometry,
+        mobile_390_revealed: mobileRevealed,
         mobile_footer: mobileFooter,
         error_footer: errorFooter,
         escape_focus: true,
