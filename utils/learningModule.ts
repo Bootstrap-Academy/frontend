@@ -1,4 +1,5 @@
 import type {
+  LearningModuleCapability,
   LearningModuleContext,
   LearningModuleAssessmentActions,
   LearningModuleData,
@@ -6,11 +7,21 @@ import type {
   LearningModuleExports,
   LearningModuleHost,
   LearningModuleInstance,
+  LearningModuleLlm,
+  LearningModuleProject,
 } from "~/types/learningModule";
 
 export type LearningModuleStatus = "loading" | "ready" | "error" | "disposed";
 
 const snapshot = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+/** A module's request copy; anything unserializable becomes an invalid request, never a throw. */
+function requestSnapshot<T>(value: T): T {
+  try {
+    return snapshot(value) ?? (null as T);
+  } catch {
+    return null as T;
+  }
+}
 
 function dataSnapshot(value: LearningModuleData): LearningModuleData {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -76,6 +87,8 @@ export function createLearningModuleSession(options: {
   save: () => Promise<boolean>;
   complete: (answer: LearningModuleData) => void;
   assessment?: LearningModuleAssessmentActions;
+  llm?: LearningModuleLlm;
+  project?: LearningModuleProject;
   busy: (busy: boolean) => void;
   status: (status: LearningModuleStatus) => void;
   load?: (url: string) => Promise<LearningModuleExports>;
@@ -88,6 +101,20 @@ export function createLearningModuleSession(options: {
   const surface = options.element.ownerDocument.createElement("div");
   const abort = new AbortController();
   const load = options.load || ((url: string) => import(/* @vite-ignore */ url));
+  const capabilities = Object.freeze(
+    (["llm", "project"] as LearningModuleCapability[]).filter((name) => options[name])
+  );
+  const cancelled = (locale: string) => ({
+    ok: false as const,
+    error: {
+      code: "cancelled",
+      fallback: false,
+      retryable: true,
+      message: locale.startsWith("de") ? "Abgebrochen." : "Cancelled.",
+    },
+  });
+  const llm = options.llm;
+  const project = options.project;
 
   function cleanup() {
     abort.abort();
@@ -118,6 +145,48 @@ export function createLearningModuleSession(options: {
       return snapshot(context);
     },
     signal: abort.signal,
+    capabilities,
+    // Late answers after navigation or an account switch never reach a closed module.
+    llm: llm && {
+      async info(profile) {
+        if (closed) return null;
+        const value = await llm.info(profile);
+        return closed || !value ? null : snapshot(value);
+      },
+      async respond(request, respondOptions = {}) {
+        if (closed) return cancelled(context.locale);
+        const onDelta = respondOptions.onDelta;
+        const result = await llm.respond(requestSnapshot(request), {
+          signal: respondOptions.signal,
+          ...(typeof onDelta === "function"
+            ? { onDelta: (delta) => (closed ? undefined : onDelta({ ...delta })) }
+            : {}),
+        });
+        return closed ? cancelled(context.locale) : snapshot(result);
+      },
+      async grade(answer, gradeOptions = {}) {
+        if (closed || context.disabled) return cancelled(context.locale);
+        const result = await llm.grade(answer, gradeOptions);
+        return closed ? cancelled(context.locale) : snapshot(result);
+      },
+      label(kind) {
+        return llm.label(kind);
+      },
+    },
+    project: project && {
+      async get() {
+        if (closed) throw { code: "offline" };
+        const value = await project.get();
+        if (closed) throw { code: "offline" };
+        return snapshot(value);
+      },
+      async save(state, expectedRevision) {
+        if (closed || context.disabled) throw { code: "offline" };
+        const value = await project.save(dataSnapshot(state), expectedRevision);
+        if (closed) throw { code: "offline" };
+        return snapshot(value);
+      },
+    },
     assessment: options.assessment && {
       async submit(answer) {
         if (closed || context.disabled) return false;

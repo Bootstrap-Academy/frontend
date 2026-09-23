@@ -38,6 +38,8 @@ const props = defineProps<{
   userId?: string;
   reviewId?: string;
   legacyVideo?: LegacyVideoContext;
+  /** The course a lesson activity belongs to; binds LLM grants and the project state. */
+  courseId?: string | null;
 }>();
 const emit = defineEmits<{
   change: [state: Record<string, any>];
@@ -95,6 +97,8 @@ const rendererProps = computed(() => {
       userId: props.userId || "",
       save: props.save,
       reviewId: props.reviewId,
+      unitId: props.activity.source.kind === "room" ? props.activity.source.unit_id : undefined,
+      courseId: props.courseId || undefined,
     };
   if (kind.value === "video")
     return {
@@ -121,8 +125,8 @@ async function load() {
     change: (state) => {
       if (current()) change(state);
     },
-    complete: (result, attemptId) => {
-      if (current()) complete(result, attemptId);
+    complete: (result, attemptId, verdict) => {
+      if (current()) complete(result, attemptId, verdict);
     },
     posting: (active) => {
       if (current()) posting(active);
@@ -145,7 +149,7 @@ async function load() {
 function change(state: Record<string, any>) {
   if (alive && !error.value && !props.disabled) emit("change", state);
 }
-function complete(result?: Record<string, any> | string, attemptId?: string) {
+function complete(result?: Record<string, any> | string, attemptId?: string, verdict?: string) {
   if (!alive || error.value || props.disabled) return;
   emit(
     "complete",
@@ -153,7 +157,10 @@ function complete(result?: Record<string, any> | string, attemptId?: string) {
       ? { attempt_id: typeof result === "string" ? result : undefined }
       : props.activity.exercise
         ? { attempt_id: typeof attemptId === "string" ? attemptId : undefined }
-        : { answer: typeof result === "object" ? result : {} }
+        : {
+            answer: typeof result === "object" ? result : {},
+            ...(kind.value === "custom" && typeof verdict === "string" ? { verdict } : {}),
+          }
   );
 }
 function posting(active: boolean) {

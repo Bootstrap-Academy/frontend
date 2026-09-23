@@ -31,6 +31,8 @@ import {
   createLearningModuleAssessment,
   learningModuleState,
 } from "~/utils/learningModuleAssessment";
+import { createLearningLlm } from "~/utils/learningLlm";
+import { createLearningProject } from "~/utils/learningProject";
 
 const props = defineProps<{
   module: LearningModuleDescriptor;
@@ -44,10 +46,14 @@ const props = defineProps<{
   exercise?: ExerciseReference;
   request?: LearningRequest;
   userId?: string;
+  /** Room unit of a lesson activity; enables `host.llm`. */
+  unitId?: string;
+  /** Enables `host.project` and binds LLM grants to this course. */
+  courseId?: string;
 }>();
 const emit = defineEmits<{
   change: [state: LearningModuleData];
-  complete: [answer: LearningModuleData, attemptId?: string];
+  complete: [answer: LearningModuleData, attemptId?: string, verdict?: string];
   posting: [busy: boolean];
 }>();
 const { t } = useI18n();
@@ -58,6 +64,7 @@ const retryError = ref(false);
 const assessmentContext = shallowRef<LearningModuleAssessmentContext>();
 const moduleState = ref(learningModuleState(props.state));
 const heartInfo = useHeartInfo();
+const gateway = useLearningGateway();
 let session: ReturnType<typeof createLearningModuleSession> | undefined;
 let assessment: ReturnType<typeof createLearningModuleAssessment> | undefined;
 const moduleBusy = ref(false);
@@ -78,6 +85,24 @@ function start() {
   session?.dispose();
   if (!surface.value) return;
   const boundAssessment = assessment;
+  // Grants, tokens and verdicts live here, per mount; a new session starts clean.
+  const lifetime = new AbortController();
+  const llm =
+    props.unitId && props.request
+      ? createLearningLlm({
+          unitId: props.unitId,
+          courseId: props.courseId,
+          locale: () => props.locale,
+          request: props.request,
+          send: gateway.send,
+          signal: lifetime.signal,
+          document: surface.value.ownerDocument,
+        })
+      : undefined;
+  const project =
+    props.courseId && props.request
+      ? createLearningProject({ courseId: props.courseId, request: props.request })
+      : undefined;
   session = createLearningModuleSession({
     descriptor: props.module,
     element: surface.value,
@@ -91,18 +116,27 @@ function start() {
     save: () => props.save?.() ?? Promise.resolve(false),
     complete: (answer) => {
       if (!boundAssessment) {
-        if (!props.exercise) emit("complete", answer);
+        if (props.exercise) return;
+        // A counting grade completes with exactly the graded text and its signed verdict.
+        const proof = llm?.takeProof();
+        if (proof) emit("complete", { text: proof.text }, undefined, proof.verdict);
+        else emit("complete", answer);
         return;
       }
       const proof = boundAssessment.completion();
       if (proof) emit("complete", answer, proof.attemptId);
     },
     assessment: boundAssessment,
+    llm,
+    project,
     busy: (busy) => {
       moduleBusy.value = busy;
       publishBusy();
     },
-    status: (next) => (status.value = next),
+    status: (next) => {
+      status.value = next;
+      if (next === "disposed" || next === "error") lifetime.abort();
+    },
   });
   void session.start();
 }
@@ -166,6 +200,8 @@ watch(
     () => props.exercise?.task_id,
     () => props.exercise?.subtask_id,
     () => props.request,
+    () => props.unitId,
+    () => props.courseId,
   ],
   initialize,
   { flush: "sync" }

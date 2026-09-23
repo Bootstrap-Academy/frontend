@@ -25,6 +25,7 @@
         :user-id="userId"
         :review-id="reviewId"
         :legacy-video="legacyVideo"
+        :course-id="courseId"
         @change="emit('change', $event)"
         @complete="emit('complete', $event)"
         @posting="emit('posting', $event)"
@@ -56,6 +57,7 @@ const props = defineProps<{
   userId?: string;
   reviewId?: string;
   legacyVideo?: LegacyVideoContext;
+  courseId?: string | null;
 }>();
 const emit = defineEmits<{
   select: [id: string];

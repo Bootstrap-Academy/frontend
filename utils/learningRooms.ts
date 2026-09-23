@@ -399,7 +399,12 @@ export function createLearningRooms(options: {
     next,
     retry: () => next(lastSelection.path, lastSelection.after, true, lastSelection),
     retryReview: startReview,
-    async complete(action: "complete" | "skip", answer?: Record<string, any>, attemptId?: string) {
+    async complete(
+      action: "complete" | "skip",
+      answer?: Record<string, any>,
+      attemptId?: string,
+      verdict?: string
+    ) {
       if (
         !alive ||
         !view.room ||
@@ -424,6 +429,7 @@ export function createLearningRooms(options: {
           ...(view.room.progress.review_id ? { review_id: view.room.progress.review_id } : {}),
           ...(attemptId ? { attempt_id: attemptId } : {}),
           ...(answer ? { answer: copy(answer) } : {}),
+          ...(verdict ? { verdict } : {}),
         };
         view.completionPending = true;
         publish();
@@ -442,11 +448,22 @@ export function createLearningRooms(options: {
       } catch (error) {
         if (current(ticket)) {
           view.error = errorKey(error);
-          view.conflict = view.error === "Conflict";
           const status =
             (error as any)?.statusCode ||
             (error as any)?.status ||
             (error as any)?.response?.status;
+          // A graded completion answers 409 for an expired, reused or outdated verdict.
+          // The work is fine; only a fresh grading helps, so this is no revision conflict.
+          if (
+            status === 409 &&
+            pendingComplete?.verdict &&
+            /grading/i.test(String((error as any)?.data?.detail || ""))
+          ) {
+            view.error = "GradeAgain";
+            pendingComplete = null;
+            view.completionPending = false;
+          }
+          view.conflict = view.error === "Conflict";
           if (status >= 400 && status < 500 && status !== 409) {
             pendingComplete = null;
             view.completionPending = false;

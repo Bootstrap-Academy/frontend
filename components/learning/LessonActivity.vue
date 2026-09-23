@@ -47,6 +47,7 @@
           :user-id="user?.id || ''"
           :review-id="view?.room?.progress.review_id || undefined"
           :legacy-video="legacyVideo"
+          :course-id="course.id"
           @change="change"
           @complete="complete"
           @posting="posting = $event"
@@ -74,6 +75,9 @@
         </button>
       </template>
       <p v-if="answerRejected" ref="outcome" role="status">{{ t("LearningRooms.Incorrect") }}</p>
+      <p v-else-if="view?.error === 'GradeAgain'" ref="outcome" role="status">
+        {{ t("LearningRooms.GradeAgain") }}
+      </p>
       <div v-else-if="saveError || view?.error" ref="outcome" role="alert">
         <p>{{ copy.saveError }}</p>
         <button v-if="view?.completionPending" type="button" :disabled="busy" @click="complete({})">
@@ -265,7 +269,7 @@ async function complete(result: LearningActivityCompletion) {
 async function handIn(result: LearningActivityCompletion) {
   if (!alive || completing.value || view.value?.completing) return;
   if (roomSource) {
-    if (await data.complete("complete", result.answer, result.attempt_id)) {
+    if (await data.complete("complete", result.answer, result.attempt_id, result.verdict)) {
       emit("completed", props.activity.id);
       emit("next");
     }

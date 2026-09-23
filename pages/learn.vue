@@ -132,6 +132,7 @@
           :save="data.save"
           :user-id="user?.id || ''"
           :disabled="locked"
+          :course-id="view.courseId"
           @change="edit"
           @posting="exercisePosting = $event"
           @complete="completeActivity"
@@ -233,7 +234,7 @@ watch(
   { flush: "sync" }
 );
 async function completeActivity(result: LearningActivityCompletion) {
-  await data.complete("complete", result.answer, result.attempt_id);
+  await data.complete("complete", result.answer, result.attempt_id, result.verdict);
 }
 async function advance() {
   if (exercisePosting.value) return;

@@ -59,6 +59,8 @@ export interface CourseCurriculum {
 export interface LearningActivityCompletion {
   answer?: Record<string, any>;
   attempt_id?: string;
+  /** A signed passing verdict from the LLM gateway for exactly `answer.text`. */
+  verdict?: string;
 }
 
 export interface LearningActivityHandle {

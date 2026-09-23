@@ -108,11 +108,7 @@ export function createLearningTransport(options: {
     }
   }
 
-  return async function request(
-    path: string,
-    method: "GET" | "POST" | "PUT" = "GET",
-    body?: unknown
-  ) {
+  async function ready() {
     const expected = options.snapshot();
     if (!expected.identity || !expected.accessToken) throw sessionError();
     if (
@@ -128,6 +124,11 @@ export function createLearningTransport(options: {
     }
     if (expired(expected.accessToken)) await renew(expected);
     if (!current(expected)) throw sessionError();
+    return expected;
+  }
+
+  async function request(path: string, method: "GET" | "POST" | "PUT" = "GET", body?: unknown) {
+    const expected = await ready();
     try {
       const response = await options.raw(path, method, body, options.snapshot().accessToken);
       if (!current(expected)) throw sessionError();
@@ -136,18 +137,33 @@ export function createLearningTransport(options: {
       if (!current(expected) || status(error) !== 401) throw error;
       await renew({ ...expected, accessToken: options.snapshot().accessToken });
       if (!current(expected)) throw sessionError();
-      // Never replay a challenge attempt. Room mutations have a server-enforced
+      // Never replay a challenge attempt. Room and project writes have a server-enforced
       // request id; their retry keeps the exact original id, revision and body.
-      const idempotentRoomWrite =
-        path.startsWith("/skills/rooms/") &&
+      const idempotentWrite =
+        (path.startsWith("/skills/rooms/") || /^\/skills\/courses\/[^/?]+\/project$/.test(path)) &&
         (method === "PUT" || method === "POST") &&
         typeof (body as any)?.request_id === "string";
-      if (method !== "GET" && !idempotentRoomWrite) throw error;
+      // A lesson grant only reads access; issuing another one changes nothing.
+      const grant = method === "POST" && /^\/skills\/rooms\/[^/?]+\/llm-grant(\?|$)/.test(path);
+      if (method !== "GET" && !idempotentWrite && !grant) throw error;
       const response = await options.raw(path, method, body, options.snapshot().accessToken);
       if (!current(expected)) throw sessionError();
       return response;
     }
-  };
+  }
+
+  /**
+   * A valid access token of this session for a direct call (the LLM gateway).
+   * `rejected` is a token the server refused with 401; it is renewed unless that already happened.
+   */
+  async function authorize(rejected?: string) {
+    const expected = await ready();
+    if (rejected && rejected === expected.accessToken) await renew(expected);
+    if (!current(expected)) throw sessionError();
+    return options.snapshot().accessToken;
+  }
+
+  return Object.assign(request, { authorize });
 }
 
 export function createLearningRecovery(
