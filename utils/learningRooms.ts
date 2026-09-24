@@ -63,8 +63,20 @@ export function createLearningRooms(options: {
   let savePromise: Promise<boolean> | null = null;
   let pendingSave: any = null;
   let pendingComplete: any = null;
+  /**
+   * A graded completion whose save failed but may still work (M1). A passing verdict costs
+   * allowance to earn again, so it waits for the retry instead of being dropped.
+   */
+  let requestedComplete: {
+    action: "complete" | "skip";
+    answer?: Record<string, any>;
+    attemptId?: string;
+    verdict: string;
+  } | null = null;
   let pendingReviewStart: any = null;
   let completionRequested = false;
+  /** The last save failed with a refusal that pressing again does not fix. */
+  let saveRefused = false;
   let lastSelection: {
     path?: string;
     after?: string;
@@ -86,6 +98,7 @@ export function createLearningRooms(options: {
     const ticket = generation;
     const unitId = view.room.unit.id;
     view.saving = true;
+    saveRefused = false;
     publish();
     const operation = (async () => {
       try {
@@ -114,6 +127,11 @@ export function createLearningRooms(options: {
         return current(ticket);
       } catch (error) {
         if (current(ticket)) {
+          const status =
+            (error as any)?.statusCode ||
+            (error as any)?.status ||
+            (error as any)?.response?.status;
+          saveRefused = status >= 400 && status < 500 && status !== 401;
           // Only a completion checks the answer. A refused save (e.g. an oversized
           // state) is a technical failure and must stay a retryable save error.
           const key = errorKey(error);
@@ -231,6 +249,7 @@ export function createLearningRooms(options: {
       view.status = "ready";
       pendingSave = null;
       pendingComplete = null;
+      requestedComplete = null;
       editVersion = 0;
       publish();
       if (autoReview && view.room?.review_available) return await startReview();
@@ -255,6 +274,7 @@ export function createLearningRooms(options: {
           view.completing ||
           pendingSave ||
           pendingComplete ||
+          requestedComplete ||
           pendingReviewStart
         )
       )
@@ -270,6 +290,7 @@ export function createLearningRooms(options: {
         editVersion,
         pendingSave,
         pendingComplete,
+        requestedComplete,
         pendingReviewStart,
       });
     },
@@ -316,7 +337,11 @@ export function createLearningRooms(options: {
           editVersion = Number.isInteger(recovery.editVersion) ? recovery.editVersion : 0;
           pendingSave = recovery.pendingSave ? copy(recovery.pendingSave) : null;
           pendingComplete = recovery.pendingComplete ? copy(recovery.pendingComplete) : null;
-          view.completionPending = !!pendingComplete;
+          requestedComplete =
+            typeof recovery.requestedComplete?.verdict === "string"
+              ? copy(recovery.requestedComplete)
+              : null;
+          view.completionPending = !!(pendingComplete || requestedComplete);
         } else {
           view.draft = copy(response.progress.state);
           view.dirty = false;
@@ -339,6 +364,7 @@ export function createLearningRooms(options: {
       editVersion = 0;
       pendingSave = null;
       pendingComplete = null;
+      requestedComplete = null;
       pendingReviewStart = null;
       savePromise = null;
       completionRequested = false;
@@ -386,6 +412,7 @@ export function createLearningRooms(options: {
         !view.room ||
         view.completing ||
         pendingComplete ||
+        requestedComplete ||
         pendingReviewStart ||
         ["completed", "skipped"].includes(view.room.progress.status)
       )
@@ -415,11 +442,24 @@ export function createLearningRooms(options: {
       )
         return false;
       if (["completed", "skipped"].includes(view.room.progress.status)) return true;
+      // The retry of a graded completion whose save failed sends that completion unchanged.
+      if (requestedComplete && !pendingComplete)
+        ({ action, answer, attemptId, verdict } = requestedComplete);
       if (action === "skip" && view.room.unit.room === "exercise") return false;
       const ticket = generation;
       completionRequested = true;
       try {
-        if (!(await save()) || !current(ticket)) return false;
+        const saved = await save();
+        if (!current(ticket)) return false;
+        if (!saved) {
+          requestedComplete =
+            verdict && !view.conflict && !saveRefused
+              ? { action, answer: answer && copy(answer), attemptId, verdict }
+              : null;
+          view.completionPending = !!(pendingComplete || requestedComplete);
+          return false;
+        }
+        requestedComplete = null;
         view.completing = true;
         view.error = "";
         pendingComplete ||= {
@@ -452,10 +492,11 @@ export function createLearningRooms(options: {
             (error as any)?.statusCode ||
             (error as any)?.status ||
             (error as any)?.response?.status;
-          // A graded completion answers 409 for an expired, reused or outdated verdict.
-          // The work is fine; only a fresh grading helps, so this is no revision conflict.
+          // A graded completion answers 409 for an expired, reused or outdated verdict and 403
+          // for one that belongs to another answer or a test mode. The work is fine; only a
+          // fresh grading helps, so this is neither a revision conflict nor a save error.
           if (
-            status === 409 &&
+            (status === 409 || status === 403) &&
             pendingComplete?.verdict &&
             /grading/i.test(String((error as any)?.data?.detail || ""))
           ) {
@@ -491,6 +532,7 @@ export function createLearningRooms(options: {
         view.error = "";
         pendingSave = null;
         pendingComplete = null;
+        requestedComplete = null;
         pendingReviewStart = null;
         view.reviewPending = false;
         view.completionPending = false;

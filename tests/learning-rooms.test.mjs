@@ -1137,3 +1137,157 @@ test("an ungraded completion never carries a verdict field", async () => {
   const post = f.calls.find(({ method }) => method === "POST");
   assert.equal("verdict" in post.body, false);
 });
+
+// Review 24.09. M1: a passing verdict must survive a save that fails on "Weiter".
+test("a graded completion whose save failed stays pending and is retried with the same verdict", async () => {
+  let saveFailure = { statusCode: 503 };
+  const f = fixture((path, method, body) => {
+    if (method === "PUT") {
+      if (saveFailure) throw saveFailure;
+      return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+    }
+    if (method === "POST") return room(body.expected_revision + 1, {}, "completed", "custom");
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await f.controller.start(true);
+  f.controller.edit({ reply: "Hallo Frau Berg" });
+  const graded = ["complete", { text: "Hallo Frau Berg" }, undefined, "signed.verdict.value"];
+  assert.equal(await f.controller.complete(...graded), false);
+  assert.equal(f.view.error, "SaveError");
+  assert.equal(f.view.completionPending, true, "the player offers to try the completion again");
+  assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
+  f.controller.edit({ reply: "changed while pending" });
+  assert.deepEqual(f.view.draft, { reply: "Hallo Frau Berg" }, "the work stays frozen");
+  const recovery = f.controller.recovery();
+  assert.equal(recovery.requestedComplete.verdict, "signed.verdict.value");
+
+  // A lost connection again keeps it pending; then the player's retry (no arguments) completes.
+  saveFailure = new TypeError("Failed to fetch");
+  assert.equal(await f.controller.complete("complete"), false);
+  assert.equal(f.view.completionPending, true);
+  saveFailure = null;
+  assert.equal(await f.controller.complete("complete"), true);
+  const [post] = f.calls.filter(({ method }) => method === "POST");
+  assert.deepEqual(
+    [post.body.action, post.body.answer, post.body.verdict],
+    ["complete", { text: "Hallo Frau Berg" }, "signed.verdict.value"]
+  );
+  assert.equal(f.view.completionPending, false);
+  assert.equal(f.view.room.progress.status, "completed");
+
+  // A refused save (e.g. an oversized state) is no reason to lock the work.
+  const refused = fixture((path, method) => {
+    if (method === "PUT") throw { statusCode: 422 };
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await refused.controller.start(true);
+  refused.controller.edit({ reply: "x" });
+  assert.equal(await refused.controller.complete(...graded), false);
+  assert.equal(refused.view.completionPending, false);
+  assert.equal(refused.controller.recovery().requestedComplete, null);
+});
+
+test("a restored graded completion is retried with its verdict", async () => {
+  const f = fixture((path, method, body) => {
+    if (method === "PUT")
+      return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+    if (method === "POST") return room(body.expected_revision + 1, {}, "completed", "custom");
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : path.startsWith("/skills/rooms?")
+        ? selection(room(0, {}, "in_progress", "custom"))
+        : room(0, {}, "in_progress", "custom");
+  });
+  await f.controller.start(true);
+  assert.equal(
+    await f.controller.restore({
+      unitId: "loops-intro",
+      pathId: "python-loops",
+      courseId: null,
+      revision: 0,
+      reviewId: null,
+      draft: { reply: "Hallo" },
+      dirty: true,
+      editVersion: 1,
+      pendingSave: null,
+      pendingComplete: null,
+      requestedComplete: {
+        action: "complete",
+        answer: { text: "Hallo" },
+        verdict: "restored.verdict.value",
+      },
+      pendingReviewStart: null,
+    }),
+    true
+  );
+  assert.equal(f.view.completionPending, true);
+  assert.equal(await f.controller.complete("complete"), true);
+  const post = f.calls.find(({ method }) => method === "POST");
+  assert.deepEqual(
+    [post.body.answer, post.body.verdict],
+    [{ text: "Hallo" }, "restored.verdict.value"]
+  );
+});
+
+// Review 24.09. N4: a verdict that belongs to another answer or a test mode asks for a new grade.
+test("a foreign or practice verdict asks for a new grade instead of a silent save error", async () => {
+  for (const detail of [
+    "This grading does not belong to this answer",
+    "This grading comes from a test mode and does not count",
+  ]) {
+    const f = fixture((path, method, body) => {
+      if (method === "PUT")
+        return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+      if (method === "POST") throw { statusCode: 403, data: { detail } };
+      return path.endsWith("capabilities")
+        ? { enabled: true }
+        : selection(room(0, {}, "new", "custom"));
+    });
+    await f.controller.start(true);
+    assert.equal(await f.controller.complete("complete", { text: "x" }, undefined, "v.w.x"), false);
+    assert.equal(f.view.error, "GradeAgain", detail);
+    assert.equal(f.view.completionPending, false);
+    assert.equal(f.view.conflict, false);
+  }
+  // A 403 for other reasons stays what it was.
+  const g = fixture((path, method) => {
+    if (method === "POST") throw { statusCode: 403, data: { detail: "No access to this course" } };
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await g.controller.start(true);
+  await g.controller.complete("complete", { text: "x" }, undefined, "v.w.x");
+  assert.equal(g.view.error, "SaveError");
+});
+
+// Review 24.09. H1: without the model a graded activity completes on the ungraded path.
+test("the ungraded answer of a graded activity goes out without a verdict and completes", async () => {
+  const f = fixture((path, method, body) => {
+    // skills-ms as documented for the fallback: exactly this answer, no verdict → introduced.
+    if (method === "POST") {
+      if ("verdict" in body || JSON.stringify(body.answer) !== '{"fallback":"example"}')
+        throw { statusCode: 422 };
+      return {
+        ...room(body.expected_revision + 1, {}, "completed", "custom"),
+        progress: {
+          revision: body.expected_revision + 1,
+          state: {},
+          status: "completed",
+          result: { kind: "introduced" },
+        },
+      };
+    }
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await f.controller.start(true);
+  assert.equal(await f.controller.complete("complete", { fallback: "example" }), true);
+  assert.equal(f.view.error, "", "no 'not quite right' after an honest fallback");
+  assert.deepEqual(f.view.room.progress.result, { kind: "introduced" });
+});
