@@ -2,7 +2,8 @@
  * Browser check for host.llm and host.project with fake skills-ms and llm-ms endpoints.
  * No real gateway, model provider or account. Usage:
  *   node tests/learning-llm.browser.mjs [screenshot-dir]
- * Ports: LLM_BROWSER_PORT (58250) for page and fakes, LLM_BROWSER_CDP (58251) for Chromium.
+ * Ports: LLM_BROWSER_PORT (58250) for page and fakes, LLM_BROWSER_CDP (58251) for Chromium,
+ * both inside LLM_BROWSER_RANGE (58250-58259), so parallel lanes keep to their own ports.
  */
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -12,10 +13,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import ts from "typescript";
 
-const port = Number(process.env.LLM_BROWSER_PORT || 58250);
-const cdpPort = Number(process.env.LLM_BROWSER_CDP || 58251);
+const [low, high] = (process.env.LLM_BROWSER_RANGE || "58250-58259").split("-").map(Number);
+const port = Number(process.env.LLM_BROWSER_PORT || low);
+const cdpPort = Number(process.env.LLM_BROWSER_CDP || low + 1);
 for (const value of [port, cdpPort])
-  if (value < 58250 || value > 58259) throw new Error(`Port ${value} is outside 58250–58259`);
+  if (!(value >= low && value <= high)) throw new Error(`Port ${value} is outside ${low}–${high}`);
 const chromium = process.env.CHROMIUM || "chromium";
 const out = process.argv[2] || (await mkdtemp(join(tmpdir(), "llm-browser-shots-")));
 await mkdir(out, { recursive: true });
@@ -53,7 +55,7 @@ const page = `<!doctype html>
 <body><main><h1>Klingel: Tresen-Bot</h1><div id="surface"></div><p id="player"></p></main>
 <script type="module">
 import { createLearningModuleSession } from "/sdk/learningModule.js";
-import { createLearningLlm } from "/sdk/learningLlm.js";
+import { createLearningLlm, LLM_FALLBACK_ANSWER } from "/sdk/learningLlm.js";
 import { createLearningProject } from "/sdk/learningProject.js";
 const locale = new URLSearchParams(location.search).get("locale") || "de";
 const request = async (path, method = "GET", body) => {
@@ -74,6 +76,12 @@ const llm = createLearningLlm({
   request, send, signal: lifetime.signal, document,
 });
 const project = createLearningProject({ courseId: "llm-course", request });
+const graded = (proof) => ({ action: "complete", answer: { text: proof.text }, verdict: proof.verdict });
+const post = (body) =>
+  request("/skills/rooms/klingel-unit/complete?course=llm-course", "POST", body).then(
+    () => (document.getElementById("player").textContent = "completed"),
+    (error) => (document.getElementById("player").textContent = "refused " + error.statusCode)
+  );
 const surface = document.getElementById("surface");
 const session = createLearningModuleSession({
   descriptor: { id: "llm-host-check", api_version: 1, entry_url: location.origin + "/module/index.js" },
@@ -82,13 +90,16 @@ const session = createLearningModuleSession({
   context: { activityId: "klingel-unit", locale, content: {}, state: {}, disabled: false },
   change: () => {},
   save: async () => true,
-  complete: async (answer) => {
-    const proof = llm.takeProof();
-    const body = proof
-      ? { action: "complete", answer: { text: proof.text }, verdict: proof.verdict }
-      : { action: "complete", answer };
-    await request("/skills/rooms/klingel-unit/complete?course=llm-course", "POST", body);
-    document.getElementById("player").textContent = "completed";
+  // Mirrors CustomActivity: a counting pass completes graded, the fallback ungraded.
+  complete: (answer) => {
+    const proof = llm.peekProof();
+    void post(proof ? graded(proof) : { action: "complete", answer });
+  },
+  fallbackComplete: () => {
+    if (!llm.fallbackAvailable()) return false;
+    const proof = llm.peekProof();
+    void post(proof ? graded(proof) : { action: "complete", answer: { ...LLM_FALLBACK_ANSWER } });
+    return true;
   },
   busy: () => {},
   status: (status) => (document.body.dataset.status = status),
@@ -114,6 +125,8 @@ const state = {
   completions: [],
   requests: [],
   dropNext: false,
+  // "live" signs verdicts, "paused" answers llm_paused, "unsigned" grades like the fake mode.
+  mode: "live",
 };
 const runs = new Map();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -192,6 +205,11 @@ const server = createServer(async (req, res) => {
     });
   }
   if (path === "/skills/rooms/klingel-unit/complete") {
+    // skills-ms as the fallback needs it: a verdict, or exactly the fallback answer without one.
+    const fallback =
+      !("verdict" in data) && JSON.stringify(data.answer) === '{"fallback":"example"}';
+    if (typeof data.verdict !== "string" && !fallback)
+      return reply(res, 422, { detail: "Send your answer together with its grading" });
     state.completions.push(data);
     return reply(res, 200, { ok: true });
   }
@@ -205,6 +223,8 @@ const server = createServer(async (req, res) => {
   }
   if (path === "/llm/v1/respond") {
     if (data.grant !== GRANT) return reply(res, 403, { code: "grant_invalid", retryable: true });
+    if (state.mode === "paused")
+      return reply(res, 503, { code: "llm_paused", message: "paused", retryable: false });
     if (data.profile === "klingel-grade") {
       const answer = data.input[0].content;
       const pass = /lieferzeit|abholen/i.test(answer);
@@ -236,7 +256,7 @@ const server = createServer(async (req, res) => {
                   evidence: pass ? answer.match(/[^.]*(Lieferzeit|abholen)[^.]*/i)[0].trim() : "",
                 },
               ],
-              receipt: pass ? RECEIPT : null,
+              receipt: state.mode === "unsigned" ? null : RECEIPT,
             },
           },
         ],
@@ -341,6 +361,7 @@ try {
     state.completions.length = 0;
     state.requests.length = 0;
     state.dropNext = true;
+    state.mode = "live";
     await command("Page.navigate", { url: `${origin}/?locale=de` });
     await until(`document.querySelector(".llm-check")?.dataset.ready === "llm,project"`, "module");
 
@@ -418,15 +439,22 @@ try {
     assert.deepEqual(state.completions, [
       { action: "complete", answer: { text: passing }, verdict: RECEIPT },
     ]);
+    assert.equal(
+      await evaluate(
+        `[...document.querySelectorAll("#criteria li")].map((li) => li.textContent).join("|")`
+      ),
+      "✓ Begrüßung mit Namen|✓ Wann das Rad abholbereit ist"
+    );
 
-    // Nothing sensitive is reachable from the module's host object.
+    // Only the host API is checked here. A module runs in the same origin and could read
+    // cookies or patch fetch; that protection is server-side (docs/learning-modules.md).
     const reachable = await evaluate(`window.__host().then((host) => JSON.stringify({
       keys: Object.keys(host), llm: Object.keys(host.llm), project: Object.keys(host.project),
       context: host.context, capabilities: host.capabilities,
       fns: [host.llm.respond, host.llm.grade, host.llm.info, host.project.save].map(String).join("")
     }))`);
     for (const secret of [ACCESS, GRANT, RECEIPT, "/llm/v1", "/skills/"])
-      assert.equal(reachable.includes(secret), false, `module can see ${secret}`);
+      assert.equal(reachable.includes(secret), false, `the host API hands out ${secret}`);
 
     const overflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
     assert.ok(overflow <= 0, `no horizontal scrolling at ${width}px (${overflow})`);
@@ -436,8 +464,55 @@ try {
     await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: true }).then(
       ({ data }) => writeFile(join(out, `llm-host-${width}-done.png`), Buffer.from(data, "base64"))
     );
+
+    // 5. Without the model a graded activity still completes, ungraded (PO 24.09.): paused, and
+    // the test host's fake mode that signs nothing. Never "not quite right", never a verdict.
+    for (const mode of ["paused", "unsigned"]) {
+      state.mode = mode;
+      state.completions.length = 0;
+      await command("Page.navigate", { url: `${origin}/?locale=de` });
+      await until(
+        `document.querySelector(".llm-check")?.dataset.ready === "llm,project"`,
+        "module"
+      );
+      await evaluate(`document.getElementById("reply").value = ${JSON.stringify(passing)}`);
+      await evaluate(`document.getElementById("grade").click()`);
+      await until(`!!document.getElementById("example")`, `${mode} example`);
+      assert.equal(
+        await evaluate(`document.querySelector("#example [data-academy-ai-label]").textContent`),
+        "Vorbereitete Beispielantwort"
+      );
+      if (mode === "paused")
+        assert.equal(
+          await evaluate(`document.getElementById("grade-note").textContent`),
+          "Die KI macht gerade Pause. Du kannst trotzdem weitermachen."
+        );
+      else
+        assert.match(await evaluate(`document.getElementById("verdict").textContent`), /Bestanden/);
+      assert.equal(
+        await evaluate(`document.getElementById("continue").textContent`),
+        "Passt, weiter"
+      );
+      if (mode === "paused")
+        await command("Page.captureScreenshot", {
+          format: "png",
+          captureBeyondViewport: true,
+        }).then(({ data }) =>
+          writeFile(join(out, `llm-host-${width}-fallback.png`), Buffer.from(data, "base64"))
+        );
+      await evaluate(`document.getElementById("continue").click()`);
+      await until(`document.getElementById("player").textContent !== ""`, `${mode} completion`);
+      assert.equal(await evaluate(`document.getElementById("player").textContent`), "completed");
+      assert.deepEqual(state.completions, [
+        { action: "complete", answer: { fallback: "example" } },
+      ]);
+      const overflowFallback = await evaluate(
+        `document.documentElement.scrollWidth - window.innerWidth`
+      );
+      assert.ok(overflowFallback <= 0, `no horizontal scrolling in the fallback at ${width}px`);
+    }
     console.log(
-      `ok ${width}px: streamed (${lengths.size} steps, ${rejoins.length} rejoin), project r${state.project.revision}, graded and completed`
+      `ok ${width}px: streamed (${lengths.size} steps, ${rejoins.length} rejoin), project r${state.project.revision}, graded and completed, paused and unsigned completed ungraded`
     );
   }
   assert.deepEqual(exceptions, []);

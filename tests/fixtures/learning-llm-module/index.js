@@ -13,7 +13,8 @@ const copy = {
     save: "Bot-Karte speichern",
     empty: "Noch nichts gespeichert.",
     saved: (revision, name) => `Gespeichert als „${name}“ (Stand ${revision}).`,
-    conflict: "Die Karte wurde woanders geändert. Neu geladen, bitte nochmal speichern.",
+    notSaved:
+      "Das Speichern hat gerade nicht geklappt. Tipp gleich nochmal auf „Bot-Karte speichern“.",
     reply: "Deine Antwort an Frau Berg",
     grade: "Prüfen lassen",
     grading: "Wird geprüft …",
@@ -21,6 +22,12 @@ const copy = {
     failed: "Noch nicht ganz",
     next: "Weiter",
     done: "Abgeschlossen.",
+    criteria: { greeting: "Begrüßung mit Namen", pickup: "Wann das Rad abholbereit ist" },
+    model:
+      "Hallo Frau Berg, danke für Ihre Nachricht. Ihr Rad ist morgen ab 10 Uhr fertig, Sie können es dann abholen.",
+    compare:
+      "Vergleich deine Antwort damit: Sagst du Frau Berg auch, wann sie ihr Rad abholen kann?",
+    confirm: "Passt, weiter",
   },
   en: {
     ask: "Ask Klingel",
@@ -33,7 +40,7 @@ const copy = {
     save: "Save bot card",
     empty: "Nothing saved yet.",
     saved: (revision, name) => `Saved as “${name}” (version ${revision}).`,
-    conflict: "The card changed elsewhere. Reloaded, please save again.",
+    notSaved: "Saving didn't work just now. Tap “Save bot card” again in a moment.",
     reply: "Your reply to Ms Berg",
     grade: "Check my reply",
     grading: "Checking …",
@@ -41,6 +48,11 @@ const copy = {
     failed: "Not quite yet",
     next: "Continue",
     done: "Completed.",
+    criteria: { greeting: "Greeting by name", pickup: "When the bike is ready" },
+    model:
+      "Hello Ms Berg, thanks for your message. Your bike will be ready tomorrow from 10 am, you can pick it up then.",
+    compare: "Compare your reply with it: do you also tell Ms Berg when she can pick up her bike?",
+    confirm: "Looks right, continue",
   },
 };
 
@@ -121,7 +133,7 @@ export function mount(element, host) {
     project.textContent = stored ? t.saved(revision, stored.bot.name) : t.empty;
     gradeHeading.textContent = t.reply;
     grade.textContent = t.grade;
-    next.textContent = t.next;
+    next.textContent = withoutGrading ? t.confirm : t.next;
   }
 
   function showExample(message) {
@@ -153,20 +165,31 @@ export function mount(element, host) {
     { signal: host.signal }
   );
 
+  // Another lesson may have changed the card meanwhile: read, merge this field, save again.
+  async function saveName() {
+    for (let attempt = 0; ; attempt++) {
+      const current = await host.project.get();
+      const state = { ...current.state, bot: { ...(current.state.bot || {}), name: name.value } };
+      try {
+        return await host.project.save(state, current.revision);
+      } catch (error) {
+        if (error?.code !== "conflict" || attempt >= 1) throw error;
+      }
+    }
+  }
+
   save.addEventListener(
     "click",
     async () => {
       if (!host.project) return;
       save.disabled = true;
       try {
-        const current = await host.project.get();
-        const state = { ...current.state, bot: { ...(current.state.bot || {}), name: name.value } };
-        const saved = await host.project.save(state, current.revision);
+        const saved = await saveName();
         revision = saved.revision;
         stored = saved.state;
         texts();
-      } catch (error) {
-        project.textContent = error?.code === "conflict" ? t.conflict : String(error?.code);
+      } catch {
+        project.textContent = t.notSaved;
       } finally {
         save.disabled = false;
       }
@@ -192,39 +215,65 @@ export function mount(element, host) {
     return paragraph;
   }
 
+  // Without the model (paused, used up, down, or a test mode that cannot sign) the learner
+  // compares with the labelled model answer and confirms; that completes ungraded.
+  let withoutGrading = false;
+  function offerExample(message) {
+    const example = node(
+      "div",
+      { id: "example", className: "bubble" },
+      host.llm.label("example"),
+      node("p", { textContent: t.model })
+    );
+    result.append(
+      ...(message ? [node("p", { id: "grade-note", textContent: message })] : []),
+      example,
+      node("p", { id: "compare", textContent: t.compare })
+    );
+    withoutGrading = true;
+    next.textContent = t.confirm;
+    next.hidden = false;
+  }
+
   grade.addEventListener(
     "click",
     async () => {
       if (!host.llm) return;
       grade.disabled = true;
       next.hidden = true;
+      withoutGrading = false;
+      next.textContent = t.next;
       result.replaceChildren(node("p", { textContent: t.grading }));
       host.change({ reply: reply.value });
       await host.save();
       const graded = await host.llm.grade(reply.value);
       grade.disabled = false;
-      if (!graded.ok) {
-        result.replaceChildren(node("p", { textContent: graded.error.message }));
-        return;
+      result.replaceChildren();
+      if (graded.ok) {
+        result.append(
+          host.llm.label("grading"),
+          node("p", {
+            id: "verdict",
+            textContent: `${graded.passed ? t.passed : t.failed} · ${graded.score}/${graded.maxScore}`,
+          }),
+          node("p", { id: "reason", textContent: graded.reason }),
+          marked(
+            reply.value,
+            graded.criteria.filter((c) => c.met)
+          ),
+          node(
+            "ul",
+            { id: "criteria" },
+            ...graded.criteria.map((c) =>
+              node("li", { textContent: `${c.met ? "✓" : "✗"} ${t.criteria[c.id] || c.id}` })
+            )
+          )
+        );
+        next.hidden = !graded.counts;
       }
-      result.replaceChildren(
-        host.llm.label("grading"),
-        node("p", {
-          id: "verdict",
-          textContent: `${graded.passed ? t.passed : t.failed} · ${graded.score}/${graded.maxScore}`,
-        }),
-        node("p", { id: "reason", textContent: graded.reason }),
-        marked(
-          reply.value,
-          graded.criteria.filter((c) => c.met)
-        ),
-        node(
-          "ul",
-          { id: "criteria" },
-          ...graded.criteria.map((c) => node("li", { textContent: `${c.met ? "✓" : "✗"} ${c.id}` }))
-        )
-      );
-      next.hidden = !graded.counts;
+      if (!graded.counts && host.llm.fallbackAvailable())
+        offerExample(graded.ok ? "" : graded.error.message);
+      else if (!graded.ok) result.append(node("p", { textContent: graded.error.message }));
     },
     { signal: host.signal }
   );
@@ -232,7 +281,9 @@ export function mount(element, host) {
   next.addEventListener(
     "click",
     () => {
-      host.complete({ reply: reply.value });
+      if (withoutGrading) {
+        if (!host.llm.fallbackComplete()) return;
+      } else host.complete({ reply: reply.value });
       next.hidden = true;
       result.append(node("p", { id: "done", textContent: t.done }));
     },
