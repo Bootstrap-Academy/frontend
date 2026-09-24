@@ -19,7 +19,7 @@ async function module(name) {
   );
   return import(pathToFileURL(target));
 }
-const { createLearningRooms } = await module("learningRooms");
+const { createLearningRooms, verdictRefusal } = await module("learningRooms");
 const { createLearningExercise } = await module("learningExercise");
 const deferred = () => {
   let resolve, reject;
@@ -1233,7 +1233,8 @@ test("a restored graded completion is retried with its verdict", async () => {
   );
 });
 
-// Review 24.09. N4: a verdict that belongs to another answer or a test mode asks for a new grade.
+// Review 24.09. N4, for servers without the stable codes: a verdict that belongs to another
+// answer or a test mode asks for a new grade.
 test("a foreign or practice verdict asks for a new grade instead of a silent save error", async () => {
   for (const detail of [
     "This grading does not belong to this answer",
@@ -1263,6 +1264,133 @@ test("a foreign or practice verdict asks for a new grade instead of a silent sav
   await g.controller.start(true);
   await g.controller.complete("complete", { text: "x" }, undefined, "v.w.x");
   assert.equal(g.view.error, "SaveError");
+});
+
+// skills-ms refuses verdicts with a stable code (skills-ms 5ac3a5d); the text stays unchanged.
+const refusals = [
+  // A fresh grading fixes these.
+  [409, "verdict_stale", "This grading is out of date. Check your answer again.", "GradeAgain"],
+  [409, "verdict_used", "This grading was already used. Check your answer again.", "GradeAgain"],
+  [403, "verdict_practice", "This grading comes from a test mode and does not count", "GradeAgain"],
+  // Grading again cannot help: calm guidance and the ungraded way on.
+  [403, "verdict_foreign", "This grading does not belong to this answer", "GradingUnavailable"],
+  [503, "verdict_unavailable", "The AI is not available right now", "GradingUnavailable"],
+  [422, "verdict_unexpected", "This room is not graded by the AI", "GradingUnavailable"],
+  // The answer went out without its grading, or the grading did not pass.
+  [422, "verdict_required", "Send your answer together with its grading", "GradeFirst"],
+  [422, "verdict_failed", "Check your answer and try again", "CheckIntroduction"],
+];
+
+test("every verdict refusal code maps to its own guidance and is never sent again", async () => {
+  for (const [statusCode, code, detail, expected] of refusals) {
+    let refuse = true;
+    const f = fixture((path, method, body) => {
+      if (method === "PUT")
+        return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+      if (method === "POST") {
+        if (refuse) throw { statusCode, data: { detail, code } };
+        return room(body.expected_revision + 1, {}, "completed", "custom");
+      }
+      return path.endsWith("capabilities")
+        ? { enabled: true }
+        : selection(room(0, {}, "new", "custom"));
+    });
+    await f.controller.start(true);
+    const verdict = code === "verdict_required" ? undefined : "signed.verdict.value";
+    assert.equal(await f.controller.complete("complete", { text: "x" }, undefined, verdict), false);
+    assert.equal(f.view.error, expected, code);
+    assert.equal(f.view.conflict, false, code);
+    assert.equal(f.view.completionPending, false, `${code}: sending it again never helps`);
+    assert.equal(f.controller.recovery()?.pendingComplete ?? null, null, code);
+    assert.equal(f.controller.recovery()?.requestedComplete ?? null, null, code);
+    // The player's retry without arguments does not resend the refused completion.
+    refuse = false;
+    const posts = f.calls.filter(({ method }) => method === "POST").length;
+    await f.controller.complete("complete");
+    const [, retry] = f.calls.filter(({ method }) => method === "POST");
+    assert.equal(posts, 1, code);
+    assert.equal(retry?.body.verdict, undefined, `${code}: the refused verdict is gone`);
+  }
+});
+
+test("the code decides over the text; the text is read only from servers without codes", () => {
+  const graded = true;
+  // A code is taken at its word, whatever the text says.
+  assert.equal(
+    verdictRefusal(
+      {
+        statusCode: 403,
+        data: { detail: "This grading does not belong", code: "verdict_foreign" },
+      },
+      graded
+    ),
+    "GradingUnavailable"
+  );
+  assert.equal(
+    verdictRefusal({ statusCode: 422, data: { code: "verdict_required" } }, false),
+    "GradeFirst"
+  );
+  // An unknown code or one of another kind is no verdict refusal, even with "grading" in it.
+  for (const code of ["verdict_new_kind", "conflict", "", "__proto__", "toString"])
+    assert.equal(
+      verdictRefusal({ statusCode: 409, data: { detail: "grading", code } }, graded),
+      "",
+      code
+    );
+  // Without a code: 409 and 403 with "grading" in the text, and only for a graded completion.
+  for (const statusCode of [409, 403])
+    assert.equal(
+      verdictRefusal({ statusCode, data: { detail: "This grading is out of date." } }, graded),
+      "GradeAgain"
+    );
+  assert.equal(verdictRefusal({ statusCode: 409, data: { detail: "grading" } }, false), "");
+  for (const statusCode of [422, 503, 500])
+    assert.equal(
+      verdictRefusal(
+        { statusCode, data: { detail: "Send your answer together with its grading" } },
+        graded
+      ),
+      "",
+      String(statusCode)
+    );
+  assert.equal(
+    verdictRefusal({ statusCode: 409, data: { detail: "Your room has changed" } }, graded),
+    ""
+  );
+  assert.equal(verdictRefusal(new TypeError("Failed to fetch"), graded), "");
+});
+
+test("a code-carrying room conflict stays a conflict and a server error without a code stays pending", async () => {
+  let refusal = {
+    statusCode: 409,
+    data: { detail: "This grading is out of date. Check your answer again.", code: "room_moved" },
+  };
+  const f = fixture((path, method, body) => {
+    if (method === "PUT")
+      return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+    if (method === "POST") throw refusal;
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await f.controller.start(true);
+  assert.equal(await f.controller.complete("complete", { text: "x" }, undefined, "v.w.x"), false);
+  assert.equal(f.view.error, "Conflict", "a coded server is never read by its text");
+  assert.equal(f.view.conflict, true);
+
+  const g = fixture((path, method, body) => {
+    if (method === "PUT")
+      return room(body.expected_revision + 1, body.state, "in_progress", "custom");
+    if (method === "POST") throw { statusCode: 503, data: { detail: "Service Unavailable" } };
+    return path.endsWith("capabilities")
+      ? { enabled: true }
+      : selection(room(0, {}, "new", "custom"));
+  });
+  await g.controller.start(true);
+  assert.equal(await g.controller.complete("complete", { text: "x" }, undefined, "v.w.x"), false);
+  assert.equal(g.view.error, "SaveError");
+  assert.equal(g.view.completionPending, true, "a plain outage keeps the graded completion");
+  assert.equal(g.controller.recovery().pendingComplete.verdict, "v.w.x");
 });
 
 // Review 24.09. H1: without the model a graded activity completes on the ungraded path.

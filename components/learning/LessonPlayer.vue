@@ -26,6 +26,7 @@
         :review-id="reviewId"
         :legacy-video="legacyVideo"
         :course-id="courseId"
+        :grading-refused="gradingRefused"
         @change="emit('change', $event)"
         @complete="emit('complete', $event)"
         @posting="emit('posting', $event)"
@@ -58,6 +59,7 @@ const props = defineProps<{
   reviewId?: string;
   legacyVideo?: LegacyVideoContext;
   courseId?: string | null;
+  gradingRefused?: boolean;
 }>();
 const emit = defineEmits<{
   select: [id: string];

@@ -21,7 +21,11 @@ import type {
   LearningModuleData,
   LearningModuleDescriptor,
 } from "~/types/learningModule";
-import type { ExerciseReference, LearningRequest } from "~/types/learningRooms";
+import type {
+  ExerciseReference,
+  LearningCompletionKind,
+  LearningRequest,
+} from "~/types/learningRooms";
 import {
   createLearningModuleSession,
   learningModuleIdentity,
@@ -50,6 +54,10 @@ const props = defineProps<{
   unitId?: string;
   /** Enables `host.project` and binds LLM grants to this course. */
   courseId?: string;
+  /** How skills-ms checks the unit's completion; the ungraded way on exists only at "llm-verdict". */
+  completionKind?: LearningCompletionKind | null;
+  /** skills-ms refused this activity's verdict for good; no grading counts here any more. */
+  gradingRefused?: boolean;
 }>();
 const emit = defineEmits<{
   change: [state: LearningModuleData];
@@ -67,6 +75,9 @@ const heartInfo = useHeartInfo();
 const gateway = useLearningGateway();
 let session: ReturnType<typeof createLearningModuleSession> | undefined;
 let assessment: ReturnType<typeof createLearningModuleAssessment> | undefined;
+let llmClient: ReturnType<typeof createLearningLlm> | undefined;
+/** skills-ms takes the ungraded completion only where it grades by verdict. */
+const gradedByVerdict = () => props.completionKind === "llm-verdict";
 const moduleBusy = ref(false);
 const assessmentBusy = ref(false);
 let alive = true;
@@ -87,7 +98,7 @@ function start() {
   const boundAssessment = assessment;
   // Grants, tokens and verdicts live here, per mount; a new session starts clean.
   const lifetime = new AbortController();
-  const llm =
+  const client =
     props.unitId && props.request
       ? createLearningLlm({
           unitId: props.unitId,
@@ -99,6 +110,12 @@ function start() {
           document: surface.value.ownerDocument,
         })
       : undefined;
+  llmClient = client;
+  if (props.gradingRefused) client?.refuseVerdicts();
+  const llm = client && {
+    ...client,
+    fallbackAvailable: () => gradedByVerdict() && client.fallbackAvailable(),
+  };
   const project =
     props.courseId && props.request
       ? createLearningProject({ courseId: props.courseId, request: props.request })
@@ -129,7 +146,8 @@ function start() {
     },
     // Without the model a graded activity completes ungraded, never with an invented verdict.
     fallbackComplete: () => {
-      if (boundAssessment || props.exercise || !llm?.fallbackAvailable()) return false;
+      if (boundAssessment || props.exercise || !gradedByVerdict() || !llm?.fallbackAvailable())
+        return false;
       const proof = llm.peekProof();
       if (proof) emit("complete", { text: proof.text }, undefined, proof.verdict);
       else emit("complete", { ...LLM_FALLBACK_ANSWER });
@@ -224,6 +242,12 @@ watch(
   { deep: true }
 );
 watch(context, (next) => session?.update(next), { deep: true });
+watch(
+  () => props.gradingRefused,
+  (refused) => {
+    if (refused) llmClient?.refuseVerdicts();
+  }
+);
 onMounted(initialize);
 onBeforeUnmount(() => {
   alive = false;

@@ -48,6 +48,7 @@
           :review-id="view?.room?.progress.review_id || undefined"
           :legacy-video="legacyVideo"
           :course-id="course.id"
+          :grading-refused="view?.error === 'GradingUnavailable'"
           @change="change"
           @complete="complete"
           @posting="posting = $event"
@@ -75,8 +76,8 @@
         </button>
       </template>
       <p v-if="answerRejected" ref="outcome" role="status">{{ t("LearningRooms.Incorrect") }}</p>
-      <p v-else-if="view?.error === 'GradeAgain'" ref="outcome" role="status">
-        {{ t("LearningRooms.GradeAgain") }}
+      <p v-else-if="gradingNotice" ref="outcome" role="status">
+        {{ t(`LearningRooms.${gradingNotice}`) }}
       </p>
       <div v-else-if="saveError || view?.error" ref="outcome" role="alert">
         <p>{{ copy.saveError }}</p>
@@ -158,6 +159,12 @@ const locked = computed(
 // The server rejects a completed answer that does not match with 422. That is
 // feedback on the answer, not a failed save: the work is kept and can be changed.
 const answerRejected = computed(() => view.value?.error === "CheckIntroduction");
+// A refused AI grading is calm guidance for the next step, not a failed save.
+const gradingNotice = computed(() =>
+  ["GradeAgain", "GradeFirst", "GradingUnavailable"].includes(view.value?.error || "")
+    ? view.value!.error
+    : ""
+);
 const finished = computed(() =>
   roomSource
     ? ["completed", "skipped"].includes(view.value?.room?.progress.status || "")

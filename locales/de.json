@@ -1896,6 +1896,8 @@
     "SignIn": "Anmelden",
     "CheckIntroduction": "Schau dir deine Antwort noch einmal an. Du kannst sie direkt hier ändern.",
     "GradeAgain": "Deine KI-Bewertung gilt hier nicht mehr. Lass deine Antwort nochmal prüfen, sie bleibt erhalten.",
+    "GradeFirst": "Lass deine Antwort zuerst von der KI prüfen, sie bleibt erhalten.",
+    "GradingUnavailable": "Deine KI-Bewertung kann hier gerade nicht angerechnet werden. Das liegt nicht an deiner Antwort, und du kannst ohne Bewertung weitermachen.",
     "AlreadyKnow": "Das kenne ich schon",
     "Skipped": "Die Einführung ist übersprungen. Du kannst mit dem nächsten Schritt weitermachen.",
     "IntroductionDone": "Gut, weiter geht’s.",

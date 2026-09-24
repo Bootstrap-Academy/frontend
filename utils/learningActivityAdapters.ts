@@ -49,6 +49,7 @@ export function roomActivity(room: RoomEnvelope): LearningActivity {
         unit.presentation?.allow_skip ??
         (unit.room !== "exercise" && !legacyRequiredUnits.has(unit.id)),
     },
+    ...(unit.completion_kind !== undefined ? { completion_kind: unit.completion_kind } : {}),
   };
 }
 

@@ -40,6 +40,8 @@ const props = defineProps<{
   legacyVideo?: LegacyVideoContext;
   /** The course a lesson activity belongs to; binds LLM grants and the project state. */
   courseId?: string | null;
+  /** skills-ms refused this activity's verdict for good; the ungraded way on opens. */
+  gradingRefused?: boolean;
 }>();
 const emit = defineEmits<{
   change: [state: Record<string, any>];
@@ -99,6 +101,8 @@ const rendererProps = computed(() => {
       reviewId: props.reviewId,
       unitId: props.activity.source.kind === "room" ? props.activity.source.unit_id : undefined,
       courseId: props.courseId || undefined,
+      completionKind: props.activity.completion_kind,
+      gradingRefused: !!props.gradingRefused,
     };
   if (kind.value === "video")
     return {

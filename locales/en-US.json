@@ -1893,6 +1893,8 @@
     "SignIn": "Sign in",
     "CheckIntroduction": "Take another look at your answer. You can change it right here.",
     "GradeAgain": "Your AI grading no longer counts here. Have your answer checked again, it stays as it is.",
+    "GradeFirst": "Have your answer checked by the AI first, it stays as it is.",
+    "GradingUnavailable": "Your AI grading can’t be counted here right now. That’s not down to your answer, and you can carry on without a grading.",
     "AlreadyKnow": "I already know this",
     "Skipped": "You’ve skipped the introduction. You can continue with the next step.",
     "IntroductionDone": "Ready for the next step.",

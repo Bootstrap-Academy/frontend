@@ -133,6 +133,7 @@
           :user-id="user?.id || ''"
           :disabled="locked"
           :course-id="view.courseId"
+          :grading-refused="view.error === 'GradingUnavailable'"
           @change="edit"
           @posting="exercisePosting = $event"
           @complete="completeActivity"

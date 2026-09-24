@@ -146,14 +146,17 @@ export interface LearningModuleLlm {
   /**
    * True when this activity saw the model unavailable (a `fallback` error, or a `retryable` one
    * other than `rate_limited` and `cancelled`) or a grade that cannot count (test mode), and no
-   * counting grade since. Then the module shows its labelled example or model answer.
+   * counting grade since; for good once skills-ms refused the activity's verdicts. Then the
+   * module shows its labelled example or model answer. Always false at an activity that
+   * skills-ms does not complete by verdict (`completion_kind` other than "llm-verdict").
    */
   fallbackAvailable(): boolean;
   /**
    * The ungraded way on for an LLM-graded activity: call it after the learner compared their
    * answer with the labelled example and confirmed. It requests the completion without a verdict
-   * (result "introduced", no XP) and returns false when no fallback was seen or the activity is
-   * locked. A counting pass, if there is one, completes as graded instead.
+   * (result "introduced", no XP) and returns false when no fallback was seen, the activity is
+   * locked or it is not completed by verdict. A counting pass, if there is one, completes as
+   * graded instead.
    */
   fallbackComplete(): boolean;
 }

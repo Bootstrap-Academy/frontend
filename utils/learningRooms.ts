@@ -23,6 +23,36 @@ function envelope(value: any): RoomEnvelope {
     throw new Error("Invalid learning room");
   return value;
 }
+/**
+ * skills-ms refuses a verdict with a stable `code` next to `detail`. `GradeAgain`: a fresh grading
+ * fixes it. `GradingUnavailable`: grading again cannot help (another environment, no verdict key,
+ * a unit it does not grade by verdict), so the host opens the ungraded way on instead.
+ * `GradeFirst`: the answer went out without its grading. A failing grading is a wrong answer.
+ */
+export const VERDICT_REFUSALS: Readonly<Record<string, string>> = Object.freeze({
+  verdict_stale: "GradeAgain",
+  verdict_used: "GradeAgain",
+  verdict_practice: "GradeAgain",
+  verdict_foreign: "GradingUnavailable",
+  verdict_unavailable: "GradingUnavailable",
+  verdict_unexpected: "GradingUnavailable",
+  verdict_required: "GradeFirst",
+  verdict_failed: "CheckIntroduction",
+});
+/** The view error for a refused verdict, or "" when the refusal is about something else. */
+export function verdictRefusal(error: any, withVerdict: boolean) {
+  const status = error?.statusCode || error?.status || error?.response?.status;
+  const code = error?.data?.code;
+  if (typeof code === "string")
+    return Object.hasOwn(VERDICT_REFUSALS, code) ? VERDICT_REFUSALS[code]! : "";
+  // Servers before the codes: a 409 for an expired, reused or outdated verdict and a 403 for one
+  // that belongs to another answer or a test mode, recognizable only by their text.
+  return withVerdict &&
+    (status === 409 || status === 403) &&
+    /grading/i.test(String(error?.data?.detail || ""))
+    ? "GradeAgain"
+    : "";
+}
 function errorKey(error: any) {
   const status = error?.statusCode || error?.status || error?.response?.status;
   return status === 409
@@ -492,15 +522,11 @@ export function createLearningRooms(options: {
             (error as any)?.statusCode ||
             (error as any)?.status ||
             (error as any)?.response?.status;
-          // A graded completion answers 409 for an expired, reused or outdated verdict and 403
-          // for one that belongs to another answer or a test mode. The work is fine; only a
-          // fresh grading helps, so this is neither a revision conflict nor a save error.
-          if (
-            (status === 409 || status === 403) &&
-            pendingComplete?.verdict &&
-            /grading/i.test(String((error as any)?.data?.detail || ""))
-          ) {
-            view.error = "GradeAgain";
+          // A refused verdict is neither a revision conflict nor a save error, and sending the
+          // same completion again never helps (also not after the 503 of a missing verdict key).
+          const refusal = verdictRefusal(error, !!pendingComplete?.verdict);
+          if (refusal) {
+            view.error = refusal;
             pendingComplete = null;
             view.completionPending = false;
           }

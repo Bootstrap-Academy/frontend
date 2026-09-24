@@ -383,6 +383,8 @@ export function createLearningLlm(options: {
   let gradeTicket = 0;
   /** The host saw the model unavailable (or unsigned, in test mode) in this activity. */
   let fallback = false;
+  /** skills-ms refused this activity's verdicts for a reason a new grading cannot fix. */
+  let refused = false;
   /**
    * Calls whose answer never arrived (dropped connection, cancelled listening, unreadable
    * answer), keyed by their exact request. The gateway finishes and bills them anyway, so
@@ -748,6 +750,8 @@ export function createLearningLlm(options: {
       const listen = linked(options.signal, given.signal);
       try {
         if (typeof answer !== "string" || !answer.trim()) throw new HostError("input_empty");
+        // No grading can count here any more: the ungraded way on, without paying for a call.
+        if (refused) throw new HostError("llm_unavailable");
         const profile = typeof given.profile === "string" ? given.profile : await gradingProfile();
         if (!profile) throw new HostError("llm_unavailable");
         const result = await call(
@@ -803,7 +807,8 @@ export function createLearningLlm(options: {
     },
     /**
      * True once this activity saw the model unavailable (paused, allowance used up, provider
-     * down, no grading profile) or an unsigned grade (test mode), until a signed grade.
+     * down, no grading profile) or an unsigned grade (test mode), until a signed grade; for good
+     * once skills-ms refused its verdicts. The player also requires an LLM-graded unit.
      */
     fallbackAvailable() {
       return fallback;
@@ -814,6 +819,18 @@ export function createLearningLlm(options: {
      */
     peekProof() {
       return proof ? { ...proof } : null;
+    },
+    /**
+     * skills-ms refused a verdict of this activity for a reason a new grading cannot fix
+     * (another environment, no verdict key, a unit it does not grade by verdict). Until the
+     * activity closes the proof is gone, `grade()` answers `llm_unavailable` without a call,
+     * a grading still running ends without counting, and the ungraded way on is open.
+     */
+    refuseVerdicts() {
+      refused = true;
+      proof = null;
+      gradeTicket++;
+      fallback = true;
     },
   };
 }

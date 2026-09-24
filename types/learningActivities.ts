@@ -1,5 +1,10 @@
 import type { Course, Lecture, Section } from "./courseTypes";
-import type { ExerciseReference, LocalizedText, RoomEnvelope } from "./learningRooms";
+import type {
+  ExerciseReference,
+  LearningCompletionKind,
+  LocalizedText,
+  RoomEnvelope,
+} from "./learningRooms";
 import type { LearningModuleDescriptor } from "./learningModule";
 
 export type LearningActivityKind =
@@ -30,6 +35,8 @@ export interface LearningActivity {
   completed: boolean | null;
   skip_allowed?: boolean;
   presentation?: { allow_skip?: boolean };
+  /** How skills-ms checks the completion of a room activity; see `LearningUnit`. */
+  completion_kind?: LearningCompletionKind | null;
 }
 
 export interface LearningLesson {

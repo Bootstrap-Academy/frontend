@@ -91,7 +91,13 @@ export interface LearningUnit {
   module?: import("./learningModule").LearningModuleDescriptor;
   presentation?: { allow_skip?: boolean };
   skip_allowed?: boolean;
+  /**
+   * How skills-ms checks a completion (never the answer or rubric). Only "llm-verdict" takes the
+   * ungraded completion without the model; missing on servers before the field.
+   */
+  completion_kind?: LearningCompletionKind | null;
 }
+export type LearningCompletionKind = "introduced" | "llm-verdict";
 export interface RoomEnvelope {
   unit: LearningUnit;
   review_available?: boolean;

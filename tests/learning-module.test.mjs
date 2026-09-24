@@ -745,6 +745,7 @@ async function customActivity(llm, extraProps = {}) {
   return {
     session: sessions[0],
     events,
+    props,
     stop() {
       cleanups.forEach((callback) => callback());
       scope.stop();
@@ -755,10 +756,13 @@ async function customActivity(llm, extraProps = {}) {
 test("the real custom activity completes ungraded only after a fallback, never with a verdict it lacks", async () => {
   let available = false;
   let proof = null;
-  const f = await customActivity({
-    peekProof: () => proof && { ...proof },
-    fallbackAvailable: () => available,
-  });
+  const f = await customActivity(
+    {
+      peekProof: () => proof && { ...proof },
+      fallbackAvailable: () => available,
+    },
+    { completionKind: "llm-verdict" }
+  );
   try {
     assert.equal(f.session.fallbackComplete(), false, "the model works: grading decides");
     assert.deepEqual(f.events, []);
@@ -780,11 +784,85 @@ test("the real custom activity completes ungraded only after a fallback, never w
   // An activity bound to a challenge exercise keeps its own completion authority.
   const exercise = await customActivity(
     { peekProof: () => null, fallbackAvailable: () => true },
-    { exercise: { type: "coding", task_id: "t", subtask_id: "s" } }
+    { exercise: { type: "coding", task_id: "t", subtask_id: "s" }, completionKind: "llm-verdict" }
   );
   try {
     assert.equal(exercise.session.fallbackComplete(), false);
   } finally {
     exercise.stop();
+  }
+});
+
+// skills-ms `completion_kind`: only a unit it completes by verdict takes the ungraded completion.
+test("the real custom activity offers the ungraded way on only where skills-ms completes by verdict", async () => {
+  for (const completionKind of ["introduced", null, undefined, "LLM-VERDICT"]) {
+    const f = await customActivity(
+      { peekProof: () => null, fallbackAvailable: () => true },
+      { completionKind }
+    );
+    try {
+      assert.equal(f.session.llm.fallbackAvailable(), false, String(completionKind));
+      assert.equal(f.session.fallbackComplete(), false, String(completionKind));
+      assert.deepEqual(f.events, [], "nothing goes out");
+      // The kind comes with the room; when it says graded by verdict, the way on follows.
+      f.props.completionKind = "llm-verdict";
+      assert.equal(f.session.llm.fallbackAvailable(), true);
+      assert.equal(f.session.fallbackComplete(), true);
+      assert.deepEqual(f.events, [["complete", { fallback: "example" }]]);
+    } finally {
+      f.stop();
+    }
+  }
+  // A counting pass at a unit that is not graded by verdict still goes out as before.
+  const proof = { text: "Hallo", verdict: "signed.verdict.value" };
+  const introduced = await customActivity(
+    { peekProof: () => ({ ...proof }), fallbackAvailable: () => true },
+    { completionKind: "introduced" }
+  );
+  try {
+    assert.equal(introduced.session.fallbackComplete(), false);
+    introduced.session.complete({ answer: 6 });
+    assert.deepEqual(introduced.events, [
+      ["complete", { text: "Hallo" }, undefined, "signed.verdict.value"],
+    ]);
+  } finally {
+    introduced.stop();
+  }
+});
+
+test("a verdict refused by skills-ms for good ends counting grades in the mounted activity", async () => {
+  let refusals = 0;
+  const llm = {
+    peekProof: () => null,
+    fallbackAvailable: () => refusals > 0,
+    refuseVerdicts: () => refusals++,
+  };
+  const f = await customActivity(llm, { completionKind: "llm-verdict" });
+  try {
+    assert.equal(refusals, 0);
+    assert.equal(f.session.llm.fallbackAvailable(), false);
+    f.props.gradingRefused = true;
+    await Vue.nextTick();
+    assert.equal(refusals, 1);
+    assert.equal(f.session.llm.fallbackAvailable(), true);
+    assert.equal(f.session.fallbackComplete(), true);
+    assert.deepEqual(f.events, [["complete", { fallback: "example" }]]);
+    // The notice going away does not bring counting grades back.
+    f.props.gradingRefused = false;
+    await Vue.nextTick();
+    assert.equal(refusals, 1);
+  } finally {
+    f.stop();
+  }
+  // A remount while the refusal is shown starts refused as well.
+  refusals = 0;
+  const remounted = await customActivity(llm, {
+    completionKind: "llm-verdict",
+    gradingRefused: true,
+  });
+  try {
+    assert.equal(refusals, 1);
+  } finally {
+    remounted.stop();
   }
 });

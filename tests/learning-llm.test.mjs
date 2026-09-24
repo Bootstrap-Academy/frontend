@@ -908,3 +908,51 @@ test("the ungraded way on opens only after the model was unavailable or could no
     "Melde dich kurz neu an, dann ist die KI wieder dabei."
   );
 });
+
+// skills-ms refused a verdict of this activity for good (verdict_foreign, verdict_unavailable,
+// verdict_unexpected): no grading counts any more and none is paid for.
+test("after skills-ms refused the verdicts, no grade counts, none is paid for and the way on opens", async () => {
+  let release;
+  const gate = new Promise((resolve) => (release = resolve));
+  const f = fixture({
+    llm: async (call) => {
+      if (call.body.profile === "chat") return json(200, result(call.body.request_id));
+      if (call.body.input[0].content === "läuft noch") await gate;
+      return json(200, graded(call.body.request_id, "pass", RECEIPT));
+    },
+  });
+  assert.equal((await f.client.grade("gut", { profile: "grader" })).counts, true);
+  assert.equal(f.client.fallbackAvailable(), false);
+  const running = f.client.grade("läuft noch", { profile: "grader" });
+  await new Promise(setImmediate);
+  const before = f.calls.length;
+
+  f.client.refuseVerdicts();
+  assert.equal(f.client.peekProof(), null, "the refused verdict is gone");
+  assert.equal(f.client.fallbackAvailable(), true);
+  release();
+  const late = await running;
+  assert.deepEqual([late.passed, late.counts], [true, false], "a grade still running never counts");
+  assert.equal(f.client.peekProof(), null);
+
+  const again = await f.client.grade("gut", { profile: "grader" });
+  assert.equal(again.ok, false);
+  assert.deepEqual(
+    [again.error.code, again.error.fallback, again.error.retryable],
+    ["llm_unavailable", true, false]
+  );
+  assert.equal(
+    again.error.message,
+    "Die KI ist hier gerade nicht verfügbar. Du kannst trotzdem weitermachen."
+  );
+  assert.equal(f.calls.length, before, "no call to the model after the refusal");
+  assert.equal(f.client.peekProof(), null);
+  assert.equal(f.client.fallbackAvailable(), true, "for good in this activity");
+  // An empty answer is still the learner's to fix first.
+  const empty = await f.client.grade("  ", { profile: "grader" });
+  assert.equal(empty.error.code, "input_empty");
+  assert.equal(f.client.fallbackAvailable(), true);
+  // Other model use goes on.
+  assert.equal((await f.client.respond({ profile: "chat", input: [] })).ok, true);
+  assert.equal(f.client.fallbackAvailable(), true);
+});

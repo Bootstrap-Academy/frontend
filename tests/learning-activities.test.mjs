@@ -66,6 +66,15 @@ test("the room adapter preserves one native identity, draft and proof without an
   assert.equal(adapters.roomLesson(declared).activities[0].presentation.allow_skip, true);
 });
 
+test("a room activity carries the public completion kind only when the server sends it", () => {
+  for (const kind of ["llm-verdict", "introduced", null]) {
+    const graded = room("graded-unit", "custom");
+    graded.unit.completion_kind = kind;
+    assert.equal(adapters.roomActivity(graded).completion_kind, kind);
+  }
+  assert.equal("completion_kind" in adapters.roomActivity(room()), false, "older servers");
+});
+
 test("legacy lesson keeps its optional video separate from native practice and completion", () => {
   const course = { id: "old-course", sections: [] };
   const section = { id: "section-a" };
@@ -506,8 +515,9 @@ async function renderLessonActivity(view, locale) {
   const vueUrl = JSON.stringify(import.meta.resolve("vue"));
   const hostStub = url(
     `import { h } from ${vueUrl};
-export default { inheritAttrs: false, props: ["state", "disabled"], setup: (props) => () =>
-  h("div", { "data-state": JSON.stringify(props.state), "data-disabled": String(props.disabled) }) };`
+export default { inheritAttrs: false, props: ["state", "disabled", "gradingRefused"], setup: (props) => () =>
+  h("div", { "data-state": JSON.stringify(props.state), "data-disabled": String(props.disabled),
+    "data-grading-refused": String(props.gradingRefused) }) };`
   );
   const file = "components/learning/LessonActivity.vue";
   const { descriptor } = parse(await readFile(new URL(`../${file}`, import.meta.url), "utf8"), {
@@ -592,6 +602,122 @@ test("technical save and completion errors in the lesson player keep the retryab
       /role="alert"[^>]*><p>Dein Stand konnte noch nicht gespeichert werden\.<\/p><button[^>]*>Nochmal versuchen<\/button>/
     );
     assert.ok(!html.includes(escapeHtml(locales.de.LearningRooms.Incorrect)));
+  }
+});
+
+test("refused AI gradings are calm guidance; only one that cannot count opens the way on", async () => {
+  const escape = (text) => escapeHtml(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const [error, refused] of [
+    ["GradeAgain", "false"],
+    ["GradeFirst", "false"],
+    ["GradingUnavailable", "true"],
+  ])
+    for (const locale of ["de", "en"]) {
+      const html = await renderLessonActivity(readyRoom({ error }), locale);
+      const message = locales[locale].LearningRooms[error];
+      assert.ok(message, `${locale} ${error}`);
+      assert.match(html, new RegExp(`<p[^>]*role="status"[^>]*>${escape(message)}</p>`));
+      assert.ok(!html.includes('role="alert"'), `${error} is no failed save`);
+      assert.ok(!html.includes(escapeHtml(locales[locale].LearningRooms.Incorrect)));
+      assert.ok(html.includes(`data-grading-refused="${refused}"`), `${error} ${locale}`);
+      assert.ok(html.includes('data-disabled="false"'), "the work stays editable");
+    }
+  const html = await renderLessonActivity(readyRoom({ error: "SaveError", dirty: true }), "de");
+  assert.ok(html.includes('data-grading-refused="false"'));
+});
+
+test("the lesson player hands the grading refusal to the activity host", async () => {
+  const vueUrl = JSON.stringify(import.meta.resolve("vue"));
+  const hostStub = url(
+    `import { h } from ${vueUrl};
+export default { inheritAttrs: false, props: ["gradingRefused", "courseId"], setup: (props) => () =>
+  h("div", { "data-grading-refused": String(props.gradingRefused), "data-course": props.courseId }) };`
+  );
+  const file = "components/learning/LessonPlayer.vue";
+  const { descriptor } = parse(await readFile(new URL(`../${file}`, import.meta.url), "utf8"), {
+    filename: file,
+  });
+  const code = compile(compileScript(descriptor, { id: file, inlineTemplate: true }).content)
+    .replace(/from ["']vue["']/g, `from ${vueUrl}`)
+    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`);
+  const LessonPlayer = (await import(url(code))).default;
+  for (const gradingRefused of [true, false]) {
+    const html = await renderToString(
+      Vue.createSSRApp(LessonPlayer, {
+        lesson: adapters.roomLesson(room("graded-unit", "custom"), "course-a"),
+        locale: "de",
+        courseId: "course-a",
+        gradingRefused,
+      })
+    );
+    assert.ok(html.includes(`data-grading-refused="${gradingRefused}"`), String(gradingRefused));
+    assert.ok(html.includes('data-course="course-a"'));
+  }
+  // The room page derives the flag from the room controller like the course lesson does.
+  const page = parse(await readFile(new URL("../pages/learn.vue", import.meta.url), "utf8"))
+    .descriptor.template.content;
+  assert.match(
+    page,
+    /<LearningLessonPlayer[^>]*:grading-refused="view\.error === 'GradingUnavailable'"/
+  );
+});
+
+test("the activity host passes the completion kind and the refusal only to a custom module", async () => {
+  const source = await readFile(
+    new URL("../components/learning/ActivityHost.vue", import.meta.url),
+    "utf8"
+  );
+  const graded = room("graded-unit", "custom");
+  graded.unit.completion_kind = "llm-verdict";
+  graded.unit.module = {
+    id: "graded-module",
+    api_version: 1,
+    entry_url: "https://lessons.example/graded.js",
+  };
+  const props = Vue.reactive({
+    activity: adapters.roomActivity(graded),
+    state: {},
+    locale: "de",
+    disabled: false,
+    courseId: "course-a",
+    gradingRefused: true,
+  });
+  const scope = Vue.effectScope();
+  try {
+    const host = scope.run(() =>
+      evaluateScript(
+        source,
+        {
+          ...Vue,
+          ...adapters,
+          defineProps: () => props,
+          defineEmits: () => () => {},
+          defineExpose: () => {},
+          onErrorCaptured: () => {},
+          onBeforeUnmount: () => {},
+          loadActivityRenderer: async (name) => ({ name }),
+        },
+        "rendererProps"
+      )
+    );
+    assert.deepEqual(
+      [
+        host.rendererProps.value.unitId,
+        host.rendererProps.value.courseId,
+        host.rendererProps.value.completionKind,
+        host.rendererProps.value.gradingRefused,
+      ],
+      ["graded-unit", "course-a", "llm-verdict", true]
+    );
+    props.gradingRefused = undefined;
+    assert.equal(host.rendererProps.value.gradingRefused, false);
+    props.activity = adapters.roomActivity(room("older-server", "custom"));
+    assert.equal(host.rendererProps.value.completionKind, undefined, "older servers");
+    props.activity = adapters.roomActivity(room());
+    assert.equal("completionKind" in host.rendererProps.value, false, "only custom modules");
+    assert.equal("gradingRefused" in host.rendererProps.value, false);
+  } finally {
+    scope.stop();
   }
 });
 
