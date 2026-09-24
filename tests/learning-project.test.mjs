@@ -23,6 +23,7 @@ const envelope = (revision, state) => ({
 
 function fixture(respond) {
   const calls = [];
+  const waits = [];
   let ids = 0;
   const project = createLearningProject({
     courseId: "llm-course",
@@ -31,8 +32,11 @@ function fixture(respond) {
       calls.push({ path, method, body: body && structuredClone(body) });
       return await respond({ path, method, body }, calls.length);
     },
+    wait: async (ms) => {
+      waits.push(ms);
+    },
   });
-  return { project, calls };
+  return { project, calls, waits };
 }
 const rejection = async (promise) => {
   try {
@@ -89,7 +93,7 @@ test("conflicts, oversized states and outages reject with their contract codes",
     await rejection(fixture(() => Promise.reject({ statusCode: 413 })).project.save({}, 0)),
     { code: "too_large" }
   );
-  const refused = fixture(() => Promise.reject({ statusCode: 503 }));
+  const refused = fixture(() => Promise.reject({ statusCode: 400 }));
   assert.deepEqual(await rejection(refused.project.save({}, 0)), { code: "offline" });
   assert.equal(refused.calls.length, 1, "a refusal is not repeated");
   const big = fixture(() => assert.fail("no request for an oversized state"));
@@ -182,4 +186,41 @@ test("authorize renews only a token the gateway actually refused", async () => {
   assert.equal(t.refreshes(), 1);
   assert.notEqual(second, first);
   assert.equal(second, t.snapshot().accessToken);
+});
+
+// Review 24.09. N5: refusals get their own codes, a server error is retried like a lost answer.
+test("no access and invalid states have their own codes; a server error is retried once", async () => {
+  for (const status of [401, 403, 404]) {
+    const f = fixture(() => Promise.reject({ statusCode: status }));
+    assert.deepEqual(await rejection(f.project.get()), { code: "no_access" }, `get ${status}`);
+    assert.deepEqual(await rejection(f.project.save({}, 0)), { code: "no_access" }, `${status}`);
+    assert.equal(f.calls.length, 2, `${status} is not repeated`);
+  }
+  const invalid = fixture(() => Promise.reject({ statusCode: 422 }));
+  assert.deepEqual(await rejection(invalid.project.save({}, 0)), { code: "invalid" });
+  assert.equal(invalid.calls.length, 1);
+
+  for (const status of [500, 502, 503, 504]) {
+    const f = fixture((call, n) =>
+      n === 1 ? Promise.reject({ statusCode: status }) : envelope(1, call.body.state)
+    );
+    assert.deepEqual(await f.project.save({ step: 1 }, 0), { revision: 1, state: { step: 1 } });
+    assert.deepEqual(f.calls[0], f.calls[1], "the same id and body");
+    assert.deepEqual(f.waits, [1000], "after a short pause, not in the same outage");
+  }
+  const down = fixture(() => Promise.reject({ statusCode: 503 }));
+  assert.deepEqual(await rejection(down.project.save({}, 0)), { code: "offline" });
+  assert.equal(down.calls.length, 2);
+});
+
+// Review 24.09. N6: a lone surrogate cannot be stored as UTF-8 on the server.
+test("a lone surrogate is refused locally; emoji and a written backslash-u are fine", async () => {
+  const f = fixture((call) => envelope(1, call.body.state));
+  assert.deepEqual(await rejection(f.project.save({ name: "Klingel \ud800" }, 0)), {
+    code: "invalid",
+  });
+  assert.deepEqual(await rejection(f.project.save({ ["\udc00"]: 1 }, 0)), { code: "invalid" });
+  assert.equal(f.calls.length, 0);
+  for (const state of [{ name: "Klingel 🚲" }, { note: "\\ud800 steht hier als Text" }])
+    assert.deepEqual(await f.project.save(state, 0), { revision: 1, state });
 });
