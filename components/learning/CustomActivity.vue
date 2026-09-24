@@ -31,7 +31,7 @@ import {
   createLearningModuleAssessment,
   learningModuleState,
 } from "~/utils/learningModuleAssessment";
-import { createLearningLlm } from "~/utils/learningLlm";
+import { createLearningLlm, LLM_FALLBACK_ANSWER } from "~/utils/learningLlm";
 import { createLearningProject } from "~/utils/learningProject";
 
 const props = defineProps<{
@@ -117,14 +117,23 @@ function start() {
     complete: (answer) => {
       if (!boundAssessment) {
         if (props.exercise) return;
-        // A counting grade completes with exactly the graded text and its signed verdict.
-        const proof = llm?.takeProof();
+        // A counting grade completes with exactly the graded text and its signed verdict. The
+        // verdict stays until a new grade, so a completion that did not go out can be repeated.
+        const proof = llm?.peekProof();
         if (proof) emit("complete", { text: proof.text }, undefined, proof.verdict);
         else emit("complete", answer);
         return;
       }
       const proof = boundAssessment.completion();
       if (proof) emit("complete", answer, proof.attemptId);
+    },
+    // Without the model a graded activity completes ungraded, never with an invented verdict.
+    fallbackComplete: () => {
+      if (boundAssessment || props.exercise || !llm?.fallbackAvailable()) return false;
+      const proof = llm.peekProof();
+      if (proof) emit("complete", { text: proof.text }, undefined, proof.verdict);
+      else emit("complete", { ...LLM_FALLBACK_ANSWER });
+      return true;
     },
     assessment: boundAssessment,
     llm,

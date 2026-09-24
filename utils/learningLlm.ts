@@ -8,6 +8,15 @@ import type {
 } from "~/types/learningModule";
 import type { LearningRequest } from "~/types/learningRooms";
 
+/**
+ * The answer of the ungraded completion of an LLM-graded activity: the model was not available,
+ * the learner compared their own answer with the lesson's labelled example and confirmed.
+ * skills-ms completes the unit as `introduced` without a verdict and without XP.
+ */
+export const LLM_FALLBACK_ANSWER: Readonly<{ fallback: "example" }> = Object.freeze({
+  fallback: "example",
+});
+
 export interface SseEvent {
   event: string;
   data: string;
@@ -84,8 +93,8 @@ const messages: Record<string, { de: string; en: string }> = {
     en: "Confirm your email address first to use the AI. You can still carry on.",
   },
   session: {
-    de: "Deine Anmeldung ist abgelaufen. Du kannst trotzdem weitermachen.",
-    en: "Your sign-in has expired. You can still carry on.",
+    de: "Melde dich kurz neu an, dann ist die KI wieder dabei.",
+    en: "Sign in again and the AI is back.",
   },
   request_already_done: {
     de: "Diese Antwort ist nicht mehr abrufbar. Du kannst trotzdem weitermachen.",
@@ -153,7 +162,9 @@ export function llmError(
 class HostError extends Error {
   constructor(
     readonly code: string,
-    readonly extra: { retryAfterMs?: unknown; resetsAt?: unknown } = {}
+    readonly extra: { retryAfterMs?: unknown; resetsAt?: unknown } = {},
+    /** The gateway may have taken the call although no answer of its own arrived. */
+    readonly unsettled = false
   ) {
     super(code);
   }
@@ -173,6 +184,27 @@ function grantError(error: unknown) {
   return new HostError("network");
 }
 
+/**
+ * A status from nginx or another proxy, without our error body. Only a timeout or a server
+ * error is worth pressing again; a missing route, a refusal or an oversized body never is.
+ */
+function proxyCode(status: number) {
+  if (status === 401) return "unauthenticated";
+  if (status === 413) return "input_too_long";
+  if (status === 429) return "rate_limited";
+  if (status === 408 || status >= 500) return "provider_unavailable";
+  return "llm_unavailable";
+}
+
+/** `Retry-After` in seconds or as an HTTP date. */
+function retryAfter(response: Response) {
+  const value = response.headers.get("retry-after")?.trim();
+  if (!value) return undefined;
+  if (/^\d+$/.test(value)) return Number(value) * 1000;
+  const date = Date.parse(value);
+  return Number.isFinite(date) ? Math.max(0, date - Date.now()) : undefined;
+}
+
 async function errorBody(response: Response) {
   let body: any = null;
   try {
@@ -180,19 +212,14 @@ async function errorBody(response: Response) {
   } catch {
     /* nginx or a proxy answered without our error body */
   }
-  const code =
-    typeof body?.code === "string"
-      ? body.code
-      : response.status === 401
-        ? "unauthenticated"
-        : response.status >= 500
-          ? "provider_unavailable"
-          : "invalid_response";
+  const own = typeof body?.code === "string";
   return {
     status: response.status,
-    code,
-    retryAfterMs: body?.retry_after_ms,
+    code: own ? (body.code as string) : proxyCode(response.status),
+    retryAfterMs: own ? body?.retry_after_ms : retryAfter(response),
     resetsAt: body?.details?.resets_at,
+    // A proxy timeout or 5xx may hide a call that runs on in the gateway.
+    unsettled: !own && (response.status === 408 || response.status >= 500),
   };
 }
 
@@ -295,10 +322,11 @@ const MAX_RECONNECTS = 3;
 /** A running call is polled about once a second, at most as long as the gateway lets it run. */
 const MAX_POLLS = 180;
 
-function linked(...signals: (AbortSignal | undefined)[]) {
+function linked(...signals: unknown[]) {
   const controller = new AbortController();
   for (const signal of signals) {
-    if (!signal) continue;
+    // Anything else a module passes as `signal` is ignored, never called.
+    if (!(signal instanceof AbortSignal)) continue;
     if (signal.aborted) controller.abort();
     else
       signal.addEventListener("abort", () => controller.abort(), {
@@ -351,6 +379,16 @@ export function createLearningLlm(options: {
   let granting: Promise<Grant> | null = null;
   let grader: Promise<string | null> | null = null;
   let proof: { text: string; verdict: string } | null = null;
+  /** Only the newest `grade()` may set or clear the proof and the fallback state. */
+  let gradeTicket = 0;
+  /** The host saw the model unavailable (or unsigned, in test mode) in this activity. */
+  let fallback = false;
+  /**
+   * Calls whose answer never arrived (dropped connection, cancelled listening, unreadable
+   * answer), keyed by their exact request. The gateway finishes and bills them anyway, so
+   * asking the same again joins that call under its request id instead of paying twice.
+   */
+  const unanswered = new Map<string, string>();
 
   function currentGrant(stale?: string): Promise<Grant> {
     if (grant && grant.value !== stale && grant.expires - 60000 > now())
@@ -387,7 +425,10 @@ export function createLearningLlm(options: {
     return granting;
   }
 
-  /** One gateway call with token and grant renewal and reconnects under the same request id. */
+  /**
+   * One gateway call with token and grant renewal and reconnects under the same request id.
+   * A call whose answer never arrived is remembered; asking exactly the same again joins it.
+   */
   async function call(
     request: LlmRequest,
     signal: AbortSignal,
@@ -403,10 +444,8 @@ export function createLearningLlm(options: {
       )
     )
       throw new HostError("invalid_request");
-    const requestId = id();
     const body = JSON.parse(
       JSON.stringify({
-        request_id: requestId,
         profile: request.profile,
         ...(request.model ? { model: request.model } : {}),
         locale: language(options.locale()),
@@ -415,119 +454,157 @@ export function createLearningLlm(options: {
         ...(request.params ? { params: request.params } : {}),
       })
     );
-    const accept = onDelta ? "text/event-stream" : "application/json";
-    // Joining a call replays its deltas from the start; forward only what is new.
-    const delivered = new Map<number, string>();
-    const deliver = (sample: number, text: string) => {
-      if (signal.aborted || !onDelta || !text) return;
-      delivered.set(sample, (delivered.get(sample) || "") + text);
-      onDelta({ sample, text });
-    };
-    let current = await currentGrant();
-    let renewToken = false;
-    let renewedToken = false;
-    let renewedGrant = false;
-    let joined = false;
-    let reconnects = 0;
-    let polls = 0;
-    const reconnect = async (ms: number) => {
-      if (reconnects >= MAX_RECONNECTS) return false;
-      reconnects++;
-      joined = true;
-      await wait(ms, signal);
-      return true;
-    };
-    for (;;) {
-      if (signal.aborted) throw new HostError("cancelled");
-      let response: Response;
-      const seen = new Map<number, string>();
-      try {
-        response = joined
-          ? await options.send(
-              `/llm/v1/requests/${encodeURIComponent(requestId)}`,
-              { method: "GET", headers: { Accept: accept }, signal },
-              renewToken
-            )
-          : await options.send(
-              "/llm/v1/respond",
-              {
-                method: "POST",
-                headers: { Accept: accept, "Content-Type": "application/json" },
-                body: JSON.stringify({ ...body, grant: current.value }),
-                signal,
-              },
-              renewToken
+    const key = JSON.stringify(body);
+    const earlier = unanswered.get(key);
+    // Joining an unanswered call first: from the gateway's buffer that costs nothing.
+    let requestId = earlier || id();
+    let joined = !!earlier;
+    let posted = false;
+    try {
+      const result = await exchange();
+      unanswered.delete(key);
+      return result;
+    } catch (error) {
+      const code = error instanceof HostError ? error.code : "network";
+      if (earlier && code === "invalid_response") {
+        // The same unreadable answer again: pressing once more would never help.
+        unanswered.delete(key);
+        throw new HostError("llm_unavailable");
+      }
+      const open =
+        !(error instanceof HostError) ||
+        error.unsettled ||
+        ["network", "cancelled", "invalid_response"].includes(code);
+      if (open && (posted || earlier)) unanswered.set(key, requestId);
+      else unanswered.delete(key);
+      throw error;
+    }
+
+    async function exchange(): Promise<ServerResult> {
+      const accept = onDelta ? "text/event-stream" : "application/json";
+      // Joining a call replays its deltas from the start; forward only what is new.
+      const delivered = new Map<number, string>();
+      const deliver = (sample: number, text: string) => {
+        if (signal.aborted || !onDelta || !text) return;
+        delivered.set(sample, (delivered.get(sample) || "") + text);
+        onDelta({ sample, text });
+      };
+      let current = await currentGrant();
+      let renewToken = false;
+      let renewedToken = false;
+      let renewedGrant = false;
+      let reconnects = 0;
+      let polls = 0;
+      const reconnect = async (ms: number) => {
+        if (reconnects >= MAX_RECONNECTS) return false;
+        reconnects++;
+        joined = true;
+        await wait(ms, signal);
+        return true;
+      };
+      for (;;) {
+        if (signal.aborted) throw new HostError("cancelled");
+        let response: Response;
+        const seen = new Map<number, string>();
+        try {
+          if (!joined) posted = true;
+          response = joined
+            ? await options.send(
+                `/llm/v1/requests/${encodeURIComponent(requestId)}`,
+                { method: "GET", headers: { Accept: accept }, signal },
+                renewToken
+              )
+            : await options.send(
+                "/llm/v1/respond",
+                {
+                  method: "POST",
+                  headers: { Accept: accept, "Content-Type": "application/json" },
+                  body: JSON.stringify({ request_id: requestId, ...body, grant: current.value }),
+                  signal,
+                },
+                renewToken
+              );
+          renewToken = false;
+          if (!response.ok) {
+            const error = await errorBody(response);
+            if (error.status === 401 && !renewedToken) {
+              renewedToken = renewToken = true;
+              continue;
+            }
+            if (["grant_invalid", "grant_expired"].includes(error.code) && !renewedGrant) {
+              renewedGrant = true;
+              current = await currentGrant(current.value);
+              joined = false;
+              continue;
+            }
+            if (error.code === "request_in_progress" && polls < MAX_POLLS) {
+              polls++;
+              joined = true;
+              await wait(count(error.retryAfterMs) || 1000, signal);
+              continue;
+            }
+            // The first POST never arrived: send it again under the same id.
+            if (error.code === "request_unknown" && joined) {
+              joined = false;
+              continue;
+            }
+            // The earlier answer has left the gateway's buffer: this is a new call.
+            if (error.code === "request_already_done" && earlier && !posted) {
+              requestId = id();
+              joined = false;
+              continue;
+            }
+            throw new HostError(
+              error.code === "unauthenticated" ? "session" : error.code,
+              error,
+              error.unsettled
             );
-        renewToken = false;
-        if (!response.ok) {
-          const error = await errorBody(response);
-          if (error.status === 401 && !renewedToken) {
-            renewedToken = renewToken = true;
-            continue;
           }
-          if (["grant_invalid", "grant_expired"].includes(error.code) && !renewedGrant) {
-            renewedGrant = true;
-            current = await currentGrant(current.value);
-            joined = false;
-            continue;
-          }
-          if (error.code === "request_in_progress" && polls < MAX_POLLS) {
-            polls++;
-            joined = true;
-            await wait(count(error.retryAfterMs) || 1000, signal);
-            continue;
-          }
-          // The first POST never arrived: send it again under the same id.
-          if (error.code === "request_unknown" && joined) {
-            joined = false;
-            continue;
-          }
-          throw new HostError(error.code === "unauthenticated" ? "session" : error.code, error);
-        }
-        if (!(response.headers.get("content-type") || "").includes("text/event-stream")) {
-          const result = serverResult(await response.json());
-          catchUp(result.outputs, delivered, deliver);
-          return result;
-        }
-        if (!response.body) throw new HostError("invalid_response");
-        for await (const event of readSse(response.body)) {
-          if (signal.aborted) throw new HostError("cancelled");
-          let data: any;
-          try {
-            data = JSON.parse(event.data);
-          } catch {
-            throw new HostError("invalid_response");
-          }
-          if (event.event === "delta" && typeof data?.text === "string") {
-            const sample = count(data.sample);
-            const text = (seen.get(sample) || "") + data.text;
-            seen.set(sample, text);
-            const already = delivered.get(sample) || "";
-            if (text.length > already.length && text.startsWith(already))
-              deliver(sample, text.slice(already.length));
-          } else if (event.event === "done") {
-            const result = serverResult({ request_id: requestId, ...data });
+          if (!(response.headers.get("content-type") || "").includes("text/event-stream")) {
+            const result = serverResult(await response.json());
             catchUp(result.outputs, delivered, deliver);
             return result;
-          } else if (event.event === "error") {
-            throw new HostError(
-              typeof data?.code === "string" ? data.code : "provider_unavailable",
-              {
-                retryAfterMs: data?.retry_after_ms,
-                resetsAt: data?.details?.resets_at,
-              }
-            );
           }
+          if (!response.body) throw new HostError("invalid_response");
+          for await (const event of readSse(response.body)) {
+            if (signal.aborted) throw new HostError("cancelled");
+            let data: any;
+            try {
+              data = JSON.parse(event.data);
+            } catch {
+              throw new HostError("invalid_response");
+            }
+            if (event.event === "delta" && typeof data?.text === "string") {
+              const sample = count(data.sample);
+              const text = (seen.get(sample) || "") + data.text;
+              seen.set(sample, text);
+              const already = delivered.get(sample) || "";
+              if (text.length > already.length && text.startsWith(already))
+                deliver(sample, text.slice(already.length));
+            } else if (event.event === "done") {
+              const result = serverResult({ request_id: requestId, ...data });
+              catchUp(result.outputs, delivered, deliver);
+              return result;
+            } else if (event.event === "error") {
+              throw new HostError(
+                typeof data?.code === "string" ? data.code : "provider_unavailable",
+                {
+                  retryAfterMs: data?.retry_after_ms,
+                  resetsAt: data?.details?.resets_at,
+                }
+              );
+            }
+          }
+          // The stream ended without `done` or `error`: the connection dropped.
+          if (await reconnect(500 * 2 ** reconnects)) continue;
+          throw new HostError("network");
+        } catch (error) {
+          if (signal.aborted || isAbort(error)) throw new HostError("cancelled");
+          if (error instanceof HostError) throw error;
+          if (status(error) === 401) throw new HostError("session");
+          if (await reconnect(500 * 2 ** reconnects)) continue;
+          throw new HostError("network");
         }
-        // The stream ended without `done` or `error`: the connection dropped.
-        if (await reconnect(500 * 2 ** reconnects)) continue;
-        throw new HostError("network");
-      } catch (error) {
-        if (signal.aborted || isAbort(error)) throw new HostError("cancelled");
-        if (error instanceof HostError) throw error;
-        if (status(error) === 401) throw new HostError("session");
-        if (await reconnect(500 * 2 ** reconnects)) continue;
-        throw new HostError("network");
       }
     }
   }
@@ -607,21 +684,29 @@ export function createLearningLlm(options: {
     return grader;
   }
 
+  /** Seeing the model unavailable opens the ungraded way on; a pressed "stop" or a wait does not. */
+  const unavailable = (error: LlmError) =>
+    error.fallback || (error.retryable && !["cancelled", "rate_limited"].includes(error.code));
+  const optionsOf = (value: unknown): Record<string, unknown> =>
+    value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
   return {
     info,
     async respond(
       request: LlmRequest,
-      respondOptions: {
+      respondOptions?: {
         onDelta?: (delta: { sample: number; text: string }) => void;
         signal?: AbortSignal;
-      } = {}
+      } | null
     ): Promise<LlmResult> {
-      const listen = linked(options.signal, respondOptions.signal);
+      const given = optionsOf(respondOptions);
+      const listen = linked(options.signal, given.signal);
+      const callback = given.onDelta;
       const onDelta =
-        typeof respondOptions.onDelta === "function"
+        typeof callback === "function"
           ? (delta: { sample: number; text: string }) => {
               try {
-                respondOptions.onDelta!({ ...delta });
+                callback({ ...delta });
               } catch {
                 /* A faulty module callback must not break the host's stream. */
               }
@@ -645,20 +730,25 @@ export function createLearningLlm(options: {
           redacted: result.redacted,
         };
       } catch (error) {
-        return { ok: false, error: failure(error) };
+        const failed = failure(error);
+        if (unavailable(failed)) fallback = true;
+        return { ok: false, error: failed };
       } finally {
         listen.abort();
       }
     },
     async grade(
       answer: string,
-      gradeOptions: { profile?: string; signal?: AbortSignal } = {}
+      gradeOptions?: { profile?: string; signal?: AbortSignal } | null
     ): Promise<LlmGradeResult> {
+      // A new grade replaces an earlier pass; an older grade that ends later changes nothing.
+      const ticket = ++gradeTicket;
       proof = null;
-      const listen = linked(options.signal, gradeOptions.signal);
+      const given = optionsOf(gradeOptions);
+      const listen = linked(options.signal, given.signal);
       try {
         if (typeof answer !== "string" || !answer.trim()) throw new HostError("input_empty");
-        const profile = gradeOptions.profile ?? (await gradingProfile());
+        const profile = typeof given.profile === "string" ? given.profile : await gradingProfile();
         if (!profile) throw new HostError("llm_unavailable");
         const result = await call(
           { profile, input: [{ role: "user", content: answer }] },
@@ -671,8 +761,13 @@ export function createLearningLlm(options: {
           throw new HostError("output_invalid");
         }
         // Only a signed pass counts; the fake provider and practice profiles sign nothing.
-        const counts = graded.passed && !!graded.receipt;
-        if (counts) proof = { text: answer, verdict: graded.receipt! };
+        const newest = ticket === gradeTicket;
+        const counts = newest && graded.passed && !!graded.receipt;
+        if (newest) {
+          if (counts) proof = { text: answer, verdict: graded.receipt! };
+          // A signed grade shows the model at work; an unsigned one can never complete.
+          fallback = !graded.receipt;
+        }
         return {
           ok: true,
           passed: graded.passed,
@@ -685,7 +780,9 @@ export function createLearningLlm(options: {
           model: result.model,
         };
       } catch (error) {
-        return { ok: false, error: failure(error) };
+        const failed = failure(error);
+        if (ticket === gradeTicket && unavailable(failed)) fallback = true;
+        return { ok: false, error: failed };
       } finally {
         listen.abort();
       }
@@ -704,11 +801,19 @@ export function createLearningLlm(options: {
       );
       return element;
     },
-    /** The last counting verdict with its exact text, for one completion. */
-    takeProof() {
-      const taken = proof;
-      proof = null;
-      return taken;
+    /**
+     * True once this activity saw the model unavailable (paused, allowance used up, provider
+     * down, no grading profile) or an unsigned grade (test mode), until a signed grade.
+     */
+    fallbackAvailable() {
+      return fallback;
+    },
+    /**
+     * The newest counting verdict with its exact text. It stays until a new `grade()` starts or
+     * the activity closes, so a completion that did not go out can be sent again unchanged.
+     */
+    peekProof() {
+      return proof ? { ...proof } : null;
     },
   };
 }

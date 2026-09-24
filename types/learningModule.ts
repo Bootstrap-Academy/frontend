@@ -124,22 +124,38 @@ export type LlmLabelKind = "live" | "example" | "grading";
 export interface LearningModuleLlm {
   /** Public profile data (models, limits, grading criteria ids); never a prompt. */
   info(profile: string): Promise<Record<string, unknown> | null>;
-  /** Never rejects: expected failures come back as `{ ok: false, error }`. */
+  /**
+   * Never rejects: expected failures come back as `{ ok: false, error }`. Asking exactly the
+   * same again after an answer that never arrived joins that call and is not billed twice.
+   */
   respond(
     request: LlmRequest,
     options?: {
       onDelta?(delta: { sample: number; text: string }): void;
       /** Stops listening; a started answer is still finished and billed on the server. */
       signal?: AbortSignal;
-    }
+    } | null
   ): Promise<LlmResult>;
   /** Grades a free-text answer with the activity's grading profile. Never rejects. */
   grade(
     answer: string,
-    options?: { profile?: string; signal?: AbortSignal }
+    options?: { profile?: string; signal?: AbortSignal } | null
   ): Promise<LlmGradeResult>;
   /** A label to show next to model output the module draws itself (required for live output). */
   label(kind?: LlmLabelKind): HTMLElement;
+  /**
+   * True when this activity saw the model unavailable (a `fallback` error, or a `retryable` one
+   * other than `rate_limited` and `cancelled`) or a grade that cannot count (test mode), and no
+   * counting grade since. Then the module shows its labelled example or model answer.
+   */
+  fallbackAvailable(): boolean;
+  /**
+   * The ungraded way on for an LLM-graded activity: call it after the learner compared their
+   * answer with the labelled example and confirmed. It requests the completion without a verdict
+   * (result "introduced", no XP) and returns false when no fallback was seen or the activity is
+   * locked. A counting pass, if there is one, completes as graded instead.
+   */
+  fallbackComplete(): boolean;
 }
 
 export interface LearningProjectSnapshot {
@@ -147,9 +163,23 @@ export interface LearningProjectSnapshot {
   state: LearningModuleData;
 }
 
+/**
+ * `conflict`: read, merge, save again. `too_large`: over 64 KiB. `offline`: try again later.
+ * `no_access`: signed out or no course access, trying again does not help. `invalid`: the server
+ * cannot store this state. `locked`: the activity is completing or locked right now.
+ */
+export type LearningProjectErrorCode =
+  | "conflict"
+  | "too_large"
+  | "offline"
+  | "no_access"
+  | "invalid"
+  | "locked";
+
 export interface LearningModuleProject {
+  /** Rejects with `{ code: "offline" | "no_access" }`. */
   get(): Promise<LearningProjectSnapshot>;
-  /** Rejects with `{ code: "conflict" | "too_large" | "offline" }`. */
+  /** Rejects with `{ code: LearningProjectErrorCode }`; a non-object state throws a TypeError. */
   save(state: LearningModuleData, expectedRevision: number): Promise<LearningProjectSnapshot>;
 }
 

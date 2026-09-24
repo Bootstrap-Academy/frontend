@@ -73,7 +73,7 @@ test("a saved room projection updates the mounted custom module without restarti
     useI18n: () => ({ t: (key) => key }),
     useHeartInfo: () => Vue.ref(null),
     useLearningGateway: () => ({ send: async () => Promise.reject(new Error("offline")) }),
-    createLearningLlm: () => ({ takeProof: () => null }),
+    createLearningLlm: () => ({ peekProof: () => null, fallbackAvailable: () => false }),
     createLearningProject: () => ({}),
     onMounted: (callback) => mounts.push(callback),
     onBeforeUnmount: (callback) => cleanups.push(callback),
@@ -425,13 +425,21 @@ test("optional platform features are flagged, and a v1 host without them is unch
     respond: async () => ({ ok: true, outputs: [] }),
     grade: async () => ({ ok: true, passed: true }),
     label: () => ({ label: true }),
+    fallbackAvailable: () => false,
   };
   const project = { get: async () => ({ revision: 0, state: {} }), save: async () => ({}) };
   const full = setup({ llm, project });
   await full.session.start();
   assert.deepEqual(full.host.capabilities, ["llm", "project"]);
   assert.equal(Object.isFrozen(full.host.capabilities), true);
-  assert.deepEqual(Object.keys(full.host.llm).sort(), ["grade", "info", "label", "respond"]);
+  assert.deepEqual(Object.keys(full.host.llm).sort(), [
+    "fallbackAvailable",
+    "fallbackComplete",
+    "grade",
+    "info",
+    "label",
+    "respond",
+  ]);
   assert.deepEqual(Object.keys(full.host.project).sort(), ["get", "save"]);
 });
 
@@ -513,7 +521,8 @@ test("a disabled activity cannot grade or save project state; bad requests never
   assert.deepEqual(calls, [null, null]);
   f.session.update({ ...context, disabled: true });
   assert.equal((await f.host.llm.grade("answer")).error.code, "cancelled");
-  await assert.rejects(f.host.project.save({}, 0), (error) => error.code === "offline");
+  // Review 24.09. N7: a locked activity says so instead of pretending to be offline.
+  await assert.rejects(f.host.project.save({}, 0), (error) => error.code === "locked");
 });
 
 test("the real custom activity completes a counting grade with its exact text and verdict", async () => {
@@ -540,7 +549,7 @@ test("the real custom activity completes a counting grade with its exact text an
   const events = [];
   const sessions = [];
   const created = { llm: [], project: [] };
-  let proof = { text: "Hallo Frau Berg", verdict: "signed.verdict.value" };
+  const proof = { text: "Hallo Frau Berg", verdict: "signed.verdict.value" };
   const mounts = [];
   const cleanups = [];
   const bindings = {
@@ -559,13 +568,7 @@ test("the real custom activity completes a counting grade with its exact text an
     useLearningGateway: () => ({ send: "gateway-send" }),
     createLearningLlm: (options) => {
       created.llm.push(options);
-      return {
-        takeProof: () => {
-          const taken = proof;
-          proof = null;
-          return taken;
-        },
-      };
+      return { peekProof: () => ({ ...proof }), fallbackAvailable: () => false };
     },
     createLearningProject: (options) => {
       created.project.push(options);
@@ -595,10 +598,11 @@ test("the real custom activity completes a counting grade with its exact text an
     );
     assert.equal(created.project[0].courseId, "llm-course");
     session.complete({ anything: "the module sent" });
+    // Review 24.09. M1: a completion that did not go out is sent again with the same verdict.
     session.complete({ other: "answer" });
     assert.deepEqual(events, [
       ["complete", { text: "Hallo Frau Berg" }, undefined, "signed.verdict.value"],
-      ["complete", { other: "answer" }],
+      ["complete", { text: "Hallo Frau Berg" }, undefined, "signed.verdict.value"],
     ]);
     // Leaving the activity ends the grant's lifetime.
     session.status("disposed");
@@ -606,5 +610,181 @@ test("the real custom activity completes a counting grade with its exact text an
   } finally {
     cleanups.forEach((callback) => callback());
     scope.stop();
+  }
+});
+
+// Review 24.09. H1, N2 and N7 at the module-facing host.
+test("the ungraded way on is closed without a host decision, while locked and after closing", async () => {
+  let available = false;
+  const requested = [];
+  const seen = [];
+  const llm = {
+    info: async () => null,
+    respond: async (request, options) => {
+      seen.push(options);
+      return { ok: true, outputs: [] };
+    },
+    grade: async (answer, options) => {
+      seen.push(options);
+      return { ok: true, passed: true, counts: false };
+    },
+    label: () => ({}),
+    fallbackAvailable: () => available,
+  };
+  const without = setup({ llm });
+  await without.session.start();
+  assert.equal(without.host.llm.fallbackComplete(), false, "no player wiring, no completion");
+
+  const f = setup({
+    llm,
+    fallbackComplete: () => {
+      requested.push(available);
+      return available;
+    },
+  });
+  await f.session.start();
+  assert.deepEqual([f.host.llm.fallbackAvailable(), f.host.llm.fallbackComplete()], [false, false]);
+  available = true;
+  assert.deepEqual([f.host.llm.fallbackAvailable(), f.host.llm.fallbackComplete()], [true, true]);
+  f.session.update({ ...context, disabled: true });
+  assert.equal(f.host.llm.fallbackComplete(), false, "a locked activity cannot complete");
+  f.session.update(context);
+
+  // Options a module gets wrong are ignored instead of throwing (N2).
+  const request = { profile: "chat", input: [] };
+  assert.equal((await f.host.llm.respond(request, null)).ok, true);
+  assert.equal((await f.host.llm.respond(request, { signal: {}, onDelta: 1 })).ok, true);
+  assert.equal((await f.host.llm.grade("answer", null)).ok, true);
+  assert.equal((await f.host.llm.grade("answer", { signal: "x", profile: 3 })).ok, true);
+  assert.deepEqual(seen, [
+    { signal: undefined },
+    { signal: undefined },
+    { signal: undefined },
+    { signal: undefined },
+  ]);
+  const listen = new AbortController();
+  await f.host.llm.grade("answer", { signal: listen.signal, profile: "grader" });
+  assert.deepEqual(seen.at(-1), { signal: listen.signal, profile: "grader" });
+
+  // A non-object is a programming error with the documented type (N7).
+  assert.throws(() => f.host.change("text"), TypeError);
+  assert.throws(() => f.host.complete(null), TypeError);
+
+  f.session.dispose();
+  assert.deepEqual([f.host.llm.fallbackAvailable(), f.host.llm.fallbackComplete()], [false, false]);
+  assert.deepEqual(requested, [false, true]);
+});
+
+const { LLM_FALLBACK_ANSWER } = await import(
+  `data:text/javascript;base64,${Buffer.from(
+    ts.transpileModule(
+      await readFile(new URL("../utils/learningLlm.ts", import.meta.url), "utf8"),
+      { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext } }
+    ).outputText
+  ).toString("base64")}`
+);
+
+async function customActivity(llm, extraProps = {}) {
+  const source = await readFile(
+    new URL("../components/learning/CustomActivity.vue", import.meta.url),
+    "utf8"
+  );
+  const script = parse(source).descriptor.scriptSetup.content;
+  const ast = ts.createSourceFile("custom.ts", script, ts.ScriptTarget.Latest, true);
+  const body = ast.statements
+    .filter((node) => !ts.isImportDeclaration(node))
+    .map((node) => node.getText(ast))
+    .join("\n");
+  const compiled = ts.transpileModule(body, {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  const props = Vue.reactive({
+    module: { ...descriptor },
+    ...context,
+    unitId: "llm-unit",
+    courseId: "llm-course",
+    request: async () => ({}),
+    ...extraProps,
+  });
+  const events = [];
+  const sessions = [];
+  const mounts = [];
+  const cleanups = [];
+  const bindings = {
+    ...Vue,
+    ...assessmentModule,
+    learningModuleIdentity,
+    LLM_FALLBACK_ANSWER,
+    window: { location: { origin: "https://bootstrap.example" } },
+    defineProps: () => props,
+    defineEmits:
+      () =>
+      (name, ...args) =>
+        events.push([name, ...args]),
+    defineExpose: () => {},
+    useI18n: () => ({ t: (key) => key }),
+    useHeartInfo: () => Vue.ref(null),
+    useLearningGateway: () => ({ send: () => {} }),
+    createLearningLlm: () => llm,
+    createLearningProject: () => ({}),
+    onMounted: (callback) => mounts.push(callback),
+    onBeforeUnmount: (callback) => cleanups.push(callback),
+    createLearningModuleSession: (options) => {
+      sessions.push(options);
+      return { start() {}, update() {}, dispose() {} };
+    },
+  };
+  const scope = Vue.effectScope();
+  const fixture = scope.run(() =>
+    new Function(...Object.keys(bindings), `${compiled}\nreturn {surface};`)(
+      ...Object.values(bindings)
+    )
+  );
+  fixture.surface.value = { ownerDocument: "document" };
+  mounts.forEach((callback) => callback());
+  return {
+    session: sessions[0],
+    events,
+    stop() {
+      cleanups.forEach((callback) => callback());
+      scope.stop();
+    },
+  };
+}
+
+test("the real custom activity completes ungraded only after a fallback, never with a verdict it lacks", async () => {
+  let available = false;
+  let proof = null;
+  const f = await customActivity({
+    peekProof: () => proof && { ...proof },
+    fallbackAvailable: () => available,
+  });
+  try {
+    assert.equal(f.session.fallbackComplete(), false, "the model works: grading decides");
+    assert.deepEqual(f.events, []);
+    available = true;
+    assert.equal(f.session.fallbackComplete(), true);
+    assert.deepEqual(f.events, [["complete", { fallback: "example" }]]);
+    // A counting pass is the stronger result and completes as graded.
+    proof = { text: "Hallo Frau Berg", verdict: "signed.verdict.value" };
+    assert.equal(f.session.fallbackComplete(), true);
+    assert.deepEqual(f.events.at(-1), [
+      "complete",
+      { text: "Hallo Frau Berg" },
+      undefined,
+      "signed.verdict.value",
+    ]);
+  } finally {
+    f.stop();
+  }
+  // An activity bound to a challenge exercise keeps its own completion authority.
+  const exercise = await customActivity(
+    { peekProof: () => null, fallbackAvailable: () => true },
+    { exercise: { type: "coding", task_id: "t", subtask_id: "s" } }
+  );
+  try {
+    assert.equal(exercise.session.fallbackComplete(), false);
+  } finally {
+    exercise.stop();
   }
 });

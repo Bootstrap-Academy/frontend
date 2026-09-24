@@ -25,7 +25,7 @@ function requestSnapshot<T>(value: T): T {
 
 function dataSnapshot(value: LearningModuleData): LearningModuleData {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
-    throw new Error("Module data must be an object");
+    throw new TypeError("Module data must be an object");
   }
   return snapshot(value);
 }
@@ -87,7 +87,9 @@ export function createLearningModuleSession(options: {
   save: () => Promise<boolean>;
   complete: (answer: LearningModuleData) => void;
   assessment?: LearningModuleAssessmentActions;
-  llm?: LearningModuleLlm;
+  llm?: Omit<LearningModuleLlm, "fallbackComplete">;
+  /** Completes an LLM-graded activity without a verdict; false when that is not allowed. */
+  fallbackComplete?: () => boolean;
   project?: LearningModuleProject;
   busy: (busy: boolean) => void;
   status: (status: LearningModuleStatus) => void;
@@ -115,6 +117,10 @@ export function createLearningModuleSession(options: {
   });
   const llm = options.llm;
   const project = options.project;
+  // Modules may pass anything as options; only real values are used, nothing throws.
+  const given = (value: unknown): Record<string, unknown> =>
+    value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const signalOf = (value: unknown) => (value instanceof AbortSignal ? value : undefined);
 
   function cleanup() {
     abort.abort();
@@ -153,24 +159,38 @@ export function createLearningModuleSession(options: {
         const value = await llm.info(profile);
         return closed || !value ? null : snapshot(value);
       },
-      async respond(request, respondOptions = {}) {
+      async respond(request, respondOptions) {
         if (closed) return cancelled(context.locale);
-        const onDelta = respondOptions.onDelta;
+        const { onDelta, signal } = given(respondOptions);
         const result = await llm.respond(requestSnapshot(request), {
-          signal: respondOptions.signal,
+          signal: signalOf(signal),
           ...(typeof onDelta === "function"
-            ? { onDelta: (delta) => (closed ? undefined : onDelta({ ...delta })) }
+            ? {
+                onDelta: (delta: { sample: number; text: string }) =>
+                  closed ? undefined : onDelta({ ...delta }),
+              }
             : {}),
         });
         return closed ? cancelled(context.locale) : snapshot(result);
       },
-      async grade(answer, gradeOptions = {}) {
+      async grade(answer, gradeOptions) {
         if (closed || context.disabled) return cancelled(context.locale);
-        const result = await llm.grade(answer, gradeOptions);
+        const { profile, signal } = given(gradeOptions);
+        const result = await llm.grade(answer, {
+          ...(typeof profile === "string" ? { profile } : {}),
+          signal: signalOf(signal),
+        });
         return closed ? cancelled(context.locale) : snapshot(result);
       },
       label(kind) {
         return llm.label(kind);
+      },
+      fallbackAvailable() {
+        return !closed && llm.fallbackAvailable();
+      },
+      fallbackComplete() {
+        if (closed || context.disabled) return false;
+        return options.fallbackComplete?.() === true;
       },
     },
     project: project && {
@@ -181,7 +201,9 @@ export function createLearningModuleSession(options: {
         return snapshot(value);
       },
       async save(state, expectedRevision) {
-        if (closed || context.disabled) throw { code: "offline" };
+        if (closed) throw { code: "offline" };
+        // While a completion runs the work is frozen; saving again later works.
+        if (context.disabled) throw { code: "locked" };
         const value = await project.save(dataSnapshot(state), expectedRevision);
         if (closed) throw { code: "offline" };
         return snapshot(value);

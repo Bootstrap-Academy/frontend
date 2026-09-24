@@ -312,7 +312,7 @@ for (const rotateGrant of [false, true])
       useI18n: () => ({ t: (key) => key }),
       useHeartInfo: () => Vue.ref(null),
       useLearningGateway: () => ({ send: async () => Promise.reject(new Error("offline")) }),
-      createLearningLlm: () => ({ takeProof: () => null }),
+      createLearningLlm: () => ({ peekProof: () => null, fallbackAvailable: () => false }),
       createLearningProject: () => ({}),
       defineEmits:
         () =>
@@ -438,7 +438,7 @@ for (const file of ["CustomActivity.vue", "ActivityHost.vue"])
       useI18n: () => ({ t: (key) => key }),
       useHeartInfo: () => Vue.ref(null),
       useLearningGateway: () => ({ send: async () => Promise.reject(new Error("offline")) }),
-      createLearningLlm: () => ({ takeProof: () => null }),
+      createLearningLlm: () => ({ peekProof: () => null, fallbackAvailable: () => false }),
       createLearningProject: () => ({}),
       onMounted: (callback) => mounted.push(callback),
       onBeforeUnmount: (callback) => cleanups.push(callback),

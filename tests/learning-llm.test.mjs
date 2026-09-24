@@ -7,7 +7,7 @@ const compile = (source) =>
   ts.transpileModule(source, {
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
   }).outputText;
-const { createLearningLlm, readSse, llmError } = await import(
+const { createLearningLlm, readSse, llmError, LLM_FALLBACK_ANSWER } = await import(
   `data:text/javascript;base64,${Buffer.from(
     compile(await readFile(new URL("../utils/learningLlm.ts", import.meta.url), "utf8"))
   ).toString("base64")}`
@@ -528,9 +528,15 @@ test("grading finds the grading profile, returns the details and keeps the verdi
     model: { alias: "fast", id: "gpt-6-luna" },
   });
   assert.deepEqual(secretsIn(grade), []);
-  assert.deepEqual(f.client.takeProof(), { text: answer, verdict: RECEIPT });
-  assert.equal(f.client.takeProof(), null, "a verdict completes once");
+  assert.deepEqual(f.client.peekProof(), { text: answer, verdict: RECEIPT });
+  f.client.peekProof().text = "changed by the caller";
+  assert.deepEqual(
+    f.client.peekProof(),
+    { text: answer, verdict: RECEIPT },
+    "the verdict stays until a new grade, so a completion can be sent again"
+  );
   await f.client.grade("Zweiter Versuch");
+  assert.equal(f.client.peekProof().text, "Zweiter Versuch");
   assert.equal(
     f.calls.filter((call) => call.path.startsWith("/llm/v1/profiles/")).length,
     2,
@@ -548,12 +554,12 @@ test("a failed or unsigned grade never counts, a new grade replaces an earlier p
   verdict = "fail";
   const failed = await f.client.grade("schlecht", { profile: "grader" });
   assert.deepEqual([failed.passed, failed.counts], [false, false]);
-  assert.equal(f.client.takeProof(), null, "the later failed grade decides");
+  assert.equal(f.client.peekProof(), null, "the later failed grade decides");
   verdict = "pass";
   receipt = null;
   const practice = await f.client.grade("gut", { profile: "grader" });
   assert.deepEqual([practice.passed, practice.counts], [true, false]);
-  assert.equal(f.client.takeProof(), null);
+  assert.equal(f.client.peekProof(), null);
   const empty = await f.client.grade("   ", { profile: "grader" });
   assert.deepEqual([empty.error.code, empty.error.fallback], ["input_empty", false]);
   const blocked = fixture({
@@ -575,7 +581,7 @@ test("respond never passes a signed verdict on and the AI label is localized", a
   assert.equal(answer.outputs[0].type, "json");
   assert.equal(answer.outputs[0].json.passed, true);
   assert.deepEqual(secretsIn(answer), []);
-  assert.equal(f.client.takeProof(), null, "only grade() can complete a room");
+  assert.equal(f.client.peekProof(), null, "only grade() can complete a room");
   const label = f.client.label("grading");
   assert.equal(label.textContent, "KI-Bewertung, kann irren");
   assert.equal(label.dataset.academyAiLabel, "grading");
@@ -602,4 +608,303 @@ test("a grading profile lookup that failed on the network is asked again", async
   const second = await f.client.grade("Antwort");
   assert.equal(second.ok, true);
   assert.equal(f.calls.at(-1).body.profile, "grader");
+});
+
+// Review 24.09. M4: nginx or another proxy answers with a status and an HTML page.
+test("proxy answers without our body map per status and are never an endless retry", async () => {
+  const html =
+    (status, headers = {}) =>
+    () =>
+      new Response("<html><body>nginx</body></html>", {
+        status,
+        headers: { "content-type": "text/html", ...headers },
+      });
+  const cases = [
+    [404, "llm_unavailable", "fallback"],
+    [405, "llm_unavailable", "fallback"],
+    [400, "llm_unavailable", "fallback"],
+    [403, "llm_unavailable", "fallback"],
+    [422, "llm_unavailable", "fallback"],
+    [413, "input_too_long", "edit"],
+    [429, "rate_limited", "retry"],
+    [408, "provider_unavailable", "retry"],
+    [502, "provider_unavailable", "retry"],
+    [503, "provider_unavailable", "retry"],
+    [504, "provider_unavailable", "retry"],
+  ];
+  for (const [status, code, action] of cases)
+    for (const stream of [false, true]) {
+      const f = fixture({ llm: html(status) });
+      const answer = await f.client.respond(
+        { profile: "chat", input: [] },
+        stream ? { onDelta() {} } : {}
+      );
+      assert.equal(answer.error.code, code, `${status}`);
+      assert.equal(answer.error.fallback, action === "fallback", `${status} fallback`);
+      assert.equal(answer.error.retryable, action === "retry", `${status} retryable`);
+      assert.equal(f.calls.length, 1, `${status} is not repeated by the host`);
+    }
+  const seconds = fixture({ llm: html(429, { "retry-after": "7" }) });
+  const wait = await seconds.client.respond({ profile: "chat", input: [] });
+  assert.equal(wait.error.retryAfterMs, 7000);
+  const date = new Date(Date.now() + 30000).toUTCString();
+  const dated = fixture({ llm: html(429, { "retry-after": date }) });
+  const later = (await dated.client.respond({ profile: "chat", input: [] })).error.retryAfterMs;
+  assert.ok(later > 27000 && later <= 30000, `${later}`);
+});
+
+// Review 24.09. M3: "Nochmal" after a lost answer must not pay for the same answer twice.
+test("asking the same again after a lost answer joins that call instead of paying twice", async () => {
+  let online = false;
+  const f = fixture({
+    llm: (call) => {
+      if (!online) throw new TypeError("fetch failed");
+      if (call.method === "GET") return json(200, result("request-1", "Hallo"));
+      return json(200, result(call.body.request_id, "neu"));
+    },
+  });
+  const request = { profile: "chat", input: [{ role: "user", content: "hi" }] };
+  const lost = await f.client.respond(request);
+  assert.deepEqual([lost.error.code, lost.error.retryable], ["network", true]);
+  assert.equal(f.calls.length, 4, "one POST and three reconnects");
+  online = true;
+  const deltas = [];
+  const again = await f.client.respond(request, { onDelta: (delta) => deltas.push(delta.text) });
+  assert.equal(again.ok, true);
+  assert.equal(again.outputs[0].text, "Hallo");
+  assert.deepEqual(deltas, ["Hallo"]);
+  assert.deepEqual(
+    f.calls.slice(4).map((call) => [call.method, call.path]),
+    [["GET", "/llm/v1/requests/request-1"]],
+    "the retry joins the first call; no second POST"
+  );
+  // Once answered, the same question is a new call: a lesson may ask twice on purpose.
+  const third = await f.client.respond(request);
+  assert.equal(third.outputs[0].text, "neu");
+  assert.deepEqual([f.calls.at(-1).method, f.calls.at(-1).body.request_id], ["POST", "request-2"]);
+  // Another question never joins.
+  await f.client.respond({ profile: "chat", input: [{ role: "user", content: "anders" }] });
+  assert.equal(f.calls.at(-1).body.request_id, "request-3");
+});
+
+test("a joined call that never arrived is sent under its id, an expired one is asked anew", async () => {
+  let phase = "down";
+  const f = fixture({
+    llm: (call) => {
+      if (phase === "down") throw new TypeError("fetch failed");
+      if (call.method === "GET")
+        return phase === "unknown"
+          ? json(404, { code: "request_unknown", message: "", retryable: false })
+          : json(409, {
+              code: "request_already_done",
+              message: "",
+              retryable: false,
+              details: { status: "completed" },
+            });
+      return json(200, result(call.body.request_id));
+    },
+  });
+  const request = { profile: "chat", input: [] };
+  const describe = (call) => [call.method, call.body?.request_id ?? call.path];
+  await f.client.respond(request);
+  phase = "unknown";
+  assert.equal((await f.client.respond(request)).ok, true);
+  assert.deepEqual(f.calls.slice(4).map(describe), [
+    ["GET", "/llm/v1/requests/request-1"],
+    ["POST", "request-1"],
+  ]);
+  phase = "down";
+  await f.client.respond(request);
+  phase = "done";
+  assert.equal((await f.client.respond(request)).ok, true);
+  assert.deepEqual(f.calls.slice(-2).map(describe), [
+    ["GET", "/llm/v1/requests/request-2"],
+    ["POST", "request-3"],
+  ]);
+});
+
+test("a lost grade, a proxy timeout and a cancelled listen are joined; a gateway error is not", async () => {
+  const request = { profile: "chat", input: [{ role: "user", content: "hi" }] };
+  let online = false;
+  const f = fixture({
+    llm: (call) => {
+      if (!online) throw new TypeError("fetch failed");
+      return json(200, graded(call.body?.request_id ?? "request-1", "pass", RECEIPT));
+    },
+  });
+  assert.equal(
+    (await f.client.grade("Hallo Frau Berg", { profile: "grader" })).error.code,
+    "network"
+  );
+  online = true;
+  const found = await f.client.grade("Hallo Frau Berg", { profile: "grader" });
+  assert.equal(found.counts, true);
+  assert.equal(f.calls.filter((call) => call.method === "POST").length, 1);
+  assert.deepEqual(f.client.peekProof(), { text: "Hallo Frau Berg", verdict: RECEIPT });
+
+  let gateway = "timeout";
+  const g = fixture({
+    llm: (call) =>
+      gateway === "timeout"
+        ? new Response("<html>504</html>", { status: 504 })
+        : json(200, result(call.body?.request_id ?? "request-1")),
+  });
+  assert.equal((await g.client.respond(request)).error.code, "provider_unavailable");
+  gateway = "ok";
+  assert.equal((await g.client.respond(request)).ok, true);
+  assert.deepEqual(
+    g.calls.map((call) => call.method),
+    ["POST", "GET"]
+  );
+
+  const listen = new AbortController();
+  const c = fixture({
+    llm: (call) =>
+      call.method === "POST"
+        ? sse([event("delta", { sample: 0, text: "Erst" })], { hang: true, signal: call.signal })
+        : sse([
+            event("delta", { sample: 0, text: "Erst" }),
+            event("delta", { sample: 0, text: "mal" }),
+            event("done", result("request-1", "Erstmal")),
+          ]),
+  });
+  const stopped = await c.client.respond(request, {
+    signal: listen.signal,
+    onDelta: () => listen.abort(),
+  });
+  assert.equal(stopped.error.code, "cancelled");
+  const deltas = [];
+  assert.equal((await c.client.respond(request, { onDelta: (d) => deltas.push(d.text) })).ok, true);
+  assert.deepEqual(deltas, ["Erst", "mal"]);
+  assert.deepEqual(
+    c.calls.map((call) => call.method),
+    ["POST", "GET"]
+  );
+
+  // The gateway answered with its own error: that call is settled, a new try is a new id.
+  const h = fixture({
+    llm: (call, n) =>
+      n === 1
+        ? json(503, { code: "provider_unavailable", retryable: true, retry_after_ms: 5000 })
+        : json(200, result(call.body.request_id)),
+  });
+  await h.client.respond(request);
+  await h.client.respond(request);
+  assert.deepEqual(
+    h.calls.map((call) => [call.method, call.body.request_id]),
+    [
+      ["POST", "request-1"],
+      ["POST", "request-2"],
+    ]
+  );
+
+  // The same unreadable answer twice falls back instead of offering "again" forever.
+  const broken = fixture({ llm: () => json(200, { request_id: "x" }) });
+  const once = await broken.client.respond(request);
+  assert.deepEqual([once.error.code, once.error.retryable], ["invalid_response", true]);
+  const twice = await broken.client.respond(request);
+  assert.deepEqual([twice.error.code, twice.error.fallback], ["llm_unavailable", true]);
+  assert.deepEqual(
+    broken.calls.map((call) => call.method),
+    ["POST", "GET"]
+  );
+});
+
+// Review 24.09. N1.
+test("only the newest grade decides, even when an older one finishes later", async () => {
+  let release;
+  const gate = new Promise((resolve) => (release = resolve));
+  const f = fixture({
+    llm: async (call) => {
+      if (call.body.input[0].content === "alt und gut") {
+        await gate;
+        return json(200, graded(call.body.request_id, "pass", RECEIPT));
+      }
+      return json(200, graded(call.body.request_id, "fail", "signed.fail.verdict"));
+    },
+  });
+  const older = f.client.grade("alt und gut", { profile: "grader" });
+  await new Promise(setImmediate);
+  const newer = await f.client.grade("neu", { profile: "grader" });
+  assert.deepEqual([newer.passed, newer.counts], [false, false]);
+  release();
+  const late = await older;
+  assert.deepEqual([late.passed, late.counts], [true, false], "an outdated pass does not count");
+  assert.equal(f.client.peekProof(), null);
+});
+
+// Review 24.09. N2.
+test("odd options from a module are ignored instead of throwing", async () => {
+  const f = fixture({
+    llm: (call) =>
+      call.path.startsWith("/llm/v1/profiles/")
+        ? json(200, { output: { type: call.path.endsWith("grader") ? "grading" : "text" } })
+        : json(
+            200,
+            call.body.profile === "grader"
+              ? graded(call.body.request_id, "pass", RECEIPT)
+              : result(call.body.request_id)
+          ),
+  });
+  const request = { profile: "chat", input: [] };
+  assert.equal((await f.client.respond(request, null)).ok, true);
+  assert.equal((await f.client.respond(request, { signal: {}, onDelta: 5 })).ok, true);
+  assert.equal((await f.client.grade("Antwort", null)).counts, true);
+  assert.equal((await f.client.grade("Antwort", { signal: "no", profile: 7 })).counts, true);
+});
+
+// Review 24.09. H1: the host decides when the ungraded way on is honest.
+test("the ungraded way on opens only after the model was unavailable or could not sign", async () => {
+  let reply;
+  const f = fixture({ llm: (call) => reply(call) });
+  const grade = () => f.client.grade("Meine Antwort", { profile: "grader" });
+  assert.equal(f.client.fallbackAvailable(), false);
+  for (const [status, code] of [
+    [429, "rate_limited"],
+    [422, "input_blocked"],
+    [400, "input_too_long"],
+  ]) {
+    reply = () => json(status, { code, message: "", retryable: code === "rate_limited" });
+    await grade();
+    assert.equal(f.client.fallbackAvailable(), false, `${code} is no outage`);
+  }
+  const listen = new AbortController();
+  listen.abort();
+  await f.client.grade("x", { profile: "grader", signal: listen.signal });
+  assert.equal(f.client.fallbackAvailable(), false, "a cancelled grade is no outage");
+
+  reply = () => json(503, { code: "llm_paused", message: "", retryable: false });
+  assert.equal((await grade()).error.fallback, true);
+  assert.equal(f.client.fallbackAvailable(), true, "paused");
+
+  reply = (call) => json(200, graded(call.body.request_id, "fail", "signed.fail.verdict"));
+  await grade();
+  assert.equal(f.client.fallbackAvailable(), false, "a signed grade shows the model at work");
+
+  reply = (call) => json(200, graded(call.body.request_id, "pass", null));
+  const unsigned = await grade();
+  assert.deepEqual([unsigned.passed, unsigned.counts], [true, false]);
+  assert.equal(f.client.fallbackAvailable(), true, "test mode signs nothing");
+
+  reply = (call) => json(200, graded(call.body.request_id, "pass", RECEIPT));
+  assert.equal((await grade()).counts, true);
+  assert.equal(f.client.fallbackAvailable(), false);
+
+  reply = () => json(503, { code: "provider_unavailable", message: "", retryable: true });
+  await f.client.respond({ profile: "chat", input: [] });
+  assert.equal(f.client.fallbackAvailable(), true, "provider down");
+  assert.deepEqual(f.client.peekProof(), { text: "Meine Antwort", verdict: RECEIPT });
+
+  const fresh = fixture({
+    llm: () => json(429, { code: "allowance_exhausted", retryable: false }),
+  });
+  await fresh.client.grade("x", { profile: "grader" });
+  assert.equal(fresh.client.fallbackAvailable(), true, "allowance used up");
+
+  assert.deepEqual(LLM_FALLBACK_ANSWER, { fallback: "example" });
+  assert.equal(Object.isFrozen(LLM_FALLBACK_ANSWER), true);
+  assert.equal(
+    llmError("session", "de").message,
+    "Melde dich kurz neu an, dann ist die KI wieder dabei."
+  );
 });
