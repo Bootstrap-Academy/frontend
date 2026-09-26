@@ -1950,6 +1950,8 @@
     "AllCourses": "Alle Kurse lernen",
     "PremiumPace": "Neue Lektionen ohne Tageslimit",
     "PremiumIntro": "Lerne in deinem Tempo weiter.",
+    "PremiumUntil": "Dein Premium läuft bis {date}.",
+    "ExtendPremium": "Ein Nachkauf verlängert deinen bezahlten Premium-Zeitraum.",
     "CoinPayment": "Du bezahlst mit deinem Coin-Guthaben.",
     "StartVideo": "Video starten",
     "StartError": "Das Starten hat nicht geklappt. Versuch es nochmal.",
