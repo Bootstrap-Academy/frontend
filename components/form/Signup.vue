@@ -40,7 +40,7 @@
       label="Links.IAgreeTo"
       id="TermsAndConditions"
       :link="{
-        to: '/docs/terms-and-conditions',
+        to: signupTerms.url,
         label: 'Links.TermsAndConditions',
       }"
       target="_blank"
@@ -86,6 +86,7 @@ import type { IForm } from "~/types/form";
 export default defineComponent({
   setup() {
     const { t } = useI18n();
+    const signupTerms = registrationTerms();
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -170,7 +171,7 @@ export default defineComponent({
             obj[key] = form[key].value;
         }
 
-        obj.terms_version = TERMS_VERSION;
+        obj.terms_version = signupTerms.version;
         obj.age_confirmed = form.ageConfirmed.value;
 
         return obj;
@@ -251,6 +252,7 @@ export default defineComponent({
     }
 
     return {
+      signupTerms,
       form,
       onclickSubmitForm,
       refForm,

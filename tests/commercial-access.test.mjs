@@ -825,6 +825,7 @@ test("actual app keeps public rights access and ordinary authentication without 
     useRouter: () => router,
     useRoute: () => route,
     useNuxtApp: () => ({ hook: (name, fn) => (hooks[name] = fn) }),
+    useRuntimeConfig: () => ({ public: {} }),
     moderationAmbientChanged: () => {},
     defineNuxtPlugin: (fn) => fn,
     defineNuxtRouteMiddleware: (fn) => fn,
@@ -2238,63 +2239,122 @@ test("mounted explicit creation in both languages requires saved-file acknowledg
   }
 });
 
-test("new signup requires explicit form confirmation and sends the current r4 version", async () => {
-  await components();
-  const terms = await moduleFrom("../composables/terms.ts"),
-    Signup = await compileComponent("../components/form/Signup.vue"),
-    requests = [],
-    notices = [];
+for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
+  test(`new signup requires explicit consent to its offered ${signupVersion} document`, async () => {
+    await components();
+    const terms = await moduleFrom("../composables/terms.ts"),
+      Signup = await compileComponent("../components/form/Signup.vue"),
+      requests = [],
+      notices = [];
+    await globals(
+      {
+        ...Vue,
+        TERMS_VERSION: terms.TERMS_VERSION,
+        registrationTerms: terms.registrationTerms,
+        useRuntimeConfig: () => ({
+          public:
+            signupVersion === "2026-09-r4"
+              ? {}
+              : {
+                  registrationTermsVersion: signupVersion,
+                  registrationTermsUrl: `/docs/terms-and-conditions-${signupVersion}`,
+                },
+        }),
+        getRegisterToken: () => null,
+        useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
+        openSnackbar: (...args) => notices.push(args),
+        signup: async (body) => {
+          requests.push(structuredClone(body));
+          return [null, { detail: "synthetic refusal" }];
+        },
+      },
+      async () => {
+        const ui = host(),
+          app = ui.renderer.createApp(Signup);
+        app.use(createI18n({ legacy: false, locale: "en-US", messages }));
+        for (const name of ["Input", "InputCheckbox", "InputBtn", "NuxtLink"])
+          app.component(name, {
+            setup:
+              (_props, { slots }) =>
+              () =>
+                h("span", slots.default?.()),
+          });
+        const vm = app.mount(ui.root);
+        try {
+          ui.all().find((node) => node.type === "form").reportValidity = () => true;
+          for (const [name, value] of Object.entries({
+            name: "synthetic",
+            display_name: "Synthetic",
+            email: "synthetic@example.invalid",
+            password: "Synthetic123",
+          })) {
+            vm.form[name].value = value;
+            vm.form[name].valid = true;
+          }
+          await vm.onclickSubmitForm();
+          assert.equal(requests.length, 0, "unchecked terms and age do not dispatch");
+          for (const name of ["termsAndConditions", "ageConfirmed"]) {
+            vm.form[name].value = true;
+            vm.form[name].valid = true;
+          }
+          await vm.onclickSubmitForm();
+          assert.equal(requests.length, 1);
+          assert.equal(requests[0].terms_version, signupVersion);
+          assert.equal(
+            vm.signupTerms.url,
+            signupVersion === "2026-09-r4"
+              ? "/docs/terms-and-conditions"
+              : `/docs/terms-and-conditions-${signupVersion}`
+          );
+          assert.equal(requests[0].age_confirmed, true);
+          assert.equal(requests[0].email, "synthetic@example.invalid");
+          assert(!Object.hasOwn(requests[0], "termsAndConditions"));
+          assert.equal(vm.form.submitting, false);
+        } finally {
+          app.unmount();
+        }
+      }
+    );
+  });
+
+test("registration-only terms never migrate an existing account or downgrade a new account", async () => {
+  const terms = await moduleFrom("../composables/terms.ts");
+  const user = ref({ id: "synthetic-user", terms_version: "2026-09-r4" });
+  const config = {
+    registrationTermsVersion: "2026-09-r5",
+    registrationTermsUrl: "/docs/terms-and-conditions-2026-09-r5",
+  };
+  const requests = [];
   await globals(
     {
-      ...Vue,
-      TERMS_VERSION: terms.TERMS_VERSION,
-      getRegisterToken: () => null,
-      useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
-      openSnackbar: (...args) => notices.push(args),
-      signup: async (body) => {
-        requests.push(structuredClone(body));
-        return [null, { detail: "synthetic refusal" }];
+      useRuntimeConfig: () => ({ public: config }),
+      useUser: () => user,
+      isAuth: ref(true),
+      useProfileLoaded: () => ref(true),
+      useState: (_name, initial) => ref(initial()),
+      isPublicLegalRoute: () => false,
+      POST: async (url, body) => {
+        requests.push({ url, body });
+        return { accepted: true };
       },
+      getUser: async () => {},
     },
     async () => {
-      const ui = host(),
-        app = ui.renderer.createApp(Signup);
-      app.use(createI18n({ legacy: false, locale: "en-US", messages }));
-      for (const name of ["Input", "InputCheckbox", "InputBtn", "NuxtLink"])
-        app.component(name, {
-          setup:
-            (_props, { slots }) =>
-            () =>
-              h("span", slots.default?.()),
-        });
-      const vm = app.mount(ui.root);
-      try {
-        ui.all().find((node) => node.type === "form").reportValidity = () => true;
-        for (const [name, value] of Object.entries({
-          name: "synthetic",
-          display_name: "Synthetic",
-          email: "synthetic@example.invalid",
-          password: "Synthetic123",
-        })) {
-          vm.form[name].value = value;
-          vm.form[name].valid = true;
-        }
-        await vm.onclickSubmitForm();
-        assert.equal(requests.length, 0, "unchecked terms and age do not dispatch");
-        for (const name of ["termsAndConditions", "ageConfirmed"]) {
-          vm.form[name].value = true;
-          vm.form[name].valid = true;
-        }
-        await vm.onclickSubmitForm();
-        assert.equal(requests.length, 1);
-        assert.equal(requests[0].terms_version, "2026-09-r4");
-        assert.equal(requests[0].age_confirmed, true);
-        assert.equal(requests[0].email, "synthetic@example.invalid");
-        assert(!Object.hasOwn(requests[0], "termsAndConditions"));
-        assert.equal(vm.form.submitting, false);
-      } finally {
-        app.unmount();
-      }
+      assert.equal(terms.needsTermsAcceptance("/learn"), false);
+      user.value.terms_version = "2026-09-r5";
+      assert.equal(terms.needsTermsAcceptance("/learn"), false);
+      user.value.terms_version = "2026-09-r3";
+      assert.equal(terms.needsTermsAcceptance("/learn"), true);
+      await terms.acceptTerms();
+      assert.equal(
+        requests[0].body.terms_version,
+        "2026-09-r4",
+        "existing-account acceptance stays separately offered legacy version"
+      );
+      config.registrationTermsUrl = "";
+      assert.throws(() => terms.registrationTerms(), /configuration is incomplete/);
+      config.registrationTermsUrl = "/docs/terms-and-conditions-2026-09-r4";
+      assert.throws(() => terms.registrationTerms(), /configuration is incomplete/);
     }
   );
 });

@@ -17,6 +17,14 @@ function feedbackBuild() {
   }
 }
 
+// A registration-only rollout must bind its displayed document and version.
+const registrationVersion = process.env.NUXT_PUBLIC_REGISTRATION_TERMS_VERSION || "";
+const registrationUrl = process.env.NUXT_PUBLIC_REGISTRATION_TERMS_URL || "";
+if (!!registrationVersion !== !!registrationUrl)
+  throw new Error("Registration terms require both a version and its document URL");
+if (registrationVersion && registrationUrl !== `/docs/terms-and-conditions-${registrationVersion}`)
+  throw new Error("Registration terms must link to their exact versioned document");
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -66,6 +74,9 @@ export default defineNuxtConfig({
       NODE_ENV: "production",
       FEEDBACK_BUILD: feedbackBuild(),
       learningRoomsEnabled: true,
+      // Disabled until the reviewed registration cohort and documents are published.
+      registrationTermsVersion: "",
+      registrationTermsUrl: "",
     },
   },
 
