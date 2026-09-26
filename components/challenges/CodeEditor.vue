@@ -40,6 +40,7 @@
           >{{ t("Buttons.Submit") }}</InputBtn
         >
       </article>
+      <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="w-full" />
     </header>
     <div ref="editorContainer" class="h-full min-h-[300px] w-full overflow-hidden style-card"></div>
   </div>
@@ -85,6 +86,7 @@ export default defineComponent({
     const container: any = ref();
 
     const { showHearts } = useDailyLearning();
+    const { attemptLimit, handleLimit } = useDailyAttemptLimit();
     const heartFree = computed(() => {
       return premiumInfo.value?.premium || !showHearts.value;
     });
@@ -135,9 +137,14 @@ export default defineComponent({
         environment: language.value,
         code: code.value,
       });
+      submitButtonLoading.value = false;
+      if (!success) {
+        if (!handleLimit(error))
+          openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
+        return;
+      }
       await getHearts();
       await getBalance();
-      submitButtonLoading.value = false;
 
       clearInterval(interval.value);
 
@@ -146,8 +153,7 @@ export default defineComponent({
         await getSubmissions(props.challengeId, props.codingChallengeId);
       }, 5000);
 
-      if (success) openSnackbar("success", "Success.CreatedSubmission");
-      else openSnackbar("error", error);
+      openSnackbar("success", "Success.CreatedSubmission");
     }
 
     function updateCodeAsExampleChange() {
@@ -264,6 +270,7 @@ export default defineComponent({
       fnCreateSubmission,
       HeartIcon,
       heartFree,
+      attemptLimit,
       openDialogSubmission,
       container,
     };

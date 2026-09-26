@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="mb-6" />
     <SkeletonSolveMatching v-if="!!!data" />
     <section v-else-if="!!data" class="flex w-full flex-col items-center">
       <!-- Header with instructions -->
@@ -177,6 +178,7 @@ const leftRefs = ref<any[]>([]);
 const rightRefs = ref<any[]>([]);
 
 const { showHearts } = useDailyLearning();
+const { attemptLimit, handleLimit } = useDailyAttemptLimit();
 const heartFree = computed(() => {
   return premiumInfo.value?.premium || !showHearts.value;
 });
@@ -361,8 +363,9 @@ function successHandler(res: any) {
 }
 
 function errorHandler(error: any) {
+  if (handleLimit(error)) return;
   console.log("error", error);
-  openSnackbar("error", error);
+  openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
 }
 
 function nextQuestion() {
