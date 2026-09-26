@@ -54,8 +54,11 @@ export function useLearningRooms(
   });
   const dailyState = useDailyLearning();
   const limitReached = ref<DailyLearning | null>(null);
-  watch(dailyState.daily, (value) => {
-    if (value && (value.unlimited || (value.remaining ?? 0) > 0)) limitReached.value = null;
+  const daily = computed(() => {
+    const room = view.value?.room;
+    return room?.course_id && room.lesson_id
+      ? dailyState.forLesson(room.course_id, room.lesson_id, room.daily)
+      : dailyState.daily.value || room?.daily || view.value?.daily || null;
   });
   const rawTransport = createLearningTransport({
     snapshot,
@@ -84,9 +87,10 @@ export function useLearningRooms(
       if (
         method === "POST" &&
         path.startsWith("/challenges/") &&
-        room?.daily &&
-        room.daily.mode !== "legacy" &&
-        !room.daily.started &&
+        room &&
+        daily.value &&
+        daily.value.mode !== "legacy" &&
+        !daily.value.started &&
         room.course_id &&
         room.lesson_id
       ) {
@@ -123,6 +127,23 @@ export function useLearningRooms(
       view.value = value;
     },
     checkpoint: () => preserve(lastUserId, true),
+  });
+  watch(dailyState.daily, (value) => {
+    const available =
+      value &&
+      (value.mode !== "daily" ||
+        value.enforced === false ||
+        value.unlimited ||
+        (value.remaining ?? 0) > 0);
+    if (!available) return;
+    limitReached.value = null;
+    // Refresh only an empty queue. A mounted lesson and its private draft stay put.
+    if (
+      view.value?.status === "ready" &&
+      view.value.emptyReason === "limit_reached" &&
+      !view.value.room
+    )
+      void retry();
   });
   function selection(query: Record<string, unknown>) {
     return {
@@ -294,7 +315,7 @@ export function useLearningRooms(
     openLocation,
     syncLocation,
     retry,
-    daily: computed(() => view.value?.room?.daily || view.value?.daily || dailyState.daily.value),
+    daily,
     limitReached,
     keepDailyDraft: () => preserve(user.value?.id || "", true),
   };

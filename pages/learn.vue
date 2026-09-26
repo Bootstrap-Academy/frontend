@@ -132,7 +132,7 @@
           v-else-if="lesson"
           :key="roomKey"
           :lesson="lesson"
-          :daily="view.room.daily"
+          :daily="daily"
           :locale="locale"
           :state="view.draft"
           :request="request"

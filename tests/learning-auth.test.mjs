@@ -190,9 +190,16 @@ function fixture(t, options = {}) {
     },
     progress: { revision, state, status: "in_progress", result: null },
   });
+  const daily = vue.ref(options.daily || null);
   let remote = envelope(options.serverState ? 2 : 0, options.serverState || {});
+  if (options.roomDaily)
+    Object.assign(remote, { daily: options.roomDaily, course_id: "course", lesson_id: "lesson" });
   const bindings = {
-    useDailyLearning: () => ({ daily: vue.ref(null), observe: () => {} }),
+    useDailyLearning: () => ({
+      daily,
+      observe: () => {},
+      forLesson: (_course, _lesson, value) => ({ ...value, ...daily.value }),
+    }),
     dailyError: () => null,
     ref: vue.ref,
     computed: vue.computed,
@@ -264,7 +271,15 @@ function fixture(t, options = {}) {
       return {
         paths: [{ id: "python-loops", title: { de: "Python", en: "Python" } }],
         path: { id: "python-loops", title: { de: "Python", en: "Python" } },
-        next: remote,
+        next:
+          options.queueAtLimit && !daily.value?.unlimited && daily.value?.remaining === 0
+            ? null
+            : remote,
+        status:
+          options.queueAtLimit && !daily.value?.unlimited && daily.value?.remaining === 0
+            ? "limit_reached"
+            : "ready",
+        daily: daily.value,
       };
     },
   };
@@ -276,7 +291,7 @@ function fixture(t, options = {}) {
     scope.stop();
   };
   t.after(dispose);
-  return { api, access, user, session, storage, calls, cookies, navigation, auth, dispose };
+  return { api, daily, access, user, session, storage, calls, cookies, navigation, auth, dispose };
 }
 
 test("the actual composable preserves drafts and its editor request binding through same-session refresh", async (t) => {
@@ -440,4 +455,37 @@ test("course login recovery retains the exact chosen lesson and all room writes 
       .filter((c) => c.path.includes("/rooms/unit") && c.method === "PUT")
       .every((c) => c.path.endsWith("?course=python-foundations"))
   );
+});
+
+test("daily or Premium refresh reopens an empty queue and updates a mounted lesson without discarding its draft", async (t) => {
+  const exhausted = {
+    mode: "daily",
+    enforced: true,
+    remaining: 0,
+    unlimited: false,
+    can_start: false,
+  };
+  for (const access of [
+    { remaining: 3, can_start: true },
+    { unlimited: true, remaining: null, can_start: true },
+  ]) {
+    const f = fixture(t, { daily: exhausted, queueAtLimit: true });
+    await settle();
+    assert.equal(f.api.view.value.emptyReason, "limit_reached");
+    f.daily.value = { ...exhausted, ...access };
+    await settle();
+    assert.equal(f.api.view.value.emptyReason, null);
+    assert.equal(f.api.view.value.room.unit.id, "unit");
+    assert.equal(f.calls.filter(({ path }) => path.startsWith("/skills/rooms?")).length, 2);
+  }
+  const f = fixture(t, { daily: exhausted, roomDaily: exhausted });
+  await settle();
+  f.api.data.edit({ code: "my private draft" });
+  const reads = f.calls.length;
+  f.daily.value = { ...exhausted, remaining: 3, can_start: true };
+  await settle();
+  assert.equal(f.api.daily.value.remaining, 3);
+  assert.equal(f.api.daily.value.can_start, true);
+  assert.equal(f.api.view.value.draft.code, "my private draft");
+  assert.equal(f.calls.length, reads);
 });
