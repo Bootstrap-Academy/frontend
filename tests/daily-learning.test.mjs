@@ -273,3 +273,53 @@ test("unknown or failed policy never exposes heart sales; two absent endpoints r
   assert.equal(old.api.mode.value, "legacy");
   assert.equal(old.api.showHearts.value, true);
 });
+
+test("legacy quiz, matching and coding quota errors remain structured and clear after restored access", async (t) => {
+  const state = Vue.ref(status({ remaining: 0, used: 3, can_start: false }));
+  const user = Vue.ref({ id: "a" });
+  const scope = Vue.effectScope();
+  t.after(() => scope.stop());
+  const { useDailyAttemptLimit } = await evaluate(
+    "composables/useDailyAttemptLimit.ts",
+    {
+      ...Vue,
+      dailyError: helpers.dailyError,
+      useDailyLearning: () => ({
+        daily: state,
+        observe: (value) => {
+          state.value = value;
+        },
+      }),
+      useUser: () => user,
+      useSession: () => Vue.ref({ id: "session" }),
+    },
+    "useDailyAttemptLimit"
+  );
+  const api = scope.run(useDailyAttemptLimit);
+  for (const [file, name] of [
+    ["quizzes.ts", "attempQuiz"],
+    ["matching.ts", "solveMatching"],
+    ["codingChallenges.ts", "createSubmission"],
+  ]) {
+    const source = await readFile(new URL(`../composables/${file}`, import.meta.url), "utf8");
+    const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
+    const node = ast.statements.find((n) => ts.isFunctionDeclaration(n) && n.name?.text === name);
+    const code = ts.transpileModule(node.getText(ast).replace(/^export /, ""), {
+      compilerOptions: { target: ts.ScriptTarget.ES2023 },
+    }).outputText;
+    const attempt = new Function("POST", code + `;return ${name}`)(async () => {
+      throw { statusCode: 429, data: { code: "daily_limit_reached", daily: state.value } };
+    });
+    const draft = { code: "private answer", answers: [true], answer: [0] };
+    const before = structuredClone(draft);
+    const [success, error] = await attempt("course", "unit", draft);
+    assert.equal(success, null);
+    assert.equal(api.handleLimit(error), true);
+    assert.equal(api.attemptLimit.value.remaining, 0);
+    assert.deepEqual(draft, before);
+  }
+  state.value = status({ remaining: 3, used: 0, can_start: true });
+  await Vue.nextTick();
+  assert.equal(api.attemptLimit.value, null);
+  assert.equal(api.handleLimit(new Error("Offline")), false);
+});

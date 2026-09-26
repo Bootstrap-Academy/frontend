@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="mb-6" />
     <SkeletonQuizAnswer v-if="loading" class="card" />
     <form
       v-else
@@ -137,6 +138,7 @@ export default defineComponent({
 
     const refForm = ref<HTMLFormElement | null>(null);
     const { showHearts } = useDailyLearning();
+    const { attemptLimit, handleLimit } = useDailyAttemptLimit();
     const heartFree = computed(() => {
       return premiumInfo.value?.premium || !showHearts.value;
     });
@@ -217,11 +219,12 @@ export default defineComponent({
     }
 
     function errorHandler(error: any) {
+      if (handleLimit(error)) return;
       if (error == "Error.TooManyAttemptsForQuiz") {
         showMaxAttemptsError.value = true;
         secondsForTryAgain.value = error.details ?? "";
       } else {
-        openSnackbar("error", error);
+        openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
       }
     }
 
@@ -310,6 +313,7 @@ export default defineComponent({
       secondsForTryAgain,
       nextQuestion,
       heartFree,
+      attemptLimit,
       fnRated,
       wasOptionsCorrect,
       ChevronDoubleRightIcon,
