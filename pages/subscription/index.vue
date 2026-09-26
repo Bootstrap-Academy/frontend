@@ -47,7 +47,13 @@
     </section>
     <hr v-if="!isPremium && showHearts" class="mt-10" />
 
-    <SubscriptionPremiumUntillCountDown v-if="!!isPremium" class="mt-20" />
+    <header v-if="isPremium && isDaily" class="mx-auto mt-10 max-w-2xl text-center">
+      <h2 class="text-3xl font-bold text-accent">{{ t("Headings.Premium") }}</h2>
+      <p v-if="premiumUntil" class="mt-3">
+        {{ t("DailyLearning.PremiumUntil", { date: premiumUntil }) }}
+      </p>
+    </header>
+    <SubscriptionPremiumUntillCountDown v-else-if="isPremium && showHearts" class="mt-20" />
 
     <section class="mb-20 mt-10 rounded-md">
       <div class="mx-auto max-w-2xl sm:text-center" v-if="!isPremium">
@@ -70,7 +76,7 @@
 
       <div class="flex justify-center">
         <p class="mt-3 max-w-md text-center text-accent" v-if="isPremium">
-          {{ t("Headings.BuyAdditionalSubscription") }}
+          {{ t(isDaily ? "DailyLearning.ExtendPremium" : "Headings.BuyAdditionalSubscription") }}
         </p>
       </div>
       <p v-if="isDaily && !planPricesKnown" role="status" class="mx-auto max-w-md text-center">
@@ -301,6 +307,15 @@ export default {
 
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
+    });
+
+    const premiumUntil = computed(() => {
+      const until = Number(premiumInfo.value?.until);
+      return until > 0 && Number.isFinite(until)
+        ? new Intl.DateTimeFormat(locale.value, { dateStyle: "long", timeStyle: "short" }).format(
+            new Date(until * 1000)
+          )
+        : "";
     });
 
     const premiumStatusAutoPay = computed(() => {
@@ -601,6 +616,7 @@ export default {
       planPricesKnown,
       t,
       premiumInfo,
+      premiumUntil,
       renewalOrder,
       renewalAccepted,
       renewalWithdrawalConsent,

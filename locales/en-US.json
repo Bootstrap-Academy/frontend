@@ -1947,6 +1947,8 @@
     "AllCourses": "Learn with every course",
     "PremiumPace": "New lessons without a daily limit",
     "PremiumIntro": "Keep learning at your own pace.",
+    "PremiumUntil": "Your Premium runs until {date}.",
+    "ExtendPremium": "Another purchase extends your paid Premium period.",
     "CoinPayment": "Paid from your coin balance.",
     "StartVideo": "Start video",
     "StartError": "This couldn’t be started. Please try again.",
