@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import { parse } from "vue/compiler-sfc";
+import { guestReturnPath } from "../utils/guest/handoff.ts";
 
 const source = async (path) => readFile(new URL(path, import.meta.url), "utf8");
 const authSource = await source("../middleware/auth.ts");
@@ -13,6 +14,7 @@ function fixture(authenticated) {
   const logs = [];
   const context = {
     process: { client: false },
+    guestReturnPath,
     console: { log: (...args) => logs.push(args) },
     useAppCookie: () => ({ value: authenticated ? "synthetic-private-token" : null }),
     navigateTo: (path, options = {}) => ({ path, replace: options.replace ?? false }),
@@ -20,7 +22,10 @@ function fixture(authenticated) {
     definePageMeta: (meta) => (context.meta = meta),
   };
   const middleware = (text) => {
-    runInNewContext(text.replace("export default", "result ="), context);
+    runInNewContext(
+      text.replace(/^import .*;\n/gm, "").replace("export default", "result ="),
+      context
+    );
     return context.result;
   };
   const auth = middleware(authSource);

@@ -17,6 +17,10 @@ async function moduleFrom(relative, replacements = {}) {
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
   }).outputText;
   code = code.replaceAll('from "vue"', `from ${JSON.stringify(import.meta.resolve("vue"))}`);
+  code = code.replaceAll(
+    'from "~/utils/guest/handoff"',
+    `from ${JSON.stringify(new URL("../utils/guest/handoff.ts", import.meta.url).href)}`
+  );
   const path = join(dir, relative.replaceAll(/[^a-z0-9]/gi, "_") + ".mjs");
   await writeFile(path, code);
   return import(pathToFileURL(path));
@@ -395,6 +399,10 @@ async function compileComponent(relative) {
       `from "../composables/${dependency}"`,
       `from ${JSON.stringify(pathToFileURL(join(dir, `___composables_${dependency}_ts.mjs`)).href)}`
     );
+  code = code.replaceAll(
+    'from "~/utils/guest/handoff"',
+    `from ${JSON.stringify(new URL("../utils/guest/handoff.ts", import.meta.url).href)}`
+  );
   code = code.replace('import "highlight.js/styles/github-dark.css";', "");
   const path = join(dir, relative.replaceAll(/[^a-z0-9]/gi, "_") + ".mjs");
   await writeFile(path, code);

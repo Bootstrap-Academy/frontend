@@ -80,6 +80,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
 
@@ -232,6 +233,11 @@ export default defineComponent({
     const router = useRouter();
 
     function successHandler(res: any) {
+      authorizeGuestHandoff(res?.user?.id);
+      if (guestReturnPath()) {
+        router.push("/start");
+        return;
+      }
       openDialog(
         "success",
         "Success.SignupSuccessful",
