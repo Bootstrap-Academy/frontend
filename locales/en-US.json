@@ -569,6 +569,8 @@
     "PurchaseRejected": "Order declined. Nothing was charged.",
     "PurchasePending": "Your order is still being processed.",
     "PurchaseUncertain": "We couldn’t confirm completion yet. Check this order’s status before placing another order.",
+    "RenewalTermsDocument": "Terms for this offer (PDF)",
+    "RenewalWithdrawalDocument": "Withdrawal policy for this offer (PDF)",
     "PurchaseDocumentUnavailable": "We couldn’t load the documents. Try again or contact hallo{'@'}bootstrap.academy.",
     "PurchaseRefresh": "Refresh status",
     "PurchaseNotOrdered": "Not ordered yet",
@@ -1211,7 +1213,7 @@
     "DownloadMyDataRateLimit": "You have just downloaded your data. Please try again in a few minutes.",
     "DownloadMyDataIncomplete": "The file has been saved, but a part of your data could not be collected right now. The file lists the missing part under “services”. Please try again later.",
     "DownloadMyDataFailed": "Your data could not be downloaded. Please try again later.",
-    "RenewalOfferChanged": "The renewal offer has changed. Please open and review the new offer."
+    "RenewalOfferChanged": "The renewal offer has changed. Please review the new offer."
   },
   "Months": {
     "January": "January",
