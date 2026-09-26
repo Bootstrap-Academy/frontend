@@ -133,6 +133,7 @@
         class="mx-auto mt-8 max-w-2xl rounded-xl bg-secondary p-6"
       >
         <OrderSummary
+          exact-offer
           :coins="renewalOrder.monthly_price"
           :disabled="!renewalAccepted || !renewalWithdrawalConsent"
           :loading="premiumBusy"
@@ -140,6 +141,24 @@
         >
           <template #characteristics>
             <p class="whitespace-pre-line">{{ renewalOrder.text }}</p>
+            <div class="flex flex-wrap gap-4">
+              <button
+                v-for="kind in ['terms', 'withdrawal']"
+                :key="kind"
+                type="button"
+                :disabled="premiumBusy"
+                class="min-h-11 text-left text-accent underline"
+                @click="downloadRenewalDocument(kind)"
+              >
+                {{
+                  t(
+                    kind === "terms"
+                      ? "Body.RenewalTermsDocument"
+                      : "Body.RenewalWithdrawalDocument"
+                  )
+                }}
+              </button>
+            </div>
           </template>
           <template #consent>
             <InputCheckbox
@@ -238,6 +257,8 @@ export default {
     const premiumPlans = usePremiumPlans();
     const heartConfig = useHeartConfig();
     const premiumBusy = ref(false);
+    const user = useUser();
+    const session = useSession();
     const renewalOrder = ref<any>(null);
     const renewalAccepted = ref(false);
     const renewalWithdrawalConsent = ref(false);
@@ -454,11 +475,7 @@ export default {
           // Preparing an offer never enables renewal. Every declaration gets a
           // request id which survives uncertain response retries in this form.
           const offer = await GET("/shop/premium/renewal-offer/me");
-          if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
-            throw new Error("Invalid renewal offer");
-          renewalAccepted.value = false;
-          renewalWithdrawalConsent.value = false;
-          renewalOrder.value = { ...offer, request_id: crypto.randomUUID() };
+          replaceRenewalOffer(offer);
           return;
         }
         const [status, error] = await updatePremiumAutoPay({ plan: null });
@@ -469,6 +486,59 @@ export default {
         }
       } catch {
         openSnackbar("error", "Error.AutopayUpdateFailed");
+      } finally {
+        premiumBusy.value = false;
+      }
+    }
+
+    function replaceRenewalOffer(offer: any) {
+      if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
+        throw new Error("Invalid renewal offer");
+      renewalAccepted.value = false;
+      renewalWithdrawalConsent.value = false;
+      renewalOrder.value = { ...offer, request_id: crypto.randomUUID() };
+    }
+
+    async function downloadRenewalDocument(kind: string) {
+      if (premiumBusy.value || !renewalOrder.value || !["terms", "withdrawal"].includes(kind))
+        return;
+      const id = renewalOrder.value.id;
+      const owner = user.value?.id;
+      const sessionId = session.value?.id;
+      const current = () =>
+        user.value?.id === owner &&
+        session.value?.id === sessionId &&
+        renewalOrder.value?.id === id;
+      premiumBusy.value = true;
+      try {
+        const documentData = await GET(
+          `/shop/premium/renewal-offer/me/${encodeURIComponent(id)}/documents/${kind}`
+        );
+        if (!current()) return;
+        const blob =
+          documentData instanceof Blob
+            ? documentData
+            : new Blob([documentData], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `premium-renewal-${id}-${kind}.pdf`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error: any) {
+        if (!current()) return;
+        if ((error?.statusCode || error?.response?.status) === 409) {
+          try {
+            const offer = await GET("/shop/premium/renewal-offer/me");
+            if (!current()) return;
+            replaceRenewalOffer(offer);
+            openSnackbar("info", "Error.RenewalOfferChanged");
+            return;
+          } catch {
+            /* Keep the existing offer available for a later read-only retry. */
+          }
+        }
+        if (current()) openSnackbar("error", "Body.PurchaseDocumentUnavailable");
       } finally {
         premiumBusy.value = false;
       }
@@ -486,8 +556,8 @@ export default {
       try {
         const current = await GET("/shop/premium/renewal-offer/me");
         if (current?.id !== renewalOrder.value.id) {
-          renewalOrder.value = null;
-          openSnackbar("error", "Error.RenewalOfferChanged");
+          replaceRenewalOffer(current);
+          openSnackbar("info", "Error.RenewalOfferChanged");
           return;
         }
         const [status, error] = await updatePremiumAutoPay({
@@ -535,6 +605,7 @@ export default {
       renewalAccepted,
       renewalWithdrawalConsent,
       confirmRenewal,
+      downloadRenewalDocument,
       subscribe,
       heartConfig,
       order,

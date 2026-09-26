@@ -568,6 +568,8 @@
     "PurchaseRejected": "Bestellung abgelehnt. Es wurde nichts abgebucht.",
     "PurchasePending": "Deine Bestellung wird noch bearbeitet.",
     "PurchaseUncertain": "Wir konnten den Abschluss noch nicht bestätigen. Prüfe den Status dieser Bestellung, bevor du neu bestellst.",
+    "RenewalTermsDocument": "AGB dieses Angebots (PDF)",
+    "RenewalWithdrawalDocument": "Widerrufsbelehrung dieses Angebots (PDF)",
     "PurchaseDocumentUnavailable": "Die Unterlagen konnten nicht geladen werden. Versuch es noch einmal oder schreib uns an hallo{'@'}bootstrap.academy.",
     "PurchaseRefresh": "Status aktualisieren",
     "PurchaseNotOrdered": "Noch nicht bestellt",
@@ -1209,7 +1211,7 @@
     "DownloadMyDataRateLimit": "Du hast deine Daten gerade erst heruntergeladen. Bitte versuche es in einigen Minuten erneut.",
     "DownloadMyDataIncomplete": "Die Datei wurde gespeichert, aber ein Teil deiner Daten konnte gerade nicht abgerufen werden. Welcher Teil fehlt, steht in der Datei unter „services“. Bitte versuche es später noch einmal.",
     "DownloadMyDataFailed": "Deine Daten konnten nicht heruntergeladen werden. Bitte versuche es später erneut.",
-    "RenewalOfferChanged": "Das Verlängerungsangebot hat sich geändert. Bitte öffne und prüfe das neue Angebot."
+    "RenewalOfferChanged": "Das Verlängerungsangebot hat sich geändert. Bitte prüfe das neue Angebot."
   },
   "Months": {
     "January": "Januar",
