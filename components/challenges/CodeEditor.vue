@@ -18,12 +18,12 @@
         <!--
           The caption explains when a whole heart is charged.
         -->
-        <p v-if="!isPremium" class="text-xs text-body">
+        <p v-if="!heartFree" class="text-xs text-body">
           {{ t("Body.WrongAnswerCostsOneHeart") }}
         </p>
 
         <InputBtn
-          v-if="!isPremium"
+          v-if="!heartFree"
           :icon="HeartIcon"
           iconRight
           :iconColor="'#FF0000'"
@@ -33,7 +33,7 @@
         >
 
         <InputBtn
-          v-else-if="isPremium"
+          v-else-if="heartFree"
           iconRight
           @click="fnCreateSubmission()"
           :loading="submitButtonLoading"
@@ -84,8 +84,9 @@ export default defineComponent({
     const updateCode = ref(true);
     const container: any = ref();
 
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
+    const { showHearts } = useDailyLearning();
+    const heartFree = computed(() => {
+      return premiumInfo.value?.premium || !showHearts.value;
     });
     const interval: any = ref(null);
 
@@ -262,7 +263,7 @@ export default defineComponent({
       testExampleLoading,
       fnCreateSubmission,
       HeartIcon,
-      isPremium,
+      heartFree,
       openDialogSubmission,
       container,
     };

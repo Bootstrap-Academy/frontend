@@ -1,3 +1,5 @@
+import { dailyError } from "~/utils/dailyLearning";
+import type { DailyLearning } from "~/types/dailyLearning";
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
@@ -50,7 +52,12 @@ export function useLearningRooms(
     accessToken: accessToken.value || "",
     refreshToken: refreshToken.value || "",
   });
-  const transport = createLearningTransport({
+  const dailyState = useDailyLearning();
+  const limitReached = ref<DailyLearning | null>(null);
+  watch(dailyState.daily, (value) => {
+    if (value && (value.unlimited || (value.remaining ?? 0) > 0)) limitReached.value = null;
+  });
+  const rawTransport = createLearningTransport({
     snapshot,
     lock: () => mutex.acquire(),
     raw: (path, method, body, token) =>
@@ -69,6 +76,47 @@ export function useLearningRooms(
       reauthRequired.value = required;
     },
   });
+  const startRequests = new Map<string, string>();
+  const transport: LearningRequest = async (path, method, body) => {
+    const expected = owner.value;
+    try {
+      const room = view.value?.room;
+      if (
+        method === "POST" &&
+        path.startsWith("/challenges/") &&
+        room?.daily &&
+        room.daily.mode !== "legacy" &&
+        !room.daily.started &&
+        room.course_id &&
+        room.lesson_id
+      ) {
+        const startPath = `/skills/courses/${encodeURIComponent(room.course_id)}/lessons/${encodeURIComponent(room.lesson_id)}/start`;
+        if (!startRequests.has(startPath)) startRequests.set(startPath, crypto.randomUUID());
+        const started = await rawTransport(startPath, "POST", {
+          request_id: startRequests.get(startPath),
+        });
+        if (expected !== owner.value) throw { statusCode: 401 };
+        dailyState.observe(started.daily || started, room.course_id, room.lesson_id);
+      }
+      const result = await rawTransport(path, method, body);
+      if (expected === owner.value) {
+        dailyState.observe(result?.daily, result?.course_id, result?.lesson_id || result?.id);
+        if (result?.next)
+          dailyState.observe(result.next.daily, result.next.course_id, result.next.lesson_id);
+        if (result?.daily?.can_start !== false) limitReached.value = null;
+      }
+      return result;
+    } catch (error) {
+      if (expected === owner.value) {
+        const daily = dailyError(error);
+        if (daily) {
+          limitReached.value = daily;
+          dailyState.observe(daily);
+        }
+      }
+      throw error;
+    }
+  };
   const data = createLearningRooms({
     request: transport,
     changed: (value) => {
@@ -144,6 +192,8 @@ export function useLearningRooms(
       const ticket = ++epoch;
       clearTimeout(timer);
       data.reset();
+      limitReached.value = null;
+      startRequests.clear();
       recovering.value = false;
       reauthRequired.value = false;
       recoveryError.value = false;
@@ -244,5 +294,8 @@ export function useLearningRooms(
     openLocation,
     syncLocation,
     retry,
+    daily: computed(() => view.value?.room?.daily || view.value?.daily || dailyState.daily.value),
+    limitReached,
+    keepDailyDraft: () => preserve(user.value?.id || "", true),
   };
 }

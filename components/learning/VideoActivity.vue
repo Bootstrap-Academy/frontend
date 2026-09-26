@@ -9,7 +9,7 @@
         allow="autoplay; encrypted-media; picture-in-picture"
         allowfullscreen
       />
-      <button v-else type="button" @click="youtubeLoaded = true">{{ copy.load }}</button>
+      <button v-else type="button" @click="startYoutube">{{ copy.load }}</button>
     </template>
     <video
       v-else-if="url"
@@ -18,6 +18,7 @@
       controls
       playsinline
       preload="metadata"
+      @play="started"
       @loadedmetadata="restore"
       @timeupdate="remember"
     >
@@ -116,8 +117,16 @@ function restore() {
   )
     video.value.currentTime = position;
 }
+function started() {
+  if (!props.disabled) emit("change", { ...props.state, viewed: true });
+}
+function startYoutube() {
+  if (props.disabled) return;
+  started();
+  youtubeLoaded.value = true;
+}
 function remember() {
-  if (!restored || !video.value || props.disabled) return;
+  if (!restored || !video.value || props.disabled || video.value.paused) return;
   const position = video.value.currentTime;
   if (Math.floor(position) === lastSavedSecond) return;
   lastSavedSecond = Math.floor(position);

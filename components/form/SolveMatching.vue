@@ -113,7 +113,7 @@
         <!--
           The caption explains when a whole heart is charged.
         -->
-        <template v-if="!data?.solved && user?.id != data?.creator && !isPremium">
+        <template v-if="!data?.solved && user?.id != data?.creator && !heartFree">
           <InputBtn
             class="mx-auto block w-full max-w-md"
             :loading="formSubmitting"
@@ -131,7 +131,7 @@
 
         <InputBtn
           class="mx-auto block w-full max-w-md"
-          v-if="!data?.solved && user?.id != data?.creator && isPremium"
+          v-if="!data?.solved && user?.id != data?.creator && heartFree"
           :loading="formSubmitting"
           @click="onclickSubmitForm()"
         >
@@ -176,8 +176,9 @@ const containerRef = ref<HTMLElement | null>(null);
 const leftRefs = ref<any[]>([]);
 const rightRefs = ref<any[]>([]);
 
-const isPremium = computed(() => {
-  return premiumInfo.value?.premium;
+const { showHearts } = useDailyLearning();
+const heartFree = computed(() => {
+  return premiumInfo.value?.premium || !showHearts.value;
 });
 
 // Computed connections for SVG lines

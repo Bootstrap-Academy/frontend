@@ -494,7 +494,7 @@
     "CompletedSkills": "All skills which you have completed.",
     "OtherSkills": "Rest of the skills which are available for exploring.",
     "NoUpcomingEvents": "No Events planned",
-    "LearnNewSkillsForFree": "Learn new tech skills with our Free plan",
+    "LearnNewSkillsForFree": "Learn at your own pace.",
     "GetAllServices": "All courses and unlimited hearts for a %%% fee",
     "Monthly": "monthly",
     "Yearly": "yearly",
@@ -1930,5 +1930,27 @@
     "ReviewStartError": "The next exercise could not start right now. Try again.",
     "BalanceUpdating": "Your hearts are being updated.",
     "HeartsPending": "Your hearts could not be updated yet. Check the result again in a moment."
+  },
+  "DailyLearning": {
+    "Remaining": "{n} new lessons left today",
+    "Reset": "New lessons again at {time}",
+    "Explanation": "You can start {n} new lessons each day. Continuing, reviewing and mistakes are free. New lessons are available at {time}.",
+    "LimitBody": "You’ve started {n} new lessons today. You can continue and review everything you’ve started as often as you like.",
+    "Continue": "Continue or review",
+    "BackToCourse": "Back to course",
+    "PremiumBenefit": "Premium lets you learn without a daily limit.",
+    "SeePremium": "See Premium",
+    "FreePace": "{n} new lessons every day",
+    "FreeReview": "Continue your work and review without limits",
+    "AllCourses": "Learn with every course",
+    "PremiumPace": "New lessons without a daily limit",
+    "PremiumIntro": "Keep learning at your own pace.",
+    "CoinPayment": "Paid from your coin balance.",
+    "StartVideo": "Start video",
+    "StartError": "This couldn’t be started. Please try again.",
+    "SavedHere": "Your work is kept here.",
+    "TryAgain": "Try again",
+    "RemainingOne": "One new lesson left today",
+    "ExploreCourses": "Explore courses"
   }
 }

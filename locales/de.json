@@ -493,7 +493,7 @@
     "CompletedSkills": "Alle Skills, die du schon abgeschlossen hast.",
     "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
     "NoUpcomingEvents": "Keine Veranstaltungen geplant",
-    "LearnNewSkillsForFree": "Lerne neue technische Fähigkeiten mit unserem kostenlosen Plan",
+    "LearnNewSkillsForFree": "Lerne in deinem Tempo.",
     "GetAllServices": "Alle Kurse und unbegrenzte Herzen für eine %%% Gebühr",
     "Monthly": "monatliche",
     "Yearly": "jährliche",
@@ -1933,5 +1933,27 @@
     "ReviewStartError": "Die nächste Übung konnte gerade nicht starten. Versuch’s nochmal.",
     "BalanceUpdating": "Deine Herzen werden aktualisiert.",
     "HeartsPending": "Deine Herzen konnten gerade nicht aktualisiert werden. Prüfe das Ergebnis gleich nochmal."
+  },
+  "DailyLearning": {
+    "Remaining": "Heute noch {n} neue Lektionen",
+    "Reset": "Neue Lektionen wieder ab {time} Uhr",
+    "Explanation": "Du kannst jeden Tag {n} neue Lektionen starten. Weitermachen, Wiederholen und Fehler kosten nichts. Um {time} Uhr gibt’s wieder neue.",
+    "LimitBody": "Du hast heute {n} neue Lektionen gestartet. Alles Angefangene kannst du fortsetzen und beliebig oft wiederholen.",
+    "Continue": "Fortsetzen oder wiederholen",
+    "BackToCourse": "Zur Kursübersicht",
+    "PremiumBenefit": "Mit Premium lernst du ohne Tageslimit.",
+    "SeePremium": "Premium ansehen",
+    "FreePace": "Jeden Tag {n} neue Lektionen",
+    "FreeReview": "Angefangenes fortsetzen und unbegrenzt wiederholen",
+    "AllCourses": "Alle Kurse lernen",
+    "PremiumPace": "Neue Lektionen ohne Tageslimit",
+    "PremiumIntro": "Lerne in deinem Tempo weiter.",
+    "CoinPayment": "Du bezahlst mit deinem Coin-Guthaben.",
+    "StartVideo": "Video starten",
+    "StartError": "Das Starten hat nicht geklappt. Versuch es nochmal.",
+    "SavedHere": "Deine Arbeit bleibt hier erhalten.",
+    "TryAgain": "Nochmal versuchen",
+    "RemainingOne": "Heute noch eine neue Lektion",
+    "ExploreCourses": "Kurse entdecken"
   }
 }

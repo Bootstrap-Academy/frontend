@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 sm:container-fluid">
-    <section v-if="!isPremium" class="mt-10 flex flex-col items-center gap-10">
+    <section v-if="!isPremium && showHearts" class="mt-10 flex flex-col items-center gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
       </h2>
@@ -45,17 +45,17 @@
         </div>
       </div>
     </section>
-    <hr v-if="!isPremium" class="mt-10" />
+    <hr v-if="!isPremium && showHearts" class="mt-10" />
 
     <SubscriptionPremiumUntillCountDown v-if="!!isPremium" class="mt-20" />
 
     <section class="mb-20 mt-10 rounded-md">
       <div class="mx-auto max-w-2xl sm:text-center" v-if="!isPremium">
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
-          {{ t("Headings.NoTrickPricing") }}
+          {{ t(isDaily ? "Headings.Premium" : "Headings.NoTrickPricing") }}
         </h2>
         <p class="text-gray mt-2 text-lg leading-8">
-          {{ t("Body.PremiumCardMain") }}
+          {{ t(isDaily ? "DailyLearning.PremiumBenefit" : "Body.PremiumCardMain") }}
         </p>
       </div>
 
@@ -73,7 +73,11 @@
           {{ t("Headings.BuyAdditionalSubscription") }}
         </p>
       </div>
+      <p v-if="isDaily && !planPricesKnown" role="status" class="mx-auto max-w-md text-center">
+        {{ t("Error.PremiumStatusUnavailable") }}
+      </p>
       <SubscriptionCard
+        v-else-if="policyKnown"
         :subscribeMonthly="() => subscribe(false)"
         :subscribeYearly="() => subscribe(true)"
         :yearly="selectedButton === 1"
@@ -225,6 +229,7 @@ export default {
   setup() {
     const { t, locale } = useI18n();
     const coins = useCoins();
+    const { isDaily, showHearts, policyKnown } = useDailyLearning();
     const selectedButton = ref(0);
     const currentCard = ref(1);
     const heartInfo: any = useHeartInfo();
@@ -263,6 +268,12 @@ export default {
       ]);
     });
 
+    const planPricesKnown = computed(() =>
+      ["MONTHLY", "YEARLY"].every(
+        (name) =>
+          Number.isFinite(premiumPlans.value[name]?.price) && premiumPlans.value[name].price > 0
+      )
+    );
     const monthlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "MONTHLY"));
     const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
     const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
@@ -393,6 +404,7 @@ export default {
     }
 
     async function filHearts() {
+      if (isDaily.value) return;
       if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       } else if (coins.value < refillPrice.value) {
@@ -441,7 +453,7 @@ export default {
         if (value === "MONTHLY") {
           // Preparing an offer never enables renewal. Every declaration gets a
           // request id which survives uncertain response retries in this form.
-          const offer = await GET("/shop/premium/renewal-offer");
+          const offer = await GET("/shop/premium/renewal-offer/me");
           if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
             throw new Error("Invalid renewal offer");
           renewalAccepted.value = false;
@@ -472,7 +484,7 @@ export default {
         return;
       premiumBusy.value = true;
       try {
-        const current = await GET("/shop/premium/renewal-offer");
+        const current = await GET("/shop/premium/renewal-offer/me");
         if (current?.id !== renewalOrder.value.id) {
           renewalOrder.value = null;
           openSnackbar("error", "Error.RenewalOfferChanged");
@@ -513,6 +525,10 @@ export default {
     );
 
     return {
+      isDaily,
+      showHearts,
+      policyKnown,
+      planPricesKnown,
       t,
       premiumInfo,
       renewalOrder,

@@ -192,6 +192,8 @@ function fixture(t, options = {}) {
   });
   let remote = envelope(options.serverState ? 2 : 0, options.serverState || {});
   const bindings = {
+    useDailyLearning: () => ({ daily: vue.ref(null), observe: () => {} }),
+    dailyError: () => null,
     ref: vue.ref,
     computed: vue.computed,
     shallowRef: vue.shallowRef,

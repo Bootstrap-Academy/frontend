@@ -68,7 +68,7 @@
         <!--
           The caption explains when a whole heart is charged.
         -->
-        <template v-if="!data?.solved && user?.id != subtask?.creator && !isPremium">
+        <template v-if="!data?.solved && user?.id != subtask?.creator && !heartFree">
           <InputBtn
             full
             :loading="formSubmitting"
@@ -87,7 +87,7 @@
 
         <InputBtn
           full
-          v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
+          v-if="!data?.solved && user?.id != subtask?.creator && heartFree"
           :loading="formSubmitting"
           @click="onclickSubmitForm()"
           mt
@@ -136,8 +136,9 @@ export default defineComponent({
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
+    const { showHearts } = useDailyLearning();
+    const heartFree = computed(() => {
+      return premiumInfo.value?.premium || !showHearts.value;
     });
     // ============================================================= Checks
 
@@ -308,7 +309,7 @@ export default defineComponent({
       showMaxAttemptsError,
       secondsForTryAgain,
       nextQuestion,
-      isPremium,
+      heartFree,
       fnRated,
       wasOptionsCorrect,
       ChevronDoubleRightIcon,
