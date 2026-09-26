@@ -37,8 +37,8 @@
           class="mb-7 mt-10 md:mb-10 md:mt-14"
         />
 
-        <NuxtLink to="/dashboard">
-          <Btn>{{ $t("CharacterDashboard.Nav") }}</Btn>
+        <NuxtLink :to="guestReturn || '/dashboard'">
+          <Btn>{{ guestReturn ? guestCopy.continue : $t("CharacterDashboard.Nav") }}</Btn>
         </NuxtLink>
       </article>
 
@@ -57,6 +57,9 @@
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
+import { guestReturnPath } from "~/utils/guest/handoff";
+import { guestCopy } from "~/utils/guest/copy";
 definePageMeta({
   layout: "inner",
 });
@@ -68,7 +71,12 @@ export default {
   setup() {
     const status = ref("");
 
-    return { status };
+    const { locale } = useI18n();
+    return {
+      status,
+      guestReturn: guestReturnPath(),
+      guestCopy: computed(() => guestCopy(locale.value)),
+    };
   },
 };
 </script>
