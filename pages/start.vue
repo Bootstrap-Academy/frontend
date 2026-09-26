@@ -183,7 +183,7 @@ async function signIn() {
 <style scoped>
 .guest-learning {
   max-width: 824px;
-  padding: 1.25rem clamp(1rem, 4vw, 2rem) 7rem;
+  padding: 1.25rem clamp(1rem, 4vw, 2rem) 2rem;
   margin: auto;
 }
 .guest-learning > h1 {
