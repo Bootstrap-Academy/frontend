@@ -27,10 +27,39 @@ const composableSource = await readFile(
   new URL("../composables/useLearningRooms.ts", import.meta.url),
   "utf8"
 );
-const { createLearningTransport, createLearningRecovery } = evaluate(transportSource, {}, [
-  "createLearningTransport",
-  "createLearningRecovery",
-]);
+const { createLearningTransport: transportFactory, createLearningRecovery } = evaluate(
+  transportSource,
+  {},
+  ["createLearningTransport", "createLearningRecovery"]
+);
+
+const { renewSession } = evaluate(
+  await readFile(new URL("../utils/sessionRefresh.ts", import.meta.url), "utf8"),
+  { Mutex },
+  ["renewSession"]
+);
+function createLearningTransport(options) {
+  if (options.renew) return transportFactory(options);
+  return transportFactory({
+    ...options,
+    renew: (expected) =>
+      renewSession({
+        expected,
+        snapshot: options.snapshot,
+        lock: async (run) => {
+          const release = await options.lock();
+          try {
+            return await run();
+          } finally {
+            release();
+          }
+        },
+        raw: (token) => options.raw("/auth/session", "PUT", { refresh_token: token }),
+        apply: options.apply,
+        refused: () => {},
+      }),
+  });
+}
 const { createLearningRooms } = evaluate(roomsSource, {}, ["createLearningRooms"]);
 const token = (expires) =>
   `header.${Buffer.from(JSON.stringify({ exp: expires })).toString("base64url")}.signature`;
@@ -48,6 +77,7 @@ test("parallel expired reads share refresh, while an unsafe challenge POST is ne
   let snapshot = {
     identity: "A:S",
     epoch: 1,
+    generation: "first",
     userId: "A",
     sessionId: "S",
     accessToken: token(1),
@@ -91,6 +121,7 @@ test("an idempotent room write retries its exact request only after a confirmed 
   let snapshot = {
     identity: "A:S",
     epoch: 1,
+    generation: "first",
     userId: "A",
     sessionId: "S",
     accessToken: fresh(),
@@ -126,6 +157,7 @@ test("a delayed refresh cannot restore a session after an account-switch ABA", a
   let snapshot = {
     identity: "A:S",
     epoch: 1,
+    generation: "first",
     userId: "A",
     sessionId: "S",
     accessToken: token(1),
@@ -144,7 +176,7 @@ test("a delayed refresh cannot restore a session after an account-switch ABA", a
   });
   const read = request("/skills/rooms");
   await settle();
-  snapshot = { ...snapshot, epoch: 3 };
+  snapshot = { ...snapshot, epoch: 3, generation: "returned-after-switch" };
   pending.resolve({
     user: { id: "A" },
     session: { id: "S" },
@@ -173,11 +205,13 @@ function fixture(t, options = {}) {
   const cleanups = [];
   const scope = vue.effectScope();
   const auth = (response) => {
-    user.value = response.user;
-    session.value = response.session;
-    access.value = response.access_token;
+    user.value = response?.user ?? null;
+    session.value = response?.session ?? null;
+    access.value = response?.access_token ?? null;
+    cookies.get("user").value = user.value;
+    cookies.get("session").value = session.value;
     cookies.get("accessToken").value = access.value;
-    refresh.value = response.refresh_token;
+    refresh.value = response?.refresh_token ?? null;
     cookies.get("refreshToken").value = refresh.value;
   };
   const envelope = (revision = 0, state = {}) => ({
@@ -224,6 +258,28 @@ function fixture(t, options = {}) {
       if (!cookies.has(key)) cookies.set(key, vue.ref(null));
       return cookies.get(key);
     },
+    getSessionSnapshot: () => ({
+      identity: user.value && session.value ? `${user.value.id}:${session.value.id}` : null,
+      generation: "first",
+      userId: user.value?.id || "",
+      sessionId: session.value?.id || "",
+      accessToken: access.value || "",
+      refreshToken: refresh.value || "",
+    }),
+    refreshSession: (expected) =>
+      renewSession({
+        expected,
+        snapshot: () => bindings.getSessionSnapshot(),
+        lock: (run) => bindings.mutex.runExclusive(run),
+        raw: (token) =>
+          bindings.$fetch("/auth/session", {
+            method: "PUT",
+            body: { refresh_token: token },
+            retry: 0,
+          }),
+        apply: auth,
+        refused: () => {},
+      }),
     setStates: auth,
     setUser: (next) => {
       user.value = next;

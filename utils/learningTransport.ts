@@ -1,6 +1,7 @@
 export interface LearningSessionSnapshot {
   identity: string | null;
   epoch: number;
+  generation: string;
   userId: string;
   sessionId: string;
   accessToken: string;
@@ -21,14 +22,13 @@ const sessionError = () => ({ statusCode: 401, data: { error: "learning_session_
 /** Refresh is coordinated with the existing client, but cannot clear a draft on failure. */
 export function createLearningTransport(options: {
   snapshot: () => LearningSessionSnapshot;
-  lock: () => Promise<() => void>;
+  renew: (expected: LearningSessionSnapshot) => Promise<unknown>;
   raw: (
     path: string,
     method: "GET" | "POST" | "PUT",
     body?: unknown,
     token?: string
   ) => Promise<any>;
-  apply: (response: any) => void;
   expired: (required: boolean) => void;
 }) {
   let renewing: { snapshot: LearningSessionSnapshot; promise: Promise<void> } | null = null;
@@ -36,14 +36,18 @@ export function createLearningTransport(options: {
   function current(expected: LearningSessionSnapshot) {
     const actual = options.snapshot();
     return (
-      !!actual.identity && actual.identity === expected.identity && actual.epoch === expected.epoch
+      !!actual.identity &&
+      actual.identity === expected.identity &&
+      actual.epoch === expected.epoch &&
+      actual.generation === expected.generation
     );
   }
   async function renew(expected: LearningSessionSnapshot) {
     if (renewing) {
       if (
         renewing.snapshot.identity === expected.identity &&
-        renewing.snapshot.epoch === expected.epoch
+        renewing.snapshot.epoch === expected.epoch &&
+        renewing.snapshot.generation === expected.generation
       ) {
         await renewing.promise;
         if (!current(expected)) throw sessionError();
@@ -54,51 +58,27 @@ export function createLearningTransport(options: {
       return renew(expected);
     }
     const operation = (async () => {
-      const release = await options.lock();
+      if (!current(expected)) throw sessionError();
+      const before = options.snapshot();
       try {
-        if (!current(expected)) throw sessionError();
-        const before = options.snapshot();
-        if (before.accessToken !== expected.accessToken && !expired(before.accessToken)) return;
-        if (!before.refreshToken) {
-          refused = before;
-          options.expired(true);
-          throw sessionError();
-        }
-        let response;
-        try {
-          response = await options.raw("/auth/session", "PUT", {
-            refresh_token: before.refreshToken,
-          });
-        } catch (error) {
-          if (current(expected) && [400, 401, 403].includes(status(error))) {
-            refused = before;
-            options.expired(true);
-            throw sessionError();
-          }
-          throw error;
-        }
-        if (!current(expected)) throw sessionError();
+        await options.renew(expected);
+      } catch (error) {
         const after = options.snapshot();
-        if (after.accessToken !== before.accessToken || after.refreshToken !== before.refreshToken)
-          return;
         if (
-          response?.user?.id !== before.userId ||
-          response?.session?.id !== before.sessionId ||
-          typeof response?.access_token !== "string" ||
-          !response.access_token ||
-          typeof response?.refresh_token !== "string" ||
-          !response.refresh_token
+          current(expected) &&
+          before.accessToken === after.accessToken &&
+          before.refreshToken === after.refreshToken &&
+          [400, 401, 403].includes(status(error))
         ) {
-          options.expired(true);
           refused = before;
+          options.expired(true);
           throw sessionError();
         }
-        options.apply(response);
-        refused = null;
-        options.expired(false);
-      } finally {
-        release();
+        throw error;
       }
+      if (!current(expected)) throw sessionError();
+      refused = null;
+      options.expired(false);
     })();
     renewing = { snapshot: expected, promise: operation };
     try {
@@ -128,13 +108,14 @@ export function createLearningTransport(options: {
     }
     if (expired(expected.accessToken)) await renew(expected);
     if (!current(expected)) throw sessionError();
+    const attempted = options.snapshot();
     try {
-      const response = await options.raw(path, method, body, options.snapshot().accessToken);
+      const response = await options.raw(path, method, body, attempted.accessToken);
       if (!current(expected)) throw sessionError();
       return response;
     } catch (error) {
       if (!current(expected) || status(error) !== 401) throw error;
-      await renew({ ...expected, accessToken: options.snapshot().accessToken });
+      await renew(attempted);
       if (!current(expected)) throw sessionError();
       // Never replay a challenge attempt. Room mutations have a server-enforced
       // request id; their retry keeps the exact original id, revision and body.

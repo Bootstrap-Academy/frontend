@@ -63,7 +63,7 @@ test("a saved room projection updates the mounted custom module without restarti
   const mounts = [];
   const cleanups = [];
   const bindings = {
-    ...Vue,
+    ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
     ...assessmentModule,
     learningModuleIdentity,
     window: { location: { origin: "https://bootstrap.example" } },

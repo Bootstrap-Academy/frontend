@@ -4,9 +4,22 @@ import test from "node:test";
 import { Mutex, Semaphore, withTimeout } from "async-mutex";
 import { jwtDecode } from "jwt-decode";
 import { createFetch } from "ofetch";
+import ts from "typescript";
+
+const utilitySource = (
+  await readFile(new URL("../utils/sessionRefresh.ts", import.meta.url), "utf8")
+)
+  .replace(/^import[\s\S]*?;\n/gm, "")
+  .replace(/^export /gm, "");
+const utility = new Function(
+  "Mutex",
+  ts.transpileModule(utilitySource, {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
+  }).outputText + "\nreturn { renewSession, sameSession, sameSessionContext, sameSessionPair };"
+)(Mutex);
 
 const source = (await readFile(new URL("../composables/fetch.js", import.meta.url), "utf8"))
-  .replace(/^import .*;\n/gm, "")
+  .replace(/^import[\s\S]*?;\n/gm, "")
   .replace(/^export /gm, "");
 
 function token(name, seconds) {
@@ -14,8 +27,16 @@ function token(name, seconds) {
   return `e30.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.synthetic`;
 }
 
-function fixture({ expired = false, refuseFirst = false, refuseAll = false } = {}) {
+function fixture({
+  expired = false,
+  refuseFirst = false,
+  refuseAll = false,
+  beforeResponse,
+  refreshFailure,
+} = {}) {
   let accessToken = token("original", expired ? -3600 : 3600);
+  let generation = "first";
+  let identity = "A:S";
   let refreshes = 0;
   let clearings = 0;
   const sent = [];
@@ -26,6 +47,7 @@ function fixture({ expired = false, refuseFirst = false, refuseAll = false } = {
       assert.ok(options.headers instanceof Headers);
       const authorization = options.headers.get("authorization");
       sent.push({ authorization, body: options.body, method: options.method });
+      if (beforeResponse) await beforeResponse(sent.length);
       const accepted =
         authorization === `Bearer ${accessToken}` &&
         !refuseAll &&
@@ -36,9 +58,26 @@ function fixture({ expired = false, refuseFirst = false, refuseAll = false } = {
       });
     },
   });
+  const mutex = new Mutex();
+  const snapshot = () => ({
+    identity: accessToken ? identity : null,
+    generation,
+    userId: "A",
+    sessionId: "S",
+    accessToken,
+    refreshToken: "original-refresh",
+  });
+  const clear = () => {
+    accessToken = null;
+    clearings++;
+  };
   const api = new Function(
     "jwtDecode",
-    "Mutex",
+    "sessionRefreshMutex",
+    "sameSession",
+    "sameSessionContext",
+    "sameSessionPair",
+    "getSessionSnapshot",
     "Semaphore",
     "withTimeout",
     "useRuntimeConfig",
@@ -53,20 +92,44 @@ function fixture({ expired = false, refuseFirst = false, refuseAll = false } = {
     `${source}\nreturn { GET, POST, mutex };`
   )(
     jwtDecode,
-    Mutex,
+    mutex,
+    utility.sameSession,
+    utility.sameSessionContext,
+    utility.sameSessionPair,
+    snapshot,
     Semaphore,
     withTimeout,
     () => ({ public: { BASE_API_URL: "https://synthetic.invalid", NODE_ENV: "production" } }),
     () => accessToken,
-    async () => {
-      accessToken = token(`refreshed-${++refreshes}`, 3600);
-      return [{ access_token: accessToken }, null];
+    async (expected) => {
+      try {
+        const result = await utility.renewSession({
+          expected,
+          snapshot,
+          lock: (run) => mutex.runExclusive(run),
+          raw: async () => {
+            if (refreshFailure) throw refreshFailure;
+            return {
+              user: { id: "A" },
+              session: { id: "S" },
+              access_token: token(`refreshed-${++refreshes}`, 3600),
+              refresh_token: "new-refresh",
+            };
+          },
+          apply: (response) => {
+            accessToken = response.access_token;
+          },
+          refused: clear,
+        });
+        return [result, null];
+      } catch (error) {
+        return [null, error];
+      }
     },
     transport,
     (value) => {
       assert.equal(value, null);
-      accessToken = null;
-      clearings++;
+      clear();
     },
     () => ({ push: (path) => redirects.push(path) }),
     () => ({ fullPath: "/subscription" }),
@@ -85,6 +148,11 @@ function fixture({ expired = false, refuseFirst = false, refuseAll = false } = {
     },
     get clearings() {
       return clearings;
+    },
+    changeAccount(account, nextGeneration) {
+      identity = `${account}:S`;
+      generation = nextGeneration;
+      accessToken = token(account, 3600);
     },
     completeConcurrentRefresh() {
       accessToken = token("concurrent-refresh", 3600);
@@ -138,4 +206,63 @@ test("a genuine 401 after fresh-token retry still clears the session and stops r
   assert.equal(f.accessToken, null);
   assert.ok(f.clearings > 0);
   assert.ok(f.redirects.length > 0);
+});
+
+function deferred() {
+  let resolve;
+  const promise = new Promise((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
+}
+
+test("late unauthorized responses cannot clear or replay under a different account", async () => {
+  const arrived = deferred(),
+    answer = deferred();
+  const f = fixture({
+    beforeResponse: async () => {
+      arrived.resolve();
+      await answer.promise;
+    },
+  });
+  const pending = f.api.POST("/synthetic/action", { private: "A" });
+  const rejected = assert.rejects(pending);
+  await arrived.promise;
+  f.changeAccount("B", "second");
+  answer.resolve();
+  await rejected;
+  assert.equal(f.refreshes, 0);
+  assert.equal(f.clearings, 0);
+  assert.equal(f.sent.length, 1);
+});
+
+test("a late unauthorized response is fenced after switching away and back", async () => {
+  const arrived = deferred(),
+    answer = deferred();
+  const f = fixture({
+    beforeResponse: async () => {
+      arrived.resolve();
+      await answer.promise;
+    },
+  });
+  const pending = f.api.GET("/auth/users/me");
+  const rejected = assert.rejects(pending);
+  await arrived.promise;
+  f.changeAccount("B", "second");
+  f.changeAccount("A", "third");
+  answer.resolve();
+  await rejected;
+  assert.equal(f.refreshes, 0);
+  assert.equal(f.clearings, 0);
+});
+
+test("network failure during proactive refresh preserves the session and does not dispatch a stale write", async () => {
+  const f = fixture({
+    expired: true,
+    refreshFailure: { statusCode: 503, data: { error: "unavailable" } },
+  });
+  await assert.rejects(f.api.POST("/synthetic/action", { keep: true }));
+  assert.equal(f.clearings, 0);
+  assert.ok(f.accessToken);
+  assert.equal(f.sent.length, 0);
 });

@@ -303,7 +303,7 @@ for (const rotateGrant of [false, true])
       sessions = [],
       events = [];
     const bindings = {
-      ...Vue,
+      ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
       ...assessmentModule,
       learningModuleIdentity,
       window: { location: { origin: "https://academy.example" } },
@@ -425,7 +425,7 @@ for (const file of ["CustomActivity.vue", "ActivityHost.vue"])
     const mounted = [],
       cleanups = [];
     const bindings = {
-      ...Vue,
+      ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
       ...assessmentModule,
       learningModuleIdentity,
       window: { location: { origin: "https://academy.example", reload: () => reloads++ } },
