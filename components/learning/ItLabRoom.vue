@@ -44,9 +44,46 @@
         @action="act"
       />
       <p v-if="actionError" role="status">{{ ui.limit }}</p>
-      <button type="button" class="lab-reset" :disabled="disabled" @click="reset">
-        {{ ui.reset }}
-      </button>
+      <div class="lab-reset-controls">
+        <div
+          v-if="resetPending"
+          class="lab-reset-confirm"
+          role="group"
+          :aria-labelledby="`${id}-reset-question`"
+          @keydown.esc.prevent="cancelReset"
+        >
+          <p :id="`${id}-reset-question`">{{ ui.resetQuestion }}</p>
+          <div class="lab-actions">
+            <button ref="cancelButton" type="button" :disabled="disabled" @click="cancelReset">
+              {{ ui.resetCancel }}
+            </button>
+            <button type="button" :disabled="disabled" @click="confirmReset">
+              {{ ui.resetConfirm }}
+            </button>
+          </div>
+        </div>
+        <div v-else class="lab-actions">
+          <button
+            ref="resetButton"
+            type="button"
+            class="lab-reset"
+            :disabled="disabled"
+            @click="reset"
+          >
+            {{ ui.reset }}
+          </button>
+          <button
+            v-if="undoDraft"
+            ref="undoButton"
+            type="button"
+            :disabled="disabled"
+            @click="undoReset"
+          >
+            {{ ui.resetUndo }}
+          </button>
+        </div>
+        <p v-if="resetMessage" role="status">{{ resetMessage }}</p>
+      </div>
       <aside class="lab-observation">
         <h3>{{ ui.observation }}</h3>
         <p>{{ lesson.observe }}</p>
@@ -110,17 +147,31 @@ const emit = defineEmits<{
   complete: [answer: Record<string, unknown>];
 }>();
 const id = useId(),
-  workspaceHeading = ref<HTMLElement | null>(null);
+  workspaceHeading = ref<HTMLElement | null>(null),
+  resetButton = ref<HTMLElement | null>(null),
+  cancelButton = ref<HTMLElement | null>(null),
+  undoButton = ref<HTMLElement | null>(null);
 const lesson = computed(() => parseLabContent(props.content)),
   ui = computed(() => itLabCopy(props.locale));
 const draft = ref<Record<string, unknown>>({ ...props.state });
+const resetPending = ref(false),
+  undoDraft = ref<Record<string, unknown> | null>(null),
+  resetNotice = ref<"resetDone" | "resetRestored" | null>(null);
+const resetMessage = computed(() => (resetNotice.value ? ui.value[resetNotice.value] : ""));
+function clearReset() {
+  resetPending.value = false;
+  undoDraft.value = null;
+  resetNotice.value = null;
+}
 watch(
   () => props.state,
   (state) => {
+    if (JSON.stringify(state) !== JSON.stringify(draft.value)) clearReset();
     draft.value = { ...state };
   },
   { flush: "sync" }
 );
+watch(() => lesson.value?.scenario, clearReset);
 const actionError = ref(false),
   needsExperiment = ref(false);
 const lab = computed(() =>
@@ -155,6 +206,7 @@ const passed = computed(
 );
 function update(patch: Record<string, unknown>) {
   if (props.disabled || !lesson.value) return;
+  clearReset();
   draft.value = {
     schema: "it-lab-state/1",
     scenario: lesson.value.scenario,
@@ -193,12 +245,52 @@ function complete() {
   if (answer) emit("complete", answer);
 }
 async function reset() {
-  if (props.disabled) return;
+  if (props.disabled || !lesson.value) return;
+  if (hasWork()) {
+    resetPending.value = true;
+    await nextTick();
+    cancelButton.value?.focus({ preventScroll: true });
+    return;
+  }
+  await applyReset();
+}
+function hasWork() {
+  return (
+    invalid.value ||
+    lab.value.tape.length > 0 ||
+    Object.keys(answers.value).length > 0 ||
+    draft.value.checked === true
+  );
+}
+async function cancelReset() {
+  resetPending.value = false;
+  await nextTick();
+  resetButton.value?.focus({ preventScroll: true });
+}
+async function confirmReset() {
+  if (props.disabled || !resetPending.value) return;
+  await applyReset();
+}
+async function applyReset() {
+  // Keep undo outside the saved draft, preserving the player's persistence contract.
+  const previous = hasWork() ? JSON.parse(JSON.stringify(draft.value)) : undoDraft.value;
   actionError.value = false;
   needsExperiment.value = false;
   update({ model: { tape: [] }, answers: {}, checked: false });
+  if (previous) undoDraft.value = previous;
+  resetNotice.value = "resetDone";
   await nextTick();
-  workspaceHeading.value?.focus({ preventScroll: true });
+  (undoButton.value || workspaceHeading.value)?.focus({ preventScroll: true });
+}
+async function undoReset() {
+  if (props.disabled || !undoDraft.value) return;
+  const previous = undoDraft.value;
+  clearReset();
+  draft.value = previous;
+  emit("change", draft.value);
+  resetNotice.value = "resetRestored";
+  await nextTick();
+  resetButton.value?.focus({ preventScroll: true });
 }
 </script>
 <style scoped>
@@ -283,6 +375,17 @@ async function reset() {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+}
+.lab-reset-controls,
+.lab-reset-confirm {
+  display: grid;
+  gap: 0.6rem;
+}
+.lab-reset-controls button {
+  min-width: 44px;
+}
+.lab-reset-controls p {
+  color: inherit;
 }
 .it-lab :deep(.lab-primary) {
   background: #39dfbc;
