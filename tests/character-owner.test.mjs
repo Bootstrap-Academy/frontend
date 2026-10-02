@@ -32,7 +32,8 @@ const setupSource = statements(descriptor.scriptSetup.content);
 const authSource = statements(
   userSource,
   (node) =>
-    ts.isFunctionDeclaration(node) && ["setStates", "getAccessToken"].includes(node.name.text)
+    ts.isFunctionDeclaration(node) &&
+    ["setStates", "getAccessToken", "readSessionCookie"].includes(node.name.text)
 );
 const settle = () => new Promise(setImmediate);
 const deferred = () => {

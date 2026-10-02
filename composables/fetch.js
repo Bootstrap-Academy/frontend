@@ -1,7 +1,12 @@
 import { jwtDecode } from "jwt-decode";
-import { Mutex, Semaphore, withTimeout } from "async-mutex";
+import {
+  sessionRefreshMutex,
+  sameSession,
+  sameSessionContext,
+  sameSessionPair,
+} from "~/utils/sessionRefresh";
 
-export const mutex = new Mutex();
+export const mutex = sessionRefreshMutex;
 
 export function GET(url, query) {
   return createApiFetch(url, "GET", null, query);
@@ -25,13 +30,15 @@ export function DELETE(url, body = null) {
 
 async function createApiFetch(url, method, body, query) {
   const config = useRuntimeConfig().public;
-  const accessToken = getAccessToken();
+  const snapshot = getSessionSnapshot();
+  const accessToken = snapshot.accessToken;
 
   const requestOptions = {
     baseURL: config.BASE_API_URL,
     method: method,
     body: body,
     query: query,
+    _session: snapshot,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -54,29 +61,23 @@ async function createApiFetch(url, method, body, query) {
   }
 }
 
-const onRequest = async ({ request, options }) => {
-  if (!isAccessTokenExpired(1)) return;
-
-  if (mutex.isLocked()) {
-    await mutex.waitForUnlock();
-    const accessToken = getAccessToken();
-
-    options.headers = normalizeHeaders(options.headers);
-    options.headers.set("Authorization", `Bearer ${accessToken}`);
-  } else {
-    const release = await mutex.acquire();
-    const [success, error] = await refresh();
-    release();
-    if (success) {
-      const accessToken = getAccessToken();
-
-      options.headers = normalizeHeaders(options.headers);
-      options.headers.set("Authorization", `Bearer ${accessToken}`);
-    }
+const onRequest = async ({ options }) => {
+  if (options._session && !sameSessionContext(options._session, getSessionSnapshot()))
+    throw { statusCode: 401, data: { error: "session_changed" } };
+  if (isAccessTokenExpired()) {
+    const [success, error] = await refresh(options._session);
+    if (!success) throw error;
   }
+  if (options._session && !sameSessionContext(options._session, getSessionSnapshot()))
+    throw { statusCode: 401, data: { error: "session_changed" } };
+  options._session = getSessionSnapshot();
+  options.headers = normalizeHeaders(options.headers);
+  options.headers.set("Authorization", `Bearer ${getAccessToken()}`);
 };
 
 const onResponse = async ({ request, options, response }) => {
+  if (options._session && !sameSessionContext(options._session, getSessionSnapshot()))
+    throw { statusCode: 401, data: { error: "session_changed" } };
   let status = response?.ok ?? null;
   const config = useRuntimeConfig().public;
   if (config.NODE_ENV == "development" && status == true) {
@@ -87,6 +88,7 @@ const onResponse = async ({ request, options, response }) => {
 const onResponseError = async (context) => {
   const { options } = context;
   const response = context.response;
+  if (options._session && !sameSessionContext(options._session, getSessionSnapshot())) return;
   // if (response.status == 403) {
   //   console.log("resoinse._Data", response._data.detail);
   //   openSnackbar("error", "Error.NotAllowed");
@@ -143,7 +145,7 @@ const onResponseError = async (context) => {
   }
 
   if (detailsLower.includes("invalid token") || detailsLower.includes("invalid refresh token")) {
-    logoutAfterInvalidToken();
+    logoutAfterInvalidToken(options._session);
   }
 
   if (details.includes("user already exists")) {
@@ -284,60 +286,31 @@ async function attemptAuthRetry(error, url, options) {
   if (!response || response.status !== 401 || !options._shouldRetry) {
     return { handled: false };
   }
-
   options._shouldRetry = false;
-
-  const [data, retryError] = await retryRequestWithFreshToken(url, options);
-  if (data !== null) {
-    return { handled: true, success: true, data };
-  }
-
-  if (!retryError || retryError?.response?.status === 401) {
-    logoutAfterInvalidToken();
-  }
-
+  const expected = options._session;
+  if (!expected?.identity || !sameSession(expected, getSessionSnapshot()))
+    return { handled: true, success: false, error };
+  const [data, retryError, attempted] = await retryRequestWithFreshToken(url, options);
+  if (data !== null) return { handled: true, success: true, data };
+  if (retryError?.response?.status === 401) logoutAfterInvalidToken(attempted);
   return { handled: true, success: false, error: retryError ?? error };
 }
 
 async function retryRequestWithFreshToken(request, options) {
-  const refreshed = await ensureFreshAccessToken();
-  if (!refreshed) {
-    return [null, null];
-  }
-
+  const expected = options._session;
+  const [success, refreshError] = await refresh(expected);
+  if (!success) return [null, refreshError, null];
+  if (!sameSession(expected, getSessionSnapshot()))
+    return [null, { statusCode: 401, data: { error: "session_changed" } }, null];
   const retryOptions = cloneRequestOptions(options);
   retryOptions._retry = true;
-
+  retryOptions._session = getSessionSnapshot();
   try {
     const data = await $fetch(request, retryOptions);
-    return [data, null];
+    return [data, null, retryOptions._session];
   } catch (error) {
-    return [null, error];
+    return [null, error, retryOptions._session];
   }
-}
-
-async function ensureFreshAccessToken() {
-  let release;
-
-  try {
-    if (mutex.isLocked()) {
-      await mutex.waitForUnlock();
-    } else {
-      release = await mutex.acquire();
-      const [success] = await refresh();
-      if (!success) {
-        return false;
-      }
-    }
-  } catch (error) {
-    return false;
-  } finally {
-    if (release) {
-      release();
-    }
-  }
-
-  return !!getAccessToken();
 }
 
 function cloneRequestOptions(options) {
@@ -352,7 +325,8 @@ function cloneRequestOptions(options) {
   return baseOptions;
 }
 
-function logoutAfterInvalidToken() {
+function logoutAfterInvalidToken(expected) {
+  if (!expected || !sameSessionPair(expected, getSessionSnapshot())) return;
   const router = useRouter();
   const route = useRoute();
 

@@ -33,23 +33,38 @@ function toCookieUser(user: any) {
   };
 }
 
-export function setUser(value: any) {
+export function setUser(value: any, writeCookie = true) {
   const user = <any>useUser();
-  const cookie_user = <any>useAppCookie("user");
 
   moderationAmbientChanged(value?.id);
   user.value = value ?? null;
-  cookie_user.value = toCookieUser(value);
+  if (writeCookie) useAppCookie<any>("user").value = toCookieUser(value);
+}
+
+/** Nuxt's useCookie installs a listener; request snapshots only need a read. */
+export function readSessionCookie(name: string): any {
+  if (typeof document === "undefined" || typeof document.cookie !== "string")
+    return useAppCookie<any>(name, { readonly: true, watch: false }).value;
+  const entry = document.cookie.split(";").find((value) => value.trim().startsWith(`${name}=`));
+  if (!entry) return null;
+  try {
+    const value = decodeURIComponent(entry.trim().slice(name.length + 1));
+    if (value === "undefined") return null;
+    try {
+      return JSON.parse(value);
+    } catch {
+      return value;
+    }
+  } catch {
+    return null;
+  }
 }
 
 export function getAccessToken() {
   const accessToken: any = useAccessToken();
-
-  if (!!!accessToken.value) return null;
-
-  const cookie_accessToken = useAppCookie("accessToken");
-  if (cookie_accessToken.value != accessToken.value) {
-    accessToken.value = cookie_accessToken.value;
+  const current = readSessionCookie("accessToken");
+  if (current != accessToken.value) {
+    accessToken.value = current;
   }
 
   return accessToken.value;
@@ -57,12 +72,9 @@ export function getAccessToken() {
 
 export function getRefreshToken() {
   const refreshToken: any = useRefreshToken();
-
-  if (!!!refreshToken.value) return null;
-
-  const cookie_refreshToken = useAppCookie("refreshToken");
-  if (cookie_refreshToken.value != refreshToken.value) {
-    refreshToken.value = cookie_refreshToken.value;
+  const current = readSessionCookie("refreshToken");
+  if (current != refreshToken.value) {
+    refreshToken.value = current;
   }
 
   return refreshToken.value;
@@ -93,26 +105,57 @@ export function restoreStates() {
   refreshToken.value = cookie_refreshToken.value ?? "";
 }
 
-export function setStates(response: any) {
-  setUser(response?.user ?? null);
+export function syncSessionCookies() {
+  const user = useUser();
+  const session = useSession();
+  const cookieUser = readSessionCookie("user");
+  const cookieSession = readSessionCookie("session");
+  if (user.value?.id !== cookieUser?.id) {
+    user.value = cookieUser ?? null;
+    useProfileLoaded().value = false;
+    moderationAmbientChanged(user.value?.id);
+  }
+  if ((session.value as any)?.id !== cookieSession?.id) session.value = cookieSession ?? null;
+  getAccessToken();
+  getRefreshToken();
+}
+
+export function setStates(response: any, renewing = false, redirect = true) {
+  // Publish synchronously before releasing the origin refresh lock. Nuxt's
+  // default cookie watcher writes on the next tick and can expose the old pair.
+  const write = (name: string, value: any) => {
+    if (typeof document !== "undefined" && typeof document.cookie === "string") {
+      document.cookie = `${name}=${value == null ? "" : encodeURIComponent(typeof value === "string" ? value : JSON.stringify(value))}; Path=/; Secure; SameSite=Lax${value == null ? "; Max-Age=0" : ""}`;
+      refreshCookie(name);
+    } else useAppCookie<any>(name, { watch: false }).value = value;
+  };
+  if (!renewing) write("authGeneration", crypto.randomUUID());
+  setUser(response?.user ?? null, false);
+  write(
+    "user",
+    response?.user
+      ? {
+          id: response.user.id ?? null,
+          name: response.user.name ?? null,
+          display_name: response.user.display_name ?? null,
+        }
+      : null
+  );
   // Login, signup and refresh answer with the full profile.
   useProfileLoaded().value = !!response?.user;
 
   const session = <any>useSession();
-  const cookie_session = <any>useAppCookie("session");
   session.value = response?.session ?? null;
   // Only the identifier of the session belongs in the cookie.
-  cookie_session.value = session.value ? { id: session.value.id ?? null } : null;
+  write("session", session.value ? { id: session.value.id ?? null } : null);
 
   const accessToken = useAccessToken();
-  const cookie_accessToken = useAppCookie("accessToken");
   accessToken.value = response?.access_token ?? null;
-  cookie_accessToken.value = accessToken.value;
+  write("accessToken", accessToken.value);
 
   const refreshToken = useRefreshToken();
-  const cookie_refreshToken = useAppCookie("refreshToken");
   refreshToken.value = response?.refresh_token ?? null;
-  cookie_refreshToken.value = refreshToken.value;
+  write("refreshToken", refreshToken.value);
 
   const hideAnimation: any = useAppCookie("hideAnimationNextTime");
   if (hideAnimation.value == undefined) hideAnimation.value = false;
@@ -123,7 +166,7 @@ export function setStates(response: any) {
   const lastViewCourse: any = useAppCookie("lastViewCourse");
   if (lastViewCourse.value == undefined) lastViewCourse.value = null;
 
-  if (response == null && !isOnPublicLegalRoute()) {
+  if (response == null && redirect && !isOnPublicLegalRoute()) {
     const router = useRouter();
     router.push("/auth/login");
   }

@@ -190,7 +190,7 @@ test("saving a room projection keeps the active renderer and its submission prep
       evaluateScript(
         source,
         {
-          ...Vue,
+          ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
           ...adapters,
           defineProps: () => props,
           defineEmits: () => () => {},
@@ -260,7 +260,7 @@ test("the actual activity host retains private code across grant rotation but re
       evaluateScript(
         source,
         {
-          ...Vue,
+          ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
           ...adapters,
           defineProps: () => props,
           defineEmits: () => (name, value) => {
@@ -333,7 +333,7 @@ test("the host rejects late module loads and old events while preserving accepte
     evaluateScript(
       source,
       {
-        ...Vue,
+        ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
         ...adapters,
         defineProps: () => props,
         defineEmits: () => (name, value) => events.push({ name, value }),
@@ -404,7 +404,7 @@ async function activityFixture(
   );
   let options;
   const bindings = {
-    ...Vue,
+    ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
     ...adapters,
     defineProps: () => ({
       activity,
@@ -675,7 +675,7 @@ test("the composed lesson page advances ordered native activities, preserves dir
     evaluateScript(
       source,
       {
-        ...Vue,
+        ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
         definePageMeta: () => {},
         useHead: () => {},
         useRoute: () => route,

@@ -1,7 +1,6 @@
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
-import { mutex } from "~/composables/fetch";
 
 export function useLearningRooms(
   options: {
@@ -42,17 +41,21 @@ export function useLearningRooms(
     `learning-room-recovery${recoveryNamespace ? `:${recoveryNamespace}` : ""}`,
     () => ({})
   );
-  const snapshot = () => ({
-    identity: owner.value,
-    epoch,
-    userId: user.value?.id || "",
-    sessionId: session.value?.id || "",
-    accessToken: accessToken.value || "",
-    refreshToken: refreshToken.value || "",
-  });
+  const snapshot = () => {
+    const shared = getSessionSnapshot();
+    return {
+      identity: shared.identity,
+      generation: shared.generation,
+      epoch,
+      userId: user.value?.id || "",
+      sessionId: session.value?.id || "",
+      accessToken: shared.accessToken,
+      refreshToken: shared.refreshToken,
+    };
+  };
   const transport = createLearningTransport({
     snapshot,
-    lock: () => mutex.acquire(),
+    renew: (expected) => refreshSession({ ...getSessionSnapshot(), ...expected }, false),
     raw: (path, method, body, token) =>
       $fetch(path, {
         baseURL: config.BASE_API_URL,
@@ -62,9 +65,6 @@ export function useLearningRooms(
         retry: 0,
         timeout: 20000,
       }),
-    apply: (response) => {
-      setStates(response);
-    },
     expired: (required) => {
       reauthRequired.value = required;
     },
@@ -209,14 +209,7 @@ export function useLearningRooms(
     const redirect = route.fullPath || "/learn";
     // Clear the stale cookie before navigation so the global login guard cannot
     // send this request back to the dashboard. No server logout/write is needed.
-    useAppCookie("accessToken").value = null;
-    useAppCookie("refreshToken").value = null;
-    useAppCookie("session").value = null;
-    useAppCookie("user").value = null;
-    accessToken.value = "";
-    refreshToken.value = "";
-    session.value = null;
-    setUser(null);
+    setStates(null, false, false);
     await router.push({ path: "/auth/login", query: { redirect } });
     return true;
   }
