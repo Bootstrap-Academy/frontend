@@ -1,5 +1,6 @@
 <template>
-  <SkeletonLeaderboard v-if="loading" />
+  <LeaderboardStatus v-if="page.error" :error="page.error" @reload="reload" />
+  <SkeletonLeaderboard v-else-if="loading" />
   <LeaderboardListing
     v-else-if="leaderBoardList.length && !loading"
     :leaderBoardList="leaderBoardList"
@@ -10,7 +11,6 @@
 </template>
 
 <script lang="ts">
-import { getOverflowAncestors } from "@floating-ui/dom";
 import { useI18n } from "vue-i18n";
 export default {
   setup() {
@@ -18,12 +18,16 @@ export default {
     const loading = ref(true);
     const offset = useLeaderboardOffset();
     const leaderBoardList = useOverAllLeaderboardList();
-    onMounted(async () => {
-      offset.value = 0;
-      await getOverAllLeaderBoard(offset.value);
+    const page = useLeaderboardPage();
+    const invalidation = useLeaderboardInvalidation();
+    async function reload() {
+      loading.value = true;
+      await getOverAllLeaderBoard(0);
       loading.value = false;
-    });
-    return { t, loading, leaderBoardList };
+    }
+    onMounted(reload);
+    watch(invalidation, reload);
+    return { t, loading, leaderBoardList, page, reload };
   },
 };
 </script>
