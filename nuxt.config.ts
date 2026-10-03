@@ -76,6 +76,8 @@ export default defineNuxtConfig({
       FEEDBACK_BUILD: feedbackBuild(),
       profilePublicationEnabled: false,
       learningRoomsEnabled: true,
+      lessonProtocolV2: false,
+      lessonContentOrigin: "",
       // Disabled until the reviewed registration cohort and documents are published.
       registrationTermsVersion: "",
       registrationTermsUrl: "",

@@ -80,7 +80,7 @@ export function createLearningRooms(options: {
       courseId ? `?course=${encodeURIComponent(courseId)}` : ""
     }`;
 
-  async function save(): Promise<boolean> {
+  async function save(operationId?: string): Promise<boolean> {
     if (!alive || view.conflict || !view.room || view.status !== "ready") return false;
     if (savePromise) return savePromise;
     if (!view.dirty && !pendingSave) return true;
@@ -90,11 +90,12 @@ export function createLearningRooms(options: {
     publish();
     const operation = (async () => {
       try {
+        let first = true;
         while (current(ticket) && (view.dirty || pendingSave)) {
           const version = pendingSave?.version ?? editVersion;
           pendingSave ||= {
             body: {
-              request_id: id(),
+              request_id: (first && operationId) || id(),
               expected_revision: view.room!.progress.revision,
               state: copy(view.draft),
               ...(view.room!.progress.review_id
@@ -110,6 +111,7 @@ export function createLearningRooms(options: {
           view.room = response;
           view.dirty = editVersion !== version;
           pendingSave = null;
+          first = false;
           view.error = "";
         }
         return current(ticket);
@@ -402,11 +404,41 @@ export function createLearningRooms(options: {
       view.dirty = true;
       publish();
     },
+    // V2 uses the same authenticated routes, CAS, retry records and owner recovery.
+    protocolSnapshot: () => copy({ room: view.room, error: view.error, conflict: view.conflict }),
+    async protocolRead() {
+      if (!alive || !view.room) throw new Error("No active learning room");
+      const ticket = generation;
+      const before = view.room;
+      const response = envelope(await options.request(unitUrl(before.unit.id)));
+      if (
+        !current(ticket) ||
+        response.unit.id !== before.unit.id ||
+        (response.progress.review_id || null) !== (before.progress.review_id || null)
+      )
+        throw new Error("Learning room changed");
+      if (response.progress.revision < before.progress.revision)
+        throw new Error("Older learning snapshot");
+      if (view.dirty || pendingSave || pendingComplete) {
+        if (response.progress.revision !== before.progress.revision)
+          throw new Error("Saved work changed");
+      } else {
+        view.room = response;
+        view.draft = copy(response.progress.state);
+        publish();
+      }
+      return copy(response);
+    },
     save,
     next,
     retry: () => next(lastSelection.path, lastSelection.after, true, lastSelection),
     retryReview: startReview,
-    async complete(action: "complete" | "skip", answer?: Record<string, any>, attemptId?: string) {
+    async complete(
+      action: "complete" | "skip",
+      answer?: Record<string, any>,
+      attemptId?: string,
+      operationId?: string
+    ) {
       if (
         !alive ||
         !view.room ||
@@ -425,7 +457,7 @@ export function createLearningRooms(options: {
         view.completing = true;
         view.error = "";
         pendingComplete ||= {
-          request_id: id(),
+          request_id: operationId || id(),
           expected_revision: view.room.progress.revision,
           action,
           ...(view.room.progress.review_id ? { review_id: view.room.progress.review_id } : {}),
