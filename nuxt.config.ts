@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   ssr: false,
 
   app: {
+    buildAssetsDir: "/_assets/",
     head: {
       title: "Bootstrap Academy",
       link: [{ rel: "manifest", href: "/manifest.txt" }],
