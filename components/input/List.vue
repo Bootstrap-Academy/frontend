@@ -61,7 +61,7 @@ export default defineComponent({
     light: { type: Boolean, default: false },
     placeholder: { type: String, default: "" },
     rules: { type: Array, default: [] },
-    modelValue: { default: [] },
+    modelValue: { type: Array as PropType<string[]>, default: [] },
     max: { type: Number, default: 10 },
   },
   emits: ["update:modelValue", "valid"],

@@ -150,7 +150,16 @@ export default defineComponent({
     });
 
     // ============================================================= options
-    const options: any = ref([
+    const options = ref<
+      {
+        id?: string;
+        answer: string;
+        placeholder?: string;
+        valid: boolean;
+        correct: boolean;
+        rules?: Array<(value: string) => boolean | string>;
+      }[]
+    >([
       {
         answer: "",
         placeholder: "Headings.HTML",
@@ -180,7 +189,7 @@ export default defineComponent({
     function onclickAddOption() {
       let isAllowed = true;
       if (options.value.length > 0) {
-        let lastAddedOption = options.value[options.value.length - 1].answer;
+        let lastAddedOption = options.value[options.value.length - 1]?.answer;
         if (!!!lastAddedOption) isAllowed = false;
       }
 
@@ -203,8 +212,10 @@ export default defineComponent({
 
     function setOptionCorrect(status: boolean, index: number) {
       if (selectedQuestionType.value == "Multi Choice" || status == false) {
+        const option = options.value[index];
+        if (!option) return;
         options.value.splice(index, 1, {
-          ...options.value[index],
+          ...option,
           correct: status,
         });
         return;
@@ -323,7 +334,7 @@ export default defineComponent({
         }
         if (hasDuplicates(options.value)) return openSnackbar("error", "Error.OptionsCannotBeSame");
         for (let i = 0; i < options.value.length; i++) {
-          if (options.value[i].answer.length > 256) {
+          if ((options.value[i]?.answer.length ?? 0) > 256) {
             return openSnackbar(
               "error",
               t("Error.CannotHaveMoreCharacters", { input: t("Inputs.AnswerOption"), max: 256 })
