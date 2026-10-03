@@ -101,6 +101,7 @@ import type {
 } from "~/types/learningActivities";
 import { roomActivity } from "~/utils/learningActivityAdapters";
 import ActivityHost from "./ActivityHost.vue";
+import { registerLearningLogout } from "~/utils/learningStorage";
 
 const props = defineProps<{
   activity: LearningActivity;
@@ -168,9 +169,11 @@ const draft = ref<Record<string, any>>({});
 const posting = ref(false);
 const completing = ref(false);
 const completed = ref(props.activity.completed === true);
+const activityUser = user.value?.id || "";
 const saveError = ref(false);
 let alive = true;
 let draftOwner = "";
+let ownerGeneration = 0;
 const draftKey = computed(() => {
   const source = props.activity.source;
   return source.kind === "challenge" && user.value?.id
@@ -254,11 +257,17 @@ watch(busy, (value) => emit("busy", value), { immediate: true });
 watch(
   owner,
   () => {
+    ownerGeneration++;
     posting.value = completing.value = false;
     draft.value = {};
     draftOwner = user.value?.id || "";
-    if (!draftKey.value) return;
+    // The keyed parent remounts later; this activity's completion belongs to its original user.
+    if (draftOwner !== activityUser || !draftKey.value) return;
     try {
+      if (completed.value) {
+        window.sessionStorage.removeItem(draftKey.value);
+        return;
+      }
       const saved = JSON.parse(window.sessionStorage.getItem(draftKey.value) || "null");
       if (saved?.owner === draftOwner && saved.state && typeof saved.state === "object")
         draft.value = saved.state;
@@ -278,7 +287,9 @@ function change(state: Record<string, any>) {
 async function save() {
   if (roomSource) return await data.save();
   if (props.activity.source.kind !== "challenge") return true;
-  if (!alive || !draftKey.value || draftOwner !== user.value?.id) return false;
+  if (!alive || !draftKey.value || draftOwner !== activityUser || draftOwner !== user.value?.id)
+    return false;
+  if (completed.value) return true;
   try {
     window.sessionStorage.setItem(
       draftKey.value,
@@ -310,8 +321,23 @@ async function handIn(result: LearningActivityCompletion) {
     return;
   }
   if (props.activity.source.kind === "challenge") {
-    if (!(await save())) return;
+    const expectedOwner = owner.value;
+    const expectedKey = draftKey.value;
+    const generation = ownerGeneration;
+    if (
+      !(await save()) ||
+      !alive ||
+      owner.value !== expectedOwner ||
+      user.value?.id !== activityUser ||
+      ownerGeneration !== generation
+    )
+      return;
     completed.value = true;
+    try {
+      if (expectedKey) window.sessionStorage.removeItem(expectedKey);
+    } catch {
+      // Completion is confirmed; the next visit retries removing this obsolete copy.
+    }
     emit("completed", props.activity.id);
     emit("next");
     return;
@@ -383,7 +409,14 @@ function shouldWarn() {
   );
 }
 defineExpose({ canLeave, shouldWarn, cancelPreparation: () => host.value?.cancelPreparation() });
+const unregisterLogout = registerLearningLogout({
+  user: () => (owner.value ? user.value?.id || null : null),
+  prepare: canLeave,
+  unsaved: () =>
+    !roomSource && !completed.value && (Object.keys(draft.value).length > 0 || shouldWarn()),
+});
 onBeforeUnmount(() => {
+  unregisterLogout();
   if (!roomSource) void save();
   alive = false;
   host.value?.cancelPreparation();
