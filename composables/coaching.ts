@@ -1,6 +1,7 @@
 import { useState } from "#app";
+import type { CoachingEvent } from "~/types/calenderTypes";
 
-export const useCoachings = () => useState("coachings", () => []);
+export const useCoachings = () => useState<CoachingEvent[]>("coachings", () => []);
 
 export async function getCoachingsForThisSubSkill(subSkillID: string) {
   try {
