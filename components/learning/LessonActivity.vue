@@ -26,6 +26,10 @@
       </button>
     </div>
     <template v-else>
+      <LearningDailyLimit
+        v-if="limitReached || lessonStart.limited.value"
+        :value="limitReached || lessonStart.limited.value!"
+      />
       <div v-if="finished" role="status">
         <p>{{ copy.done }}</p>
         <button type="button" @click="emit('next')">{{ copy.next }}</button>
@@ -42,7 +46,7 @@
           :state="roomSource ? view?.draft || {} : draft"
           :locale="locale"
           :disabled="locked"
-          :request="request"
+          :request="nativeRequest"
           :save="save"
           :user-id="user?.id || ''"
           :review-id="view?.room?.progress.review_id || undefined"
@@ -74,7 +78,7 @@
         </button>
       </template>
       <p v-if="answerRejected" ref="outcome" role="status">{{ t("LearningRooms.Incorrect") }}</p>
-      <div v-else-if="saveError || view?.error" ref="outcome" role="alert">
+      <div v-else-if="!limitReached && (saveError || view?.error)" ref="outcome" role="alert">
         <p>{{ copy.saveError }}</p>
         <button v-if="view?.completionPending" type="button" :disabled="busy" @click="complete({})">
           {{ copy.retry }}
@@ -97,7 +101,12 @@ import type {
 import { roomActivity } from "~/utils/learningActivityAdapters";
 import ActivityHost from "./ActivityHost.vue";
 
-const props = defineProps<{ activity: LearningActivity; course: Course; locale: string }>();
+const props = defineProps<{
+  activity: LearningActivity;
+  course: Course;
+  locale: string;
+  lessonId?: string;
+}>();
 const emit = defineEmits<{ next: []; completed: [id: string]; busy: [active: boolean] }>();
 const roomSource = props.activity.source.kind === "room" ? props.activity.source : null;
 const {
@@ -111,6 +120,8 @@ const {
   reauthenticate,
   recovering,
   retry,
+  limitReached,
+  keepDailyDraft,
 } = useLearningRooms({
   ...(roomSource
     ? {
@@ -125,6 +136,30 @@ const {
   loadRoom: !!roomSource,
 });
 const { t } = useI18n();
+const lessonStart = useLessonStart(
+  computed(() => props.course.id),
+  computed(() => props.lessonId || "")
+);
+const nativeRequest = computed(
+  () => async (path: string, method?: "GET" | "POST" | "PUT", body?: unknown) => {
+    const send = request.value;
+    if (
+      !roomSource &&
+      method === "POST" &&
+      path.startsWith("/challenges/") &&
+      !(await lessonStart.start())
+    ) {
+      throw {
+        statusCode: lessonStart.limited.value ? 429 : 503,
+        data: {
+          code: lessonStart.limited.value ? "daily_limit_reached" : "lesson_start_unavailable",
+          daily: lessonStart.limited.value,
+        },
+      };
+    }
+    return send(path, method, body);
+  }
+);
 const host = ref<LearningActivityHandle | null>(null);
 const outcome = ref<HTMLElement | null>(null);
 const draft = ref<Record<string, any>>({});
@@ -172,6 +207,7 @@ const legacyVideo = computed(() => {
   return source.kind === "lecture"
     ? {
         course: props.course,
+        lessonId: props.lessonId,
         lecture: props.activity.content as Lecture,
         section: props.course.sections.find((section) => section.id === source.section_id),
       }
@@ -321,6 +357,7 @@ async function skip() {
 }
 async function canLeave() {
   if (!owner.value) return true;
+  if (limitReached.value && keepDailyDraft()) return true;
   if (busy.value) return false;
   host.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict || view.value?.reviewPending)

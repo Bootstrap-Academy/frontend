@@ -1,6 +1,17 @@
 /** Terms offered at signup. Existing accounts and stored contracts are not migrated. */
 export const TERMS_VERSION = "2026-09-r4";
 
+/** New signup can offer a separate approved version without migrating old accounts. */
+export function registrationTerms() {
+  const config = useRuntimeConfig().public;
+  const version = String(config.registrationTermsVersion || "");
+  const url = String(config.registrationTermsUrl || "");
+  if (!version && !url) return { version: TERMS_VERSION, url: "/docs/terms-and-conditions" };
+  if (!version || url !== `/docs/terms-and-conditions-${version}`)
+    throw new Error("Registration terms configuration is incomplete");
+  return { version, url };
+}
+
 /**
  * Routes on which the re-acceptance gate stays hidden: the documents the gate
  * links to, the account page the user needs in order to delete the account
@@ -40,7 +51,9 @@ export function needsTermsAcceptance(path: string) {
   if (useTermsGateDismissed().value) return false;
   if (isTermsGateExemptRoute(path)) return false;
 
-  return user.value.terms_version != TERMS_VERSION;
+  // A registration-only version does not ask valid existing accounts to migrate,
+  // and a new account must never be prompted to accept an older legacy version.
+  return ![TERMS_VERSION, registrationTerms().version].includes(user.value.terms_version);
 }
 
 /**

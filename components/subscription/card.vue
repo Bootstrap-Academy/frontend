@@ -2,7 +2,7 @@
   <div class="flex justify-center">
     <div class="max-md:space-y-8 md:flex md:max-w-4xl md:space-x-8">
       <div
-        class="m-3 w-full rounded-xl border border-accent p-8 shadow-xl md:w-1/2"
+        class="my-3 w-full rounded-xl border border-accent p-8 shadow-xl md:w-1/2"
         v-if="!isPremium"
       >
         <div class="mb-4 flex justify-center">
@@ -18,26 +18,32 @@
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
-          <p>{{ t("Body.HeartsEveryDay", { n: dailyHearts }) }}</p>
-          <Tooltip :heading="'Body.UnlimitedHeartsTooltip'">
+          <p>
+            {{
+              isDaily
+                ? t("DailyLearning.FreePace", { n: daily?.limit ?? 3 })
+                : t("Body.HeartsEveryDay", { n: dailyHearts })
+            }}
+          </p>
+          <Tooltip v-if="!isDaily" :heading="'Body.UnlimitedHeartsTooltip'">
             <InformationCircleIcon class="h-6 w-6 text-accent" />
           </Tooltip>
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
-          <p>{{ t("Body.LimitedAccessToCourses") }}</p>
-          <Tooltip :heading="'Body.LimitedAccessToCoursesTooltip'">
+          <p>{{ t(isDaily ? "DailyLearning.AllCourses" : "Body.LimitedAccessToCourses") }}</p>
+          <Tooltip v-if="!isDaily" :heading="'Body.LimitedAccessToCoursesTooltip'">
             <InformationCircleIcon class="h-6 w-6 text-accent" />
           </Tooltip>
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
-          <p>{{ t("Body.LearnNewThings") }}</p>
+          <p>{{ t(isDaily ? "DailyLearning.FreeReview" : "Body.LearnNewThings") }}</p>
         </div>
       </div>
 
       <div
-        class="m-3 w-full rounded-xl bg-accent p-8 text-black shadow-xl"
+        class="my-3 w-full rounded-xl bg-accent p-8 text-black shadow-xl"
         :class="{ 'md:w-1/2': !isPremium }"
       >
         <div class="mb-4 flex justify-center">
@@ -46,13 +52,18 @@
         <h1 class="mb-2 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
         <p class="mb-8 text-center text-black">
           {{
-            t("Body.GetAllServices").replace(
-              "%%%",
-              props.yearly ? t("Body.Yearly") : t("Body.Monthly")
-            )
+            isDaily
+              ? t("DailyLearning.PremiumIntro")
+              : t("Body.GetAllServices").replace(
+                  "%%%",
+                  props.yearly ? t("Body.Yearly") : t("Body.Monthly")
+                )
           }}
         </p>
         <div class="mb-8">
+          <p v-if="isDaily" class="mb-3 text-center text-black">
+            {{ t("DailyLearning.CoinPayment") }}
+          </p>
           <button
             type="button"
             :disabled="disabled || !hasEnoughCoins"
@@ -76,7 +87,9 @@
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
-          <p class="text-black">{{ t("Body.UnlimitedHearts") }}</p>
+          <p class="text-black">
+            {{ t(isDaily ? "DailyLearning.PremiumPace" : "Body.UnlimitedHearts") }}
+          </p>
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
@@ -84,7 +97,9 @@
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
-          <p class="text-black">{{ t("Body.LearnNewThings") }}</p>
+          <p class="text-black">
+            {{ t(isDaily ? "DailyLearning.FreeReview" : "Body.LearnNewThings") }}
+          </p>
         </div>
       </div>
     </div>
@@ -107,6 +122,7 @@ import { useI18n } from "vue-i18n";
 import { useCoins } from "../../composables/coins";
 const { t, locale } = useI18n();
 const premiumInfo: any = usePremiumInfo();
+const { isDaily, daily } = useDailyLearning();
 const coinConfig = useCoinConfig();
 const heartConfig = useHeartConfig();
 

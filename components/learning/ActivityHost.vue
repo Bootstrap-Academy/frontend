@@ -110,6 +110,7 @@ const rendererProps = computed(() => {
       course: props.legacyVideo?.course,
       activeLecture: props.legacyVideo?.lecture,
       activeSection: props.legacyVideo?.section,
+      lessonId: props.legacyVideo?.lessonId,
     };
   return shared;
 });

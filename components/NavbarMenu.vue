@@ -1,7 +1,7 @@
 <template>
   <button class="relative py-3 text-left" @blur="closeMenu">
     <div class="flex items-center gap-1 sm:gap-2 md:gap-4">
-      <UserHearts />
+      <UserHearts v-if="showHearts" />
       <UserCoins />
 
       <div class="relative">
@@ -55,6 +55,7 @@ export default {
   setup() {
     const { t } = useI18n();
     const premiumInfo = usePremiumInfo();
+    const { isDaily, showHearts } = useDailyLearning();
     const show = ref(false);
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
@@ -102,6 +103,8 @@ export default {
       return user?.value?.display_name ?? "";
     });
     return {
+      isDaily,
+      showHearts,
       links,
       show,
       closeMenu,
