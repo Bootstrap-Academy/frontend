@@ -178,6 +178,10 @@ definePageMeta({ middleware: ["auth"] });
 const { t, locale } = useI18n();
 useHead(() => ({ title: t("LearningRooms.Title") }));
 const router = useRouter();
+const exerciseComponent = ref<{
+  cancelPreparation: () => void;
+  prepareNavigation?: () => Promise<boolean>;
+} | null>(null);
 const {
   protocol,
   view,
@@ -197,7 +201,14 @@ const {
   daily,
   limitReached,
   keepDailyDraft,
-} = useLearningRooms();
+} = useLearningRooms({
+  prepareLogout: async () => {
+    const player = exerciseComponent.value;
+    if ((await player?.prepareNavigation?.()) === false) return false;
+    player?.cancelPreparation();
+    return true;
+  },
+});
 const language = computed(() => (locale.value.startsWith("de") ? "de" : "en"));
 const localized = (value?: LocalizedText) => value?.[language.value] || value?.en || "";
 const backLink = computed(() =>
@@ -224,10 +235,6 @@ const locked = computed(
 );
 const sessionRevision = ref(0);
 const exercisePosting = ref(false);
-const exerciseComponent = ref<{
-  cancelPreparation: () => void;
-  prepareNavigation?: () => Promise<boolean>;
-} | null>(null);
 watch(
   owner,
   () => {

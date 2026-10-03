@@ -383,18 +383,25 @@ test("the host rejects late module loads and old events while preserving accepte
 
 async function activityFixture(
   activity,
-  { request = async () => true, roomView, roomData = {}, stored = null } = {}
+  { request = async () => true, roomView, roomData = {}, stored = null, tabStorage } = {}
 ) {
   const scope = Vue.effectScope();
   const events = [];
   const writes = [];
+  const removals = [];
   const owner = Vue.ref("user-a:session-a");
   const user = Vue.ref({ id: "user-a" });
   const callbacks = [];
   const storage = {
-    getItem: () => stored,
+    getItem: (key) => (tabStorage ? tabStorage.getItem(key) : stored),
+    removeItem: (key) => {
+      removals.push(key);
+      tabStorage?.removeItem(key);
+      stored = null;
+    },
     setItem: (key, value) => {
       writes.push({ key, value });
+      tabStorage?.setItem(key, value);
       stored = value;
     },
   };
@@ -413,6 +420,7 @@ async function activityFixture(
     }),
     defineEmits: () => (name, value) => events.push({ name, value }),
     defineExpose: () => {},
+    registerLearningLogout: () => () => {},
     onBeforeUnmount: (callback) => callbacks.push(callback),
     useI18n: () => ({ t: (key) => key }),
     useLessonStart: () => ({ limited: Vue.ref(null), start: async () => true }),
@@ -446,6 +454,7 @@ async function activityFixture(
     options,
     events,
     writes,
+    removals,
     owner,
     user,
     stop: () => {
@@ -523,7 +532,11 @@ export default { inheritAttrs: false, props: ["state", "disabled"], setup: (prop
       /from ["']~\/utils\/learningActivityAdapters["']/,
       `from ${JSON.stringify(adapterUrl)}`
     )
-    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`);
+    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`)
+    .replace(
+      /from ["']~\/utils\/learningStorage["']/,
+      `from ${JSON.stringify(url("export const registerLearningLogout = () => () => {};"))}`
+    );
   const LessonActivity = (await import(url(code))).default;
   globalThis.useLessonStart = () => ({ limited: Vue.ref(null), start: async () => true });
   globalThis.useLearningRooms = () => ({
@@ -646,6 +659,114 @@ test("challenge checkpoints use native identities and an in-flight POST still bl
   assert.equal(await fixture.save(), false);
   fixture.stop();
 });
+
+test("confirmed native completion removes its draft and exit/unmount cannot recreate it", async () => {
+  const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+  const activity = {
+    id: "native-a",
+    kind: "coding",
+    source: { kind: "challenge", ...reference },
+    exercise: reference,
+    content: {},
+    completed: false,
+  };
+  const fixture = await activityFixture(activity);
+  fixture.change({ code: "private answer", submission_id: "confirmed" });
+  await fixture.complete({ attempt_id: "confirmed" });
+  assert.equal(fixture.finished.value, true);
+  assert.deepEqual(fixture.removals, ["academy-challenge-draft:user-a:coding:task-a:code-a"]);
+  const written = fixture.writes.length;
+  assert.equal(await fixture.canLeave(), true);
+  fixture.stop();
+  assert.equal(fixture.writes.length, written);
+  const reopened = await activityFixture(
+    { ...activity, completed: true },
+    { stored: JSON.stringify({ owner: "user-a", state: { code: "obsolete" } }) }
+  );
+  assert.deepEqual(reopened.draft.value, {});
+  assert.equal(reopened.removals.length, 1);
+  reopened.stop();
+});
+
+for (const order of ["user-first", "session-first"])
+  test(`a completed native activity never removes the next account's draft (${order})`, async () => {
+    const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+    const otherKey = "academy-challenge-draft:user-b:coding:task-a:code-a";
+    const otherDraft = JSON.stringify({ owner: "user-b", state: { code: "unsaved B" } });
+    const map = new Map([[otherKey, otherDraft]]);
+    const fixture = await activityFixture(
+      {
+        id: "native-a",
+        kind: "coding",
+        source: { kind: "challenge", ...reference },
+        exercise: reference,
+        content: {},
+        completed: true,
+      },
+      {
+        tabStorage: {
+          getItem: (key) => map.get(key) || null,
+          setItem: (key, value) => map.set(key, value),
+          removeItem: (key) => map.delete(key),
+        },
+      }
+    );
+    const initial = fixture.removals.length;
+    if (order === "user-first") fixture.user.value = { id: "user-b" };
+    fixture.owner.value = "user-b:session-b";
+    if (order === "session-first") fixture.user.value = { id: "user-b" };
+    assert.ok(fixture.removals.slice(initial).every((key) => !key.includes(":user-b:")));
+    assert.equal(await fixture.save(), false);
+    fixture.stop();
+    assert.ok(fixture.removals.every((key) => !key.includes(":user-b:")));
+    assert.equal(map.get(otherKey), otherDraft);
+    assert.equal(fixture.writes.length, 0);
+  });
+
+for (const transition of ["switch", "ABA", "unmount"])
+  test(`native completion stays with its original account during an awaited checkpoint (${transition})`, async () => {
+    const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+    const otherKey = "academy-challenge-draft:user-b:coding:task-a:code-a";
+    const otherDraft = JSON.stringify({ owner: "user-b", state: { code: "private B" } });
+    const map = new Map([[otherKey, otherDraft]]);
+    const fixture = await activityFixture(
+      {
+        id: "native-a",
+        kind: "coding",
+        source: { kind: "challenge", ...reference },
+        exercise: reference,
+        content: {},
+        completed: false,
+      },
+      {
+        tabStorage: {
+          getItem: (key) => map.get(key) || null,
+          setItem: (key, value) => map.set(key, value),
+          removeItem: (key) => map.delete(key),
+        },
+      }
+    );
+    fixture.change({ code: "confirmed A", submission_id: "confirmed" });
+    const completion = fixture.complete({ attempt_id: "confirmed" });
+    if (transition === "unmount") fixture.stop();
+    else {
+      fixture.user.value = { id: "user-b" };
+      fixture.owner.value = "user-b:session-b";
+      if (transition === "ABA") {
+        fixture.user.value = { id: "user-a" };
+        fixture.owner.value = "user-a:session-a";
+      }
+    }
+    await completion;
+    assert.equal(map.get(otherKey), otherDraft);
+    assert.equal(
+      fixture.events.some((event) => ["completed", "next"].includes(event.name)),
+      false
+    );
+    assert.equal(fixture.finished.value, false);
+    assert.equal(fixture.removals.length, 0);
+    if (transition !== "unmount") fixture.stop();
+  });
 
 test("the composed lesson page advances ordered native activities, preserves direct selection and does not award progress", async () => {
   const source = await readFile(
