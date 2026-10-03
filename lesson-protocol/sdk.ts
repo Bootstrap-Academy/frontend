@@ -191,7 +191,8 @@ export class LessonSDK {
         expectedRevision:
           options.expectedRevision ??
           (previous?.type === "state.save"
-            ? previous.payload.expectedRevision
+            ? // Cached requests have passed the state.save schema, including this integer.
+              (previous.payload.expectedRevision as number)
             : (this.initValue?.state.revision ?? 0)),
         schemaVersion: this.manifest.state.schemaVersion,
       },
@@ -205,7 +206,8 @@ export class LessonSDK {
       {
         expectedRevision:
           previous?.type === "state.reset"
-            ? previous.payload.expectedRevision
+            ? // Cached requests have passed the state.reset schema, including this integer.
+              (previous.payload.expectedRevision as number)
             : (this.initValue?.state.revision ?? 0),
       },
       { id }

@@ -25,7 +25,11 @@ export function recognizedResult(type: string, data: JsonObject): JsonObject {
 export function resultSignature(type: string, data: JsonObject): string {
   return canonicalJson(recognizedResult(type, data));
 }
-const require = (condition: unknown, message: string, code = "invalid_message") => {
+const require: (condition: unknown, message: string, code?: string) => asserts condition = (
+  condition,
+  message,
+  code = "invalid_message"
+) => {
   if (!condition) throw new ProtocolError(code, message);
 };
 const unique = (values: string[]) => new Set(values).size === values.length;
@@ -98,7 +102,9 @@ export function hasCapability(
 }
 
 export function validateInit(manifest: Manifest, value: unknown): Init {
-  validateSchema(operations["host.init"].payload, value, messageSchema);
+  const operation = operations["host.init"];
+  require(operation, "Missing host.init schema.");
+  validateSchema(operation.payload, value, messageSchema);
   const init = value as Init;
   require(init.lessonId === manifest.id, "Init lesson mismatch.");
   require(manifest.languages.includes(init.locale), "Undeclared locale.");
@@ -157,8 +163,9 @@ export function validateTranscript(
         : undefined;
       require(options.senders ||
         operation?.senders.length === 1, "Transcript needs explicit direction.");
-      sender = options.senders?.[index] ?? operation!.senders[0];
-      require(sender === "host" || sender === "lesson", "Invalid transcript direction.");
+      const direction = options.senders?.[index] ?? operation?.senders[0];
+      require(direction === "host" || direction === "lesson", "Invalid transcript direction.");
+      sender = direction;
       if (operation) require(operation.senders.includes(sender), "Wrong transcript direction.");
       if (message.kind === "request") {
         const signature = canonicalJson({ type: message.type, payload: message.payload });
@@ -251,9 +258,12 @@ export function validateReplay(
     if (step.action.kind === "drag") {
       const points = (step.action.points ?? []) as JsonObject[];
       require(points.length >= 2, "Drag needs two points.");
-      require(points.every(
-        (point, index) => index === 0 || (point.tMs as number) >= (points[index - 1].tMs as number)
-      ), "Unordered drag.");
+      require(points.every((point, index) => {
+        const previous = points[index - 1];
+        return (
+          index === 0 || Boolean(previous && (point.tMs as number) >= (previous.tMs as number))
+        );
+      }), "Unordered drag.");
     }
     for (const assertion of step.expect.assertions)
       require(/^\/(?:[^~]|~[01])*$/.test(assertion.path), "Invalid JSON Pointer.");
