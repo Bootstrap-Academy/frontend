@@ -46,8 +46,8 @@ export async function logout() {
       !(await prepareLearningLogout(userId, () =>
         window.confirm(
           String(readSessionCookie("locale") || "de").startsWith("en")
-            ? "Some work hasn't been saved to your account. Logging out removes its copy from this browser. Log out anyway?"
-            : "Ein Teil deiner Arbeit ist noch nicht im Konto gespeichert. Beim Abmelden wird die Kopie aus diesem Browser gelöscht. Trotzdem abmelden?"
+            ? "Logging out removes the copy of your work from this browser. Any work that isn't saved in your account may be lost. Log out anyway?"
+            : "Beim Abmelden löschen wir die Kopie deiner Arbeit aus diesem Browser. Was noch nicht im Konto gespeichert ist, kann dabei verloren gehen. Trotzdem abmelden?"
         )
       ))
     )

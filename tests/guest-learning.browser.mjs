@@ -646,7 +646,7 @@ try {
         const dialog = await dialogPromise;
         assert.match(
           dialog.message(),
-          english ? /hasn't been saved/ : /noch nicht im Konto gespeichert/
+          english ? /isn't saved in your account/ : /noch nicht im Konto gespeichert/
         );
         if (accept) await dialog.accept();
         else await dialog.dismiss();
