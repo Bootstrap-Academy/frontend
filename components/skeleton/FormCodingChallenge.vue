@@ -23,9 +23,7 @@
         class="group flex w-fit cursor-pointer items-center gap-2 rounded-full bg-[#6448e433] px-3 py-1 hover:bg-[#5e41de4d]"
       >
         <Cog6ToothIcon class="h-7 w-7 text-white group-hover:animate-spin" />
-        <p class="text-[#afa7dd]">
-          {{ advanceSettings ? "Hide Settings" : "Advance Settings" }}
-        </p>
+        <p class="text-[#afa7dd]">Advance Settings</p>
       </div>
     </article>
   </div>
