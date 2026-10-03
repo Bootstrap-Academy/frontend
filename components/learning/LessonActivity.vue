@@ -171,6 +171,7 @@ const activityUser = user.value?.id || "";
 const saveError = ref(false);
 let alive = true;
 let draftOwner = "";
+let ownerGeneration = 0;
 const draftKey = computed(() => {
   const source = props.activity.source;
   return source.kind === "challenge" && user.value?.id
@@ -254,6 +255,7 @@ watch(busy, (value) => emit("busy", value), { immediate: true });
 watch(
   owner,
   () => {
+    ownerGeneration++;
     posting.value = completing.value = false;
     draft.value = {};
     draftOwner = user.value?.id || "";
@@ -317,10 +319,20 @@ async function handIn(result: LearningActivityCompletion) {
     return;
   }
   if (props.activity.source.kind === "challenge") {
-    if (!(await save())) return;
+    const expectedOwner = owner.value;
+    const expectedKey = draftKey.value;
+    const generation = ownerGeneration;
+    if (
+      !(await save()) ||
+      !alive ||
+      owner.value !== expectedOwner ||
+      user.value?.id !== activityUser ||
+      ownerGeneration !== generation
+    )
+      return;
     completed.value = true;
     try {
-      if (draftKey.value) window.sessionStorage.removeItem(draftKey.value);
+      if (expectedKey) window.sessionStorage.removeItem(expectedKey);
     } catch {
       // Completion is confirmed; the next visit retries removing this obsolete copy.
     }

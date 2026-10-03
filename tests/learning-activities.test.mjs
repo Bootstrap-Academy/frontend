@@ -723,6 +723,51 @@ for (const order of ["user-first", "session-first"])
     assert.equal(fixture.writes.length, 0);
   });
 
+for (const transition of ["switch", "ABA", "unmount"])
+  test(`native completion stays with its original account during an awaited checkpoint (${transition})`, async () => {
+    const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+    const otherKey = "academy-challenge-draft:user-b:coding:task-a:code-a";
+    const otherDraft = JSON.stringify({ owner: "user-b", state: { code: "private B" } });
+    const map = new Map([[otherKey, otherDraft]]);
+    const fixture = await activityFixture(
+      {
+        id: "native-a",
+        kind: "coding",
+        source: { kind: "challenge", ...reference },
+        exercise: reference,
+        content: {},
+        completed: false,
+      },
+      {
+        tabStorage: {
+          getItem: (key) => map.get(key) || null,
+          setItem: (key, value) => map.set(key, value),
+          removeItem: (key) => map.delete(key),
+        },
+      }
+    );
+    fixture.change({ code: "confirmed A", submission_id: "confirmed" });
+    const completion = fixture.complete({ attempt_id: "confirmed" });
+    if (transition === "unmount") fixture.stop();
+    else {
+      fixture.user.value = { id: "user-b" };
+      fixture.owner.value = "user-b:session-b";
+      if (transition === "ABA") {
+        fixture.user.value = { id: "user-a" };
+        fixture.owner.value = "user-a:session-a";
+      }
+    }
+    await completion;
+    assert.equal(map.get(otherKey), otherDraft);
+    assert.equal(
+      fixture.events.some((event) => ["completed", "next"].includes(event.name)),
+      false
+    );
+    assert.equal(fixture.finished.value, false);
+    assert.equal(fixture.removals.length, 0);
+    if (transition !== "unmount") fixture.stop();
+  });
+
 test("the composed lesson page advances ordered native activities, preserves direct selection and does not award progress", async () => {
   const source = await readFile(
     new URL("../pages/courses/[id]/lessons/[lesson].vue", import.meta.url),
