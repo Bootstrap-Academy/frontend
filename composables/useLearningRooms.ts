@@ -3,12 +3,14 @@ import type { DailyLearning } from "~/types/dailyLearning";
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
+import { registerLearningLogout } from "~/utils/learningStorage";
 
 export function useLearningRooms(
   options: {
     selection?: { path?: string; courseId: string; unitId: string };
     syncLocation?: boolean;
     loadRoom?: boolean;
+    prepareLogout?: () => Promise<boolean> | boolean;
   } = {}
 ) {
   const config = useRuntimeConfig().public;
@@ -284,7 +286,30 @@ export function useLearningRooms(
     await router.push({ path: "/auth/login", query: { redirect } });
     return true;
   }
+  const unregisterLogout = registerLearningLogout({
+    user: () => (owner.value ? user.value?.id || null : null),
+    prepare: async () => {
+      if (view.value?.saving || view.value?.completing || view.value?.reviewStarting) return false;
+      const expectedOwner = owner.value;
+      const expectedEpoch = epoch;
+      // A module may still hold work outside the native room draft.
+      if (options.prepareLogout && (await options.prepareLogout()) === false) return false;
+      if (!alive || epoch !== expectedEpoch || owner.value !== expectedOwner) return false;
+      if (view.value?.saving || view.value?.completing || view.value?.reviewStarting) return false;
+      if (view.value?.dirty && !view.value.completionPending && !view.value.conflict)
+        await data.save();
+      if (!alive || epoch !== expectedEpoch || owner.value !== expectedOwner) return false;
+      return preserve(lastUserId, true);
+    },
+    unsaved: () => !!data.recovery(),
+    clear: (userId) => {
+      const remaining = { ...memoryRecovery.value };
+      delete remaining[userId];
+      memoryRecovery.value = remaining;
+    },
+  });
   onBeforeUnmount(() => {
+    unregisterLogout();
     preserve(lastUserId);
     alive = false;
     epoch++;

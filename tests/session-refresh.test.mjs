@@ -334,6 +334,9 @@ for (const result of ["success", "unauthorized", "offline"]) {
       withSessionRefreshLock: (run) => run(),
       getSessionSnapshot: () => ({ ...current }),
       useRuntimeConfig: () => ({ public: { BASE_API_URL: "https://synthetic.invalid" } }),
+      useUser: () => ({ value: { id: "A" } }),
+      prepareLearningLogout: async () => true,
+      clearLearningStorage: () => {},
       setStates: (value) => {
         assert.equal(value, null);
         current = { ...current, identity: null, generation: "logout" };
@@ -368,6 +371,7 @@ for (const result of ["success", "unauthorized", "offline"]) {
       ...Object.values(bindings)
     );
     const pending = logout();
+    await new Promise((resolve) => setImmediate(resolve));
     assert.equal(current.identity, null);
     assert.equal(calls.length, 1);
     assert.equal(calls[0].url, "https://synthetic.invalid/auth/sessions/A/S");
@@ -465,14 +469,24 @@ test("cookie publication is synchronous, keeps the refresh generation, and reads
     if (!refs.has(key)) refs.set(key, { value: null });
     return refs.get(key);
   };
+  let expected;
+  const checkPair = () => {
+    assert.deepEqual(readSessionCookie("user")?.id || null, expected?.user?.id || null);
+    assert.deepEqual(readSessionCookie("session")?.id || null, expected?.session?.id || null);
+    assert.equal(readSessionCookie("accessToken"), expected?.access_token || null);
+    assert.equal(readSessionCookie("refreshToken"), expected?.refresh_token || null);
+  };
   const bindings = {
     document,
     useAppCookie: (name) => {
       assert(!["user", "session", "accessToken", "refreshToken", "authGeneration"].includes(name));
       return state(`cookie:${name}`);
     },
-    refreshCookie: () => {},
-    setUser: (user) => (state("user").value = user),
+    refreshCookie: checkPair,
+    setUser: (user) => {
+      checkPair();
+      state("user").value = user;
+    },
     useProfileLoaded: () => state("profile"),
     useSession: () => state("session"),
     useAccessToken: () => state("access"),
@@ -483,15 +497,18 @@ test("cookie publication is synchronous, keeps the refresh generation, and reads
     ...Object.keys(bindings),
     `${cookieCode}\nreturn { readSessionCookie, setStates };`
   )(...Object.values(bindings));
-  setStates(response("login"));
+  expected = response("login");
+  setStates(expected);
   const generation = readSessionCookie("authGeneration");
   assert(generation);
   assert.deepEqual(readSessionCookie("user"), { id: "A", name: null, display_name: null });
   for (let count = 0; count < 100; count++)
     assert.equal(readSessionCookie("refreshToken"), "login");
-  setStates(response("renewed"), true);
+  expected = response("renewed");
+  setStates(expected, true);
   assert.equal(readSessionCookie("authGeneration"), generation);
   assert.equal(readSessionCookie("refreshToken"), "renewed");
+  expected = null;
   setStates(null);
   assert.notEqual(readSessionCookie("authGeneration"), generation);
   assert.equal(readSessionCookie("user"), null);

@@ -14,6 +14,7 @@ const {
   validateLessonCsp,
   verifyLessonPackage,
   sha256,
+  createLessonFrame,
 } = await compiled.importModule("browser");
 const { canonicalJson } = await compiled.importModule("schema");
 const manifest = JSON.parse(
@@ -24,6 +25,44 @@ manifest.optional = [];
 const surface = JSON.parse(
   await readFile(new URL("../lesson-protocol/fixtures/messages.json", import.meta.url))
 )[0].payload.surface;
+test("closing a failed bridge retains frame-local work until explicit disposal", async () => {
+  let removed = 0,
+    messages = 0;
+  const iframe = {
+    style: {},
+    setAttribute() {},
+    remove() {
+      removed++;
+    },
+    contentWindow: {
+      postMessage() {
+        messages++;
+      },
+    },
+  };
+  const frame = createLessonFrame(
+    {
+      ownerDocument: { createElement: () => iframe },
+      replaceChildren() {},
+    },
+    {
+      manifest,
+      origin: "https://lessons.example.invalid",
+      descriptor: { entry_url: "https://lessons.example.invalid/lesson" },
+    },
+    () => {}
+  );
+  iframe.onload();
+  await frame.load;
+  frame.transport.close();
+  frame.transport.send({ type: "host.connect" });
+  assert.equal(messages, 0);
+  assert.equal(removed, 0);
+  frame.dispose();
+  assert.equal(removed, 1);
+  assert.equal(iframe.onload, null);
+  assert.equal(iframe.onerror, null);
+});
 const flush = async () => {
   for (let i = 0; i < 4; i++) await new Promise((resolve) => setImmediate(resolve));
 };
@@ -121,6 +160,10 @@ test("planned navigation flushes local SDK state before the host can leave", asy
   assert.equal(await f.host.prepareNavigation(), true);
   assert.equal(f.host.phase, "paused");
   assert.equal(f.state().value.note, "last local edit");
+  await f.host.visibility(false);
+  assert.equal(f.host.phase, "running");
+  await f.sdk.saveState({ note: "work after cancelled navigation" });
+  assert.equal(f.state().value.note, "work after cancelled navigation");
 });
 test("failed preparation retains the live scene and retries the same pending save", async (t) => {
   let sdk,

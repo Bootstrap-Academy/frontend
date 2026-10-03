@@ -2,12 +2,13 @@ type TabStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 export const GUEST_RETURN_KEY = "academy-guest-return:1";
 function readHandoff(storage: TabStorage) {
   const value = JSON.parse(storage.getItem(GUEST_RETURN_KEY) || "null");
-  return typeof value?.id === "string" &&
+  const valid =
+    typeof value?.id === "string" &&
     /^[0-9a-f-]{36}$/i.test(value.id) &&
     typeof value.expires === "number" &&
-    value.expires > Date.now()
-    ? value
-    : null;
+    value.expires > Date.now();
+  if (!valid && value) storage.removeItem(GUEST_RETURN_KEY);
+  return valid ? value : null;
 }
 /** This is only a return hint. It cannot authorize a server completion. */
 export function guestReturnPath(storage?: TabStorage | null): string | null {
