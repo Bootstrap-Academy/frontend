@@ -3,6 +3,7 @@
     class="grid-auto h-screen-inner min container grid-rows-[auto_auto_1fr] gap-card pt-container pb-container"
   >
     <FormSearch
+      live
       class="col-span-full justify-self-end"
       placeholder="Body.SearchCourses"
       v-model="filters.search_term"
@@ -15,7 +16,12 @@
       @selected="onSelectedOption($event)"
     />
 
-    <template v-if="loading">
+    <div v-if="failed" role="alert" class="col-span-full">
+      <p>{{ t("Error.TryAgainLater") }}</p>
+      <Btn secondary class="mt-4" @click="loadCourses">{{ retry }}</Btn>
+    </div>
+
+    <template v-else-if="loading">
       <CourseCardSkeleton v-for="n in 5" :key="n" />
     </template>
 
@@ -43,6 +49,9 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
+import { getCourseCatalogue } from "~/composables/courses";
+import type { Course } from "~/types/courseTypes";
+import type { CourseCatalogueFilters } from "~/utils/courseCatalogue";
 
 definePageMeta({
   layout: "inner",
@@ -54,8 +63,9 @@ export default {
     title: "My Courses",
   },
   setup() {
-    const myCourses = useMyCourses();
-    const { locale } = useI18n();
+    const myCourses = ref<Course[]>([]);
+    const { locale, t } = useI18n();
+    const retry = computed(() => (locale.value === "de" ? "Noch einmal versuchen" : "Try again"));
     const loadMore = computed(() =>
       locale.value === "de" ? "Mehr Kurse anzeigen" : "Load more courses"
     );
@@ -63,33 +73,64 @@ export default {
     const visibleCourses = computed(() => myCourses.value.slice(0, visibleCount.value));
     watch(myCourses, () => (visibleCount.value = 12));
 
-    const loading = ref(myCourses.value.length <= 0);
+    const loading = ref(true);
+    const failed = ref(false);
+    const user = useUser();
+    const session = useSession();
+    const owner = computed(() => `${user.value?.id || ""}:${session.value?.id || ""}`);
+    let epoch = 0;
+    let alive = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     function onSelectedOption(option: string) {
       filters.free = option == "free";
       filters.recent_first = option == "lastSeen";
     }
 
-    onMounted(async () => {
-      await getMyCourses();
-      loading.value = false;
-    });
-
-    const filters: any = reactive({
+    const filters = reactive<CourseCatalogueFilters>({
       free: false,
-      recent_first: false,
+      recent_first: true,
       search_term: "",
     });
 
+    async function loadCourses() {
+      clearTimeout(timer);
+      const request = ++epoch;
+      const expectedOwner = owner.value;
+      loading.value = true;
+      failed.value = false;
+      const [courses, error] = await getCourseCatalogue({ ...filters });
+      if (!alive || request !== epoch || expectedOwner !== owner.value) return;
+      myCourses.value = courses || [];
+      failed.value = !!error;
+      loading.value = false;
+    }
+
+    function schedule(delay: number) {
+      ++epoch;
+      clearTimeout(timer);
+      loading.value = true;
+      failed.value = false;
+      visibleCount.value = 12;
+      timer = setTimeout(loadCourses, delay);
+    }
+
+    onMounted(loadCourses);
+    onBeforeUnmount(() => {
+      alive = false;
+      ++epoch;
+      clearTimeout(timer);
+    });
+
     watch(
-      () => filters,
-      async (newValue, oldValue) => {
-        loading.value = true;
-        await getFilteredMyCourses(newValue);
-        loading.value = false;
-      },
-      { deep: true }
+      () => [filters.search_term, filters.free, filters.recent_first],
+      (next, previous) => schedule(next[0] !== previous[0] ? 250 : 0),
+      { flush: "sync" }
     );
+    watch(owner, () => {
+      myCourses.value = [];
+      schedule(0);
+    });
 
     const options = reactive([
       {
@@ -104,6 +145,10 @@ export default {
 
     return {
       loading,
+      failed,
+      retry,
+      loadCourses,
+      t,
       myCourses,
       visibleCourses,
       visibleCount,
