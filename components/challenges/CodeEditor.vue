@@ -85,10 +85,10 @@ export default defineComponent({
     const updateCode = ref(true);
     const container: any = ref();
 
-    const { showHearts } = useDailyLearning();
+    const { isDaily } = useDailyLearning();
     const { attemptLimit, handleLimit } = useDailyAttemptLimit();
     const heartFree = computed(() => {
-      return premiumInfo.value?.premium || !showHearts.value;
+      return premiumInfo.value?.premium || isDaily.value;
     });
     const interval: any = ref(null);
 

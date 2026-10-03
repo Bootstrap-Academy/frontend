@@ -177,10 +177,10 @@ const containerRef = ref<HTMLElement | null>(null);
 const leftRefs = ref<any[]>([]);
 const rightRefs = ref<any[]>([]);
 
-const { showHearts } = useDailyLearning();
+const { isDaily } = useDailyLearning();
 const { attemptLimit, handleLimit } = useDailyAttemptLimit();
 const heartFree = computed(() => {
-  return premiumInfo.value?.premium || !showHearts.value;
+  return premiumInfo.value?.premium || isDaily.value;
 });
 
 // Computed connections for SVG lines

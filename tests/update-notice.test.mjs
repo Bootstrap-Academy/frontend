@@ -390,6 +390,29 @@ for (const language of ["de", "en-US"]) {
     await mounted(language, async (f) => {
       assert(f.notice());
       assert(f.ui.text().includes(messages[language].UpdateNotice.Body));
+      assert(
+        messages[language].UpdateNotice.Body.includes(
+          language === "de"
+            ? "Daten aus, die sowieso schon gespeichert sind"
+            : "data that is already stored"
+        )
+      );
+      assert(
+        messages[language].UpdateNotice.Body.includes(
+          language === "de"
+            ? "nur auf Summen, nie auf dich einzeln"
+            : "only look at totals, never at you individually"
+        )
+      );
+      assert.equal(
+        messages[language].UpdateNotice.Link,
+        language === "de" ? "Mehr dazu" : "Learn more"
+      );
+      assert.equal(
+        messages[language].UpdateNotice.Dismiss,
+        language === "de" ? "Schließen" : "Close"
+      );
+      assert.equal(UPDATE_NOTICE_VERSION, "2026-10-privacy-statistics-1");
       assert.equal(f.notice().props["aria-label"], messages[language].Links.Privacy);
       assert(f.ui.all().some((n) => n.type === "main"));
       assert(

@@ -323,3 +323,25 @@ test("legacy quiz, matching and coding quota errors remain structured and clear 
   assert.equal(api.attemptLimit.value, null);
   assert.equal(api.handleLimit(new Error("Offline")), false);
 });
+
+test("an unavailable policy never promises a free quiz, matching or coding retry", async () => {
+  for (const file of [
+    "components/form/QuizAnswer.vue",
+    "components/form/SolveMatching.vue",
+    "components/challenges/CodeEditor.vue",
+  ]) {
+    const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
+    const body = source.match(/const heartFree = computed\(\(\) => \{([\s\S]*?)\}\);/)[1];
+    const premiumInfo = Vue.ref({ premium: false }),
+      isDaily = Vue.ref(false);
+    const actual = Vue.computed(
+      new Function("premiumInfo", "isDaily", `return () => {${body}};`)(premiumInfo, isDaily)
+    );
+    assert.equal(actual.value, false, `${file}: unknown policy retains legacy heart charge`);
+    isDaily.value = true;
+    assert.equal(actual.value, true, `${file}: confirmed daily policy is heart-free`);
+    isDaily.value = false;
+    premiumInfo.value = { premium: true };
+    assert.equal(actual.value, true, `${file}: existing Premium stays heart-free`);
+  }
+});

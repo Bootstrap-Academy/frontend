@@ -137,10 +137,10 @@ export default defineComponent({
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
-    const { showHearts } = useDailyLearning();
+    const { isDaily } = useDailyLearning();
     const { attemptLimit, handleLimit } = useDailyAttemptLimit();
     const heartFree = computed(() => {
-      return premiumInfo.value?.premium || !showHearts.value;
+      return premiumInfo.value?.premium || isDaily.value;
     });
     // ============================================================= Checks
 

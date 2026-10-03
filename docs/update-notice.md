@@ -1,6 +1,6 @@
 # In-app update notices
 
-`UpdateNotice.vue` displays one sentence with a direct link and a close button in the normal page flow. It never submits consent or calls an API. Public legal/intake routes suppress it so their purpose remains clear.
+`UpdateNotice.vue` displays a short explanation with a direct link and a close button in the normal page flow. It never submits consent or calls an API. Public legal/intake routes suppress it so their purpose remains clear.
 
 `UPDATE_NOTICE_WINDOW` in `composables/updateNotice.ts` defines a version and an inclusive start/exclusive expiry in UTC. The mounted component checks expiry every minute and releases its timer/listener on unmount. For a future notice, change the version, window, link and DE/EN translations together. Previous version markers never suppress a new notice.
 
