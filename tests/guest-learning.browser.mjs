@@ -18,6 +18,7 @@ const browser = await chromium.launch({
 });
 const results = [],
   errors = [];
+const traces = [];
 const payload = { exp: Math.floor(Date.now() / 1000) + 7200, sub: "guest-test-A" };
 const token = `header.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.synthetic`;
 const sourceState = {
@@ -28,16 +29,21 @@ const sourceState = {
   practiceRepetitions: 4,
 };
 
-async function fixture(width = 390) {
+async function fixture(width = 390, english = false) {
   const context = await browser.newContext({
     viewport: { width, height: 844 },
     reducedMotion: "reduce",
   });
   const page = await context.newPage();
+  if (english)
+    await context.addCookies([
+      { name: "locale", value: "en-US", url: app, secure: true, sameSite: "Lax" },
+    ]);
   page.setDefaultTimeout(30000);
   page.on("pageerror", (e) => errors.push(e.message));
   const calls = [],
     receipts = new Map();
+  traces.push(calls);
   let user = {
     id: "guest-test-A",
     name: "GuestTest",
@@ -50,6 +56,17 @@ async function fixture(width = 390) {
   };
   let progress = { revision: 0, state: {}, status: "new", result: null, review_id: null };
   let mode = "normal";
+  let challengeCompleted = false;
+  const native = {
+    id: "native",
+    kind: "quiz",
+    roles: ["practice"],
+    title: { de: "Übung", en: "Exercise" },
+    source: { kind: "challenge", type: "multiple_choice", task_id: "task", subtask_id: "quiz" },
+    exercise: { type: "multiple_choice", task_id: "task", subtask_id: "quiz" },
+    content: {},
+    completed: false,
+  };
   const auth = () => ({
     user,
     session: { id: "guest-test-session" },
@@ -125,7 +142,48 @@ async function fixture(width = 390) {
     else if (url.pathname === "/skills/rooms") {
       const path = { id: "python-loops", title: { de: "Python", en: "Python" }, chapters: [] };
       response = { paths: [path], path, next: { unit, progress } };
-    } else if (url.pathname.endsWith("/premium")) response = { premium: false };
+    } else if (url.pathname === "/skills/courses/storage-test")
+      response = { id: "storage-test", title: "Storage test", sections: [] };
+    else if (url.pathname === "/skills/courses/storage-test/lessons/native")
+      response = {
+        id: "native",
+        course_id: "storage-test",
+        explicit: true,
+        title: native.title,
+        activities: [{ ...native, completed: challengeCompleted }],
+      };
+    else if (url.pathname === "/skills/courses/storage-test/curriculum")
+      response = {
+        course_id: "storage-test",
+        explicit: true,
+        chapters: [],
+        lessons: [
+          {
+            id: "native",
+            title: native.title,
+            activity_ids: ["native"],
+            completed: challengeCompleted,
+          },
+        ],
+      };
+    else if (url.pathname === "/challenges/tasks/task/multiple_choice/quiz")
+      response = {
+        id: "quiz",
+        task_id: "task",
+        creator: "someone-else",
+        enabled: true,
+        retired: false,
+        single_choice: true,
+        question: "2 + 2?",
+        answers: ["4", "5"],
+        solved: challengeCompleted,
+      };
+    else if (url.pathname === "/challenges/tasks/task/multiple_choice/quiz/attempts") {
+      challengeCompleted = true;
+      response = { solved: true, attempt_id: "verified-attempt" };
+    } else if (url.pathname.startsWith("/shop/hearts/")) response = { hearts: 5 };
+    else if (url.pathname.startsWith("/shop/premium/")) response = { premium: true };
+    else if (url.pathname.endsWith("/premium")) response = { premium: false };
     else if (url.pathname.endsWith("/learning-resources")) response = { hearts: 5, premium: false };
     else if (url.pathname.includes("notifications")) response = [];
     await route.fulfill({
@@ -146,7 +204,8 @@ async function fixture(width = 390) {
     mode: (value) => (mode = value),
     conflict: () =>
       (progress = { ...progress, revision: 4, status: "in_progress", state: { stage: 2 } }),
-    auth: async () => {
+    auth: async (owner = "guest-test-A") => {
+      user.id = owner;
       user.email_verified = true;
       await context.addCookies(
         Object.entries({
@@ -171,7 +230,7 @@ async function noOverflow(page) {
 }
 async function seedFinished(f) {
   await f.page.goto(app + "/start");
-  await f.page.getByRole("button", { name: "Einen Schritt gehen" }).waitFor();
+  await f.page.getByRole("button", { name: /Einen Schritt gehen|Move one step/ }).waitFor();
   await f.page.evaluate(
     (state) =>
       localStorage.setItem(
@@ -185,6 +244,9 @@ async function seedFinished(f) {
     sourceState
   );
   await f.page.reload();
+  await f.page
+    .getByRole("heading", { name: /Du hast das Ziel erreicht|You reached the target/ })
+    .waitFor();
 }
 async function play(f, english) {
   const { page } = f;
@@ -308,6 +370,7 @@ try {
   await f.page.reload();
   await f.page.getByRole("button", { name: "Save progress and continue", exact: true }).click();
   await f.page.waitForURL("**/learn?**");
+  assert.equal(await f.page.evaluate(() => localStorage.getItem("academy-guest-learning:1")), null);
   await f.page.getByRole("button", { name: "Finish introduction", exact: false }).waitFor();
   const puts = f.calls.filter(
     (c) => c.path === "/skills/rooms/loops-intro/state?course=python-foundations"
@@ -444,6 +507,245 @@ try {
     "Blocked browser storage: exercise completes in memory, warning is honest, auth navigation preserves unsaved work"
   );
   await blocked.close();
+
+  for (const width of [390, 1280])
+    for (const english of [false, true]) {
+      const label = `${english ? "en" : "de"}-${width}`;
+      const expired = await fixture(width, english);
+      await seedFinished(expired);
+      assert.ok(
+        await expired.page.evaluate(() =>
+          Number.isSafeInteger(
+            JSON.parse(localStorage.getItem("academy-guest-learning:1")).guest.lastUsedAt
+          )
+        )
+      );
+      await expired.page.evaluate(() => {
+        const key = "academy-guest-learning:1",
+          store = JSON.parse(localStorage.getItem(key));
+        store.guest.lastUsedAt = Date.now() - 30 * 86400000;
+        localStorage.setItem(key, JSON.stringify(store));
+      });
+      await expired.page.reload();
+      await expired.page
+        .getByRole("button", { name: /Einen Schritt gehen|Move one step/ })
+        .waitFor();
+      assert.equal(
+        await expired.page.evaluate(() => localStorage.getItem("academy-guest-learning:1")),
+        null
+      );
+      await noOverflow(expired.page);
+      await expired.page.locator("main").screenshot({ path: resolve(out, `expired-${label}.png`) });
+      results.push(`${label}: legacy migration and expiry remove guest bytes on read`);
+      await expired.close();
+
+      const changed = await fixture(width, english);
+      await seedFinished(changed);
+      await changed.auth();
+      changed.mode("uncertain");
+      await changed.page.reload();
+      await changed.page
+        .getByRole("button", {
+          name: /Fortschritt speichern und weiterlernen|Save progress and continue/,
+        })
+        .click();
+      await changed.page
+        .getByRole("button", { name: /Speichern erneut versuchen|Try saving again/ })
+        .waitFor();
+      const original = await changed.page.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("academy-guest-learning:1")).accounts["guest-test-A"]
+            .pending
+      );
+      await changed.auth("guest-test-B");
+      await changed.page.reload();
+      await changed.page
+        .getByRole("button", { name: /Einen Schritt gehen|Move one step/ })
+        .waitFor();
+      assert.deepEqual(
+        await changed.page.evaluate(
+          () =>
+            JSON.parse(localStorage.getItem("academy-guest-learning:1")).accounts["guest-test-A"]
+              .pending
+        ),
+        original
+      );
+      assert.equal(
+        await changed.page
+          .getByRole("heading", { name: /Du hast das Ziel erreicht|You reached the target/ })
+          .count(),
+        0
+      );
+      await changed.auth();
+      await changed.page.reload();
+      await changed.page
+        .getByRole("button", {
+          name: /Fortschritt speichern und weiterlernen|Save progress and continue/,
+        })
+        .click();
+      await changed.page.waitForURL("**/learn?**");
+      const writes = changed.calls.filter(
+        (c) => c.path === "/skills/rooms/loops-intro/state?course=python-foundations"
+      );
+      assert.equal(writes.length, 2);
+      assert.deepEqual(writes[0].body, writes[1].body);
+      assert.equal(
+        await changed.page.evaluate(() => localStorage.getItem("academy-guest-learning:1")),
+        null
+      );
+      results.push(
+        `${label}: lost response, hidden A draft in B, exact A retry, confirmed copy removed`
+      );
+      await changed.close();
+
+      const logged = await fixture(width, english);
+      await logged.auth();
+      await logged.page.goto(app + "/docs/imprint");
+      await logged.page.getByRole("button", { name: /Kontomenü|Account menu/ }).waitFor();
+      await logged.page.evaluate((state) => {
+        localStorage.setItem(
+          "academy-guest-learning:1",
+          JSON.stringify({
+            version: 1,
+            guest: null,
+            accounts: {
+              "guest-test-A": {
+                version: 1,
+                id: crypto.randomUUID(),
+                owner: "guest-test-A",
+                state,
+                finished: true,
+                pending: { request_id: crypto.randomUUID(), expected_revision: 0, state },
+              },
+            },
+          })
+        );
+        sessionStorage.setItem(
+          "academy-challenge-draft:guest-test-A:multiple_choice:t:s",
+          "private draft"
+        );
+        sessionStorage.setItem(
+          "academy-learning-recovery:activity:c:u:guest-test-A",
+          "unconfirmed completion"
+        );
+        sessionStorage.setItem(
+          "academy-challenge-draft:guest-test-B:multiple_choice:t:s",
+          "other account"
+        );
+      }, sourceState);
+      const snapshot = await logged.page.evaluate(() => [
+        localStorage.getItem("academy-guest-learning:1"),
+        sessionStorage.getItem("academy-learning-recovery:activity:c:u:guest-test-A"),
+      ]);
+      const logout = async (accept) => {
+        await logged.page.getByRole("button", { name: /Kontomenü|Account menu/ }).click();
+        const dialogPromise = logged.page.waitForEvent("dialog");
+        const click = logged.page
+          .getByRole("button", { name: /Logout|Ausloggen|Abmelden/, exact: true })
+          .click();
+        const dialog = await dialogPromise;
+        assert.match(
+          dialog.message(),
+          english ? /isn't saved in your account/ : /noch nicht im Konto gespeichert/
+        );
+        if (accept) await dialog.accept();
+        else await dialog.dismiss();
+        await click;
+      };
+      await logout(false);
+      assert.deepEqual(
+        await logged.page.evaluate(() => [
+          localStorage.getItem("academy-guest-learning:1"),
+          sessionStorage.getItem("academy-learning-recovery:activity:c:u:guest-test-A"),
+        ]),
+        snapshot
+      );
+      assert.equal(logged.calls.filter((c) => c.method === "DELETE").length, 0);
+      await logged.page
+        .locator("main")
+        .screenshot({ path: resolve(out, `logout-cancel-${label}.png`) });
+      await logged.page.waitForTimeout(1100);
+      await logout(true);
+      await logged.page.waitForFunction(() => !document.cookie.includes("accessToken="));
+      assert.equal(
+        await logged.page.evaluate(() => localStorage.getItem("academy-guest-learning:1")),
+        null
+      );
+      assert.equal(
+        await logged.page.evaluate(() =>
+          sessionStorage.getItem("academy-learning-recovery:activity:c:u:guest-test-A")
+        ),
+        null
+      );
+      assert.equal(
+        await logged.page.evaluate(() =>
+          sessionStorage.getItem("academy-challenge-draft:guest-test-A:multiple_choice:t:s")
+        ),
+        null
+      );
+      assert.equal(
+        await logged.page.evaluate(() =>
+          sessionStorage.getItem("academy-challenge-draft:guest-test-B:multiple_choice:t:s")
+        ),
+        "other account"
+      );
+      results.push(
+        `${label}: explicit logout cancel preserves work; confirmed logout removes owned learning copies`
+      );
+      await logged.close();
+
+      const challenge = await fixture(width, english);
+      await challenge.auth();
+      await challenge.page.goto(app + "/courses/storage-test/lessons/native");
+      await challenge.page.getByRole("radio", { name: "4", exact: true }).check();
+      const draftKey = "academy-challenge-draft:guest-test-A:multiple_choice:task:quiz";
+      assert.ok(await challenge.page.evaluate((key) => sessionStorage.getItem(key), draftKey));
+      const activeDraft = await challenge.page.evaluate(
+        (key) => sessionStorage.getItem(key),
+        draftKey
+      );
+      await challenge.page.getByRole("button", { name: /Kontomenü|Account menu/ }).click();
+      const dialogPromise = challenge.page.waitForEvent("dialog");
+      const logoutClick = challenge.page
+        .getByRole("button", { name: /Logout|Ausloggen|Abmelden/, exact: true })
+        .click();
+      const dialog = await dialogPromise;
+      await dialog.dismiss();
+      await logoutClick;
+      assert.equal(
+        await challenge.page.evaluate((key) => sessionStorage.getItem(key), draftKey),
+        activeDraft
+      );
+      assert.equal(
+        await challenge.page.getByRole("radio", { name: "4", exact: true }).isChecked(),
+        true
+      );
+      await challenge.page
+        .getByRole("button", { name: /Antwort prüfen|Check answer|Prüfen|Check/, exact: true })
+        .click();
+      await challenge.page.locator(".exercise-result.correct button").click();
+      await challenge.page.waitForURL("**/courses/storage-test");
+      assert.equal(
+        await challenge.page.evaluate((key) => sessionStorage.getItem(key), draftKey),
+        null
+      );
+      await challenge.page.goto(app + "/courses/storage-test/lessons/native");
+      await challenge.page
+        .getByText(english ? "Completed" : "Abgeschlossen", { exact: true })
+        .waitFor();
+      assert.equal(
+        await challenge.page.evaluate((key) => sessionStorage.getItem(key), draftKey),
+        null
+      );
+      results.push(
+        `${label}: real native renderer completion removes draft through exit and reload`
+      );
+      await noOverflow(challenge.page);
+      await challenge.page
+        .locator("main")
+        .screenshot({ path: resolve(out, `completed-${label}.png`) });
+      await challenge.close();
+    }
   assert.deepEqual(errors, []);
   await writeFile(
     resolve(out, "results.json"),
@@ -459,6 +761,24 @@ try {
     )
   );
   console.log(JSON.stringify({ passed: results.length, results, pageErrors: errors }, null, 2));
+} catch (error) {
+  console.error(
+    JSON.stringify({
+      completed: results,
+      calls: traces.map((calls) => calls.map(({ path, method }) => ({ path, method }))),
+    })
+  );
+  for (const context of browser.contexts())
+    for (const page of context.pages())
+      console.error(
+        JSON.stringify({
+          url: page.url(),
+          alerts: await page.locator('[role="alert"]').allTextContents(),
+          pageErrors: errors,
+          body: (await page.locator("body").innerText()).slice(-2000),
+        })
+      );
+  throw error;
 } finally {
   await browser.close();
 }
