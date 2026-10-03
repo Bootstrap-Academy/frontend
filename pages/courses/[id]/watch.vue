@@ -189,7 +189,8 @@ async function load() {
     if (current()) loading.value = false;
   }
 }
-async function go(step: CourseStep) {
+async function go(step: CourseStep | undefined) {
+  if (!step) return;
   saveError.value = false;
   await router.replace(
     courseWatchLocation(id.value, step, { skillID: skillID.value, subSkillID: subSkillID.value })
