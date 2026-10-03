@@ -8,24 +8,44 @@
       class="mb-5 block w-40 object-contain md:mt-2 lg:hidden"
     />
 
-    <nav class="flex flex-wrap justify-center gap-container">
+    <nav :aria-label="t('Navigation.Footer')" class="flex flex-wrap justify-center gap-container">
       <NuxtLink v-for="({ label, pathname }, i) of webLinks" :key="i" :to="pathname">
         {{ t(label) }}
       </NuxtLink>
     </nav>
 
-    <article class="my-2.5 flex justify-center gap-10 md:my-5">
-      <a href="https://twitter.com/TheMorpheusTuts" target="_blank">
-        <IconTwitter class="fill-accent transition-basic hover:scale-125" />
+    <article class="my-2.5 flex flex-wrap justify-center gap-10 md:my-5">
+      <a
+        href="https://twitter.com/TheMorpheusTuts"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="t('Navigation.Social', { name: 'Twitter' })"
+      >
+        <IconTwitter aria-hidden="true" class="fill-accent transition-basic hover:scale-125" />
       </a>
-      <a href="https://www.instagram.com/TheMorpheusTuts/" target="_blank">
-        <IconInstagram class="fill-accent transition-basic hover:scale-125" />
+      <a
+        href="https://www.instagram.com/TheMorpheusTuts/"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="t('Navigation.Social', { name: 'Instagram' })"
+      >
+        <IconInstagram aria-hidden="true" class="fill-accent transition-basic hover:scale-125" />
       </a>
-      <a href="https://www.youtube.com/user/themorpheus407" target="_blank">
-        <IconYoutube class="fill-accent transition-basic hover:scale-125" />
+      <a
+        href="https://www.youtube.com/user/themorpheus407"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="t('Navigation.Social', { name: 'YouTube' })"
+      >
+        <IconYoutube aria-hidden="true" class="fill-accent transition-basic hover:scale-125" />
       </a>
-      <a href="https://github.com/Bootstrap-Academy" target="_blank">
-        <IconGithub class="fill-accent transition-basic hover:scale-125" />
+      <a
+        href="https://github.com/Bootstrap-Academy"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="t('Navigation.Social', { name: 'GitHub' })"
+      >
+        <IconGithub aria-hidden="true" class="fill-accent transition-basic hover:scale-125" />
       </a>
     </article>
 
@@ -36,7 +56,10 @@
         Ⓒ {{ new Date().getFullYear() }}
         {{ t("Body.Copyright") }}
       </p>
-      <nav class="flex flex-wrap justify-center gap-2.5 text-sm text-subheading md:gap-5">
+      <nav
+        :aria-label="t('Navigation.Legal')"
+        class="flex flex-wrap justify-center gap-2.5 text-sm text-subheading md:gap-5"
+      >
         <template v-for="({ label, pathname }, i) of usefulLinks" :key="i">
           <span class="text-accent" v-if="i > 0">|</span>
           <NuxtLink :to="pathname" class="text-hover">

@@ -31,9 +31,9 @@
     </article>
 
     <section class="container-form">
-      <h3 class="text-heading-3 mb-6 text-center md:mb-8">
+      <h1 class="text-heading-3 mb-6 text-center md:mb-8">
         {{ t("Forms.Signup") }}
-      </h3>
+      </h1>
 
       <FormSignup />
     </section>
@@ -48,11 +48,9 @@ definePageMeta({
 });
 
 export default {
-  head: {
-    title: "Signup",
-  },
   setup() {
     const { t } = useI18n();
+    useHead(() => ({ title: `${t("Buttons.Signup")} · Bootstrap Academy` }));
 
     return { t };
   },
