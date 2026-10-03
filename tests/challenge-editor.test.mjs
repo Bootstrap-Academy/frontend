@@ -64,6 +64,7 @@ function fixture(mobile = false) {
     "useDailyLearning",
     "useDailyAttemptLimit",
     "getPremiumStatus",
+    "openSnackbar",
     "__loadChallengeEditorMonaco",
     "__challengeEditorDependencies",
   ];
@@ -86,8 +87,13 @@ function fixture(mobile = false) {
   globalThis.useDailyLearning = () => ({ isDaily: ref(false) });
   globalThis.useDailyAttemptLimit = () => ({ attemptLimit: ref(null), handleLimit: () => false });
   globalThis.getPremiumStatus = async () => {};
+  const attempts = [];
+  globalThis.openSnackbar = () => {};
   globalThis.__challengeEditorDependencies = {
-    createSubmission() {},
+    async createSubmission(_challenge, _coding, payload) {
+      attempts.push(payload);
+      return [false, "fixture-error"];
+    },
     getEnvironments: async () => {},
     useEnvironments: () => env,
     useCodingSubmission: () => submission,
@@ -176,6 +182,7 @@ function fixture(mobile = false) {
     submission,
     models,
     languages,
+    attempts,
     get vm() {
       return vm;
     },
@@ -214,12 +221,16 @@ test("hidden coding does not load Monaco; mobile typing and saved submissions us
     f.visible();
     await flush();
     assert.equal(f.loads, 0);
+    await f.vm.fnCreateSubmission();
+    assert.equal(f.attempts.at(-1).code, "initial");
     f.vm.nativeInput({ target: { value: "print('phone')" } });
     await flush();
     assert.equal(f.props.modelValue, "print('phone')");
     f.submission.value = { code: "saved", environment: "python" };
     await flush();
     assert.equal(f.props.modelValue, "saved");
+    await f.vm.fnCreateSubmission();
+    assert.equal(f.attempts.at(-1).code, "saved");
   } finally {
     f.cleanup();
   }

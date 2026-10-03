@@ -94,7 +94,7 @@ export default defineComponent({
     const enhanced = ref(false);
     const environments: any = useEnvironments();
 
-    const code: any = ref("");
+    const code = ref(props.modelValue);
     const submitButtonLoading = ref(false);
     const submission = useCodingSubmission();
     const premiumInfo: any = usePremiumInfo();
@@ -231,6 +231,7 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (newValue) => {
+        code.value = newValue;
         if (editor && editor.getValue() !== newValue) {
           editor.setValue(newValue);
         }
@@ -250,8 +251,8 @@ export default defineComponent({
       () => submission.value,
       (newValue: any, oldValue) => {
         if (typeof newValue?.code === "string" && props.modelValue !== newValue.code) {
+          code.value = newValue.code;
           if (editor) editor.setValue(newValue.code);
-          else emit("update:modelValue", newValue.code);
           // using updateCode as boolean so i can neglect watch from showing up dialog
           updateCode.value = false;
           language.value = newValue.environment;
