@@ -36,7 +36,7 @@
           <td
             class="text-body-1 h-20 w-40 overflow-scroll border-b border-r border-primary px-5 py-3 text-body font-body"
           >
-            <div class="" v-html="$md.render(codingChallenge?.description ?? '')"></div>
+            <Markdown class="" :source="codingChallenge?.description ?? ''"></Markdown>
             <!-- {{ codingChallenge?.description ?? "" }} -->
           </td>
           <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">

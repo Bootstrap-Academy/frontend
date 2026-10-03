@@ -40,10 +40,7 @@
           >
             {{ t("Buttons.ManageInput") }}
           </Btn>
-          <div
-            class="markdown clamp line-1 italic opacity-70"
-            v-html="$md.render(item.input)"
-          ></div>
+          <Markdown class="markdown clamp line-1 italic opacity-70" :source="item.input"></Markdown>
         </article>
 
         <article class="mt-box">
@@ -57,10 +54,10 @@
           >
             {{ t("Buttons.ManageOutput") }}
           </Btn>
-          <div
+          <Markdown
             class="markdown clamp line-1 italic opacity-70"
-            v-html="$md.render(item.output)"
-          ></div>
+            :source="item.output"
+          ></Markdown>
         </article>
       </article>
 
