@@ -1,5 +1,6 @@
 <template>
   <div>
+    <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="mb-6" />
     <SkeletonQuizAnswer v-if="loading" class="card" />
     <form
       v-else
@@ -68,7 +69,7 @@
         <!--
           The caption explains when a whole heart is charged.
         -->
-        <template v-if="!data?.solved && user?.id != subtask?.creator && !isPremium">
+        <template v-if="!data?.solved && user?.id != subtask?.creator && !heartFree">
           <InputBtn
             full
             :loading="formSubmitting"
@@ -87,7 +88,7 @@
 
         <InputBtn
           full
-          v-if="!data?.solved && user?.id != subtask?.creator && isPremium"
+          v-if="!data?.solved && user?.id != subtask?.creator && heartFree"
           :loading="formSubmitting"
           @click="onclickSubmitForm()"
           mt
@@ -136,8 +137,10 @@ export default defineComponent({
     // ============================================================= refs
 
     const refForm = ref<HTMLFormElement | null>(null);
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
+    const { isDaily } = useDailyLearning();
+    const { attemptLimit, handleLimit } = useDailyAttemptLimit();
+    const heartFree = computed(() => {
+      return premiumInfo.value?.premium || isDaily.value;
     });
     // ============================================================= Checks
 
@@ -216,11 +219,12 @@ export default defineComponent({
     }
 
     function errorHandler(error: any) {
+      if (handleLimit(error)) return;
       if (error == "Error.TooManyAttemptsForQuiz") {
         showMaxAttemptsError.value = true;
         secondsForTryAgain.value = error.details ?? "";
       } else {
-        openSnackbar("error", error);
+        openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
       }
     }
 
@@ -308,7 +312,8 @@ export default defineComponent({
       showMaxAttemptsError,
       secondsForTryAgain,
       nextQuestion,
-      isPremium,
+      heartFree,
+      attemptLimit,
       fnRated,
       wasOptionsCorrect,
       ChevronDoubleRightIcon,

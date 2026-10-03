@@ -13,13 +13,15 @@
           {{ steps.length }}
         </p>
         <h1>{{ active.title }}</h1>
+        <LearningDailyNotice v-if="!lessonStart.limited.value" :value="lessonStart.daily.value" />
         <progress
           :value="progress.completed"
           :max="progress.total || 1"
           :aria-label="copy.progress"
         />
       </header>
-      <div class="player-content">
+      <LearningDailyLimit v-if="lessonStart.limited.value" :value="lessonStart.limited.value" />
+      <div v-else class="player-content">
         <article class="lesson-content">
           <p v-if="active.description" class="lesson-description">{{ active.description }}</p>
           <LearningLessonPlayer
@@ -27,7 +29,12 @@
             :key="active.id"
             :lesson="lesson"
             :locale="locale"
-            :legacy-video="{ course, lecture: active, section: activeSection }"
+            :legacy-video="{
+              course,
+              lecture: active,
+              section: activeSection,
+              lessonId: lesson?.id,
+            }"
           />
           <CoursePractice
             :key="`${id}:${active.id}`"
@@ -149,6 +156,10 @@ const lesson = computed(() =>
     ? legacyLectureLesson(course.value, active.value, activeSection.value)
     : null
 );
+const lessonStart = useLessonStart(
+  id,
+  computed(() => lesson.value?.id || "")
+);
 useHead(() => ({ title: active.value?.title || course.value?.title || copy.value.course }));
 let generation = 0;
 let alive = true;
@@ -201,6 +212,7 @@ async function finishLecture() {
   saving.value = true;
   saveError.value = false;
   try {
+    if (!(await lessonStart.start()) || !current()) return;
     await PUT(
       `/skills/courses/${encodeURIComponent(id.value)}/lectures/${encodeURIComponent(step.id)}/complete`
     );

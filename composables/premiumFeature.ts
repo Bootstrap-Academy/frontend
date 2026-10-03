@@ -1,4 +1,10 @@
-export const usePremiumInfo = () => useState("premiumInfo", () => null);
+type PremiumInfo = {
+  premium: boolean;
+  since: number | null;
+  until: number | null;
+  autopay: "MONTHLY" | "YEARLY" | null;
+};
+export const usePremiumInfo = () => useState<PremiumInfo | null>("premiumInfo", () => null);
 export const usePremiumStatusKnown = () => useState("premiumStatusKnown", () => false);
 const usePremiumStatusRevision = () => useState("premiumStatusRevision", () => 0);
 

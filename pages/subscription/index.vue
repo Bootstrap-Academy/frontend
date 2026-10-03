@@ -1,6 +1,6 @@
 <template>
   <div class="px-4 sm:container-fluid">
-    <section v-if="!isPremium" class="mt-10 flex flex-col items-center gap-10">
+    <section v-if="!isPremium && showHearts" class="mt-10 flex flex-col items-center gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
       </h2>
@@ -45,17 +45,23 @@
         </div>
       </div>
     </section>
-    <hr v-if="!isPremium" class="mt-10" />
+    <hr v-if="!isPremium && showHearts" class="mt-10" />
 
-    <SubscriptionPremiumUntillCountDown v-if="!!isPremium" class="mt-20" />
+    <header v-if="isPremium && isDaily" class="mx-auto mt-10 max-w-2xl text-center">
+      <h2 class="text-3xl font-bold text-accent">{{ t("Headings.Premium") }}</h2>
+      <p v-if="premiumUntil" class="mt-3">
+        {{ t("DailyLearning.PremiumUntil", { date: premiumUntil }) }}
+      </p>
+    </header>
+    <SubscriptionPremiumUntillCountDown v-else-if="isPremium && showHearts" class="mt-20" />
 
     <section class="mb-20 mt-10 rounded-md">
       <div class="mx-auto max-w-2xl sm:text-center" v-if="!isPremium">
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
-          {{ t("Headings.NoTrickPricing") }}
+          {{ t(isDaily ? "Headings.Premium" : "Headings.NoTrickPricing") }}
         </h2>
         <p class="text-gray mt-2 text-lg leading-8">
-          {{ t("Body.PremiumCardMain") }}
+          {{ t(isDaily ? "DailyLearning.PremiumBenefit" : "Body.PremiumCardMain") }}
         </p>
       </div>
 
@@ -70,10 +76,14 @@
 
       <div class="flex justify-center">
         <p class="mt-3 max-w-md text-center text-accent" v-if="isPremium">
-          {{ t("Headings.BuyAdditionalSubscription") }}
+          {{ t(isDaily ? "DailyLearning.ExtendPremium" : "Headings.BuyAdditionalSubscription") }}
         </p>
       </div>
+      <p v-if="isDaily && !planPricesKnown" role="status" class="mx-auto max-w-md text-center">
+        {{ t("Error.PremiumStatusUnavailable") }}
+      </p>
       <SubscriptionCard
+        v-else-if="policyKnown"
         :subscribeMonthly="() => subscribe(false)"
         :subscribeYearly="() => subscribe(true)"
         :yearly="selectedButton === 1"
@@ -129,6 +139,7 @@
         class="mx-auto mt-8 max-w-2xl rounded-xl bg-secondary p-6"
       >
         <OrderSummary
+          exact-offer
           :coins="renewalOrder.monthly_price"
           :disabled="!renewalAccepted || !renewalWithdrawalConsent"
           :loading="premiumBusy"
@@ -136,6 +147,24 @@
         >
           <template #characteristics>
             <p class="whitespace-pre-line">{{ renewalOrder.text }}</p>
+            <div class="flex flex-wrap gap-4">
+              <button
+                v-for="kind in ['terms', 'withdrawal']"
+                :key="kind"
+                type="button"
+                :disabled="premiumBusy"
+                class="min-h-11 text-left text-accent underline"
+                @click="downloadRenewalDocument(kind)"
+              >
+                {{
+                  t(
+                    kind === "terms"
+                      ? "Body.RenewalTermsDocument"
+                      : "Body.RenewalWithdrawalDocument"
+                  )
+                }}
+              </button>
+            </div>
           </template>
           <template #consent>
             <InputCheckbox
@@ -225,6 +254,7 @@ export default {
   setup() {
     const { t, locale } = useI18n();
     const coins = useCoins();
+    const { isDaily, showHearts, policyKnown } = useDailyLearning();
     const selectedButton = ref(0);
     const currentCard = ref(1);
     const heartInfo: any = useHeartInfo();
@@ -233,6 +263,8 @@ export default {
     const premiumPlans = usePremiumPlans();
     const heartConfig = useHeartConfig();
     const premiumBusy = ref(false);
+    const user = useUser();
+    const session = useSession();
     const renewalOrder = ref<any>(null);
     const renewalAccepted = ref(false);
     const renewalWithdrawalConsent = ref(false);
@@ -263,12 +295,27 @@ export default {
       ]);
     });
 
+    const planPricesKnown = computed(() =>
+      ["MONTHLY", "YEARLY"].every(
+        (name) =>
+          Number.isFinite(premiumPlans.value[name]?.price) && premiumPlans.value[name].price > 0
+      )
+    );
     const monthlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "MONTHLY"));
     const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
     const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
 
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
+    });
+
+    const premiumUntil = computed(() => {
+      const until = Number(premiumInfo.value?.until);
+      return until > 0 && Number.isFinite(until)
+        ? new Intl.DateTimeFormat(locale.value, { dateStyle: "long", timeStyle: "short" }).format(
+            new Date(until * 1000)
+          )
+        : "";
     });
 
     const premiumStatusAutoPay = computed(() => {
@@ -393,6 +440,7 @@ export default {
     }
 
     async function filHearts() {
+      if (isDaily.value) return;
       if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       } else if (coins.value < refillPrice.value) {
@@ -441,12 +489,8 @@ export default {
         if (value === "MONTHLY") {
           // Preparing an offer never enables renewal. Every declaration gets a
           // request id which survives uncertain response retries in this form.
-          const offer = await GET("/shop/premium/renewal-offer");
-          if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
-            throw new Error("Invalid renewal offer");
-          renewalAccepted.value = false;
-          renewalWithdrawalConsent.value = false;
-          renewalOrder.value = { ...offer, request_id: crypto.randomUUID() };
+          const offer = await GET("/shop/premium/renewal-offer/me");
+          replaceRenewalOffer(offer);
           return;
         }
         const [status, error] = await updatePremiumAutoPay({ plan: null });
@@ -462,6 +506,59 @@ export default {
       }
     }
 
+    function replaceRenewalOffer(offer: any) {
+      if (!offer?.id || !offer?.text || !(offer.monthly_price > 0))
+        throw new Error("Invalid renewal offer");
+      renewalAccepted.value = false;
+      renewalWithdrawalConsent.value = false;
+      renewalOrder.value = { ...offer, request_id: crypto.randomUUID() };
+    }
+
+    async function downloadRenewalDocument(kind: string) {
+      if (premiumBusy.value || !renewalOrder.value || !["terms", "withdrawal"].includes(kind))
+        return;
+      const id = renewalOrder.value.id;
+      const owner = user.value?.id;
+      const sessionId = session.value?.id;
+      const current = () =>
+        user.value?.id === owner &&
+        session.value?.id === sessionId &&
+        renewalOrder.value?.id === id;
+      premiumBusy.value = true;
+      try {
+        const documentData = await GET(
+          `/shop/premium/renewal-offer/me/${encodeURIComponent(id)}/documents/${kind}`
+        );
+        if (!current()) return;
+        const blob =
+          documentData instanceof Blob
+            ? documentData
+            : new Blob([documentData], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `premium-renewal-${id}-${kind}.pdf`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error: any) {
+        if (!current()) return;
+        if ((error?.statusCode || error?.response?.status) === 409) {
+          try {
+            const offer = await GET("/shop/premium/renewal-offer/me");
+            if (!current()) return;
+            replaceRenewalOffer(offer);
+            openSnackbar("info", "Error.RenewalOfferChanged");
+            return;
+          } catch {
+            /* Keep the existing offer available for a later read-only retry. */
+          }
+        }
+        if (current()) openSnackbar("error", "Body.PurchaseDocumentUnavailable");
+      } finally {
+        premiumBusy.value = false;
+      }
+    }
+
     async function confirmRenewal() {
       if (
         !renewalOrder.value ||
@@ -472,10 +569,10 @@ export default {
         return;
       premiumBusy.value = true;
       try {
-        const current = await GET("/shop/premium/renewal-offer");
+        const current = await GET("/shop/premium/renewal-offer/me");
         if (current?.id !== renewalOrder.value.id) {
-          renewalOrder.value = null;
-          openSnackbar("error", "Error.RenewalOfferChanged");
+          replaceRenewalOffer(current);
+          openSnackbar("info", "Error.RenewalOfferChanged");
           return;
         }
         const [status, error] = await updatePremiumAutoPay({
@@ -513,12 +610,18 @@ export default {
     );
 
     return {
+      isDaily,
+      showHearts,
+      policyKnown,
+      planPricesKnown,
       t,
       premiumInfo,
+      premiumUntil,
       renewalOrder,
       renewalAccepted,
       renewalWithdrawalConsent,
       confirmRenewal,
+      downloadRenewalDocument,
       subscribe,
       heartConfig,
       order,
