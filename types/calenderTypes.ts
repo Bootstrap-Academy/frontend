@@ -24,14 +24,14 @@ export class Instructor {
 }
 
 export class WebinarEvent extends EventBase {
-  type: "webinar" = "webinar";
+  override type: "webinar" = "webinar";
   creation_date: number = 0;
   max_participants: number = 0;
   participants: number = 0;
 }
 
 export class CoachingEvent extends EventBase {
-  type: "coaching" = "coaching";
+  override type: "coaching" = "coaching";
   student: {
     id: string;
     name: string;

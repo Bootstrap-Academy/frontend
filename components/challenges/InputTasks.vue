@@ -94,6 +94,7 @@ import { PencilIcon, PlusCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/vue/
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
+import type { TaskDraft } from "~/types/codingChallengeViews";
 import { description } from "~~/description";
 
 export default defineComponent({
@@ -110,7 +111,7 @@ export default defineComponent({
     light: { type: Boolean, default: false },
     placeholder: { type: String, default: "" },
     rules: { type: Array, default: [] },
-    modelValue: { default: [] },
+    modelValue: { type: Array as PropType<TaskDraft[]>, default: [] },
     max: { type: Number, default: 10 },
   },
   emits: ["update:modelValue", "valid"],
@@ -122,7 +123,7 @@ export default defineComponent({
       get() {
         return props.modelValue;
       },
-      set(value: Array<any>) {
+      set(value: TaskDraft[]) {
         emit("update:modelValue", value);
       },
     });
@@ -156,6 +157,7 @@ export default defineComponent({
       if (length == 0) return true;
 
       let lastTask = tasks.value[length - 1];
+      if (!lastTask) return true;
       let arr = tasks.value.filter((t) => {
         return t.name.toLocaleLowerCase() == lastTask.name.toLocaleLowerCase();
       });
@@ -177,10 +179,11 @@ export default defineComponent({
       if (length == 0) return msg;
 
       let lastTask = tasks.value[length - 1];
+      if (!lastTask) return msg;
 
-      if (lastTask.totalPoints < 5) {
+      if (Number(lastTask.totalPoints) < 5) {
         msg = "must be >= 5";
-      } else if (lastTask.totalPoints > 100) {
+      } else if (Number(lastTask.totalPoints) > 100) {
         msg = "must be <= 100";
       }
 

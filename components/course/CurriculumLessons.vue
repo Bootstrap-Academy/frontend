@@ -42,7 +42,7 @@ const groups = computed(() => {
         lessons: [],
       });
     }
-    ordered[ordered.length - 1].lessons.push(lesson);
+    ordered[ordered.length - 1]?.lessons.push(lesson);
     previous = chapter;
   }
   return ordered;

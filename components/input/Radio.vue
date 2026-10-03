@@ -48,7 +48,7 @@ export default defineComponent({
       type: Object as PropType<{ to: string; label: string }>,
       default: null,
     },
-    modelValue: { default: false },
+    modelValue: { type: [String, Boolean] as PropType<string | boolean>, default: false },
   },
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
