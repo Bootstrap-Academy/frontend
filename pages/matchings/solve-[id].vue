@@ -112,7 +112,7 @@
             selectedOption == 0 ? "Headings.EmptyTasksForThis" : "Headings.EmptyTasksForThisFilter",
             {
               placeholder: t(notFoundFor),
-              filter: t(buttonOptions[selectedOption].name),
+              filter: t(buttonOptions[selectedOption]?.name ?? ""),
               type: t("Headings.Matchings"),
             }
           )

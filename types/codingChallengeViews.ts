@@ -36,6 +36,12 @@ export interface CodingTaskView {
   xp: number;
 }
 
+export interface ChallengeCategoryView {
+  id: string;
+  title: string;
+  description: string;
+}
+
 export interface CodingSubmissionView {
   id: string;
   creation_timestamp: string;
