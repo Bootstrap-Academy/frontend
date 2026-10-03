@@ -26,9 +26,11 @@ import type {
 import type { LearningRequest } from "~/types/learningRooms";
 import { activityContent, activityRenderer } from "~/utils/learningActivityAdapters";
 import { learningModuleIdentity } from "~/utils/learningModule";
+import type { RoomProtocolSource } from "~/utils/lessonProtocolRooms";
 import { loadActivityRenderer } from "./activityRegistry";
 
 const props = defineProps<{
+  protocol?: RoomProtocolSource;
   activity: LearningActivity;
   state: Record<string, any>;
   locale: string;
@@ -45,6 +47,7 @@ const emit = defineEmits<{
   posting: [active: boolean];
   skip: [];
 }>();
+const protocolEnabled = () => String(useRuntimeConfig().public.lessonProtocolV2) === "true";
 const instance = ref<LearningActivityHandle | null>(null);
 const renderer = shallowRef<Awaited<ReturnType<typeof loadActivityRenderer>> | null>(null);
 const error = ref(false);
@@ -88,6 +91,7 @@ const rendererProps = computed(() => {
   if (kind.value === "custom")
     return {
       ...shared,
+      ...(props.activity.module?.api_version === 2 ? { protocol: props.protocol } : {}),
       module: props.activity.module,
       activityId: props.activity.id,
       exercise: props.activity.exercise,
@@ -137,7 +141,9 @@ async function load() {
   emit("posting", false);
   try {
     if (!kind.value) throw new Error("Unsupported learning activity");
-    const loaded = await loadActivityRenderer(kind.value);
+    const v2 = kind.value === "custom" && props.activity.module?.api_version === 2;
+    if (v2 && !protocolEnabled()) throw new Error("Lesson protocol v2 is disabled");
+    const loaded = await loadActivityRenderer(v2 ? "protocol-v2" : kind.value);
     if (alive && ticket === generation.value) renderer.value = loaded;
   } catch {
     if (alive && ticket === generation.value) error.value = true;
@@ -179,7 +185,10 @@ async function retry() {
     if (alive) retrying.value = false;
   }
 }
-defineExpose({ cancelPreparation });
+defineExpose({
+  cancelPreparation,
+  prepareNavigation: () => instance.value?.prepareNavigation?.() ?? Promise.resolve(true),
+});
 watch(
   [
     () => props.activity.id,

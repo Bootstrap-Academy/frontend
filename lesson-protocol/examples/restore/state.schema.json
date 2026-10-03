@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "properties": {
+    "restored": { "type": "boolean" },
+    "note": { "type": "string", "maxLength": 2000 }
+  },
+  "additionalProperties": false
+}

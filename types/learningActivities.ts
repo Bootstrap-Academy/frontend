@@ -67,6 +67,7 @@ export interface LearningActivityCompletion {
 
 export interface LearningActivityHandle {
   cancelPreparation(): void;
+  prepareNavigation?(): Promise<boolean>;
 }
 
 export interface LegacyVideoContext {

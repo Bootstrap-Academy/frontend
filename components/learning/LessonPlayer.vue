@@ -10,7 +10,7 @@
           type="button"
           :aria-current="item.id === activity?.id ? 'step' : undefined"
           :disabled="disabled"
-          @click="emit('select', item.id)"
+          @click="select(item.id)"
         >
           {{ index + 1 }}. {{ title(item.title) }}
         </button>
@@ -19,6 +19,7 @@
         <ActivityHost
           ref="host"
           :key="activity.id"
+          :protocol="protocol"
           :activity="activity"
           :state="state || {}"
           :locale="locale"
@@ -47,11 +48,13 @@ import type {
   LegacyVideoContext,
 } from "~/types/learningActivities";
 import type { LearningRequest, LocalizedText } from "~/types/learningRooms";
+import type { RoomProtocolSource } from "~/utils/lessonProtocolRooms";
 import ActivityHost from "./ActivityHost.vue";
 import type { DailyLearning } from "~/types/dailyLearning";
 import { dailyBlocked } from "~/utils/dailyLearning";
 
 const props = defineProps<{
+  protocol?: RoomProtocolSource;
   lesson: LearningLesson;
   daily?: DailyLearning | null;
   activeActivityId?: string;
@@ -82,7 +85,14 @@ const copy = computed(() => ({
   activities: props.locale.startsWith("de") ? "Lernschritte" : "Activities",
 }));
 const title = (value: LocalizedText) => value[props.locale.startsWith("de") ? "de" : "en"];
-defineExpose({ cancelPreparation: () => host.value?.cancelPreparation() });
+async function select(id: string) {
+  if ((await host.value?.prepareNavigation?.()) === false) return;
+  emit("select", id);
+}
+defineExpose({
+  cancelPreparation: () => host.value?.cancelPreparation(),
+  prepareNavigation: () => host.value?.prepareNavigation?.() ?? Promise.resolve(true),
+});
 </script>
 
 <style scoped>
