@@ -29,7 +29,6 @@ export default defineNuxtConfig({
   ssr: false,
 
   app: {
-    buildAssetsDir: "/_assets/",
     head: {
       title: "Bootstrap Academy",
       link: [{ rel: "manifest", href: "/manifest.txt" }],
@@ -57,6 +56,7 @@ export default defineNuxtConfig({
     },
     pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "layout", mode: "out-in" },
+    buildAssetsDir: "/_assets/",
   },
 
   css: ["~/assets/css/tailwind.css"],
