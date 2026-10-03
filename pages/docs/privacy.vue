@@ -36,10 +36,12 @@
       </li>
       <li><a href="#hosting">Hosting, Auftragsverarbeiter und Datensicherungen</a></li>
       <li><a href="#serverlogs">Server-Logs und Fehlerberichte</a></li>
-      <li><a href="#cookies">Cookies und lokale Speichertechnologien</a></li>
+      <li><a href="#cookies">Cookies und Speicher in deinem Browser</a></li>
       <li><a href="#konto">Benutzerkonto, Anmeldung und Sitzungen</a></li>
       <li><a href="#oauth">Anmeldung über GitHub, Discord oder Google</a></li>
-      <li><a href="#lernen">Lernplattform, Lernfortschritt und Bestenliste</a></li>
+      <li>
+        <a href="#lernen">Lernplattform, privater Lernfortschritt und freiwillige Freigabe</a>
+      </li>
       <li><a href="#challenges">Challenges, Code-Ausführung und Moderation</a></li>
       <li><a href="#events">Frühere Webinare und Coachings</a></li>
       <li><a href="#zahlungen">MorphCoins, Premium, Herzen und Zahlungen</a></li>
@@ -219,7 +221,8 @@
           Rechnungen, Gutschriften und Schlussabrechnungen nach Handels- und Steuerrecht, Prüfung
           von Umsatzsteuer-Identifikationsnummern, Nachweis und Bestätigung deiner Erklärungen zum
           Widerrufsrecht sowie von Kündigungen und Widerrufen (§ 312f Abs. 3, § 312k Abs. 4, § 356a
-          BGB), Erfüllung deiner Rechte auf Auskunft und Datenübertragbarkeit (Art. 15, 20 DSGVO).
+          BGB), Nachweis deiner Profilfreigabe (Art. 7 Abs. 1 DSGVO), Erfüllung deiner Rechte auf
+          Auskunft und Datenübertragbarkeit (Art. 15, 20 DSGVO).
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. f DSGVO</strong> (berechtigte Interessen): Server-Logs und
@@ -229,22 +232,24 @@
           Missbrauchsschutz, Zählung fehlgeschlagener Anmeldeversuche (Abschnitt 10.4), Begrenzung
           der Anfragerate der öffentlichen Kündigungs- und Widerrufsformulare und Aufbewahrung der
           Erklärungen als Nachweis (Abschnitt 15.6), Verwaltungsprotokoll über administrative
-          Zugriffe (Abschnitt 10.5), Betrieb des Discord-Bots (Abschnitt 17.3), Bestenliste
-          (motivierende Lernumgebung), Beantwortung allgemeiner Anfragen (Abschnitt 17.2),
-          Erstellung zusammengefasster Statistiken (Abschnitt 6.1). Gegen diese Verarbeitungen
-          kannst du Widerspruch einlegen (Abschnitt 23).
+          Zugriffe (Abschnitt 10.5), Betrieb des Discord-Bots (Abschnitt 17.3), zuverlässige
+          Wiederaufnahme des Lernens ohne Konto (Abschnitt 9), Beantwortung allgemeiner Anfragen
+          (Abschnitt 17.2), Erstellung zusammengefasster Statistiken (Abschnitt 6.1). Gegen diese
+          Verarbeitungen kannst du Widerspruch einlegen (Abschnitt 23).
         </li>
         <li>
-          <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung): das Laden von YouTube-Videos
-          in Kursen. Die Einwilligung gibst du durch Klick auf das jeweilige Video; sie gilt nur für
+          <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung): deine freiwillige Freigabe von
+          Profilangaben und Bestenlisten-Teilnahme (Abschnitt 12.2) und das Laden von YouTube-Videos
+          in Kursen. Die Einwilligung für ein Video gibst du durch Klick darauf; sie gilt nur für
           diesen Aufruf.
         </li>
         <li>
           <strong>§ 25 TDDDG</strong>: Das Speichern von Informationen in deinem Browser und der
-          Zugriff darauf (Cookies, Local Storage) erfolgt nach § 25 Abs. 2 Nr. 2 TDDDG ohne
-          Einwilligung, weil es unbedingt erforderlich ist, um die von dir ausdrücklich gewünschte
-          Funktion bereitzustellen (Abschnitt 9). Für das Laden von YouTube-Videos holen wir deine
-          Einwilligung nach § 25 Abs. 1 TDDDG ein (Abschnitt 16).
+          Zugriff darauf (Cookies, Local Storage und Session Storage) braucht nach § 25 Abs. 2 Nr. 2
+          TDDDG keine Einwilligung, soweit es im nötigen Umfang und für die nötige Dauer unbedingt
+          erforderlich ist, um deine ausdrücklich gewünschte Funktion bereitzustellen (Abschnitt 9).
+          Für das Laden von YouTube-Videos holen wir deine Einwilligung nach § 25 Abs. 1 TDDDG ein
+          (Abschnitt 16).
         </li>
       </ul>
     </section>
@@ -314,17 +319,22 @@
             <tr>
               <td>Cookies, Local Storage und Session Storage (Abschnitt 9)</td>
               <td>
-                Anmeldung, Sitzung, Anmeldung über Drittanbieter, von dir gewählte Einstellungen
+                Anmeldung, Darstellung, lokale Lernentwürfe und sichere Wiederaufnahme von Lernen,
+                Käufen, Erklärungen und Fällen
               </td>
               <td>
-                Sitzungstoken, Nutzerkennung, Nickname, Anzeigename, Einstellungen, Einmalwerte
-                einer laufenden Anmeldung über einen Drittanbieter
+                Anmelde- und Kontodaten, Einstellungen, Lernstände, Entwurfs-, Bestell- und
+                Fallkennungen, Erklärungen, Zugangsschlüssel und Wiederaufnahmebelege
               </td>
-              <td>§ 25 Abs. 2 Nr. 2 TDDDG; Art. 6 Abs. 1 lit. b DSGVO</td>
-              <td>Sitzungsende; Local Storage und Session Storage siehe Abschnitt 9</td>
+              <td>
+                Erforderliche Speicherzugriffe: § 25 Abs. 2 Nr. 2 TDDDG; personenbezogene Daten je
+                Funktion: Art. 6 Abs. 1 lit. b, c oder f DSGVO (Abschnitt 9)
+              </td>
+              <td>Browserfristen und Bereinigung nach Abschnitt 9</td>
               <td>
                 Cloudflare, Inc. (Cookies werden bei Anfragen an die Weboberfläche mitgesendet,
-                Abschnitt 7.2)
+                Abschnitt 7.2); für die jeweilige Aktion nötige Angaben an unsere API bei Hetzner;
+                bei Zahlungen auch PayPal (Abschnitt 15)
               </td>
             </tr>
             <tr>
@@ -333,10 +343,14 @@
               <td>
                 Nickname, Anzeigename, E-Mail-Adresse, Passwort-Hash, Verifizierungsstatus, Rolle,
                 Sitzungen, Zwei-Faktor-Daten, Profilangaben, Altersbestätigung, Zustimmung zu den
-                AGB oder Aufschub der Entscheidung, Einstellung zur Bestenliste; Zähler
-                fehlgeschlagener Anmeldeversuche je Konto und je IP-Adresse (nur als Hashwert)
+                AGB oder Aufschub der Entscheidung, Freigabewahl und letzter Freigabe- und
+                Widerrufsbeleg; Zähler fehlgeschlagener Anmeldeversuche je Konto und je IP-Adresse
+                (nur als Hashwert)
               </td>
-              <td>Art. 6 Abs. 1 lit. b DSGVO; Zähler: lit. f</td>
+              <td>
+                Art. 6 Abs. 1 lit. b DSGVO; Freigabe: lit. a; Freigabenachweis: lit. c; Zähler: lit.
+                f
+              </td>
               <td>
                 Bis zur Kontolöschung; Sitzungen bis 30 Tage nach der letzten Nutzung; Zähler 15
                 Minuten nach dem letzten Fehlversuch
@@ -373,14 +387,17 @@
             </tr>
             <tr>
               <td>Lernplattform (Abschnitt 12)</td>
-              <td>Kurse, Fortschrittsanzeige, XP, Bestenliste</td>
+              <td>Kurse, private Fortschrittsanzeige, XP, freiwillig freigegebene Bestenlisten</td>
               <td>
                 Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP,
                 Skill-Level, Lösungsstand, Versuche und private Zwischenstände in Lernräumen
               </td>
-              <td>Art. 6 Abs. 1 lit. b DSGVO; Bestenliste: Art. 6 Abs. 1 lit. f DSGVO</td>
-              <td>Bis zur Kontolöschung</td>
-              <td>Bestenliste: angemeldete Nutzer (Anzeigename, Nickname, XP, Rang)</td>
+              <td>Art. 6 Abs. 1 lit. b DSGVO; Freigabe: Art. 6 Abs. 1 lit. a DSGVO</td>
+              <td>Private Lerndaten: bis zur Kontolöschung; Sichtbarkeit: bis zum Widerruf</td>
+              <td>
+                Nach Freigabe: angemeldete Nutzer mit bestätigter E-Mail-Adresse (Anzeigename,
+                Standard-Avatar, Gesamt-XP, Plätze und Punkte der Bestenlisten, Abschnitt 12.2)
+              </td>
             </tr>
             <tr>
               <td>Challenges und Code-Ausführung (Abschnitt 13)</td>
@@ -656,169 +673,209 @@
     </section>
 
     <section id="cookies">
-      <h2>9 Cookies und lokale Speichertechnologien</h2>
+      <h2>9 Cookies und Speicher in deinem Browser</h2>
       <p>
-        Wir verwenden ausschließlich eigene Cookies, Local-Storage- und Session-Storage-Einträge
-        (First Party) und keine Cookies Dritter. Alle Einträge sind unbedingt erforderlich, um die
-        von dir ausdrücklich gewünschten Funktionen bereitzustellen: Anmeldung, Sitzungsverwaltung,
-        die Anmeldung über GitHub, Discord oder Google und von dir gewählte Einstellungen. Für sie
-        ist nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung erforderlich; deshalb zeigen wir keinen
-        Cookie-Hinweis an. Die Verarbeitung der darin enthaltenen Daten stützt sich auf Art. 6 Abs.
-        1 lit. b DSGVO. Analyse-, Marketing- oder Tracking-Cookies setzen wir nicht.
-      </p>
-      <p>
-        Welche Dienste Dritter beim Laden von Videos (Abschnitt 16) und beim Bezahlen (Abschnitt 15)
-        Informationen in deinem Browser speichern, beschreiben wir dort.
+        Unsere Weboberfläche und unser interner Adminbereich nutzen Cookies und lokale
+        Browser-Speicher. Damit halten wir deine Anmeldung aufrecht, merken uns die Darstellung und
+        bewahren deine Arbeit bei Unterbrechungen. Bei Käufen, Erklärungen und Beschwerden merken
+        wir uns den ursprünglichen Vorgang, damit du ihn nach einem Verbindungsfehler sicher
+        fortsetzen kannst. Die Tabelle zeigt die Angaben und ihre Dauer im Browser. Eigene Analyse-,
+        Werbe- oder Tracking-Einträge setzen wir nicht.
       </p>
       <div class="legal-table-scroll" tabindex="0">
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Art</th>
-              <th>Zweck</th>
-              <th>Speicherdauer</th>
+              <th>Wofür</th>
+              <th>Welche Angaben</th>
+              <th>Wie lange im Browser?</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>accessToken</code></td>
-              <td>Cookie</td>
-              <td>Zugriffstoken für Anfragen an die API</td>
-              <td>Sitzungsende; Token serverseitig 5 Minuten gültig, wird automatisch erneuert</td>
-            </tr>
-            <tr>
-              <td><code>refreshToken</code></td>
-              <td>Cookie</td>
-              <td>Erneuerung des Zugriffstokens</td>
+              <td>Anmeldung und Schutz deiner Sitzung</td>
               <td>
-                Sitzungsende; Token serverseitig 30 Tage ab der letzten Erneuerung gültig, bei
-                Abmeldung ungültig
+                Anmelde- und Erneuerungstoken, Konto- und Sitzungsdaten sowie technische Prüfwerte
+                für die Abstimmung zwischen Tabs. Im Lernfrontend enthalten die Kontodaten nur
+                Kennung, Nickname und Anzeigename; im Adminbereich kann die gespeicherte
+                Profilantwort weitere Kontodaten enthalten.
+              </td>
+              <td>
+                Cookies für die Browser-Sitzung; Anmelde- und Kontodaten entfernen wir beim
+                Abmelden. Die technische Kennung des Anmeldewechsels wird dabei ersetzt. Lokale
+                Sperrwerte sind 25 Sekunden gültig und werden nach der Erneuerung entfernt; nach
+                einem Abbruch können sie bis zum nächsten Zugriff oder zur Browserlöschung bleiben.
               </td>
             </tr>
             <tr>
-              <td><code>session</code></td>
-              <td>Cookie</td>
-              <td>Kennung deiner aktuellen Sitzung</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>user</code></td>
-              <td>Cookie</td>
-              <td>Nutzerkennung, Nickname und Anzeigename für die Anzeige in der Oberfläche</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>locale</code></td>
-              <td>Cookie</td>
+              <td>Darstellung und Wiederaufnahme der Ansicht</td>
               <td>
-                deine Sprachauswahl; wird nur gespeichert, wenn du die Sprache umstellst (die
-                Voreinstellung Deutsch wird nicht gespeichert)
-              </td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>hideAnimationNextTime</code></td>
-              <td>Cookie</td>
-              <td>Erfolgsanimation beim nächsten Mal nicht anzeigen</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>lastViewCourse</code></td>
-              <td>Cookie</td>
-              <td>Zuletzt geöffneter Kurs</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>currentVideo</code>, <code>currentVideoTime</code></td>
-              <td>Cookie</td>
-              <td>Wiedergabeposition, um ein Kursvideo fortzusetzen</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>zoomLevel</code></td>
-              <td>Cookie</td>
-              <td>Von dir gewählte Zoomstufe des Skill-Baums</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>rootTree_nextNode</code>, <code>subTree_nextNode</code></td>
-              <td>Cookie</td>
-              <td>Zuletzt von dir ausgewählte Position im Skill-Baum (Zeile und Spalte)</td>
-              <td>Sitzungsende</td>
-            </tr>
-            <tr>
-              <td><code>selectedButton</code></td>
-              <td>Local Storage</td>
-              <td>Gewählter Reiter im Kursplayer</td>
-              <td>Bis du den Kursplayer verlässt</td>
-            </tr>
-            <tr>
-              <td><code>selectedButtonLeaderBoard</code></td>
-              <td>Local Storage</td>
-              <td>Gewählter Reiter der Bestenliste</td>
-              <td>Bis du die Bestenliste verlässt</td>
-            </tr>
-            <tr>
-              <td><code>bootstrap-academy:update-notice:…</code></td>
-              <td>Local Storage</td>
-              <td>
-                Merkt erst nach „Schließen“, dass der Hinweis für dein Konto oder als Gast und die
-                jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
-                Zustimmung zu Vertrags- oder Datenschutzhinweisen.
+                Sprache, Anzeigeoptionen, gewählter Reiter, Position im Skill-Baum, zuletzt
+                geöffneter Kurs und Videoposition; im Adminbereich auch Suchtexte und Filter.
               </td>
               <td>
-                Bis du die Browserdaten löschst; eine neue Hinweisversion kann erneut angezeigt
-                werden
+                Cookies für die Browser-Sitzung. Den lokal gespeicherten Bestenlisten-Reiter
+                entfernen wir beim Verlassen der Ansicht innerhalb der App; nach einem abrupten
+                Schließen kann er im Browser bleiben.
               </td>
             </tr>
             <tr>
-              <td><code>oauth_flow</code></td>
-              <td>Session Storage</td>
+              <td>Geschlossene Hinweise</td>
               <td>
-                Einmalkennung (state), Anbieter und Zweck einer laufenden Anmeldung oder Verknüpfung
-                über GitHub, Discord oder Google, damit die Rückkehr vom Anbieter derselben Anfrage
-                zugeordnet werden kann (Abschnitt 11)
+                Welche Hinweisversion du in diesem Browser beziehungsweise mit deinem Konto
+                geschlossen hast. Das bestätigt keine Zustimmung.
               </td>
-              <td>Bis zur Rückkehr vom Anbieter, spätestens bis zum Schließen des Browser-Tabs</td>
+              <td>
+                Im dauerhaften Browser-Speicher bis zur Browserlöschung. Das Ende des
+                Anzeigefensters entfernt den Schließvermerk nicht automatisch.
+              </td>
             </tr>
             <tr>
-              <td><code>oauth_register_token</code></td>
-              <td>Session Storage</td>
+              <td>Lernen ohne Konto</td>
               <td>
-                Registrierungstoken nach einer ersten Anmeldung über GitHub, Discord oder Google,
-                bis die Registrierung abgeschlossen ist (Abschnitt 11)
+                Dein Übungsentwurf mit erlaubten Szeneneingaben, Bearbeitungs- und Abschlussstand,
+                zufälliger Entwurfskennung und Zeitpunkt der letzten Nutzung. Dazu ein
+                Rückkehrhinweis nach angeforderter Anmeldung oder Registrierung.
               </td>
               <td>
-                Bis zum Abschluss der Registrierung, spätestens bis zum Schließen des Browser-Tabs
+                Der Entwurf im dauerhaften Browser-Speicher läuft 30 Tage nach dem letzten Laden
+                oder Bearbeiten ab und wird beim nächsten Zugriff entfernt. Ohne weiteren Zugriff
+                können die Angaben länger im Browser liegen. Ältere Entwürfe ohne Zeitangabe
+                erhalten beim ersten Öffnen einmalig diese Frist. Der Rückkehrhinweis im
+                Tab-Speicher gilt 24 Stunden; wir entfernen ihn nach Übernahme, beim Abmelden des
+                zugeordneten Kontos oder beim nächsten Zugriff nach Ablauf.
+              </td>
+            </tr>
+            <tr>
+              <td>Verlustschutz beim Lernen mit Konto und bei der Gastübernahme</td>
+              <td>
+                Private Antworten, Code und Bearbeitungsstände, Konto-, Aufgaben- und Kurskennungen
+                sowie Angaben zu offenen Speicher- oder Abschlussvorgängen.
+              </td>
+              <td>
+                Im Tab-Speicher; Wiederholkopien der Gastübernahme auch im dauerhaften
+                Browser-Speicher. Bestätigte Übernahmekopien und Entwürfe nativ abgeschlossener
+                Aufgaben entfernen wir. Unbestätigte Vorgänge bleiben für einen sicheren erneuten
+                Versuch ohne feste Ablauffrist erhalten. Beim ausdrücklichen Abmelden bereinigen wir
+                die Lernkopien dieses Kontos nach Vorbereitung; bei unbestätigter Arbeit kannst du
+                abbrechen. Läuft nur die Anmeldung ab, bleibt die Wiederaufnahme für eine erneute
+                Anmeldung erhalten.
+              </td>
+            </tr>
+            <tr>
+              <td>Anmeldung oder Verknüpfung über Drittanbieter</td>
+              <td>
+                Einmalwerte zur Zuordnung deiner Rückkehr und gegebenenfalls ein
+                Registrierungstoken.
+              </td>
+              <td>
+                Im Tab-Speicher bis zur Rückkehr beziehungsweise erfolgreichen Registrierung. Bei
+                Abbruch bleibt der jeweilige Wert für die Tab-Sitzung; seine Gültigkeit kann früher
+                enden (Abschnitt 11).
+              </td>
+            </tr>
+            <tr>
+              <td>Kaufwiederaufnahme</td>
+              <td>
+                Konto- und Bestellkennungen, bei PayPal auch Coin-Menge und Stand des Zahlvorgangs.
+              </td>
+              <td>
+                Im dauerhaften Browser-Speicher. Wir entfernen oder ersetzen diese Angaben bei
+                bestätigter Abwicklung, Übergabe an die Zahlungswiederaufnahme oder deinem Schließen
+                beziehungsweise Verwerfen des dafür vorgesehenen Vorgangs. Offene oder unklare
+                Zahlungen bleiben ohne feste Ablauffrist erhalten.
+              </td>
+            </tr>
+            <tr>
+              <td>Kündigung und Widerruf ohne Konto</td>
+              <td>
+                Deine Erklärung mit Kontakt- und Vertragsangaben, technische Werte für denselben
+                erneuten Versuch und der Eingangsbeleg.
+              </td>
+              <td>
+                Im Tab-Speicher. Zur Wiederaufnahme höchstens 24 Stunden nutzbar; nach Ablauf beim
+                nächsten Zugriff oder bei einem ausdrücklich neuen Formular entfernt. Ohne weiteren
+                Zugriff können die Angaben für die Tab-Sitzung bleiben.
+              </td>
+            </tr>
+            <tr>
+              <td>Meldungen, Beschwerden und gesonderte Fall- oder Lernzugänge</td>
+              <td>
+                Fall- und Empfängerkennungen, Zugangsschlüssel, deine Erklärung, Bestätigungen und
+                Angaben zur Fortsetzung vorhandener Ansprüche.
+              </td>
+              <td>
+                Im Tab-Speicher. Fallzugangsschlüssel werden beim Wechsel des Kontokontexts
+                entfernt; bereits gesendete Erklärungen und Vorgangsbelege können für die
+                Tab-Sitzung bleiben. Die Gültigkeit eines Zugangs kann früher enden.
+              </td>
+            </tr>
+            <tr>
+              <td>Bearbeitung von Ansprüchen und Aufbewahrungsprüfungen im Adminbereich</td>
+              <td>
+                Fall-, Personen- und Bearbeiterkennungen, vorbereitete Erklärungen und Bewertungen
+                sowie Bestätigungsbelege.
+              </td>
+              <td>
+                Im dauerhaften Browser-Speicher des bearbeitenden Administrators bis zur
+                Browserlöschung. Abmelden und Abschluss des Vorgangs entfernen diese lokalen Kopien
+                derzeit nicht automatisch.
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <p>
-        Alle Cookies sind Sitzungscookies: Sie werden gelöscht, wenn du den Browser schließt. Sie
-        werden mit den Attributen <code>Secure</code> und <code>SameSite=Lax</code> gesetzt, also
-        nur über verschlüsselte Verbindungen und nicht bei Aufrufen aus fremden Websites übertragen.
-        Der Zugriffstoken ist serverseitig fünf Minuten gültig und wird mit dem Erneuerungstoken
-        automatisch verlängert; der Erneuerungstoken ist serverseitig 30 Tage ab der letzten
-        Erneuerung gültig und wird beim Abmelden ungültig. Die Speicherdauer der
-        Local-Storage-Einträge ist in der Tabelle angegeben; sie werden nicht an unsere Server
-        übertragen. Die Session-Storage-Einträge gelten nur für den jeweiligen Browser-Tab; die
-        Weboberfläche sendet ihre Werte einmal an unsere Programmierschnittstelle, um die Anmeldung
-        oder Registrierung abzuschließen, und löscht sie nach deren Erfolg – bricht eine
-        Registrierung ab, bleibt das Registrierungstoken bis zum Schließen des Tabs gespeichert.
-        Cookies für bootstrap.academy sendet dein Browser bei jeder Anfrage an die Weboberfläche
-        mit, also auch an Cloudflare (Abschnitt 7.2).
+        Cookies sendet dein Browser bei passenden Anfragen an den jeweiligen Webhost mit. Dadurch
+        erhält sie auch Cloudflare als Anbieter der Weboberfläche (Abschnitt 7.2). Local und Session
+        Storage werden beim Seitenaufruf nicht automatisch mitgesendet. Die App überträgt daraus die
+        Angaben, die für deine jeweilige Aktion nötig sind, etwa einen Lernstand, eine
+        Bestellkennung, eine Erklärung oder einen Zugangsnachweis, an unsere
+        Programmierschnittstelle bei Hetzner in Deutschland (Abschnitt 7.1). Beim PayPal-Zahlvorgang
+        wird außerdem die Bestellkennung für die Zahlung verwendet (Abschnitt 15). Gewählte
+        Ansichten können auch Teil der aufgerufenen Seitenadresse sein.
       </p>
       <p>
-        Du kannst Cookies, Local Storage und Session Storage jederzeit über deinen Browser löschen
-        oder blockieren. Ohne die Anmelde-Cookies kannst du dich nicht anmelden.
+        Wenn du ohne Konto im Gast-Einstieg lernst, speichern wir den Übungsentwurf zunächst nur in
+        diesem Browser. Fordest du dort die Übernahme an, senden wir die erlaubten Zustandswerte an
+        dein Konto. Das kann nach der dort begonnenen Anmeldung oder Registrierung automatisch
+        geschehen; wenn du bereits angemeldet bist, steht dir die Schaltfläche zur Übernahme zur
+        Verfügung. Die Übernahme allein vergibt keine XP und bestätigt keinen Lektionsabschluss.
+        Nach bestätigter Speicherung entfernen wir die lokale Übernahmekopie. Bei unklarer Antwort
+        bleibt sie erhalten, damit du denselben Vorgang sicher wiederholen kannst.
       </p>
       <p>
-        Seit September 2026 nicht mehr verwendet werden das Cookie
-        <code>agreedToCookiePolicy</code> (ehemaliger Cookie-Hinweis), das Cookie
-        <code>job_filters</code> und das Cookie von Google reCAPTCHA.
+        Sitzungscookies haben keine feste Ablauffrist für ihre Speicherung; dein Browser bestimmt
+        das Ende seiner Sitzung. Session Storage gehört zur jeweiligen Tab-Sitzung und bleibt beim
+        Neuladen erhalten. Stellt dein Browser Sitzungen wieder her, können auch diese Angaben nach
+        einem Neustart erhalten bleiben. Local Storage bleibt über das Schließen des Browsers hinaus
+        bestehen, bis die App oder dein Browser die Angaben entfernt. Die Gültigkeit von Token und
+        Zugangsschlüsseln ist davon getrennt (Abschnitte 10, 11 und 13.4).
+      </p>
+      <p>
+        Für das Speichern und Auslesen, das deine ausdrücklich gewünschte Funktion unbedingt
+        braucht, ist nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung erforderlich. Das gilt im
+        nötigen Umfang und für die nötige Dauer. Bei personenbezogenen Angaben gelten zusätzlich die
+        Rechtsgrundlagen der jeweiligen Funktion: für Konto, Lernen mit Konto und Käufe Art. 6 Abs.
+        1 lit. b DSGVO; für vorgeschriebene Erklärungen und Bestätigungen auch lit. c; für
+        erforderlichen Missbrauchsschutz, zuverlässige Wiederaufnahme und Rechtsnachweise lit. f.
+        Unser Interesse beim Gast-Einstieg ist, dir zuverlässiges Lernen und Fortsetzen ohne Konto
+        zu ermöglichen. Meldungen, Beschwerden und Ansprüche erklären die Abschnitte 10.7, 13.3,
+        13.4 und 15. Gegen Verarbeitungen nach lit. f kannst du nach Abschnitt 23 Widerspruch
+        einlegen.
+      </p>
+      <p>
+        Du kannst Cookies und lokale Speicher über deinen Browser löschen oder blockieren. Ohne
+        Anmelde-Cookies funktioniert die Anmeldung nicht. Gesperrter Speicher kann die
+        Wiederaufnahme, sichere Zahlung oder Übernahme eines Entwurfs verhindern; im Gast-Einstieg
+        kannst du dann in der geöffneten Seite weiterlernen. Verweigert dein Browser den
+        Speicherzugriff, kann auch unsere Bereinigung scheitern. Eine Browserlöschung löscht bereits
+        übermittelte Konto- oder Vertragsdaten nicht automatisch. Deren Fristen stehen in den
+        jeweiligen Fachabschnitten.
+      </p>
+      <p>
+        Für Speicherungen durch eingebundene Anbieter gelten zusätzlich die Angaben zur jeweiligen
+        Funktion, insbesondere zu PayPal (Abschnitt 15) und YouTube (Abschnitt 16).
       </p>
     </section>
 
@@ -826,21 +883,24 @@
       <h2>10 Benutzerkonto, Anmeldung und Sitzungen</h2>
       <h3>10.1 Registrierung</h3>
       <p>
-        Für die Nutzung der Lernplattform ist ein kostenloses Benutzerkonto erforderlich. Bei der
-        Registrierung erheben wir vier Angaben:
+        Im Gast-Einstieg kannst du ohne Konto lernen (Abschnitt 9). Wenn du deinen Stand in einem
+        Konto speichern und mit den übrigen Kursen weitermachen willst, brauchst du ein kostenloses
+        Benutzerkonto. Bei der Registrierung erheben wir vier Angaben:
       </p>
       <ul>
         <li>
           <strong>Nickname</strong> (Benutzername): eindeutige Kennung deines Kontos und
           Anmeldename. Über die Weboberfläche besteht er aus 3 bis 32 Buchstaben und Ziffern; er
           muss plattformweit eindeutig sein und kann höchstens alle 30 Tage geändert werden. Ein
-          Pseudonym ist ausdrücklich zulässig; ein Klarname ist nicht erforderlich. Der Nickname ist
-          für andere angemeldete Nutzer sichtbar (Abschnitte 12.2 und 14).
+          Pseudonym ist ausdrücklich zulässig; ein Klarname ist nicht erforderlich. Deine
+          Profilfreigabe veröffentlicht den Nickname nicht (Abschnitt 12.2). Für noch vorhandene
+          frühere Eventdaten gilt Abschnitt 14.
         </li>
         <li>
-          <strong>Anzeigename</strong>: der Name, den andere angemeldete Nutzer sehen, etwa in der
-          Bestenliste. Für gegebenenfalls noch vorhandene frühere Eventdaten gilt Abschnitt 14. Auch
-          hier ist ein Pseudonym zulässig. Der Anzeigename kann jederzeit geändert werden.
+          <strong>Anzeigename</strong>: der Name, den andere angemeldete Nutzer mit bestätigter
+          E-Mail-Adresse nach deiner Freigabe sehen, etwa in der Bestenliste (Abschnitt 12.2). Für
+          noch vorhandene frühere Eventdaten gilt Abschnitt 14. Auch hier ist ein Pseudonym
+          zulässig. Der Anzeigename kann jederzeit geändert werden.
         </li>
         <li>
           <strong>E-Mail-Adresse</strong>: für die Verifizierung des Kontos, das Zurücksetzen des
@@ -879,8 +939,8 @@
         Zwei-Faktor-Authentifizierung das TOTP-Geheimnis und Wiederherstellungscodes, Verknüpfungen
         mit GitHub, Discord oder Google (Abschnitt 11), dein MorphCoins-Guthaben mit allen
         Transaktionen, deine Herzen, deinen Premium-Status mit dem Kennzeichen für die automatische
-        Verlängerung, PayPal-Bestellreferenzen, deine Einstellung, ob du in den Bestenlisten
-        angezeigt wirst (Abschnitt 12.2), und – erst wenn du eine kostenpflichtige Leistung erwirbst
+        Verlängerung, PayPal-Bestellreferenzen, deine Freigabewahl mit dem letzten Freigabe- und
+        Widerrufsbeleg (Abschnitt 12.2), und – erst wenn du eine kostenpflichtige Leistung erwirbst
         – deine Rechnungsdaten, deine Kundennummer sowie deine Erklärungen zum Widerrufsrecht
         (Abschnitt 15).
       </p>
@@ -942,8 +1002,9 @@
       </p>
       <h3>10.6 Rechtsgrundlage und Speicherdauer</h3>
       <p>
-        Rechtsgrundlage für das Benutzerkonto ist Art. 6 Abs. 1 lit. b DSGVO. Kontodaten speichern
-        wir, bis du dein Konto löschst. Sitzungen werden mit Ablauf des Erneuerungstokens gelöscht.
+        Rechtsgrundlage für das Benutzerkonto ist Art. 6 Abs. 1 lit. b DSGVO. Für die freiwillige
+        Freigabe gilt Abschnitt 12.2. Kontodaten speichern wir, bis du dein Konto löschst. Sitzungen
+        werden mit Ablauf des Erneuerungstokens gelöscht.
       </p>
       <h3>10.7 Kontolöschung</h3>
       <p>
@@ -1080,7 +1141,7 @@
     </section>
 
     <section id="lernen">
-      <h2>12 Lernplattform, Lernfortschritt und Bestenliste</h2>
+      <h2>12 Lernplattform, privater Lernfortschritt und freiwillige Freigabe</h2>
       <h3>12.1 Lern- und Fortschrittsdaten</h3>
       <p>
         Im Dienst Skills speichern wir, welche Kurse du freigeschaltet oder gekauft hast,
@@ -1126,39 +1187,55 @@
         vergeben und dich an der passenden Stelle weiterlernen zu lassen. Rechtsgrundlage ist Art. 6
         Abs. 1 lit. b DSGVO. Deine privaten Lernraumdaten sind für andere Nutzer nicht abrufbar. Sie
         gehören zu deinem Datenexport und werden mit deinem Konto gelöscht; notwendige
-        Vertragsnachweise bleiben davon getrennt (Abschnitt 10.7). Für die Bestenliste gilt
-        Abschnitt 12.2.
+        Vertragsnachweise bleiben davon getrennt (Abschnitt 10.7). Für deine freiwillige Freigabe
+        und die Bestenlisten gilt Abschnitt 12.2.
+      </p>
+      <p>
+        Den lokalen Gastentwurf und die von dir angeforderte Übernahme in dein Konto beschreiben wir
+        in Abschnitt 9. Vor der Übernahme laden wir den Gastentwurf nicht in dein Konto hoch.
       </p>
       <p>
         Zur Erstellung zusammengefasster Statistiken aus vorhandenen Daten siehe
         <a href="#statistiken">Abschnitt 6.1</a>.
       </p>
-      <h3>12.2 Bestenliste</h3>
+      <h3 id="profilfreigabe">12.2 Freiwillige Profilfreigabe und Bestenlisten</h3>
       <p>
-        Die Bestenliste zeigt angemeldeten Nutzern mit verifizierter E-Mail-Adresse eine Rangliste
-        nach Gesamt-XP. Zu jedem Eintrag werden Anzeigename, Standard-Avatar, Gesamt-XP und Rang
-        angezeigt; die technische Antwort enthält außerdem Nickname, Registrierungsdatum und die
-        Kennzeichnung als Administrator. Es gibt Ranglisten insgesamt, je Programmiersprache und je
-        Aufgabe. Für nicht angemeldete Besucher ist die Bestenliste nicht abrufbar. Deine XP je
-        Skill siehst nur du selbst.
+        Dein Lernstand ist erstmal privat. Neue Konten beginnen privat; beim Umstellen setzen wir
+        auch alle bestehenden Konten auf privat. Eine frühere Bestenlisten-Einstellung gilt nicht
+        als Freigabe. Wenn du dein Profil freigibst, sehen andere angemeldete Nutzer mit bestätigter
+        E-Mail-Adresse deinen Anzeigenamen, den Standard-Avatar und deine Gesamt-XP. Du kannst dann
+        auch in unseren Bestenlisten erscheinen: insgesamt, je Programmiersprache und je Aufgabe.
+        Dort sehen andere deinen Platz und die zugehörigen Punkte. Neu verdiente XP und Punkte
+        werden mit angezeigt. Sichtbare Plätze und Teilnehmerzahlen berücksichtigen nur freigegebene
+        Konten.
       </p>
       <p>
-        Ob du in den Bestenlisten erscheinst, entscheidest du selbst: In den Profileinstellungen
-        („Profil bearbeiten“, Abschnitt „Sichtbarkeit“) kannst du den Haken „In den Bestenlisten
-        anzeigen“ entfernen. Du wirst dann in keiner Bestenliste mehr aufgeführt, und andere Nutzer
-        können deinen Rang nicht mehr abrufen; deine XP werden weiterhin gezählt, und deinen eigenen
-        Rang siehst du weiterhin. Administratoren können deinen Rang für Supportzwecke weiterhin
-        abrufen. Neue Konten werden angezeigt, solange der Haken gesetzt ist. Die Änderung wirkt
-        spätestens nach zehn Minuten, weil der Dienst Challenges die Angaben zu Nutzern und die
-        Seiten der Bestenliste kurze Zeit zwischenspeichert.
+        Einzelne Skills und Skill-Level, Bio, Tags, Lösungen, Abgaben und Projekt- oder
+        Lernraumstände bleiben privat. Auch Nickname, E-Mail-Adresse, Registrierungsdatum und
+        Kontostatus gehören nicht zur Freigabe. Zur Zuordnung enthält die Schnittstelle eine
+        technische Kontokennung und den Stand der Sichtbarkeit. Nicht angemeldete Besucher und
+        Konten ohne bestätigte E-Mail-Adresse können die freigegebenen Angaben nicht abrufen.
       </p>
       <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse ist eine
-        motivierende, gemeinschaftliche Lernumgebung. Das Entfernen des Hakens ist dein Widerspruch
-        gegen diese Verarbeitung (Abschnitt 23); Gründe musst du dafür nicht angeben. Du kannst den
-        Widerspruch auch per E-Mail an
-        <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>
-        erklären; wir setzen die Einstellung dann für dich.
+        Vor der Freigabe siehst du eine Vorschau. Unter „Profil bearbeiten“ kannst du mit „Wieder
+        privat stellen“ jederzeit widerrufen. Sobald der Widerruf bestätigt ist, liefern neue Abrufe
+        deine Angaben nicht mehr an andere Nutzer. Was jemand vorher kopiert hat, können wir damit
+        nicht zurückholen. Dein eigener Lernstand und deine XP bleiben erhalten; privat zu bleiben
+        kostet dich keinen Lernzugang. Berechtigte Administratoren können notwendige Angaben für
+        Support, Abrechnung und Moderation weiter einsehen (Abschnitt 10.5).
+      </p>
+      <p>
+        Für diese Freigabe ist deine Einwilligung die Rechtsgrundlage (Art. 6 Abs. 1 lit. a DSGVO).
+        Du kannst sie in den Profileinstellungen widerrufen oder uns darum bitten:
+        <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>.
+        Die Verarbeitung bis zum Widerruf bleibt davon unberührt. Wir speichern deine Wahl, ihren
+        Änderungsstand, die Version und den Prüfwert des gezeigten Freigabehinweises sowie Zeitpunkt
+        und letzten Beleg der Freigabe und des Widerrufs. Den Einwilligungsnachweis brauchen wir, um
+        deine Freigabe belegen zu können (Art. 6 Abs. 1 lit. c in Verbindung mit Art. 7 Abs. 1
+        DSGVO). Diese Angaben gehören zu deinem Datenexport und werden mit deinem Konto gelöscht; im
+        konkreten Streitfall nötige Nachweise bleiben getrennt nach Abschnitt 10.7 erhalten. Das
+        Schließen eines Hinweises, Anmelden oder Speichern anderer Profilangaben erteilt keine
+        Freigabe.
       </p>
       <h3>12.3 Jobs-Bereich</h3>
       <p>
@@ -1709,9 +1786,10 @@
       </p>
       <p>
         Für den technischen Betrieb verwenden wir aggregierte Betriebskennzahlen und Fehlerberichte
-        auf selbst betriebenen Systemen (Abschnitt 8). Die weitere Verwendung von Lerndaten in der
-        Bestenliste und im derzeit nicht freigeschalteten Jobs-Bereich ist in den Abschnitten 12.2
-        und 12.3 beschrieben. Daraus entsteht kein Profil für Werbezwecke.
+        auf selbst betriebenen Systemen (Abschnitt 8). Die weitere Verwendung von Lerndaten im
+        freiwillig freigegebenen Profil und in den Bestenlisten sowie im derzeit nicht
+        freigeschalteten Jobs-Bereich ist in den Abschnitten 12.2 und 12.3 beschrieben. Daraus
+        entsteht kein Profil für Werbezwecke.
       </p>
     </section>
 
@@ -1795,7 +1873,8 @@
             <tr>
               <td>
                 Konto, Profil, Zwei-Faktor-Daten, Altersbestätigung, AGB-Zustimmung oder -Aufschub,
-                Einstellung zur Bestenliste, Kundennummer, Erklärungen zum Widerrufsrecht
+                Freigabewahl und letzter Freigabe- und Widerrufsbeleg, Kundennummer, Erklärungen zum
+                Widerrufsrecht
               </td>
               <td>
                 Bis zur Kontolöschung, soweit die Angaben nicht als erforderliche Vertrags- oder
@@ -1970,11 +2049,11 @@
         über GitHub, Discord oder Google: die Verknüpfung statt des Passworts) sowie die Bestätigung
         des Mindestalters und die Zustimmung zu den AGB erforderlich. Ohne diese Angaben können wir
         kein Konto anlegen; die Pflicht ergibt sich aus dem Nutzungsvertrag. Kurzbeschreibung und
-        Tags im Profil sind freiwillig. Für den Kauf von MorphCoins brauchen wir die
-        Rechnungsangaben aus Abschnitt 15.3. Für einen bereits entstandenen Vergütungs- oder
-        Erstattungsanspruch können ebenfalls Abrechnungsangaben nötig sein. Das reine Lernen ist
-        nicht davon abhängig. Weitere Daten verarbeiten wir für die Funktionen, die du selbst nutzt,
-        etwa Kurse, Aufgaben und Videos.
+        Tags im Profil und die Freigabe nach Abschnitt 12.2 sind freiwillig. Für den Kauf von
+        MorphCoins brauchen wir die Rechnungsangaben aus Abschnitt 15.3. Für einen bereits
+        entstandenen Vergütungs- oder Erstattungsanspruch können ebenfalls Abrechnungsangaben nötig
+        sein. Das reine Lernen ist nicht davon abhängig. Weitere Daten verarbeiten wir für die
+        Funktionen, die du selbst nutzt, etwa Kurse, Aufgaben und Videos.
       </p>
     </section>
 
@@ -1987,10 +2066,10 @@
         wir, dass ein Konto von einer Person unter 16 Jahren angelegt wurde, löschen wir es. Eltern
         und Erziehungsberechtigte erreichen uns bei Fragen zu einem Konto unter
         <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a>.
-        Einwilligungen (Abschnitt 16) können nach Art. 8 DSGVO nur Personen ab 16 Jahren wirksam
-        erteilen. Für kostenpflichtige Leistungen, die Minderjährige ab 16 Jahren erwerben, gelten
-        die §§ 107 bis 110 BGB (Zustimmung der gesetzlichen Vertreter); Einzelheiten stehen in den
-        Allgemeinen Geschäftsbedingungen.
+        Einwilligungen (Abschnitte 12.2 und 16) können nach Art. 8 DSGVO nur Personen ab 16 Jahren
+        wirksam erteilen. Für kostenpflichtige Leistungen, die Minderjährige ab 16 Jahren erwerben,
+        gelten die §§ 107 bis 110 BGB (Zustimmung der gesetzlichen Vertreter); Einzelheiten stehen
+        in den Allgemeinen Geschäftsbedingungen.
       </p>
     </section>
 
@@ -2019,31 +2098,33 @@
           <strong>Datenübertragbarkeit</strong> (Art. 20 DSGVO): In den Kontoeinstellungen kannst du
           unter „Meine Daten herunterladen“ jederzeit eine Datei im JSON-Format abrufen. Sie enthält
           aus dem Kerndienst deine Konto- und Profildaten einschließlich Rechnungsdaten,
-          AGB-Zustimmung und Bestenlisten-Einstellung, deine Sitzungen (ohne Token), Verknüpfungen
-          mit GitHub, Discord oder Google, Guthaben, Herzen, Transaktionen, Premium-Status,
-          MorphCoins-Bestellungen, die Datensätze deiner Rechnungen und Gutschriften, deine
-          Kündigungs- und Widerrufserklärungen und deine Erklärungen zum Widerrufsrecht; aus dem
-          Dienst Skills Kurszugriffe, zuletzt angesehene Kurse, abgeschlossene Lektionen,
-          Lesezeichen, XP sowie private Lernraumstände, Wiederholungen und die noch gespeicherten
-          Bestätigungen zu Speicher- und Abschlussanfragen; aus dem Dienst Challenges Lösungsstand,
-          Versuche, Einreichungen mit Quellcode und Ergebnis, Bewertungen, selbst erstellte Aufgaben
-          und die für dich bestimmten Moderationsmitteilungen mit Beschwerde- und Maßnahmenstand;
-          aus dem früheren Eventangebot noch vorhandene eigene Angebots-, Buchungs-, Zeitfenster-,
-          Bewertungs- und Anspruchsdaten. Nicht enthalten sind Passwort-Hash,
-          Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, deine Kundennummer (sie
-          ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die Einträge des
-          Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt deiner
-          Altersbestätigung; Auskunft dazu erhältst du auf Anfrage. Ist einer der Dienste beim Abruf
-          nicht erreichbar, erhältst du die übrigen Daten, und die Datei nennt den fehlenden Teil.
-          Der Abruf ist auf einmal je zehn Minuten begrenzt. Auf Anfrage erstellen wir die Datei
-          auch für dich; dieser Abruf durch einen Administrator wird im Verwaltungsprotokoll
-          festgehalten (Abschnitt 10.5).
+          AGB-Zustimmung, Freigabewahl und letztem Freigabe- und Widerrufsbeleg, deine Sitzungen
+          (ohne Token), Verknüpfungen mit GitHub, Discord oder Google, Guthaben, Herzen,
+          Transaktionen, Premium-Status, MorphCoins-Bestellungen, die Datensätze deiner Rechnungen
+          und Gutschriften, deine Kündigungs- und Widerrufserklärungen und deine Erklärungen zum
+          Widerrufsrecht; aus dem Dienst Skills Kurszugriffe, zuletzt angesehene Kurse,
+          abgeschlossene Lektionen, Lesezeichen, XP sowie private Lernraumstände, Wiederholungen und
+          die noch gespeicherten Bestätigungen zu Speicher- und Abschlussanfragen; aus dem Dienst
+          Challenges Lösungsstand, Versuche, Einreichungen mit Quellcode und Ergebnis, Bewertungen,
+          selbst erstellte Aufgaben und die für dich bestimmten Moderationsmitteilungen mit
+          Beschwerde- und Maßnahmenstand; aus dem früheren Eventangebot noch vorhandene eigene
+          Angebots-, Buchungs-, Zeitfenster-, Bewertungs- und Anspruchsdaten. Nicht enthalten sind
+          Passwort-Hash, Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, deine
+          Kundennummer (sie ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die
+          Einträge des Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt
+          deiner Altersbestätigung; Auskunft dazu erhältst du auf Anfrage. Ist einer der Dienste
+          beim Abruf nicht erreichbar, erhältst du die übrigen Daten, und die Datei nennt den
+          fehlenden Teil. Der Abruf ist auf einmal je zehn Minuten begrenzt. Auf Anfrage erstellen
+          wir die Datei auch für dich; dieser Abruf durch einen Administrator wird im
+          Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
         </li>
         <li>
           <strong>Widerruf von Einwilligungen</strong> (Art. 7 Abs. 3 DSGVO) mit Wirkung für die
-          Zukunft. Die Einwilligung zum Laden von YouTube-Videos widerrufst du, indem du keine
-          weiteren Videos lädst (Abschnitt 16). Die beim Kauf digitaler Inhalte erklärte Zustimmung
-          zur sofortigen Vertragsausführung betrifft dein Widerrufsrecht als Verbraucher, nicht die
+          Zukunft. Deine Profilfreigabe widerrufst du unter „Profil bearbeiten“ mit „Wieder privat
+          stellen“ oder über unsere Ansprechstelle (<a href="#profilfreigabe">Abschnitt 12.2</a>).
+          Die Einwilligung zum Laden von YouTube-Videos widerrufst du, indem du keine weiteren
+          Videos lädst (Abschnitt 16). Die beim Kauf digitaler Inhalte erklärte Zustimmung zur
+          sofortigen Vertragsausführung betrifft dein Widerrufsrecht als Verbraucher, nicht die
           Datenverarbeitung; Einzelheiten stehen in der
           <a href="/docs/right-of-withdrawal">Widerrufsbelehrung</a>.
         </li>
@@ -2058,19 +2139,18 @@
           widersprechen, die sich aus deiner besonderen Situation ergeben. Das gilt für
           Verarbeitungen, die wir auf Art. 6 Abs. 1 lit. f DSGVO stützen. Das betrifft die
           Server-Logs, die Fehlerberichte, die Datensicherungen, die Auslieferung der Weboberfläche
-          über Cloudflare, die Moderation, den Discord-Bot (Abschnitt 17.3), die Bestenliste, das
-          Verwaltungsprotokoll (Abschnitt 10.5), die Zähler fehlgeschlagener Anmeldeversuche und der
-          Kündigungs- und Widerrufsformulare, die Aufbewahrung von Kündigungs- und
-          Widerrufserklärungen als Nachweis (Abschnitt 15.6) und die Beantwortung allgemeiner
-          Anfragen (Abschnitt 17.2) sowie die Erstellung zusammengefasster Statistiken bis zur
-          Anonymisierung (Abschnitt 6.1). Wir verarbeiten die Daten dann nicht mehr, es sei denn,
-          wir können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die deine
-          Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der
-          Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Direktwerbung betreiben
-          wir nicht. Schicke deinen Widerspruch an
+          über Cloudflare, die Moderation, den Discord-Bot (Abschnitt 17.3), die zuverlässige
+          Wiederaufnahme des Gast-Einstiegs (Abschnitt 9), das Verwaltungsprotokoll (Abschnitt
+          10.5), die Zähler fehlgeschlagener Anmeldeversuche und der Kündigungs- und
+          Widerrufsformulare, die Aufbewahrung von Kündigungs- und Widerrufserklärungen als Nachweis
+          (Abschnitt 15.6) und die Beantwortung allgemeiner Anfragen (Abschnitt 17.2) sowie die
+          Erstellung zusammengefasster Statistiken bis zur Anonymisierung (Abschnitt 6.1). Wir
+          verarbeiten die Daten dann nicht mehr, es sei denn, wir können zwingende schutzwürdige
+          Gründe für die Verarbeitung nachweisen, die deine Interessen, Rechte und Freiheiten
+          überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von
+          Rechtsansprüchen. Direktwerbung betreiben wir nicht. Schicke deinen Widerspruch an
           <a href="mailto:hallo@bootstrap.academy" class="underline-link">hallo@bootstrap.academy</a
-          >. Der Anzeige in den Bestenlisten widersprichst du am einfachsten, indem du in den
-          Profileinstellungen den Haken „In den Bestenlisten anzeigen“ entfernst (Abschnitt 12.2).
+          >.
         </strong>
       </p>
       <p>
@@ -2108,8 +2188,8 @@
         abrufbar.
       </p>
       <p>
-        Seit September 2026 nicht mehr eingesetzt: Google reCAPTCHA, Gravatar, der Cookie-Hinweis
-        und die Newsletter-Funktion.
+        Seit September 2026 nicht mehr eingesetzt: Gravatar, der Cookie-Hinweis und die
+        Newsletter-Funktion.
       </p>
       <p><strong>Fassung:</strong> 2026-10-r1 · <strong>Stand:</strong> 3. Oktober 2026</p>
     </section>
