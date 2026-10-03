@@ -42,15 +42,27 @@
       </article>
       <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="w-full" />
     </header>
-    <div ref="editorContainer" class="h-full min-h-[300px] w-full overflow-hidden style-card"></div>
+    <div ref="editorContainer" class="h-full min-h-[300px] w-full overflow-hidden style-card">
+      <textarea
+        v-if="!enhanced"
+        :value="modelValue"
+        :aria-label="t('LearningRooms.Code')"
+        class="h-full min-h-[300px] w-full resize-y bg-secondary p-4 font-mono text-base text-heading"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        autocorrect="off"
+        @input="nativeInput"
+      />
+      <div v-show="enhanced" ref="monacoContainer" class="h-full min-h-[300px] w-full" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
-import { defineComponent, onMounted, onBeforeUnmount, watch } from "vue";
-import type { Prop, Ref } from "vue";
-import * as monaco from "monaco-editor";
+import { defineComponent, onMounted, onBeforeUnmount, watch, ref, computed, nextTick } from "vue";
+import type * as Monaco from "monaco-editor";
 import { HeartIcon } from "@heroicons/vue/24/outline";
 import {
   createSubmission,
@@ -72,18 +84,22 @@ export default defineComponent({
   components: { HeartIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
-    let editor: monaco.editor.IStandaloneCodeEditor;
+    let editor: Monaco.editor.IStandaloneCodeEditor | undefined;
+    let monaco: typeof Monaco | undefined;
+    let observer: IntersectionObserver | undefined;
+    let alive = true;
+    let enhancing = false;
     const editorContainer = ref<HTMLDivElement | null>(null);
+    const monacoContainer = ref<HTMLDivElement | null>(null);
+    const enhanced = ref(false);
     const environments: any = useEnvironments();
 
-    const code: any = ref("");
+    const code = ref(props.modelValue);
     const submitButtonLoading = ref(false);
-    const testExampleLoading = ref(false);
     const submission = useCodingSubmission();
     const premiumInfo: any = usePremiumInfo();
     const language = ref("typescript");
     const updateCode = ref(true);
-    const container: any = ref();
 
     const { isDaily } = useDailyLearning();
     const { attemptLimit, handleLimit } = useDailyAttemptLimit();
@@ -100,17 +116,55 @@ export default defineComponent({
       return items;
     });
 
-    const handleEditorDidMount = (editorInstance: monaco.editor.IStandaloneCodeEditor) => {
+    const handleEditorDidMount = (editorInstance: Monaco.editor.IStandaloneCodeEditor) => {
       editor = editorInstance;
 
-      editor.getModel()?.onDidChangeContent(() => {
-        const value = editor.getValue();
+      editorInstance.getModel()?.onDidChangeContent(() => {
+        const value = editorInstance.getValue();
         if (props.modelValue !== value) {
           code.value = value;
           emit("update:modelValue", value);
         }
       });
     };
+
+    function nativeInput(event: Event) {
+      const value = (event.target as HTMLTextAreaElement).value;
+      code.value = value;
+      emit("update:modelValue", value);
+    }
+
+    async function enhanceEditor() {
+      if (!alive || enhancing) return;
+      enhancing = true;
+      observer?.disconnect();
+      // Native editing supports small screens and touch keyboards without the large chunk.
+      if (window.matchMedia("(pointer: coarse), (max-width: 640px)").matches) return;
+      try {
+        monaco = await import("monaco-editor");
+        if (!alive) return;
+        enhanced.value = true;
+        await nextTick();
+        if (!alive || !monacoContainer.value) return;
+        editor = monaco.editor.create(monacoContainer.value, {
+          value: props.modelValue,
+          language: props.selectedLanguage ?? language.value,
+          theme: "vs-dark",
+          automaticLayout: true,
+          minimap: { enabled: false },
+          wordWrap: "on",
+          fontSize: 16,
+          ariaLabel: t("LearningRooms.Code"),
+          tabFocusMode: true,
+        });
+        handleEditorDidMount(editor);
+      } catch {
+        editor?.getModel()?.dispose();
+        editor?.dispose();
+        editor = undefined;
+        enhanced.value = false;
+      }
+    }
 
     async function openDialogSubmission() {
       return openDialog(
@@ -149,7 +203,6 @@ export default defineComponent({
       clearInterval(interval.value);
 
       interval.value = setInterval(async () => {
-        console.log("interval");
         await getSubmissions(props.challengeId, props.codingChallengeId);
       }, 5000);
 
@@ -178,6 +231,7 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (newValue) => {
+        code.value = newValue;
         if (editor && editor.getValue() !== newValue) {
           editor.setValue(newValue);
         }
@@ -196,8 +250,9 @@ export default defineComponent({
     watch(
       () => submission.value,
       (newValue: any, oldValue) => {
-        if (editor && editor.getValue() !== newValue) {
-          editor.setValue(newValue.code);
+        if (typeof newValue?.code === "string" && props.modelValue !== newValue.code) {
+          code.value = newValue.code;
+          if (editor) editor.setValue(newValue.code);
           // using updateCode as boolean so i can neglect watch from showing up dialog
           updateCode.value = false;
           language.value = newValue.environment;
@@ -222,13 +277,12 @@ export default defineComponent({
     watch(
       () => props.selectedLanguage,
       () => {
-        console.log("checked");
         update(props.selectedLanguage);
       }
     );
 
     function update(value: string) {
-      if (editor) {
+      if (editor && monaco) {
         const model = editor.getModel();
 
         if (model) {
@@ -240,18 +294,18 @@ export default defineComponent({
     onMounted(async () => {
       await getEnvironments();
       await getPremiumStatus();
-      container.value = <HTMLElement>editorContainer.value;
-
-      editor = monaco.editor.create(container.value, {
-        value: props.modelValue,
-        language: props.selectedLanguage ?? language.value,
-        theme: "vs-dark",
+      if (!alive || !editorContainer.value || typeof IntersectionObserver === "undefined") return;
+      observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting && entry.intersectionRatio > 0))
+          void enhanceEditor();
       });
-
-      handleEditorDidMount(editor);
+      observer.observe(editorContainer.value);
     });
 
     onBeforeUnmount(() => {
+      alive = false;
+      observer?.disconnect();
+      editor?.getModel()?.dispose();
       editor?.dispose();
 
       clearInterval(interval.value);
@@ -261,18 +315,19 @@ export default defineComponent({
       t,
       handleEditorDidMount,
       editorContainer,
+      monacoContainer,
+      enhanced,
+      nativeInput,
       languages,
       language,
       update,
       code,
       submitButtonLoading,
-      testExampleLoading,
       fnCreateSubmission,
       HeartIcon,
       heartFree,
       attemptLimit,
       openDialogSubmission,
-      container,
     };
   },
 });
