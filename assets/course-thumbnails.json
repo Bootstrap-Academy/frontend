@@ -1,0 +1,772 @@
+{
+  "https://static.bootstrap.academy/thumbnails/CSS.jpg": {
+    "sha256": "3bb74ddbe6ced6ea13e684e1716736e1ecb64fb14dbb25ac0666cb084099127a",
+    "originalBytes": 271759,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/3bb74ddbe6ced6ea-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/3bb74ddbe6ced6ea-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/algorithmen.jpg": {
+    "sha256": "b92c6e81ca2517018b68c74ef0fec636d3c20a9791a1f179c82c0de012941b34",
+    "originalBytes": 543066,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/b92c6e81ca251701-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/b92c6e81ca251701-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/anonymity.jpg": {
+    "sha256": "dbe35a93c2f01a3de7b7f509ac81ab2895d2f9f8d4c98a8312474415798b9db2",
+    "originalBytes": 163333,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/dbe35a93c2f01a3d-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/dbe35a93c2f01a3d-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/assembler.jpg": {
+    "sha256": "53a4fdb155317a8ff855e7ff5248bee62feb9d9607a58f5dc2eb85eb4ea054f6",
+    "originalBytes": 345449,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/53a4fdb155317a8f-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/53a4fdb155317a8f-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/bash.jpg": {
+    "sha256": "6c0c1d9bde3fa7d8ff35ee9c95e781cf8ea211d2192baa468d6c01ee2b78b610",
+    "originalBytes": 455144,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/6c0c1d9bde3fa7d8-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/6c0c1d9bde3fa7d8-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/binary.jpg": {
+    "sha256": "cbe86cf8f36ad3ca82ce166071aab4b37478639c8838cf7070e4a85c6704059d",
+    "originalBytes": 640404,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/cbe86cf8f36ad3ca-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/cbe86cf8f36ad3ca-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/binaryexploitationsecurecoding.jpg": {
+    "sha256": "af37ba57f7bfd11aaa435ec4ac995fa8b08723c2dd93f2122dfa3dbb22098c24",
+    "originalBytes": 632867,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/af37ba57f7bfd11a-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/af37ba57f7bfd11a-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/blockchain.jpg": {
+    "sha256": "a3092d7a2cc79a67fc27396fa53001649a64bfbcab2a9185e3c7337c6e266267",
+    "originalBytes": 791368,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/a3092d7a2cc79a67-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/a3092d7a2cc79a67-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/c.jpg": {
+    "sha256": "417ff510513a0d640bfd711dfd06d90b59e760387972e4aa097bc36f2aae5a53",
+    "originalBytes": 278070,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/417ff510513a0d64-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/417ff510513a0d64-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/c_sharp.jpg": {
+    "sha256": "619972374d9f15ff38d96c7486a42292bf413078de8c735f684c5efb5cd32b7c",
+    "originalBytes": 238316,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/619972374d9f15ff-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/619972374d9f15ff-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/cleancode.jpg": {
+    "sha256": "3aba802358455cc170242d915358206a51187e3ba85691632dab5bd79f8ec8ae",
+    "originalBytes": 325846,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/3aba802358455cc1-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/3aba802358455cc1-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/cloud.jpg": {
+    "sha256": "b0486463bb508914da29d2a58abbc5ac1098cacec5c19c945041eb67a8b7e96d",
+    "originalBytes": 470023,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/b0486463bb508914-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/b0486463bb508914-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/cpp.jpg": {
+    "sha256": "fd817a68dcccef39136fcf9d15f5e44a31d017a93d196a19d0741eca30b0ea91",
+    "originalBytes": 359564,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/fd817a68dcccef39-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/fd817a68dcccef39-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/dartflutter.jpg": {
+    "sha256": "f1a2f245bdc05e9606b481b85ca39fa287627796e841892e252d91f881b324c5",
+    "originalBytes": 325655,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/f1a2f245bdc05e96-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/f1a2f245bdc05e96-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/datamining.jpg": {
+    "sha256": "a1f23eb7ac05a5c411f42ad29bfb37f63a45c649fd489e85694bd00be196ff8e",
+    "originalBytes": 289697,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/a1f23eb7ac05a5c4-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/a1f23eb7ac05a5c4-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/datenvisualisierung.jpg": {
+    "sha256": "2440dd2b9a3e7c4bf8fdef921d10ce037f44e80a537d0f2b52b7270f7cd1f83b",
+    "originalBytes": 389362,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/2440dd2b9a3e7c4b-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/2440dd2b9a3e7c4b-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/devops.jpg": {
+    "sha256": "5893481e8354a5c4de439f79b85efc57b4702b48e83a49075bfe9fecbb5e3444",
+    "originalBytes": 299379,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/5893481e8354a5c4-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/5893481e8354a5c4-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/docker.jpg": {
+    "sha256": "b20278d3a5491d25c648f36df54909bb992d3d10a04e3c9097f4cd76b9f90a2b",
+    "originalBytes": 336247,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/b20278d3a5491d25-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/b20278d3a5491d25-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/firewalls.jpg": {
+    "sha256": "6cf0b66c4de6c7e893c6ba4bb9dff9aff0d4235c368c296c28863d4b7abd8de0",
+    "originalBytes": 482775,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/6cf0b66c4de6c7e8-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/6cf0b66c4de6c7e8-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/formale%20logik.jpg": {
+    "sha256": "357aa5f2bbbdf16ae87482772aae8010a298df4eb401b4889461dd2a21a66d35",
+    "originalBytes": 396558,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/357aa5f2bbbdf16a-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/357aa5f2bbbdf16a-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/git.jpg": {
+    "sha256": "4487294ec7615cf6623dd4ea69e38134212faff292e27c8fdfebc76af2cf416f",
+    "originalBytes": 240296,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/4487294ec7615cf6-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/4487294ec7615cf6-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/haskell.jpg": {
+    "sha256": "bb4fa953369f0d6ad1f15b5f800c0f11da8155141758c57c89dc85c568c73854",
+    "originalBytes": 159302,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/bb4fa953369f0d6a-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/bb4fa953369f0d6a-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/html.jpg": {
+    "sha256": "ae2d38f035d293ff2cb7ccbc3563f3044d58ac9e42efd7e686494afc52d2788d",
+    "originalBytes": 422713,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/ae2d38f035d293ff-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/ae2d38f035d293ff-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/iam.jpg": {
+    "sha256": "da01025a2bc60d07ce32676f8f3400d6d1d2db4e43cc0dee7f4ec3a81c5196da",
+    "originalBytes": 300779,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/da01025a2bc60d07-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/da01025a2bc60d07-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/java.jpg": {
+    "sha256": "2ab3eebfedf8af6dc79eb52890b2a49cd1705f00790c3eb5394eb5859077131e",
+    "originalBytes": 370663,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/2ab3eebfedf8af6d-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/2ab3eebfedf8af6d-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/javascript.jpg": {
+    "sha256": "54530f1539fe46edc2012b61cd970ec8e26330310ed2549437e787bbd0e27847",
+    "originalBytes": 239671,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/54530f1539fe46ed-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/54530f1539fe46ed-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/kotlin.jpg": {
+    "sha256": "eac66526d9dba38cd250fb07349d1c6276b1f9f58f873a6965f7381a3dd39295",
+    "originalBytes": 410637,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/eac66526d9dba38c-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/eac66526d9dba38c-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/krypto.jpg": {
+    "sha256": "587f53bb926cee1881eacfb6876363a58e8829ff66db59e99ea25165503851cb",
+    "originalBytes": 297506,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/587f53bb926cee18-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/587f53bb926cee18-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/lamda.jpg": {
+    "sha256": "4fe481d699c6bc96abfbc2085ffddd7987a58358e6acd7b9c0650dbd359e92da",
+    "originalBytes": 179328,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/4fe481d699c6bc96-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/4fe481d699c6bc96-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/latex.jpg": {
+    "sha256": "0570ae3292f630adb078ed6ab1ae974944149c20999fd8741e9ce16dd2c72fa1",
+    "originalBytes": 269385,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/0570ae3292f630ad-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/0570ae3292f630ad-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/linux.jpg": {
+    "sha256": "414d84827d3a49ec724c31aac6bf9350eb0de03ed3b152765847bea1ab49b9cf",
+    "originalBytes": 200449,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/414d84827d3a49ec-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/414d84827d3a49ec-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/llms.jpg": {
+    "sha256": "66a76a2a589ca9f5ab56332e281e6fdb9a5be476a6f44ba64690c4f12636dc71",
+    "originalBytes": 423647,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/66a76a2a589ca9f5-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/66a76a2a589ca9f5-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/machinelearning.jpg": {
+    "sha256": "8bd2b0ee00af60922616d07cf451e14e1127268633017d000a69b3e5cac3ade0",
+    "originalBytes": 500023,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/8bd2b0ee00af6092-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/8bd2b0ee00af6092-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/medienkompetenz.jpg": {
+    "sha256": "217f73630be1ed447a8c8036eea181a93a9db833662f3aee5f7daf2b51603124",
+    "originalBytes": 389210,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/217f73630be1ed44-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/217f73630be1ed44-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/mengenlehre.jpg": {
+    "sha256": "4168832c4f2bac163bce3fccdb9df728da61c45e425fb47d5b7b173d9c1dd8fa",
+    "originalBytes": 312777,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/4168832c4f2bac16-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/4168832c4f2bac16-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/netzsicherheit.jpg": {
+    "sha256": "651d91deb85c901b720781f2760680a5e3ac82a291e28e499fdfb334ef358d6b",
+    "originalBytes": 566781,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/651d91deb85c901b-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/651d91deb85c901b-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/nmap.jpg": {
+    "sha256": "417ce0a0b9f6a4d0b76e47020e56fe580cfae95147943ed0fedfee68e353e4cb",
+    "originalBytes": 442202,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/417ce0a0b9f6a4d0-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/417ce0a0b9f6a4d0-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/pentesting.jpg": {
+    "sha256": "ab31dd87667b1ff502f7a271189cb0443a1f731e40536ad4ecfca4f63fe88b5b",
+    "originalBytes": 198649,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/ab31dd87667b1ff5-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/ab31dd87667b1ff5-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/php.jpg": {
+    "sha256": "51f21e04382e9a89c16b34af29b78b6a9fe4cf88ed9160be1f2c7a9309458c86",
+    "originalBytes": 400681,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/51f21e04382e9a89-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/51f21e04382e9a89-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/progsprachen.jpg": {
+    "sha256": "1e4059b7d645b2cefcc6599a39a542ddba9d0bb70f10d50ae4ebe8758acd7fb3",
+    "originalBytes": 290151,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/1e4059b7d645b2ce-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/1e4059b7d645b2ce-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/prolog.jpg": {
+    "sha256": "5bb383e316901f3f2e06fe29835bfb6834f5032194f5cfcdca43e0bd28cc2f4b",
+    "originalBytes": 402659,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/5bb383e316901f3f-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/5bb383e316901f3f-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/python.jpg": {
+    "sha256": "3f6fb2ee7af5b67538228ac454caaedf6125d7eb0c48fcb964a8f1e4939e76d6",
+    "originalBytes": 213725,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/3f6fb2ee7af5b675-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/3f6fb2ee7af5b675-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/pytorch.jpg": {
+    "sha256": "ee7a8d2abecadee43fb919158b4da737c2bc5bab0337a5a72007603901aec825",
+    "originalBytes": 639784,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/ee7a8d2abecadee4-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/ee7a8d2abecadee4-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/reversing.jpg": {
+    "sha256": "4ffccc5055800aa0d754d25ae103c9494220ac11e3df65dd29ee23240fd57651",
+    "originalBytes": 381445,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/4ffccc5055800aa0-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/4ffccc5055800aa0-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/signalverarbeitung.jpg": {
+    "sha256": "eb8399989d71f40737135d9e915494bf4e058ae01ec3db90432241df81987c0c",
+    "originalBytes": 241376,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/eb8399989d71f407-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/eb8399989d71f407-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/softskills.jpg": {
+    "sha256": "19588a791d2a5129623779cca51c5d8014662210b5d580b8aeda4531bb3c39d1",
+    "originalBytes": 424870,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/19588a791d2a5129-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/19588a791d2a5129-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/softwareengineering.jpg": {
+    "sha256": "e04f40f662d07f97c7e4a14c9bbe991c2a9b21704e1d9d311e37a4b29cd27a46",
+    "originalBytes": 239571,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/e04f40f662d07f97-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/e04f40f662d07f97-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/sql.jpg": {
+    "sha256": "51aa5987093d8da452576395881411945c5395daf2c81ace53cbfb23ada75852",
+    "originalBytes": 122756,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/51aa5987093d8da4-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/51aa5987093d8da4-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/tensorflow.jpg": {
+    "sha256": "6442e62b8d97b7bee84c86414501d01292f658d264a188b12f54f2e3b377535b",
+    "originalBytes": 852979,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/6442e62b8d97b7be-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/6442e62b8d97b7be-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/threejs.jpg": {
+    "sha256": "2bd583c0bd5740406ca100c15ed377d869e59a9aa7e76eeda9817fd3c2423579",
+    "originalBytes": 371314,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/2bd583c0bd574040-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/2bd583c0bd574040-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/typescript.jpg": {
+    "sha256": "4fb1bf7b963a05e72841ce52d3941a5017f1ab5b73f73c898d2e12f7be5a1939",
+    "originalBytes": 398262,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/4fb1bf7b963a05e7-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/4fb1bf7b963a05e7-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/uml.jpg": {
+    "sha256": "f849a077d574e8f633a2e1c073c810cb14c13a63d80a91d5cc77e52b9bb47985",
+    "originalBytes": 372203,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/f849a077d574e8f6-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/f849a077d574e8f6-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/unrealengine.jpg": {
+    "sha256": "b288611c71b2413288e644e659477d92d2ca3a10b9a1cee26fab20effba8a81e",
+    "originalBytes": 206235,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/b288611c71b24132-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/b288611c71b24132-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/windows.jpg": {
+    "sha256": "28c238dd14cfa87adf6fd1918dcb209c4f9208653bf96644987f549538d74882",
+    "originalBytes": 93404,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/28c238dd14cfa87a-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/28c238dd14cfa87a-800.webp"
+      }
+    ]
+  },
+  "https://static.bootstrap.academy/thumbnails/wireshark.jpg": {
+    "sha256": "1c8e27064af20eac02fe8bd645a6efcce51e2bccfcd1f39b56016178da341d2e",
+    "originalBytes": 320197,
+    "variants": [
+      {
+        "width": 400,
+        "src": "/course-thumbnails/1c8e27064af20eac-400.webp"
+      },
+      {
+        "width": 800,
+        "src": "/course-thumbnails/1c8e27064af20eac-800.webp"
+      }
+    ]
+  }
+}
