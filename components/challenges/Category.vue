@@ -88,7 +88,7 @@ export default defineComponent({
     });
 
     const progress = computed(() => {
-      return (categoryStats?.value?.solved / categoryStats?.value?.total ?? 1) * 100;
+      return (categoryStats?.value?.solved / categoryStats?.value?.total) * 100;
     });
 
     const progressBar = computed(() => {

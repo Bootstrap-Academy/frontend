@@ -62,11 +62,12 @@
 import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 import type { PropType } from "vue";
+import type { CodingTaskView } from "~/types/codingChallengeViews";
 
 export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
-    codingChallenges: { type: Array as PropType<any>, default: [] },
+    codingChallenges: { type: Array as PropType<CodingTaskView[]>, default: [] },
   },
   setup(props) {
     const { t } = useI18n();

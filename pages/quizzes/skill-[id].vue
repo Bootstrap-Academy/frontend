@@ -66,7 +66,7 @@ export default {
 
     onMounted(async () => {
       loading.value = true;
-      await getQuizzes();
+      await getQuizzesInSkill(skillID.value);
       loading.value = false;
     });
 

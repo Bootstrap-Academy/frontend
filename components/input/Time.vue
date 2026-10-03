@@ -58,13 +58,13 @@ export default defineComponent({
 
     const minHrs = computed(() => {
       if (!!!props.min) return -1;
-      let [hrs, mins, secs] = props.min.split(":");
+      let [hrs = "", mins, secs] = props.min.split(":");
       return parseInt(hrs);
     });
 
     const minMins = computed(() => {
       if (!!!props.min) return -1;
-      let [hrs, mins, secs] = props.min.split(":");
+      let [hrs, mins = "", secs] = props.min.split(":");
       return parseInt(mins);
     });
 
@@ -121,7 +121,7 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (newValue, oldValue) => {
-        const [hrs, mins, secs] = newValue.split(":");
+        const [hrs = "", mins = "", secs] = newValue.split(":");
         hours.value = parseInt(hrs);
         minutes.value = parseInt(mins);
         checkMinValidityAfterBlur(hours.value, minutes.value);

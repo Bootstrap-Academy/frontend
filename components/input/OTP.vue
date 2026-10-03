@@ -57,7 +57,7 @@ export default defineComponent({
 
     // ============================================================= refs
     const touched = ref(!!props.modelValue);
-    const DOM_INPUTS = ref<HTMLInputElement[] | []>([]);
+    const DOM_INPUTS = ref<HTMLInputElement[]>([]);
 
     const totalOTPChars = computed(() => {
       return props.numberOfFields * props.numberOfCharsPerField;
@@ -68,13 +68,15 @@ export default defineComponent({
     }
 
     function oninput(index: number) {
-      let value = DOM_INPUTS.value[index].value;
+      const field = DOM_INPUTS.value[index];
+      if (!field) return;
+      let value = field.value;
 
       if (
         value.length >= props.numberOfCharsPerField * props.numberOfFields &&
         index >= props.numberOfFields
       ) {
-        DOM_INPUTS.value[index].value = value[0];
+        field.value = value.charAt(0);
       }
 
       let otp = "";
@@ -85,10 +87,12 @@ export default defineComponent({
       let finalOTP = "";
 
       for (let i = 0; i < otp.length; i++) {
-        if (!!otp[i] && !!DOM_INPUTS.value[i]) {
-          DOM_INPUTS.value[i].value = otp[i];
-          finalOTP = finalOTP + otp[i];
-          DOM_INPUTS.value[i].focus();
+        const digit = otp[i],
+          field = DOM_INPUTS.value[i];
+        if (digit && field) {
+          field.value = digit;
+          finalOTP = finalOTP + digit;
+          field.focus();
         }
       }
 
@@ -115,16 +119,18 @@ export default defineComponent({
           }
         });
 
-      DOM_INPUTS.value[0].setCustomValidity(msg);
+      DOM_INPUTS.value[0]?.setCustomValidity(msg);
       emit("valid", !!!msg);
       error.value = msg;
     }
 
     function onkeydownDelete(index: number) {
-      let value = DOM_INPUTS.value[index].value;
+      const field = DOM_INPUTS.value[index];
+      if (!field) return;
+      let value = field.value;
 
       if (!!!value && index > 0) {
-        DOM_INPUTS.value[index].focus();
+        field.focus();
       }
     }
 
@@ -136,7 +142,7 @@ export default defineComponent({
 
     onMounted(() => {
       nextTick(() => {
-        if (!!DOM_INPUTS.value[0]) DOM_INPUTS.value[0].focus();
+        DOM_INPUTS.value[0]?.focus();
       });
     });
 
