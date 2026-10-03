@@ -1,21 +1,34 @@
 <template>
-  <section class="h-7.5 relative w-screen overflow-clip print:hidden" :class="color">
+  <section class="relative w-full print:hidden" :class="color">
     <article class="container-fluid flex h-fit justify-end gap-3 py-1.5">
-      <img
+      <button
+        type="button"
         @click="locale = 'en-US'"
-        src="/images/en.webp"
-        :alt="t('AltAttributes.EnglishTranslation')"
-        class="h-4 w-4 cursor-pointer rounded-3xl object-cover transition duration-200 ease-out"
-        :class="locale == 'en-US' ? 'opacity-100' : 'opacity-60'"
-      />
-
-      <img
+        lang="en"
+        :aria-pressed="locale === 'en-US'"
+        class="rounded px-2 py-1 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        :class="
+          color === 'bg-accent'
+            ? 'text-primary focus-visible:outline-primary'
+            : 'text-heading focus-visible:outline-heading'
+        "
+      >
+        English
+      </button>
+      <button
+        type="button"
         @click="locale = 'de'"
-        src="/images/de.webp"
-        :alt="t('AltAttributes.GermanTranslation')"
-        class="h-4 w-4 cursor-pointer rounded-3xl object-cover transition duration-200 ease-out"
-        :class="locale == 'de' ? 'opacity-100' : 'opacity-60'"
-      />
+        lang="de"
+        :aria-pressed="locale === 'de'"
+        class="rounded px-2 py-1 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        :class="
+          color === 'bg-accent'
+            ? 'text-primary focus-visible:outline-primary'
+            : 'text-heading focus-visible:outline-heading'
+        "
+      >
+        Deutsch
+      </button>
     </article>
   </section>
 </template>
@@ -28,7 +41,7 @@ export default {
     color: { type: String, default: "bg-tertiary" },
   },
   setup() {
-    const { t, locale } = useI18n();
+    const { locale } = useI18n();
 
     const cookie_locale = useAppCookie("locale");
 
@@ -42,7 +55,7 @@ export default {
       { deep: true }
     );
 
-    return { locale, t };
+    return { locale };
   },
 };
 </script>

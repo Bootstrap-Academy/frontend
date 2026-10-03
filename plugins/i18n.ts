@@ -11,7 +11,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
     globalInjection: true,
     messages: { "en-US": en, de },
     defaultLocale: "de",
-    locale: locale.value || "de",
+    locale: locale.value === "en-US" || locale.value === "en" ? "en-US" : "de",
     loadLanguagesAsync: true,
     langDir: "~/locales",
     strategy: "no_prefix",
@@ -21,4 +21,5 @@ export default defineNuxtPlugin(({ vueApp }) => {
   });
 
   vueApp.use(i18n);
+  useHead(() => ({ htmlAttrs: { lang: i18n.global.locale.value === "en-US" ? "en" : "de" } }));
 });
