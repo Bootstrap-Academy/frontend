@@ -49,7 +49,7 @@
 import { useDialogSlot } from "~~/composables/dialogSlot";
 import { useI18n } from "vue-i18n";
 import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
-import type { matching } from "~/types/matching";
+import type { Matching } from "~/types/matching";
 
 const props = defineProps({
   matchings: { type: Array as PropType<any>, default: [] },
@@ -60,7 +60,7 @@ const { t } = useI18n();
 const dialog = useDialogSlot();
 const dialogCreateMatching = useDialogCreateMatching();
 const propData = ref();
-const matching: Ref<matching | null> = useMatching();
+const matching: Ref<Matching | null> = useMatching();
 
 function openDialogCreateMatching(subtask: any) {
   propData.value = subtask;
