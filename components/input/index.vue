@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="flex flex-wrap items-center gap-card-sm">
-      <label v-if="!noLabel" class="text-body-2 mb-2 block text-body font-body" :for="id || label">
+      <label v-if="!noLabel" class="text-body-2 mb-2 block text-body font-body" :for="inputId">
         {{ t(label) }}
       </label>
       <p
         v-if="hint"
-        :id="`${id || label}-hint`"
+        :id="`${inputId}-hint`"
         class="relative z-0 pb-2 text-xs text-body"
         :class="noLabel ? 'text-left' : 'text-right'"
       >
@@ -29,13 +29,13 @@
       :placeholder="noLabel ? t(label) : t(placeholder)"
       :type="type"
       :name="name != '' ? name : label"
-      :id="id != '' ? id : label"
+      :id="inputId"
       v-model="input"
       @blur="touched = true"
       :autocomplete="autocomplete"
       :aria-invalid="error ? 'true' : undefined"
       :aria-describedby="
-        [hint ? `${id || label}-hint` : '', error ? `${id || label}-error` : '']
+        [hint ? `${inputId}-hint` : '', error ? `${inputId}-error` : '']
           .filter(Boolean)
           .join(' ') || undefined
       "
@@ -43,7 +43,7 @@
     />
 
     <p
-      :id="`${id || label}-error`"
+      :id="`${inputId}-error`"
       :aria-hidden="error ? undefined : 'true'"
       class="relative z-0 pt-2 text-xs text-error"
       :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -80,6 +80,8 @@ export default defineComponent({
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const fallbackId = useId();
+    const inputId = computed(() => props.id || `${fallbackId}-input`);
 
     const input = computed({
       get() {
@@ -127,7 +129,7 @@ export default defineComponent({
         DOM_INPUT.value?.focus();
       }
     });
-    return { t, input, error, DOM_INPUT, touched };
+    return { t, input, inputId, error, DOM_INPUT, touched };
   },
 });
 </script>

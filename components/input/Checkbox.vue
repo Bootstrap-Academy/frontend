@@ -7,9 +7,9 @@
           :class="sm ? 'h-4 w-4' : 'h-6 w-6'"
           type="checkbox"
           v-model="input"
-          :id="id || label"
+          :id="inputId"
           :aria-invalid="error ? 'true' : undefined"
-          :aria-describedby="error ? `${id || label}-error` : undefined"
+          :aria-describedby="error ? `${inputId}-error` : undefined"
         />
 
         <div
@@ -19,7 +19,7 @@
           <CheckIcon class="icon" :class="[sm ? 'h-4 w-4 stroke-[3]' : 'h-5 w-5 stroke-[3]']" />
         </div>
       </div>
-      <label class="flex gap-3 text-body font-body" :for="id || label">
+      <label class="flex gap-3 text-body font-body" :for="inputId">
         <span :class="sm ? 'text-xs' : 'text-body-1'"
           >{{ $t(label) }}
 
@@ -38,7 +38,7 @@
     </div>
     <p
       v-if="required"
-      :id="`${id || label}-error`"
+      :id="`${inputId}-error`"
       :aria-hidden="error ? undefined : 'true'"
       class="relative z-0 pt-2 text-xs text-error"
       :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, useId } from "vue";
 import type { PropType } from "vue";
 import { CheckIcon } from "@heroicons/vue/24/solid";
 
@@ -75,6 +75,8 @@ export default defineComponent({
   },
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
+    const fallbackId = useId();
+    const inputId = computed(() => props.id || `${fallbackId}-checkbox`);
     // ============================================================= refs
     const touched = ref(false);
 
@@ -99,7 +101,7 @@ export default defineComponent({
     );
 
     // ============================================================= functions
-    return { input, error };
+    return { input, inputId, error };
   },
 });
 </script>
