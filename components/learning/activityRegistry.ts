@@ -12,6 +12,7 @@ const renderers: Record<string, () => Promise<{ default: Component }>> = {
   exercise: () => import("./ExerciseRoom.vue"),
   "legacy-video": () => import("../course/Video.vue"),
   video: () => import("./VideoActivity.vue"),
+  "protocol-v2": () => import("./ProtocolActivity.vue"),
   custom: () => import("./CustomActivity.vue"),
 };
 
