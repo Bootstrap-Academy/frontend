@@ -123,14 +123,14 @@ export function syncSessionCookies() {
 export function setStates(response: any, renewing = false, redirect = true) {
   // Publish synchronously before releasing the origin refresh lock. Nuxt's
   // default cookie watcher writes on the next tick and can expose the old pair.
+  const written: string[] = [];
   const write = (name: string, value: any) => {
     if (typeof document !== "undefined" && typeof document.cookie === "string") {
       document.cookie = `${name}=${value == null ? "" : encodeURIComponent(typeof value === "string" ? value : JSON.stringify(value))}; Path=/; Secure; SameSite=Lax${value == null ? "; Max-Age=0" : ""}`;
-      refreshCookie(name);
+      written.push(name);
     } else useAppCookie<any>(name, { watch: false }).value = value;
   };
   if (!renewing) write("authGeneration", crypto.randomUUID());
-  setUser(response?.user ?? null, false);
   write(
     "user",
     response?.user
@@ -141,21 +141,23 @@ export function setStates(response: any, renewing = false, redirect = true) {
         }
       : null
   );
+  // Publish the complete cookie pair before reactive owner watchers can read it.
+  write("session", response?.session ? { id: response.session.id ?? null } : null);
+  write("accessToken", response?.access_token ?? null);
+  write("refreshToken", response?.refresh_token ?? null);
+  for (const name of written) refreshCookie(name);
+  setUser(response?.user ?? null, false);
   // Login, signup and refresh answer with the full profile.
   useProfileLoaded().value = !!response?.user;
 
   const session = <any>useSession();
   session.value = response?.session ?? null;
-  // Only the identifier of the session belongs in the cookie.
-  write("session", session.value ? { id: session.value.id ?? null } : null);
 
   const accessToken = useAccessToken();
   accessToken.value = response?.access_token ?? null;
-  write("accessToken", accessToken.value);
 
   const refreshToken = useRefreshToken();
   refreshToken.value = response?.refresh_token ?? null;
-  write("refreshToken", refreshToken.value);
 
   const hideAnimation: any = useAppCookie("hideAnimationNextTime");
   if (hideAnimation.value == undefined) hideAnimation.value = false;
