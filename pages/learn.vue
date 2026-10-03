@@ -28,6 +28,12 @@
     >
       {{ t("LearningRooms.Loading") }}
     </div>
+    <LearningDailyLimit
+      v-else-if="view.emptyReason === 'limit_reached' && daily"
+      :value="daily"
+      :continue-label="view.courseId ? undefined : 'DailyLearning.ExploreCourses'"
+      :continue-to="view.courseId ? `/courses/${encodeURIComponent(view.courseId)}` : '/skill-tree'"
+    />
     <section v-else-if="view.status === 'disabled'" class="room-state">
       <h1>{{ t("LearningRooms.Unavailable") }}</h1>
       <NuxtLink to="/dashboard" class="primary-link">{{ t("LearningRooms.Back") }}</NuxtLink>
@@ -39,6 +45,7 @@
       </button>
     </section>
     <template v-else>
+      <LearningDailyLimit v-if="limitReached" :value="limitReached" />
       <div class="learning-path">
         <label for="learning-path">{{ t("LearningRooms.LearningPath") }}</label>
         <select
@@ -72,7 +79,7 @@
         </div>
       </section>
       <section
-        v-else-if="view.error && !reauthRequired && !view.reviewPending"
+        v-else-if="view.error && !limitReached && !reauthRequired && !view.reviewPending"
         class="room-message"
         role="alert"
       >
@@ -125,6 +132,7 @@
           v-else-if="lesson"
           :key="roomKey"
           :lesson="lesson"
+          :daily="daily"
           :locale="locale"
           :state="view.draft"
           :request="request"
@@ -185,6 +193,9 @@ const {
   openLocation,
   syncLocation,
   retry,
+  daily,
+  limitReached,
+  keepDailyDraft,
 } = useLearningRooms();
 const language = computed(() => (locale.value.startsWith("de") ? "de" : "en"));
 const localized = (value?: LocalizedText) => value?.[language.value] || value?.en || "";
@@ -249,6 +260,7 @@ async function changePath(path: string) {
 }
 async function canLeave() {
   if (!owner.value) return true;
+  if (limitReached.value && keepDailyDraft()) return true;
   if (exercisePosting.value || view.value?.reviewStarting) return false;
   exerciseComponent.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict) return false;

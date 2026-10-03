@@ -493,7 +493,7 @@
     "CompletedSkills": "Alle Skills, die du schon abgeschlossen hast.",
     "OtherSkills": "Rest der Skills, die zum Erkunden verfügbar sind.",
     "NoUpcomingEvents": "Keine Veranstaltungen geplant",
-    "LearnNewSkillsForFree": "Lerne neue technische Fähigkeiten mit unserem kostenlosen Plan",
+    "LearnNewSkillsForFree": "Lerne in deinem Tempo.",
     "GetAllServices": "Alle Kurse und unbegrenzte Herzen für eine %%% Gebühr",
     "Monthly": "monatliche",
     "Yearly": "jährliche",
@@ -568,6 +568,8 @@
     "PurchaseRejected": "Bestellung abgelehnt. Es wurde nichts abgebucht.",
     "PurchasePending": "Deine Bestellung wird noch bearbeitet.",
     "PurchaseUncertain": "Wir konnten den Abschluss noch nicht bestätigen. Prüfe den Status dieser Bestellung, bevor du neu bestellst.",
+    "RenewalTermsDocument": "AGB dieses Angebots (PDF)",
+    "RenewalWithdrawalDocument": "Widerrufsbelehrung dieses Angebots (PDF)",
     "PurchaseDocumentUnavailable": "Die Unterlagen konnten nicht geladen werden. Versuch es noch einmal oder schreib uns an hallo{'@'}bootstrap.academy.",
     "PurchaseRefresh": "Status aktualisieren",
     "PurchaseNotOrdered": "Noch nicht bestellt",
@@ -1209,7 +1211,7 @@
     "DownloadMyDataRateLimit": "Du hast deine Daten gerade erst heruntergeladen. Bitte versuche es in einigen Minuten erneut.",
     "DownloadMyDataIncomplete": "Die Datei wurde gespeichert, aber ein Teil deiner Daten konnte gerade nicht abgerufen werden. Welcher Teil fehlt, steht in der Datei unter „services“. Bitte versuche es später noch einmal.",
     "DownloadMyDataFailed": "Deine Daten konnten nicht heruntergeladen werden. Bitte versuche es später erneut.",
-    "RenewalOfferChanged": "Das Verlängerungsangebot hat sich geändert. Bitte öffne und prüfe das neue Angebot."
+    "RenewalOfferChanged": "Das Verlängerungsangebot hat sich geändert. Bitte prüfe das neue Angebot."
   },
   "Months": {
     "January": "Januar",
@@ -1933,5 +1935,29 @@
     "ReviewStartError": "Die nächste Übung konnte gerade nicht starten. Versuch’s nochmal.",
     "BalanceUpdating": "Deine Herzen werden aktualisiert.",
     "HeartsPending": "Deine Herzen konnten gerade nicht aktualisiert werden. Prüfe das Ergebnis gleich nochmal."
+  },
+  "DailyLearning": {
+    "Remaining": "Heute noch {n} neue Lektionen",
+    "Reset": "Neue Lektionen wieder ab {time} Uhr",
+    "Explanation": "Du kannst jeden Tag {n} neue Lektionen starten. Weitermachen, Wiederholen und Fehler kosten nichts. Um {time} Uhr gibt’s wieder neue.",
+    "LimitBody": "Du hast heute {n} neue Lektionen gestartet. Alles Angefangene kannst du fortsetzen und beliebig oft wiederholen.",
+    "Continue": "Fortsetzen oder wiederholen",
+    "BackToCourse": "Zur Kursübersicht",
+    "PremiumBenefit": "Mit Premium lernst du ohne Tageslimit.",
+    "SeePremium": "Premium ansehen",
+    "FreePace": "Jeden Tag {n} neue Lektionen",
+    "FreeReview": "Angefangenes fortsetzen und unbegrenzt wiederholen",
+    "AllCourses": "Alle Kurse lernen",
+    "PremiumPace": "Neue Lektionen ohne Tageslimit",
+    "PremiumIntro": "Lerne in deinem Tempo weiter.",
+    "PremiumUntil": "Dein Premium läuft bis {date}.",
+    "ExtendPremium": "Ein Nachkauf verlängert deinen bezahlten Premium-Zeitraum.",
+    "CoinPayment": "Du bezahlst mit deinem Coin-Guthaben.",
+    "StartVideo": "Video starten",
+    "StartError": "Das Starten hat nicht geklappt. Versuch es nochmal.",
+    "SavedHere": "Deine Arbeit bleibt hier erhalten.",
+    "TryAgain": "Nochmal versuchen",
+    "RemainingOne": "Heute noch eine neue Lektion",
+    "ExploreCourses": "Kurse entdecken"
   }
 }

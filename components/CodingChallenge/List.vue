@@ -41,6 +41,7 @@ export default defineComponent({
     const route = useRoute();
     const codingChallenges = useAllCodingChallengesInATask();
     const loading = ref(true);
+    const { isDaily } = useDailyLearning();
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
     const hearts = computed(() => {
@@ -62,9 +63,9 @@ export default defineComponent({
     }
 
     function solveCodingChallenge(codingChallenge: any) {
-      if (!isPremium.value && hearts.value < 2) {
+      if (!isDaily.value && !isPremium.value && hearts.value < 2) {
         return openSnackbar("info", "Error.NotEnoughHearts");
-      } else if (isPremium.value || hearts.value >= 2) {
+      } else if (isDaily.value || isPremium.value || hearts.value >= 2) {
         navigateTo(
           `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
         );
