@@ -1,7 +1,7 @@
 import { guestReturnPath } from "~/utils/guest/handoff";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  if (to.path !== from.path && process.client) {
+  if (to.path !== from.path && import.meta.client) {
     setTimeout(() => {
       window.scrollTo({
         top: 0,
