@@ -1,14 +1,22 @@
 <template>
-  <form class="flex h-fit w-full max-w-sm items-center overflow-clip rounded bg-accent shadow-xl">
+  <form
+    class="flex h-fit w-full max-w-sm items-center overflow-clip rounded bg-accent shadow-xl"
+    @submit.prevent="onclickForceSearch"
+  >
     <input
       type="text"
       :placeholder="translatedPlaceholder"
       @change="onchange"
+      @input="oninput"
       v-model.trim="search"
       class="text-body-1 w-full px-4 py-2 text-primary outline-none font-body placeholder:text-body-1 placeholder:text-secondary placeholder:font-body"
     />
 
-    <button @click.prevent="onclickForceSearch" class="bg-accent px-4">
+    <button
+      @click.prevent="onclickForceSearch"
+      :aria-label="translatedPlaceholder"
+      class="bg-accent px-4"
+    >
       <MagnifyingGlassIcon class="h-5 w-5 fill-white" />
     </button>
   </form>
@@ -22,6 +30,7 @@ export default {
   props: {
     placeholder: { type: String, default: "" },
     modelValue: { type: String, default: "" },
+    live: { type: Boolean, default: false },
   },
   emits: ["update:modelValue"],
   components: { MagnifyingGlassIcon },
@@ -30,20 +39,14 @@ export default {
 
     function onchange() {
       emit("update:modelValue", search.value);
+    }
 
-      // if (search.value.length == 1) {
-      // 	emit('update:modelValue', search.value);
-      // } else if (search.value.length >= props.modelValue.length + 3) {
-      // 	emit('update:modelValue', search.value);
-      // } else if (search.value.length <= props.modelValue.length - 3) {
-      // 	emit('update:modelValue', search.value);
-      // } else if (!!!search.value.length) {
-      // 	emit('update:modelValue', search.value);
-      // }
+    function oninput() {
+      if (props.live) onchange();
     }
 
     function onclickForceSearch() {
-      emit("update:modelValue", search.value + " ");
+      emit("update:modelValue", search.value + (props.live ? "" : " "));
     }
 
     const { t } = useI18n();
@@ -58,9 +61,8 @@ export default {
       search,
       onclickForceSearch,
       onchange,
+      oninput,
     };
   },
 };
 </script>
-
-<style scoped></style>
