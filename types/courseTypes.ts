@@ -1,4 +1,5 @@
 type Author = {
+  // Catalogue credit; its URL never grants learner-profile access.
   name: string;
   url: string;
 };
@@ -67,6 +68,7 @@ export class LecturesWithQuiz {
 export class Quiz {
   coins: number = 0;
   creation_timestamp: string = "";
+  // Technical ownership reference, independent of profile publication.
   creator: string = "";
   enabled: boolean = false;
   id: string = "";
