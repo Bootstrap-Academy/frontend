@@ -60,13 +60,15 @@ function nextQuestion(id: number) {
   }
   console.log("index is ", index);
   for (let i = index; i < props.matchings?.length; i++) {
+    const item = props.matchings[i];
+    if (!item) continue;
     console.log("inside loop");
     if (
       !props.matchings[i]?.matching.solved &&
       props.matchings[i]?.matching.creator != user?.value.id
       // &&      i != index
     ) {
-      selectedQuiz.value = props.matchings[i].matching;
+      selectedQuiz.value = item.matching;
       break;
     }
   }

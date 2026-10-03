@@ -107,6 +107,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from "vue";
+import type { SessionIdentity } from "~/types/sessionIdentity";
 import type { Course, CourseLearningPlan } from "~/types/courseTypes";
 import type { CourseCurriculum } from "~/types/learningActivities";
 import { courseSteps, courseWatchLocation } from "~/utils/courseJourney";
@@ -116,7 +118,7 @@ const route = useRoute();
 const router = useRouter();
 const { copy, localized, localizeCourse } = useCourseExperienceCopy();
 const user = useUser();
-const session = useSession();
+const session: Ref<SessionIdentity | null> = useSession();
 const originalCourse = ref<Course | null>(null);
 const course = computed(() => (originalCourse.value ? localizeCourse(originalCourse.value) : null));
 const learningPlan = ref<CourseLearningPlan | null>(null);

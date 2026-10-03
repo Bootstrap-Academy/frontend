@@ -20,7 +20,8 @@ export async function refreshSession(expected = getSessionSnapshot(), clearOnInv
   const app = useNuxtApp();
   return renewSession({
     expected,
-    snapshot: () => app.runWithContext(getSessionSnapshot),
+    // With ssr:false, Nuxt runs this synchronous callback immediately in Vue's context.
+    snapshot: () => app.runWithContext(getSessionSnapshot) as SessionSnapshot,
     lock: withSessionRefreshLock,
     raw: (token) =>
       $fetch(`${config.BASE_API_URL}/auth/session`, {

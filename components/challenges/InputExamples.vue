@@ -141,10 +141,11 @@ import { PencilIcon, PlusCircleIcon, PlusIcon, XMarkIcon } from "@heroicons/vue/
 import { defineComponent } from "vue";
 import type { PropType, Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import type { ExampleDraft } from "~/types/codingChallengeViews";
 
 export default defineComponent({
   props: {
-    modelValue: { default: [] },
+    modelValue: { type: Array as PropType<ExampleDraft[]>, default: [] },
     max: { type: Number, default: 10 },
     label: { type: String, default: "" },
   },
@@ -157,7 +158,7 @@ export default defineComponent({
       get() {
         return props.modelValue;
       },
-      set(value: Array<any>) {
+      set(value: ExampleDraft[]) {
         emit("update:modelValue", value);
       },
     });
@@ -186,9 +187,11 @@ export default defineComponent({
     const output = ref("");
     const outputMarkdownModal = ref(false);
 
-    function updateItemInList(obj: any) {
+    function updateItemInList(obj: Partial<Pick<ExampleDraft, "input" | "output">>) {
+      const item = list.value[selectedItemIndex.value];
+      if (!item) return;
       list.value.splice(selectedItemIndex.value, 1, {
-        ...list.value[selectedItemIndex.value],
+        ...item,
         ...obj,
       });
 
@@ -197,9 +200,11 @@ export default defineComponent({
       outputMarkdownModal.value = false;
     }
 
-    function filterListBasedOnKey(key: string) {
+    function filterListBasedOnKey(key: keyof ExampleDraft) {
+      const last = lastItemInList.value;
+      if (!last) return [];
       return list.value.filter((item) => {
-        return item[key].toLocaleLowerCase() == lastItemInList.value[key].toLocaleLowerCase();
+        return item[key].toLocaleLowerCase() == last[key].toLocaleLowerCase();
       });
     }
 

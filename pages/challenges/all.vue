@@ -28,7 +28,7 @@
     </p> -->
     <template v-for="(category, i) of challengesCategories" :key="category.id">
       <ChallengesCategory :xp="xp" :data="category" />
-      <hr class="mt-box" v-if="i < challengesCategories.length - 1" />
+      <hr class="mt-box" v-if="Number(i) < challengesCategories.length - 1" />
     </template>
   </main>
 </template>
