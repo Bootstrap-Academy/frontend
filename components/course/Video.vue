@@ -1,5 +1,7 @@
 <template>
   <article v-if="activeLecture" class="course-video">
+    <LearningDailyLimit v-if="lessonStart.limited.value" :value="lessonStart.limited.value" />
+    <p v-if="lessonStart.error.value" role="alert">{{ t("DailyLearning.StartError") }}</p>
     <template v-if="activeLecture.type === 'youtube' && activeLecture.video_id">
       <iframe
         v-if="youtubeLoaded"
@@ -11,7 +13,7 @@
       <div v-else>
         <div class="video-placeholder">
           <PlayCircleIcon class="h-14 w-14 text-accent" aria-hidden="true" />
-          <button type="button" @click="youtubeLoaded = true">{{ t("Buttons.LoadVideo") }}</button>
+          <button type="button" @click="loadYoutube">{{ t("Buttons.LoadVideo") }}</button>
         </div>
         <p class="video-privacy">
           {{ t("Links.VideoPrivacyHint") }}
@@ -23,7 +25,15 @@
       </div>
     </template>
     <template v-else-if="activeLecture.type === 'mp4'">
-      <p v-if="loading" role="status">{{ copy.loading }}</p>
+      <button
+        v-if="needsStart"
+        type="button"
+        :disabled="lessonStart.pending.value"
+        @click="startVideo"
+      >
+        {{ t("DailyLearning.StartVideo") }}
+      </button>
+      <p v-else-if="loading" role="status">{{ copy.loading }}</p>
       <div v-else-if="error" role="alert">
         <p>{{ copy.loadError }}</p>
         <button type="button" @click="load()">{{ copy.retry }}</button>
@@ -37,6 +47,7 @@
         controls
         playsinline
         preload="metadata"
+        @play="onPlay"
         @timeupdate="rememberPosition"
         @loadedmetadata="restorePosition"
       >
@@ -54,8 +65,15 @@ const props = defineProps<{
   course: Course | null;
   activeLecture: Lecture | null;
   activeSection?: Section | null;
+  lessonId?: string;
 }>();
 const { t } = useI18n();
+const lessonStart = useLessonStart(
+  computed(() => props.course?.id || ""),
+  computed(() => props.lessonId || props.activeLecture?.id || "")
+);
+const needsStart = ref(false);
+const playAuthorized = ref(false);
 const { copy } = useCourseExperienceCopy();
 const user = useUser();
 const session = useSession();
@@ -95,6 +113,8 @@ async function load(refresh = false) {
     source.value = "";
     loading.value = false;
     youtubeLoaded.value = false;
+    needsStart.value = false;
+    playAuthorized.value = false;
   }
   if (!courseId || !lectureId || props.activeLecture?.type !== "mp4") return;
   loading.value = !refresh;
@@ -114,10 +134,38 @@ async function load(refresh = false) {
       };
     }
     source.value = result;
-  } catch {
-    if (current() && !source.value) error.value = true;
+  } catch (cause: any) {
+    if (current() && !source.value) {
+      if ((cause?.data?.code || cause?.data?.error) === "lesson_start_required")
+        needsStart.value = true;
+      else error.value = true;
+    }
   } finally {
     if (current()) loading.value = false;
+  }
+}
+async function loadYoutube() {
+  if (await lessonStart.start()) youtubeLoaded.value = true;
+}
+async function startVideo() {
+  if (!(await lessonStart.start())) return;
+  needsStart.value = false;
+  await load();
+  await nextTick();
+  if (video.value) void video.value.play().catch(() => {});
+}
+async function onPlay() {
+  if (
+    playAuthorized.value ||
+    lessonStart.daily.value?.started ||
+    lessonStart.daily.value?.mode === "legacy"
+  )
+    return;
+  const media = video.value;
+  media?.pause();
+  if (await lessonStart.start()) {
+    playAuthorized.value = true;
+    void media?.play().catch(() => {});
   }
 }
 function rememberPosition(event: Event) {

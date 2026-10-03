@@ -1,0 +1,173 @@
+{
+  "id": "loops-intro",
+  "path_id": "python-loops",
+  "title": {
+    "de": "Wiederholungen verstehen",
+    "en": "Understanding repetition"
+  },
+  "room": "loop-explorer",
+  "teaches": ["instructions", "counted-repetition", "python-print", "python-range"],
+  "practices": [],
+  "requires": [],
+  "retired": false,
+  "completion": {
+    "kind": "introduced",
+    "answer": {
+      "prediction": 6,
+      "repetitions": 4
+    },
+    "allow_skip": true
+  },
+  "content": {
+    "de": {
+      "steps": [
+        {
+          "id": "instruction",
+          "title": "Eine Anweisung. Ein Schritt.",
+          "body": "Eine Anweisung sagt genau, was passieren soll. Unsere Figur startet auf Feld 0. Lass sie ein Feld weitergehen."
+        },
+        {
+          "id": "repetition",
+          "title": "Einmal sagen, mehrmals machen.",
+          "body": "Die Anweisung bleibt gleich. Du bestimmst nur, wie oft sie ausgeführt wird. Das ist die Idee einer Schleife."
+        },
+        {
+          "id": "prediction",
+          "title": "Was passiert jetzt?",
+          "body": "Jetzt ändern wir die Anweisung: Die Figur geht bei jeder Wiederholung zwei Felder weiter. Sie startet wieder auf Feld 0."
+        },
+        {
+          "id": "practice",
+          "title": "Bring die Figur ans Ziel.",
+          "body": "Du bestimmst die Anzahl der Wiederholungen. Die Anweisung bleibt: zwei Felder weitergehen."
+        },
+        {
+          "id": "code",
+          "title": "Dasselbe Prinzip in Python.",
+          "body": "Eine Schleife kann auch Text ausgeben. Hier siehst du die wenigen Bausteine, die du für deine erste Codeaufgabe brauchst."
+        }
+      ],
+      "single": {
+        "instruction": "Geh ein Feld weiter.",
+        "result": "Einmal ausgeführt: Die Figur steht auf Feld 1.",
+        "start": "Die Figur startet auf Feld 0."
+      },
+      "repeat": {
+        "instruction": "Geh ein Feld weiter.",
+        "min": 1,
+        "max": 6,
+        "initial": 3,
+        "result": "{count} Wiederholungen: Die Figur steht auf Feld {position}."
+      },
+      "prediction": {
+        "instruction": "Geh zwei Felder weiter.",
+        "repetitions": 3,
+        "stride": 2,
+        "question": "Auf welchem Feld steht die Figur nach drei Wiederholungen?",
+        "correct": "Genau: 2 + 2 + 2 = 6. Drei Wiederholungen ergeben hier sechs Schritte.",
+        "tryAgain": "Jede der drei Wiederholungen geht zwei Felder weiter. Zähle von 0 aus: 2, dann 4 …"
+      },
+      "practice": {
+        "instruction": "Geh zwei Felder weiter.",
+        "target": 8,
+        "stride": 2,
+        "min": 1,
+        "max": 6,
+        "initial": 1,
+        "question": "Wie oft muss die Figur gehen, um Feld 8 zu erreichen?",
+        "hint": "Pro Wiederholung geht es zwei Felder weiter. Teile die acht Schritte durch zwei.",
+        "correct": "Passt: vier Wiederholungen mit je zwei Schritten erreichen Feld 8.",
+        "position": "{count} Wiederholungen bringen dich auf Feld {position}."
+      },
+      "code": {
+        "single": "print(\"Hallo\")",
+        "singleExplanation": "print gibt den Text in der Klammer aus. Die Anführungszeichen zeigen, wo der Text beginnt und endet. Sie werden nicht mit ausgegeben.",
+        "loop": "for schritt in range(3):\n    print(\"Hallo\")",
+        "loopExplanation": "range(3) liefert nacheinander die Zahlen 0, 1 und 2: drei Werte, also drei Wiederholungen. schritt ist der Name für den aktuellen Wert. Für unsere Textausgabe brauchen wir seinen Wert noch nicht.",
+        "notes": [
+          "Der Doppelpunkt am Ende der ersten Zeile eröffnet die Schleife.",
+          "Die vier Leerzeichen vor print rücken die Anweisung ein. So gehört sie zur Schleife und wird jedes Mal ausgeführt."
+        ],
+        "outputLine": "Hallo",
+        "repeatCount": 3,
+        "outputLabel": "So sieht die Ausgabe aus",
+        "next": "Jetzt kannst du das Beispiel erst vorhersagen und zuordnen. Danach schreibst du selbst eine Schleife und führst deinen Code aus."
+      }
+    },
+    "en": {
+      "steps": [
+        {
+          "id": "instruction",
+          "title": "One instruction. One step.",
+          "body": "An instruction says exactly what should happen. Our figure starts on space 0. Move it one space forward."
+        },
+        {
+          "id": "repetition",
+          "title": "Say it once. Do it again.",
+          "body": "The instruction stays the same. You only choose how many times it runs. That is the idea behind a loop."
+        },
+        {
+          "id": "prediction",
+          "title": "What happens next?",
+          "body": "Now the instruction changes: the figure moves two spaces forward each time. It starts on space 0 again."
+        },
+        {
+          "id": "practice",
+          "title": "Get the figure to the target.",
+          "body": "You choose the number of repetitions. The instruction stays the same: move two spaces forward."
+        },
+        {
+          "id": "code",
+          "title": "The same idea in Python.",
+          "body": "A loop can also display text. Here are the few building blocks you need for your first coding exercise."
+        }
+      ],
+      "single": {
+        "instruction": "Move one space forward.",
+        "result": "Run once: the figure is on space 1.",
+        "start": "The figure starts on space 0."
+      },
+      "repeat": {
+        "instruction": "Move one space forward.",
+        "min": 1,
+        "max": 6,
+        "initial": 3,
+        "result": "{count} repetitions: the figure is on space {position}."
+      },
+      "prediction": {
+        "instruction": "Move two spaces forward.",
+        "repetitions": 3,
+        "stride": 2,
+        "question": "Which space does the figure reach after three repetitions?",
+        "correct": "Exactly: 2 + 2 + 2 = 6. Three repetitions make six steps here.",
+        "tryAgain": "Each of the three repetitions moves two spaces forward. Count from 0: 2, then 4 …"
+      },
+      "practice": {
+        "instruction": "Move two spaces forward.",
+        "target": 8,
+        "stride": 2,
+        "min": 1,
+        "max": 6,
+        "initial": 1,
+        "question": "How many repetitions will get the figure to space 8?",
+        "hint": "Each repetition moves two spaces forward. Divide the eight steps by two.",
+        "correct": "That works: four repetitions of two steps reach space 8.",
+        "position": "{count} repetitions take you to space {position}."
+      },
+      "code": {
+        "single": "print(\"Hallo\")",
+        "singleExplanation": "print displays the text inside the parentheses. The quotation marks show where the text starts and ends. They are not included in the output.",
+        "loop": "for step in range(3):\n    print(\"Hallo\")",
+        "loopExplanation": "range(3) produces the numbers 0, 1 and 2: three values, so three repetitions. step is the name for the current value. We do not need its value for our text output yet.",
+        "notes": [
+          "The colon at the end of the first line starts the loop.",
+          "The four spaces before print indent the instruction. This puts it inside the loop, so it runs each time."
+        ],
+        "outputLine": "Hallo",
+        "repeatCount": 3,
+        "outputLabel": "This is what the output looks like",
+        "next": "Now you can predict what an example will do and match loops to their outputs. Then you will write and run a loop yourself."
+      }
+    }
+  }
+}
