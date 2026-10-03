@@ -1,8 +1,3 @@
-export class Calendar {
-  ics_token: string = "";
-  events: WebinarEvent[] | CoachingEvent[] = [];
-}
-
 export class EventBase {
   id: string = "";
   type: "webinar" | "coaching" = "webinar"; // "coaching" | "webinar"
