@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Bootstrap Academy",
-      link: [{ rel: "manifest", href: "manifest.txt" }],
+      link: [{ rel: "manifest", href: "/manifest.txt" }],
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },

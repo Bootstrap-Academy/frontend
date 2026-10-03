@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bootstrap.academy/schemas/lesson-manifest-2.0.json",
+  "title": "Academy lesson manifest v2",
+  "type": "object",
+  "required": [
+    "id",
+    "protocol",
+    "entry",
+    "requires",
+    "optional",
+    "goals",
+    "stage",
+    "languages",
+    "assets",
+    "state",
+    "accessibility",
+    "replay"
+  ],
+  "properties": {
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "protocol": {
+      "type": "object",
+      "required": ["major", "minor"],
+      "properties": {
+        "major": {
+          "const": 2
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": true
+    },
+    "entry": {
+      "$ref": "#/$defs/path"
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability"
+      },
+      "uniqueItems": true
+    },
+    "optional": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability"
+      },
+      "uniqueItems": true
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/language"
+      },
+      "uniqueItems": true
+    },
+    "goals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "subskill_id", "xp", "assessment"],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "label": {
+            "$ref": "#/$defs/localized"
+          },
+          "subskill_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "xp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "assessment": {
+            "type": "object",
+            "required": ["kind", "ref"],
+            "properties": {
+              "kind": {
+                "enum": ["introduced", "deterministic", "llm"]
+              },
+              "ref": {
+                "$ref": "#/$defs/id"
+              },
+              "fallback": {
+                "enum": ["self-compare", "deterministic"]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "llm"
+                    }
+                  },
+                  "required": ["kind"]
+                },
+                "then": {
+                  "required": ["fallback"]
+                }
+              }
+            ],
+            "additionalProperties": true
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "assessment": {
+                  "properties": {
+                    "kind": {
+                      "const": "introduced"
+                    }
+                  },
+                  "required": ["kind"]
+                }
+              },
+              "required": ["assessment"]
+            },
+            "then": {
+              "properties": {
+                "xp": {
+                  "const": 0
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": true
+      }
+    },
+    "stage": {
+      "type": "object",
+      "required": ["orientation", "logical", "safeMargin"],
+      "properties": {
+        "orientation": {
+          "enum": ["portrait", "landscape"]
+        },
+        "logical": {
+          "type": "object",
+          "required": ["width", "height"],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "safeMargin": {
+          "type": "integer",
+          "minimum": 16,
+          "maximum": 32
+        },
+        "reason": {
+          "$ref": "#/$defs/localized"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "orientation": {
+                "const": "portrait"
+              }
+            },
+            "required": ["orientation"]
+          },
+          "then": {
+            "properties": {
+              "logical": {
+                "properties": {
+                  "width": {
+                    "const": 360
+                  },
+                  "height": {
+                    "const": 640
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "orientation": {
+                "const": "landscape"
+              }
+            },
+            "required": ["orientation"]
+          },
+          "then": {
+            "required": ["reason"],
+            "properties": {
+              "logical": {
+                "properties": {
+                  "width": {
+                    "const": 640
+                  },
+                  "height": {
+                    "const": 360
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "mediaType", "bytes", "loading"],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/path"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "mediaType": {
+            "enum": [
+              "text/html",
+              "text/javascript",
+              "text/css",
+              "application/json",
+              "image/svg+xml",
+              "image/png",
+              "image/webp",
+              "image/avif",
+              "audio/ogg",
+              "audio/mpeg",
+              "audio/mp4",
+              "application/octet-stream"
+            ]
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "loading": {
+            "enum": ["initial", "lazy"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "state": {
+      "type": "object",
+      "required": ["schemaVersion", "schema", "maxBytes"],
+      "properties": {
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "schema": {
+          "$ref": "#/$defs/path"
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        }
+      },
+      "additionalProperties": true
+    },
+    "accessibility": {
+      "type": "object",
+      "required": ["keyboard", "tapAlternative", "reducedMotion", "semanticView"],
+      "properties": {
+        "keyboard": {
+          "const": true
+        },
+        "tapAlternative": {
+          "const": true
+        },
+        "reducedMotion": {
+          "const": true
+        },
+        "semanticView": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "replay": {
+      "type": "object",
+      "required": ["suite"],
+      "properties": {
+        "suite": {
+          "$ref": "#/$defs/path"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+    },
+    "path": {
+      "type": "string",
+      "maxLength": 200,
+      "pattern": "^(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)+$"
+    },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+    },
+    "localized": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/language"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      }
+    },
+    "capability": {
+      "type": "object",
+      "required": ["id", "major", "minMinor"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$"
+        },
+        "major": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "minMinor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
