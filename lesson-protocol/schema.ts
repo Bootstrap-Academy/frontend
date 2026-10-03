@@ -51,8 +51,11 @@ export function canonicalJson(value: unknown): string {
   const sort = (a: string, b: string) => {
     const aa = Array.from(a, (c) => c.codePointAt(0)!);
     const bb = Array.from(b, (c) => c.codePointAt(0)!);
-    for (let i = 0; i < Math.min(aa.length, bb.length); i++)
-      if (aa[i] !== bb[i]) return aa[i] - bb[i];
+    for (let i = 0; i < Math.min(aa.length, bb.length); i++) {
+      const first = aa[i],
+        second = bb[i];
+      if (first !== undefined && second !== undefined && first !== second) return first - second;
+    }
     return aa.length - bb.length;
   };
   const encode = (item: JsonValue): string => {

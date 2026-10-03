@@ -53,7 +53,9 @@ export function readPointer(value: JsonValue, pointer: string): JsonValue {
     const key = token.replaceAll("~1", "/").replaceAll("~0", "~");
     if (current === null || typeof current !== "object" || !Object.hasOwn(current, key))
       throw new Error(`Missing snapshot path ${pointer}`);
-    current = (current as JsonObject)[key];
+    const next = (current as JsonObject)[key];
+    if (next === undefined) throw new Error(`Missing snapshot path ${pointer}`);
+    current = next;
   }
   return current;
 }
