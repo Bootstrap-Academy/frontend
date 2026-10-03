@@ -77,7 +77,7 @@ export default defineComponent({
       if (!!!timestamp) return ``;
 
       let { month, year } = convertTimestampToDate(timestamp);
-      return `${t(month.string).substring(0, 3)}, ${year}`;
+      return `${t(month.string ?? "").substring(0, 3)}, ${year}`;
     });
 
     return { image, title, category, authors, lastUpdated, t };
