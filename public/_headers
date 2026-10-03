@@ -1,0 +1,9 @@
+# Cloudflare Pages: only the canonical Academy hosts learn this short HSTS policy.
+# PR previews and pages.dev hosts remain outside these rules.
+https://test.bootstrap.academy/*
+  Strict-Transport-Security: max-age=300
+
+# Prepared for the next approved production release; keep the initial trial short.
+# Increase max-age only after HTTPS checks, without broadening the host scope.
+https://bootstrap.academy/*
+  Strict-Transport-Security: max-age=300
