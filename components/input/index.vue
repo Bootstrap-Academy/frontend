@@ -63,7 +63,7 @@ export default defineComponent({
     light: { type: Boolean, default: false },
     placeholder: { type: String, default: "" },
     rules: { type: Array, default: [] },
-    modelValue: { default: "" },
+    modelValue: { type: [String, Number] as PropType<string | number>, default: "" },
     disabled: { type: Boolean, default: false },
     focusThis: { type: Boolean, default: false },
   },
@@ -75,7 +75,7 @@ export default defineComponent({
       get() {
         return props.modelValue;
       },
-      set(value: string) {
+      set(value: string | number) {
         emit("update:modelValue", value);
       },
     });
