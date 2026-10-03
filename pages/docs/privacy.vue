@@ -535,18 +535,21 @@
     <section id="statistiken">
       <h3>6.1 Zusammengefasste Statistiken</h3>
       <p>
-        Aus den in diesen Hinweisen beschriebenen, ohnehin gespeicherten Daten können wir intern
-        Statistiken für den Betrieb, die Verbesserung und die Weiterentwicklung unseres Angebots
-        erstellen, soweit die Daten dafür erforderlich sind. Die Ergebnisse verwenden wir
-        ausschließlich zusammengefasst und so, dass keine Rückschlüsse auf einzelne Personen möglich
-        sind; sie dienen keinen Entscheidungen über einzelne Personen. Dafür erheben wir keine
-        zusätzlichen Daten und geben keine Einzeldaten weiter. Grundlage der Verarbeitung bis zur
-        Anonymisierung ist Art. 6 Abs. 1 lit. f DSGVO: Unser Interesse an einem zuverlässigen und
-        hilfreichen Angebot überwiegt, weil wir die Verarbeitung auf erforderliche vorhandene Daten
-        beschränken und nur Ergebnisse ohne Personenbezug nutzen. Du kannst dieser Verarbeitung aus
-        Gründen deiner besonderen Situation nach Art. 21 DSGVO über die
-        <a href="#datenschutz-ansprechstelle">Ansprechstelle in Abschnitt 3</a> widersprechen;
-        Einzelheiten stehen in <a href="#rechte">Abschnitt 23</a>.
+        Wir wollen die Academy für alle besser machen. Dafür wollen wir zum Beispiel wissen, ob neue
+        Funktionen wirklich genutzt werden und welche Lektionen schwerfallen. Wir werten dazu intern
+        Daten aus, die wir nach diesen Hinweisen ohnehin speichern, und nur so weit, wie es dafür
+        nötig ist. Zusätzlich erheben wir nichts. Die Ergebnisse zeigen nur Summen, aus denen sich
+        keine einzelne Person ablesen lässt. Für Entscheidungen über einzelne Personen nutzen wir
+        sie nie, und Einzeldaten geben wir nicht weiter.
+      </p>
+      <p>
+        Rechtsgrundlage der Verarbeitung bis zur Anonymisierung ist unser berechtigtes Interesse an
+        einem Angebot, das gut funktioniert und beim Lernen hilft (Art. 6 Abs. 1 lit. f DSGVO). Es
+        überwiegt, weil wir die Auswertung auf nötige, bereits vorhandene Daten beschränken und nur
+        Ergebnisse ohne Personenbezug verwenden. Du kannst dieser Verarbeitung aus Gründen deiner
+        besonderen Situation widersprechen (Art. 21 DSGVO). Das geht über die
+        <a href="#datenschutz-ansprechstelle">Ansprechstelle in Abschnitt 3</a>; Einzelheiten stehen
+        in <a href="#rechte">Abschnitt 23</a>.
       </p>
     </section>
 
