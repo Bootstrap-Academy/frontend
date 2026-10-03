@@ -7,6 +7,9 @@
   >
     <Input
       :label="t('Inputs.Nickname')"
+      autocomplete="username"
+      id="SignupUsername"
+      :show-error="submitted"
       v-model="form.name.value"
       @valid="form.name.valid = $event"
       :rules="form.name.rules"
@@ -14,6 +17,9 @@
 
     <Input
       :label="t('Inputs.DisplayName')"
+      autocomplete="nickname"
+      id="SignupDisplayName"
+      :show-error="submitted"
       v-model="form.display_name.value"
       @valid="form.display_name.valid = $event"
       :rules="form.display_name.rules"
@@ -22,6 +28,9 @@
     <Input
       :label="t('Inputs.EmailAddress')"
       type="email"
+      autocomplete="email"
+      id="SignupEmail"
+      :show-error="submitted"
       v-model="form.email.value"
       @valid="form.email.valid = $event"
       :rules="form.email.rules"
@@ -31,6 +40,9 @@
       v-if="!register_token"
       :label="t('Inputs.Password')"
       type="password"
+      autocomplete="new-password"
+      id="SignupPassword"
+      :show-error="submitted"
       v-model="form.password.value"
       @valid="form.password.valid = $event"
       :rules="form.password.rules"
@@ -61,7 +73,7 @@
 
     <p class="text-body-1 text-body">
       {{ t("Links.PrivacyNoticeHint") }}
-      <NuxtLink to="/docs/privacy" target="_blank" class="text-accent hover:underline">{{
+      <NuxtLink to="/docs/privacy" target="_blank" class="text-accent underline">{{
         t("Links.PrivacyNoticeLinkText")
       }}</NuxtLink
       >{{ t("Links.PrivacyNoticeHintEnd") }}
@@ -79,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
@@ -156,7 +168,6 @@ export default defineComponent({
           }
         }
 
-        if (refForm.value) refForm.value.reportValidity();
         return isValid;
       },
       body: () => {
@@ -204,6 +215,7 @@ export default defineComponent({
     // ============================================================= functions
     async function onclickSubmitForm() {
       submitted.value = true;
+      await nextTick();
 
       if (form.validate()) {
         form.submitting = true;
@@ -226,7 +238,8 @@ export default defineComponent({
 
         success ? successHandler(success) : errorHandler(error);
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        await nextTick();
+        refForm.value?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
       }
     }
 

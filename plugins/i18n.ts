@@ -21,5 +21,11 @@ export default defineNuxtPlugin(({ vueApp }) => {
   });
 
   vueApp.use(i18n);
-  useHead(() => ({ htmlAttrs: { lang: i18n.global.locale.value === "en-US" ? "en" : "de" } }));
+  const route = useRoute();
+  useHead(() => ({
+    htmlAttrs: { lang: i18n.global.locale.value === "en-US" ? "en" : "de" },
+    title: /^\/docs\/privacy\/?$/.test(route.path)
+      ? `${i18n.global.t("Links.Privacy")} · Bootstrap Academy`
+      : undefined,
+  }));
 });
