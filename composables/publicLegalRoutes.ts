@@ -1,7 +1,7 @@
 /** Public documents and declarations must stay usable when a session fails. */
 export function isPublicLegalRoute(path: string) {
   // Vue Router matches these fixed routes case-insensitively, including on direct entry.
-  const pathname = path.split(/[?#]/, 1)[0].toLowerCase().replace(/\/+$/, "") || "/";
+  const pathname = (path.split(/[?#]/, 1)[0] ?? "").toLowerCase().replace(/\/+$/, "") || "/";
 
   return (
     pathname === "/moderation" ||

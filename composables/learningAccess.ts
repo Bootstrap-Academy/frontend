@@ -188,13 +188,14 @@ export function createLearningAccess(options: Options) {
     if (!sameOwner(current, value.owner)) throw fail("owner_changed");
     const rows = saved(),
       index = rows.findIndex((r) => r.record.body.command_id === value.body.command_id);
+    const previous = rows[index];
     if (
-      index >= 0 &&
-      (JSON.stringify(rows[index].record.body) !== JSON.stringify(value.body) ||
-        JSON.stringify(rows[index].record.owner) !== JSON.stringify(value.owner) ||
-        rows[index].record.version !== value.version ||
-        (rows[index].record.receipt &&
-          JSON.stringify(rows[index].record.receipt) !== JSON.stringify(value.receipt)))
+      previous &&
+      (JSON.stringify(previous.record.body) !== JSON.stringify(value.body) ||
+        JSON.stringify(previous.record.owner) !== JSON.stringify(value.owner) ||
+        previous.record.version !== value.version ||
+        (previous.record.receipt &&
+          JSON.stringify(previous.record.receipt) !== JSON.stringify(value.receipt)))
     )
       throw fail("invalid_recovery");
     const sequence = Math.max(0, ...rows.map((row) => row.sequence)) + 1;

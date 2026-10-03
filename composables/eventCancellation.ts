@@ -5,7 +5,16 @@ import type {
   CancellationReceipt,
   CancellationScope,
   CancellationTarget,
+  CancellationStatement,
 } from "../types/eventCancellation";
+
+type CancellationPost = {
+  (
+    path: string,
+    body: { kind: CancellationKind; scope: CancellationScope }
+  ): Promise<CancellationTarget>;
+  (path: string, body: CancellationStatement): Promise<CancellationReceipt>;
+};
 
 /** One owner and exact scope per attempt, preserved before the first declaration POST. */
 export function createEventCancellation(options: {
@@ -13,8 +22,8 @@ export function createEventCancellation(options: {
   event: string;
   kind: CancellationKind;
   scope: CancellationScope;
-  post: (path: string, body: unknown) => Promise<any>;
-  get: (path: string) => Promise<any>;
+  post: CancellationPost;
+  get: (path: string) => Promise<CancellationReceipt>;
   read: (key: string) => CancellationAttempt | null;
   save: (key: string, attempt: CancellationAttempt) => void;
   uuid: () => string;
@@ -137,7 +146,8 @@ export function useEventCancellation(
     event,
     kind,
     scope,
-    post: POST,
+    // fetch.js forwards JSON bodies; its inferred default only describes null.
+    post: POST as unknown as CancellationPost,
     get: GET,
     uuid: () => crypto.randomUUID(),
     read: (key) => {
