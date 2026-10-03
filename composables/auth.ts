@@ -1,5 +1,6 @@
 import { GET, POST } from "./fetch";
 import { revokeSession, withSessionRefreshLock } from "~/utils/sessionRefresh";
+import { clearLearningStorage, prepareLearningLogout } from "~/utils/learningStorage";
 
 export const useOauthProviders = () => useState("oauthProviders", () => []);
 
@@ -40,9 +41,29 @@ export async function logout() {
   const config = useRuntimeConfig().public;
 
   try {
+    const userId = useUser().value?.id || "";
+    if (
+      !(await prepareLearningLogout(userId, () =>
+        window.confirm(
+          String(readSessionCookie("locale") || "de").startsWith("en")
+            ? "Some work hasn't been saved to your account. Logging out removes its copy from this browser. Log out anyway?"
+            : "Ein Teil deiner Arbeit ist noch nicht im Konto gespeichert. Beim Abmelden wird die Kopie aus diesem Browser gelöscht. Trotzdem abmelden?"
+        )
+      ))
+    )
+      return [false, null];
+    // Preparation may await a save or a dialog; never clear a subsequent login.
+    const current = getSessionSnapshot();
+    if (current.identity !== expected.identity || current.generation !== expected.generation)
+      return [false, null];
     // The explicit action ends this browser session immediately, including
     // when its refresh token has already been revoked or the API is offline.
     setStates(null);
+    try {
+      clearLearningStorage(userId);
+    } catch {
+      // Browser cleanup must never prevent revoking this session on the server.
+    }
 
     // Calendar Composable
     const calendar = useCalendar();

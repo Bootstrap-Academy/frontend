@@ -100,6 +100,7 @@ import type {
 } from "~/types/learningActivities";
 import { roomActivity } from "~/utils/learningActivityAdapters";
 import ActivityHost from "./ActivityHost.vue";
+import { registerLearningLogout } from "~/utils/learningStorage";
 
 const props = defineProps<{
   activity: LearningActivity;
@@ -257,6 +258,10 @@ watch(
     draftOwner = user.value?.id || "";
     if (!draftKey.value) return;
     try {
+      if (completed.value) {
+        window.sessionStorage.removeItem(draftKey.value);
+        return;
+      }
       const saved = JSON.parse(window.sessionStorage.getItem(draftKey.value) || "null");
       if (saved?.owner === draftOwner && saved.state && typeof saved.state === "object")
         draft.value = saved.state;
@@ -276,6 +281,7 @@ function change(state: Record<string, any>) {
 async function save() {
   if (roomSource) return await data.save();
   if (props.activity.source.kind !== "challenge") return true;
+  if (completed.value) return true;
   if (!alive || !draftKey.value || draftOwner !== user.value?.id) return false;
   try {
     window.sessionStorage.setItem(
@@ -310,6 +316,11 @@ async function handIn(result: LearningActivityCompletion) {
   if (props.activity.source.kind === "challenge") {
     if (!(await save())) return;
     completed.value = true;
+    try {
+      if (draftKey.value) window.sessionStorage.removeItem(draftKey.value);
+    } catch {
+      // Completion is confirmed; the next visit retries removing this obsolete copy.
+    }
     emit("completed", props.activity.id);
     emit("next");
     return;
@@ -380,7 +391,14 @@ function shouldWarn() {
   );
 }
 defineExpose({ canLeave, shouldWarn, cancelPreparation: () => host.value?.cancelPreparation() });
+const unregisterLogout = registerLearningLogout({
+  user: () => (owner.value ? user.value?.id || null : null),
+  prepare: canLeave,
+  unsaved: () =>
+    !roomSource && !completed.value && (Object.keys(draft.value).length > 0 || shouldWarn()),
+});
 onBeforeUnmount(() => {
+  unregisterLogout();
   if (!roomSource) void save();
   alive = false;
   host.value?.cancelPreparation();

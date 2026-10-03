@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, shallowRef, watch } from "vue";
 import { createGuestLearning, GUEST_KEY } from "~/utils/guest/learning";
+import { registerLearningLogout } from "~/utils/learningStorage";
 
 export function useGuestLearning() {
   const { user, owner, request, reauthRequired, reauthenticate } = useLearningRooms({
@@ -37,7 +38,13 @@ export function useGuestLearning() {
     if (event.key?.startsWith(GUEST_KEY) && !view.value?.busy) data.load();
   }
   window.addEventListener("storage", storageChanged);
+  const unregisterLogout = registerLearningLogout({
+    user: () => user.value?.id || null,
+    prepare: () => !view.value?.busy,
+    unsaved: () => !!view.value?.draft.owner && !view.value.draft.saved,
+  });
   onBeforeUnmount(() => {
+    unregisterLogout();
     data.dispose();
     window.removeEventListener("storage", storageChanged);
   });

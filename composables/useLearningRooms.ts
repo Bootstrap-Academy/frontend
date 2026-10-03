@@ -3,6 +3,7 @@ import type { DailyLearning } from "~/types/dailyLearning";
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
+import { registerLearningLogout } from "~/utils/learningStorage";
 
 export function useLearningRooms(
   options: {
@@ -284,7 +285,23 @@ export function useLearningRooms(
     await router.push({ path: "/auth/login", query: { redirect } });
     return true;
   }
+  const unregisterLogout = registerLearningLogout({
+    user: () => (owner.value ? user.value?.id || null : null),
+    prepare: async () => {
+      if (view.value?.saving || view.value?.completing || view.value?.reviewStarting) return false;
+      if (view.value?.dirty && !view.value.completionPending && !view.value.conflict)
+        await data.save();
+      return preserve(lastUserId, true);
+    },
+    unsaved: () => !!data.recovery(),
+    clear: (userId) => {
+      const remaining = { ...memoryRecovery.value };
+      delete remaining[userId];
+      memoryRecovery.value = remaining;
+    },
+  });
   onBeforeUnmount(() => {
+    unregisterLogout();
     preserve(lastUserId);
     alive = false;
     epoch++;

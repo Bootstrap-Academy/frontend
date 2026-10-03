@@ -4,6 +4,7 @@ import type { LearningRequest } from "../../types/learningRooms";
 
 export const guestExercise = exercise;
 export const GUEST_KEY = "academy-guest-learning:1";
+export const GUEST_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 export const guestDestination =
   "/learn?path=python-loops&course=python-foundations&unit=loops-intro";
 const roomUrl = "/skills/rooms/loops-intro";
@@ -17,6 +18,7 @@ export type GuestDraft = {
   owner: string | null;
   state: State;
   finished: boolean;
+  lastUsedAt?: number;
   pending?: Pending;
   saved?: boolean;
 };
@@ -97,6 +99,8 @@ function decode(raw: string | null, owner: string | null): GuestDraft | null {
       state,
       finished: value.finished === true && guestFinished(state),
     };
+    if (Number.isSafeInteger(value.lastUsedAt) && value.lastUsedAt >= 0)
+      draft.lastUsedAt = value.lastUsedAt;
     if (owner && value.saved === true) draft.saved = true;
     if (
       owner &&
@@ -126,14 +130,17 @@ export function createGuestLearning(options: {
     persisted: boolean;
   }) => void;
   id?: () => string;
+  now?: () => number;
 }) {
   const id = options.id || (() => crypto.randomUUID());
+  const now = options.now || Date.now;
   const fresh = (): GuestDraft => ({
     version: 1,
     id: id(),
     owner: null,
     state: {},
     finished: false,
+    lastUsedAt: now(),
   });
   let draft = fresh(),
     busy = false,
@@ -149,16 +156,35 @@ export function createGuestLearning(options: {
     } catch {
       /* Ignore a corrupt local record. */
     }
-    return raw?.version === 1 && object(raw.accounts)
-      ? (raw as { version: 1; guest: unknown; accounts: Record<string, unknown> })
-      : { version: 1 as const, guest: null as unknown, accounts: {} as Record<string, unknown> };
+    const store =
+      raw?.version === 1 && object(raw.accounts)
+        ? (raw as { version: 1; guest: unknown; accounts: Record<string, unknown> })
+        : { version: 1 as const, guest: null as unknown, accounts: {} as Record<string, unknown> };
+    let cleaned = false;
+    const guest = readDraft(store.guest, null);
+    if (guest && guest.lastUsedAt === undefined) {
+      // Existing drafts get one migration grace period rather than losing work.
+      store.guest = { ...guest, lastUsedAt: now() };
+    } else if (guest && now() - guest.lastUsedAt! >= GUEST_TTL_MS) {
+      store.guest = null;
+      cleaned = true;
+    }
+    for (const [owner, value] of Object.entries(store.accounts)) {
+      if (readDraft(value, owner)?.saved) {
+        delete store.accounts[owner];
+        cleaned = true;
+      }
+    }
+    if (cleaned) writeStore(store);
+    return store;
   }
   const readDraft = (value: unknown, user: string | null) =>
     decode(JSON.stringify(value ?? null), user);
   function writeStore(value: ReturnType<typeof stored>) {
     if (!options.local) throw { guest: "storage" };
     try {
-      options.local.setItem(GUEST_KEY, JSON.stringify(value));
+      if (!value.guest && !Object.keys(value.accounts).length) options.local.removeItem(GUEST_KEY);
+      else options.local.setItem(GUEST_KEY, JSON.stringify(value));
     } catch {
       throw { guest: "storage" };
     }
@@ -174,6 +200,16 @@ export function createGuestLearning(options: {
       const guest = readDraft(store.guest, null);
       draft = own || guest || fresh();
       persisted = !!(own || guest);
+      if (!own && guest) {
+        draft.lastUsedAt = now();
+        store.guest = draft;
+        try {
+          writeStore(store);
+        } catch {
+          persisted = false;
+          error = "storage";
+        }
+      }
       if (!options.local) error = "storage";
     } catch {
       draft = fresh();
@@ -193,6 +229,7 @@ export function createGuestLearning(options: {
           return false;
         }
         store.guest = draft;
+        draft.lastUsedAt = now();
       } else {
         if (readDraft(store.accounts[draft.owner], draft.owner)?.id !== draft.id)
           throw { guest: "conflict" };
@@ -253,6 +290,7 @@ export function createGuestLearning(options: {
   }
   async function transfer() {
     const user = options.user();
+    if (draft.saved && draft.owner === user) return true;
     if (busy || !user || !Object.keys(draft.state).length || (draft.owner && draft.owner !== user))
       return false;
     const ticket = generation;
@@ -316,9 +354,14 @@ export function createGuestLearning(options: {
           result.progress.review_id
         )
           throw { guest: "save" };
+        const latest = stored();
+        if (readDraft(latest.accounts[user], user)?.id === draft.id) delete latest.accounts[user];
+        if (readDraft(latest.guest, null)?.id === draft.id) latest.guest = null;
+        // Keep the exact pending request if local cleanup fails; retry is idempotent.
+        writeStore(latest);
         draft.saved = true;
         delete draft.pending;
-        if (!persist()) return false;
+        persisted = false;
         try {
           options.tab?.removeItem(GUEST_RETURN_KEY);
         } catch {

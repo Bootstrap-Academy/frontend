@@ -234,6 +234,7 @@ function fixture(t, options = {}) {
       observe: () => {},
       forLesson: (_course, _lesson, value) => ({ ...value, ...daily.value }),
     }),
+    registerLearningLogout: () => () => {},
     dailyError: () => null,
     ref: vue.ref,
     computed: vue.computed,

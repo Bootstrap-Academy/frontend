@@ -388,11 +388,16 @@ async function activityFixture(
   const scope = Vue.effectScope();
   const events = [];
   const writes = [];
+  const removals = [];
   const owner = Vue.ref("user-a:session-a");
   const user = Vue.ref({ id: "user-a" });
   const callbacks = [];
   const storage = {
     getItem: () => stored,
+    removeItem: (key) => {
+      removals.push(key);
+      stored = null;
+    },
     setItem: (key, value) => {
       writes.push({ key, value });
       stored = value;
@@ -413,6 +418,7 @@ async function activityFixture(
     }),
     defineEmits: () => (name, value) => events.push({ name, value }),
     defineExpose: () => {},
+    registerLearningLogout: () => () => {},
     onBeforeUnmount: (callback) => callbacks.push(callback),
     useI18n: () => ({ t: (key) => key }),
     useLessonStart: () => ({ limited: Vue.ref(null), start: async () => true }),
@@ -446,6 +452,7 @@ async function activityFixture(
     options,
     events,
     writes,
+    removals,
     owner,
     user,
     stop: () => {
@@ -523,7 +530,11 @@ export default { inheritAttrs: false, props: ["state", "disabled"], setup: (prop
       /from ["']~\/utils\/learningActivityAdapters["']/,
       `from ${JSON.stringify(adapterUrl)}`
     )
-    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`);
+    .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`)
+    .replace(
+      /from ["']~\/utils\/learningStorage["']/,
+      `from ${JSON.stringify(url("export const registerLearningLogout = () => () => {};"))}`
+    );
   const LessonActivity = (await import(url(code))).default;
   globalThis.useLessonStart = () => ({ limited: Vue.ref(null), start: async () => true });
   globalThis.useLearningRooms = () => ({
@@ -645,6 +656,34 @@ test("challenge checkpoints use native identities and an in-flight POST still bl
   await tick();
   assert.equal(await fixture.save(), false);
   fixture.stop();
+});
+
+test("confirmed native completion removes its draft and exit/unmount cannot recreate it", async () => {
+  const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+  const activity = {
+    id: "native-a",
+    kind: "coding",
+    source: { kind: "challenge", ...reference },
+    exercise: reference,
+    content: {},
+    completed: false,
+  };
+  const fixture = await activityFixture(activity);
+  fixture.change({ code: "private answer", submission_id: "confirmed" });
+  await fixture.complete({ attempt_id: "confirmed" });
+  assert.equal(fixture.finished.value, true);
+  assert.deepEqual(fixture.removals, ["academy-challenge-draft:user-a:coding:task-a:code-a"]);
+  const written = fixture.writes.length;
+  assert.equal(await fixture.canLeave(), true);
+  fixture.stop();
+  assert.equal(fixture.writes.length, written);
+  const reopened = await activityFixture(
+    { ...activity, completed: true },
+    { stored: JSON.stringify({ owner: "user-a", state: { code: "obsolete" } }) }
+  );
+  assert.deepEqual(reopened.draft.value, {});
+  assert.equal(reopened.removals.length, 1);
+  reopened.stop();
 });
 
 test("the composed lesson page advances ordered native activities, preserves direct selection and does not award progress", async () => {

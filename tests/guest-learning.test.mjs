@@ -23,10 +23,10 @@ const code = ts.transpileModule(
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
   }
 ).outputText;
-const { createGuestLearning, guestState, guestFinished, GUEST_KEY } = new Function(
+const { createGuestLearning, guestState, guestFinished, GUEST_KEY, GUEST_TTL_MS } = new Function(
   "exercise",
   "GUEST_RETURN_KEY",
-  code + "\nreturn {createGuestLearning, guestState, guestFinished, GUEST_KEY};"
+  code + "\nreturn {createGuestLearning, guestState, guestFinished, GUEST_KEY, GUEST_TTL_MS};"
 )(exercise, GUEST_RETURN_KEY);
 const solved = {
   stage: 4,
@@ -57,6 +57,7 @@ function fixture(overrides = {}) {
   const controller = createGuestLearning({
     local,
     tab,
+    now: overrides.now,
     user: () => user,
     lock: async (run) => run(),
     changed: (value) => (view = value),
@@ -144,6 +145,7 @@ test("explicit handoff saves only a draft to the exact existing course unit", as
   ]);
   assert.deepEqual(f.calls[1].body.state, solved);
   assert.equal(f.view.draft.saved, true);
+  assert.equal(f.local.getItem(GUEST_KEY), null);
   await f.controller.transfer();
   assert.equal(f.calls.length, 2);
   f.setUser(null);
@@ -151,7 +153,7 @@ test("explicit handoff saves only a draft to the exact existing course unit", as
   f.setUser("B");
   assert.deepEqual(f.view.draft.state, {});
   f.setUser("A");
-  assert.equal(f.view.draft.saved, true);
+  assert.deepEqual(f.view.draft.state, {}, "confirmed work belongs on the server now");
 });
 
 test("uncertain save persists the exact request and retries it after reload without duplicate mutation", async () => {
@@ -178,12 +180,14 @@ test("uncertain save persists the exact request and retries it after reload with
   ready(f);
   assert.equal(await f.controller.transfer(), false);
   const pending = structuredClone(f.view.draft.pending);
+  assert.deepEqual(JSON.parse(f.local.getItem(GUEST_KEY)).accounts.A.pending, pending);
   assert.equal(f.view.error, "save");
   f.controller.load();
   assert.deepEqual(f.view.draft.pending, pending);
   assert.equal(await f.controller.transfer(), true);
   assert.deepEqual(f.calls[1].body, f.calls[3].body);
   assert.equal(writes, 1);
+  assert.equal(f.local.getItem(GUEST_KEY), null);
 });
 
 test("a double click runs only one transfer", async () => {
@@ -288,7 +292,7 @@ test("another tab/account cannot claim or rewrite a draft after ownership was as
   b.controller.load();
   b.controller.edit({ stage: 1, singleDone: true });
   a.controller.load();
-  assert.deepEqual(a.view.draft.state, solved);
+  assert.notDeepEqual(a.view.draft.state, solved, "confirmed account work isn't cached locally");
 });
 
 test("storage failure preserves in-memory play and prevents all account writes", async () => {
@@ -358,6 +362,7 @@ test("expired or inaccessible handoff storage never authorizes automatic import"
     JSON.stringify({ id: crypto.randomUUID(), expires: Date.now() - 1 })
   );
   assert.equal(guestReturnPath(tab), null);
+  assert.equal(tab.getItem(GUEST_RETURN_KEY), null);
   assert.equal(authorizeGuestHandoff("A", tab), false);
   const denied = {
     getItem() {
@@ -388,4 +393,70 @@ test("a generic service rate limit is not presented as a daily lesson allowance"
   ready(f);
   assert.equal(await f.controller.transfer(), false);
   assert.equal(f.view.error, "save");
+});
+
+test("guest use renews the 30-day inactivity period; an expired read removes the bytes", () => {
+  let time = 1000;
+  const f = fixture({ now: () => time });
+  f.controller.edit(solved);
+  time += GUEST_TTL_MS - 1;
+  f.controller.load();
+  assert.deepEqual(f.view.draft.state, solved);
+  assert.equal(JSON.parse(f.local.getItem(GUEST_KEY)).guest.lastUsedAt, time);
+  time += GUEST_TTL_MS;
+  f.controller.load();
+  assert.deepEqual(f.view.draft.state, {});
+  assert.equal(f.local.getItem(GUEST_KEY), null);
+  assert.equal(f.calls.length, 0);
+});
+
+test("legacy guest drafts get one grace period and confirmed legacy account copies are pruned", () => {
+  let time = 1000;
+  const local = memory();
+  const draft = { version: 1, id: crypto.randomUUID(), owner: null, state: solved, finished: true };
+  const pending = {
+    ...draft,
+    owner: "B",
+    pending: { request_id: crypto.randomUUID(), expected_revision: 0, state: solved },
+  };
+  local.setItem(
+    GUEST_KEY,
+    JSON.stringify({
+      version: 1,
+      guest: draft,
+      accounts: { A: { ...draft, owner: "A", saved: true }, B: pending },
+    })
+  );
+  const f = fixture({ local, now: () => time });
+  const store = JSON.parse(local.getItem(GUEST_KEY));
+  assert.equal(store.guest.lastUsedAt, time);
+  assert.equal(store.accounts.A, undefined);
+  assert.deepEqual(store.accounts.B.pending, pending.pending);
+  time += GUEST_TTL_MS;
+  f.controller.load();
+  assert.equal(JSON.parse(local.getItem(GUEST_KEY)).guest, null);
+  f.setUser("B");
+  assert.deepEqual(
+    f.view.draft.pending,
+    pending.pending,
+    "uncertain account writes never expire as guest drafts"
+  );
+});
+
+test("failed cleanup after a confirmed server save retains the exact retry request", async () => {
+  const f = fixture();
+  ready(f);
+  const remove = f.local.removeItem;
+  f.local.removeItem = () => {
+    throw new Error("denied");
+  };
+  assert.equal(await f.controller.transfer(), false);
+  const pending = structuredClone(f.view.draft.pending);
+  assert.equal(f.view.error, "storage");
+  assert.equal(f.view.draft.saved, undefined);
+  assert.deepEqual(JSON.parse(f.local.getItem(GUEST_KEY)).accounts.A.pending, pending);
+  f.local.removeItem = remove;
+  assert.equal(await f.controller.transfer(), true);
+  assert.deepEqual(f.calls[1].body, f.calls[3].body);
+  assert.equal(f.local.getItem(GUEST_KEY), null);
 });
