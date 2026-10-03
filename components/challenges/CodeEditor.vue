@@ -60,6 +60,7 @@
 </template>
 
 <script lang="ts">
+import { decodeApiError } from "~/utils/apiError";
 import { useI18n } from "vue-i18n";
 import { defineComponent, onMounted, onBeforeUnmount, watch, ref, computed, nextTick } from "vue";
 import type * as Monaco from "monaco-editor";
@@ -193,8 +194,7 @@ export default defineComponent({
       });
       submitButtonLoading.value = false;
       if (!success) {
-        if (!handleLimit(error))
-          openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
+        if (!handleLimit(error)) openSnackbar("error", decodeApiError(error).messageKey);
         return;
       }
       await getHearts();

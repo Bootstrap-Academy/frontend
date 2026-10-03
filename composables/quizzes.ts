@@ -320,22 +320,11 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
       `challenges/tasks/${taskId}/multiple_choice/${subTaskid}/attempts`,
       body
     );
-    let success = null;
-    if (!!res.error) {
-      success = "Too Much Requests";
-    } else if (!!res.solved) {
-      success = true;
-    } else if (!!!res.solved) {
-      success = false;
-    }
-    return [success, null];
-  } catch (error: any) {
-    if (error?.data?.error == "not_enough_hearts") {
-      return [null, "Error.NotEnoughHeartsForQuiz"];
-    } else if (error?.detail == "Error.TooManyAttemptsForQuiz") {
-      return [null, "Error.TooManyAttemptsForQuiz"];
-    }
-    return [null, error?.data || error];
+    if (res?.error || typeof res?.solved !== "boolean")
+      throw { statusCode: 502, data: { error: "invalid_attempt_response" } };
+    return [res.solved, null];
+  } catch (error: unknown) {
+    return [null, error];
   }
 }
 

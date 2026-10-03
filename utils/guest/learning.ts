@@ -1,3 +1,4 @@
+import { decodeApiError } from "../apiError";
 import exercise from "./loops-intro.json";
 import { GUEST_RETURN_KEY } from "./handoff";
 import type { LearningRequest } from "../../types/learningRooms";
@@ -381,18 +382,15 @@ export function createGuestLearning(options: {
       });
     } catch (failure: any) {
       if (current()) {
-        const status = failure?.statusCode || failure?.status || failure?.response?.status;
+        const kind = decodeApiError(failure).kind;
         error =
           failure?.guest ||
-          (status === 401
-            ? "session"
-            : status === 409
-              ? "conflict"
-              : status === 429 &&
-                  (failure?.data?.code === "daily_limit_reached" ||
-                    failure?.data?.detail?.code === "daily_limit_reached")
-                ? "limit"
-                : "save");
+          (
+            { session: "session", conflict: "conflict", daily_limit: "limit" } as Partial<
+              Record<typeof kind, string>
+            >
+          )[kind] ||
+          "save";
       }
       return false;
     } finally {

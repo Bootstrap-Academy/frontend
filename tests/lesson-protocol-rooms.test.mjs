@@ -13,9 +13,15 @@ const source = await readFile(new URL("../utils/learningRooms.ts", import.meta.u
 const controllerFile = join(compiled.directory, "learning-rooms-controller.mjs");
 await writeFile(
   controllerFile,
-  ts.transpileModule(source, {
-    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
-  }).outputText
+  ts.transpileModule(
+    source.replaceAll(
+      '"./apiError"',
+      JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href)
+    ),
+    {
+      compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+    }
+  ).outputText
 );
 const { createLearningRooms } = await import(pathToFileURL(controllerFile));
 const { createRoomProtocolBinding } = await compiled.importModule("rooms");

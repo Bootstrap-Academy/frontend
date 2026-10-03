@@ -13,12 +13,13 @@ async function module(name) {
   const target = join(temporary, `${name}.mjs`);
   await writeFile(
     target,
-    ts.transpileModule(source, {
+    ts.transpileModule(source.replaceAll('from "./apiError"', 'from "./apiError.mjs"'), {
       compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
     }).outputText
   );
   return import(pathToFileURL(target));
 }
+await module("apiError");
 const { createLearningRooms } = await module("learningRooms");
 const { createLearningExercise } = await module("learningExercise");
 const deferred = () => {
