@@ -267,7 +267,7 @@ async function expire() {
 }
 async function backgroundProfile() {
   await ev(
-    `import('/_nuxt/composables/user.ts').then(m => {${state}.runWithContext(() => {m.getUser();});});`
+    `import(${state}.$config.app.buildAssetsDir+'composables/user.ts').then(m => {${state}.runWithContext(() => {m.getUser();});});`
   );
 }
 async function assertPublic(route) {
@@ -570,7 +570,7 @@ try {
   );
   await receipt("/vertrag-kuendigen", "recovered-receipt");
   const recovered = await ev(
-    `import('/_nuxt/composables/contracts.ts').then(m=>m.recoverDeclarationReceipt('/contracts/cancellations'))`
+    `import(${state}.$config.app.buildAssetsDir+'composables/contracts.ts').then(m=>m.recoverDeclarationReceipt('/contracts/cancellations'))`
   );
   assert.deepEqual(
     Object.keys(recovered[0].declaration).sort(),
