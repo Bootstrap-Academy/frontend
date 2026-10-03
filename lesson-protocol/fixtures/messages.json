@@ -1,0 +1,209 @@
+[
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 2,
+    "id": "h-init",
+    "kind": "event",
+    "type": "host.init",
+    "payload": {
+      "lessonId": "example-restore",
+      "manifestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "locale": "de",
+      "content": {
+        "mission": "Rette deine Notiz."
+      },
+      "state": {
+        "revision": 0,
+        "schemaVersion": 1,
+        "value": {
+          "scene": "recover",
+          "copied": []
+        }
+      },
+      "disabled": false,
+      "capabilities": [
+        {
+          "id": "kit.scene",
+          "major": 1,
+          "minor": 0,
+          "implementation": "academy-scene-1.0.0",
+          "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "id": "genre.diagnosis",
+          "major": 1,
+          "minor": 0,
+          "implementation": "academy-diagnosis-1.0.0",
+          "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        {
+          "id": "host.artifact",
+          "major": 1,
+          "minor": 0,
+          "implementation": "academy-artifact-1.0.0",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "limits": {
+        "messageBytes": 262144,
+        "stateBytes": 4096
+      },
+      "surface": {
+        "revision": 1,
+        "css": {
+          "width": 360,
+          "height": 640
+        },
+        "scale": 1,
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "safeRect": {
+          "x": 24,
+          "y": 24,
+          "width": 312,
+          "height": 592
+        },
+        "occlusions": [],
+        "edgeExclusions": {
+          "left": 24,
+          "right": 24,
+          "top": 24,
+          "bottom": 24
+        },
+        "dpr": 1,
+        "reducedMotion": false,
+        "displayMode": "page"
+      }
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 2,
+    "id": "l-ready",
+    "kind": "event",
+    "type": "lesson.ready",
+    "payload": {
+      "stateRevision": 0,
+      "sceneId": "recover"
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 3,
+    "id": "save-1",
+    "kind": "request",
+    "type": "state.save",
+    "payload": {
+      "expectedRevision": 0,
+      "schemaVersion": 1,
+      "state": {
+        "scene": "recover",
+        "copied": ["note.txt"]
+      }
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 3,
+    "id": "h-save-1",
+    "kind": "response",
+    "type": "rpc.result",
+    "replyTo": "save-1",
+    "payload": {
+      "ok": true,
+      "data": {
+        "revision": 1,
+        "persisted": true
+      }
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 4,
+    "id": "swipe-policy-1",
+    "kind": "request",
+    "type": "navigation.policy",
+    "payload": {
+      "swipe": {
+        "forward": false,
+        "back": false
+      }
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 4,
+    "id": "h-policy-1",
+    "kind": "response",
+    "type": "rpc.result",
+    "replyTo": "swipe-policy-1",
+    "payload": {
+      "ok": true,
+      "data": {
+        "epoch": 1,
+        "swipe": {
+          "forward": false,
+          "back": false
+        }
+      }
+    }
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 5,
+    "id": "project-1",
+    "kind": "request",
+    "type": "project.read",
+    "payload": {}
+  },
+  {
+    "protocol": {
+      "major": 2,
+      "minor": 0
+    },
+    "sessionId": "s-demo",
+    "seq": 5,
+    "id": "h-project-1",
+    "kind": "response",
+    "type": "rpc.result",
+    "replyTo": "project-1",
+    "payload": {
+      "ok": false,
+      "error": {
+        "code": "missing_capability",
+        "message": "Dein Werkstück kannst du hier als Datei mitnehmen.",
+        "retryable": false
+      }
+    }
+  }
+]
