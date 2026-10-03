@@ -313,8 +313,15 @@ test("strict content checks and exact answer map exclude foreign keys", () => {
   assert.equal(m.labAnswers(c, { result: "b" }), null);
   assert.deepEqual(m.labAnswers(c, { result: "a", solved: true }), { result: "a" });
 });
-function mount(content, initial = {}) {
-  const make = (tag, text = "") => ({ tag, text, props: {}, children: [], parent: null });
+function mount(content, initial = {}, options = {}) {
+  const make = (tag, text = "") => ({
+    tag,
+    text,
+    props: {},
+    children: [],
+    parent: null,
+    focus() {},
+  });
   const renderer = createRenderer({
     createElement: make,
     createText: (t) => make("#text", t),
@@ -338,23 +345,151 @@ function mount(content, initial = {}) {
   });
   const root = make("root"),
     state = ref(initial),
-    locale = ref("de"),
-    done = [];
+    locale = ref(options.locale || "de"),
+    disabled = ref(options.disabled || false),
+    currentContent = ref(content),
+    done = [],
+    changes = [];
   const app = renderer.createApp({
     setup: () => () =>
       h(Lab, {
-        content,
+        content: currentContent.value,
         state: state.value,
         locale: locale.value,
-        disabled: false,
-        onChange: (s) => (state.value = s),
+        disabled: disabled.value,
+        onChange: (s) => {
+          changes.push(JSON.parse(JSON.stringify(s)));
+          state.value = s;
+        },
         onComplete: (a) => done.push(a),
       }),
   });
   app.mount(root);
   const all = (n = root) => [n, ...n.children.flatMap((c) => all(c))];
-  return { state, locale, done, all, stop: () => app.unmount() };
+  return {
+    state,
+    locale,
+    disabled,
+    content: currentContent,
+    changes,
+    done,
+    all,
+    stop: () => app.unmount(),
+  };
 }
+const labButton = (app, text) => app.all().find((n) => n.tag === "button" && n.text === text);
+const changedLab = (scenario, actions) => ({
+  schema: "it-lab-state/1",
+  scenario,
+  model: replay(scenario, actions).state,
+  answers: { result: "a" },
+  checked: true,
+});
+test("all five lab families confirm reset, cancel without writes, and undo the full checked draft", async () => {
+  for (const [scenario, actions] of [
+    ["input-output", [action("text", "My work")]],
+    ["bits-values", [action("bit", 1)]],
+    ["save-restart", ["open", action("edit", "19:00")]],
+    ["sequence", [action("move", 0), "run"]],
+    ["local-network", [action("uplink", "off"), "test"]],
+  ]) {
+    const initial = changedLab(scenario, actions);
+    const app = mount(sample(scenario), initial, { locale: "en" });
+    await labButton(app, "Reset this exercise").props.onClick();
+    assert.deepEqual(app.state.value, initial, scenario);
+    assert.equal(app.changes.length, 0, "opening confirmation saves nothing");
+    await labButton(app, "Keep working").props.onClick();
+    assert.deepEqual(app.state.value, initial);
+    assert.equal(app.changes.length, 0, "cancel saves nothing");
+    await labButton(app, "Reset this exercise").props.onClick();
+    await labButton(app, "Reset").props.onClick();
+    assert.deepEqual(app.state.value.model, { tape: [] });
+    assert.deepEqual(app.state.value.answers, {});
+    assert.equal(app.state.value.checked, false);
+    assert.equal(app.changes.length, 1);
+    // A normal host echo, a save lock and translation must keep the undo available.
+    app.state.value = JSON.parse(JSON.stringify(app.state.value));
+    app.disabled.value = true;
+    app.locale.value = "de";
+    await nextTick();
+    const lockedUndo = labButton(app, "Rückgängig");
+    assert.equal(lockedUndo.props.disabled, true);
+    await lockedUndo.props.onClick();
+    assert.equal(app.changes.length, 1);
+    app.disabled.value = false;
+    await nextTick();
+    await labButton(app, "Rückgängig").props.onClick();
+    assert.deepEqual(app.state.value, initial, "undo restores actions, answers and check status");
+    assert.equal(app.changes.length, 2);
+    assert.equal(app.done.length, 0, "reset and undo never complete a lesson");
+    labButton(app, "Weiter").props.onClick();
+    assert.deepEqual(app.done, [{ result: "a" }]);
+    const saved = JSON.parse(JSON.stringify(app.state.value));
+    app.stop();
+    const reloaded = mount(sample(scenario), saved, { locale: "en" });
+    assert.ok(labButton(reloaded, "Continue"));
+    assert.deepEqual(reloaded.state.value, initial);
+    reloaded.stop();
+  }
+});
+test("unchanged lab states need no confirmation; a repeated empty reset retains the undo", async () => {
+  const app = mount(sample("input-output"), {}, { locale: "en" });
+  await labButton(app, "Reset this exercise").props.onClick();
+  assert.equal(labButton(app, "Keep working"), undefined);
+  assert.equal(labButton(app, "Undo"), undefined);
+  const input = app.all().find((n) => n.tag === "input" && n.props.maxlength == 160);
+  input.props.onInput({ target: { value: "Keep this" } });
+  await nextTick();
+  const ownWork = JSON.parse(JSON.stringify(app.state.value));
+  await labButton(app, "Reset this exercise").props.onClick();
+  await labButton(app, "Reset").props.onClick();
+  await labButton(app, "Reset this exercise").props.onClick();
+  assert.equal(labButton(app, "Keep working"), undefined);
+  await labButton(app, "Undo").props.onClick();
+  assert.deepEqual(app.state.value, ownWork);
+  app.stop();
+});
+test("answer-only work in every scenario and unreadable saved drafts are protected", async () => {
+  for (const scenario of Object.keys(m.labScenarios)) {
+    const app = mount(sample(scenario), { answers: { result: "b" } }, { locale: "en" });
+    await labButton(app, "Reset this exercise").props.onClick();
+    assert.ok(labButton(app, "Keep working"), scenario);
+    assert.equal(app.changes.length, 0);
+    app.stop();
+  }
+  const invalid = { schema: "old/1", model: { tape: [{ type: "unknown" }] } };
+  const app = mount(sample("input-output"), invalid, { locale: "en" });
+  await labButton(app, "Reset this exercise").props.onClick();
+  await labButton(app, "Reset").props.onClick();
+  await labButton(app, "Undo").props.onClick();
+  assert.deepEqual(app.state.value, invalid);
+  app.stop();
+});
+test("new lab work and external activity changes invalidate old reset controls", async () => {
+  const app = mount(sample("input-output"), changedLab("input-output", [action("text", "Old")]), {
+    locale: "en",
+  });
+  await labButton(app, "Reset this exercise").props.onClick();
+  await labButton(app, "Reset").props.onClick();
+  const undo = labButton(app, "Undo");
+  app
+    .all()
+    .find((n) => n.tag === "input" && n.props.maxlength == 160)
+    .props.onInput({ target: { value: "New" } });
+  await nextTick();
+  await undo.props.onClick();
+  assert.equal(labButton(app, "Undo"), undefined);
+  assert.equal(m.readLab("input-output", app.state.value.model).model.machine.text, "New");
+  await labButton(app, "Reset this exercise").props.onClick();
+  const confirm = labButton(app, "Reset");
+  app.content.value = sample("bits-values");
+  app.state.value = {};
+  await nextTick();
+  await confirm.props.onClick();
+  assert.deepEqual(app.state.value, {});
+  assert.equal(labButton(app, "Keep working"), undefined);
+  app.stop();
+});
 test("actual component events preserve drafts through language/reload and emit introduced answers", async () => {
   const app = mount(sample("input-output"));
   const input = app.all().find((n) => n.tag === "input" && n.props.maxlength == 160);
