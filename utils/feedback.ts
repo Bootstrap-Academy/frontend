@@ -32,7 +32,7 @@ export function browserSummary(agent: string) {
     ["Safari", /Version\/([\d.]+).*Safari/],
   ] as const) {
     const match = expression.exec(agent);
-    if (match) return name + " " + match[1].slice(0, 24);
+    if (match?.[1]) return name + " " + match[1].slice(0, 24);
   }
   return "unavailable";
 }

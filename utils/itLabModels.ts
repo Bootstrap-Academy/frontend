@@ -183,20 +183,22 @@ export function initialLab(scenario: LabScenario): LabModel {
         format: "program",
         writable: false,
       });
+    const firstFile = files[0];
+    if (!firstFile) throw new Error("Initial workspace has no file");
     return {
       workspace: {
         files,
         processes: [
           {
             id: 1,
-            file: files[0].path,
-            draft: scenario === "project-recover" ? "Zusatznotiz · 20:00" : files[0].data,
+            file: firstFile.path,
+            draft: scenario === "project-recover" ? "Zusatznotiz · 20:00" : firstFile.data,
             cost: 2,
             job: false,
           },
         ],
         active: 1,
-        selected: files[0].path,
+        selected: firstFile.path,
         backup: scenario === "project-recover" ? projectFiles() : [],
         backupLabel: scenario === "project-recover" ? "complete" : "",
         notice: "",
@@ -459,7 +461,7 @@ function canonicalAction(s: LabScenario, input: unknown): LabAction | null {
       ? { type: t, value: v }
       : null;
   if (["value", "bit", "cell", "colour", "depth", "move", "switch", "deliver"].includes(t)) {
-    const ranges: Record<string, number[]> = {
+    const ranges: Record<string, [number, number]> = {
       value: [0, 30],
       bit: [0, 3],
       cell: [0, 15],
@@ -469,7 +471,8 @@ function canonicalAction(s: LabScenario, input: unknown): LabAction | null {
       switch: [1, 200],
       deliver: [0, 2],
     };
-    return integer(v, ranges[t][0], ranges[t][1]) ? { type: t, value: v } : null;
+    const range = ranges[t];
+    return range && integer(v, range[0], range[1]) ? { type: t, value: v } : null;
   }
   const enums: Record<string, string[]> = {
     operation: ["double", "add"],
@@ -503,7 +506,10 @@ function applyAction(s: LabScenario, model: LabModel, a: LabAction) {
     if (t === "dataset") m.dataset = v as string;
     if (t === "move") {
       const i = v as number;
-      [m.order[i], m.order[i + 1]] = [m.order[i + 1], m.order[i]];
+      const first = m.order[i],
+        second = m.order[i + 1];
+      if (first !== undefined && second !== undefined)
+        [m.order[i], m.order[i + 1]] = [second, first];
     }
     if (!["step", "run"].includes(t)) m.steps = 0;
     if (t === "step") m.steps = Math.min(machineTrace(s, m).length, m.steps + 1);
@@ -512,7 +518,11 @@ function applyAction(s: LabScenario, model: LabModel, a: LabAction) {
   if (model.bits) {
     const b = model.bits;
     b.notice = "";
-    if (t === "bit") b.bits[v as number] = 1 - b.bits[v as number];
+    if (t === "bit") {
+      const index = v as number,
+        current = b.bits[index];
+      if (current !== undefined) b.bits[index] = 1 - current;
+    }
     if (t === "text") b.text = v as string;
     if (t === "decoder") b.latin = v === "latin";
     if (t === "cell") b.cell = v as number;
@@ -635,6 +645,11 @@ function applyAction(s: LabScenario, model: LabModel, a: LabAction) {
         ...f,
         path: f.path.replace(/^\/[^/]+\//, "/wiederhergestellt/"),
       }));
+      const firstCopy = copies[0];
+      if (!firstCopy) {
+        w.notice = "noBackup";
+        return;
+      }
       if (copies.some((c) => w.files.some((f) => f.path === c.path))) {
         w.notice = "exists";
         return;
@@ -647,7 +662,7 @@ function applyAction(s: LabScenario, model: LabModel, a: LabAction) {
         return;
       }
       w.files.push(...copies);
-      w.selected = copies[0].path;
+      w.selected = firstCopy.path;
       w.notice = "restored";
     }
   }
