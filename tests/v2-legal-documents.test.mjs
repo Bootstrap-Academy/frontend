@@ -92,6 +92,32 @@ test("current document templates compile and every local contents link resolves 
   assert(!/Abschnitt 14\.[123]\b/.test(privacy));
 });
 
+test("statistics explanation keeps its existing-data limits, legal basis and objection route", () => {
+  const statistics = privacy.match(/<section id="statistiken">([\s\S]*?)<\/section>/)?.[1];
+  assert(statistics, "statistics section exists");
+  const explanation = text(statistics);
+  for (const wording of [
+    "Wir wollen die Academy für alle besser machen.",
+    "ob neue Funktionen wirklich genutzt werden und welche Lektionen schwerfallen",
+    "intern Daten aus, die wir nach diesen Hinweisen ohnehin speichern",
+    "nur so weit, wie es dafür nötig ist",
+    "Zusätzlich erheben wir nichts.",
+    "nur Summen, aus denen sich keine einzelne Person ablesen lässt",
+    "Für Entscheidungen über einzelne Personen nutzen wir sie nie",
+    "Einzeldaten geben wir nicht weiter",
+    "Verarbeitung bis zur Anonymisierung",
+    "Art. 6 Abs. 1 lit. f DSGVO",
+    "überwiegt, weil",
+    "nur Ergebnisse ohne Personenbezug verwenden",
+    "aus Gründen deiner besonderen Situation widersprechen (Art. 21 DSGVO)",
+  ]) {
+    assert(explanation.includes(wording), wording);
+  }
+  assert(statistics.includes('href="#datenschutz-ansprechstelle"'));
+  assert(statistics.includes('href="#rechte"'));
+  assert(text(privacy).includes("Fassung: 2026-10-r1"));
+});
+
 test("new acquisition and storage descriptions distinguish preserved history from the current offer", () => {
   const terms = text(current);
   const notice = text(privacy);
