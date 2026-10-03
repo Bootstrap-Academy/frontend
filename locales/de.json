@@ -1959,5 +1959,28 @@
     "TryAgain": "Nochmal versuchen",
     "RemainingOne": "Heute noch eine neue Lektion",
     "ExploreCourses": "Kurse entdecken"
+  },
+  "ProfilePublication": {
+    "Private": "Privat",
+    "SharedStatus": "Freigegeben",
+    "Unknown": "Sichtbarkeit gerade nicht verfügbar.",
+    "Loading": "Sichtbarkeit wird geladen …",
+    "ShowPreview": "Vorschau ansehen",
+    "Preview": "So sehen andere dein Profil",
+    "Share": "Profil freigeben",
+    "Withdraw": "Wieder privat stellen",
+    "Shared": "Dein Profil ist freigegeben.",
+    "PrivateAgain": "Dein Profil ist wieder privat.",
+    "TotalXP": "{xp} Gesamt-XP",
+    "RankingPreview": "Nach deiner Freigabe kannst du auch in der Gesamt-, Aufgaben- und Sprachbestenliste erscheinen. Solange dein Profil privat ist, hast du dort keinen öffentlichen Platz.",
+    "Notice": "Andere angemeldete Nutzer mit bestätigter E-Mail-Adresse sehen deinen Anzeigenamen, den Standard-Avatar, deine Gesamt-XP sowie Plätze und Punkte der Gesamt-, Aufgaben- und Sprachbestenlisten. Neue XP und Punkte werden mit angezeigt. Einzelne Skills, Bio, Tags, Lösungen und Projektstände bleiben privat. Du kannst jederzeit wieder privat stellen. Frühere Kopien können wir nicht zurückholen.",
+    "SignIn": "Melde dich bitte wieder an, damit wir deine aktuelle Einstellung prüfen können.",
+    "Verify": "Bestätige bitte deine E-Mail-Adresse, bevor du dein Profil freigibst.",
+    "Changed": "Deine Einstellung wurde inzwischen geändert. Lade den aktuellen Stand und bei Bedarf eine neue Vorschau.",
+    "NewPreview": "Diese Vorschau ist nicht mehr aktuell. Lade bitte eine neue Vorschau.",
+    "Unavailable": "Wir konnten den aktuellen Stand gerade nicht bestätigen. Bitte versuch es noch einmal.",
+    "CheckAgain": "Einstellung prüfen",
+    "Reload": "Neu laden",
+    "RankingUnavailable": "Die Bestenliste ist gerade nicht verfügbar. Bitte versuch es noch einmal."
   }
 }
