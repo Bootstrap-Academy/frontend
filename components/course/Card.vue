@@ -1,6 +1,18 @@
 <template>
   <article class="overflow-hidden bg-secondary style-card">
-    <img v-if="image" :src="image" alt="" class="h-32 w-full object-cover" />
+    <img
+      v-if="image"
+      :src="imageFailed ? image : thumbnail.src"
+      :srcset="imageFailed ? undefined : thumbnail.srcset"
+      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+      width="800"
+      height="450"
+      :loading="eagerImage ? 'eager' : 'lazy'"
+      decoding="async"
+      alt=""
+      class="h-32 w-full object-cover"
+      @error="imageFailed = true"
+    />
     <div class="card-sm">
       <h3 class="clamp tight line-2 text-heading-3">{{ title }}</h3>
       <p class="clamp line-2 text-body-2 mt-2">{{ description }}</p>
@@ -34,11 +46,13 @@ import type { PropType } from "vue";
 import { PlayIcon } from "@heroicons/vue/24/outline";
 import IconMorphcoin from "~/components/icon/Morphcoin.vue";
 import { useI18n } from "vue-i18n";
+import { courseImage } from "~/utils/courseImages";
 
 export default defineComponent({
   components: { PlayIcon, IconMorphcoin },
   props: {
     data: { type: Object as PropType<any>, default: null },
+    eagerImage: { type: Boolean, default: false },
   },
   setup(props) {
     const { t } = useI18n();
@@ -48,6 +62,9 @@ export default defineComponent({
     const image = computed(() => {
       return props.data?.image || "";
     });
+    const imageFailed = ref(false);
+    const thumbnail = computed(() => courseImage(image.value));
+    watch(image, () => (imageFailed.value = false));
 
     const title = computed(() => {
       return translated.value?.title || "";
@@ -93,9 +110,18 @@ export default defineComponent({
       return props.data?.completed ?? false;
     });
 
-    return { image, title, description, price, lectures, completed, t, copy };
+    return {
+      image,
+      imageFailed,
+      thumbnail,
+      title,
+      description,
+      price,
+      lectures,
+      completed,
+      t,
+      copy,
+    };
   },
 });
 </script>
-
-<style scoped></style>
