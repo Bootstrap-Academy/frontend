@@ -601,7 +601,7 @@ try {
       const logged = await fixture(width, english);
       await logged.auth();
       await logged.page.goto(app + "/docs/imprint");
-      await logged.page.getByRole("img", { name: /avatar|Profilbild|Benutzerbild/i }).waitFor();
+      await logged.page.getByRole("button", { name: /Kontomenü|Account menu/ }).waitFor();
       await logged.page.evaluate((state) => {
         localStorage.setItem(
           "academy-guest-learning:1",
@@ -638,7 +638,7 @@ try {
         sessionStorage.getItem("academy-learning-recovery:activity:c:u:guest-test-A"),
       ]);
       const logout = async (accept) => {
-        await logged.page.getByRole("img", { name: /avatar|Profilbild|Benutzerbild/i }).click();
+        await logged.page.getByRole("button", { name: /Kontomenü|Account menu/ }).click();
         const dialogPromise = logged.page.waitForEvent("dialog");
         const click = logged.page
           .getByRole("button", { name: /Logout|Ausloggen|Abmelden/, exact: true })
@@ -704,7 +704,7 @@ try {
         (key) => sessionStorage.getItem(key),
         draftKey
       );
-      await challenge.page.getByRole("img", { name: /avatar|Profilbild|Benutzerbild/i }).click();
+      await challenge.page.getByRole("button", { name: /Kontomenü|Account menu/ }).click();
       const dialogPromise = challenge.page.waitForEvent("dialog");
       const logoutClick = challenge.page
         .getByRole("button", { name: /Logout|Ausloggen|Abmelden/, exact: true })
