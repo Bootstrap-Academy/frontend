@@ -111,7 +111,7 @@ export async function verifyLessonPackage(
       signal,
       cache: "default",
     });
-    const actualType = response.headers.get("content-type")?.split(";")[0].trim();
+    const actualType = response.headers.get("content-type")?.split(";")[0]?.trim();
     if (
       !response.ok ||
       response.url !== url ||
@@ -229,10 +229,11 @@ export function createLessonWindowTransport(
     try {
       const message = validateMessage(event.data, { sender: "host" });
       if (message.type !== "host.connect" || message.payload.transport !== "message-port") return;
-      port = event.ports[0];
+      const connected = event.ports[0]!;
+      port = connected;
       target.removeEventListener("message", bootstrap);
-      port.onmessage = (event) => receive?.(event.data);
-      port.start();
+      connected.onmessage = (event) => receive?.(event.data);
+      connected.start();
       first = message;
       resolveConnection(message);
       receive?.(message);
