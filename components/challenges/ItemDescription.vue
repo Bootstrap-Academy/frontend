@@ -1,11 +1,11 @@
 <template>
   <article>
     <h4 class="text-heading-3">{{ t("Headings.Description") }}</h4>
-    <div
+    <Markdown
       class="markdown"
       v-if="typeof description == 'string'"
-      v-html="$md.render(description)"
-    ></div>
+      :source="description"
+    ></Markdown>
   </article>
 </template>
 
