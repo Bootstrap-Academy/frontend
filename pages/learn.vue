@@ -2,7 +2,11 @@
   <main class="learning-page">
     <header class="learning-heading">
       <NuxtLink :to="backLink" class="back-link">← {{ backLabel }}</NuxtLink>
-      <p v-if="view?.status === 'ready'" class="save-status" aria-live="polite">
+      <p
+        v-if="view?.status === 'ready' && view.room?.unit.module?.api_version !== 2"
+        class="save-status"
+        aria-live="polite"
+      >
         {{
           t(
             view.saving
@@ -131,6 +135,7 @@
           ref="exerciseComponent"
           v-else-if="lesson"
           :key="roomKey"
+          :protocol="protocol"
           :lesson="lesson"
           :daily="daily"
           :locale="locale"
@@ -149,12 +154,7 @@
           v-if="!finished && lesson?.activities[0]?.presentation?.allow_skip"
           class="room-footer"
         >
-          <button
-            type="button"
-            class="quiet-button"
-            :disabled="locked"
-            @click="data.complete('skip')"
-          >
+          <button type="button" class="quiet-button" :disabled="locked" @click="skip">
             {{ t("LearningRooms.AlreadyKnow") }}
           </button>
         </footer>
@@ -179,6 +179,7 @@ const { t, locale } = useI18n();
 useHead(() => ({ title: t("LearningRooms.Title") }));
 const router = useRouter();
 const {
+  protocol,
   view,
   data,
   edit,
@@ -223,7 +224,10 @@ const locked = computed(
 );
 const sessionRevision = ref(0);
 const exercisePosting = ref(false);
-const exerciseComponent = ref<{ cancelPreparation: () => void } | null>(null);
+const exerciseComponent = ref<{
+  cancelPreparation: () => void;
+  prepareNavigation?: () => Promise<boolean>;
+} | null>(null);
 watch(
   owner,
   () => {
@@ -248,12 +252,14 @@ async function completeActivity(result: LearningActivityCompletion) {
 }
 async function advance() {
   if (exercisePosting.value) return;
+  if ((await exerciseComponent.value?.prepareNavigation?.()) === false) return;
   exerciseComponent.value?.cancelPreparation();
   if (view.value?.room && (await data.next(view.value.path?.id, view.value.room.unit.id)))
     await syncLocation();
 }
 async function changePath(path: string) {
   if (exercisePosting.value) return;
+  if ((await exerciseComponent.value?.prepareNavigation?.()) === false) return;
   exerciseComponent.value?.cancelPreparation();
   if (await data.next(path, undefined, true, { courseId: null }))
     await router.replace({ path: "/learn", query: { path } });
@@ -262,10 +268,15 @@ async function canLeave() {
   if (!owner.value) return true;
   if (limitReached.value && keepDailyDraft()) return true;
   if (exercisePosting.value || view.value?.reviewStarting) return false;
-  exerciseComponent.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict) return false;
+  if ((await exerciseComponent.value?.prepareNavigation?.()) === false) return false;
+  exerciseComponent.value?.cancelPreparation();
   if (view.value?.dirty || view.value?.saving) return await data.save();
   return true;
+}
+async function skip() {
+  if ((await exerciseComponent.value?.prepareNavigation?.()) === false) return;
+  await data.complete("skip");
 }
 onBeforeRouteLeave(canLeave);
 onBeforeRouteUpdate(async (to) => {

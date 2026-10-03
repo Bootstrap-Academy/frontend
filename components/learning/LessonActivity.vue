@@ -42,6 +42,7 @@
           v-if="renderActivity && (activity.source.kind !== 'lecture' || activity.kind === 'video')"
           ref="host"
           :key="`${owner}:${activity.id}:${view?.room?.progress.review_id || 'initial'}`"
+          :protocol="roomSource ? protocol : undefined"
           :activity="renderActivity"
           :state="roomSource ? view?.draft || {} : draft"
           :locale="locale"
@@ -110,6 +111,7 @@ const props = defineProps<{
 const emit = defineEmits<{ next: []; completed: [id: string]; busy: [active: boolean] }>();
 const roomSource = props.activity.source.kind === "room" ? props.activity.source : null;
 const {
+  protocol,
   view,
   data,
   edit,
@@ -359,9 +361,10 @@ async function canLeave() {
   if (!owner.value) return true;
   if (limitReached.value && keepDailyDraft()) return true;
   if (busy.value) return false;
-  host.value?.cancelPreparation();
   if (view.value?.completionPending || view.value?.conflict || view.value?.reviewPending)
     return false;
+  if ((await host.value?.prepareNavigation?.()) === false) return false;
+  host.value?.cancelPreparation();
   return roomSource && !view.value?.dirty && !view.value?.saving ? true : await save();
 }
 async function signIn() {
