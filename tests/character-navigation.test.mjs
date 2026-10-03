@@ -23,7 +23,11 @@ function fixture(authenticated) {
   };
   const middleware = (text) => {
     runInNewContext(
-      text.replace(/^import .*;\n/gm, "").replace("export default", "result ="),
+      text
+        .replace(/^import .*;\n/gm, "")
+        // Nuxt replaces this compile-time flag before the middleware is executed.
+        .replaceAll("import.meta.client", JSON.stringify(context.process.client))
+        .replace("export default", "result ="),
       context
     );
     return context.result;
