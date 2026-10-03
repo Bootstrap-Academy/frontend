@@ -44,11 +44,11 @@
           :rules="!!pointsErrorMsg && i == tasks.length - 1 ? [(v: string) => pointsErrorMsg] : []"
         />
 
-        <div
+        <Markdown
           v-if="!!task.description"
           class="markdown clamp line-1 col-span-2"
-          v-html="$md.render(task.description)"
-        ></div>
+          :source="task.description"
+        ></Markdown>
         <Btn
           tertiary
           class="w-fit !pb-1 !pt-0"

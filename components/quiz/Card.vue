@@ -7,7 +7,9 @@
       v-if="data?.solved"
       class="absolute -right-1 -top-1.5 h-6 w-6 rounded-full bg-accent p-0.5 text-white"
     />
-    <h3 class="text-heading-4">Q). <span v-html="$md.render(data?.question ?? '')"></span></h3>
+    <h3 class="text-heading-4">
+      Q). <Markdown as="span" :source="data?.question ?? ''"></Markdown>
+    </h3>
 
     <div class="flex items-center justify-between gap-box">
       <!-- Single Choice mit Tooltip -->
