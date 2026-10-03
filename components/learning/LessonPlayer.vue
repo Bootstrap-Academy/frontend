@@ -1,36 +1,40 @@
 <template>
   <section class="lesson-player">
-    <nav v-if="lesson.activities.length > 1" :aria-label="copy.activities">
-      <button
-        v-for="(item, index) in lesson.activities"
-        :key="item.id"
-        type="button"
-        :aria-current="item.id === activity?.id ? 'step' : undefined"
-        :disabled="disabled"
-        @click="emit('select', item.id)"
-      >
-        {{ index + 1 }}. {{ title(item.title) }}
-      </button>
-    </nav>
-    <slot v-if="activity" name="activity" :activity="activity">
-      <ActivityHost
-        ref="host"
-        :key="activity.id"
-        :activity="activity"
-        :state="state || {}"
-        :locale="locale"
-        :disabled="disabled"
-        :request="request"
-        :save="save"
-        :user-id="userId"
-        :review-id="reviewId"
-        :legacy-video="legacyVideo"
-        @change="emit('change', $event)"
-        @complete="emit('complete', $event)"
-        @posting="emit('posting', $event)"
-        @skip="emit('skip')"
-      />
-    </slot>
+    <LearningDailyNotice v-if="!blocked" :value="daily" />
+    <LearningDailyLimit v-if="blocked && daily" :value="daily" />
+    <template v-else>
+      <nav v-if="lesson.activities.length > 1" :aria-label="copy.activities">
+        <button
+          v-for="(item, index) in lesson.activities"
+          :key="item.id"
+          type="button"
+          :aria-current="item.id === activity?.id ? 'step' : undefined"
+          :disabled="disabled"
+          @click="emit('select', item.id)"
+        >
+          {{ index + 1 }}. {{ title(item.title) }}
+        </button>
+      </nav>
+      <slot v-if="activity" name="activity" :activity="activity">
+        <ActivityHost
+          ref="host"
+          :key="activity.id"
+          :activity="activity"
+          :state="state || {}"
+          :locale="locale"
+          :disabled="disabled"
+          :request="request"
+          :save="save"
+          :user-id="userId"
+          :review-id="reviewId"
+          :legacy-video="legacyVideo"
+          @change="emit('change', $event)"
+          @complete="emit('complete', $event)"
+          @posting="emit('posting', $event)"
+          @skip="emit('skip')"
+        />
+      </slot>
+    </template>
   </section>
 </template>
 
@@ -44,9 +48,12 @@ import type {
 } from "~/types/learningActivities";
 import type { LearningRequest, LocalizedText } from "~/types/learningRooms";
 import ActivityHost from "./ActivityHost.vue";
+import type { DailyLearning } from "~/types/dailyLearning";
+import { dailyBlocked } from "~/utils/dailyLearning";
 
 const props = defineProps<{
   lesson: LearningLesson;
+  daily?: DailyLearning | null;
   activeActivityId?: string;
   state?: Record<string, any>;
   locale: string;
@@ -64,6 +71,7 @@ const emit = defineEmits<{
   posting: [active: boolean];
   skip: [];
 }>();
+const blocked = computed(() => dailyBlocked(props.daily));
 const host = ref<LearningActivityHandle | null>(null);
 const activity = computed(() =>
   props.activeActivityId
