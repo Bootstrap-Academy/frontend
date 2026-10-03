@@ -293,7 +293,10 @@ export function createLessonFrame(
   const load = new Promise<void>((resolve, reject) => {
     rejectLoad = reject;
     frame.onload = () => {
-      if (closed) return;
+      if (closed) {
+        dispose();
+        return;
+      }
       if (loaded) {
         dispose();
         failed();
@@ -311,21 +314,24 @@ export function createLessonFrame(
     if (!closed) receive?.(event.data);
   };
   channel.port1.onmessageerror = () => {
-    dispose();
+    close();
     failed();
   };
   channel.port1.start();
-  function dispose() {
+  function close() {
     if (closed) return;
     closed = true;
     channel.port1.onmessage = null;
     channel.port1.onmessageerror = null;
     channel.port1.close();
     channel.port2.close();
-    frame.onload = frame.onerror = null;
-    frame.remove();
     receive = undefined;
     rejectLoad?.(new ProtocolError("cancelled", "Document closed."));
+  }
+  function dispose() {
+    close();
+    frame.onload = frame.onerror = null;
+    frame.remove();
   }
   frame.src = verified.descriptor.entry_url;
   surface.replaceChildren(frame);
@@ -348,7 +354,8 @@ export function createLessonFrame(
           receive = undefined;
         };
       },
-      close: dispose,
+      // A failed bridge cannot checkpoint; keep visible work until the user leaves or retries.
+      close,
     },
   };
 }

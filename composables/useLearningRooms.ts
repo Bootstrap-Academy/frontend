@@ -10,6 +10,7 @@ export function useLearningRooms(
     selection?: { path?: string; courseId: string; unitId: string };
     syncLocation?: boolean;
     loadRoom?: boolean;
+    prepareLogout?: () => Promise<boolean> | boolean;
   } = {}
 ) {
   const config = useRuntimeConfig().public;
@@ -289,8 +290,15 @@ export function useLearningRooms(
     user: () => (owner.value ? user.value?.id || null : null),
     prepare: async () => {
       if (view.value?.saving || view.value?.completing || view.value?.reviewStarting) return false;
+      const expectedOwner = owner.value;
+      const expectedEpoch = epoch;
+      // A module may still hold work outside the native room draft.
+      if (options.prepareLogout && (await options.prepareLogout()) === false) return false;
+      if (!alive || epoch !== expectedEpoch || owner.value !== expectedOwner) return false;
+      if (view.value?.saving || view.value?.completing || view.value?.reviewStarting) return false;
       if (view.value?.dirty && !view.value.completionPending && !view.value.conflict)
         await data.save();
+      if (!alive || epoch !== expectedEpoch || owner.value !== expectedOwner) return false;
       return preserve(lastUserId, true);
     },
     unsaved: () => !!data.recovery(),

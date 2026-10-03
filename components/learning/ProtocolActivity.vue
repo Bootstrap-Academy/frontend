@@ -56,6 +56,8 @@ const copy = computed(() =>
         back: "Zurück",
         progress: "Fortschritt in der Szene",
         reset: "Deinen Stand zurücksetzen?",
+        discard:
+          "Deine letzten Änderungen sind vielleicht noch nicht gespeichert. Willst du die Szene trotzdem verlassen?",
       }
     : {
         loading: "Loading …",
@@ -64,6 +66,7 @@ const copy = computed(() =>
         back: "Back",
         progress: "Scene progress",
         reset: "Reset your work?",
+        discard: "Your latest changes might not be saved yet. Leave the scene anyway?",
       }
 );
 function dispose() {
@@ -80,7 +83,11 @@ async function close() {
   await router.push("/");
 }
 async function prepareNavigation() {
-  if (phase.value === "recoverable-error") return !props.save || (await props.save());
+  if (phase.value === "recoverable-error") {
+    // A failed frame may contain work the native room has never received.
+    if (frame && !window.confirm(copy.value.discard)) return false;
+    return !props.save || (await props.save());
+  }
   return host?.prepareNavigation() ?? false;
 }
 async function start() {
@@ -196,9 +203,11 @@ async function start() {
 }
 async function retry() {
   if (retrying.value) return;
+  if (frame && !window.confirm(copy.value.discard)) return;
+  const ticket = generation;
   retrying.value = true;
   try {
-    if (!props.save || (await props.save())) await start();
+    if ((!props.save || (await props.save())) && alive && ticket === generation) await start();
   } finally {
     retrying.value = false;
   }
@@ -237,7 +246,7 @@ onBeforeUnmount(() => {
 defineExpose({
   prepareNavigation,
   cancelPreparation: () => {
-    /* Saves remain recoverable; navigation owns disposal. */
+    void host?.visibility(false);
   },
 });
 </script>

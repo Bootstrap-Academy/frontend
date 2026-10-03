@@ -73,6 +73,98 @@ const deferred = () => {
 };
 const settle = () => new Promise(setImmediate);
 
+const protocolComponent = await readFile(
+  new URL("../components/learning/ProtocolActivity.vue", import.meta.url),
+  "utf8"
+);
+const protocolAst = ts.createSourceFile(
+  "ProtocolActivity.ts",
+  protocolComponent.match(/<script setup lang="ts">([\s\S]*?)<\/script>/)[1],
+  ts.ScriptTarget.Latest,
+  true
+);
+const protocolNavigation = protocolAst.statements
+  .filter(
+    (node) =>
+      ts.isFunctionDeclaration(node) && ["prepareNavigation", "retry"].includes(node.name?.text)
+  )
+  .map((node) => node.getText(protocolAst))
+  .join("\n");
+function failedFrame(options = {}) {
+  const warnings = [];
+  let saves = 0,
+    restarts = 0;
+  const api = evaluate(
+    `${protocolNavigation}\nfunction changeOwner() { generation++; }\nfunction unmount() { alive = false; }`,
+    {
+      phase: vue.ref("recoverable-error"),
+      frame: options.frame === false ? undefined : {},
+      host: undefined,
+      copy: vue.ref({ discard: "Your latest changes might not be saved yet." }),
+      window: {
+        confirm: (message) => {
+          warnings.push(message);
+          return options.accept === true;
+        },
+      },
+      props: {
+        save: async () => {
+          saves++;
+          return options.save ? await options.save() : true;
+        },
+      },
+      retrying: vue.ref(false),
+      generation: 1,
+      alive: true,
+      start: async () => {
+        restarts++;
+      },
+    },
+    ["prepareNavigation", "retry", "changeOwner", "unmount"]
+  );
+  return { ...api, warnings, saves: () => saves, restarts: () => restarts };
+}
+
+test("a failed frame with unconfirmed local work requires consent before leaving or restarting", async () => {
+  const kept = failedFrame();
+  assert.equal(await kept.prepareNavigation(), false);
+  await kept.retry();
+  assert.equal(kept.saves(), 0);
+  assert.equal(kept.restarts(), 0);
+  assert.equal(kept.warnings.length, 2);
+  const discarded = failedFrame({ accept: true });
+  assert.equal(await discarded.prepareNavigation(), true);
+  await discarded.retry();
+  assert.equal(discarded.saves(), 2);
+  assert.equal(discarded.restarts(), 1);
+  assert.equal(discarded.warnings.length, 2);
+});
+
+test("a package failure before any frame exists can save and leave without a loss warning", async () => {
+  const f = failedFrame({ frame: false });
+  assert.equal(await f.prepareNavigation(), true);
+  await f.retry();
+  assert.equal(f.warnings.length, 0);
+  assert.equal(f.saves(), 2);
+  assert.equal(f.restarts(), 1);
+});
+
+test("discard consent does not bypass a failed native save or restart a changed owner", async () => {
+  const failed = failedFrame({ accept: true, save: async () => false });
+  assert.equal(await failed.prepareNavigation(), false);
+  await failed.retry();
+  assert.equal(failed.restarts(), 0);
+  for (const change of ["changeOwner", "unmount"]) {
+    const gate = deferred();
+    const f = failedFrame({ accept: true, save: () => gate.promise });
+    const retry = f.retry();
+    f[change]();
+    gate.resolve(true);
+    await retry;
+    assert.equal(f.restarts(), 0);
+  }
+});
+
 test("parallel expired reads share refresh, while an unsafe challenge POST is never replayed", async () => {
   let snapshot = {
     identity: "A:S",
@@ -203,6 +295,7 @@ function fixture(t, options = {}) {
   const calls = [];
   const navigation = [];
   const cleanups = [];
+  let logoutGuard;
   const scope = vue.effectScope();
   const auth = (response) => {
     user.value = response?.user ?? null;
@@ -234,7 +327,10 @@ function fixture(t, options = {}) {
       observe: () => {},
       forLesson: (_course, _lesson, value) => ({ ...value, ...daily.value }),
     }),
-    registerLearningLogout: () => () => {},
+    registerLearningLogout: (guard) => {
+      logoutGuard = guard;
+      return () => {};
+    },
     dailyError: () => null,
     ref: vue.ref,
     computed: vue.computed,
@@ -348,8 +444,99 @@ function fixture(t, options = {}) {
     scope.stop();
   };
   t.after(dispose);
-  return { api, daily, access, user, session, storage, calls, cookies, navigation, auth, dispose };
+  return {
+    api,
+    daily,
+    access,
+    user,
+    session,
+    storage,
+    calls,
+    cookies,
+    navigation,
+    auth,
+    dispose,
+    logoutGuard,
+  };
 }
+
+test("logout checkpoints player-local work before saving the native room draft", async (t) => {
+  let frameDraft = "my note",
+    preparations = 0;
+  const f = fixture(t, {
+    roomOptions: {
+      prepareLogout: async () => {
+        preparations++;
+        f.api.data.edit({ note: frameDraft });
+        frameDraft = "";
+        return true;
+      },
+    },
+  });
+  await settle();
+  assert.deepEqual(f.api.view.value.room.progress.state, {});
+  assert.equal(await f.logoutGuard.prepare(), true);
+  assert.equal(preparations, 1);
+  assert.deepEqual(f.api.view.value.room.progress.state, { note: "my note" });
+  assert.equal(f.calls.filter(({ method }) => method === "PUT").length, 1);
+  assert.equal(f.logoutGuard.unsaved(), false);
+});
+
+test("refused or failed player preparation keeps logout pending and leaves work intact", async (t) => {
+  for (const fail of [false, true]) {
+    const f = fixture(t, {
+      roomOptions: {
+        prepareLogout: () => {
+          if (fail) throw new Error("checkpoint unavailable");
+          return false;
+        },
+      },
+    });
+    await settle();
+    f.api.data.edit({ note: "still here" });
+    if (fail) await assert.rejects(f.logoutGuard.prepare(), /checkpoint unavailable/);
+    else assert.equal(await f.logoutGuard.prepare(), false);
+    assert.equal(f.calls.filter(({ method }) => method === "PUT").length, 0);
+    assert.equal(f.api.view.value.draft.note, "still here");
+    assert.equal(f.user.value.id, "A");
+  }
+});
+
+test("a delayed player checkpoint cannot save after owner changes, A-B-A, or unmount", async (t) => {
+  for (const change of ["owner", "return", "unmount"]) {
+    const gate = deferred();
+    const f = fixture(t, { roomOptions: { prepareLogout: () => gate.promise } });
+    await settle();
+    f.api.data.edit({ note: "A's private work" });
+    const leaving = f.logoutGuard.prepare();
+    if (change === "unmount") f.dispose();
+    else {
+      f.auth({
+        user: { id: "B" },
+        session: { id: "session-B" },
+        access_token: fresh(),
+        refresh_token: "refresh-B",
+      });
+      await settle();
+      if (change === "return") {
+        f.auth({
+          user: { id: "A" },
+          session: { id: "session-A" },
+          access_token: fresh(),
+          refresh_token: "refresh-A",
+        });
+        await settle();
+      }
+      f.api.data.edit({ note: "the current account's work" });
+    }
+    const before = f.calls.filter(({ method }) => method === "PUT").length;
+    gate.resolve(true);
+    assert.equal(await leaving, false);
+    assert.equal(f.calls.filter(({ method }) => method === "PUT").length, before);
+    if (change !== "unmount")
+      assert.equal(f.api.view.value.draft.note, "the current account's work");
+  }
+});
 
 test("the actual composable preserves drafts and its editor request binding through same-session refresh", async (t) => {
   const f = fixture(t);
