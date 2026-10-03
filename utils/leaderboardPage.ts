@@ -51,7 +51,10 @@ export function normalizeLeaderboardPage(value: any, policySeen = false) {
         value.epoch_revision < 0))
   )
     throw { statusCode: 503 };
-  const leaderboard: LeaderboardEntry[] = value.leaderboard.map((item: any) => {
+  const leaderboard: LeaderboardEntry[] = value.leaderboard.flatMap((item: any) => {
+    // The old DTO permits an unresolved account. Keep its pagination contract,
+    // while displaying no anonymous person/score as a substitute for identity.
+    if (!active && item?.user == null) return [];
     if (
       typeof item?.user?.id !== "string" ||
       typeof item?.user?.display_name !== "string" ||
@@ -62,11 +65,13 @@ export function normalizeLeaderboardPage(value: any, policySeen = false) {
       (active && item.user.avatar_url !== null)
     )
       throw { statusCode: 503 };
-    return {
-      user: { id: item.user.id, display_name: item.user.display_name, avatar_url: null },
-      rank: item.rank,
-      score: item.score,
-    };
+    return [
+      {
+        user: { id: item.user.id, display_name: item.user.display_name, avatar_url: null },
+        rank: item.rank,
+        score: item.score,
+      },
+    ];
   });
   return {
     leaderboard,

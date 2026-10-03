@@ -85,7 +85,21 @@ async function fixture(width, locale) {
   await context.route("**/*", async (route) => {
     const req = route.request(),
       url = new URL(req.url());
-    if (url.origin === app || url.protocol === "data:") return route.continue();
+    if (url.origin === app) {
+      // Exercise the same compiled assets with only the public feature flag
+      // enabled in this isolated synthetic fixture. Published files stay off.
+      if (process.env.PUBLICATION_TEST_ENABLE_FROM_BUILD === "true" && req.isNavigationRequest()) {
+        const response = await route.fetch();
+        const html = await response.text();
+        assert.ok(html.includes("profilePublicationEnabled:false"));
+        return route.fulfill({
+          response,
+          body: html.replace("profilePublicationEnabled:false", "profilePublicationEnabled:true"),
+        });
+      }
+      return route.continue();
+    }
+    if (url.protocol === "data:") return route.continue();
     if (url.origin !== api) return route.abort();
     const path = url.pathname,
       method = req.method();
@@ -217,6 +231,16 @@ try {
         assert.equal(await page.locator("#ProfileShowOnLeaderboard").isChecked(), true);
         assert.equal(f.paths.filter((p) => p.path.includes("publication")).length, 0);
         await page.screenshot({ path: `${out}/disabled-${width}-${locale}.png` });
+        await page.getByRole("button", { name: locales[locale].Buttons.Safe, exact: true }).click();
+        await page.waitForFunction(() => !document.querySelector(".form-submitting"));
+        assert.equal(f.writes.find((w) => w.kind === "profile").body.leaderboard_opt_out, false);
+        await page.goto(app + "/challenges/leader-board");
+        await page.getByText("Rank user 0", { exact: true }).first().waitFor();
+        await page
+          .getByRole("button", { name: locales[locale].Headings.More, exact: true })
+          .click();
+        await page.getByText("Rank user 10", { exact: true }).waitFor();
+        assert.equal(f.paths.filter((p) => p.path.includes("publication")).length, 0);
         results.push({ name: "disabled-legacy-profile", width, locale, publicationRequests: 0 });
         await f.context.close();
         continue;

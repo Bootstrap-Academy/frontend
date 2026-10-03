@@ -358,6 +358,19 @@ test("legacy and publication leaderboards retain only the decided fields; partia
     });
   }
   assert.throws(() => leaderboard.normalizeLeaderboardPage(legacy, true));
+  assert.equal(
+    leaderboard.normalizeLeaderboardPage({
+      total: 3,
+      leaderboard: [{ user: null, score: 99, rank: 1 }, ...legacy.leaderboard],
+    }).leaderboard.length,
+    1
+  );
+  assert.throws(() =>
+    leaderboard.normalizeLeaderboardPage({
+      ...active,
+      leaderboard: [{ user: null, score: 99, rank: 1 }],
+    })
+  );
   assert.throws(() =>
     leaderboard.normalizeLeaderboardPage({ ...active, epoch_revision: undefined })
   );
