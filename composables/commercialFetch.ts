@@ -1,9 +1,11 @@
 import type { $Fetch } from "ofetch";
 
 /** Keep a received personal/learning denial visible to the existing proof guards. */
-export function createCommercialFetch(parent: $Fetch): $Fetch {
-  const native = parent.native;
-  return parent.create(
+export function createCommercialFetch(parent: typeof globalThis.$fetch) {
+  // Nuxt's browser $fetch is ofetch. Nitro omits native and create's second argument.
+  const transport = parent as typeof parent & Pick<$Fetch, "native" | "create">;
+  const native = transport.native;
+  return transport.create(
     {},
     {
       fetch: async (request, options) => {
