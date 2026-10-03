@@ -1,4 +1,9 @@
 {
+  "Navigation": {
+    "OpenMenu": "Menü öffnen",
+    "CloseMenu": "Menü schließen",
+    "MainMenu": "Hauptmenü"
+  },
   "UpdateNotice": {
     "Body": "Wir wollen die Academy für alle besser machen und wissen, ob neue Funktionen wirklich genutzt werden und welche Lektionen schwerfallen. Dafür werten wir Daten aus, die sowieso schon gespeichert sind, und schauen nur auf Summen, nie auf dich einzeln.",
     "Link": "Mehr dazu",
