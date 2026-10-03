@@ -179,6 +179,13 @@ async function pageFixture(file, request, { reactiveWatches = false } = {}) {
   const route = Vue.reactive({ params: { id: "python" }, query: {} });
   const navigation = [];
   const bindings = {
+    useLessonStart: () => ({
+      daily: Vue.ref(null),
+      limited: Vue.ref(null),
+      error: Vue.ref(false),
+      pending: Vue.ref(false),
+      start: async () => true,
+    }),
     ...journey,
     ref: Vue.ref,
     computed: Vue.computed,
@@ -322,6 +329,7 @@ test("legacy watch releases an old owner's pending save without clearing the new
   t.after(f.dispose);
   await f.load();
   const previousSave = f.finishLecture();
+  await new Promise(setImmediate); // Admission resolves before the completion PUT.
   assert.equal(f.saving.value, true);
   f.saveError.value = true;
   owner = "user-b";
@@ -333,6 +341,7 @@ test("legacy watch releases an old owner's pending save without clearing the new
   assert.equal(f.saveError.value, false);
 
   const currentSave = f.finishLecture();
+  await new Promise(setImmediate);
   assert.equal(f.saving.value, true);
   pending[0](true);
   await previousSave;
@@ -387,6 +396,13 @@ test("MP4 resume survives startup events and signed URL renewal without changing
   let nextSource = () => Promise.resolve("https://example.invalid/own-video.mp4");
   let unmount;
   const bindings = {
+    useLessonStart: () => ({
+      daily: Vue.ref(null),
+      limited: Vue.ref(null),
+      error: Vue.ref(false),
+      pending: Vue.ref(false),
+      start: async () => true,
+    }),
     ref: Vue.ref,
     computed: Vue.computed,
     defineProps: () => props,

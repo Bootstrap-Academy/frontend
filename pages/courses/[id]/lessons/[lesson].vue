@@ -14,6 +14,7 @@
       <h1>{{ title(lesson.title) }}</h1>
       <LearningLessonPlayer
         :lesson="lesson"
+        :daily="lessonDaily"
         :active-activity-id="activeId"
         :locale="locale"
         :disabled="busy"
@@ -25,6 +26,7 @@
             :key="`${owner}:${lesson.id}:${activity.id}`"
             :activity="activity"
             :course="course"
+            :lesson-id="lesson.id"
             :locale="locale"
             @busy="busy = $event"
             @completed="recordCompletion"
@@ -50,6 +52,7 @@ const { owner, request, reauthRequired, reauthenticate } = useLearningRooms({
   loadRoom: false,
   syncLocation: false,
 });
+const dailyState = useDailyLearning();
 const course = ref<Course | null>(null);
 const lesson = ref<LearningLesson | null>(null);
 const curriculum = ref<CourseCurriculum | null>(null);
@@ -61,6 +64,9 @@ const activityHandle = ref<{ canLeave: () => Promise<boolean>; shouldWarn: () =>
 );
 const courseId = computed(() => String(route.params.id || ""));
 const lessonId = computed(() => String(route.params.lesson || ""));
+const lessonDaily = computed(() =>
+  dailyState.forLesson(courseId.value, lesson.value?.id || lessonId.value, lesson.value?.daily)
+);
 const overview = computed(() => `/courses/${encodeURIComponent(courseId.value)}`);
 const activeId = computed(() => {
   const requested = typeof route.query.activity === "string" ? route.query.activity : null;
@@ -69,6 +75,10 @@ const activeId = computed(() => {
       ? requested
       : null;
   return (
+    (lesson.value?.initial_activity_id &&
+    lesson.value.activities.some((activity) => activity.id === lesson.value?.initial_activity_id)
+      ? lesson.value.initial_activity_id
+      : null) ||
     lesson.value?.activities.find((activity) => activity.completed !== true)?.id ||
     lesson.value?.activities[0]?.id ||
     null
@@ -119,7 +129,11 @@ async function load() {
     if (
       courseResponse?.id !== expectedCourse ||
       lessonResponse?.course_id !== expectedCourse ||
-      lessonResponse?.id !== expectedLesson ||
+      !(
+        lessonResponse?.id === expectedLesson ||
+        (lessonResponse?.initial_activity_id === expectedLesson &&
+          lessonResponse?.activities?.some((activity: any) => activity.id === expectedLesson))
+      ) ||
       lessonResponse.explicit !== true ||
       !Array.isArray(lessonResponse.activities) ||
       !lessonResponse.activities.length ||

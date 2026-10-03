@@ -5,6 +5,7 @@
 -->
 <template>
   <button
+    v-if="showHearts"
     type="button"
     @click="fnRefillHearts()"
     class="flex scale-90 cursor-pointer items-center justify-between rounded-full bg-light px-6 text-sm text-white"
@@ -47,6 +48,7 @@ export default {
   setup() {
     const { t, locale } = useI18n();
     const coins = useCoins();
+    const { isDaily, showHearts } = useDailyLearning();
     const heartInfo: any = useHeartInfo();
     const heartConfig = useHeartConfig();
     const offer = ref<any>(null);
@@ -67,6 +69,7 @@ export default {
     onMounted(loadHeartConfig);
 
     async function fnRefillHearts() {
+      if (isDaily.value) return;
       if (hearts.value >= heartConfig.value.hearts_max) {
         return openSnackbar("info", "Error.AlreadyHaveHearts");
       }
@@ -96,6 +99,8 @@ export default {
     }
 
     return {
+      isDaily,
+      showHearts,
       offer,
       t,
       fnRefillHearts,
