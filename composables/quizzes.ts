@@ -328,12 +328,12 @@ export async function attempQuiz(taskId: any, subTaskid: any, body: any) {
     }
     return [success, null];
   } catch (error: any) {
-    if (error.data.error == "not_enough_hearts") {
+    if (error?.data?.error == "not_enough_hearts") {
       return [null, "Error.NotEnoughHeartsForQuiz"];
-    } else if (error.detail == "Error.TooManyAttemptsForQuiz") {
+    } else if (error?.detail == "Error.TooManyAttemptsForQuiz") {
       return [null, "Error.TooManyAttemptsForQuiz"];
     }
-    return [null, error.data];
+    return [null, error?.data || error];
   }
 }
 

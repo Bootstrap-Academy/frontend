@@ -2,7 +2,7 @@ import { useState } from "#app";
 import { User } from "~/types/userTypes";
 
 export const useUser = () => useState<User>("user", () => new User());
-export const useSession = () => useState("session", () => null);
+export const useSession = () => useState<{ id: string } | null>("session", () => null);
 export const useAccessToken = () => useState("accessToken", () => "");
 export const useRefreshToken = () => useState("refreshToken", () => "");
 export const useShowConfetti = () => useState("showConfetti", () => false);
