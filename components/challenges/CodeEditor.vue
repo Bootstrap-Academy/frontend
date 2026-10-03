@@ -18,12 +18,12 @@
         <!--
           The caption explains when a whole heart is charged.
         -->
-        <p v-if="!isPremium" class="text-xs text-body">
+        <p v-if="!heartFree" class="text-xs text-body">
           {{ t("Body.WrongAnswerCostsOneHeart") }}
         </p>
 
         <InputBtn
-          v-if="!isPremium"
+          v-if="!heartFree"
           :icon="HeartIcon"
           iconRight
           :iconColor="'#FF0000'"
@@ -33,13 +33,14 @@
         >
 
         <InputBtn
-          v-else-if="isPremium"
+          v-else-if="heartFree"
           iconRight
           @click="fnCreateSubmission()"
           :loading="submitButtonLoading"
           >{{ t("Buttons.Submit") }}</InputBtn
         >
       </article>
+      <LearningDailyLimit v-if="attemptLimit" :value="attemptLimit" class="w-full" />
     </header>
     <div ref="editorContainer" class="h-full min-h-[300px] w-full overflow-hidden style-card"></div>
   </div>
@@ -84,8 +85,10 @@ export default defineComponent({
     const updateCode = ref(true);
     const container: any = ref();
 
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
+    const { showHearts } = useDailyLearning();
+    const { attemptLimit, handleLimit } = useDailyAttemptLimit();
+    const heartFree = computed(() => {
+      return premiumInfo.value?.premium || !showHearts.value;
     });
     const interval: any = ref(null);
 
@@ -134,9 +137,14 @@ export default defineComponent({
         environment: language.value,
         code: code.value,
       });
+      submitButtonLoading.value = false;
+      if (!success) {
+        if (!handleLimit(error))
+          openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
+        return;
+      }
       await getHearts();
       await getBalance();
-      submitButtonLoading.value = false;
 
       clearInterval(interval.value);
 
@@ -145,8 +153,7 @@ export default defineComponent({
         await getSubmissions(props.challengeId, props.codingChallengeId);
       }, 5000);
 
-      if (success) openSnackbar("success", "Success.CreatedSubmission");
-      else openSnackbar("error", error);
+      openSnackbar("success", "Success.CreatedSubmission");
     }
 
     function updateCodeAsExampleChange() {
@@ -262,7 +269,8 @@ export default defineComponent({
       testExampleLoading,
       fnCreateSubmission,
       HeartIcon,
-      isPremium,
+      heartFree,
+      attemptLimit,
       openDialogSubmission,
       container,
     };

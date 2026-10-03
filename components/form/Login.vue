@@ -100,6 +100,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
 import IconGithub from "~/components/icon/Github.vue";
@@ -230,8 +231,11 @@ export default defineComponent({
     }
 
     function successHandler(res: any) {
+      authorizeGuestHandoff(res?.user?.id);
       if (needRecoveryCode.value) {
         router.push(`/account/mfa/disabled`);
+      } else if (guestReturnPath()) {
+        router.push("/start");
       } else if (redirect.value) {
         router.push(redirect.value);
       } else if (!hasEmail.value) {

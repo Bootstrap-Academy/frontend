@@ -135,9 +135,9 @@ export async function solveMatching(task_id: any, subTask_id: any, body: any) {
     }
     return [success, null];
   } catch (error: any) {
-    if (error.data.error == "not_enough_hearts") {
+    if (error?.data?.error == "not_enough_hearts") {
       return [null, "Error.NotEnoughHeartsForMatching"];
-    } else if (error.detail == "Error.TooManyAttemptsForQuiz") {
+    } else if (error?.detail == "Error.TooManyAttemptsForQuiz") {
       return [null, "Error.TooManyAttemptsForQuiz"];
     }
     console.log("error", error);

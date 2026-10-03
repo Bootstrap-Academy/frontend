@@ -40,7 +40,7 @@
       label="Links.IAgreeTo"
       id="TermsAndConditions"
       :link="{
-        to: '/docs/terms-and-conditions',
+        to: signupTerms.url,
         label: 'Links.TermsAndConditions',
       }"
       target="_blank"
@@ -80,12 +80,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
 
 export default defineComponent({
   setup() {
     const { t } = useI18n();
+    const signupTerms = registrationTerms();
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -170,7 +172,7 @@ export default defineComponent({
             obj[key] = form[key].value;
         }
 
-        obj.terms_version = TERMS_VERSION;
+        obj.terms_version = signupTerms.version;
         obj.age_confirmed = form.ageConfirmed.value;
 
         return obj;
@@ -231,6 +233,11 @@ export default defineComponent({
     const router = useRouter();
 
     function successHandler(res: any) {
+      authorizeGuestHandoff(res?.user?.id);
+      if (guestReturnPath()) {
+        router.push("/start");
+        return;
+      }
       openDialog(
         "success",
         "Success.SignupSuccessful",
@@ -251,6 +258,7 @@ export default defineComponent({
     }
 
     return {
+      signupTerms,
       form,
       onclickSubmitForm,
       refForm,
