@@ -4,7 +4,7 @@ import hljs from "highlight.js";
 import DOMPurify from "dompurify";
 import "katex/dist/katex.min.css";
 
-export default defineNuxtPlugin((app) => {
+export default defineNuxtPlugin(() => {
   const md = new MarkdownIt({
     html: false,
     linkify: true,
@@ -68,5 +68,5 @@ export default defineNuxtPlugin((app) => {
     return false;
   });
 
-  app.provide("md", md);
+  return { provide: { md } };
 });
