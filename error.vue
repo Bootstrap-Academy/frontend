@@ -2,7 +2,7 @@
   <NuxtLayout name="default">
     <main class="mt-main container-fluid grid grid-cols-1 gap-container pb-container">
       <section class="container card grid bg-secondary gap-card-sm style-card">
-        <div :title="error?.statusCode.toString()" class="error-code text-accent">
+        <div :title="error?.statusCode?.toString()" class="error-code text-accent">
           {{ error?.statusCode }}
         </div>
 
