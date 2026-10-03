@@ -1,23 +1,3 @@
-<!--
-❌ Responsive UI
-✅ Page Title
-✅ Translation
-❌ Animation
-✅ middleware
-
-✅ Tested on chrome
-✅ Tested on firefox
-✅ Tested on safari
-❌ Tested on android mobile
-❌ Tested on apple mobile
-
-✅ Handle loading if data already exists
-✅ Handle loading if data is empty
-✅ Display data
-✅ Handle empty state
-
-✅ Api implemented
--->
 <template>
   <main
     class="grid-auto h-screen-inner min container grid-rows-[auto_auto_1fr] gap-card pt-container pb-container"
@@ -40,9 +20,21 @@
     </template>
 
     <template v-else-if="myCourses && myCourses.length > 0">
-      <NuxtLink v-for="(course, i) of myCourses" :key="i" :to="`/courses/${course.id}`">
-        <CourseCard :data="course" />
+      <NuxtLink
+        v-for="(course, i) of visibleCourses"
+        :key="course.id"
+        :to="`/courses/${course.id}`"
+      >
+        <CourseCard :data="course" :eager-image="Number(i) < 3" />
       </NuxtLink>
+      <Btn
+        v-if="visibleCount < myCourses.length"
+        secondary
+        class="col-span-full justify-self-center"
+        @click="visibleCount += 12"
+      >
+        {{ loadMore }}
+      </Btn>
     </template>
 
     <CourseCardEmptyState class="col-span-full" v-else />
@@ -50,6 +42,8 @@
 </template>
 
 <script lang="ts">
+import { useI18n } from "vue-i18n";
+
 definePageMeta({
   layout: "inner",
   middleware: ["auth"],
@@ -61,6 +55,13 @@ export default {
   },
   setup() {
     const myCourses = useMyCourses();
+    const { locale } = useI18n();
+    const loadMore = computed(() =>
+      locale.value === "de" ? "Mehr Kurse anzeigen" : "Load more courses"
+    );
+    const visibleCount = ref(12);
+    const visibleCourses = computed(() => myCourses.value.slice(0, visibleCount.value));
+    watch(myCourses, () => (visibleCount.value = 12));
 
     const loading = ref(myCourses.value.length <= 0);
 
@@ -101,7 +102,16 @@ export default {
       },
     ]);
 
-    return { loading, myCourses, onSelectedOption, filters, options };
+    return {
+      loading,
+      myCourses,
+      visibleCourses,
+      visibleCount,
+      loadMore,
+      onSelectedOption,
+      filters,
+      options,
+    };
   },
 };
 </script>
