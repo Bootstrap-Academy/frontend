@@ -1,6 +1,21 @@
-export const UPDATE_NOTICE_VERSION = "2026-09-update-1";
+export const UPDATE_NOTICE_VERSION = "2026-10-privacy-statistics-1";
+export const UPDATE_NOTICE_BROWSER = "browser";
+export const UPDATE_NOTICE_LINK = "/docs/privacy#statistiken";
+
+export interface UpdateNoticeWindow {
+  version: string;
+  startsAt: number;
+  expiresAt: number;
+}
+
+export const UPDATE_NOTICE_WINDOW: UpdateNoticeWindow = {
+  version: UPDATE_NOTICE_VERSION,
+  startsAt: Date.parse("2026-10-03T00:00:00Z"),
+  expiresAt: Date.parse("2026-11-02T00:00:00Z"),
+};
 
 export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean): string | null {
+  if (token === null || token === undefined || token === "") return UPDATE_NOTICE_BROWSER;
   return loaded &&
     typeof token === "string" &&
     token.length > 0 &&
@@ -10,8 +25,8 @@ export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean
     : null;
 }
 
-export function updateNoticeKey(subject: string): string {
-  return `bootstrap-academy:update-notice:${UPDATE_NOTICE_VERSION}:${subject}`;
+export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION): string {
+  return `bootstrap-academy:update-notice:${version}:${subject}`;
 }
 
 export interface UpdateNoticeView {
@@ -25,30 +40,51 @@ export function createUpdateNotice(options: {
   dismissed: Set<string>;
   storage: () => Pick<Storage, "getItem" | "setItem">;
   changed: (view: UpdateNoticeView) => void;
+  window?: UpdateNoticeWindow;
+  now?: () => number;
 }) {
   const dismissed = options.dismissed;
+  const window = options.window ?? UPDATE_NOTICE_WINDOW;
+  const now = options.now ?? (() => Date.now());
+  const key = (owner: string) => updateNoticeKey(owner, window.version);
   let subject: string | null = null;
   let revision = 0;
   let alive = true;
+
+  function active() {
+    const time = now();
+    return Number.isFinite(time) && time >= window.startsAt && time < window.expiresAt;
+  }
+
+  function readDismissal() {
+    if (subject !== null && active()) {
+      try {
+        if (options.storage().getItem(key(subject)) === "1") dismissed.add(key(subject));
+      } catch {
+        // Displaying the notice never needs a persistent write.
+      }
+    }
+  }
 
   function publish() {
     const owner = subject;
     const ticket = revision;
     options.changed({
-      visible: owner !== null && !dismissed.has(owner),
+      visible: active() && owner !== null && !dismissed.has(key(owner)),
       revision: ticket,
       dismiss: () => {
         if (
           !alive ||
+          !active() ||
           owner === null ||
           owner !== subject ||
           ticket !== revision ||
-          dismissed.has(owner)
+          dismissed.has(key(owner))
         )
           return;
-        dismissed.add(owner);
+        dismissed.add(key(owner));
         try {
-          options.storage().setItem(updateNoticeKey(owner), "1");
+          options.storage().setItem(key(owner), "1");
         } catch {
           // Keep the explicit dismissal for this mounted app when storage is unavailable.
         }
@@ -62,19 +98,25 @@ export function createUpdateNotice(options: {
       if (!alive) return;
       if (next !== subject) revision++;
       subject = next;
-      if (next !== null) {
-        try {
-          if (options.storage().getItem(updateNoticeKey(next)) === "1") dismissed.add(next);
-        } catch {
-          // Displaying the notice never needs a persistent write.
-        }
-      }
+      readDismissal();
       publish();
     },
     storageChanged(key: string | null, value: string | null) {
-      if (!alive || subject === null || key !== updateNoticeKey(subject) || value !== "1") return;
-      dismissed.add(subject);
+      if (
+        !alive ||
+        subject === null ||
+        key !== updateNoticeKey(subject, window.version) ||
+        value !== "1"
+      )
+        return;
+      dismissed.add(key);
       publish();
+    },
+    refresh() {
+      if (alive) {
+        readDismissal();
+        publish();
+      }
     },
     dispose() {
       alive = false;

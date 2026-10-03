@@ -3,20 +3,16 @@
     v-if="view.visible"
     :key="view.revision"
     class="container my-4 print:hidden"
-    aria-labelledby="update-notice-title"
+    :aria-label="t('Links.Privacy')"
     data-update-notice
   >
-    <div class="border-accent/30 rounded-lg border bg-secondary p-4 sm:p-6">
-      <h2 id="update-notice-title" class="mb-2 text-lg font-semibold">
-        {{ t("UpdateNotice.Title") }}
-      </h2>
-      <p class="mb-4">{{ t("UpdateNotice.Body") }}</p>
-      <div class="flex flex-wrap items-center gap-4">
-        <NuxtLink class="underline" to="/docs/terms-and-conditions">
-          {{ t("Links.TermsAndConditions") }}
+    <div class="border-accent/30 rounded-lg border bg-secondary p-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <p class="min-w-0 flex-1 basis-64">{{ t("UpdateNotice.Body") }}</p>
+        <NuxtLink class="inline-flex min-h-11 items-center underline" :to="UPDATE_NOTICE_LINK">
+          {{ t("UpdateNotice.Link") }}
         </NuxtLink>
-        <NuxtLink class="underline" to="/docs/privacy">{{ t("Links.Privacy") }}</NuxtLink>
-        <Btn sm secondary v-on="{ click: view.dismiss }">{{ t("UpdateNotice.Dismiss") }}</Btn>
+        <Btn secondary v-on="{ click: view.dismiss }">{{ t("UpdateNotice.Dismiss") }}</Btn>
       </div>
     </div>
   </aside>
@@ -28,6 +24,7 @@ import { useI18n } from "vue-i18n";
 import { isPublicLegalRoute } from "../composables/publicLegalRoutes";
 import {
   createUpdateNotice,
+  UPDATE_NOTICE_LINK,
   updateNoticeSubject,
   type UpdateNoticeView,
 } from "../composables/updateNotice";
@@ -39,6 +36,7 @@ const accessToken = useAccessToken();
 const loaded = useProfileLoaded();
 const route = useRoute();
 const ready = ref(false);
+let expiryCheck: ReturnType<typeof setInterval> | undefined;
 const view = shallowRef<UpdateNoticeView>({ visible: false, revision: 0, dismiss: () => {} });
 const notice = createUpdateNotice({
   dismissed: props.dismissed,
@@ -66,8 +64,10 @@ function storageChanged(event: StorageEvent) {
 onMounted(() => {
   window.addEventListener("storage", storageChanged);
   ready.value = true;
+  expiryCheck = setInterval(() => notice.refresh(), 60_000);
 });
 onBeforeUnmount(() => {
+  clearInterval(expiryCheck);
   notice.dispose();
   window.removeEventListener("storage", storageChanged);
 });

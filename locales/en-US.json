@@ -1,8 +1,8 @@
 {
   "UpdateNotice": {
-    "Title": "We’re actively developing bootstrap academy again.",
-    "Body": "Ordering and cancelling are now easier. We’ve also updated existing course access and our legal information. More improvements are on the way. Thanks for being here!",
-    "Dismiss": "Got it"
+    "Body": "Our privacy notice now explains how we can use data already stored to produce aggregate statistics that cannot identify individuals.",
+    "Link": "Privacy",
+    "Dismiss": "Close"
   },
   "English": "English",
   "German": "Deutsch",

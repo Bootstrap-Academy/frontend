@@ -20,13 +20,20 @@ for (const name of ["updateNotice", "publicLegalRoutes"]) {
   const source = await readFile(new URL(`../composables/${name}.ts`, import.meta.url), "utf8");
   await writeFile(new URL(output(name)), transpile(source));
 }
-const { createUpdateNotice, updateNoticeKey, updateNoticeSubject, UPDATE_NOTICE_VERSION } =
-  await import(output("updateNotice"));
+const {
+  createUpdateNotice,
+  updateNoticeKey,
+  updateNoticeSubject,
+  UPDATE_NOTICE_VERSION,
+  UPDATE_NOTICE_BROWSER,
+  UPDATE_NOTICE_WINDOW,
+  UPDATE_NOTICE_LINK,
+} = await import(output("updateNotice"));
 const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
 const A = "10000000-0000-4000-8000-000000000001";
 const B = "10000000-0000-4000-8000-000000000002";
 
-function fixture(data = new Map(), unavailable = false) {
+function fixture(data = new Map(), unavailable = false, timing = {}) {
   const writes = [],
     reads = [];
   const storage = {
@@ -46,6 +53,8 @@ function fixture(data = new Map(), unavailable = false) {
     dismissed: new Set(),
     storage: () => storage,
     changed: (next) => (view = next),
+    now: () => UPDATE_NOTICE_WINDOW.startsAt + 1000,
+    ...timing,
   });
   return {
     data,
@@ -137,6 +146,8 @@ function host() {
   return { root, renderer, all, text };
 }
 async function mounted(language, fn, { blocked = false, data = new Map() } = {}) {
+  const actualNow = Date.now;
+  Date.now = () => UPDATE_NOTICE_WINDOW.startsAt + 1000;
   const f = fixture(data, blocked),
     ui = host(),
     listeners = new Map(),
@@ -258,23 +269,24 @@ async function mounted(language, fn, { blocked = false, data = new Map() } = {})
     });
   } finally {
     app.unmount();
+    Date.now = actualNow;
     assert.equal(listeners.size, 0);
     for (const [key, descriptor] of descriptors)
       if (descriptor) Object.defineProperty(globalThis, key, descriptor);
       else delete globalThis[key];
   }
 }
-test("only a loaded authenticated UUID profile qualifies; notice version is separate", () => {
+test("guests use a browser marker; authenticated accounts need a loaded UUID profile", () => {
   assert.equal(updateNoticeSubject(A, "current", true), A);
   for (const args of [
-    [A, "", true],
-    [A, null, true],
     [A, "current", false],
     [null, "current", true],
     ["", "current", true],
     ["not-a-user", "current", true],
   ])
     assert.equal(updateNoticeSubject(...args), null);
+  for (const token of ["", null, undefined])
+    assert.equal(updateNoticeSubject(null, token, false), UPDATE_NOTICE_BROWSER);
   assert.notEqual(UPDATE_NOTICE_VERSION, "2026-09-r2");
 });
 test("display/auth changes never write; explicit dismissal persists one user/version marker", () => {
@@ -329,6 +341,7 @@ test("a throwing storage getter also supports memory-only explicit dismissal", (
       throw new Error("SecurityError");
     },
     changed: (v) => (view = v),
+    now: () => UPDATE_NOTICE_WINDOW.startsAt + 1000,
   });
   c.select(A);
   assert.equal(view.visible, true);
@@ -376,9 +389,8 @@ for (const language of ["de", "en-US"]) {
   test(`actual app/notice/button ${language}: inline information, legal links, explicit marker, no consent/request`, async () => {
     await mounted(language, async (f) => {
       assert(f.notice());
-      assert.match(f.ui.text(), new RegExp(messages[language].UpdateNotice.Title));
-      assert.equal(f.notice().props["aria-labelledby"], "update-notice-title");
-      assert(f.ui.all().some((n) => n.props.id === "update-notice-title"));
+      assert(f.ui.text().includes(messages[language].UpdateNotice.Body));
+      assert.equal(f.notice().props["aria-label"], messages[language].Links.Privacy);
       assert(f.ui.all().some((n) => n.type === "main"));
       assert(
         !f.ui
@@ -390,7 +402,7 @@ for (const language of ["de", "en-US"]) {
           .all()
           .filter((n) => n.type === "a")
           .map((n) => n.props.href),
-        ["/docs/terms-and-conditions", "/docs/privacy"]
+        [UPDATE_NOTICE_LINK]
       );
       assert.equal(f.button().props.type, "button");
       assert.deepEqual(f.writes, []);
@@ -403,7 +415,7 @@ for (const language of ["de", "en-US"]) {
     });
   });
 }
-test("actual app suppresses the notice on public/legal routes and before a loaded session without writing", async () => {
+test("actual app suppresses on public/legal routes and while an authenticated profile is loading", async () => {
   await mounted("de", async (f) => {
     for (const path of [
       "/docs/privacy",
@@ -427,13 +439,85 @@ test("actual app suppresses the notice on public/legal routes and before a loade
     f.loaded.value = true;
     f.token.value = "";
     await f.tick();
-    assert.equal(Boolean(f.notice()), false);
+    assert(f.notice(), "a guest sees the same notice without needing an account");
     f.token.value = "fresh";
     await f.tick();
     assert(f.notice());
     assert.deepEqual(f.writes, []);
     assert.deepEqual(f.requests, []);
   });
+});
+
+test("notice window is start-inclusive/end-exclusive and expires in an open app", () => {
+  let time = UPDATE_NOTICE_WINDOW.startsAt - 1;
+  const f = fixture(new Map(), false, { now: () => time });
+  f.controller.select(A);
+  assert.equal(f.view.visible, false);
+  assert.deepEqual(f.reads, []);
+  time++;
+  f.controller.refresh();
+  assert.equal(f.view.visible, true);
+  const close = f.view.dismiss;
+  time = UPDATE_NOTICE_WINDOW.expiresAt;
+  f.controller.refresh();
+  assert.equal(f.view.visible, false);
+  close();
+  assert.deepEqual(f.writes, []);
+  time = NaN;
+  f.controller.refresh();
+  assert.equal(f.view.visible, false);
+});
+
+test("a saved dismissal is honored when the window opens, and a new version has its own marker", () => {
+  let time = UPDATE_NOTICE_WINDOW.startsAt - 1;
+  const data = new Map([[updateNoticeKey(A), "1"]]);
+  const f = fixture(data, false, { now: () => time });
+  f.controller.select(A);
+  time++;
+  f.controller.refresh();
+  assert.equal(f.view.visible, false);
+  let next;
+  const c = createUpdateNotice({
+    dismissed: new Set(),
+    storage: () => f.storage,
+    changed: (v) => (next = v),
+    now: () => time,
+    window: { ...UPDATE_NOTICE_WINDOW, version: "next-notice" },
+  });
+  c.select(A);
+  assert.equal(next.visible, true);
+  next.dismiss();
+  assert.deepEqual(f.writes, [[updateNoticeKey(A, "next-notice"), "1"]]);
+});
+
+test("actual guest dismissal survives reload and stays separate from a signed-in account", async () => {
+  const data = new Map();
+  await mounted(
+    "de",
+    async (f) => {
+      f.token.value = "";
+      f.user.value = null;
+      await f.tick();
+      assert(f.notice());
+      f.button().props.onClick();
+      await f.tick();
+      assert.equal(Boolean(f.notice()), false);
+      assert.deepEqual(f.writes, [[updateNoticeKey(UPDATE_NOTICE_BROWSER), "1"]]);
+    },
+    { data }
+  );
+  await mounted(
+    "de",
+    async (f) => {
+      assert(f.notice(), "the account has its own marker");
+      f.token.value = "";
+      f.user.value = null;
+      await f.tick();
+      assert.equal(Boolean(f.notice()), false);
+      assert.deepEqual(f.writes, []);
+    },
+    { data }
+  );
 });
 test("actual app account switch/ABA invalidates held close; each user's dismissal remains separate", async () => {
   await mounted("en-US", async (f) => {
@@ -519,7 +603,7 @@ test("blocked storage dismissal survives keyed default/inner layout remounts wit
       f.token.value = "";
       f.route.path = "/auth/login";
       await f.tick();
-      assert.equal(Boolean(f.notice()), false);
+      assert(f.notice(), "the guest browser has its own notice after logout");
       f.user.value = { id: B };
       f.token.value = "new";
       f.route.path = "/dashboard";
