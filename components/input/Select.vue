@@ -42,6 +42,7 @@
 import { defineComponent } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
+import { selectInitialValue } from "~/utils/inputSelect";
 
 export default defineComponent({
   props: {
@@ -78,7 +79,7 @@ export default defineComponent({
       },
     });
 
-    input.value = !!input.value ? input.value : props.options[1].value;
+    input.value = selectInitialValue(input.value, props.options);
 
     const selectedOptionLabel = computed(() => {
       return (props.options.find((option) => option.value == input.value)?.label ?? "").toString();

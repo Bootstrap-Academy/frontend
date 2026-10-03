@@ -3,8 +3,9 @@ import { description } from "~~/description";
 
 export const useMyChallengesStats: () => Ref<any> = () => useState("myChallengesStats", () => null);
 
-export const useChallengesCategories: () => Ref<any[]> = () =>
-  useState("challengesCategories", () => []);
+export const useChallengesCategories: () => Ref<
+  import("~/types/codingChallengeViews").ChallengeCategoryView[]
+> = () => useState("challengesCategories", () => []);
 
 export const useChallengeCategory: () => Ref<any> = () => useState("challengeCategory", () => null);
 

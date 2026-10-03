@@ -108,7 +108,8 @@ export function resolveInitialSkilltreeTarget(
   const distance = (node: { row: number; column: number }) =>
     (node.row - centerRow) ** 2 + (node.column - centerColumn) ** 2;
   occupied.sort((a, b) => distance(a) - distance(b) || a.row - b.row || a.column - b.column);
-  return { row: occupied[0].row, column: occupied[0].column };
+  const closest = occupied[0];
+  return closest ? { row: closest.row, column: closest.column } : null;
 }
 
 export function scrollMapToNode(

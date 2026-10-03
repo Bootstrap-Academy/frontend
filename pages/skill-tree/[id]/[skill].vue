@@ -18,7 +18,7 @@
           :size="140"
           :node="skill"
           :active="true"
-          :completed="skill?.completed || false"
+          :completed="false"
           :navigate="false"
           :is-bookmarked="bookmarked"
           @bookmarked="toggleBookmark"
@@ -67,17 +67,21 @@
 </template>
 
 <script setup lang="ts">
-import type { Course } from "~/types/courseTypes";
+import type { Course, CourseBookmark } from "~/types/courseTypes";
 import { getCourseCatalogue } from "~/composables/courses";
+import type { Ref } from "vue";
+import type { SessionIdentity } from "~/types/sessionIdentity";
+import type { SkillTree, SubSkill } from "~/types/skillTreeTypes";
 definePageMeta({ middleware: ["auth"] });
 const { copy, localizeCourse } = useCourseExperienceCopy();
 const route = useRoute();
 const user = useUser();
-const session = useSession();
+const session: Ref<SessionIdentity | null> = useSession();
 const rootSkillID = computed(() => String(route.params.id || ""));
 const subSkillID = computed(() => String(route.params.skill || ""));
 const skillName = computed(() => subSkillID.value.replaceAll("_", " "));
-const skill = ref<any>(null);
+type SkillDetails = Omit<SubSkill, "icon"> & { icon: string | null; is_bookmarked: boolean | null };
+const skill = ref<SkillDetails | null>(null);
 const originalCourses = ref<Course[]>([]);
 const courses = computed(() => originalCourses.value.map(localizeCourse));
 const bookmarked = ref(false);
@@ -109,9 +113,11 @@ async function load() {
   originalCourses.value = [];
   skill.value = null;
   try {
-    const tree = await GET(`/skills/skilltree/${encodeURIComponent(rootSkillID.value)}`);
+    const tree: SkillTree<SkillDetails> = await GET(
+      `/skills/skilltree/${encodeURIComponent(rootSkillID.value)}`
+    );
     if (!current()) return;
-    const selected = tree.skills?.find((item: any) => item.id === subSkillID.value);
+    const selected = tree.skills?.find((item) => item.id === subSkillID.value);
     if (!selected) throw new Error("Unknown skill");
     skill.value = selected;
     bookmarked.value = !!selected.is_bookmarked;
@@ -144,7 +150,7 @@ const courseLink = (id: string) => ({
   query: { skillID: rootSkillID.value, subSkillID: subSkillID.value },
 });
 function rememberCourse(courseId: string) {
-  useAppCookie("lastViewCourse").value = {
+  useAppCookie<CourseBookmark>("lastViewCourse").value = {
     courseId,
     skillID: rootSkillID.value,
     subSkillID: subSkillID.value,

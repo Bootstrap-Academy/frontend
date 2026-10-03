@@ -63,7 +63,7 @@ export default defineComponent({
     });
 
     const isActive = computed(() => {
-      return props.activeLecture == props.data?.id ?? "";
+      return props.activeLecture == props.data?.id;
     });
 
     const duration = computed(() => {
