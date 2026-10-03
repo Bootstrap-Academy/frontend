@@ -192,15 +192,17 @@ export const assignLectureQuizzes = async () => {
   const quizzesInLectureInfo = useQuizzesInLectureInfo();
   const quizzesInLecture = useQuizzesInLecture();
 
-  if (quizzesInLectureInfo.value.length) {
-    await getSubTasksInQuiz(quizzesInLectureInfo.value[0].id);
+  const firstQuiz = quizzesInLectureInfo.value[0];
+  if (firstQuiz) {
+    await getSubTasksInQuiz(firstQuiz.id);
+    if (quizzesInLectureInfo.value[0]?.id !== firstQuiz.id) return;
 
     subTasksInSkill.value.forEach((quiz) => {
       console.log("subTasksInSkill", subTasksInSkill.value, quiz);
       quizzesInLecture.value.push(quiz);
     });
 
-    await getMatchingsInLecture(quizzesInLectureInfo.value[0].id);
+    await getMatchingsInLecture(firstQuiz.id);
   }
 };
 

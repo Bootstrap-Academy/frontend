@@ -177,9 +177,10 @@ function rememberPosition(event: Event) {
 }
 function restorePosition(event: Event) {
   const media = event.target as HTMLVideoElement;
-  if (!alive || media !== video.value || pendingPosition?.lecture !== props.activeLecture?.id)
+  const pending = pendingPosition;
+  if (!alive || !pending || media !== video.value || pending.lecture !== props.activeLecture?.id)
     return;
-  const { position, playing } = pendingPosition;
+  const { position, playing } = pending;
   pendingPosition = null;
   if (
     Number.isFinite(position) &&

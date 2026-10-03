@@ -26,13 +26,13 @@
     </video>
     <p v-else role="alert">{{ copy.unavailable }}</p>
     <AsyncExerciseRoom
-      v-if="exercise"
-      :reference="exercise"
+      v-if="props.exercise"
+      :reference="props.exercise"
       :content="content"
       :state="state"
       :disabled="disabled"
-      :request="request"
-      :save="save"
+      :request="props.request"
+      :save="props.save"
       :user-id="userId || ''"
       :review-id="reviewId"
       @change="emit('change', $event)"
@@ -56,17 +56,19 @@
 import { computed, defineAsyncComponent, onBeforeUnmount, ref } from "vue";
 import type { ExerciseReference, LearningRequest } from "~/types/learningRooms";
 const AsyncExerciseRoom = defineAsyncComponent(() => import("./ExerciseRoom.vue"));
-const props = defineProps<{
-  content: Record<string, any>;
-  state: Record<string, any>;
-  locale: string;
-  disabled?: boolean;
-  exercise?: ExerciseReference;
-  request?: LearningRequest;
-  save?: () => Promise<boolean>;
-  userId?: string;
-  reviewId?: string;
-}>();
+const props = defineProps<
+  {
+    content: Record<string, any>;
+    state: Record<string, any>;
+    locale: string;
+    disabled?: boolean;
+    userId?: string;
+    reviewId?: string;
+  } & (
+    | { exercise: ExerciseReference; request: LearningRequest; save: () => Promise<boolean> }
+    | { exercise?: undefined; request?: LearningRequest; save?: () => Promise<boolean> }
+  )
+>();
 const emit = defineEmits<{
   change: [state: Record<string, any>];
   complete: [answer: Record<string, any>, attemptId?: string];

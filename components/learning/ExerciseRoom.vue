@@ -185,6 +185,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import type {
+  ExerciseData,
   ExerciseDraft,
   ExerciseReference,
   ExerciseView,
@@ -224,19 +225,20 @@ const view = shallowRef<ExerciseView>({
 });
 const draft = ref<ExerciseDraft>({ code: props.content?.initial_code || "", ...props.state });
 const presentation = computed(() => {
-  const original = view.value.data || {};
-  const copy = props.content || {};
+  const original: Partial<ExerciseData> = view.value.data || {};
+  const copy: Record<string, unknown> = props.content || {};
   const translated = { ...original };
   for (const field of ["question", "description"] as const) {
     if (typeof copy[field] === "string") translated[field] = copy[field];
   }
   for (const field of ["answers", "left", "right"] as const) {
+    const candidate = copy[field];
     if (
-      Array.isArray(copy[field]) &&
-      copy[field].length === original[field]?.length &&
-      copy[field].every((item: unknown) => typeof item === "string")
+      Array.isArray(candidate) &&
+      candidate.length === original[field]?.length &&
+      candidate.every((item: unknown) => typeof item === "string")
     ) {
-      translated[field] = copy[field];
+      translated[field] = candidate;
     }
   }
   return translated;
