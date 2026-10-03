@@ -1,0 +1,121 @@
+{
+  "formatVersion": 1,
+  "lessonId": "example-restore",
+  "manifestHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "packageHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "hostBuild": "fixture-host-2.0.0",
+  "engines": [
+    {
+      "id": "kit.scene",
+      "implementation": "academy-scene-1.0.0",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "id": "genre.diagnosis",
+      "implementation": "academy-diagnosis-1.0.0",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "locale": "de",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "dpr": 2,
+    "safeInsets": {
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    },
+    "reducedMotion": false
+  },
+  "seed": 602103,
+  "clock": "virtual",
+  "initial": {
+    "state": {},
+    "project": null,
+    "stateRevision": 0
+  },
+  "fixtures": {
+    "providerMode": "off",
+    "server": "recovery-introduced-fixture",
+    "faults": []
+  },
+  "steps": [
+    {
+      "atMs": 0,
+      "action": {
+        "kind": "tap",
+        "target": "draft-save-separately"
+      },
+      "expect": {
+        "assertions": [
+          {
+            "path": "/state/draftPreserved",
+            "equals": true
+          }
+        ],
+        "screenshot": "screens/01.png"
+      }
+    },
+    {
+      "atMs": 2000,
+      "action": {
+        "kind": "drag",
+        "target": "backup-a-note",
+        "points": [
+          {
+            "x": 90,
+            "y": 280,
+            "tMs": 0
+          },
+          {
+            "x": 240,
+            "y": 420,
+            "tMs": 600
+          }
+        ]
+      },
+      "expect": {
+        "assertions": [
+          {
+            "path": "/state/openedFiles/note.txt",
+            "equals": "Mein eigener Entwurf"
+          },
+          {
+            "path": "/navigation/changed",
+            "equals": false
+          }
+        ],
+        "screenshot": "screens/02.png"
+      }
+    },
+    {
+      "atMs": 4000,
+      "action": {
+        "kind": "tap",
+        "target": "recover-complete"
+      },
+      "expect": {
+        "assertions": [
+          {
+            "path": "/host/outcome",
+            "equals": "introduced"
+          },
+          {
+            "path": "/host/xp",
+            "equals": 0
+          }
+        ],
+        "screenshot": "screens/03.png"
+      }
+    }
+  ],
+  "expectFinal": {
+    "outcome": "introduced",
+    "xp": 0,
+    "providerCalls": 0,
+    "persisted": true,
+    "stateHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}
