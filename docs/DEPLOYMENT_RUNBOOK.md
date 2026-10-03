@@ -12,9 +12,11 @@ Preserve the intended `BASE_API_URL` and `BASE_WEB_URL` for the deployment envir
 
 ## Static asset errors
 
-Keep `public/_nuxt/404.html` in the generated bundle. Cloudflare Pages uses this directory's [nearest 404 page](https://developers.cloudflare.com/pages/configuration/serving-pages/#not-found-behavior) for missing JavaScript, CSS and other files under `/_nuxt/`. Existing assets are served normally. `build.sh` removes only the root `404.html`, preserving Pages' single-page application routing for course URLs and other client routes.
+Nuxt builds assets under the permanent `app.buildAssetsDir` path `/_assets/`. This replaces `/_nuxt/` so old cached SPA responses cannot break new bundle imports. Both Test and the production frontend use this setting when built from this source; do not override it per environment.
 
-After deployment, verify that an existing JavaScript and CSS file return their expected content types, missing files under `/_nuxt/` return 404, and a direct visit to a client route still loads the app. Asset scanners must check response status and content type: a Monaco configuration key such as `editor.experimental.preferTreeSitter.css` is not a stylesheet URL.
+Keep `public/_assets/404.html` and `public/_nuxt/404.html` in the generated bundle. Cloudflare Pages uses the directory's [nearest 404 page](https://developers.cloudflare.com/pages/configuration/serving-pages/#not-found-behavior) for missing files. Native 404 responses use `Cache-Control: no-store`, including when the Cloudflare build generates immutable cache rules for existing assets. `build.sh` removes only the root `404.html`, preserving Pages' single-page application routing for course URLs and other client routes.
+
+After deployment, check existing JavaScript and CSS content types, missing files under both asset paths returning 404 with `no-store`, and a direct client route loading the app. Repeat asset checks with the browser's `Origin` header and play a lesson in a real browser. Asset scanners must check status and content type: the Monaco configuration key `editor.experimental.preferTreeSitter.css` is not a stylesheet URL. Changing the path bypasses old cache entries; it does not purge them.
 
 ## Verification and recovery
 
