@@ -34,18 +34,11 @@
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />
 
     <!-- <LeaderboardSeasonal
-      :leaderBoardList="leaderBoardList"
       v-if="selectedbutton == 0 && !loading"
     /> -->
 
-    <LeaderboardLanguageBased
-      :leaderBoardList="leaderBoardList"
-      v-if="selectedbutton == 0 && !loading"
-    />
-    <LeaderboardChallengeBased
-      :leaderBoardList="leaderBoardList"
-      v-else-if="selectedbutton == 1 && !loading"
-    />
+    <LeaderboardLanguageBased v-if="selectedbutton == 0 && !loading" />
+    <LeaderboardChallengeBased v-else-if="selectedbutton == 1 && !loading" />
     <LeaderboardOverall v-else-if="selectedbutton == 2 && !loading" />
   </main>
 </template>
@@ -53,7 +46,6 @@
 <script lang="ts">
 import { TrophyIcon } from "@heroicons/vue/24/outline";
 import { useI18n } from "vue-i18n";
-import { useLeaderBoardList } from "~~/composables/leaderboard";
 definePageMeta({
   middleware: ["auth"],
 });
@@ -68,7 +60,6 @@ export default {
   setup() {
     const { t } = useI18n();
     const loading = ref(false);
-    const leaderBoardList = useLeaderBoardList();
     const selectedbutton: any = ref(localStorage.getItem("selectedButtonLeaderBoard") ?? 0);
     const router = useRouter();
     const route = useRoute();
@@ -96,7 +87,7 @@ export default {
       localStorage.removeItem("selectedButtonLeaderBoard");
     });
 
-    return { buttonOptions, selectedbutton, t, leaderBoardList, loading, TrophyIcon };
+    return { buttonOptions, selectedbutton, t, loading, TrophyIcon };
   },
 };
 </script>
