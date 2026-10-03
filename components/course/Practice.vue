@@ -26,6 +26,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from "vue";
+import type { SessionIdentity } from "~/types/sessionIdentity";
 import {
   loadCoursePractice,
   practiceLocation,
@@ -44,7 +46,7 @@ const props = defineProps<{
 }>();
 const { copy } = useCourseExperienceCopy();
 const user = useUser();
-const session = useSession();
+const session: Ref<SessionIdentity | null> = useSession();
 const loading = ref(true);
 const error = ref(false);
 const items = ref<CoursePracticeItem[]>([]);

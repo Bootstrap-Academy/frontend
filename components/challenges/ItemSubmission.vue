@@ -31,7 +31,7 @@
           </th>
         </tr>
 
-        <tr v-for="(submission, i) of submissions" :key="submission.name">
+        <tr v-for="(submission, i) of submissions" :key="submission.id">
           <td class="text-body-1 border-b border-r border-primary px-5 py-3 text-body font-body">
             #{{ i + 1 }}
           </td>
@@ -126,6 +126,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
+import type { Ref } from "vue";
+import type { CodingSubmissionView } from "~/types/codingChallengeViews";
 import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
@@ -153,7 +155,7 @@ export default defineComponent({
   components: { CodeBracketIcon, CheckIcon, CheckBadgeIcon },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const submissions: any = useCodingSubmissions();
+    const submissions: Ref<CodingSubmissionView[]> = useCodingSubmissions();
     const expandedRows = ref<Record<string, boolean>>({});
 
     const verdictIs: any = (submission: any) => {
@@ -196,7 +198,7 @@ export default defineComponent({
       if (!!error) openSnackbar("error", error);
     }
 
-    function verdictIcons(verdict: string) {
+    function verdictIcons(verdict?: string) {
       const verdictIconMapping: { [key: string]: any } = {
         COMPILATION_ERROR: NoSymbolIcon,
         INVALID_OUTPUT_FORMAT: FlagIcon,
@@ -208,7 +210,7 @@ export default defineComponent({
         TIME_LIMIT_EXCEEDED: ClockIcon,
         WRONG_ANSWER: XMarkIcon,
       };
-      return verdictIconMapping[verdict];
+      return verdictIconMapping[verdict ?? ""];
     }
 
     function messageTitle(submission: any) {
