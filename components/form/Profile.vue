@@ -263,7 +263,7 @@ export default defineComponent({
       const { date, month, year } = convertTimestampToDate(after_30Days);
 
       return t("Body.EditNickname", {
-        placeholder: `${date} ${t(month.string)}, ${year}`,
+        placeholder: `${date} ${t(month.string ?? "")}, ${year}`,
       });
     });
 

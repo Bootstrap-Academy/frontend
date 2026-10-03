@@ -64,11 +64,11 @@
 <script setup lang="ts">
 import { PlusCircleIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { ArrowRightIcon } from "@heroicons/vue/24/solid";
-import type { PropType } from "nuxt/dist/app/compat/capi";
+import type { PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDialogSlot } from "~~/composables/dialogSlot";
 import type {
-  matching as matchingType,
+  Matching as matchingType,
   matchingOptionArray,
   matchingSolutionArray,
 } from "~~/types/matching";

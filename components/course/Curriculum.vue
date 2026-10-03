@@ -20,7 +20,7 @@
             type="button"
             :disabled="!isCourseAccessible || !section.id || !lecture.id"
             :aria-current="activeLecture === lecture.id ? 'step' : undefined"
-            @click="emit('watch', { sectionID: section.id, lectureID: lecture.id })"
+            @click="section.id && emit('watch', { sectionID: section.id, lectureID: lecture.id })"
           >
             <span class="lecture-number" aria-hidden="true">{{
               lecture.completed ? "✓" : lectureIndex + 1

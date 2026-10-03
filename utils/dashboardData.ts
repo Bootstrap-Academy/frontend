@@ -270,6 +270,7 @@ export function createDashboardData(options: {
                 if (!alive || ticket !== generation || practiceTicket !== practiceGeneration)
                   return;
                 const skill = skills[next++];
+                if (skill === undefined) continue;
                 const tasks = array(
                   await options.get(`/challenges/skills/${encodeURIComponent(skill)}/tasks`)
                 );

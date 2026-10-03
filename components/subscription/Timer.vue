@@ -23,14 +23,14 @@ export default {
       remainingTime.value = Math.max(0, props.targetTime - currentTime);
     };
 
-    const formatTime = (milliseconds) => {
+    const formatTime = (milliseconds: number) => {
       const hours = Math.floor(milliseconds / (1000 * 60 * 60));
       const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
       return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     };
 
-    const pad = (number) => {
+    const pad = (number: number) => {
       return (number < 10 ? "0" : "") + number;
     };
 
