@@ -1,0 +1,2688 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bootstrap.academy/schemas/lesson-message-2.0.json",
+  "type": "object",
+  "required": ["protocol", "sessionId", "seq", "id", "kind", "type", "payload"],
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "required": ["major", "minor"],
+      "properties": {
+        "major": {
+          "const": 2
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": true
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "kind": {
+      "enum": ["request", "event", "response"]
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$",
+      "maxLength": 100
+    },
+    "replyTo": {
+      "$ref": "#/$defs/id"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "response"
+          }
+        },
+        "required": ["kind"]
+      },
+      "then": {
+        "required": ["replyTo"],
+        "properties": {
+          "type": {
+            "const": "rpc.result"
+          },
+          "payload": {
+            "$ref": "#/$defs/result"
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": ["replyTo"]
+        },
+        "properties": {
+          "type": {
+            "not": {
+              "const": "rpc.result"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "host.connect"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/host.connect.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lesson.hello"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/lesson.hello.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "host.init"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/host.init.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lesson.ready"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/lesson.ready.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "host.lifecycle"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/host.lifecycle.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "host.context"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/host.context.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "host.surface"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/host.surface.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lesson.busy"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/lesson.busy.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "state.read"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/state.read.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "state.save"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/state.save.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "state.reset"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/state.reset.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "goals.progress"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/goals.progress.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "assessment.submit"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/assessment.submit.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "assessment.status"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/assessment.status.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "assessment.result"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/assessment.result.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "completion.request"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/completion.request.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "reward.committed"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/reward.committed.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "navigation.policy"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/navigation.policy.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "navigation.pointer"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/navigation.pointer.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "navigation.gesture"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/navigation.gesture.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "navigation.request"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/navigation.request.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "display.fullscreen"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/display.fullscreen.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "audio.preference"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/audio.preference.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "haptics.play"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/haptics.play.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "artifact.export"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/artifact.export.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "project.read"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/project.read.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "project.save"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/project.save.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "llm.info"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/llm.info.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "llm.respond"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/llm.respond.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "llm.delta"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/llm.delta.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "llm.result"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/llm.result.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "llm.cancel"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/llm.cancel.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "assessment.fallback"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/assessment.fallback.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "assessment.appeal"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/assessment.appeal.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "request.cancel"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/request.cancel.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lesson.error"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "event"
+          },
+          "payload": {
+            "$ref": "#/$defs/lesson.error.payload"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,100}$"
+    },
+    "result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["ok", "data"],
+          "properties": {
+            "ok": {
+              "const": true
+            },
+            "data": {
+              "type": "object"
+            }
+          },
+          "not": {
+            "required": ["error"]
+          },
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "required": ["ok", "error"],
+          "properties": {
+            "ok": {
+              "const": false
+            },
+            "error": {
+              "type": "object",
+              "required": ["code", "message", "retryable"],
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "revision": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "retryAfterSeconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "not": {
+            "required": ["data"]
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+    },
+    "swipe": {
+      "type": "object",
+      "properties": {
+        "forward": {
+          "type": "boolean"
+        },
+        "back": {
+          "type": "boolean"
+        }
+      },
+      "required": ["forward", "back"],
+      "additionalProperties": true
+    },
+    "phase": {
+      "enum": ["running", "paused", "suspending", "disposed"]
+    },
+    "displayMode": {
+      "enum": ["browser-fullscreen", "page", "standalone", "native"]
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": ["x", "y"],
+      "additionalProperties": true
+    },
+    "rect": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["x", "y", "width", "height"],
+      "additionalProperties": true
+    },
+    "surface": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "css": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "minimum": 0
+            },
+            "height": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["width", "height"],
+          "additionalProperties": true
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "offset": {
+          "$ref": "#/$defs/point"
+        },
+        "safeRect": {
+          "$ref": "#/$defs/rect"
+        },
+        "occlusions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rect"
+          }
+        },
+        "edgeExclusions": {
+          "type": "object",
+          "properties": {
+            "left": {
+              "type": "number",
+              "minimum": 0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0
+            },
+            "top": {
+              "type": "number",
+              "minimum": 0
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["left", "right", "top", "bottom"],
+          "additionalProperties": true
+        },
+        "dpr": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "reducedMotion": {
+          "type": "boolean"
+        },
+        "displayMode": {
+          "$ref": "#/$defs/displayMode"
+        }
+      },
+      "required": [
+        "revision",
+        "css",
+        "scale",
+        "offset",
+        "safeRect",
+        "occlusions",
+        "edgeExclusions",
+        "dpr",
+        "reducedMotion",
+        "displayMode"
+      ],
+      "additionalProperties": true
+    },
+    "capability": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$"
+        },
+        "major": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "implementation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "availability": {
+          "enum": ["paused", "available"]
+        }
+      },
+      "required": ["id", "major", "minor", "implementation", "sha256"],
+      "additionalProperties": true
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "messageBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 262144
+        },
+        "stateBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "projectBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        }
+      },
+      "required": ["messageBytes", "stateBytes"],
+      "additionalProperties": true
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "value": {
+          "type": "object"
+        }
+      },
+      "required": ["revision", "schemaVersion", "value"],
+      "additionalProperties": true
+    },
+    "feedback": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "met": {
+                "type": "boolean"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              }
+            },
+            "required": ["id", "met", "reason", "evidence"],
+            "additionalProperties": true
+          }
+        },
+        "rejected": {
+          "type": "boolean"
+        },
+        "source": {
+          "enum": ["server", "example", "model"]
+        }
+      },
+      "required": ["summary"],
+      "additionalProperties": true
+    },
+    "assessmentFinal": {
+      "type": "object",
+      "properties": {
+        "assessmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "const": "final"
+        },
+        "outcome": {
+          "enum": ["passed", "not_passed", "introduced", "unavailable"]
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "counts": {
+          "type": "boolean"
+        },
+        "receiptHandle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["assessmentId", "status", "outcome", "feedback", "counts"],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "counts": {
+                "const": true
+              }
+            },
+            "required": ["counts"]
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "const": "passed"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "feedback": {
+                "properties": {
+                  "source": {
+                    "const": "example"
+                  }
+                },
+                "required": ["source"]
+              }
+            },
+            "required": ["feedback"]
+          },
+          "then": {
+            "properties": {
+              "counts": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "feedback": {
+                "properties": {
+                  "rejected": {
+                    "const": true
+                  }
+                },
+                "required": ["rejected"]
+              }
+            },
+            "required": ["feedback"]
+          },
+          "then": {
+            "properties": {
+              "counts": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "host.connect.payload": {
+      "type": "object",
+      "properties": {
+        "transport": {
+          "enum": ["message-port", "javascript-channel"]
+        },
+        "manifestHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": ["transport", "manifestHash"],
+      "additionalProperties": true
+    },
+    "lesson.hello.payload": {
+      "type": "object",
+      "properties": {
+        "lessonId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "manifestHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "sdk": {
+          "type": "object",
+          "properties": {
+            "major": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "minor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": ["major", "minor"],
+          "additionalProperties": true
+        }
+      },
+      "required": ["lessonId", "manifestHash", "sdk"],
+      "additionalProperties": true
+    },
+    "host.init.payload": {
+      "type": "object",
+      "properties": {
+        "lessonId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "manifestHash": {
+          "$ref": "#/$defs/hash"
+        },
+        "locale": {
+          "$ref": "#/$defs/locale"
+        },
+        "content": {
+          "type": "object"
+        },
+        "state": {
+          "$ref": "#/$defs/snapshot"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "surface": {
+          "$ref": "#/$defs/surface"
+        }
+      },
+      "required": [
+        "lessonId",
+        "manifestHash",
+        "locale",
+        "content",
+        "state",
+        "disabled",
+        "capabilities",
+        "limits",
+        "surface"
+      ],
+      "additionalProperties": true
+    },
+    "lesson.ready.payload": {
+      "type": "object",
+      "properties": {
+        "stateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sceneId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["stateRevision", "sceneId"],
+      "additionalProperties": true
+    },
+    "host.lifecycle.payload": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/phase"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": ["phase", "reason"],
+      "additionalProperties": true
+    },
+    "host.lifecycle.result": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/phase"
+        },
+        "dirty": {
+          "type": "boolean"
+        }
+      },
+      "required": ["phase", "dirty"],
+      "additionalProperties": true
+    },
+    "host.context.payload": {
+      "type": "object",
+      "properties": {
+        "locale": {
+          "$ref": "#/$defs/locale"
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "assessmentView": {
+          "type": "object"
+        }
+      },
+      "required": ["locale", "disabled"],
+      "additionalProperties": true
+    },
+    "host.surface.payload": {
+      "$ref": "#/$defs/surface"
+    },
+    "lesson.busy.payload": {
+      "type": "object",
+      "properties": {
+        "busy": {
+          "type": "boolean"
+        },
+        "reason": {
+          "enum": ["saving", "checking", "preparing"]
+        }
+      },
+      "required": ["busy", "reason"],
+      "additionalProperties": true
+    },
+    "state.read.payload": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": true
+    },
+    "state.read.result": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "object"
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        }
+      },
+      "required": ["revision", "schemaVersion", "state", "maxBytes"],
+      "additionalProperties": true
+    },
+    "state.save.payload": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "object"
+        }
+      },
+      "required": ["expectedRevision", "schemaVersion", "state"],
+      "additionalProperties": true
+    },
+    "state.save.result": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "persisted": {
+          "const": true
+        }
+      },
+      "required": ["revision", "persisted"],
+      "additionalProperties": true
+    },
+    "state.reset.payload": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["expectedRevision"],
+      "additionalProperties": true
+    },
+    "state.reset.result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "cancelled": {
+              "const": true
+            }
+          },
+          "required": ["cancelled"],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cancelled": {
+              "const": false
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "state": {
+              "type": "object"
+            }
+          },
+          "required": ["cancelled", "revision", "state"],
+          "additionalProperties": true
+        }
+      ]
+    },
+    "goals.progress.payload": {
+      "type": "object",
+      "properties": {
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "fraction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": ["goalId", "fraction"],
+      "additionalProperties": true
+    },
+    "assessment.submit.payload": {
+      "type": "object",
+      "properties": {
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "stateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "answer": {
+          "type": "object"
+        }
+      },
+      "required": ["goalId", "stateRevision", "answer"],
+      "additionalProperties": true
+    },
+    "assessment.submit.result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "assessmentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "status": {
+              "const": "pending"
+            }
+          },
+          "required": ["assessmentId", "status"],
+          "additionalProperties": true
+        },
+        {
+          "$ref": "#/$defs/assessmentFinal"
+        }
+      ]
+    },
+    "assessment.status.payload": {
+      "type": "object",
+      "properties": {
+        "assessmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["assessmentId"],
+      "additionalProperties": true
+    },
+    "assessment.status.result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "assessmentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "status": {
+              "const": "pending"
+            }
+          },
+          "required": ["assessmentId", "status"],
+          "additionalProperties": true
+        },
+        {
+          "$ref": "#/$defs/assessmentFinal"
+        }
+      ]
+    },
+    "assessment.result.payload": {
+      "type": "object",
+      "properties": {
+        "assessmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "const": "final"
+        },
+        "outcome": {
+          "enum": ["passed", "not_passed", "introduced", "unavailable"]
+        },
+        "feedback": {
+          "$ref": "#/$defs/feedback"
+        },
+        "counts": {
+          "type": "boolean"
+        },
+        "receiptHandle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["assessmentId", "status", "outcome", "feedback", "counts", "goalId"],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "counts": {
+                "const": true
+              }
+            },
+            "required": ["counts"]
+          },
+          "then": {
+            "properties": {
+              "outcome": {
+                "const": "passed"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "feedback": {
+                "properties": {
+                  "source": {
+                    "const": "example"
+                  }
+                },
+                "required": ["source"]
+              }
+            },
+            "required": ["feedback"]
+          },
+          "then": {
+            "properties": {
+              "counts": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "feedback": {
+                "properties": {
+                  "rejected": {
+                    "const": true
+                  }
+                },
+                "required": ["rejected"]
+              }
+            },
+            "required": ["feedback"]
+          },
+          "then": {
+            "properties": {
+              "counts": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "completion.request.payload": {
+      "type": "object",
+      "properties": {
+        "goalIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        },
+        "stateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "receiptHandles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      },
+      "required": ["goalIds", "stateRevision", "receiptHandles"],
+      "additionalProperties": true
+    },
+    "completion.request.result": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "enum": ["completed", "introduced", "pending", "not_passed"]
+        },
+        "persisted": {
+          "type": "boolean"
+        }
+      },
+      "required": ["outcome", "persisted"],
+      "additionalProperties": true
+    },
+    "reward.committed.payload": {
+      "type": "object",
+      "properties": {
+        "awardId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "xp": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "result": {
+          "enum": ["passed", "introduced"]
+        },
+        "persisted": {
+          "const": true
+        }
+      },
+      "required": ["awardId", "goalId", "xp", "result", "persisted"],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "introduced"
+              }
+            },
+            "required": ["result"]
+          },
+          "then": {
+            "properties": {
+              "xp": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "navigation.policy.payload": {
+      "type": "object",
+      "properties": {
+        "swipe": {
+          "$ref": "#/$defs/swipe"
+        }
+      },
+      "required": ["swipe"],
+      "additionalProperties": true
+    },
+    "navigation.policy.result": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "swipe": {
+          "$ref": "#/$defs/swipe"
+        }
+      },
+      "required": ["epoch", "swipe"],
+      "additionalProperties": true
+    },
+    "navigation.pointer.payload": {
+      "type": "object",
+      "properties": {
+        "pointerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "owner": {
+          "enum": ["scene", "navigation"]
+        },
+        "phase": {
+          "enum": ["begin", "end", "cancel"]
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["pointerId", "owner", "phase", "epoch"],
+      "additionalProperties": true
+    },
+    "navigation.gesture.payload": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "enum": ["next", "previous"]
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "distanceCss": {
+          "type": "number"
+        },
+        "crossDistanceCss": {
+          "type": "number"
+        }
+      },
+      "required": ["direction", "epoch", "distanceCss", "crossDistanceCss"],
+      "additionalProperties": true
+    },
+    "navigation.gesture.result": {
+      "type": "object",
+      "properties": {
+        "accepted": {
+          "type": "boolean"
+        }
+      },
+      "required": ["accepted"],
+      "additionalProperties": true
+    },
+    "navigation.request.payload": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "enum": ["next", "previous", "skip", "close"]
+        }
+      },
+      "required": ["direction"],
+      "additionalProperties": true
+    },
+    "navigation.request.result": {
+      "type": "object",
+      "properties": {
+        "accepted": {
+          "type": "boolean"
+        }
+      },
+      "required": ["accepted"],
+      "additionalProperties": true
+    },
+    "display.fullscreen.payload": {
+      "type": "object",
+      "properties": {
+        "requested": {
+          "type": "boolean"
+        }
+      },
+      "required": ["requested"],
+      "additionalProperties": true
+    },
+    "display.fullscreen.result": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/displayMode"
+        },
+        "needsHostGesture": {
+          "type": "boolean"
+        }
+      },
+      "required": ["mode", "needsHostGesture"],
+      "additionalProperties": true
+    },
+    "audio.preference.payload": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled"],
+      "additionalProperties": true
+    },
+    "audio.preference.result": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "userActivationRequired": {
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled", "userActivationRequired"],
+      "additionalProperties": true
+    },
+    "haptics.play.payload": {
+      "type": "object",
+      "properties": {
+        "preset": {
+          "enum": ["light", "success"]
+        }
+      },
+      "required": ["preset"],
+      "additionalProperties": true
+    },
+    "haptics.play.result": {
+      "type": "object",
+      "properties": {
+        "played": {
+          "type": "boolean"
+        }
+      },
+      "required": ["played"],
+      "additionalProperties": true
+    },
+    "artifact.export.payload": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "mediaType": {
+          "enum": ["application/json", "text/plain"]
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "mediaType", "content"],
+      "additionalProperties": true
+    },
+    "artifact.export.result": {
+      "type": "object",
+      "properties": {
+        "exported": {
+          "type": "boolean"
+        }
+      },
+      "required": ["exported"],
+      "additionalProperties": true
+    },
+    "project.read.payload": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": true
+    },
+    "project.read.result": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "object"
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        }
+      },
+      "required": ["revision", "state", "maxBytes"],
+      "additionalProperties": true
+    },
+    "project.save.payload": {
+      "type": "object",
+      "properties": {
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "object"
+        }
+      },
+      "required": ["expectedRevision", "state"],
+      "additionalProperties": true
+    },
+    "project.save.result": {
+      "type": "object",
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "persisted": {
+          "const": true
+        }
+      },
+      "required": ["revision", "persisted"],
+      "additionalProperties": true
+    },
+    "llm.info.payload": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["profile"],
+      "additionalProperties": true
+    },
+    "llm.info.result": {
+      "type": "object",
+      "properties": {
+        "availability": {
+          "enum": ["paused", "available"]
+        }
+      },
+      "required": ["availability"],
+      "additionalProperties": true
+    },
+    "llm.respond.payload": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "input": {
+          "type": "object"
+        }
+      },
+      "required": ["profile", "input"],
+      "additionalProperties": true
+    },
+    "llm.respond.result": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "const": "pending"
+        }
+      },
+      "required": ["requestId", "status"],
+      "additionalProperties": true
+    },
+    "llm.delta.payload": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sample": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": ["requestId", "index", "sample", "text"],
+      "additionalProperties": true
+    },
+    "error": {
+      "type": "object",
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "retryAfterSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": true
+    },
+    "llm.result.payload": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "status": {
+          "enum": ["completed", "failed"]
+        },
+        "output": {
+          "type": "object"
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      },
+      "required": ["requestId", "status"],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["output"],
+            "not": {
+              "required": ["error"]
+            }
+          },
+          "else": {
+            "required": ["error"],
+            "not": {
+              "required": ["output"]
+            }
+          }
+        }
+      ]
+    },
+    "llm.cancel.payload": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["requestId"],
+      "additionalProperties": true
+    },
+    "llm.cancel.result": {
+      "type": "object",
+      "properties": {
+        "listening": {
+          "const": false
+        }
+      },
+      "required": ["listening"],
+      "additionalProperties": true
+    },
+    "assessment.fallback.payload": {
+      "type": "object",
+      "properties": {
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "stateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["goalId", "stateRevision"],
+      "additionalProperties": true
+    },
+    "assessment.fallback.result": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "const": "introduced"
+        },
+        "counts": {
+          "const": false
+        },
+        "receiptHandle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["outcome", "counts", "receiptHandle"],
+      "additionalProperties": true
+    },
+    "assessment.appeal.payload": {
+      "type": "object",
+      "properties": {
+        "assessmentId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["assessmentId"],
+      "additionalProperties": true
+    },
+    "assessment.appeal.result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "appealId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "status": {
+              "const": "pending"
+            }
+          },
+          "required": ["appealId", "status"],
+          "additionalProperties": true
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "unavailable"
+            }
+          },
+          "required": ["status"],
+          "additionalProperties": true
+        }
+      ]
+    },
+    "request.cancel.payload": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "required": ["requestId"],
+      "additionalProperties": true
+    },
+    "request.cancel.result": {
+      "type": "object",
+      "properties": {
+        "cancelled": {
+          "type": "boolean"
+        }
+      },
+      "required": ["cancelled"],
+      "additionalProperties": true
+    },
+    "lesson.error.payload": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "recoverable": {
+          "type": "boolean"
+        }
+      },
+      "required": ["code", "recoverable"],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true,
+  "x-operations": {
+    "host.connect": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/host.connect.payload"
+      }
+    },
+    "lesson.hello": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/lesson.hello.payload"
+      }
+    },
+    "host.init": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/host.init.payload"
+      }
+    },
+    "lesson.ready": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/lesson.ready.payload"
+      }
+    },
+    "host.lifecycle": {
+      "senders": ["host"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/host.lifecycle.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/host.lifecycle.result"
+      }
+    },
+    "host.context": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/host.context.payload"
+      }
+    },
+    "host.surface": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/host.surface.payload"
+      }
+    },
+    "lesson.busy": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/lesson.busy.payload"
+      }
+    },
+    "state.read": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/state.read.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/state.read.result"
+      }
+    },
+    "state.save": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/state.save.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/state.save.result"
+      }
+    },
+    "state.reset": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/state.reset.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/state.reset.result"
+      }
+    },
+    "goals.progress": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/goals.progress.payload"
+      }
+    },
+    "assessment.submit": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/assessment.submit.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/assessment.submit.result"
+      }
+    },
+    "assessment.status": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/assessment.status.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/assessment.status.result"
+      }
+    },
+    "assessment.result": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/assessment.result.payload"
+      }
+    },
+    "completion.request": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/completion.request.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/completion.request.result"
+      }
+    },
+    "reward.committed": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/reward.committed.payload"
+      }
+    },
+    "navigation.policy": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/navigation.policy.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/navigation.policy.result"
+      }
+    },
+    "navigation.pointer": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/navigation.pointer.payload"
+      }
+    },
+    "navigation.gesture": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/navigation.gesture.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/navigation.gesture.result"
+      }
+    },
+    "navigation.request": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/navigation.request.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/navigation.request.result"
+      }
+    },
+    "display.fullscreen": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/display.fullscreen.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/display.fullscreen.result"
+      }
+    },
+    "audio.preference": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/audio.preference.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/audio.preference.result"
+      }
+    },
+    "haptics.play": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/haptics.play.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/haptics.play.result"
+      },
+      "capability": {
+        "id": "host.haptics",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "artifact.export": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/artifact.export.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/artifact.export.result"
+      },
+      "capability": {
+        "id": "host.artifact",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "project.read": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/project.read.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/project.read.result"
+      },
+      "capability": {
+        "id": "host.project",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "project.save": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/project.save.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/project.save.result"
+      },
+      "capability": {
+        "id": "host.project",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "llm.info": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/llm.info.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/llm.info.result"
+      },
+      "capability": {
+        "id": "host.llm",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "llm.respond": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/llm.respond.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/llm.respond.result"
+      },
+      "capability": {
+        "id": "host.llm",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "llm.delta": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/llm.delta.payload"
+      },
+      "capability": {
+        "id": "host.llm",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "llm.result": {
+      "senders": ["host"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/llm.result.payload"
+      },
+      "capability": {
+        "id": "host.llm",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "llm.cancel": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/llm.cancel.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/llm.cancel.result"
+      },
+      "capability": {
+        "id": "host.llm",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "assessment.fallback": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/assessment.fallback.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/assessment.fallback.result"
+      }
+    },
+    "assessment.appeal": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/assessment.appeal.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/assessment.appeal.result"
+      },
+      "capability": {
+        "id": "assessment.appeal",
+        "major": 1,
+        "minMinor": 0
+      }
+    },
+    "request.cancel": {
+      "senders": ["host", "lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/request.cancel.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/request.cancel.result"
+      }
+    },
+    "lesson.error": {
+      "senders": ["lesson"],
+      "kind": "event",
+      "payload": {
+        "$ref": "#/$defs/lesson.error.payload"
+      }
+    }
+  }
+}
