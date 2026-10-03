@@ -30,7 +30,10 @@
       </li>
       <li><a href="#geltungsbereich">Geltungsbereich und Systeme</a></li>
       <li><a href="#rechtsgrundlagen">Rechtsgrundlagen</a></li>
-      <li><a href="#ueberblick">Überblick Verarbeitungstätigkeiten</a></li>
+      <li>
+        <a href="#ueberblick">Überblick Verarbeitungstätigkeiten</a>,
+        <a href="#statistiken">zusammengefasste Statistiken (6.1)</a>
+      </li>
       <li><a href="#hosting">Hosting, Auftragsverarbeiter und Datensicherungen</a></li>
       <li><a href="#serverlogs">Server-Logs und Fehlerberichte</a></li>
       <li><a href="#cookies">Cookies und lokale Speichertechnologien</a></li>
@@ -201,7 +204,7 @@
       <h2>5 Rechtsgrundlagen</h2>
       <p>
         Wir verarbeiten personenbezogene Daten auf den folgenden Rechtsgrundlagen. In den
-        Abschnitten 7 bis 17 nennen wir für jede Verarbeitung die konkrete Grundlage.
+        Abschnitten 6.1 und 7 bis 17 nennen wir für jede Verarbeitung die konkrete Grundlage.
       </p>
       <ul>
         <li>
@@ -227,8 +230,9 @@
           der Anfragerate der öffentlichen Kündigungs- und Widerrufsformulare und Aufbewahrung der
           Erklärungen als Nachweis (Abschnitt 15.6), Verwaltungsprotokoll über administrative
           Zugriffe (Abschnitt 10.5), Betrieb des Discord-Bots (Abschnitt 17.3), Bestenliste
-          (motivierende Lernumgebung), Beantwortung allgemeiner Anfragen (Abschnitt 17.2). Gegen
-          diese Verarbeitungen kannst du Widerspruch einlegen (Abschnitt 23).
+          (motivierende Lernumgebung), Beantwortung allgemeiner Anfragen (Abschnitt 17.2),
+          Erstellung zusammengefasster Statistiken (Abschnitt 6.1). Gegen diese Verarbeitungen
+          kannst du Widerspruch einlegen (Abschnitt 23).
         </li>
         <li>
           <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung): das Laden von YouTube-Videos
@@ -264,6 +268,16 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>Zusammengefasste Statistiken (Abschnitt 6.1)</td>
+              <td>Betrieb, Verbesserung und Weiterentwicklung des Angebots</td>
+              <td>Erforderliche Daten aus den hier beschriebenen, ohnehin gespeicherten Daten</td>
+              <td>Art. 6 Abs. 1 lit. f DSGVO bis zur Anonymisierung</td>
+              <td>
+                Quelldaten: die jeweils genannten Speicherfristen; Ergebnisse ohne Personenbezug
+              </td>
+              <td>Interne Auswertung, keine Weitergabe von Einzeldaten für diesen Zweck</td>
+            </tr>
             <tr>
               <td>Auslieferung der Weboberfläche (Abschnitt 7.2)</td>
               <td>Bereitstellung der Website, Schutz vor Überlastungsangriffen</td>
@@ -518,6 +532,24 @@
       </div>
     </section>
 
+    <section id="statistiken">
+      <h3>6.1 Zusammengefasste Statistiken</h3>
+      <p>
+        Aus den in diesen Hinweisen beschriebenen, ohnehin gespeicherten Daten können wir intern
+        Statistiken für den Betrieb, die Verbesserung und die Weiterentwicklung unseres Angebots
+        erstellen, soweit die Daten dafür erforderlich sind. Die Ergebnisse verwenden wir
+        ausschließlich zusammengefasst und so, dass keine Rückschlüsse auf einzelne Personen möglich
+        sind; sie dienen keinen Entscheidungen über einzelne Personen. Dafür erheben wir keine
+        zusätzlichen Daten und geben keine Einzeldaten weiter. Grundlage der Verarbeitung bis zur
+        Anonymisierung ist Art. 6 Abs. 1 lit. f DSGVO: Unser Interesse an einem zuverlässigen und
+        hilfreichen Angebot überwiegt, weil wir die Verarbeitung auf erforderliche vorhandene Daten
+        beschränken und nur Ergebnisse ohne Personenbezug nutzen. Du kannst dieser Verarbeitung aus
+        Gründen deiner besonderen Situation nach Art. 21 DSGVO über die
+        <a href="#datenschutz-ansprechstelle">Ansprechstelle in Abschnitt 3</a> widersprechen;
+        Einzelheiten stehen in <a href="#rechte">Abschnitt 23</a>.
+      </p>
+    </section>
+
     <section id="hosting">
       <h2>7 Hosting, Auftragsverarbeiter und Datensicherungen</h2>
       <h3>7.1 Hetzner Online GmbH</h3>
@@ -728,8 +760,8 @@
               <td><code>bootstrap-academy:update-notice:…</code></td>
               <td>Local Storage</td>
               <td>
-                Merkt erst nach „Verstanden“, dass der Update-Hinweis für deine Nutzerkennung und
-                die jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
+                Merkt erst nach „Schließen“, dass der Hinweis für dein Konto oder als Gast und die
+                jeweilige Hinweisversion in diesem Browser geschlossen wurde. Dies ist keine
                 Zustimmung zu Vertrags- oder Datenschutzhinweisen.
               </td>
               <td>
@@ -1093,6 +1125,10 @@
         gehören zu deinem Datenexport und werden mit deinem Konto gelöscht; notwendige
         Vertragsnachweise bleiben davon getrennt (Abschnitt 10.7). Für die Bestenliste gilt
         Abschnitt 12.2.
+      </p>
+      <p>
+        Zur Erstellung zusammengefasster Statistiken aus vorhandenen Daten siehe
+        <a href="#statistiken">Abschnitt 6.1</a>.
       </p>
       <h3>12.2 Bestenliste</h3>
       <p>
@@ -1662,10 +1698,11 @@
       <p>
         Wir setzen keine Webanalyse, Werbenetzwerke, Tracking-Pixel oder Dienste zur
         Reichweitenmessung ein – weder auf der Website noch in E-Mails. Wir verwenden Lern-,
-        Leistungs- und Code-Daten nicht für Produktentwicklung, Werbung oder das Training von
-        KI-Modellen. Zur Bereitstellung der Lernfunktion werten wir deinen gespeicherten Lernstand
-        wie in Abschnitt 12.1 beschrieben aus. Ein laufender KI-Chat oder eine KI-Auswertung deiner
-        Eingaben gehört derzeit nicht zur Plattform.
+        Leistungs- und Code-Daten nicht für Werbung oder das Training von KI-Modellen.
+        Zusammengefasste Statistiken für Betrieb, Verbesserung und Weiterentwicklung beschreiben wir
+        in <a href="#statistiken">Abschnitt 6.1</a>. Zur Bereitstellung der Lernfunktion werten wir
+        deinen gespeicherten Lernstand wie in Abschnitt 12.1 beschrieben aus. Ein laufender KI-Chat
+        oder eine KI-Auswertung deiner Eingaben gehört derzeit nicht zur Plattform.
       </p>
       <p>
         Für den technischen Betrieb verwenden wir aggregierte Betriebskennzahlen und Fehlerberichte
@@ -2022,8 +2059,9 @@
           Verwaltungsprotokoll (Abschnitt 10.5), die Zähler fehlgeschlagener Anmeldeversuche und der
           Kündigungs- und Widerrufsformulare, die Aufbewahrung von Kündigungs- und
           Widerrufserklärungen als Nachweis (Abschnitt 15.6) und die Beantwortung allgemeiner
-          Anfragen (Abschnitt 17.2). Wir verarbeiten die Daten dann nicht mehr, es sei denn, wir
-          können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die deine
+          Anfragen (Abschnitt 17.2) sowie die Erstellung zusammengefasster Statistiken bis zur
+          Anonymisierung (Abschnitt 6.1). Wir verarbeiten die Daten dann nicht mehr, es sei denn,
+          wir können zwingende schutzwürdige Gründe für die Verarbeitung nachweisen, die deine
           Interessen, Rechte und Freiheiten überwiegen, oder die Verarbeitung dient der
           Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Direktwerbung betreiben
           wir nicht. Schicke deinen Widerspruch an
@@ -2070,7 +2108,7 @@
         Seit September 2026 nicht mehr eingesetzt: Google reCAPTCHA, Gravatar, der Cookie-Hinweis
         und die Newsletter-Funktion.
       </p>
-      <p><strong>Fassung:</strong> 2026-09-r4</p>
+      <p><strong>Fassung:</strong> 2026-10-r1 · <strong>Stand:</strong> 3. Oktober 2026</p>
     </section>
   </main>
 </template>
