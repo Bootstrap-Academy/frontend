@@ -3,9 +3,9 @@
     class="h-screen-inner min container-fluid grid grid-cols-1 items-center gap-container pt-container pb-container midXl:grid-cols-[auto_minmax(0,0.8fr)]"
   >
     <section class="container-form">
-      <h3 class="text-heading-3 mb-2 text-center">
+      <h1 class="text-heading-3 mb-2 text-center">
         {{ t("Forms.Login") }}
-      </h3>
+      </h1>
       <p class="text-body-1 mb-6 md:mb-8">{{ t("Body.ChallengesNickname") }}</p>
 
       <FormLogin />
@@ -29,9 +29,9 @@ import { useI18n } from "vue-i18n";
 definePageMeta({ layout: "inner" });
 
 export default {
-  head: { title: "Login" },
   setup() {
     const { t } = useI18n();
+    useHead(() => ({ title: `${t("Buttons.Login")} · Bootstrap Academy` }));
 
     onMounted(async () => await getOAuthProviders());
 

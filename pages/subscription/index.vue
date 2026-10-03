@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 sm:container-fluid">
+  <main class="px-4 sm:container-fluid">
     <section v-if="!isPremium && showHearts" class="mt-10 flex flex-col items-center gap-10">
       <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
         {{ t("Headings.RefillHearts") }}
@@ -123,7 +123,7 @@
             class="rounded-full px-4 py-2 text-xs font-semibold capitalize disabled:opacity-50 sm:px-6 sm:text-sm md:px-8"
             :class="
               premiumStatusKnown && premiumStatusAutoPay === button.plan
-                ? 'bg-light text-black'
+                ? 'bg-light text-heading'
                 : 'text-white'
             "
             @click="fnUpdatePremiumAutoPay(button.plan)"
@@ -241,7 +241,7 @@
         </OrderSummary>
       </div>
     </Modal>
-  </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -253,6 +253,7 @@ import SvgHeart from "../../components/svg/Heart.vue";
 export default {
   setup() {
     const { t, locale } = useI18n();
+    useHead(() => ({ title: `${t("Headings.Premium")} · Bootstrap Academy` }));
     const coins = useCoins();
     const { isDaily, showHearts, policyKnown } = useDailyLearning();
     const selectedButton = ref(0);
