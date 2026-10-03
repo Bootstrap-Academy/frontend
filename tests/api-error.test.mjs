@@ -78,6 +78,8 @@ test("HTTP failures and exact server codes keep session, conflict, throttle, hea
   }
   assert.equal(dailyError({ statusCode: 429, data: { daily } }), null);
   for (const error of [
+    { data: { error: "constructor" } },
+    { headers: { get: "invalid" } },
     undefined,
     null,
     new Error("offline"),

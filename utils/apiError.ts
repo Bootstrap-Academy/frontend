@@ -104,7 +104,9 @@ export function decodeApiError(error: unknown): ApiError {
   const headerSource = (source.headers ?? response.headers) as
     | { get?: (name: string) => string | null }
     | undefined;
-  const retry = body.retry_after ?? headerSource?.get?.("retry-after");
+  const retry =
+    body.retry_after ??
+    (typeof headerSource?.get === "function" ? headerSource.get("retry-after") : null);
   const retryNumber =
     typeof retry === "number" ? retry : /^\d+$/.test(text(retry)) ? Number(retry) : NaN;
   const retryAfter = Number.isSafeInteger(retryNumber) && retryNumber > 0 ? retryNumber : null;
@@ -153,7 +155,7 @@ export function decodeApiError(error: unknown): ApiError {
       description.toLowerCase().includes(fragment)
     );
     if (legacy) messageKey = `Error.${legacy[1]}`;
-    else if (code && codeMessages[code]) messageKey = `Error.${codeMessages[code]}`;
+    else if (code && Object.hasOwn(codeMessages, code)) messageKey = `Error.${codeMessages[code]}`;
     else if (translatedKeys.has(description)) messageKey = description;
   }
   return {
