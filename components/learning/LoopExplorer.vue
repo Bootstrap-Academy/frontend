@@ -196,7 +196,7 @@ import { computed, nextTick, ref, useId } from "vue";
 type Step = { id: string; title: string; body: string };
 type Range = { min: number; max: number; initial: number };
 type LoopContent = {
-  steps: Step[];
+  steps: [Step, Step, Step, Step, Step];
   single: { instruction: string; result: string; start: string };
   repeat: Range & { instruction: string; result: string };
   prediction: {
@@ -277,7 +277,8 @@ function integer(value: unknown, fallback: number, min: number, max: number) {
     ? Math.min(max, Math.max(min, value))
     : fallback;
 }
-const stage = computed(() => integer(props.state.stage, 0, 0, 4));
+// The persisted stage is clamped to the five steps of this activity.
+const stage = computed(() => integer(props.state.stage, 0, 0, 4) as 0 | 1 | 2 | 3 | 4);
 const current = computed(() => lesson.value.steps[stage.value]);
 const singleDone = computed(() => props.state.singleDone === true);
 const prediction = computed(() =>

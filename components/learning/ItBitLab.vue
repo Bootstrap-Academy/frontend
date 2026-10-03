@@ -156,9 +156,10 @@ async function navigate(event: KeyboardEvent, index: number) {
     ArrowUp: -4,
     ArrowDown: 4,
   };
-  if (event.key in offsets) {
+  const offset = offsets[event.key];
+  if (offset !== undefined) {
     event.preventDefault();
-    const cell = Math.max(0, Math.min(15, index + offsets[event.key]));
+    const cell = Math.max(0, Math.min(15, index + offset));
     send("cell", cell);
     await nextTick();
     cells[cell]?.focus();

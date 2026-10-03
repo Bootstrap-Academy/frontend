@@ -30,7 +30,7 @@ const enhanced = ref(false);
 let editor: Monaco.editor.IStandaloneCodeEditor | undefined;
 let monaco: typeof Monaco | undefined;
 let alive = true;
-const language = () => props.language.split("-")[0];
+const language = () => props.language.split("-")[0] ?? "";
 onMounted(async () => {
   // Keep native editing on small screens as well as touch devices. Some mobile
   // browsers report a fine pointer when an external pointer is connected.
