@@ -41,7 +41,7 @@
               {{ t(path.label) }}
             </h1>
 
-            <span v-if="i < breadcrumbs.length - 1" class="mx-3 text-accent"> / </span>
+            <span v-if="Number(i) < breadcrumbs.length - 1" class="mx-3 text-accent"> / </span>
           </template>
         </div>
         <p class="h-fit w-fit rounded bg-warning px-3 py-1 text-primary">
@@ -111,7 +111,8 @@ export default {
     const codingChallenge: any = useCodingChallenge();
     const examples: any = useCodingExamples();
     const environment = ref();
-    const allCodingChallenges = useAllCodingChallengesInATask();
+    const allCodingChallenges: Ref<import("~/types/codingChallengeViews").CodingTaskView[]> =
+      useAllCodingChallengesInATask();
     const route = useRoute();
     const code = ref("// write your code here");
     const breadcrumbs = computed(() => {
