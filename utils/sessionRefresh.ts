@@ -28,7 +28,9 @@ export function sameSessionPair(a: SessionSnapshot, b: SessionSnapshot) {
 
 export function accessTokenExpired(token: string, margin = 100) {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    const encoded = token.split(".")[1];
+    if (!encoded) return false;
+    const payload = JSON.parse(atob(encoded.replace(/-/g, "+").replace(/_/g, "/")));
     return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now() + margin * 1000;
   } catch {
     return false;
