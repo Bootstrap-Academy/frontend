@@ -287,7 +287,7 @@ test("actual confirmation component renders exact scope and pending/applied/unkn
   }
 });
 
-test("both actual parent dialogs mount the exact-target component with their intended scope", async () => {
+test("historical dialogs keep exact cancellation scopes and cannot offer new bookings or editing", async () => {
   const dir = await mkdtemp(join(tmpdir(), "l3-ordinary-parents-"));
   const names = [
       "useUser",
@@ -349,6 +349,24 @@ test("both actual parent dialogs mount the exact-target component with their int
         "auto",
       ],
       [
+        "../components/calendar/EventBooking.vue",
+        {
+          event: { type: "webinar", booked: false, bookable: true },
+          booked: false,
+          id: "event-original",
+          type: "webinar",
+          theme: {},
+          stats: [],
+          isMine: false,
+          bookable: true,
+          description: "",
+          subSkillID: "",
+          start: 1791806400,
+        },
+        null,
+        null,
+      ],
+      [
         "../components/form/Webinar.vue",
         {
           data: {
@@ -404,6 +422,18 @@ test("both actual parent dialogs mount the exact-target component with their int
       app.mount(ui.root);
       await nextTick();
       const clickable = ui.all().filter((n) => n.type === "button");
+      assert.equal(
+        ui.all().some((n) => n.type === "form"),
+        false,
+        "no retired event editor"
+      );
+      if (scope === null) {
+        assert.equal(clickable.length, 0, "an unbooked event cannot create another offer");
+        assert.deepEqual(mounted, []);
+        app.unmount();
+        app = null;
+        continue;
+      }
       const chosen = file.includes("EventBooking")
         ? clickable.find((n) => ui.text(n).includes("More"))
         : clickable.find((n) => ui.text(n).includes("Delete") || ui.text(n).includes("Cancel"));

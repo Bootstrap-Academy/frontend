@@ -349,21 +349,12 @@ for (const result of ["success", "unauthorized", "offline"]) {
       },
     };
     for (const name of [
-      "Calendar",
-      "ICS",
-      "Events",
-      "EventFilter",
-      "Coachings",
       "Coins",
       "PaypalClientID",
       "MyCourses",
       "Courses",
       "Course",
       "VideoSRC",
-      "UnratedWebinars",
-      "Webinar",
-      "Webinars",
-      "MyWebinars",
       "XP",
     ])
       bindings[`use${name}`] = () => (cleanup[name] ||= { value: "old" });
