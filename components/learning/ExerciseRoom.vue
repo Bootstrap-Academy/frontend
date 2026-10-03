@@ -151,7 +151,7 @@
           </button>
         </div>
         <div v-if="!['pending', 'uncertain'].includes(view.phase)" class="submit-action">
-          <p v-if="view.premium === false">
+          <p v-if="view.premium === false && showHearts">
             {{ t("Body.WrongAnswerCostsOneHeart") }}
           </p>
           <button type="button" :disabled="locked || !valid" @click="submit">
@@ -192,6 +192,7 @@ import type {
 } from "~/types/learningRooms";
 import { createLearningExercise } from "~/utils/learningExercise";
 
+const { showHearts } = useDailyLearning();
 const props = defineProps<{
   reference: ExerciseReference;
   state: Record<string, any>;

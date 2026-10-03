@@ -12,6 +12,7 @@ import {
   type FeedbackPayload,
 } from "../utils/feedback";
 
+const props = defineProps<{ inline?: boolean }>();
 const { locale } = useI18n();
 const de = computed(() => locale.value.startsWith("de"));
 const text = (german: string, english: string) => (de.value ? german : english);
@@ -198,12 +199,17 @@ const errorText = computed(() => {
 </script>
 
 <template>
-  <div v-if="ready" class="feedback-launcher print:hidden">
+  <div
+    v-if="ready"
+    class="feedback-launcher print:hidden"
+    :class="props.inline ? 'container flex justify-end pb-6' : ''"
+  >
     <button
       v-show="!opened && stack.length === 0"
       type="button"
-      class="feedback-open fixed right-4 z-40 inline-flex min-h-12 items-center gap-2 rounded-full border border-accent bg-primary px-4 py-3 font-semibold text-heading shadow-lg"
-      style="bottom: calc(1rem + env(safe-area-inset-bottom))"
+      class="feedback-open inline-flex min-h-12 items-center gap-2 rounded-full border border-accent bg-primary px-4 py-3 font-semibold text-heading"
+      :class="props.inline ? 'relative' : 'fixed right-4 z-40 shadow-lg'"
+      :style="props.inline ? undefined : { bottom: 'calc(1rem + env(safe-area-inset-bottom))' }"
       aria-haspopup="dialog"
       @click="opened = true"
     >
