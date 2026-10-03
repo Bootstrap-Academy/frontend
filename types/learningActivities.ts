@@ -1,3 +1,4 @@
+import type { DailyLearning } from "./dailyLearning";
 import type { Course, Lecture, Section } from "./courseTypes";
 import type { ExerciseReference, LocalizedText, RoomEnvelope } from "./learningRooms";
 import type { LearningModuleDescriptor } from "./learningModule";
@@ -33,6 +34,8 @@ export interface LearningActivity {
 }
 
 export interface LearningLesson {
+  initial_activity_id?: string | null;
+  daily?: DailyLearning;
   course_id: string;
   explicit?: boolean;
   id: string;
@@ -52,6 +55,7 @@ export interface CourseCurriculum {
     title: LocalizedText;
     chapter_id?: string | null;
     activity_ids: string[];
+    daily?: DailyLearning;
     completed: boolean;
   }[];
 }
@@ -66,6 +70,7 @@ export interface LearningActivityHandle {
 }
 
 export interface LegacyVideoContext {
+  lessonId?: string;
   course: Course;
   lecture: Lecture;
   section?: Section | null;

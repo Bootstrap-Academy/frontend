@@ -29,6 +29,7 @@
 
 <script lang="ts">
 import { useI18n } from "vue-i18n";
+import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 
 definePageMeta({
   layout: "inner",
@@ -111,7 +112,8 @@ export default {
         router.push("/auth/signup");
       } else {
         setStates(res?.login ?? null);
-        router.push(`/dashboard`);
+        authorizeGuestHandoff(res?.login?.user?.id);
+        router.push(guestReturnPath() || "/dashboard");
       }
     }
 

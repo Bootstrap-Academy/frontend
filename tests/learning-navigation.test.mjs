@@ -50,6 +50,9 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
     useI18n: () => ({ t: (key) => key, locale: vue.ref("de") }),
     useRouter: () => ({ replace: async () => {} }),
     useLearningRooms: () => ({
+      daily: vue.ref(null),
+      limitReached: vue.ref(null),
+      keepDailyDraft: () => true,
       view,
       data: {
         save: async () => canSave,
