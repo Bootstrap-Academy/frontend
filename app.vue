@@ -6,7 +6,7 @@
       <Loading v-if="!publicLegalPage" />
       <UpdateNotice :dismissed="updateNoticeDismissals" />
     </LazyClientOnly>
-    <NuxtPage />
+    <NuxtPage :lang="publicLegalPage ? 'de' : undefined" />
 
     <Modal v-if="!publicLegalPage && dialog && dialog.show" @backdrop="handleDialogOnBackdrop()">
       <Dialog :dialog="dialog" />
