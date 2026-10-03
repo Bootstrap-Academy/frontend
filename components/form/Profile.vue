@@ -52,7 +52,9 @@
       :rules="form.tags.rules"
     />
 
-    <article class="mt-card">
+    <ProfilePublication v-if="publicationEnabled" />
+
+    <article v-else class="mt-card">
       <h2 class="text-heading-2 font-black mb-box">
         {{ t("Headings.Visibility") }}
       </h2>
@@ -144,9 +146,9 @@ export default defineComponent({
     const { t } = useI18n();
 
     const business = ref(false);
-    // The API stores the opt-out; the form asks the other way round, so that
-    // the box is ticked by default and unticking it hides the user.
-    const showOnLeaderboard = ref(true);
+    const publicationEnabled = profilePublicationEnabled();
+    // An absent profile field never implies permission to list a person.
+    const showOnLeaderboard = ref(false);
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -263,7 +265,7 @@ export default defineComponent({
       const { date, month, year } = convertTimestampToDate(after_30Days);
 
       return t("Body.EditNickname", {
-        placeholder: `${date} ${t(month.string ?? "")}, ${year}`,
+        placeholder: `${date} ${month.string ? t(month.string) : ""}, ${year}`,
       });
     });
 
@@ -288,7 +290,7 @@ export default defineComponent({
       form.first_name.value = data?.first_name ?? "";
       form.last_name.value = data?.last_name ?? "";
       business.value = data?.business ?? false;
-      showOnLeaderboard.value = !(data?.leaderboard_opt_out ?? false);
+      showOnLeaderboard.value = data?.leaderboard_opt_out === false;
     }
 
     watch(
@@ -309,7 +311,7 @@ export default defineComponent({
         const [success, error] = await editUser({
           ...form.body(),
           business: business.value,
-          leaderboard_opt_out: !showOnLeaderboard.value,
+          ...(!publicationEnabled ? { leaderboard_opt_out: !showOnLeaderboard.value } : {}),
         });
         form.submitting = false;
 
@@ -372,6 +374,7 @@ export default defineComponent({
       hintNickname,
       business,
       showOnLeaderboard,
+      publicationEnabled,
     };
   },
 });
