@@ -1,5 +1,6 @@
 <template>
-  <SkeletonLeaderboard v-if="loading" />
+  <LeaderboardStatus v-if="page.error" :error="page.error" @reload="reload" />
+  <SkeletonLeaderboard v-else-if="loading" />
   <LeaderboardListing
     v-else-if="codingChallengeLeaderboardList.length"
     :leaderBoardList="codingChallengeLeaderboardList"
@@ -22,14 +23,17 @@ export default {
     const loading = ref(true);
     const offset = useLeaderboardOffset();
     const codingChallengeLeaderboardList = useCodingChallengeLeaderboardList();
-    onMounted(async () => {
-      console.log("id", props.challengeId);
-      offset.value = 0;
-      codingChallengeLeaderboardList.value = [];
-      await getCodingChallengeLeaderboard(props.challengeId, offset.value);
+    const page = useLeaderboardPage();
+    const invalidation = useLeaderboardInvalidation();
+    async function reload() {
+      loading.value = true;
+      await getCodingChallengeLeaderboard(props.challengeId, 0);
       loading.value = false;
-    });
-    return { t, loading, codingChallengeLeaderboardList };
+    }
+    onMounted(reload);
+    watch(invalidation, reload);
+    watch(() => props.challengeId, reload);
+    return { t, loading, codingChallengeLeaderboardList, page, reload };
   },
 };
 </script>
