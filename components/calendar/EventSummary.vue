@@ -75,7 +75,6 @@
 
 <script setup lang="ts">
 import type { WebinarEvent, CoachingEvent } from "~/types/calenderTypes";
-import { InformationCircleIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
 const props = defineProps<{
   event: WebinarEvent | CoachingEvent;

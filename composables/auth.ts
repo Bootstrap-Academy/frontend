@@ -44,20 +44,6 @@ export async function logout() {
     // when its refresh token has already been revoked or the API is offline.
     setStates(null);
 
-    // Calendar Composable
-    const calendar = useCalendar();
-    calendar.value = null;
-    const ics = useICS();
-    ics.value = "";
-    const events = useEvents();
-    events.value = [];
-    const eventFilter = useEventFilter();
-    eventFilter.value = "all";
-
-    // Coaching Composable
-    const coachings = useCoachings();
-    coachings.value = [];
-
     // Coins Composable
     const coins = useCoins();
     coins.value = 0;
@@ -73,18 +59,6 @@ export async function logout() {
     course.value = null;
     const videoSRC = useVideoSRC();
     videoSRC.value = "";
-
-    // Ratings Composable
-    const unratedWebinars = useUnratedWebinars();
-    unratedWebinars.value = [];
-
-    // Webinars Composable
-    const webinar = useWebinar();
-    webinar.value = null;
-    const webinars = useWebinars();
-    webinars.value = [];
-    const myWebinars = useMyWebinars();
-    myWebinars.value = [];
 
     // XP Composable
     const xp = useXP();
