@@ -1,6 +1,11 @@
 {
   "private": true,
   "scripts": {
+    "check:node": "node scripts/check-node-version.mjs",
+    "preinstall": "npm run check:node",
+    "prebuild": "npm run check:node",
+    "predev": "npm run check:node",
+    "pregenerate": "npm run check:node",
     "build": "nuxt build",
     "dev": "nuxt dev --open",
     "start": "nuxt start",
