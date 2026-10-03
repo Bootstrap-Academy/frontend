@@ -6,10 +6,10 @@
       class="h-full w-full resize-none overflow-scroll rounded-md px-4 py-2"
       rows="10"
     ></textarea>
-    <div
-      v-html="$md.render(markdown)"
+    <Markdown
+      :source="markdown"
       class="h-full max-h-[30vh] overflow-y-scroll rounded-md border-2 border-primary px-4 py-2"
-    ></div>
+    ></Markdown>
   </section>
 </template>
 
