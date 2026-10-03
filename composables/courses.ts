@@ -1,6 +1,24 @@
 import { useState } from "#app";
 import { Course } from "~/types/courseTypes";
 import type { GetUnseenLectureResponse } from "~/types/courseTypes";
+import { createCourseCatalogue } from "~/utils/courseCatalogue";
+import type { CourseCatalogueFilters } from "~/utils/courseCatalogue";
+
+const fetchCatalogue = createCourseCatalogue<Course>(
+  (url) => GET(url),
+  () => {
+    const snapshot = getSessionSnapshot();
+    return JSON.stringify([snapshot.identity, snapshot.generation]);
+  }
+);
+
+export async function getCourseCatalogue(filters: CourseCatalogueFilters) {
+  try {
+    return [await fetchCatalogue({ ...filters }), null] as const;
+  } catch (error: any) {
+    return [null, error?.data || error] as const;
+  }
+}
 
 export const useListOfCompletedCourses = () => useState("listOfCompletedCourses", (): any[] => []);
 export const useMyCourses = () => useState("myCourses", (): any[] => []);
@@ -174,44 +192,6 @@ export async function completeLecture(courseID: string, lectureID: string) {
 export async function verifyCertificate(body: any) {
   try {
     const response = await GET(`/skills/course_access`);
-
-    return [response, null];
-  } catch (error: any) {
-    return [null, error.data];
-  }
-}
-
-export async function getFilteredMyCourses(filters: any[]) {
-  try {
-    let query = "";
-
-    for (let key in filters) {
-      if (typeof filters[key] == "object" && filters[key].length > 0) {
-        filters[key].forEach((item: any) => {
-          query = query + `${key}=${item}&`;
-        });
-      } else if (typeof filters[key] == "boolean" && filters[key] == true) {
-        query = query + `${key}=${filters[key]}&`;
-      } else if (typeof filters[key] == "string" && !!filters[key] && filters[key] != "---") {
-        query = query + `${key}=${filters[key]}&`;
-      } else if (typeof filters[key] == "number" && filters[key] != -1) {
-        query = query + `${key}=${filters[key]}&`;
-      }
-    }
-
-    const response = await GET(`/skills/courses?${query}`);
-
-    const myCourses = useMyCourses();
-
-    if (query.includes("search_term")) {
-      myCourses.value = response ?? [];
-    } else {
-      const allCoursesResponse = await GET(`/skills/courses`);
-
-      let arr = [...response, ...allCoursesResponse];
-
-      myCourses.value = [...new Map(arr.map((item) => [item["id"], item])).values()];
-    }
 
     return [response, null];
   } catch (error: any) {

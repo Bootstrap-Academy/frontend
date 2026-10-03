@@ -68,6 +68,7 @@
 
 <script setup lang="ts">
 import type { Course } from "~/types/courseTypes";
+import { getCourseCatalogue } from "~/composables/courses";
 definePageMeta({ middleware: ["auth"] });
 const { copy, localizeCourse } = useCourseExperienceCopy();
 const route = useRoute();
@@ -114,17 +115,13 @@ async function load() {
     if (!selected) throw new Error("Unknown skill");
     skill.value = selected;
     bookmarked.value = !!selected.is_bookmarked;
-    const responses = await Promise.allSettled(
-      (selected.courses || []).map((id: string) =>
-        GET(`/skills/courses/${encodeURIComponent(id)}/summary`)
-      )
-    );
+    const ids: string[] = selected.courses || [];
+    const [catalogue, catalogueError] = ids.length ? await getCourseCatalogue({}) : [[], null];
     if (!current()) return;
-    courseError.value = responses.some((response) => response.status === "rejected");
-    originalCourses.value = responses
-      .flatMap((response) =>
-        response.status === "fulfilled" && response.value ? [response.value as Course] : []
-      )
+    const byId = new Map((catalogue || []).map((course: Course) => [course.id, course]));
+    courseError.value = !!catalogueError || ids.some((id) => !byId.has(id));
+    originalCourses.value = ids
+      .flatMap((id) => (byId.has(id) ? [byId.get(id)!] : []))
       .sort((a, b) => Number(!!b.learning_path_id) - Number(!!a.learning_path_id));
   } catch {
     if (current()) error.value = true;
