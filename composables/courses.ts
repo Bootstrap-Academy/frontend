@@ -23,7 +23,7 @@ export async function getCourseCatalogue(filters: CourseCatalogueFilters) {
 export const useListOfCompletedCourses = () => useState("listOfCompletedCourses", (): any[] => []);
 export const useMyCourses = () => useState("myCourses", (): any[] => []);
 export const useCourses = () => useState<Course[]>("courses", (): Course[] => []);
-export const useCourse = () => useState<Course>("course", (): Course => new Course());
+export const useCourse = () => useState<Course | null>("course", (): Course => new Course());
 export const useVideoSRC = () => useState("videoSRC", (): string => "");
 
 export async function getTheseCourses(arrOfCourseIDs: string[]) {
