@@ -2,7 +2,11 @@
   "Navigation": {
     "OpenMenu": "Open menu",
     "CloseMenu": "Close menu",
-    "MainMenu": "Main menu"
+    "MainMenu": "Main menu",
+    "AccountMenu": "Account menu",
+    "Footer": "More pages",
+    "Legal": "Legal information",
+    "Social": "Bootstrap Academy on {name}"
   },
   "UpdateNotice": {
     "Body": "We want to make the Academy better for everyone and find out whether new features are actually used and which lessons are difficult. We use data that is already stored and only look at totals, never at you individually.",

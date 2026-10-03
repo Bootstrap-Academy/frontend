@@ -2289,7 +2289,8 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
           });
         const vm = app.mount(ui.root);
         try {
-          ui.all().find((node) => node.type === "form").reportValidity = () => true;
+          // Field associations and keyboard focus are verified in the browser suite.
+          ui.all().find((node) => node.type === "form").querySelector = () => null;
           for (const [name, value] of Object.entries({
             name: "synthetic",
             display_name: "Synthetic",
