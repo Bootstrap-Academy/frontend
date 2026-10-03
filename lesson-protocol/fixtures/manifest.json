@@ -1,0 +1,98 @@
+{
+  "id": "example-restore",
+  "protocol": {
+    "major": 2,
+    "minor": 0
+  },
+  "entry": "index.html",
+  "requires": [
+    {
+      "id": "kit.scene",
+      "major": 1,
+      "minMinor": 0
+    },
+    {
+      "id": "genre.diagnosis",
+      "major": 1,
+      "minMinor": 0
+    },
+    {
+      "id": "host.artifact",
+      "major": 1,
+      "minMinor": 0
+    }
+  ],
+  "optional": [
+    {
+      "id": "host.project",
+      "major": 1,
+      "minMinor": 0
+    },
+    {
+      "id": "host.haptics",
+      "major": 1,
+      "minMinor": 0
+    }
+  ],
+  "goals": [
+    {
+      "id": "restore-openable",
+      "label": {
+        "de": "Gerettete Dateien öffnen",
+        "en": "Open the recovered files"
+      },
+      "subskill_id": "fixture-it-subskill",
+      "xp": 0,
+      "assessment": {
+        "kind": "introduced",
+        "ref": "fixture-restore"
+      }
+    }
+  ],
+  "stage": {
+    "orientation": "portrait",
+    "logical": {
+      "width": 360,
+      "height": 640
+    },
+    "safeMargin": 16
+  },
+  "languages": ["de", "en"],
+  "assets": [
+    {
+      "path": "index.html",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "text/html",
+      "bytes": 2048,
+      "loading": "initial"
+    },
+    {
+      "path": "main.js",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "mediaType": "text/javascript",
+      "bytes": 32000,
+      "loading": "initial"
+    },
+    {
+      "path": "state.schema.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "mediaType": "application/json",
+      "bytes": 1024,
+      "loading": "initial"
+    }
+  ],
+  "state": {
+    "schemaVersion": 1,
+    "schema": "state.schema.json",
+    "maxBytes": 65536
+  },
+  "accessibility": {
+    "keyboard": true,
+    "tapAlternative": true,
+    "reducedMotion": true,
+    "semanticView": true
+  },
+  "replay": {
+    "suite": "replays/restore.json"
+  }
+}
