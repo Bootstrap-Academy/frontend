@@ -2,9 +2,9 @@
   <section class="exercise-room" :aria-busy="view.phase === 'loading'">
     <p v-if="view.phase === 'loading'" role="status">{{ t("LearningRooms.Loading") }}</p>
     <template v-else-if="view.data">
-      <div
+      <Markdown
         class="exercise-description prose-invert"
-        v-html="$md.render(presentation.question || presentation.description || '')"
+        :source="presentation.question || presentation.description || ''"
       />
       <fieldset v-if="reference.type === 'multiple_choice'" :disabled="locked">
         <legend>

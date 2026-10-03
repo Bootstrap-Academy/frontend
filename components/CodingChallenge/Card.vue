@@ -3,7 +3,7 @@
     <section>
       <article class="flex justify-between gap-3">
         <p v-if="!!codingChallenge?.description" class="tight text-accent sm:w-3/4">
-          <span v-html="$md.render(codingChallenge?.description ?? '')"></span>
+          <Markdown as="span" :source="codingChallenge?.description ?? ''"></Markdown>
         </p>
 
         <ArrowRightIcon
