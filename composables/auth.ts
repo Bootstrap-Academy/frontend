@@ -1,5 +1,6 @@
 import { GET, POST } from "./fetch";
 import { revokeSession, withSessionRefreshLock } from "~/utils/sessionRefresh";
+import { clearLearningStorage, prepareLearningLogout } from "~/utils/learningStorage";
 
 export const useOauthProviders = () => useState("oauthProviders", () => []);
 
@@ -40,9 +41,29 @@ export async function logout() {
   const config = useRuntimeConfig().public;
 
   try {
+    const userId = useUser().value?.id || "";
+    if (
+      !(await prepareLearningLogout(userId, () =>
+        window.confirm(
+          String(readSessionCookie("locale") || "de").startsWith("en")
+            ? "Logging out removes the copy of your work from this browser. Any work that isn't saved in your account may be lost. Log out anyway?"
+            : "Beim Abmelden löschen wir die Kopie deiner Arbeit aus diesem Browser. Was noch nicht im Konto gespeichert ist, kann dabei verloren gehen. Trotzdem abmelden?"
+        )
+      ))
+    )
+      return [false, null];
+    // Preparation may await a save or a dialog; never clear a subsequent login.
+    const current = getSessionSnapshot();
+    if (current.identity !== expected.identity || current.generation !== expected.generation)
+      return [false, null];
     // The explicit action ends this browser session immediately, including
     // when its refresh token has already been revoked or the API is offline.
     setStates(null);
+    try {
+      clearLearningStorage(userId);
+    } catch {
+      // Browser cleanup must never prevent revoking this session on the server.
+    }
 
     // Coins Composable
     const coins = useCoins();
