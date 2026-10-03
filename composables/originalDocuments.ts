@@ -194,11 +194,12 @@ export function originalInventory(value: unknown, expected?: string): OriginalIn
           r.record_basis
         )
       );
-      need(artifacts.length === 1 && artifacts[0].variant === "original");
+      const original = artifacts[0];
+      need(artifacts.length === 1 && original && original.variant === "original");
       need(
-        same(selected, artifacts[0].selector) &&
-          r.reader_state === artifacts[0].reader_state &&
-          r.reason === artifacts[0].reason
+        same(selected, original.selector) &&
+          r.reader_state === original.reader_state &&
+          r.reason === original.reason
       );
       if (selected) {
         if (r.kind === "invoice") need(r.printed_number === `R${selected.id.padStart(7, "0")}`);

@@ -309,6 +309,7 @@ export function useLearningRooms(
     data.dispose();
   });
   return {
+    protocol: { data, owner: () => owner.value },
     view,
     data,
     edit,
