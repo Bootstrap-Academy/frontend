@@ -131,6 +131,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import type { PropType } from "vue";
+import type { CodingExampleView } from "~/types/codingChallengeViews";
 import {
   ArrowPathIcon,
   CheckCircleIcon,
@@ -155,7 +156,7 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const exampleElements: any = ref([]);
+const exampleElements = ref<CodingExampleView[]>([]);
 const exampleDetails = ref<Record<string, boolean>>({});
 
 const verdictLabelMap: Record<string, string> = {
@@ -222,6 +223,7 @@ function successHandler(success: any, id: any) {
   let atIndex: number = getExampleIndexById(id);
 
   const element = exampleElements.value[atIndex];
+  if (!element) return;
   element.verdict = success?.verdict ?? null;
   element.message = success?.message ?? null;
   element.detail = success?.message?.detail ?? "";
@@ -237,7 +239,7 @@ function errorHandler(error: any) {
   openSnackbar("error", error);
 }
 
-function verdictIcons(verdict: string) {
+function verdictIcons(verdict: string | null) {
   const verdictIconMapping: { [key: string]: any } = {
     COMPILATION_ERROR: NoSymbolIcon,
     INVALID_OUTPUT_FORMAT: FlagIcon,
