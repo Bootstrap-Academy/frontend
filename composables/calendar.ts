@@ -1,7 +1,7 @@
 import { useState } from "#app";
 import { WebinarEvent, CoachingEvent, Calendar } from "~/types/calenderTypes";
 
-export const useCalendar = () => useState<Calendar>("calendar", () => new Calendar());
+export const useCalendar = () => useState<Calendar | null>("calendar", () => new Calendar());
 export const useICS = () => useState("ics", () => "");
 export const useEvents = () => useState<(WebinarEvent | CoachingEvent)[]>("events", () => []);
 export const useEventFilter = () => useState("eventFilter", () => "all");

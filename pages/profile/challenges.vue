@@ -37,7 +37,7 @@
 
     <template v-for="(category, i) of challengesCategories" :key="category.id">
       <ChallengesCategory :data="category" mine />
-      <hr class="mt-box" v-if="i < challengesCategories.length - 1" />
+      <hr class="mt-box" v-if="Number(i) < challengesCategories.length - 1" />
     </template>
   </main>
 </template>

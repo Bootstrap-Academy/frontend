@@ -249,6 +249,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from "vue";
+import type { SessionIdentity } from "~/types/sessionIdentity";
 import { computed, onBeforeUnmount, reactive, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -271,7 +273,7 @@ const { t, locale } = useI18n();
 useHead(() => ({ title: t("CharacterDashboard.Title") }));
 const router = useRouter();
 const user = useUser();
-const session = useSession();
+const session: Ref<SessionIdentity | null> = useSession();
 const accessToken = useAccessToken();
 const roomConfig = useRuntimeConfig().public;
 const roomsAvailable = ref(false);

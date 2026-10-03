@@ -3,6 +3,12 @@ type Author = {
   url: string;
 };
 
+export interface CourseBookmark {
+  courseId: string;
+  skillID: string;
+  subSkillID: string;
+}
+
 export class Course {
   authors: Author[] = [];
   category: string = "";
