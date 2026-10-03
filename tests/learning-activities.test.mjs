@@ -415,6 +415,7 @@ async function activityFixture(
     defineExpose: () => {},
     onBeforeUnmount: (callback) => callbacks.push(callback),
     useI18n: () => ({ t: (key) => key }),
+    useLessonStart: () => ({ limited: Vue.ref(null), start: async () => true }),
     useLearningRooms: (value) => {
       options = value;
       return {
@@ -426,6 +427,8 @@ async function activityFixture(
         edit: () => {},
         reauthRequired: Vue.ref(false),
         recovering: Vue.ref(false),
+        limitReached: Vue.ref(null),
+        keepDailyDraft: () => true,
         retry: () => {},
       };
     },
@@ -522,6 +525,7 @@ export default { inheritAttrs: false, props: ["state", "disabled"], setup: (prop
     )
     .replace(/from ["']\.\/ActivityHost\.vue["']/, `from ${JSON.stringify(hostStub)}`);
   const LessonActivity = (await import(url(code))).default;
+  globalThis.useLessonStart = () => ({ limited: Vue.ref(null), start: async () => true });
   globalThis.useLearningRooms = () => ({
     view: Vue.ref(view),
     data: {},
@@ -545,6 +549,7 @@ export default { inheritAttrs: false, props: ["state", "disabled"], setup: (prop
     return await renderToString(app);
   } finally {
     delete globalThis.useLearningRooms;
+    delete globalThis.useLessonStart;
   }
 }
 const readyRoom = (extra) => ({
@@ -687,6 +692,7 @@ test("the composed lesson page advances ordered native activities, preserves dir
           push: async (location) => navigation.push(location),
         }),
         useI18n: () => ({ locale: Vue.ref("de") }),
+        useDailyLearning: () => ({ forLesson: (_course, _lesson, value) => value }),
         useLearningRooms: () => ({
           owner,
           reauthRequired: Vue.ref(false),

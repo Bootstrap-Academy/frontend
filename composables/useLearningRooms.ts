@@ -1,3 +1,5 @@
+import { dailyError } from "~/utils/dailyLearning";
+import type { DailyLearning } from "~/types/dailyLearning";
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
@@ -53,7 +55,15 @@ export function useLearningRooms(
       refreshToken: shared.refreshToken,
     };
   };
-  const transport = createLearningTransport({
+  const dailyState = useDailyLearning();
+  const limitReached = ref<DailyLearning | null>(null);
+  const daily = computed(() => {
+    const room = view.value?.room;
+    return room?.course_id && room.lesson_id
+      ? dailyState.forLesson(room.course_id, room.lesson_id, room.daily)
+      : dailyState.daily.value || room?.daily || view.value?.daily || null;
+  });
+  const rawTransport = createLearningTransport({
     snapshot,
     renew: (expected) => refreshSession({ ...getSessionSnapshot(), ...expected }, false),
     raw: (path, method, body, token) =>
@@ -69,12 +79,71 @@ export function useLearningRooms(
       reauthRequired.value = required;
     },
   });
+  const startRequests = new Map<string, string>();
+  const transport: LearningRequest = async (path, method, body) => {
+    const expected = owner.value;
+    try {
+      const room = view.value?.room;
+      if (
+        method === "POST" &&
+        path.startsWith("/challenges/") &&
+        room &&
+        daily.value &&
+        daily.value.mode !== "legacy" &&
+        !daily.value.started &&
+        room.course_id &&
+        room.lesson_id
+      ) {
+        const startPath = `/skills/courses/${encodeURIComponent(room.course_id)}/lessons/${encodeURIComponent(room.lesson_id)}/start`;
+        if (!startRequests.has(startPath)) startRequests.set(startPath, crypto.randomUUID());
+        const started = await rawTransport(startPath, "POST", {
+          request_id: startRequests.get(startPath),
+        });
+        if (expected !== owner.value) throw { statusCode: 401 };
+        dailyState.observe(started.daily || started, room.course_id, room.lesson_id);
+      }
+      const result = await rawTransport(path, method, body);
+      if (expected === owner.value) {
+        dailyState.observe(result?.daily, result?.course_id, result?.lesson_id || result?.id);
+        if (result?.next)
+          dailyState.observe(result.next.daily, result.next.course_id, result.next.lesson_id);
+        if (result?.daily?.can_start !== false) limitReached.value = null;
+      }
+      return result;
+    } catch (error) {
+      if (expected === owner.value) {
+        const daily = dailyError(error);
+        if (daily) {
+          limitReached.value = daily;
+          dailyState.observe(daily);
+        }
+      }
+      throw error;
+    }
+  };
   const data = createLearningRooms({
     request: transport,
     changed: (value) => {
       view.value = value;
     },
     checkpoint: () => preserve(lastUserId, true),
+  });
+  watch(dailyState.daily, (value) => {
+    const available =
+      value &&
+      (value.mode !== "daily" ||
+        value.enforced === false ||
+        value.unlimited ||
+        (value.remaining ?? 0) > 0);
+    if (!available) return;
+    limitReached.value = null;
+    // Refresh only an empty queue. A mounted lesson and its private draft stay put.
+    if (
+      view.value?.status === "ready" &&
+      view.value.emptyReason === "limit_reached" &&
+      !view.value.room
+    )
+      void retry();
   });
   function selection(query: Record<string, unknown>) {
     return {
@@ -144,6 +213,8 @@ export function useLearningRooms(
       const ticket = ++epoch;
       clearTimeout(timer);
       data.reset();
+      limitReached.value = null;
+      startRequests.clear();
       recovering.value = false;
       reauthRequired.value = false;
       recoveryError.value = false;
@@ -237,5 +308,8 @@ export function useLearningRooms(
     openLocation,
     syncLocation,
     retry,
+    daily,
+    limitReached,
+    keepDailyDraft: () => preserve(user.value?.id || "", true),
   };
 }
