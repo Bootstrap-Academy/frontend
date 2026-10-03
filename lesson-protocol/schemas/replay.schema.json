@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bootstrap.academy/schemas/lesson-replay-1.0.json",
+  "type": "object",
+  "required": [
+    "formatVersion",
+    "lessonId",
+    "manifestHash",
+    "packageHash",
+    "hostBuild",
+    "engines",
+    "locale",
+    "viewport",
+    "seed",
+    "clock",
+    "initial",
+    "fixtures",
+    "steps",
+    "expectFinal"
+  ],
+  "properties": {
+    "formatVersion": {
+      "const": 1
+    },
+    "lessonId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,79}$"
+    },
+    "manifestHash": {
+      "$ref": "#/$defs/hash"
+    },
+    "packageHash": {
+      "$ref": "#/$defs/hash"
+    },
+    "hostBuild": {
+      "type": "string",
+      "minLength": 1
+    },
+    "engines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "implementation", "sha256"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "implementation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "$ref": "#/$defs/hash"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+    },
+    "viewport": {
+      "type": "object",
+      "required": ["width", "height", "dpr", "safeInsets", "reducedMotion"],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dpr": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "safeInsets": {
+          "type": "object",
+          "required": ["top", "right", "bottom", "left"],
+          "properties": {
+            "top": {
+              "type": "number",
+              "minimum": 0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 0
+            },
+            "left": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": true
+        },
+        "reducedMotion": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "clock": {
+      "enum": ["virtual", "real"]
+    },
+    "initial": {
+      "type": "object",
+      "required": ["state", "project", "stateRevision"],
+      "properties": {
+        "state": {
+          "type": "object"
+        },
+        "project": {
+          "type": ["object", "null"]
+        },
+        "stateRevision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": true
+    },
+    "fixtures": {
+      "type": "object",
+      "required": ["providerMode", "server", "faults"],
+      "properties": {
+        "providerMode": {
+          "enum": ["off", "fake"]
+        },
+        "server": {
+          "type": "string",
+          "minLength": 1
+        },
+        "faults": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["atMs", "action", "expect"],
+        "properties": {
+          "atMs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "action": {
+            "type": "object",
+            "required": ["kind"],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "tap",
+                  "drag",
+                  "input",
+                  "key",
+                  "step",
+                  "reload",
+                  "pause",
+                  "resume",
+                  "fault",
+                  "navigate"
+                ]
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {},
+              "points": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["x", "y", "tMs"],
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    },
+                    "tMs": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          },
+          "expect": {
+            "type": "object",
+            "required": ["assertions"],
+            "properties": {
+              "assertions": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["path", "equals"],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "^/"
+                    },
+                    "equals": {}
+                  },
+                  "additionalProperties": true
+                }
+              },
+              "screenshot": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_/-]+\\.png$"
+              },
+              "messages": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "senders": {
+                "type": "array",
+                "items": {
+                  "enum": ["host", "lesson"]
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "expectFinal": {
+      "type": "object",
+      "required": ["outcome", "xp", "providerCalls", "persisted", "stateHash"],
+      "properties": {
+        "outcome": {
+          "enum": ["completed", "introduced", "skipped", "not_passed"]
+        },
+        "xp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "providerCalls": {
+          "const": 0
+        },
+        "persisted": {
+          "type": "boolean"
+        },
+        "stateHash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": ["introduced", "skipped", "not_passed"]
+              }
+            },
+            "required": ["outcome"]
+          },
+          "then": {
+            "properties": {
+              "xp": {
+                "const": 0
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}
