@@ -383,6 +383,13 @@ export class LessonHost {
     }
     if (type === "state.reset") {
       revision();
+      // The native adapter resets to the platform's empty initial room state.
+      // Refuse before confirmation/write when that target violates this package's schema.
+      try {
+        this.options.validateState({});
+      } catch {
+        throw new ProtocolError("unsupported", "This lesson needs an approved reset state.");
+      }
       const saved = await this.options.actions.reset(p.expectedRevision as number, operationId);
       return saved ? { cancelled: false, ...adopt(saved) } : { cancelled: true };
     }

@@ -57,7 +57,7 @@ async function fixture(t, overrides = {}) {
     actions,
     clock,
     context: { locale: "de", content: {}, disabled: !!overrides.disabled, surface },
-    validateState: () => {},
+    validateState: overrides.validateState || (() => {}),
     status: (phase) => phases.push(phase),
   });
   const sdk = new LessonSDK({
@@ -358,6 +358,26 @@ test("state limit counts Skills separator spaces and untrusted input remains JSO
   );
   const state = Object.fromEntries(Array.from({ length: 7000 }, (_, i) => [String(i), 0]));
   assert(serverStateBytes(state) > Buffer.byteLength(JSON.stringify(state)));
+});
+test("reset validates the platform baseline before any destructive server mutation", async (t) => {
+  let resets = 0;
+  const f = await fixture(t, {
+    actions: {
+      read: async () => ({ revision: 0, schemaVersion: 1, value: { note: "kept" } }),
+      reset: async () => {
+        resets++;
+        return { revision: 1, schemaVersion: 1, value: {} };
+      },
+    },
+    validateState: (value) => {
+      if (typeof value.note !== "string")
+        throw new ProtocolError("invalid_message", "Note required.");
+    },
+  });
+  await assert.rejects(f.sdk.resetState(), { code: "unsupported" });
+  assert.equal(resets, 0);
+  assert.deepEqual(f.sdk.snapshot, { revision: 0, schemaVersion: 1, value: { note: "kept" } });
+  assert.equal(f.host.phase, "running");
 });
 test("content origin/package paths reject app domains, grants, mismatched hashes and credentials", () => {
   const package_hash = "a".repeat(64);

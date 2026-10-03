@@ -93,8 +93,10 @@ session. Navigation, error, unmount and owner/session changes close the port.
 
 `rooms.ts` adapts state/read/save/reset and completion to the existing Skills
 room routes and their CAS/idempotency/recovery controller. A retry retains the
-server operation and body. Planned navigation asks the lesson to pause and
-flush local edits; a dirty acknowledgement keeps the page and resumes the
+server operation and body. The initial reset baseline is `{}`; schemas that
+require other fields receive `unsupported` before any reset write or confirmation
+prompt. Planned navigation asks the lesson to pause and flush local edits;
+a dirty acknowledgement keeps the page and resumes the
 scene. Authors must implement `onLifecycle` to pause local resources and save
 their last local edit for reason `navigation` before returning `false`. An
 unconfirmed save must return `true` and remain retryable. Tab loss can still
