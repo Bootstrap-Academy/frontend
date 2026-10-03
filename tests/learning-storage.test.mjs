@@ -142,3 +142,48 @@ test("confirmed work and an unclaimed guest do not require a loss warning", asyn
   clearLearningStorage("A", stores);
   assert.equal(stores.local.getItem(GUEST_KEY), null);
 });
+
+for (const failure of ["getItem", "setItem", "removeItem"])
+  test(`logout cleans accessible tab copies despite a local ${failure} failure`, async () => {
+    const stores = { local: storage(), tab: storage() };
+    stores.local.setItem(
+      GUEST_KEY,
+      JSON.stringify({
+        version: 1,
+        guest: failure === "setItem" ? { owner: null } : null,
+        accounts: { A: { owner: "A" } },
+      })
+    );
+    stores.local[failure] = () => {
+      throw new Error("blocked");
+    };
+    stores.tab.setItem("academy-challenge-draft:A:quiz:t:s", "private answer");
+    stores.tab.setItem("academy-learning-recovery:A", "pending save");
+    stores.tab.setItem(GUEST_RETURN_KEY, JSON.stringify({ authorizedFor: "A" }));
+    stores.tab.setItem("academy-challenge-draft:B:quiz:t:s", "other account");
+    stores.tab.setItem("purchase-checkout:A:product", "uncertain payment");
+    assert.equal(await prepareLearningLogout("A", () => true, stores), true);
+    assert.doesNotThrow(() => clearLearningStorage("A", stores));
+    assert.equal(stores.tab.getItem("academy-challenge-draft:A:quiz:t:s"), null);
+    assert.equal(stores.tab.getItem("academy-learning-recovery:A"), null);
+    assert.equal(stores.tab.getItem(GUEST_RETURN_KEY), null);
+    assert.equal(stores.tab.getItem("academy-challenge-draft:B:quiz:t:s"), "other account");
+    assert.equal(stores.tab.getItem("purchase-checkout:A:product"), "uncertain payment");
+  });
+
+test("one blocked tab key cannot prevent removing the remaining copies", () => {
+  const stores = { local: storage(), tab: storage() };
+  const blockedKey = "academy-challenge-draft:A:quiz:t:s";
+  stores.tab.setItem(blockedKey, "blocked");
+  stores.tab.setItem("academy-learning-recovery:A", "pending save");
+  stores.tab.setItem(GUEST_RETURN_KEY, JSON.stringify({ owner: "A" }));
+  const remove = stores.tab.removeItem;
+  stores.tab.removeItem = (key) => {
+    if (key === blockedKey) throw new Error("blocked");
+    remove(key);
+  };
+  clearLearningStorage("A", stores);
+  assert.equal(stores.tab.getItem(blockedKey), "blocked");
+  assert.equal(stores.tab.getItem("academy-learning-recovery:A"), null);
+  assert.equal(stores.tab.getItem(GUEST_RETURN_KEY), null);
+});

@@ -148,7 +148,7 @@ export function createGuestLearning(options: {
     persisted = false,
     generation = 0;
   const publish = () => options.changed({ draft: clone(draft), busy, error, persisted });
-  function stored() {
+  function stored(onCleanupFailure?: () => void) {
     const text = options.local?.getItem(GUEST_KEY);
     let raw;
     try {
@@ -165,6 +165,7 @@ export function createGuestLearning(options: {
     if (guest && guest.lastUsedAt === undefined) {
       // Existing drafts get one migration grace period rather than losing work.
       store.guest = { ...guest, lastUsedAt: now() };
+      cleaned = true;
     } else if (guest && now() - guest.lastUsedAt! >= GUEST_TTL_MS) {
       store.guest = null;
       cleaned = true;
@@ -175,7 +176,14 @@ export function createGuestLearning(options: {
         cleaned = true;
       }
     }
-    if (cleaned) writeStore(store);
+    if (cleaned) {
+      try {
+        writeStore(store);
+      } catch (failure) {
+        if (!onCleanupFailure) throw failure;
+        onCleanupFailure();
+      }
+    }
     return store;
   }
   const readDraft = (value: unknown, user: string | null) =>
@@ -195,16 +203,18 @@ export function createGuestLearning(options: {
     error = "";
     const user = options.user();
     try {
-      const store = stored();
+      const store = stored(() => (error = "storage"));
       const own = user ? readDraft(store.accounts[user], user) : null;
       const guest = readDraft(store.guest, null);
       draft = own || guest || fresh();
-      persisted = !!(own || guest);
+      persisted = !!(own || guest) && !error;
       if (!own && guest) {
         draft.lastUsedAt = now();
         store.guest = draft;
         try {
           writeStore(store);
+          persisted = true;
+          error = "";
         } catch {
           persisted = false;
           error = "storage";

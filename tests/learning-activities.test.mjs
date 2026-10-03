@@ -383,7 +383,7 @@ test("the host rejects late module loads and old events while preserving accepte
 
 async function activityFixture(
   activity,
-  { request = async () => true, roomView, roomData = {}, stored = null } = {}
+  { request = async () => true, roomView, roomData = {}, stored = null, tabStorage } = {}
 ) {
   const scope = Vue.effectScope();
   const events = [];
@@ -393,13 +393,15 @@ async function activityFixture(
   const user = Vue.ref({ id: "user-a" });
   const callbacks = [];
   const storage = {
-    getItem: () => stored,
+    getItem: (key) => (tabStorage ? tabStorage.getItem(key) : stored),
     removeItem: (key) => {
       removals.push(key);
+      tabStorage?.removeItem(key);
       stored = null;
     },
     setItem: (key, value) => {
       writes.push({ key, value });
+      tabStorage?.setItem(key, value);
       stored = value;
     },
   };
@@ -685,6 +687,41 @@ test("confirmed native completion removes its draft and exit/unmount cannot recr
   assert.equal(reopened.removals.length, 1);
   reopened.stop();
 });
+
+for (const order of ["user-first", "session-first"])
+  test(`a completed native activity never removes the next account's draft (${order})`, async () => {
+    const reference = { type: "coding", task_id: "task-a", subtask_id: "code-a" };
+    const otherKey = "academy-challenge-draft:user-b:coding:task-a:code-a";
+    const otherDraft = JSON.stringify({ owner: "user-b", state: { code: "unsaved B" } });
+    const map = new Map([[otherKey, otherDraft]]);
+    const fixture = await activityFixture(
+      {
+        id: "native-a",
+        kind: "coding",
+        source: { kind: "challenge", ...reference },
+        exercise: reference,
+        content: {},
+        completed: true,
+      },
+      {
+        tabStorage: {
+          getItem: (key) => map.get(key) || null,
+          setItem: (key, value) => map.set(key, value),
+          removeItem: (key) => map.delete(key),
+        },
+      }
+    );
+    const initial = fixture.removals.length;
+    if (order === "user-first") fixture.user.value = { id: "user-b" };
+    fixture.owner.value = "user-b:session-b";
+    if (order === "session-first") fixture.user.value = { id: "user-b" };
+    assert.ok(fixture.removals.slice(initial).every((key) => !key.includes(":user-b:")));
+    assert.equal(await fixture.save(), false);
+    fixture.stop();
+    assert.ok(fixture.removals.every((key) => !key.includes(":user-b:")));
+    assert.equal(map.get(otherKey), otherDraft);
+    assert.equal(fixture.writes.length, 0);
+  });
 
 test("the composed lesson page advances ordered native activities, preserves direct selection and does not award progress", async () => {
   const source = await readFile(

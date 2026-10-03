@@ -167,6 +167,7 @@ const draft = ref<Record<string, any>>({});
 const posting = ref(false);
 const completing = ref(false);
 const completed = ref(props.activity.completed === true);
+const activityUser = user.value?.id || "";
 const saveError = ref(false);
 let alive = true;
 let draftOwner = "";
@@ -256,7 +257,8 @@ watch(
     posting.value = completing.value = false;
     draft.value = {};
     draftOwner = user.value?.id || "";
-    if (!draftKey.value) return;
+    // The keyed parent remounts later; this activity's completion belongs to its original user.
+    if (draftOwner !== activityUser || !draftKey.value) return;
     try {
       if (completed.value) {
         window.sessionStorage.removeItem(draftKey.value);
@@ -281,8 +283,9 @@ function change(state: Record<string, any>) {
 async function save() {
   if (roomSource) return await data.save();
   if (props.activity.source.kind !== "challenge") return true;
+  if (!alive || !draftKey.value || draftOwner !== activityUser || draftOwner !== user.value?.id)
+    return false;
   if (completed.value) return true;
-  if (!alive || !draftKey.value || draftOwner !== user.value?.id) return false;
   try {
     window.sessionStorage.setItem(
       draftKey.value,

@@ -77,20 +77,33 @@ export async function prepareLearningLogout(
 /** Call after the synchronous session reset, so watchers cannot recreate removed copies. */
 export function clearLearningStorage(user: string, stores = browserLearningStorage()) {
   if (!user) return;
-  for (const guard of guards) guard.clear?.(user);
-  const store = guestStore(stores.local);
-  if (store?.accounts && Object.hasOwn(store.accounts, user)) {
-    delete store.accounts[user];
-    if (!store.guest && !Object.keys(store.accounts).length) stores.local?.removeItem(GUEST_KEY);
-    else stores.local?.setItem(GUEST_KEY, JSON.stringify(store));
+  function attempt(action: () => void) {
+    try {
+      action();
+    } catch {
+      // A blocked store or key must not prevent cleanup of the other learning copies.
+    }
   }
-  for (const key of accountKeys(stores.tab, user)) stores.tab?.removeItem(key);
-  let intent;
-  try {
-    intent = JSON.parse(stores.tab?.getItem(GUEST_RETURN_KEY) || "null");
-  } catch {
-    stores.tab?.removeItem(GUEST_RETURN_KEY);
-  }
-  if (intent?.owner === user || intent?.authorizedFor === user)
-    stores.tab?.removeItem(GUEST_RETURN_KEY);
+  for (const guard of guards) attempt(() => guard.clear?.(user));
+  attempt(() => {
+    const store = guestStore(stores.local);
+    if (store?.accounts && Object.hasOwn(store.accounts, user)) {
+      delete store.accounts[user];
+      if (!store.guest && !Object.keys(store.accounts).length) stores.local?.removeItem(GUEST_KEY);
+      else stores.local?.setItem(GUEST_KEY, JSON.stringify(store));
+    }
+  });
+  attempt(() => {
+    for (const key of accountKeys(stores.tab, user)) attempt(() => stores.tab?.removeItem(key));
+  });
+  attempt(() => {
+    let intent;
+    try {
+      intent = JSON.parse(stores.tab?.getItem(GUEST_RETURN_KEY) || "null");
+    } catch {
+      stores.tab?.removeItem(GUEST_RETURN_KEY);
+    }
+    if (intent?.owner === user || intent?.authorizedFor === user)
+      stores.tab?.removeItem(GUEST_RETURN_KEY);
+  });
 }

@@ -49,7 +49,7 @@ const deferred = () => {
   return { promise, resolve };
 };
 function fixture(overrides = {}) {
-  let user = null,
+  let user = overrides.user ?? null,
     view;
   const calls = [],
     local = overrides.local === undefined ? memory() : overrides.local,
@@ -441,6 +441,47 @@ test("legacy guest drafts get one grace period and confirmed legacy account copi
     pending.pending,
     "uncertain account writes never expire as guest drafts"
   );
+});
+
+test("legacy guest grace is persisted while an unresolved account draft is selected", () => {
+  let time = 1000;
+  const local = memory();
+  const guest = { version: 1, id: crypto.randomUUID(), owner: null, state: solved, finished: true };
+  const own = {
+    ...guest,
+    id: crypto.randomUUID(),
+    owner: "A",
+    pending: { request_id: crypto.randomUUID(), expected_revision: 0, state: solved },
+  };
+  local.setItem(GUEST_KEY, JSON.stringify({ version: 1, guest, accounts: { A: own } }));
+  const f = fixture({ local, user: "A", now: () => time });
+  assert.equal(JSON.parse(local.getItem(GUEST_KEY)).guest.lastUsedAt, time);
+  assert.deepEqual(f.view.draft.pending, own.pending);
+  time += GUEST_TTL_MS - 1;
+  f.controller.load();
+  assert.equal(JSON.parse(local.getItem(GUEST_KEY)).guest.lastUsedAt, 1000);
+  time++;
+  f.controller.load();
+  assert.equal(JSON.parse(local.getItem(GUEST_KEY)).guest, null);
+  assert.deepEqual(JSON.parse(local.getItem(GUEST_KEY)).accounts.A, own);
+  assert.deepEqual(f.view.draft.pending, own.pending);
+  assert.equal(f.calls.length, 0);
+});
+
+test("a blocked migration write preserves readable work and reports storage failure", () => {
+  const local = memory();
+  const guest = { version: 1, id: crypto.randomUUID(), owner: null, state: solved, finished: true };
+  local.setItem(GUEST_KEY, JSON.stringify({ version: 1, guest, accounts: {} }));
+  const original = local.getItem(GUEST_KEY);
+  local.setItem = () => {
+    throw new Error("blocked");
+  };
+  const f = fixture({ local });
+  assert.deepEqual(f.view.draft.state, solved);
+  assert.equal(f.view.error, "storage");
+  assert.equal(f.view.persisted, false);
+  assert.equal(local.getItem(GUEST_KEY), original);
+  assert.equal(f.calls.length, 0);
 });
 
 test("failed cleanup after a confirmed server save retains the exact retry request", async () => {
