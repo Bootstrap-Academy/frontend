@@ -25,8 +25,8 @@
           <SkillTreeNode
             v-for="(column, j) in row"
             :key="`${i}${j}`"
-            :row="i"
-            :column="j"
+            :row="Number(i)"
+            :column="Number(j)"
             @ref="insertRefInMap($event, i, j)"
             :node="getNode(i, j)"
             @size="nodeSize = $event"
@@ -214,10 +214,10 @@ export default {
         .fill(null)
         .map(() => new Array(totalColumns.value).fill(null));
     };
-    const map: any[] = reactive([]);
+    const map = reactive<(SVGElement | null)[][]>([]);
 
-    function insertRefInMap(ref: any, row: number, column: number) {
-      map[row].splice(column, 1, ref);
+    function insertRefInMap(ref: SVGElement | null, row: number, column: number) {
+      map[row]?.splice(column, 1, ref);
     }
 
     function resetMap() {
