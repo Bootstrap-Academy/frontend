@@ -14,8 +14,8 @@
     <Snackbar class="z-[999]" />
   </NuxtLayout>
   <LazyClientOnly>
+    <FeedbackLauncher :inline="guestLearningPage" />
     <Footer />
-    <FeedbackLauncher />
   </LazyClientOnly>
 </template>
 
@@ -40,6 +40,7 @@ export default {
     // which also loads the full profile of the logged in user.
     const route = useRoute();
     const publicLegalPage = computed(() => isPublicLegalRoute(route.path));
+    const guestLearningPage = computed(() => /^\/start\/?$/.test(route.path));
 
     return {
       updateNoticeDismissals,
@@ -47,6 +48,7 @@ export default {
       handleDialogOnBackdrop,
       showConfetti,
       publicLegalPage,
+      guestLearningPage,
     };
   },
 };
