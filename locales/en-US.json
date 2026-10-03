@@ -1956,5 +1956,28 @@
     "TryAgain": "Try again",
     "RemainingOne": "One new lesson left today",
     "ExploreCourses": "Explore courses"
+  },
+  "ProfilePublication": {
+    "Private": "Private",
+    "SharedStatus": "Shared",
+    "Unknown": "Visibility is currently unavailable.",
+    "Loading": "Loading visibility …",
+    "ShowPreview": "View preview",
+    "Preview": "How others see your profile",
+    "Share": "Share profile",
+    "Withdraw": "Make private again",
+    "Shared": "Your profile is shared.",
+    "PrivateAgain": "Your profile is private again.",
+    "TotalXP": "{xp} total XP",
+    "RankingPreview": "After sharing, you can also appear in the overall, task and language leaderboards. A private profile has no public rank there.",
+    "Notice": "Other signed-in users with a verified email address can see your display name, standard avatar, total XP, and ranks and scores in the overall, task and language leaderboards. Newly earned XP and scores update this view. Individual skills, bio, tags, solutions and project state stay private. You can make your profile private again at any time. We cannot retrieve earlier copies.",
+    "SignIn": "Please sign in again so we can check your current setting.",
+    "Verify": "Please verify your email address before sharing your profile.",
+    "Changed": "Your setting has changed. Reload the current state and a new preview if needed.",
+    "NewPreview": "This preview is out of date. Please load a new preview.",
+    "Unavailable": "We could not confirm the current state. Please try again.",
+    "CheckAgain": "Check setting",
+    "Reload": "Reload",
+    "RankingUnavailable": "The leaderboard is currently unavailable. Please try again."
   }
 }
