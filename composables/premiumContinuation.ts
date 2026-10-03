@@ -100,7 +100,7 @@ function instant(v: any): bigint | null {
   const m = /^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,6}))?(Z|[+-]\d{2}:\d{2})$/.exec(
     v
   );
-  if (!m || +m[2] > 23 || +m[3] > 59 || +m[4] > 59) return null;
+  if (!m || Number(m[2]) > 23 || Number(m[3]) > 59 || Number(m[4]) > 59) return null;
   const day = new Date(m[1] + "T00:00:00Z"),
     millis = Date.parse(`${m[1]}T${m[2]}:${m[3]}:${m[4]}${m[6]}`);
   if (

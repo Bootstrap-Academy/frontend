@@ -1,11 +1,21 @@
 import type { ExerciseDraft, ExerciseKind, ExerciseView } from "./learningRooms";
 
 /** Public browser contract for centrally reviewed Academy lesson modules. */
-export interface LearningModuleDescriptor {
+export interface LearningModuleV1Descriptor {
   id: string;
   api_version: 1;
   entry_url: string;
 }
+
+export interface LearningModuleV2Descriptor {
+  id: string;
+  api_version: 2;
+  entry_url: string;
+  manifest_url: string;
+  manifest_hash: string;
+  package_hash: string;
+}
+export type LearningModuleDescriptor = LearningModuleV1Descriptor | LearningModuleV2Descriptor;
 
 export type LearningModuleData = Record<string, unknown>;
 

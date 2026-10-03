@@ -237,10 +237,11 @@ export function createCommercialAccess(options: Options) {
   function save(value: Rotation) {
     const rows = saved(),
       index = rows.findIndex((r) => r.rotation.body.command_id === value.body.command_id);
+    const previous = rows[index];
     if (
-      index >= 0 &&
-      (JSON.stringify(rows[index].rotation.body) !== JSON.stringify(value.body) ||
-        JSON.stringify(rows[index].rotation.owner) !== JSON.stringify(value.owner))
+      previous &&
+      (JSON.stringify(previous.rotation.body) !== JSON.stringify(value.body) ||
+        JSON.stringify(previous.rotation.owner) !== JSON.stringify(value.owner))
     )
       throw failure("invalid_recovery");
     const entry = { ambient: options.ambient(), rotation: value };

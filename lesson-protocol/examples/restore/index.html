@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Protocol example</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1 id="title">Rette deine Notiz</h1>
+      <label id="label" for="note">Deine Notiz</label
+      ><textarea id="note" rows="3" maxlength="2000" disabled></textarea>
+      <div id="file" role="status"></div>
+      <div class="actions">
+        <button id="restore" disabled>Aus Sicherung holen</button
+        ><button id="save" disabled>Speichern</button
+        ><button id="retry" hidden>Speichern nochmal versuchen</button
+        ><button id="complete" disabled>Fertig</button
+        ><button id="error" disabled>Verbindung unterbrechen</button>
+      </div>
+      <p id="status" role="status"></p>
+      <details>
+        <summary>C5 probe</summary>
+        <pre id="sample"></pre>
+      </details>
+    </main>
+  </body>
+</html>

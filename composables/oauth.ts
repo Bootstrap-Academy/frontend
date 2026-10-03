@@ -1,5 +1,18 @@
 import { DELETE, GET, POST } from "./fetch";
 
+type OAuthAuthorization = { authorize_url: string; state: string };
+type OAuthCallback = { state: string; code: string };
+type OAuthLink = { id: string; provider_id: string; display_name: string };
+type OAuthPost = {
+  (
+    path: "/auth/oauth/authorize",
+    body: { provider_id: string; redirect_uri: string }
+  ): Promise<OAuthAuthorization>;
+  (path: "/auth/oauth/links/me", body: OAuthCallback): Promise<OAuthLink>;
+};
+// fetch.js forwards JSON bodies; its inferred default only describes null.
+const postOAuth = POST as unknown as OAuthPost;
+
 /**
  * Where the browser keeps the `state` of a running authorization flow. The
  * backend issues it, the provider hands it back in the callback URL, and only
@@ -47,16 +60,20 @@ export async function startOAuthFlow(
 ) {
   const ambient = moderationAmbientIdentity();
   try {
-    const response = <any>(purpose === "moderation"
-      ? await $fetch("/auth/moderation/access/oauth/begin", {
-          baseURL: useRuntimeConfig().public.BASE_API_URL,
-          credentials: "omit",
-          retry: 0,
-          timeout: 20000,
-          method: "POST",
-          body: { provider: provider_id, redirect_uri: oauthRedirectUri() },
-        })
-      : await POST("/auth/oauth/authorize", { provider_id, redirect_uri: oauthRedirectUri() }));
+    const response =
+      purpose === "moderation"
+        ? await $fetch<OAuthAuthorization>("/auth/moderation/access/oauth/begin", {
+            baseURL: useRuntimeConfig().public.BASE_API_URL,
+            credentials: "omit",
+            retry: 0,
+            timeout: 20000,
+            method: "POST",
+            body: { provider: provider_id, redirect_uri: oauthRedirectUri() },
+          })
+        : await postOAuth("/auth/oauth/authorize", {
+            provider_id,
+            redirect_uri: oauthRedirectUri(),
+          });
 
     if (!valid() || (purpose === "moderation" && ambient !== moderationAmbientIdentity()))
       throw new Error("OAuth owner or view changed");
@@ -121,9 +138,9 @@ export async function getOAuthLinks() {
  * Add the provider account the finished authorization flow belongs to to the
  * signed-in account.
  */
-export async function createOAuthLink(body: { state: string; code: string }) {
+export async function createOAuthLink(body: OAuthCallback) {
   try {
-    const response = await POST("/auth/oauth/links/me", body);
+    const response = await postOAuth("/auth/oauth/links/me", body);
 
     return [response, null];
   } catch (error: any) {
