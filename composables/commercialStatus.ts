@@ -90,6 +90,7 @@ export function commercialState(value: unknown): string {
 /** Finance prints S{u64}; its existing original-only API takes the numeric suffix. */
 export function commercialStatementPath(number: string): string | null {
   const match = /^S(0|[1-9][0-9]{0,19})$/.exec(number);
-  if (!match || BigInt(match[1]) > 18446744073709551615n) return null;
-  return `/documents/final-statement/${match[1]}/original`;
+  const suffix = match?.[1];
+  if (!suffix || BigInt(suffix) > 18446744073709551615n) return null;
+  return `/documents/final-statement/${suffix}/original`;
 }

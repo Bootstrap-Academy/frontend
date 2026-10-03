@@ -19,6 +19,21 @@ export type WithdrawalKind = "service" | "digital";
 /** Purchases the declarations are recorded for. */
 export type WithdrawalSubject = "coins" | "premium" | "hearts" | "course" | "webinar" | "coaching";
 
+type WithdrawalConsent = {
+  id: string;
+  subject: WithdrawalSubject;
+  reference: string | null;
+  text_version: string;
+  consented_at: number;
+};
+type WithdrawalConsentPost = (
+  path: "/shop/consents",
+  body: ReturnType<typeof withdrawalConsentBody> & {
+    subject: WithdrawalSubject;
+    reference: string | null;
+  }
+) => Promise<WithdrawalConsent>;
+
 /** Body every order request carries once the declarations have been given. */
 export function withdrawalConsentBody() {
   return {
@@ -35,7 +50,9 @@ export function withdrawalConsentBody() {
  */
 export async function recordWithdrawalConsent(subject: WithdrawalSubject, reference?: string) {
   try {
-    const response = await POST(`/shop/consents`, {
+    // fetch.js forwards JSON bodies; its inferred default only describes null.
+    const postConsent = POST as unknown as WithdrawalConsentPost;
+    const response = await postConsent(`/shop/consents`, {
       subject,
       reference: reference || null,
       ...withdrawalConsentBody(),
