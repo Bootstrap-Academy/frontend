@@ -24,6 +24,7 @@ function envelope(value: any): RoomEnvelope {
   return value;
 }
 function errorKey(error: any) {
+  if ((error?.data?.code || error?.data?.error) === "daily_limit_reached") return "DailyLimit";
   const status = error?.statusCode || error?.status || error?.response?.status;
   return status === 409
     ? "Conflict"
@@ -220,11 +221,17 @@ export function createLearningRooms(options: {
         (selection?.unitId && response.next?.unit?.id !== selection.unitId)
       )
         throw new Error("Selected course room was not returned");
+      view.daily = response.daily;
       view.paths = response.paths;
       view.path = response.path;
       view.courseId = courseId;
       view.room = response.next === null ? null : envelope(response.next);
-      view.emptyReason = response.next === null ? response.empty_reason || "unavailable" : null;
+      view.emptyReason =
+        response.next === null
+          ? response.status === "limit_reached"
+            ? "limit_reached"
+            : response.empty_reason || "unavailable"
+          : null;
       view.draft = copy(view.room?.progress.state || {});
       view.dirty = false;
       view.conflict = false;

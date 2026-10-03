@@ -67,10 +67,12 @@ async function mockRequest(params) {
   if (request.method === "OPTIONS") data = "";
   else if (url.pathname === "/auth/users/me") data = profile;
   else if (url.pathname === "/auth/oauth/providers") data = [];
+  else if (url.pathname === "/shop/learning/policy")
+    data = { mode: "legacy", premium: true, heart_sales: true, single_course_sales: true };
   else if (url.pathname === "/shop/coins/config") data = { coins_per_euro: 100, vat_percent: 19 };
   else if (url.pathname === "/shop/hearts/config")
     data = { hearts_max: 6, hearts_refill_price: 50 };
-  else if (url.pathname === "/shop/premium/renewal-offer")
+  else if (url.pathname === "/shop/premium/renewal-offer/me")
     data = {
       id: offerId,
       monthly_price: 1000,
@@ -510,7 +512,9 @@ try {
     await evaluate(
       '[...document.querySelectorAll("#premium-renewal-order button")].find(b => b.innerText.includes("ZAHLUNGSPFLICHTIG")).click()'
     );
-    await until('!document.querySelector("#premium-renewal-order")');
+    await until(
+      '[...document.querySelectorAll("#premium-renewal-order input[type=checkbox]")].length === 3 && [...document.querySelectorAll("#premium-renewal-order input[type=checkbox]")].every(b => !b.checked)'
+    );
     assert.equal(puts().length, before);
     assert.equal(autopay, null);
   });

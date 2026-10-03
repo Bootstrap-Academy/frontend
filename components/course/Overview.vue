@@ -26,6 +26,8 @@
       />
     </div>
 
+    <LearningDailyNotice :value="selectedDaily" />
+
     <InputBtn
       :loading="loading"
       :disabled="isCourseAccessible && data?.has_explicit_curriculum && !curriculum"
@@ -100,6 +102,11 @@ const props = defineProps({
   subSkillID: { type: String, default: null },
 });
 const { t } = useI18n();
+const { daily, forLesson } = useDailyLearning();
+const selectedDaily = computed(() => {
+  const lesson = props.curriculum?.lessons.find((item) => !item.completed);
+  return lesson ? forLesson(props.data?.id, lesson.id, lesson.daily) : daily.value;
+});
 const { copy } = useCourseExperienceCopy();
 
 const link = computed(() =>
