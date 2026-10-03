@@ -65,20 +65,6 @@ export async function logout() {
       // Browser cleanup must never prevent revoking this session on the server.
     }
 
-    // Calendar Composable
-    const calendar = useCalendar();
-    calendar.value = null;
-    const ics = useICS();
-    ics.value = "";
-    const events = useEvents();
-    events.value = [];
-    const eventFilter = useEventFilter();
-    eventFilter.value = "all";
-
-    // Coaching Composable
-    const coachings = useCoachings();
-    coachings.value = [];
-
     // Coins Composable
     const coins = useCoins();
     coins.value = 0;
@@ -94,18 +80,6 @@ export async function logout() {
     course.value = null;
     const videoSRC = useVideoSRC();
     videoSRC.value = "";
-
-    // Ratings Composable
-    const unratedWebinars = useUnratedWebinars();
-    unratedWebinars.value = [];
-
-    // Webinars Composable
-    const webinar = useWebinar();
-    webinar.value = null;
-    const webinars = useWebinars();
-    webinars.value = [];
-    const myWebinars = useMyWebinars();
-    myWebinars.value = [];
 
     // XP Composable
     const xp = useXP();
