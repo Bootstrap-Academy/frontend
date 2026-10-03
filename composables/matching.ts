@@ -126,21 +126,10 @@ export async function deleteMatching(taskId: any, subTaskId: any) {
 export async function solveMatching(task_id: any, subTask_id: any, body: any) {
   try {
     const res = await POST(`/challenges/tasks/${task_id}/matchings/${subTask_id}/attempts`, body);
-    let success = null;
-    console.log("ress", res);
-    if (!!res.solved) {
-      success = true;
-    } else if (!!!res.solved) {
-      success = false;
-    }
-    return [success, null];
-  } catch (error: any) {
-    if (error?.data?.error == "not_enough_hearts") {
-      return [null, "Error.NotEnoughHeartsForMatching"];
-    } else if (error?.detail == "Error.TooManyAttemptsForQuiz") {
-      return [null, "Error.TooManyAttemptsForQuiz"];
-    }
-    console.log("error", error);
+    if (res?.error || typeof res?.solved !== "boolean")
+      throw { statusCode: 502, data: { error: "invalid_attempt_response" } };
+    return [res.solved, null];
+  } catch (error: unknown) {
     return [null, error];
   }
 }

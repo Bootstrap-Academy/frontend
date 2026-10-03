@@ -7,9 +7,15 @@ import { createSSRApp, createRenderer, h, nextTick, ref } from "vue";
 import { renderToString } from "@vue/server-renderer";
 const url = (s) => `data:text/javascript;base64,${Buffer.from(s).toString("base64")}`;
 const compile = (s) =>
-  ts.transpileModule(s, {
-    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
-  }).outputText;
+  ts.transpileModule(
+    s.replaceAll(
+      '"./apiError"',
+      JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href)
+    ),
+    {
+      compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+    }
+  ).outputText;
 const moduleUrl = async (name) =>
   url(compile(await readFile(new URL(`../utils/${name}.ts`, import.meta.url), "utf8")));
 const modelUrl = await moduleUrl("itLabModels"),

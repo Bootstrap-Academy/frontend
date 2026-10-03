@@ -1092,6 +1092,10 @@
     "OAuthSuccess": "Your OAuth was successful. Now please add your account information to complete your signup process."
   },
   "Error": {
+    "LearningSession": "Please sign in again to continue learning.",
+    "LearningConflict": "Your learning progress has changed. Load the saved progress before continuing.",
+    "LearningUnavailable": "That did not work just now. Please try again.",
+    "DailyLimitReached": "You have reached your daily limit for new lessons. You can continue lessons you have already started.",
     "PremiumStatusUnavailable": "Your current Premium and renewal status could not be loaded. Please try again before placing an order.",
     "AutopayUpdateFailed": "The automatic renewal change could not be confirmed. Please check the current status and try again if needed.",
     "PremiumRenewalChanged": "Automatic renewal has changed. Please review the updated order summary and confirm again.",
@@ -1884,6 +1888,7 @@
     "NoPractice": "There are no new exercises available here right now. Choose another focus or have a look at your courses."
   },
   "LearningRooms": {
+    "DailyLimit": "You have reached your daily limit for new lessons. You can continue lessons you have already started.",
     "Title": "Your learning room",
     "ContinueLearning": "Continue learning",
     "Back": "Back to your character",
