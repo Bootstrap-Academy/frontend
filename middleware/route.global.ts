@@ -1,3 +1,5 @@
+import { guestReturnPath } from "~/utils/guest/handoff";
+
 export default defineNuxtRouteMiddleware((to, from) => {
   if (to.path !== from.path && process.client) {
     setTimeout(() => {
@@ -23,6 +25,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const cookie_accessToken = useAppCookie("accessToken");
 
   if (to.path.includes("/auth/login") && !!cookie_accessToken.value) {
-    return navigateTo("/dashboard");
+    return navigateTo(guestReturnPath() || "/dashboard");
   }
 });

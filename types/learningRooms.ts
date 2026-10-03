@@ -1,3 +1,4 @@
+import type { DailyLearning } from "./dailyLearning";
 export type ExerciseKind = "multiple_choice" | "matching" | "coding";
 
 export interface ExerciseReference {
@@ -93,6 +94,9 @@ export interface LearningUnit {
   skip_allowed?: boolean;
 }
 export interface RoomEnvelope {
+  daily?: DailyLearning;
+  course_id?: string;
+  lesson_id?: string;
   unit: LearningUnit;
   review_available?: boolean;
   progress: {
@@ -128,5 +132,6 @@ export interface LearningRoomsView {
   reviewPending: boolean;
   conflict: boolean;
   error: string;
-  emptyReason: "completed" | "unavailable" | "prerequisites" | null;
+  daily?: DailyLearning;
+  emptyReason: "completed" | "unavailable" | "prerequisites" | "limit_reached" | null;
 }

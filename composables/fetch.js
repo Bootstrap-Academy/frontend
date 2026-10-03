@@ -12,6 +12,7 @@ export function GET(url, query) {
   return createApiFetch(url, "GET", null, query);
 }
 
+/** @param {unknown} body */
 export function POST(url, body = null) {
   return createApiFetch(url, "POST", body);
 }
