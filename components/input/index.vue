@@ -6,6 +6,7 @@
       </label>
       <p
         v-if="hint"
+        :id="`${id || label}-hint`"
         class="relative z-0 pb-2 text-xs text-body"
         :class="noLabel ? 'text-left' : 'text-right'"
       >
@@ -21,7 +22,7 @@
           'cursor-not-allowed': disabled,
         },
         light
-          ? 'bg-white text-subheading ring-subheading focus:ring-subheading focus:ring-offset-subheading'
+          ? 'bg-white text-primary ring-primary focus:ring-primary focus:ring-offset-white'
           : 'bg-secondary text-white ring-tertiary focus:ring-accent focus:ring-offset-tertiary',
       ]"
       ref="DOM_INPUT"
@@ -32,14 +33,22 @@
       v-model="input"
       @blur="touched = true"
       :autocomplete="autocomplete"
+      :aria-invalid="error ? 'true' : undefined"
+      :aria-describedby="
+        [hint ? `${id || label}-hint` : '', error ? `${id || label}-error` : '']
+          .filter(Boolean)
+          .join(' ') || undefined
+      "
       :min="min"
     />
 
     <p
-      class="relative z-0 pt-2 text-xs text-error transition duration-500 ease-out"
+      :id="`${id || label}-error`"
+      :aria-hidden="error ? undefined : 'true'"
+      class="relative z-0 pt-2 text-xs text-error"
       :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
-      {{ error }}.
+      {{ error }}
     </p>
   </div>
 </template>
@@ -52,7 +61,7 @@ import { useI18n } from "vue-i18n";
 export default defineComponent({
   props: {
     min: { type: String || Number, default: "" },
-    autocomplete: { type: String, default: "true" },
+    autocomplete: { type: String, default: "off" },
     hint: { type: String, default: "" },
     name: { type: String, default: "" },
     id: { type: String, default: "" },
@@ -66,6 +75,7 @@ export default defineComponent({
     modelValue: { type: [String, Number] as PropType<string | number>, default: "" },
     disabled: { type: Boolean, default: false },
     focusThis: { type: Boolean, default: false },
+    showError: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "valid"],
   setup(props, { emit }) {
@@ -85,7 +95,7 @@ export default defineComponent({
     const DOM_INPUT = ref<HTMLInputElement | null>(null);
 
     const error = computed(() => {
-      if (!!!DOM_INPUT.value || (!touched.value && !input.value)) return "";
+      if (!!!DOM_INPUT.value || (!props.showError && !touched.value && !input.value)) return "";
 
       let msg: string = "";
 
