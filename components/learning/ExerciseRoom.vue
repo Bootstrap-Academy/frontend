@@ -136,7 +136,12 @@
             )
           }}
         </p>
-        <p v-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
+        <!-- Same result box as a checked answer, so the learner sees it was not checked at all. -->
+        <div v-if="view.error === 'TechnicalFailure'" class="exercise-result" role="alert">
+          <p>{{ t("Headings.NotChecked") }}</p>
+          <p>{{ t("LearningRooms.TechnicalFailure") }}</p>
+        </div>
+        <p v-else-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
         <button
           v-if="
             (view.phase === 'uncertain' && !reviewId) || (view.phase === 'pending' && view.error)
