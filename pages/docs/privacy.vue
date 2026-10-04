@@ -310,7 +310,7 @@
                 Fehler IP-Adresse der auslösenden Anfrage
               </td>
               <td>Art. 6 Abs. 1 lit. f DSGVO</td>
-              <td>90 Tage</td>
+              <td>90 Tage, durch die tageweise Löschung bis zu drei Tage länger</td>
               <td>Keine (selbst betriebenes System bei Hetzner)</td>
             </tr>
             <tr>
@@ -548,9 +548,12 @@
         Funktionen wirklich genutzt werden, welche Lektionen schwerfallen und wie sich die Grenzen
         beim kostenlosen Lernen auswirken. Wir werten dazu intern Daten aus, die wir nach diesen
         Hinweisen ohnehin speichern, und nur so weit, wie es dafür nötig ist. Zusätzlich erheben wir
-        nichts. Die Ergebnisse sind zusammengefasste Werte wie Anzahlen, Anteile oder Mittelwerte,
-        jeweils über so viele Personen, dass sich niemand einzeln ablesen lässt. Für Entscheidungen
-        über einzelne Personen nutzen wir sie nie, und Einzeldaten geben wir nicht weiter.
+        nichts. Die Ergebnisse fassen wir so grob zusammen, etwa als Größenklassen und gerundete
+        Anteile, dass sich daraus keine Angaben über einzelne Personen ableiten lassen. Jede Angabe
+        beruht auf mindestens zehn Personen; Gruppen oder Werte, die einzelne Beiträge erkennbar
+        machen könnten, lassen wir weg. Für Entscheidungen über einzelne Personen nutzen wir die
+        Ergebnisse nie, und Einzeldaten geben wir nicht weiter. Wenn du widersprichst, beziehen wir
+        deine Daten in künftige Auswertungen nicht mehr ein.
       </p>
       <p>
         Rechtsgrundlage der Verarbeitung bis zur Anonymisierung ist unser berechtigtes Interesse an
@@ -590,8 +593,8 @@
       </p>
       <p>
         Anfragen an unsere Programmierschnittstelle api.bootstrap.academy – dazu gehören Anmeldung,
-        Passwörter, Kontoinhalte, Lerndaten und Zahlungen – laufen nicht über Cloudflare, sondern
-        direkt zu unseren Servern bei Hetzner.
+        Passwörter, Kontoinhalte, Lerndaten und Zahlungen – gehen direkt an unsere Server bei
+        Hetzner, ohne Cloudflare.
       </p>
       <p>
         Anbieter: Cloudflare, Inc., 101 Townsend Street, San Francisco, CA 94107, USA. Cloudflare
@@ -638,17 +641,18 @@
         Kündigungs- oder Widerrufserklärung (Abschnitt 15.6) die Bestätigungs-E-Mail nicht
         zugestellt werden kann. In der Testumgebung (Abschnitt 4) laufen die Dienste mit
         ausführlicherer Protokollierung; dort enthalten die Systemprotokolle zu jeder Anfrage
-        IP-Adresse, Anfragekennung und vollständige Anfrageadresse und können die E-Mail-Adressen
-        von Empfängern unserer E-Mails enthalten. Zweck ist der sichere und stabile Betrieb:
-        Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten, Fehlersuche.
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle werden nach 30 Tagen gelöscht
-        und sind nicht Teil der Datensicherungen. Aus den Webserver-Protokollen erzeugen wir auf
-        einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl der Anfragen,
-        Antwortzeiten, Fehlerquoten); diese enthalten keine IP-Adressen und keinen Personenbezug.
-        Beim Abruf der Vorschaubilder von static.bootstrap.academy (Abschnitt 7.1) protokolliert der
-        Webserver dieses Webhosting-Pakets Zeitpunkt, aufgerufene Datei und Browserkennung; die
-        IP-Adresse wird dort nach der Dokumentation des Hosters nur anonymisiert abgelegt. Wir
-        werten diese Protokolle nicht aus; sie werden nach 30 Tagen automatisch gelöscht.
+        IP-Adresse, Anfragekennung und das Muster des aufgerufenen Pfads, ohne die darin enthaltenen
+        Kennungen, und können die E-Mail-Adressen von Empfängern unserer E-Mails enthalten. Zweck
+        ist der sichere und stabile Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von
+        Anfrageraten, Fehlersuche. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle
+        werden nach 30 Tagen gelöscht und sind nicht Teil der Datensicherungen. Aus den
+        Webserver-Protokollen erzeugen wir auf einem selbst betriebenen Monitoring-System
+        aggregierte Kennzahlen (Anzahl der Anfragen, Antwortzeiten, Fehlerquoten); diese enthalten
+        keine IP-Adressen und keinen Personenbezug. Beim Abruf der Vorschaubilder von
+        static.bootstrap.academy (Abschnitt 7.1) protokolliert der Webserver dieses
+        Webhosting-Pakets Zeitpunkt, aufgerufene Datei und Browserkennung; die IP-Adresse wird dort
+        nach der Dokumentation des Hosters nur anonymisiert abgelegt. Wir werten diese Protokolle
+        nicht aus; sie werden nach 30 Tagen automatisch gelöscht.
       </p>
       <h3>8.2 Fehlerberichte</h3>
       <p>
@@ -657,11 +661,14 @@
         Bericht enthält die Fehlermeldung, den Programmablauf (Stacktrace), die aufgerufene Adresse,
         die Kennung der auslösenden Anfrage, je nach Fehler auch deren IP-Adresse, und – wenn der
         Fehler in einer angemeldeten Sitzung auftrat – deine Nutzerkennung; bei fehlgeschlagenen
-        Zahlungen kann er die Fehlerantwort von PayPal enthalten. Fehler der Testumgebung gehen an
-        dasselbe System. Das System ist nur aus unserem Administrationsnetz erreichbar; ein Dienst
-        Dritter ist nicht beteiligt. Die Weboberfläche im Browser sendet keine Fehlerberichte.
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Fehlerbehebung). Speicherdauer: 90 Tage;
-        danach werden die Berichte automatisch gelöscht.
+        Zahlungen kann er die Fehlerantwort von PayPal enthalten. Außerdem kann er die letzten
+        Systemmeldungen des Dienstes vor dem Fehler enthalten. Passwörter, Token, Codes,
+        Anfrageinhalte und Inhalte von E-Mails nehmen wir nicht in Fehlerberichte auf. Fehler der
+        Testumgebung gehen an dasselbe System. Das System ist nur aus unserem Administrationsnetz
+        erreichbar; ein Dienst Dritter ist nicht beteiligt. Die Weboberfläche im Browser sendet
+        keine Fehlerberichte. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Fehlerbehebung).
+        Speicherdauer: 90 Tage; danach werden die Berichte automatisch gelöscht. Weil die Löschung
+        tageweise läuft, können einzelne Berichte bis zu drei Tage länger gespeichert sein.
       </p>
     </section>
 
@@ -723,17 +730,24 @@
               <td>Lernen mit Konto, ohne Arbeit zu verlieren</td>
               <td>Antworten, Code und Entwürfe sowie offene Speicher- und Abschlussvorgänge</td>
               <td>
-                Session Storage. Bestätigte Stände entfernen wir, alles andere spätestens beim
-                Abmelden oder am Ende der Tab-Sitzung.
+                Session Storage. Bestätigte Stände entfernen wir. Beim Abmelden und nach einer
+                bestätigten Kontolöschung entfernen wir die Kopien deines Kontos auch in anderen
+                offenen Tabs dieses Browsers. Läuft deine Anmeldung ab oder wirst du automatisch
+                abgemeldet, behalten wir noch nicht gespeicherte Arbeit für die nächste Anmeldung,
+                längstens bis zum Ende der Tab-Sitzung.
               </td>
             </tr>
             <tr>
               <td>Käufe und Zahlungen sicher abschließen</td>
-              <td>Bestellkennung, bei PayPal auch Coin-Menge und Stand der Zahlung</td>
               <td>
-                Local Storage, bis der Kauf abgeschlossen, abgelaufen oder verworfen ist. Ist noch
-                unklar, ob gezahlt wurde, bleibt die Kennung auch nach dem Abmelden, bis das geklärt
-                ist.
+                Bestellkennung und deine Nutzerkennung, je nach Kauf die Kennung des Kurses, bei
+                PayPal auch Coin-Menge und Stand der Zahlung
+              </td>
+              <td>
+                Local Storage, bis der Kauf abgeschlossen, abgelaufen oder verworfen ist.
+                Abgelaufene Angebote entfernt die App, wenn du wieder angemeldet bist. Offene
+                Vorgänge bleiben auch beim Abmelden und bei einer Kontolöschung gespeichert, bis
+                geklärt ist, ob gezahlt wurde.
               </td>
             </tr>
             <tr>
@@ -754,13 +768,14 @@
                 Welche Hinweise du für dein Konto oder als Gast geschlossen hast (das ist keine
                 Zustimmung); Zufallswerte und gegebenenfalls deine Nutzerkennung, damit sich Tabs
                 und Anmeldevorgänge nicht in die Quere kommen und andere Tabs Änderungen an deinem
-                Profil mitbekommen; technische Angaben zum Neuladen nach einem Update
+                Profil mitbekommen; beim technischen Neuladen nach einem Update nur der Zielpfad und
+                eine Ablaufzeit, damit sich die Seite nicht wiederholt neu lädt
               </td>
               <td>
                 Cookies, Local und Session Storage, jeweils so lange, wie unten beschrieben.
                 Vermerke zu geschlossenen Hinweisen entfernen wir, sobald der Hinweis nicht mehr
-                erscheint. Den App-Zustand, den die Weboberfläche beim Neuladen kurz ablegt,
-                entfernen wir beim nächsten Start.
+                erscheint. Kopien des App-Zustands, die ältere Versionen beim Neuladen abgelegt
+                haben, entfernen wir beim Start.
               </td>
             </tr>
             <tr>
@@ -879,7 +894,8 @@
         letzten Erneuerung sowie das Kennzeichen, ob die Sitzung mit einem zweiten Faktor bestätigt
         wurde. Beim Abmelden wird die Sitzung ungültig; abgelaufene Sitzungen löschen wir
         automatisch. Optional kannst du eine Zwei-Faktor-Authentifizierung (TOTP) einrichten; dafür
-        speichern wir das TOTP-Geheimnis und Wiederherstellungscodes.
+        speichern wir das TOTP-Geheimnis, Wiederherstellungscodes und den Zeitschritt des zuletzt
+        angenommenen Codes, damit derselbe Code nicht zweimal gilt.
       </p>
       <p>
         Um das Erraten von Passwörtern zu erschweren, zählen wir fehlgeschlagene Anmeldeversuche je
@@ -1102,10 +1118,10 @@
         Im Dienst Challenges speichern wir zu Quizfragen, Zuordnungsaufgaben und Programmieraufgaben
         deinen Lösungsstand, Versuche, Zeitpunkte und Bewertungen. Deine gewählten Antworten können
         auch Bestandteil eines gespeicherten Lernraums sein. Für Code-Einreichungen gilt zusätzlich
-        Abschnitt 13. Die Wiedergabeposition von Kursvideos speichern wir nur in deinem Browser
-        (Abschnitt 9). Für eine notwendige Kaufbestätigung ruft der Dienst Skills deine
-        E-Mail-Adresse aus dem Kerndienst ab und hält sie höchstens fünf Minuten im
-        Zwischenspeicher.
+        Abschnitt 13. Die Wiedergabeposition klassischer Kursvideos speichern wir nur in deinem
+        Browser (Abschnitt 9); bei Videos in Lernräumen gehört sie zu deinem Lernstand. Für eine
+        notwendige Kaufbestätigung ruft der Dienst Skills deine E-Mail-Adresse aus dem Kerndienst ab
+        und hält sie höchstens fünf Minuten im Zwischenspeicher.
       </p>
       <p>
         Einzelne Einheiten kannst du ohne Konto ausprobieren. Dein Stand bleibt dann nur in deinem
@@ -1138,12 +1154,14 @@
         Nach deiner Freigabe sehen andere angemeldete Nutzer mit bestätigter E-Mail-Adresse deinen
         Anzeigenamen, den Standard-Avatar, deine Gesamt-XP sowie deine Plätze und Punkte in den
         Bestenlisten insgesamt, je Aufgabe und je Programmiersprache. Neu verdiente XP und Punkte
-        erscheinen dort laufend. Zur Zuordnung enthalten die Antworten deine technische
-        Nutzerkennung; sie steht auch an früheren Nutzeraufgaben, die du erstellt hast (Abschnitt
-        13.3). Nickname, E-Mail-Adresse, einzelne Skills, Bio, Tags, Lösungen und Projektstände
-        bleiben privat. Besucher ohne Anmeldung und Konten ohne bestätigte E-Mail-Adresse sehen
-        nichts davon. Plätze und Teilnehmerzahlen berücksichtigen nur freigegebene Konten. Wollen
-        wir später mehr zeigen, gilt deine bisherige Freigabe dafür nicht; du entscheidest dann neu.
+        erscheinen dort laufend. Daran sehen andere auch, in welchen Aufgaben und
+        Programmiersprachen du Punkte hast. Nickname, E-Mail-Adresse, einzelne Skills, Bio, Tags,
+        Lösungen und Projektstände bleiben privat. Besucher ohne Anmeldung und Konten ohne
+        bestätigte E-Mail-Adresse sehen nichts davon. Plätze und Teilnehmerzahlen berücksichtigen
+        nur freigegebene Konten. Du erscheinst nur, solange deine eigene E-Mail-Adresse bestätigt
+        und dein Konto nicht gesperrt ist; nach einer Änderung der Adresse wirkt deine Freigabe
+        wieder, sobald du die neue bestätigt hast. Wollen wir später mehr zeigen, gilt deine
+        bisherige Freigabe dafür nicht; du entscheidest dann neu.
       </p>
       <p>
         Unter „Profil bearbeiten“ im Abschnitt „Sichtbarkeit“ siehst du vor der Freigabe eine
@@ -1151,8 +1169,9 @@
         liefern wir deine Angaben bei neuen Abrufen nicht mehr aus. Was andere vorher schon geladen
         oder kopiert haben, können wir nicht zurückholen. Deine XP und dein Lernstand bleiben
         erhalten, und privat zu bleiben kostet dich nichts. Administratoren sehen für den Support,
-        ob du freigegeben hast. Sie können dein Profil wieder privat stellen, etwa wenn du uns darum
-        bittest, aber nie für dich freigeben (Abschnitt 10.5).
+        ob du freigegeben hast, und können dein Profil wieder privat stellen, etwa wenn du uns darum
+        bittest. Freigeben kannst nur du. Administratoren tun das nie für dich, auch nicht, wenn sie
+        sich zur Fehlersuche in deinem Konto anmelden (Abschnitt 10.5).
       </p>
       <p>
         Rechtsgrundlage der Freigabe ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst
@@ -1329,7 +1348,8 @@
         Der bisherige Eventdienst bleibt für Auskunft, Löschung und die Abwicklung bestehender
         Rechte erreichbar. Soweit noch Daten zu deinem Konto vorhanden sind, können dazu frühere
         Angebote, Buchungen, Zeitfenster, Bewertungen, Nutzerkennungen, Zahlungs- und
-        Vertragsnachweise gehören. Wir nutzen sie nur noch für diese bestehenden Vorgänge.
+        Vertragsnachweise gehören. Wir nutzen sie nur noch für diese bestehenden Vorgänge. Namen
+        anderer Nutzer, etwa von Kursleitern, zeigt der Eventdienst nur noch Administratoren.
         Notwendige Kontaktangaben rufen wir dafür aus dem Kerndienst ab; der Zwischenspeicher dafür
         läuft nach höchstens fünf Minuten ab. Für wichtige Nachrichten zu einem bestehenden Vertrag
         gilt Abschnitt 17.1.
@@ -1376,8 +1396,8 @@
         PayPal kann dabei Informationen in deinem Browser speichern und auslesen (etwa Cookies zur
         Betrugsprävention); dies ist zur Abwicklung der von dir gewünschten Zahlung erforderlich (§
         25 Abs. 2 Nr. 2 TDDDG). PayPal verarbeitet deine Zahlungs- und Verbindungsdaten in eigener
-        Verantwortung nach seiner Datenschutzerklärung. Auf anderen Seiten wird das SDK nicht
-        geladen.
+        Verantwortung nach seiner Datenschutzerklärung. Auf anderen Seiten lädt es nur, wenn du dort
+        eine begonnene PayPal-Zahlung fortsetzt.
       </p>
       <p>
         An PayPal übermitteln wir bei der Bestellanlage ausschließlich Betrag und Währung. Name,
@@ -1570,9 +1590,10 @@
         Rechtsgrundlage ist deine Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1
         TDDDG, die du durch den Klick für dieses Video erteilst. Wir speichern die Einwilligung
         nicht; bei jedem Video entscheidest du neu. Du kannst die Einwilligung mit Wirkung für die
-        Zukunft widerrufen, indem du keine weiteren Videos lädst. Ohne Einwilligung kannst du die
-        Videos nicht ansehen; die übrigen Kursinhalte bleiben nutzbar. Wir erhalten von Google keine
-        Daten darüber, welche Videos du ansiehst.
+        Zukunft widerrufen: Die aktuelle Einbettung beendest du, indem du die Videoseite verlässt
+        oder den Tab schließt, und weitere Videos lädst du einfach nicht. Ohne Einwilligung kannst
+        du die Videos nicht ansehen; die übrigen Kursinhalte bleiben nutzbar. Wir erhalten von
+        Google keine Daten darüber, welche Videos du ansiehst.
       </p>
     </section>
 
@@ -1675,12 +1696,12 @@
         Vorgangskennung, einen Prüfwert des Inhalts, den Zeitpunkt, eine Kennzeichnung für den
         Abgleich und gegebenenfalls den Link zur GitHub-Meldung und eine zufällige Bildkennung. Der
         Beleg enthält keine Kopie von Titel, Beschreibung, Diagnosewerten oder IP-Adresse. Die
-        Anzahl dieser Belege ist begrenzt. Sie werden nicht nach einer festen Frist gelöscht,
-        sondern bleiben erhalten, solange der Dienst die zugehörigen Vorgangskennungen akzeptiert.
-        Zum Schutz vor Missbrauch zählen wir Anfragen anhand der IP-Adresse und des Zeitpunkts bis
-        zu einer Stunde im Arbeitsspeicher. Die Anzahl dieser Zähler ist begrenzt. Diese Angaben
-        senden wir nicht an GitHub. Grundlage dieser Schutzmaßnahmen ist Art. 6 Abs. 1 lit. f DSGVO
-        (zuverlässige Zustellung und Schutz vor missbräuchlicher Veröffentlichung).
+        Anzahl dieser Belege ist begrenzt. Sie bleiben erhalten, solange der Dienst die zugehörigen
+        Vorgangskennungen akzeptiert; eine feste Löschfrist gibt es dafür nicht. Zum Schutz vor
+        Missbrauch zählen wir Anfragen anhand der IP-Adresse und des Zeitpunkts bis zu einer Stunde
+        im Arbeitsspeicher. Die Anzahl dieser Zähler ist begrenzt. Diese Angaben senden wir nicht an
+        GitHub. Grundlage dieser Schutzmaßnahmen ist Art. 6 Abs. 1 lit. f DSGVO (zuverlässige
+        Zustellung und Schutz vor missbräuchlicher Veröffentlichung).
       </p>
       <h3>17.3 Discord-Community</h3>
       <p>
@@ -1938,7 +1959,7 @@
             </tr>
             <tr>
               <td>Fehlerberichte</td>
-              <td>90 Tage</td>
+              <td>90 Tage, durch die tageweise Löschung bis zu drei Tage länger</td>
             </tr>
             <tr>
               <td>Kontakt- und Support-Kommunikation</td>
@@ -2050,9 +2071,10 @@
           <strong>Widerruf von Einwilligungen</strong> (Art. 7 Abs. 3 DSGVO) mit Wirkung für die
           Zukunft. Die Freigabe deines Profils widerrufst du unter „Profil bearbeiten“ mit „Wieder
           privat stellen“ (Abschnitt 12.2). Die Einwilligung zum Laden von YouTube-Videos widerrufst
-          du, indem du keine weiteren Videos lädst (Abschnitt 16). Die beim Kauf digitaler Inhalte
-          erklärte Zustimmung zur sofortigen Vertragsausführung betrifft dein Widerrufsrecht als
-          Verbraucher, nicht die Datenverarbeitung; Einzelheiten stehen in der
+          du, indem du die Videoseite verlässt oder den Tab schließt und keine weiteren Videos lädst
+          (Abschnitt 16). Die beim Kauf digitaler Inhalte erklärte Zustimmung zur sofortigen
+          Vertragsausführung betrifft dein Widerrufsrecht als Verbraucher, nicht die
+          Datenverarbeitung; Einzelheiten stehen in der
           <a href="/docs/right-of-withdrawal">Widerrufsbelehrung</a>.
         </li>
         <li>

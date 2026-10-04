@@ -103,9 +103,10 @@ test("statistics explanation keeps its existing-data limits, legal basis and obj
     "intern Daten aus, die wir nach diesen Hinweisen ohnehin speichern",
     "nur so weit, wie es dafür nötig ist",
     "Zusätzlich erheben wir nichts.",
-    "zusammengefasste Werte wie Anzahlen, Anteile oder Mittelwerte",
-    "über so viele Personen, dass sich niemand einzeln ablesen lässt",
-    "Für Entscheidungen über einzelne Personen nutzen wir sie nie",
+    "dass sich daraus keine Angaben über einzelne Personen ableiten lassen",
+    "Jede Angabe beruht auf mindestens zehn Personen",
+    "beziehen wir deine Daten in künftige Auswertungen nicht mehr ein",
+    "Für Entscheidungen über einzelne Personen nutzen wir die Ergebnisse nie",
     "Einzeldaten geben wir nicht weiter",
     "Verarbeitung bis zur Anonymisierung",
     "Art. 6 Abs. 1 lit. f DSGVO",
@@ -129,7 +130,6 @@ test("profile sharing is described as consent with its exact audience, scope and
     "Das gilt für neue und bestehende Konten; eine frühere Einstellung zur Bestenliste zählt nicht als Freigabe.",
     "andere angemeldete Nutzer mit bestätigter E-Mail-Adresse",
     "Anzeigenamen, den Standard-Avatar, deine Gesamt-XP sowie deine Plätze und Punkte",
-    "technische Nutzerkennung",
     "Nickname, E-Mail-Adresse, einzelne Skills, Bio, Tags, Lösungen und Projektstände bleiben privat.",
     "Plätze und Teilnehmerzahlen berücksichtigen nur freigegebene Konten.",
     "„Wieder privat stellen“",
@@ -143,6 +143,8 @@ test("profile sharing is described as consent with its exact audience, scope and
   assert(!notice.includes("In den Bestenlisten anzeigen"));
   assert(!notice.includes("Bestenliste (motivierende Lernumgebung)"));
   assert(!notice.includes("Der Nickname ist für andere angemeldete Nutzer sichtbar"));
+  assert(!explanation.includes("Nutzerkennung"), "public leaderboards carry no account ID");
+  assert(explanation.includes("Freigeben kannst nur du."));
 });
 
 test("browser storage section names its categories without promising more than the app does", () => {
@@ -153,12 +155,13 @@ test("browser storage section names its categories without promising more than t
     "Lernen ohne Konto",
     "bis 30 Tage nach der letzten Nutzung",
     "Der Rückkehrhinweis liegt 24 Stunden im Session Storage.",
-    "Ist noch unklar, ob gezahlt wurde, bleibt die Kennung auch nach dem Abmelden",
     "Kündigungen und Widerrufe gelten 24 Stunden",
     "Fristen prüft die App, wenn du die Seite wieder öffnest.",
     "Cookies sendet dein Browser von selbst nur an die Weboberfläche",
     "§ 25 Abs. 2 Nr. 2 TDDDG",
-    "Den App-Zustand, den die Weboberfläche beim Neuladen kurz ablegt, entfernen wir beim nächsten Start.",
+    "nur der Zielpfad und eine Ablaufzeit",
+    "auch in anderen offenen Tabs dieses Browsers",
+    "Offene Vorgänge bleiben auch beim Abmelden und bei einer Kontolöschung gespeichert",
   ]) {
     assert(explanation.includes(wording), wording);
   }
