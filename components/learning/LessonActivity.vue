@@ -152,13 +152,15 @@ const nativeRequest = computed(
       path.startsWith("/challenges/") &&
       !(await lessonStart.start())
     ) {
-      throw {
-        statusCode: lessonStart.limited.value ? 429 : 503,
-        data: {
-          code: lessonStart.limited.value ? "daily_limit_reached" : "lesson_start_unavailable",
-          daily: lessonStart.limited.value,
-        },
-      };
+      throw (
+        lessonStart.failure.value || {
+          statusCode: lessonStart.limited.value ? 429 : 503,
+          data: {
+            code: lessonStart.limited.value ? "daily_limit_reached" : "lesson_start_unavailable",
+            daily: lessonStart.limited.value,
+          },
+        }
+      );
     }
     return send(path, method, body);
   }
@@ -343,6 +345,7 @@ async function handIn(result: LearningActivityCompletion) {
     return;
   }
   const source = props.activity.source;
+  if (source.kind !== "lecture") return;
   const expectedOwner = owner.value;
   completing.value = true;
   saveError.value = false;

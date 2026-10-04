@@ -1,4 +1,5 @@
 import type { DailyLearning } from "../types/dailyLearning";
+import { decodeApiError } from "./apiError";
 
 export function dailyLearning(value: any): DailyLearning | null {
   if (
@@ -29,12 +30,11 @@ export function dailyBlocked(value?: DailyLearning | null) {
     value.can_start === false
   );
 }
-export function dailyError(error: any): DailyLearning | null {
-  const body = error?.data || error?.response?._data || error;
-  return body?.code === "daily_limit_reached" || body?.error === "daily_limit_reached"
-    ? dailyLearning(body.daily)
-    : null;
+export function dailyError(error: unknown): DailyLearning | null {
+  const decoded = decodeApiError(error);
+  return decoded.kind === "daily_limit" ? dailyLearning(decoded.daily) : null;
 }
+
 export function dailyResetTime(value: DailyLearning, locale: string) {
   return new Intl.DateTimeFormat(locale.startsWith("de") ? "de-DE" : "en-GB", {
     hour: "2-digit",

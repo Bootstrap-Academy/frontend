@@ -28,6 +28,10 @@ code = ts.transpileModule(code, {
   compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
 }).outputText;
 code = code
+  .replaceAll(
+    'from "~/utils/apiError"',
+    `from ${JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href)}`
+  )
   .replace(
     /from ["']vue["']/g,
     `from ${JSON.stringify(pathToFileURL(require.resolve("vue")).href)}`

@@ -1,3 +1,4 @@
+import { decodeApiError } from "../utils/apiError.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
@@ -24,10 +25,11 @@ const code = ts.transpileModule(
   }
 ).outputText;
 const { createGuestLearning, guestState, guestFinished, GUEST_KEY, GUEST_TTL_MS } = new Function(
+  "decodeApiError",
   "exercise",
   "GUEST_RETURN_KEY",
   code + "\nreturn {createGuestLearning, guestState, guestFinished, GUEST_KEY, GUEST_TTL_MS};"
-)(exercise, GUEST_RETURN_KEY);
+)(decodeApiError, exercise, GUEST_RETURN_KEY);
 const solved = {
   stage: 4,
   singleDone: true,

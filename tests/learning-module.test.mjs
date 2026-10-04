@@ -28,7 +28,17 @@ const moduleUrl = (source) =>
   ).toString("base64")}`;
 const assessmentModule = await import(
   moduleUrl(
-    assessmentSource.replace('"./learningExercise"', JSON.stringify(moduleUrl(exerciseSource)))
+    assessmentSource.replace(
+      '"./learningExercise"',
+      JSON.stringify(
+        moduleUrl(
+          exerciseSource.replaceAll(
+            '"./apiError"',
+            JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href)
+          )
+        )
+      )
+    )
   )
 );
 const descriptor = {

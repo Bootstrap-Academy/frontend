@@ -1,5 +1,7 @@
 import type { LearningRequest, LearningRoomsView, RoomEnvelope } from "../types/learningRooms";
 
+import { decodeApiError } from "./apiError";
+
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 function envelope(value: any): RoomEnvelope {
   if (
@@ -23,17 +25,15 @@ function envelope(value: any): RoomEnvelope {
     throw new Error("Invalid learning room");
   return value;
 }
-function errorKey(error: any) {
-  if ((error?.data?.code || error?.data?.error) === "daily_limit_reached") return "DailyLimit";
-  const status = error?.statusCode || error?.status || error?.response?.status;
-  return status === 409
-    ? "Conflict"
-    : status === 401
-      ? "Session"
-      : status === 422
-        ? "CheckIntroduction"
-        : "SaveError";
+function errorKey(error: unknown) {
+  const decoded = decodeApiError(error);
+  if (decoded.kind === "daily_limit") return "DailyLimit";
+  if (decoded.kind === "conflict") return "Conflict";
+  if (decoded.kind === "session") return "Session";
+  if (decoded.kind === "throttle") return "Wait";
+  return decoded.status === 422 ? "CheckIntroduction" : "SaveError";
 }
+
 export function createLearningRooms(options: {
   request: LearningRequest;
   changed: (view: LearningRoomsView) => void;

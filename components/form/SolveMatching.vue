@@ -151,6 +151,7 @@
 </template>
 
 <script setup lang="ts">
+import { decodeApiError } from "~/utils/apiError";
 import { useI18n } from "vue-i18n";
 import { ChevronDoubleRightIcon } from "@heroicons/vue/24/solid";
 import FullHeart from "../svg/FullHeart.vue";
@@ -365,7 +366,7 @@ function successHandler(res: any) {
 function errorHandler(error: any) {
   if (handleLimit(error)) return;
   console.log("error", error);
-  openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
+  openSnackbar("error", decodeApiError(error).messageKey);
 }
 
 function nextQuestion() {

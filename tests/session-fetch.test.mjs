@@ -1,3 +1,4 @@
+import { decodeApiError } from "../utils/apiError.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
@@ -72,6 +73,7 @@ function fixture({
     clearings++;
   };
   const api = new Function(
+    "decodeApiError",
     "jwtDecode",
     "sessionRefreshMutex",
     "sameSession",
@@ -91,6 +93,7 @@ function fixture({
     "console",
     `${source}\nreturn { GET, POST, mutex };`
   )(
+    decodeApiError,
     jwtDecode,
     mutex,
     utility.sameSession,

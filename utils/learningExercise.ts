@@ -1,5 +1,18 @@
 import type { ExerciseReference, ExerciseView, LearningRequest } from "../types/learningRooms";
 
+import { decodeApiError } from "./apiError";
+
+const codingVerdicts = new Set([
+  "OK",
+  "COMPILATION_ERROR",
+  "INVALID_OUTPUT_FORMAT",
+  "MEMORY_LIMIT_EXCEEDED",
+  "NO_OUTPUT",
+  "PRE_CHECK_FAILED",
+  "RUNTIME_ERROR",
+  "TIME_LIMIT_EXCEEDED",
+  "WRONG_ANSWER",
+]);
 const segment = encodeURIComponent;
 export function exercisePath(reference: ExerciseReference) {
   const resource = {
@@ -12,19 +25,18 @@ export function exercisePath(reference: ExerciseReference) {
   return `/challenges/tasks/${segment(reference.task_id)}/${resource}/${segment(reference.subtask_id)}`;
 }
 
-export function learningError(error: any) {
-  const code = error?.data?.error || error?.data?.detail?.code;
-  if (code === "not_enough_hearts") return "NoHearts";
-  if (
-    code === "not_enough_coins" ||
-    code === "permission_denied" ||
-    code === "subtask_access_denied"
-  )
-    return "NoAccess";
-  if (code === "too_many_requests" || error?.status === 429 || error?.statusCode === 429)
-    return "Wait";
-  if (error?.status === 401 || error?.statusCode === 401) return "Session";
-  return "RequestError";
+export function learningError(error: unknown) {
+  const kind = decodeApiError(error).kind;
+  return {
+    hearts: "NoHearts",
+    access: "NoAccess",
+    throttle: "Wait",
+    daily_limit: "DailyLimit",
+    session: "Session",
+    conflict: "Conflict",
+    unavailable: "RequestError",
+    request: "RequestError",
+  }[kind];
 }
 
 export function createLearningExercise(options: {
@@ -102,6 +114,8 @@ export function createLearningExercise(options: {
         )
           throw new Error("Invalid attempt");
         if (coding ? response?.result?.verdict : typeof response?.solved === "boolean") {
+          if (coding && !codingVerdicts.has(response.result.verdict))
+            throw new Error("Invalid coding verdict");
           view.result = coding ? response.result : { solved: response.solved };
           if (response.hearts_pending === true) {
             view.phase = "pending";
@@ -305,7 +319,7 @@ export function createLearningExercise(options: {
         if (!current(ticket)) return;
         view.posting = false;
         // A known 4xx refusal did not create an attempt; a lost/5xx response may have.
-        const status = error?.statusCode || error?.status || error?.response?.status;
+        const status = decodeApiError(error).status ?? 0;
         const refused = status >= 400 && status < 500 && status !== 408;
         view.phase = refused ? "preparing" : "uncertain";
         publish();
