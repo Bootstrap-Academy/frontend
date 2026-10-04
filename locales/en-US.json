@@ -1932,6 +1932,7 @@
     "Details": "View details",
     "Running": "Your result is being checked.",
     "StillRunning": "The check is still running. You can check the result again shortly.",
+    "StillChecking": "The check is still running. Your result will show up here as soon as it’s ready.",
     "TechnicalFailure": "We couldn’t check your code because of a technical problem. It doesn’t cost you any hearts or attempts. Just submit it again.",
     "UnknownResult": "Sorry, we can’t show this result here. You can submit your code again.",
     "CheckResult": "Check result",

@@ -37,6 +37,22 @@ export function codingSubmissionStatus(submission: any) {
   return { title: "Headings.PendingResult", body: "" };
 }
 
+/** A coding check can take minutes (queue, capped technical retries with backoff). */
+export const codingPollWindow = 300_000;
+/** After this much waiting the room says the check is still running. */
+export const codingSlowAfter = 30_000;
+/** 2 s for the first 30 s, then one second longer per check, up to 10 s. */
+export function codingPollDelay(poll: number) {
+  return Math.min(10_000, 2_000 + Math.max(0, poll - 14) * 1_000);
+}
+
+/** The part of `document` the polling needs: a hidden tab sends no requests. */
+export interface PageVisibility {
+  readonly hidden: boolean;
+  addEventListener(type: "visibilitychange", listener: () => void): void;
+  removeEventListener(type: "visibilitychange", listener: () => void): void;
+}
+
 const segment = encodeURIComponent;
 export function exercisePath(reference: ExerciseReference) {
   const resource = {
@@ -68,8 +84,9 @@ export function createLearningExercise(options: {
   changed: (view: ExerciseView) => void;
   persistSubmission: (unknown: boolean, id?: string, attemptId?: string) => Promise<boolean>;
   heartsChanged?: (info: any) => void;
-  wait?: () => Promise<void>;
+  wait?: (ms: number) => Promise<void>;
   maxPolls?: number;
+  page?: PageVisibility | null;
 }) {
   const empty = (): ExerciseView => ({
     data: null,
@@ -81,6 +98,7 @@ export function createLearningExercise(options: {
     submissionId: null,
     result: null,
     posting: false,
+    slow: false,
   });
   let view = empty();
   let generation = 0;
@@ -96,8 +114,31 @@ export function createLearningExercise(options: {
   let heartRefresh = 0;
   const publish = () => options.changed({ ...view });
   const current = (ticket: number) => alive && ticket === generation;
-  const wait = options.wait || (() => new Promise<void>((resolve) => setTimeout(resolve, 2000)));
-  const maxPolls = options.maxPolls ?? 30;
+  const wait =
+    options.wait || ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
+  const page: PageVisibility | null =
+    options.page !== undefined ? options.page : typeof document === "undefined" ? null : document;
+  const sleepers = new Set<() => void>();
+
+  /** Resolves once the tab is visible again, or when this controller moves on. */
+  function visible() {
+    if (!page?.hidden) return Promise.resolve();
+    return new Promise<void>((resolve) => {
+      const done = () => {
+        page.removeEventListener("visibilitychange", check);
+        sleepers.delete(done);
+        resolve();
+      };
+      const check = () => {
+        if (!page.hidden) done();
+      };
+      sleepers.add(done);
+      page.addEventListener("visibilitychange", check);
+    });
+  }
+  function wake() {
+    for (const done of [...sleepers]) done();
+  }
 
   async function refreshHearts(ticket: number) {
     if (!current(ticket) || !options.heartsChanged) return;
@@ -120,8 +161,22 @@ export function createLearningExercise(options: {
     // The detail endpoint returns source code only. Verdicts are exposed in the
     // current user's list; never infer success from its first/latest entry.
     const path = `${exercisePath(reference)}/${coding ? "submissions" : `attempts/${segment(attemptId)}`}`;
+    const limit = options.maxPolls ?? (coding ? Infinity : 30);
+    let waited = 0;
+    // One request at a time. The next one waits for its delay and a visible tab.
+    const next = async (i: number) => {
+      if (i + 1 >= limit || (coding && waited >= codingPollWindow)) return false;
+      const delay = coding ? codingPollDelay(i) : 2_000;
+      await wait(delay);
+      // A finished room registers no listener; a hidden tab waits to be visible.
+      if (!current(ticket)) return false;
+      await visible();
+      waited += delay;
+      return current(ticket);
+    };
+    view.slow = false;
     try {
-      for (let i = 0; i < maxPolls; i++) {
+      for (let i = 0; ; i++) {
         if (!current(ticket)) return;
         const data = await options.request(path);
         if (!current(ticket)) return;
@@ -147,9 +202,10 @@ export function createLearningExercise(options: {
           if (response.hearts_pending === true) {
             view.phase = "pending";
             publish();
-            if (i + 1 < maxPolls) await wait();
+            if (!(await next(i))) break;
             continue;
           }
+          view.slow = false;
           view.posting = true;
           publish();
           await refreshHearts(ticket);
@@ -172,20 +228,27 @@ export function createLearningExercise(options: {
           // Nothing was charged or counted, so the learner can submit again.
           view.submissionId = null;
           view.result = null;
+          view.slow = false;
           view.phase = "ready";
           view.error = "TechnicalFailure";
           publish();
           return;
         }
-        if (i + 1 < maxPolls) await wait();
+        if (coding && !view.slow && waited >= codingSlowAfter) {
+          view.slow = true;
+          publish();
+        }
+        if (!(await next(i))) break;
       }
       if (current(ticket)) {
+        view.slow = false;
         view.phase = "pending";
         view.error = view.result ? "HeartsPending" : "StillRunning";
         publish();
       }
     } catch (error) {
       if (current(ticket)) {
+        view.slow = false;
         view.phase = "pending";
         view.error = learningError(error);
         publish();
@@ -202,6 +265,7 @@ export function createLearningExercise(options: {
   return {
     reset() {
       generation++;
+      wake();
       polling = false;
       sending = false;
       dispatched = false;
@@ -220,6 +284,7 @@ export function createLearningExercise(options: {
       attemptId?: string
     ) {
       const ticket = ++generation;
+      wake();
       polling = false;
       sending = false;
       dispatched = false;
@@ -440,6 +505,7 @@ export function createLearningExercise(options: {
     dispose() {
       alive = false;
       generation++;
+      wake();
       polling = false;
       sending = false;
       dispatched = false;

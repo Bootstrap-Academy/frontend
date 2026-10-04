@@ -126,7 +126,15 @@
           </details>
         </div>
         <p v-if="view.phase === 'pending'" role="status">
-          {{ t(view.result ? "LearningRooms.BalanceUpdating" : "LearningRooms.Running") }}
+          {{
+            t(
+              view.result
+                ? "LearningRooms.BalanceUpdating"
+                : view.slow
+                  ? "LearningRooms.StillChecking"
+                  : "LearningRooms.Running"
+            )
+          }}
         </p>
         <p v-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
         <button

@@ -346,12 +346,14 @@ function exerciseFixture(handler, options = {}) {
   let view;
   const calls = [];
   const controller = createLearningExercise({
-    maxPolls: 3,
-    wait: async () => {},
+    maxPolls: "maxPolls" in options ? options.maxPolls : 3,
+    wait: options.wait || (async () => {}),
+    page: options.page,
     persistSubmission: options.persistSubmission || (async () => true),
     heartsChanged: options.heartsChanged,
     changed: (next) => {
       view = next;
+      options.changed?.(next);
     },
     request: async (path, method = "GET", body) => {
       calls.push({ path, method, body });
@@ -456,6 +458,131 @@ test("a reload finds a submission closed after technical failures ready for anot
   assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
 });
 
+test("coding keeps polling with backoff for five minutes and says the check is still running", async () => {
+  const delays = [];
+  const views = [];
+  let waited = 0;
+  const f = exerciseFixture(
+    (path, method) => (method === "POST" ? { id: "mine" } : [{ id: "mine", result: null }]),
+    {
+      maxPolls: undefined,
+      wait: async (ms) => {
+        delays.push(ms);
+        waited += ms;
+      },
+      changed: (view) => views.push({ ...view, waited }),
+    }
+  );
+  const polls = () =>
+    f.calls.filter(({ path, method }) => path.endsWith("/submissions") && method === "GET").length;
+  await f.controller.load(reference, "learner");
+  await f.controller.submit({ code: "print(1)", environment: "python" });
+  assert.equal(delays[0], 2000);
+  assert.equal(Math.max(...delays), 10000);
+  assert.ok(delays.every((delay, i) => i === 0 || delay >= delays[i - 1]));
+  assert.ok(waited >= 300000 && waited - delays.at(-1) < 300000, String(waited));
+  assert.equal(polls(), delays.length + 1);
+  // While polling goes on by itself the room shows a calm status, no error and no button.
+  const slow = views.filter((view) => view.slow);
+  assert.ok(slow.length && slow.every((view) => view.phase === "pending" && view.error === ""));
+  assert.ok(slow[0].waited >= 30000 && slow[0].waited < 40000);
+  // Only after the window the manual check is offered, as before.
+  assert.equal(f.view.phase, "pending");
+  assert.equal(f.view.error, "StillRunning");
+  assert.equal(f.view.slow, false);
+});
+
+test("a late close after technical retries arrives without a manual check", async () => {
+  let polls = 0;
+  const f = exerciseFixture(
+    (path, method) =>
+      method === "POST"
+        ? { id: "mine" }
+        : [{ id: "mine", result: null, technical_failure: ++polls > 40 }],
+    { maxPolls: undefined }
+  );
+  await f.controller.load(reference, "learner");
+  await f.controller.submit({ code: "print(1)", environment: "python" });
+  assert.equal(polls, 41);
+  assert.equal(f.view.phase, "ready");
+  assert.equal(f.view.error, "TechnicalFailure");
+});
+
+function hiddenTabFixture() {
+  const page = Object.assign(new EventTarget(), { hidden: false });
+  let polls = 0;
+  const f = exerciseFixture(
+    (path, method) => {
+      if (method === "POST") return { id: "mine" };
+      if (++polls === 2) page.hidden = true;
+      return [{ id: "mine", result: polls > 2 ? { verdict: "OK" } : null }];
+    },
+    { maxPolls: undefined, page }
+  );
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+  return { f, page, polls: () => polls, settle };
+}
+
+test("a hidden tab sends no checks and resumes as soon as it is visible again", async () => {
+  const { f, page, polls, settle } = hiddenTabFixture();
+  await f.controller.load(reference, "learner");
+  const running = f.controller.submit({ code: "print(1)", environment: "python" });
+  for (let i = 0; i < 5; i++) await settle();
+  assert.equal(polls(), 2);
+  page.dispatchEvent(new Event("visibilitychange"));
+  await f.controller.check();
+  for (let i = 0; i < 5; i++) await settle();
+  assert.equal(polls(), 2, "still hidden: neither the event nor a manual check polls");
+  page.hidden = false;
+  page.dispatchEvent(new Event("visibilitychange"));
+  await running;
+  assert.equal(polls(), 3);
+  assert.equal(f.view.phase, "correct");
+});
+
+test("leaving the page while the tab is hidden ends polling for good", async () => {
+  const { f, page, polls, settle } = hiddenTabFixture();
+  await f.controller.load(reference, "learner");
+  let finished = false;
+  f.controller.submit({ code: "print(1)", environment: "python" }).then(() => (finished = true));
+  for (let i = 0; i < 5; i++) await settle();
+  f.controller.dispose();
+  for (let i = 0; i < 5; i++) await settle();
+  assert.equal(finished, true, "dispose releases the hidden wait");
+  page.hidden = false;
+  page.dispatchEvent(new Event("visibilitychange"));
+  for (let i = 0; i < 5; i++) await settle();
+  assert.equal(polls(), 2);
+});
+
+test("a room left during a delay never waits for the tab afterwards", async () => {
+  const page = Object.assign(new EventTarget(), { hidden: true });
+  const listeners = [];
+  const add = page.addEventListener.bind(page);
+  page.addEventListener = (type, listener) => {
+    listeners.push(type);
+    add(type, listener);
+  };
+  const delay = deferred();
+  let polls = 0;
+  const f = exerciseFixture(
+    (path, method) =>
+      method === "POST" ? { id: "mine" } : (polls++, [{ id: "mine", result: null }]),
+    { maxPolls: undefined, page, wait: () => delay.promise }
+  );
+  await f.controller.load(reference, "learner");
+  let finished = false;
+  f.controller.submit({ code: "print(1)", environment: "python" }).then(() => (finished = true));
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+  await settle();
+  f.controller.dispose();
+  delay.resolve();
+  for (let i = 0; i < 5; i++) await settle();
+  assert.equal(finished, true);
+  assert.equal(polls, 1);
+  assert.deepEqual(listeners, []);
+});
+
 test("a memory kill is the learner's verdict and is shown as such", async () => {
   const verdict = { verdict: "MEMORY_LIMIT_EXCEEDED", run: { stderr: "Killed" } };
   const f = exerciseFixture((path, method) =>
@@ -498,6 +625,7 @@ test("submission list texts cover verdicts, technical closes, unknown values and
     "Headings.PendingResult",
     "LearningRooms.TechnicalFailure",
     "LearningRooms.UnknownResult",
+    "LearningRooms.StillChecking",
     ...[
       "OK",
       "COMPILATION_ERROR",

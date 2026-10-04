@@ -1935,6 +1935,7 @@
     "Details": "Details ansehen",
     "Running": "Dein Ergebnis wird geprüft.",
     "StillRunning": "Die Prüfung dauert noch. Du kannst das Ergebnis gleich erneut abrufen.",
+    "StillChecking": "Die Prüfung dauert noch. Dein Ergebnis erscheint hier, sobald es fertig ist.",
     "TechnicalFailure": "Wir konnten deinen Code wegen eines technischen Problems nicht prüfen. Das kostet dich keine Herzen oder Versuche. Gib ihn einfach noch einmal ab.",
     "UnknownResult": "Dieses Ergebnis können wir hier leider nicht anzeigen. Du kannst deinen Code noch einmal abgeben.",
     "CheckResult": "Ergebnis abrufen",

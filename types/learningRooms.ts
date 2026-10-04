@@ -60,6 +60,8 @@ export interface ExerciseView {
   submissionId: string | null;
   result: Record<string, any> | null;
   posting: boolean;
+  /** A coding check has been running for a while; polling continues on its own. */
+  slow?: boolean;
 }
 
 export type LocalizedText = { de: string; en: string };
