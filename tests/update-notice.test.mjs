@@ -410,8 +410,15 @@ for (const language of ["de", "en-US"]) {
       assert(
         messages[language].UpdateNotice.Body.includes(
           language === "de"
-            ? "nur auf Summen, nie auf dich einzeln"
-            : "only look at totals, never at you individually"
+            ? "nur auf zusammengefasste Zahlen, nie auf dich einzeln"
+            : "only look at aggregated figures, never at you individually"
+        )
+      );
+      assert(
+        messages[language].UpdateNotice.Body.includes(
+          language === "de"
+            ? "In Bestenlisten erscheinst du nur, wenn du dein Profil unter „Profil bearbeiten“ freigibst."
+            : "You only appear in leaderboards if you share your profile under “Edit profile”."
         )
       );
       assert.equal(
@@ -422,7 +429,8 @@ for (const language of ["de", "en-US"]) {
         messages[language].UpdateNotice.Dismiss,
         language === "de" ? "Schließen" : "Close"
       );
-      assert.equal(UPDATE_NOTICE_VERSION, "2026-10-privacy-statistics-1");
+      assert.equal(UPDATE_NOTICE_VERSION, "2026-10-privacy-r2");
+      assert.equal(UPDATE_NOTICE_LINK, "/docs/privacy#aenderungen");
       assert.equal(f.notice().props["aria-label"], messages[language].Links.Privacy);
       assert(f.ui.all().some((n) => n.type === "main"));
       assert(
@@ -698,6 +706,8 @@ test("app start removes dismissals of the retired September notice at any time; 
     assert.equal(f.data.has(current), now < UPDATE_NOTICE_WINDOW.expiresAt);
   }
   assert(RETIRED_UPDATE_NOTICE_VERSIONS.includes("2026-09-update-1"));
+  // The statistics notice ran only on test and was replaced by the bundled privacy notice.
+  assert(RETIRED_UPDATE_NOTICE_VERSIONS.includes("2026-10-privacy-statistics-1"));
   assert(
     !RETIRED_UPDATE_NOTICE_VERSIONS.includes(UPDATE_NOTICE_VERSION),
     "the shown notice is never retired"
