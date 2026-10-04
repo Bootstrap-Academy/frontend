@@ -28,6 +28,9 @@ if (registrationVersion && registrationUrl !== `/docs/terms-and-conditions-${reg
 export default defineNuxtConfig({
   ssr: false,
 
+  // Our reload handler keeps the loop guard without persisting user state.
+  experimental: { emitRouteChunkError: "manual", restoreState: false },
+
   app: {
     head: {
       title: "Bootstrap Academy",
