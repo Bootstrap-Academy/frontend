@@ -36,7 +36,12 @@ export interface Manifest {
   }[];
   assets: { path: string; mediaType: string; loading: "initial" | "lazy" }[];
   state: { schemaVersion: number; schema: string; maxBytes: number };
-  stage: { orientation: string; reason?: Record<string, string> };
+  stage: {
+    orientation: string;
+    logical: { width: number; height: number };
+    safeMargin: number;
+    reason?: Record<string, string>;
+  };
 }
 export interface Envelope {
   protocol: Version;

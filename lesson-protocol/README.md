@@ -74,9 +74,9 @@ public SDK entry point.
 SDK's handshake. It verifies package bytes, registry/owner bindings, server
 limits and idempotent writes; JSON validity creates no trust.
 J4 can use state, progress, navigation and lifecycle without choosing a renderer.
-J3 supplies pointer ownership and the gesture recognizer; `gesture` checks an
-eligible completed navigation candidate, epoch and the 64px/1.5 thresholds.
-The SDK does not handle DOM pointers or evaluate model text. Text rendering
+`bindLessonPointers` supplies frame-local pointer ownership and the gesture
+recognizer; `gesture` checks an eligible completed navigation candidate, epoch
+and the 64px/1.5 thresholds. The SDK does not evaluate model text. Text rendering
 and the output/action boundary remain separate C5 obligations. `safe-output.ts`
 appends streaming chunks as text nodes and parses schema-checked JSON as data.
 
@@ -107,8 +107,69 @@ Core completion currently supports only server-approved introductions using
 manifest's assessment reference, matches the saved state and sends the fixed
 answer to the real introduction validator. This is not assessment or an XP
 authority. Optional services, including live LLM and project/assessment
-capabilities, receive no grants and fail honestly. Stage scaling, gestures and
-actual fullscreen are separate work; navigation swipes remain disabled.
+capabilities, receive no grants and fail honestly.
+
+## Surface, input and display
+
+The host contains a 360 × 640 portrait or 640 × 360 landscape stage without
+stretching. `host.surface` revisions supply CSS viewport dimensions, scale and
+offset, a logical safe rectangle, CSS edge exclusions/occlusions, DPR, reduced
+motion and the actual display mode. The optional additive `visualScale` field
+reports the parent's VisualViewport zoom: a cross-origin iframe's own viewport
+can still report 1 while its parent is zoomed. Older SDKs ignore the field.
+
+```ts
+const init = await sdk.start();
+bindLessonStage(sdk, document.querySelector("#stage")!);
+bindLessonPointers(sdk, document.body);
+bindSceneKeyboard(document.querySelector("#parcel")!, {
+  move: (x, y) => moveParcel(x, y),
+  activate: () => recover(),
+  cancel: () => cancelDrag(),
+});
+sdk.ready("recover");
+await sdk.navigation({ forward: true, back: true });
+```
+
+Mark navigation backgrounds with `data-lesson-navigation` before interaction;
+their touch action becomes `pan-x pinch-zoom`. Mark scene handles with
+`data-lesson-scene` and set the scene's own touch action in its stylesheet.
+Pointer ownership is fixed at the start. Scene handles, form controls,
+selection, zoom, multiple pointers, cancelled gestures and the initial 24 CSS-px
+frame edges cannot become navigation swipes. Surface/lifecycle changes cancel
+the candidate. A changed policy applies only to new gestures. The host checks
+the announced pointer end and epoch again and flushes work before navigation.
+A declined or failed navigation resumes the retained scene.
+
+`stagePoint(surface, {x: clientX, y: clientY}, frameBounds)` maps pointer input
+back into logical coordinates. `minimumHitSize(surface)` and the stage CSS
+variable `--lesson-hit-size` provide 44 CSS-px targets after scaling. Authors
+must keep essential objects inside `safeRect` and provide reflowing semantic
+controls for enlarged text and short keyboard viewports. Scaling a drawing
+alone does not meet that requirement. Tab stays native; scene arrows and
+Space/Enter act only on the focused scene handle. Host arrows act only on its
+focused navigation buttons. Text inputs retain their ordinary keys.
+
+The host offers Previous, Next, Skip and Close, with a 260 CSS-px sidebar on
+wide screens. Previous uses session-local, owner-bound confirmed room history;
+it reads an existing room, without awarding XP or silently creating a review.
+Continuation after a confirmed skip belongs to the surviving parent room,
+because completion can remove the frame before its event arrives. Course
+players supply their own continuation; the standalone learning room opens the
+server-selected next room. Existing v1 navigation is unchanged.
+
+`display.fullscreen` requests a host affordance; it never performs fullscreen
+from an asynchronous frame RPC. A host click synchronously requests fullscreen
+on the container containing both scene and controls. Promise rejection retains
+`page`; actual `fullscreenchange` determines `browser-fullscreen`. A detected
+home-screen context reports `standalone`. The iframe keeps fullscreen denied.
+Neither mode requires installation or suppresses browser/system exit paths.
+
+`onDispose` registers lesson resource cleanup. Stage/pointer bindings register
+their own cleanup; register the returned keyboard disposer too. Authors own
+their other scene listeners, animation, audio and selection cleanup. Physical
+iOS/Android gestures, safe areas, software keyboards and screen readers still
+require device acceptance; Chromium emulation does not establish them.
 
 Build the small fixture-derived example with the existing build dependencies:
 

@@ -80,6 +80,7 @@ export class LessonSDK {
   private listeners = new Map<string, Set<(payload: JsonObject) => void>>();
   private awards = new Set<string>();
   private policy = { epoch: 0, swipe: { forward: false, back: false } };
+  private disposers = new Set<() => void>();
 
   constructor(private readonly options: SDKOptions) {
     this.manifest = cloneJson(validateManifest(options.manifest));
@@ -105,6 +106,20 @@ export class LessonSDK {
   }
   get navigationPolicy() {
     return cloneJson(this.policy);
+  }
+  onDispose(dispose: () => void): () => void {
+    if (this.closed) dispose();
+    else this.disposers.add(dispose);
+    return () => this.disposers.delete(dispose);
+  }
+  pointer(
+    pointerId: number,
+    owner: "scene" | "navigation",
+    phase: "begin" | "end" | "cancel",
+    epoch: number
+  ): void {
+    this.assertActive();
+    this.send("navigation.pointer", "event", { pointerId, owner, phase, epoch });
   }
   capability(id: string, major = 1, minMinor = 0): Capability | undefined {
     const capability = this.initValue?.capabilities.find(
@@ -349,6 +364,8 @@ export class LessonSDK {
 
   dispose(): void {
     if (this.closed) return;
+    for (const dispose of this.disposers) dispose();
+    this.disposers.clear();
     this.closed = true;
     this.phaseValue = "disposed";
     this.clock.clearTimeout(this.handshakeTimer);
@@ -643,6 +660,9 @@ export class LessonSDK {
       };
       validateMessage(response, { sender: "lesson", requestType: message.type });
       this.send("rpc.result", "response", { ok: true, data }, undefined, message.id);
+      if (message.type === "host.lifecycle" && !existing?.result)
+        for (const listener of this.listeners.get("host.lifecycle") ?? [])
+          listener(cloneJson(message.payload));
       if (data.phase === "disposed") this.dispose();
     } catch (error) {
       if (!this.sessionId) return;

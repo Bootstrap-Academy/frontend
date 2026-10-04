@@ -11,6 +11,7 @@ export function useLearningRooms(
     syncLocation?: boolean;
     loadRoom?: boolean;
     prepareLogout?: () => Promise<boolean> | boolean;
+    protocolNext?: () => Promise<boolean> | boolean;
   } = {}
 ) {
   const config = useRuntimeConfig().public;
@@ -316,8 +317,86 @@ export function useLearningRooms(
     clearTimeout(timer);
     data.dispose();
   });
+  // Session-local, server-selected history gives the v2 host a real previous target.
+  const visits = shallowRef<
+    { owner: string; path: string; courseId: string | null; unitId: string }[]
+  >([]);
+  let goingBack: { owner: string } | undefined;
+  watch(
+    () => [owner.value, view.value?.status, view.value?.courseId, view.value?.room?.unit.id],
+    () => {
+      if (!owner.value || visits.value.some((visit) => visit.owner !== owner.value))
+        visits.value = [];
+      const value = view.value;
+      if (
+        goingBack?.owner === owner.value ||
+        String(config.lessonProtocolV2) !== "true" ||
+        value?.status !== "ready" ||
+        !value.room ||
+        !owner.value
+      )
+        return;
+      const previous = visits.value.at(-1);
+      if (previous?.courseId !== value.courseId || previous?.path !== value.room.unit.path_id)
+        visits.value = [];
+      if (visits.value.at(-1)?.unitId === value.room.unit.id) return;
+      visits.value = [
+        ...visits.value,
+        {
+          owner: owner.value,
+          path: value.room.unit.path_id,
+          courseId: value.courseId,
+          unitId: value.room.unit.id,
+        },
+      ];
+    },
+    { flush: "sync", immediate: true }
+  );
+  async function previous() {
+    const target = visits.value.at(-2);
+    if (!target || target.owner !== owner.value || goingBack?.owner === owner.value) return false;
+    const operation = { owner: target.owner };
+    goingBack = operation;
+    try {
+      const opened = await data.openConfirmed(target.unitId, target.path, target.courseId);
+      if (!opened) return false;
+      if (target.owner !== owner.value) return false;
+      visits.value = visits.value.slice(0, -1);
+      await syncLocation();
+      return true;
+    } finally {
+      if (goingBack === operation) goingBack = undefined;
+    }
+  }
+  async function advanceProtocol() {
+    const identity = owner.value;
+    const value = view.value;
+    if (
+      !alive ||
+      !identity ||
+      value?.status !== "ready" ||
+      !value.room ||
+      !["completed", "skipped"].includes(value.room.progress.status)
+    )
+      return false;
+    if (options.protocolNext) return await options.protocolNext();
+    const opened = await data.next(value.path?.id, value.room.unit.id);
+    if (!opened || !alive || identity !== owner.value) return false;
+    await syncLocation();
+    return true;
+  }
   return {
-    protocol: { data, owner: () => owner.value },
+    protocol: {
+      data,
+      owner: () => owner.value,
+      get previous() {
+        return visits.value.length > 1 ? previous : undefined;
+      },
+      advance:
+        options.protocolNext || (!options.selection && options.syncLocation !== false)
+          ? advanceProtocol
+          : undefined,
+    },
     view,
     data,
     edit,

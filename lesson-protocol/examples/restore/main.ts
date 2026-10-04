@@ -1,3 +1,5 @@
+import { bindLessonPointers, bindLessonStage, bindSceneKeyboard } from "../../input";
+import { stagePoint, type Surface } from "../../surface";
 import { LessonSDK } from "../../sdk";
 import { createLessonWindowTransport } from "../../browser";
 import { appendLessonText, setLessonText, parseLessonOutput } from "../../safe-output";
@@ -22,7 +24,74 @@ let de = true;
 let dirty = false;
 let disabled = true;
 let saving: Promise<boolean> | undefined;
+const parcel = element("parcel") as HTMLButtonElement;
+function controls() {
+  const active = !disabled && sdk.phase === "running";
+  const locked = !active || !!pending || !!saving;
+  note.disabled = restore.disabled = parcel.disabled = complete.disabled = locked;
+  save.disabled = locked;
+  retry.disabled = !active || !!saving;
+  (element("error") as HTMLButtonElement).disabled = !active;
+}
+let position = { x: 54, y: 72 };
+let drag: number | undefined;
+let startPosition = position;
+let startPointer = { x: 0, y: 0 };
+const place = () => {
+  parcel.style.left = `${position.x}px`;
+  parcel.style.top = `${position.y}px`;
+};
+function recover() {
+  state = { ...state, restored: true };
+  dirty = true;
+  draw();
+  sdk.progress("restore-openable", 1);
+}
+function cancelDrag() {
+  if (drag === undefined) return false;
+  drag = undefined;
+  position = startPosition;
+  place();
+  return true;
+}
+function coordinates(event: PointerEvent) {
+  return stagePoint(
+    sdk.context!.surface as Surface,
+    { x: event.clientX, y: event.clientY },
+    { left: 0, top: 0 }
+  );
+}
+parcel.addEventListener("pointerdown", (event) => {
+  if (disabled || pending || sdk.phase !== "running") return;
+  drag = event.pointerId;
+  startPosition = { ...position };
+  startPointer = coordinates(event);
+  parcel.setPointerCapture(event.pointerId);
+});
+parcel.addEventListener("pointermove", (event) => {
+  if (event.pointerId !== drag) return;
+  const current = coordinates(event);
+  position = {
+    x: Math.max(24, Math.min(264, startPosition.x + current.x - startPointer.x)),
+    y: Math.max(24, Math.min(280, startPosition.y + current.y - startPointer.y)),
+  };
+  place();
+});
+parcel.addEventListener("pointerup", (event) => {
+  if (event.pointerId !== drag) return;
+  drag = undefined;
+  if (position.x > 190 && position.y > 100) recover();
+  else {
+    position = startPosition;
+    place();
+  }
+});
+parcel.addEventListener("pointercancel", cancelDrag);
+place();
 function draw() {
+  if (state.restored) position = { x: 232, y: 125 };
+  else position = { x: 54, y: 72 };
+  place();
   note.value = typeof state.note === "string" ? state.note : "";
   element("file").dataset.restored = String(state.restored === true);
   setLessonText(
@@ -43,13 +112,14 @@ function persist(repeated = false): Promise<boolean> {
   if (saving) return saving;
   saving = performSave(repeated).finally(() => {
     saving = undefined;
+    controls();
   });
   return saving;
 }
 async function performSave(repeated: boolean): Promise<boolean> {
   if (!pending) pending = { id: crypto.randomUUID(), state: { ...state } };
   save.disabled = true;
-  note.disabled = restore.disabled = true;
+  note.disabled = restore.disabled = parcel.disabled = true;
   try {
     const result = repeated
       ? await sdk.retry(pending.id)
@@ -68,8 +138,7 @@ async function performSave(repeated: boolean): Promise<boolean> {
     );
     return false;
   } finally {
-    save.disabled = disabled;
-    note.disabled = restore.disabled = disabled || !!pending;
+    controls();
   }
 }
 void transport.connection
@@ -82,6 +151,7 @@ void transport.connection
       transport,
       onError: () => message("Die Verbindung ist unterbrochen. / Connection interrupted."),
       onLifecycle: async (phase, reason) => {
+        if (phase !== "running") cancelDrag();
         if (phase === "paused" && reason === "navigation" && (dirty || pending))
           return !(await persist(!!pending));
         return dirty || !!pending;
@@ -115,9 +185,52 @@ void transport.connection
     for (const [id, value] of Object.entries(text)) setLessonText(element(id), value);
     draw();
     message(de ? "Dein bestätigter Stand ist geladen." : "Your confirmed work is loaded.");
-    for (const button of [restore, save, retry, complete, element("error") as HTMLButtonElement])
-      button.disabled = init.disabled;
-    note.disabled = init.disabled;
+    bindLessonPointers(sdk, document.body);
+    bindLessonStage(sdk, element("stage"));
+    sdk.onDispose(
+      bindSceneKeyboard(parcel, {
+        move: (x, y) => {
+          if (disabled || pending) return;
+          position = {
+            x: Math.max(24, Math.min(264, position.x + x * 24)),
+            y: Math.max(24, Math.min(280, position.y + y * 24)),
+          };
+          place();
+        },
+        activate: () => {
+          if (!disabled && !pending) recover();
+        },
+        cancel: cancelDrag,
+      })
+    );
+    const escape = (event: KeyboardEvent) => {
+      if (
+        event.key === "Escape" &&
+        !event.defaultPrevented &&
+        !event.isComposing &&
+        !(event.target instanceof HTMLTextAreaElement) &&
+        !(event.target instanceof HTMLInputElement)
+      ) {
+        if (cancelDrag()) {
+          event.preventDefault();
+          return;
+        }
+        void sdk
+          .navigate("close")
+          .catch(() => message(de ? "Deine Arbeit bleibt hier." : "Your work stays here."));
+      }
+    };
+    document.addEventListener("keydown", escape);
+    sdk.onDispose(() => document.removeEventListener("keydown", escape));
+    sdk.on("host.lifecycle", (payload) => {
+      controls();
+      if (payload.phase === "running")
+        void sdk.navigation({ forward: true, back: true }).catch(() => {});
+    });
+    sdk.on("host.context", (payload) => {
+      disabled = !!payload.disabled;
+      controls();
+    });
     sdk.ready("restore");
   })
   .catch(() => message("Verbindung nicht bereit. / Connection unavailable."));
@@ -127,10 +240,7 @@ note.addEventListener("input", () => {
   message(de ? "Noch nicht gespeichert." : "Not saved yet.");
 });
 restore.addEventListener("click", () => {
-  state = { ...state, restored: true };
-  dirty = true;
-  draw();
-  sdk.progress("restore-openable", 1);
+  recover();
 });
 save.addEventListener("click", () => {
   void persist();

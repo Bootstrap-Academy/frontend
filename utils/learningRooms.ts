@@ -411,6 +411,60 @@ export function createLearningRooms(options: {
     },
     // V2 uses the same authenticated routes, CAS, retry records and owner recovery.
     protocolSnapshot: () => copy({ room: view.room, error: view.error, conflict: view.conflict }),
+    async openConfirmed(unitId: string, pathId: string, courseId: string | null = null) {
+      if (
+        !alive ||
+        view.status !== "ready" ||
+        view.saving ||
+        view.completing ||
+        view.completionPending ||
+        view.reviewPending ||
+        view.reviewStarting ||
+        view.courseId !== courseId ||
+        view.conflict
+      )
+        return false;
+      if (!(await save())) return false;
+      const ticket = ++generation;
+      const version = editVersion;
+      const before = view.room;
+      const path = view.paths.find((value) => value.id === pathId);
+      if (!path) return false;
+      try {
+        // The existing read endpoint rechecks access/prerequisites for this precise previous room.
+        const response = envelope(await options.request(unitUrl(unitId, "", courseId)));
+        if (
+          !current(ticket) ||
+          view.room !== before ||
+          editVersion !== version ||
+          view.dirty ||
+          view.saving ||
+          view.completing ||
+          pendingSave ||
+          pendingComplete ||
+          pendingReviewStart ||
+          view.conflict ||
+          response.unit.id !== unitId ||
+          response.unit.path_id !== pathId ||
+          (response.course_id || null) !== courseId
+        )
+          return false;
+        view.room = response;
+        view.path = path;
+        view.courseId = courseId;
+        view.draft = copy(response.progress.state);
+        view.dirty = false;
+        view.error = "";
+        view.emptyReason = null;
+        pendingSave = pendingComplete = pendingReviewStart = null;
+        editVersion = 0;
+        lastSelection = { path: pathId, courseId, ...(courseId ? { unitId } : {}) };
+        publish();
+        return true;
+      } catch {
+        return false;
+      }
+    },
     async protocolRead() {
       if (!alive || !view.room) throw new Error("No active learning room");
       const ticket = generation;

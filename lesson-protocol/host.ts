@@ -28,6 +28,7 @@ export interface HostActions {
   progress(goalId: string, fraction: number): void;
   busy(value: boolean): void;
   current(): boolean;
+  display?(requested: boolean): Promise<JsonObject>;
 }
 
 /** No frame-supplied URL, RPC, receipt or XP is an authority. */
@@ -110,9 +111,45 @@ export class LessonHost {
     this.options.context.disabled = disabled;
     if (this.init && this.current()) this.send("host.context", "event", { locale, disabled });
   }
+  surface(value: JsonObject) {
+    if ((value.revision as number) <= (this.options.context.surface.revision as number)) return;
+    this.options.context.surface = cloneJson(value);
+    if (this.init) this.init.surface = cloneJson(value);
+    if (this.init && this.current()) this.send("host.surface", "event", value);
+  }
+  /** Host controls use the same flush/save/navigation contract as frame requests. */
+  private navigating = false;
+  async navigate(
+    direction: "next" | "previous" | "skip" | "close",
+    requestId?: string
+  ): Promise<boolean> {
+    if (
+      !this.current() ||
+      this.navigating ||
+      (this.options.context.disabled && direction !== "close") ||
+      (this.uncertain && this.uncertain !== requestId)
+    )
+      return false;
+    this.navigating = true;
+    try {
+      if (!(await this.prepareNavigation())) return false;
+      const accepted = await this.options.actions.navigate(direction);
+      if (!accepted && this.current()) await this.visibility(false);
+      return accepted;
+    } catch (error) {
+      if (this.current()) await this.visibility(false);
+      throw error;
+    } finally {
+      this.navigating = false;
+    }
+  }
   private transition(phase: "running" | "paused", reason: string): Promise<boolean> {
     if (!this.current() || this.lifecycle)
       return Promise.reject(new ProtocolError("locked", "Lifecycle already changing."));
+    if (phase === "paused") {
+      this.pointers.clear();
+      this.gestureEpoch = undefined;
+    }
     return new Promise((resolve, reject) => {
       const id = this.send("host.lifecycle", "request", { phase, reason })!;
       const timer = this.clock.setTimeout(() => {
@@ -248,6 +285,36 @@ export class LessonHost {
       ? operations[message.type]
       : undefined;
     if (message.kind === "event") {
+      if (message.type === "navigation.pointer") {
+        if (this.phase !== "running" || this.lifecycle?.phase === "paused") return;
+        const id = message.payload.pointerId as number;
+        if (message.payload.phase === "begin") {
+          this.gestureEpoch = undefined;
+          if (this.pointers.size >= 16)
+            throw new ProtocolError("rate_limited", "Too many pointers.");
+          this.pointers.set(id, {
+            owner: message.payload.owner as string,
+            epoch: message.payload.epoch as number,
+            solo: this.pointers.size === 0,
+          });
+          if (this.pointers.size > 1)
+            for (const pointer of this.pointers.values()) pointer.solo = false;
+        } else {
+          const pointer = this.pointers.get(id);
+          this.pointers.delete(id);
+          if (
+            message.payload.phase === "end" &&
+            pointer?.solo &&
+            pointer.owner === "navigation" &&
+            pointer.owner === message.payload.owner &&
+            pointer.epoch === message.payload.epoch &&
+            pointer.epoch === this.policyEpoch
+          )
+            this.gestureEpoch = pointer.epoch;
+          else this.gestureEpoch = undefined;
+        }
+        return;
+      }
       if (message.type === "lesson.error") {
         this.fail();
         return;
@@ -285,8 +352,6 @@ export class LessonHost {
       if (!record.promise) {
         const bound = record;
         const execute = async () => {
-          if (message.type === "navigation.request" && !(await this.prepareNavigation()))
-            return { accepted: false };
           return run();
         };
         const run = async () => {
@@ -298,6 +363,7 @@ export class LessonHost {
             "state.reset",
             "completion.request",
             "navigation.request",
+            "navigation.gesture",
           ].includes(message.type);
           if (mutating && this.uncertain && this.uncertain !== message.id)
             throw new ProtocolError("locked", "Retry the unconfirmed operation first.");
@@ -314,13 +380,13 @@ export class LessonHost {
           bound.result = cloneJson(result);
           return result;
         };
-        const previous =
-          message.type === "navigation.request"
-            ? this.navigationTail.catch(() => {}).then(() => this.tail)
-            : this.tail;
+        const previous = ["navigation.request", "navigation.gesture"].includes(message.type)
+          ? this.navigationTail.catch(() => {}).then(() => this.tail)
+          : this.tail;
         bound.promise = previous.catch(() => {}).then(execute);
         // Lifecycle preparation may issue a final state.save; it must not queue behind navigation.
-        if (message.type === "navigation.request") this.navigationTail = bound.promise;
+        if (["navigation.request", "navigation.gesture"].includes(message.type))
+          this.navigationTail = bound.promise;
         else this.tail = bound.promise;
       }
       const promise = record.promise!;
@@ -362,8 +428,15 @@ export class LessonHost {
     };
     if (type === "state.read") return adopt(await this.options.actions.read());
     if (
-      ["state.save", "state.reset", "completion.request", "navigation.request"].includes(type) &&
-      this.options.context.disabled
+      [
+        "state.save",
+        "state.reset",
+        "completion.request",
+        "navigation.request",
+        "navigation.gesture",
+      ].includes(type) &&
+      this.options.context.disabled &&
+      !(type === "navigation.request" && p.direction === "close")
     )
       throw new ProtocolError("locked", "Activity locked.");
     if (type === "state.save") {
@@ -410,12 +483,41 @@ export class LessonHost {
       return this.options.actions.complete(goals, p.stateRevision as number, operationId);
     }
     if (type === "navigation.request")
-      return { accepted: await this.options.actions.navigate(p.direction as string) };
-    if (type === "navigation.policy")
-      return { epoch: ++this.policyEpoch, swipe: { forward: false, back: false } };
-    if (type === "navigation.gesture") return { accepted: false }; // Gesture arbitration is J3.
+      return {
+        accepted: await this.navigate(
+          p.direction as "next" | "previous" | "skip" | "close",
+          message.id
+        ),
+      };
+    if (type === "navigation.policy") {
+      this.swipe = cloneJson(p.swipe as { forward: boolean; back: boolean });
+      this.gestureEpoch = undefined;
+      return { epoch: ++this.policyEpoch, swipe: this.swipe };
+    }
+    if (type === "navigation.gesture") {
+      const released = this.gestureEpoch === this.policyEpoch && p.epoch === this.policyEpoch;
+      this.gestureEpoch = undefined;
+      const distance = p.distanceCss as number,
+        cross = p.crossDistanceCss as number;
+      const direction = p.direction as "next" | "previous";
+      if (
+        !released ||
+        this.pointers.size ||
+        !this.swipe[direction === "next" ? "forward" : "back"] ||
+        Math.abs(distance) < 64 ||
+        Math.abs(distance) < 1.5 * Math.abs(cross) ||
+        (direction === "next" ? distance >= 0 : distance <= 0)
+      )
+        return { accepted: false };
+      return { accepted: await this.navigate(direction, message.id) };
+    }
     if (type === "display.fullscreen")
-      return { mode: "page", needsHostGesture: p.requested === true };
+      return (
+        this.options.actions.display?.(p.requested === true) ?? {
+          mode: "page",
+          needsHostGesture: false,
+        }
+      );
     if (type === "audio.preference") return { enabled: false, userActivationRequired: true };
     if (type === "request.cancel") return { cancelled: false };
     throw new ProtocolError(
@@ -424,6 +526,9 @@ export class LessonHost {
     );
   }
   private policyEpoch = 0;
+  private swipe = { forward: false, back: false };
+  private pointers = new Map<number, { owner: string; epoch: number; solo: boolean }>();
+  private gestureEpoch?: number;
   private replyError(message: Envelope, error: unknown) {
     const e =
       error instanceof ProtocolError
@@ -454,6 +559,8 @@ export class LessonHost {
     this.phaseTo("disposed");
   }
   private close() {
+    this.pointers.clear();
+    this.gestureEpoch = undefined;
     this.markOpened(false);
     this.clock.clearTimeout(this.timer);
     this.unsubscribe?.();
