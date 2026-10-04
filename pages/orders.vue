@@ -99,6 +99,8 @@ async function refresh() {
     const result = await GET("/shop/purchases");
     if (generation === current && user.value?.id === owner) {
       orders.value = result.filter((order: any) => order.offer.user_id === owner);
+      for (const order of orders.value) await cleanupPurchaseRecovery(order);
+      if (generation !== current || user.value?.id !== owner) return;
       error.value = false;
     }
   } catch {

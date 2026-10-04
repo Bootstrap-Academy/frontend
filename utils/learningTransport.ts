@@ -10,7 +10,9 @@ export interface LearningSessionSnapshot {
 
 function expired(token: string) {
   try {
-    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    const segment = token.split(".")[1];
+    if (!segment) return false;
+    const payload = JSON.parse(atob(segment.replace(/-/g, "+").replace(/_/g, "/")));
     return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now() + 60000;
   } catch {
     return false;
@@ -146,6 +148,17 @@ export function createLearningRecovery(
       if (!user) return null;
       try {
         const stored = JSON.parse(storage.getItem(key(user)) || "null");
+        const state = stored?.state;
+        if (
+          stored?.user === user &&
+          state?.dirty === false &&
+          !state.pendingSave &&
+          !state.pendingComplete &&
+          !state.pendingReviewStart
+        ) {
+          storage.removeItem(key(user));
+          return null;
+        }
         return stored?.user === user ? stored.state : null;
       } catch {
         return null;

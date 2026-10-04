@@ -29,6 +29,23 @@ export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION
   return `bootstrap-academy:update-notice:${version}:${subject}`;
 }
 
+/** The dismissal has no purpose after its notice's display window ends.
+ * Only this known version is removed; an older open tab must not erase a newer notice. */
+export function clearExpiredUpdateNotices(
+  storage: Pick<Storage, "length" | "key" | "removeItem">,
+  window = UPDATE_NOTICE_WINDOW,
+  now = Date.now()
+) {
+  if (!Number.isFinite(now) || now < window.expiresAt) return;
+  const prefix = `bootstrap-academy:update-notice:${window.version}:`;
+  const keys: string[] = [];
+  for (let i = 0; i < storage.length; i++) {
+    const key = storage.key(i);
+    if (key?.startsWith(prefix)) keys.push(key);
+  }
+  for (const key of keys) storage.removeItem(key);
+}
+
 export interface UpdateNoticeView {
   visible: boolean;
   revision: number;
@@ -38,7 +55,7 @@ export interface UpdateNoticeView {
 /** This marker records an explicit local dismissal, never consent or acceptance. */
 export function createUpdateNotice(options: {
   dismissed: Set<string>;
-  storage: () => Pick<Storage, "getItem" | "setItem">;
+  storage: () => Pick<Storage, "getItem" | "setItem" | "length" | "key" | "removeItem">;
   changed: (view: UpdateNoticeView) => void;
   window?: UpdateNoticeWindow;
   now?: () => number;
@@ -57,6 +74,11 @@ export function createUpdateNotice(options: {
   }
 
   function readDismissal() {
+    try {
+      clearExpiredUpdateNotices(options.storage(), window, now());
+    } catch {
+      /* Best-effort cleanup if storage is blocked. */
+    }
     if (subject !== null && active()) {
       try {
         if (options.storage().getItem(key(subject)) === "1") dismissed.add(key(subject));

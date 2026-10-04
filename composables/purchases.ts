@@ -72,6 +72,30 @@ export function finishPurchaseRecovery(offer: PurchaseOffer, status: any) {
   const key = recoveryKey(owner, scope(offer));
   if (readRecovery(owner, scope(offer))?.orderId === offer.id) localStorage.removeItem(key);
 }
+/** The orders page already reads authoritative states. Reconcile all returned
+ * orders without a new request, and never use an age alone to discard a payment. */
+export async function cleanupPurchaseRecovery(status: any) {
+  const offer: PurchaseOffer = status?.offer;
+  const owner = useUser().value?.id;
+  if (!owner || offer?.user_id !== owner || !offer?.id || !offer?.product?.kind) return;
+  const terminal = ["fulfilled", "failed"].includes(status.state);
+  const expired =
+    status.state === "offered" &&
+    Number.isFinite(Date.parse(offer.expires_at)) &&
+    Date.parse(offer.expires_at) <= Date.now();
+  if (!terminal && !expired) return;
+  const key = recoveryKey(owner, scope(offer));
+  const clean = () => {
+    if (useUser().value?.id !== owner) return;
+    if (readRecovery(owner, scope(offer))?.orderId === offer.id) localStorage.removeItem(key);
+  };
+  try {
+    if (navigator.locks) await navigator.locks.request(key, clean);
+    else clean();
+  } catch {
+    /* Unreadable/unavailable recovery stays protected. */
+  }
+}
 /** The PayPal composable has durably saved its original provider identity. */
 export function handoffPurchaseRecovery(offer: PurchaseOffer) {
   const owner = useUser().value?.id;

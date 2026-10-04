@@ -129,6 +129,7 @@ export function createLearningRooms(options: {
           view.saving = false;
           savePromise = null;
           publish();
+          options.checkpoint?.();
         }
       }
     })();
@@ -311,7 +312,8 @@ export function createLearningRooms(options: {
           publish();
           return await startReview();
         }
-        if (!["completed", "skipped"].includes(response.progress.status)) {
+        const sameReview = (recovery.reviewId || null) === (response.progress.review_id || null);
+        if (!sameReview || !["completed", "skipped"].includes(response.progress.status)) {
           view.room = {
             ...response,
             progress: {
@@ -334,6 +336,9 @@ export function createLearningRooms(options: {
         view.error = "";
         view.conflict = (recovery.reviewId || null) !== (response.progress.review_id || null);
         publish();
+        // A state save is idempotent under its original request ID. Resolve a lost
+        // response on reentry; a failed retry keeps the exact body and newer edits.
+        if (pendingSave && !view.conflict) await save();
         return true;
       } catch {
         if (current(ticket)) {
@@ -497,6 +502,7 @@ export function createLearningRooms(options: {
           completionRequested = false;
           view.completing = false;
           publish();
+          options.checkpoint?.();
         }
       }
     },
