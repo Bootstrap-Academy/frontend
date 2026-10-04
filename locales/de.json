@@ -913,6 +913,7 @@
     "DeleteAccount": "Ja, Konto löschen",
     "DownloadMyData": "Meine Daten herunterladen",
     "RemoveLink": "Entfernen",
+    "RemoveTag": "{tag} entfernen",
     "LinkAccount": "{provider} verknüpfen",
     "LoginWithProvider": "Mit {provider} anmelden",
     "AcceptTermsAndConditions": "AGB akzeptieren",
@@ -1850,6 +1851,8 @@
     "Unconfirmed": "Der Eingang konnte noch nicht bestätigt werden. Prüfe den Status erneut.",
     "Check": "Status prüfen",
     "Submit": "Meldung senden",
+    "Start": "Aufgabe melden",
+    "Reason": "Was stimmt nicht?",
     "Open": "Meine Meldung ansehen"
   },
   "CharacterDashboard": {

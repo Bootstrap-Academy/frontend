@@ -1,6 +1,6 @@
-// Keyboard, label and contrast regression for the toggles, the sort select, chips and the navbar
-// heart counter on the leaderboard, premium page, course catalogue, profile editing and dev
-// palette, at 390 and 1280 px in DE and EN. Serve a local build (`bash build.sh`, SPA fallback to 200.html), then:
+// Keyboard, label and contrast regression for the toggles, the sort select, chips, the navbar
+// heart counter, tag removal and the report dialog on the leaderboard, premium page, course
+// catalogue, profile editing, a quiz and the dev palette, at 390 and 1280 px in DE and EN. Serve a local build (`bash build.sh`, SPA fallback to 200.html), then:
 //   A11Y_APP=http://127.0.0.1:58893 AXE_SOURCE=axe.min.js PLAYWRIGHT_MODULE=… node tests/a11y-controls.browser.mjs
 // All API calls are answered by synthetic fixtures; writes and other hosts are blocked.
 import assert from "node:assert/strict";
@@ -40,6 +40,18 @@ const course = (id, title, extra) => ({
   sections: [{ lectures: [{ id: `${id}-lecture` }] }],
   ...extra,
 });
+const quiz = {
+  id: "mc-1",
+  task_id: "quiz-task",
+  question: "Local quiz question",
+  answers: ["First answer", "Second answer"],
+  single_choice: true,
+  creator: "someone-else",
+  solved: false,
+  rated: false,
+  xp: 10,
+  coins: 0,
+};
 const courses = [
   course("free-1", "Free course", { price: 0, completed: false }),
   course("free-2", "Second free course", { price: 0, completed: false }),
@@ -66,6 +78,8 @@ function fixture(url) {
   if (path === "/challenges/categories/category-1/challenges")
     return [{ id: "challenge-1", description: "Local challenge" }];
   if (path === "/skills/courses") return courses;
+  if (path === "/challenges/tasks/quiz-task/multiple_choice") return [quiz];
+  if (path === "/challenges/tasks/quiz-task/multiple_choice/mc-1") return quiz;
   return null;
 }
 
@@ -76,6 +90,14 @@ const settled = (page) =>
       .getAnimations()
       .every((a) => !(a instanceof CSSTransition) || a.playState !== "running")
   );
+
+// Dialogs fade in; colors are only meaningful once every ancestor is fully opaque.
+const shown = (page, selector) =>
+  page.waitForFunction((selector) => {
+    for (let e = document.querySelector(selector); e; e = e.parentElement)
+      if (getComputedStyle(e).opacity !== "1") return false;
+    return document.getAnimations().every((a) => a.playState !== "running");
+  }, selector);
 
 async function audit(page, axe, scope) {
   await settled(page);
@@ -131,6 +153,7 @@ async function focusRing(page) {
       tag: e.tagName,
       focusVisible: e.matches(":focus-visible"),
       outline: `${style.outlineStyle} ${style.outlineWidth} ${style.outlineColor}`,
+      color: style.color,
     };
   });
 }
@@ -264,12 +287,59 @@ export async function catalogue(page, t) {
   return { layout, keyboardSort: true, chips };
 }
 
-export async function profileEdit(page) {
+const focused = (locator) => locator.evaluate((e) => e === document.activeElement);
+
+export async function profileEdit(page, t) {
   await page.goto("/profile/edit", { waitUntil: "networkidle" });
   await page.getByText("python", { exact: true }).waitFor();
   const chips = await chipContrast(page, "[class*='chip-color-']");
   assert.ok(chips.length >= user.tags.length);
-  return { chips };
+  // Two tags removed with Enter and Space; focus moves on to the next tag's remove button.
+  const remove = (tag) =>
+    page.getByRole("button", { name: t("Buttons.RemoveTag").replace("{tag}", tag), exact: true });
+  await tabTo(page, remove("python"));
+  const ring = await focusRing(page);
+  assert.equal(ring.focusVisible, true);
+  assert.match(ring.outline, /^solid 2px /);
+  assert.equal(ring.outline.replace(/^solid 2px /, ""), ring.color, "ring in the chip text color");
+  await page.keyboard.press("Enter");
+  await page.getByText("python", { exact: true }).waitFor({ state: "detached" });
+  assert.equal(await focused(remove("vue")), true);
+  await page.keyboard.press("Space");
+  await page.getByText("vue", { exact: true }).waitFor({ state: "detached" });
+  assert.equal(await focused(remove("rust")), true);
+  return { chips, ring, enter: true, space: true, focusFollows: true };
+}
+
+// The report flag and the reasons inside the dialog work with the keyboard.
+export async function report(page, t, axe) {
+  await page.goto("/quizzes/solve-quiz-task?quizzesFrom=quiz", { waitUntil: "networkidle" });
+  const flag = page.getByRole("button", { name: t("ReportCopy.Start"), exact: true });
+  await tabTo(page, flag);
+  visibleRing(await focusRing(page));
+  await page.keyboard.press("Enter");
+  const group = page.getByRole("group", { name: t("ReportCopy.Reason"), exact: true });
+  const reason = (key) =>
+    group.getByRole("button", { name: new RegExp(`^${t(`Headings.${key}`)}$`, "i") });
+  await reason("Wrong").waitFor();
+  await shown(page, "[role=dialog] [role=group]");
+  await tabTo(page, reason("Wrong"));
+  const ring = await focusRing(page);
+  visibleRing(ring);
+  assert.equal(await pressed(reason("Wrong")), "false");
+  await page.keyboard.press("Space");
+  assert.equal(await pressed(reason("Wrong")), "true");
+  await page.keyboard.press("Tab");
+  assert.equal(await focused(reason("UnrelatedSkill")), true);
+  await page.keyboard.press("Enter");
+  assert.equal(await pressed(reason("UnrelatedSkill")), "true");
+  assert.equal(await pressed(reason("Wrong")), "false");
+  await shown(page, "[role=dialog] [role=group]");
+  const dialog = (await audit(page, axe, "[role=dialog]")).filter((v) =>
+    [...RULES, "link-name", "target-size"].includes(v.id)
+  );
+  assert.deepEqual(dialog, [], JSON.stringify(dialog));
+  return { ring, space: true, tab: true, enter: true, dialog };
 }
 
 export async function palette(page) {
@@ -299,7 +369,7 @@ async function main() {
     args: ["--no-sandbox"],
   });
   const token = `header.${Buffer.from(JSON.stringify({ sub: user.id, exp: Math.floor(Date.now() / 1000) + 7200 })).toString("base64url")}.synthetic`;
-  const pages = { leaderboard, hearts, subscription, catalogue, profileEdit, palette };
+  const pages = { leaderboard, hearts, subscription, catalogue, profileEdit, report, palette };
   const result = { app, chromium: browser.version(), cases: [], failures: [], unknownApi: [] };
   try {
     for (const width of [390, 1280]) {

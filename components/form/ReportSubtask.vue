@@ -11,17 +11,25 @@
     <p v-if="pending && !receipt" role="status">
       {{ t("ReportCopy.Unconfirmed") }}<br />{{ pending.comment }}
     </p>
-    <article v-if="!receipt && !pending" class="flex flex-wrap justify-evenly gap-8">
-      <Chip
+    <article
+      v-if="!receipt && !pending"
+      role="group"
+      :aria-label="t('ReportCopy.Reason')"
+      class="flex flex-wrap justify-evenly gap-8"
+    >
+      <button
         v-for="(chip, i) of reportValueArray"
         :key="i"
-        class="w-fit cursor-pointer"
-        md
-        @click="reason = chip.value"
+        type="button"
+        :aria-pressed="reason == chip.value"
+        class="rounded-[100px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         :class="reason == chip.value ? 'scale-[120%]' : ''"
+        @click="reason = chip.value"
       >
-        {{ t(`Headings.${chip.key}`) }}
-      </Chip>
+        <Chip class="w-fit" md>
+          {{ t(`Headings.${chip.key}`) }}
+        </Chip>
+      </button>
     </article>
     <article class="mt-12 flex flex-wrap justify-end gap-4">
       <InputBtn @click="closeReportDialog()" secondary>

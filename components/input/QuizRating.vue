@@ -32,10 +32,14 @@
           👎
         </button>
       </div>
-      <FlagIcon
-        class="h-5 w-5 cursor-pointer text-error hover:scale-110"
+      <button
+        type="button"
+        :aria-label="t('ReportCopy.Start')"
+        class="-m-0.5 rounded p-0.5 text-error hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         @click="openReportDialog()"
-      />
+      >
+        <FlagIcon class="h-5 w-5" aria-hidden="true" />
+      </button>
     </article>
     <DialogSlot
       v-if="dialogReportTask"

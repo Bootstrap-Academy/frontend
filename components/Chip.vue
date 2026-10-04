@@ -1,6 +1,6 @@
 <template>
   <div :class="classes" @click.self="onclick">
-    <component v-if="icon" :is="icon" class="icon cursor-pointer" @click="onclickIcon"></component>
+    <component v-if="icon" :is="icon" class="icon" aria-hidden="true"></component>
     <slot></slot>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default defineComponent({
     iconRight: { type: Boolean, default: false },
     color: { type: String, default: "" },
   },
-  emits: ["click", "iconClick"],
+  emits: ["click"],
   setup(props, { emit }) {
     function onclick() {
       emit("click", true);
@@ -56,10 +56,7 @@ export default defineComponent({
       ];
     });
 
-    function onclickIcon() {
-      emit("iconClick", true);
-    }
-    return { classes, onclick, onclickIcon };
+    return { classes, onclick };
   },
 });
 </script>
