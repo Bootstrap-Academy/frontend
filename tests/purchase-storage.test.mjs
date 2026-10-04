@@ -43,10 +43,43 @@ test("orders read cleans only confirmed final orders or an unused expired offer,
       "useUser",
       "localStorage",
       "navigator",
+      "GET",
       purchases + "\nreturn {cleanupPurchaseRecovery};"
-    )(() => f.user, f.localStorage, { locks: { request: (k, fn) => fn() } });
+    )(
+      () => f.user,
+      f.localStorage,
+      { locks: { request: (k, fn) => fn() } },
+      async () => order(state)
+    );
     await api.cleanupPurchaseRecovery(order(state));
     assert.equal(f.map.has(key), ["awaiting_payment", "pending", "review"].includes(state), state);
+  }
+});
+test("a stale expired offer cannot erase a newly accepted payment or an uncoordinated checkout", async () => {
+  for (const scenario of ["accepted", "status-lost", "no-lock"]) {
+    const f = fixture();
+    const original = JSON.stringify({ owner, orderId: id });
+    f.map.set(key, original);
+    let reads = 0;
+    const api = new Function(
+      "useUser",
+      "localStorage",
+      "navigator",
+      "GET",
+      purchases + "\nreturn {cleanupPurchaseRecovery};"
+    )(
+      () => f.user,
+      f.localStorage,
+      scenario === "no-lock" ? {} : { locks: { request: (k, fn) => fn() } },
+      async () => {
+        reads++;
+        if (scenario === "status-lost") throw Error("lost status");
+        return order("awaiting_payment");
+      }
+    );
+    await api.cleanupPurchaseRecovery(order("offered"));
+    assert.equal(f.map.get(key), original);
+    assert.equal(reads, scenario === "no-lock" ? 0 : 1);
   }
 });
 test("late cleanup, an owner change and malformed saved data cannot erase another order", async () => {

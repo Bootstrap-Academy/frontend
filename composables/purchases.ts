@@ -72,8 +72,8 @@ export function finishPurchaseRecovery(offer: PurchaseOffer, status: any) {
   const key = recoveryKey(owner, scope(offer));
   if (readRecovery(owner, scope(offer))?.orderId === offer.id) localStorage.removeItem(key);
 }
-/** The orders page already reads authoritative states. Reconcile all returned
- * orders without a new request, and never use an age alone to discard a payment. */
+/** Final states are stable. An expired offered row may predate another tab's
+ * acceptance, so reread it under the checkout lock before removing its identity. */
 export async function cleanupPurchaseRecovery(status: any) {
   const offer: PurchaseOffer = status?.offer;
   const owner = useUser().value?.id;
@@ -85,7 +85,24 @@ export async function cleanupPurchaseRecovery(status: any) {
     Date.parse(offer.expires_at) <= Date.now();
   if (!terminal && !expired) return;
   const key = recoveryKey(owner, scope(offer));
-  const clean = () => {
+  const clean = async () => {
+    if (useUser().value?.id !== owner) return;
+    if (readRecovery(owner, scope(offer))?.orderId !== offer.id) return;
+    if (expired) {
+      // Without cross-tab coordination, preserve a possibly in-flight acceptance.
+      if (!navigator.locks) return;
+      const fresh = await recover(owner, scope(offer));
+      if (
+        fresh?.offer?.id !== offer.id ||
+        (!["fulfilled", "failed"].includes(fresh.state) &&
+          !(
+            fresh.state === "offered" &&
+            Number.isFinite(Date.parse(fresh.offer.expires_at)) &&
+            Date.parse(fresh.offer.expires_at) <= Date.now()
+          ))
+      )
+        return;
+    }
     if (useUser().value?.id !== owner) return;
     if (readRecovery(owner, scope(offer))?.orderId === offer.id) localStorage.removeItem(key);
   };
