@@ -89,11 +89,12 @@ async function until(expression, milliseconds = 15000) {
   }
   throw new Error("Timed out: " + expression + "; exceptions: " + exceptions.join("\n"));
 }
+// Scrolls instantly: the app scrolls smoothly, and the launcher can sit below the fold on phones.
 async function click(selector) {
   const rect = await evaluate(
     "(()=>{const e=document.querySelector(" +
       JSON.stringify(selector) +
-      ");e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()"
+      ");e.scrollIntoView({block:'center',behavior:'instant'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()"
   );
   await command("Input.dispatchMouseEvent", {
     type: "mousePressed",
@@ -165,13 +166,14 @@ async function footerControls() {
   return result;
 }
 // Content a page scrolls into view (such as a lesson's "not quite right yet" line) or the
-// browser brings into view must stop above the floating launcher, not under it.
+// browser brings into view must never end up under the launcher. On phones the launcher sits
+// in the page flow above the footer, so it is measured again after every scroll.
 async function revealedContentClear() {
   const result = await evaluate(`(async () => {
     const frames = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     await document.fonts.ready;
     await frames();
-    const launcher = document.querySelector('.feedback-open').getBoundingClientRect();
+    const open = document.querySelector('.feedback-open');
     const targets = Array.from(document.querySelectorAll('main p, footer a')).filter(element => {
       const rect = element.getBoundingClientRect();
       return rect.top + scrollY > innerHeight && rect.height > 0 && rect.height < innerHeight / 2;
@@ -182,15 +184,25 @@ async function revealedContentClear() {
       target.scrollIntoView({ block: 'nearest', behavior: 'instant' });
       await frames();
       const rect = target.getBoundingClientRect();
+      const launcher = open.getBoundingClientRect();
       if (rect.left < launcher.right && rect.right > launcher.left &&
           rect.top < launcher.bottom && rect.bottom > launcher.top)
         covered.push(target.textContent.trim().slice(0, 40));
     }
     window.scrollTo({ top: 0, behavior: 'instant' });
-    return { width: innerWidth, targets: targets.length, covered };
+    const footer = document.querySelector('footer');
+    return {
+      width: innerWidth,
+      position: getComputedStyle(open).position,
+      beforeFooter: !!(open.compareDocumentPosition(footer) & Node.DOCUMENT_POSITION_FOLLOWING),
+      targets: targets.length,
+      covered,
+    };
   })()`);
   assert.ok(result.targets > 0, "the page has content below the fold");
-  assert.deepEqual(result.covered, [], "revealed content stops above the launcher");
+  assert.deepEqual(result.covered, [], "revealed content never ends up under the launcher");
+  assert.equal(result.position, "static", "on phones the launcher is part of the page flow");
+  assert.equal(result.beforeFooter, true);
   return result;
 }
 try {
