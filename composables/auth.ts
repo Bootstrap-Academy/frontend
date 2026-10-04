@@ -1,6 +1,7 @@
 import { GET, POST } from "./fetch";
 import { revokeSession, withSessionRefreshLock } from "~/utils/sessionRefresh";
 import { clearLearningStorage, prepareLearningLogout } from "~/utils/learningStorage";
+import { broadcastLearningLogout } from "~/utils/learningLogoutSync";
 
 export const useOauthProviders = () => useState("oauthProviders", () => []);
 
@@ -64,6 +65,7 @@ export async function logout() {
     } catch {
       // Browser cleanup must never prevent revoking this session on the server.
     }
+    broadcastLearningLogout(expected);
 
     // Coins Composable
     const coins = useCoins();
