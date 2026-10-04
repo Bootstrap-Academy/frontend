@@ -3,6 +3,10 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import ts from "typescript";
+import { compileScript, parse } from "@vue/compiler-sfc";
+import * as Vue from "vue";
+import { renderToString } from "vue/server-renderer";
+import { createI18n } from "vue-i18n";
 
 async function load(file, bindings, names) {
   const source = (await readFile(new URL(file, import.meta.url), "utf8"))
@@ -442,5 +446,34 @@ test("late old-owner pages, missing active metadata and 401/503 cannot retain ca
     await next;
     assert.deepEqual(f.state.entries, []);
     assert.equal(f.state.offset, 0);
+  }
+});
+
+test("the leaderboard status names what reading a leaderboard needs, not sharing a profile", async () => {
+  const file = new URL("../components/leaderboard/Status.vue", import.meta.url);
+  const { descriptor } = parse(await readFile(file, "utf8"));
+  const code = ts
+    .transpileModule(compileScript(descriptor, { id: "status", inlineTemplate: true }).content, {
+      compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+    })
+    .outputText.replace(
+      /from ["'](vue|vue-i18n)["']/g,
+      (_, dep) => `from "${import.meta.resolve(dep)}"`
+    );
+  const Status = (await import(`data:text/javascript,${encodeURIComponent(code)}`)).default;
+  for (const locale of ["de", "en-US"]) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../locales/${locale}.json`, import.meta.url))
+    );
+    const text = messages.ProfilePublication;
+    const render = async (error) => {
+      const app = Vue.createSSRApp({ render: () => Vue.h(Status, { error }) });
+      app.use(createI18n({ legacy: false, locale, messages: { [locale]: messages } }));
+      return (await renderToString(app)).replace(/<[^>]+>/g, "").replace(/<!--.*?-->/g, "");
+    };
+    assert.ok((await render("Verify")).includes(text.RankingVerify));
+    assert.ok(!(await render("Verify")).includes(text.Verify), "no profile sharing hint");
+    assert.ok((await render("SignIn")).includes(text.RankingSignIn));
+    assert.ok((await render("Unavailable")).includes(text.RankingUnavailable));
   }
 });

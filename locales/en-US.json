@@ -1997,6 +1997,8 @@
     "Unavailable": "We could not confirm the current state. Please try again.",
     "CheckAgain": "Check setting",
     "Reload": "Reload",
+    "RankingSignIn": "Sign in again to see the leaderboards.",
+    "RankingVerify": "Verify your email address to see the leaderboards.",
     "RankingUnavailable": "The leaderboard is currently unavailable. Please try again."
   }
 }

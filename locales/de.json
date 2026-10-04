@@ -2000,6 +2000,8 @@
     "Unavailable": "Wir konnten den aktuellen Stand gerade nicht bestätigen. Bitte versuch es noch einmal.",
     "CheckAgain": "Einstellung prüfen",
     "Reload": "Neu laden",
+    "RankingSignIn": "Melde dich wieder an, um die Bestenlisten zu sehen.",
+    "RankingVerify": "Bestätige deine E-Mail-Adresse, um die Bestenlisten zu sehen.",
     "RankingUnavailable": "Die Bestenliste ist gerade nicht verfügbar. Bitte versuch es noch einmal."
   }
 }
