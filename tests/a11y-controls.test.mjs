@@ -227,6 +227,15 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
+test("heart icons are decorative and never an empty, focusable button", async () => {
+  for (const name of ["FullHeart", "HalfHeart"]) {
+    const Heart = await compile(`../components/svg/${name}.vue`, name);
+    const html = await renderToString(Vue.createSSRApp({ render: () => Vue.h(Heart) }));
+    assert.doesNotMatch(html, /<button|tabindex/, name);
+    assert.match(html, /^<\w+[^>]* aria-hidden="true"/, name);
+  }
+});
+
 test("the contrast calculation matches WCAG reference values", () => {
   assert.equal(contrast("#ffffff", "#000000"), 21);
   assert.equal(contrast("#777777", "#777777"), 1);

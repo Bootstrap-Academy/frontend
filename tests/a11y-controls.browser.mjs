@@ -1,6 +1,6 @@
-// Keyboard, label and contrast regression for the toggles, the sort select and chips on the
-// leaderboard, premium page, course catalogue, profile editing and dev palette, at 390 and
-// 1280 px in DE and EN. Serve a local build (`bash build.sh`, SPA fallback to 200.html), then:
+// Keyboard, label and contrast regression for the toggles, the sort select, chips and the navbar
+// heart counter on the leaderboard, premium page, course catalogue, profile editing and dev
+// palette, at 390 and 1280 px in DE and EN. Serve a local build (`bash build.sh`, SPA fallback to 200.html), then:
 //   A11Y_APP=http://127.0.0.1:58893 AXE_SOURCE=axe.min.js PLAYWRIGHT_MODULE=… node tests/a11y-controls.browser.mjs
 // All API calls are answered by synthetic fixtures; writes and other hosts are blocked.
 import assert from "node:assert/strict";
@@ -135,8 +135,8 @@ async function focusRing(page) {
   });
 }
 
-function visibleRing(ring) {
-  assert.equal(ring.tag, "BUTTON");
+function visibleRing(ring, tag = "BUTTON") {
+  assert.equal(ring.tag, tag);
   assert.equal(ring.focusVisible, true);
   assert.equal(
     ring.outline,
@@ -181,6 +181,25 @@ export async function leaderboard(page, t) {
   const select = page.getByRole("combobox", { name: t("LearningRooms.Language"), exact: true });
   await select.waitFor();
   return { ring, enter: true, shiftTab: true, space: true, languageSelectNamed: true };
+}
+
+// The navbar heart counter is one named link to the hearts page; the drawn hearts are decorative.
+export async function hearts(page, t, axe) {
+  await page.goto("/challenges/leader-board", { waitUntil: "networkidle" });
+  const name = t("Navigation.Hearts").replace("{hearts}", "3").replace("{max}", "3");
+  const link = page.getByRole("link", { name, exact: true });
+  await tabTo(page, link);
+  const ring = await focusRing(page);
+  visibleRing(ring, "A");
+  const inner = await link.evaluate((e) => e.querySelectorAll("a, button, [tabindex]").length);
+  assert.equal(inner, 0, "no focusable element inside the counter");
+  const navbar = (await audit(page, axe, "section.container-fluid")).filter((v) =>
+    [...RULES, "link-name", "target-size"].includes(v.id)
+  );
+  assert.deepEqual(navbar, [], JSON.stringify(navbar));
+  await page.keyboard.press("Enter");
+  await page.waitForURL("**/subscription");
+  return { ring, name, enter: true, navbar };
 }
 
 export async function subscription(page, t) {
@@ -280,7 +299,7 @@ async function main() {
     args: ["--no-sandbox"],
   });
   const token = `header.${Buffer.from(JSON.stringify({ sub: user.id, exp: Math.floor(Date.now() / 1000) + 7200 })).toString("base64url")}.synthetic`;
-  const pages = { leaderboard, subscription, catalogue, profileEdit, palette };
+  const pages = { leaderboard, hearts, subscription, catalogue, profileEdit, palette };
   const result = { app, chromium: browser.version(), cases: [], failures: [], unknownApi: [] };
   try {
     for (const width of [390, 1280]) {
@@ -327,7 +346,7 @@ async function main() {
           page.on("pageerror", (error) => errors.push(error.message));
           const entry = { page: name, width, language };
           try {
-            entry.checks = await run(page, t);
+            entry.checks = await run(page, t, axe);
             // The whole page is recorded; the owned rules are asserted for the page content.
             entry.axe = await audit(page, axe);
             entry.mainAxe = await audit(page, axe, "main");

@@ -4,6 +4,7 @@
     "CloseMenu": "Menü schließen",
     "MainMenu": "Hauptmenü",
     "AccountMenu": "Kontomenü",
+    "Hearts": "{hearts} von {max} Herzen",
     "Footer": "Weitere Seiten",
     "Legal": "Rechtliches",
     "Social": "Bootstrap Academy auf {name}"
