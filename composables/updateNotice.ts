@@ -1,6 +1,6 @@
-export const UPDATE_NOTICE_VERSION = "2026-10-privacy-statistics-1";
+export const UPDATE_NOTICE_VERSION = "2026-10-privacy-r2";
 export const UPDATE_NOTICE_BROWSER = "browser";
-export const UPDATE_NOTICE_LINK = "/docs/privacy#statistiken";
+export const UPDATE_NOTICE_LINK = "/docs/privacy#aenderungen";
 
 export interface UpdateNoticeWindow {
   version: string;
@@ -10,8 +10,8 @@ export interface UpdateNoticeWindow {
 
 export const UPDATE_NOTICE_WINDOW: UpdateNoticeWindow = {
   version: UPDATE_NOTICE_VERSION,
-  startsAt: Date.parse("2026-10-03T00:00:00Z"),
-  expiresAt: Date.parse("2026-11-02T00:00:00Z"),
+  startsAt: Date.parse("2026-10-05T00:00:00Z"),
+  expiresAt: Date.parse("2026-11-04T00:00:00Z"),
 };
 
 export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean): string | null {
@@ -30,7 +30,10 @@ export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION
 }
 
 /** Versions no build shows any more. When a notice is replaced, add its version here. */
-export const RETIRED_UPDATE_NOTICE_VERSIONS: readonly string[] = ["2026-09-update-1"];
+export const RETIRED_UPDATE_NOTICE_VERSIONS: readonly string[] = [
+  "2026-09-update-1",
+  "2026-10-privacy-statistics-1",
+];
 
 /** A dismissal has no purpose once its notice can no longer appear: retired versions
  * always, the current version after its display window. Unknown versions stay, so an

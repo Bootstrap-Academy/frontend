@@ -98,12 +98,15 @@ test("statistics explanation keeps its existing-data limits, legal basis and obj
   const explanation = text(statistics);
   for (const wording of [
     "Wir wollen die Academy für alle besser machen.",
-    "ob neue Funktionen wirklich genutzt werden und welche Lektionen schwerfallen",
+    "ob neue Funktionen wirklich genutzt werden, welche Lektionen schwerfallen",
+    "wie sich die Grenzen beim kostenlosen Lernen auswirken",
     "intern Daten aus, die wir nach diesen Hinweisen ohnehin speichern",
     "nur so weit, wie es dafür nötig ist",
     "Zusätzlich erheben wir nichts.",
-    "nur Summen, aus denen sich keine einzelne Person ablesen lässt",
-    "Für Entscheidungen über einzelne Personen nutzen wir sie nie",
+    "dass sich daraus keine Angaben über einzelne Personen ableiten lassen",
+    "Jede Angabe beruht auf mindestens zehn Personen",
+    "beziehen wir deine Daten in künftige Auswertungen nicht mehr ein",
+    "Für Entscheidungen über einzelne Personen nutzen wir die Ergebnisse nie",
     "Einzeldaten geben wir nicht weiter",
     "Verarbeitung bis zur Anonymisierung",
     "Art. 6 Abs. 1 lit. f DSGVO",
@@ -115,7 +118,63 @@ test("statistics explanation keeps its existing-data limits, legal basis and obj
   }
   assert(statistics.includes('href="#datenschutz-ansprechstelle"'));
   assert(statistics.includes('href="#rechte"'));
-  assert(text(privacy).includes("Fassung: 2026-10-r1"));
+  assert(text(privacy).includes("Fassung: 2026-10-r2"));
+});
+
+test("profile sharing is described as consent with its exact audience, scope and withdrawal", () => {
+  const sharing = privacy.match(/<h3 id="profilfreigabe">([\s\S]*?)<h3>12\.3/)?.[1];
+  assert(sharing, "profile sharing section exists");
+  const explanation = text(sharing);
+  for (const wording of [
+    "Dein Lernstand ist privat.",
+    "Das gilt für neue und bestehende Konten; eine frühere Einstellung zur Bestenliste zählt nicht als Freigabe.",
+    "andere angemeldete Nutzer mit bestätigter E-Mail-Adresse",
+    "Anzeigenamen, den Standard-Avatar, deine Gesamt-XP sowie deine Plätze und Punkte",
+    "Nickname, E-Mail-Adresse, einzelne Skills, Bio, Tags, Lösungen und Projektstände bleiben privat.",
+    "Plätze und Teilnehmerzahlen berücksichtigen nur freigegebene Konten.",
+    "„Wieder privat stellen“",
+    "Art. 6 Abs. 1 lit. a DSGVO",
+    "Art. 6 Abs. 1 lit. c in Verbindung mit Art. 7 Abs. 1 DSGVO",
+    "in deinem Datenexport enthalten und werden mit deinem Konto gelöscht",
+  ]) {
+    assert(explanation.includes(wording), wording);
+  }
+  const notice = text(privacy);
+  assert(!notice.includes("In den Bestenlisten anzeigen"));
+  assert(!notice.includes("Bestenliste (motivierende Lernumgebung)"));
+  assert(!notice.includes("Der Nickname ist für andere angemeldete Nutzer sichtbar"));
+  assert(!explanation.includes("Nutzerkennung"), "public leaderboards carry no account ID");
+  assert(explanation.includes("Für dich freigeben werden wir dein Profil nie"));
+});
+
+test("browser storage section names its categories without promising more than the app does", () => {
+  const storage = privacy.match(/<section id="cookies">([\s\S]*?)<\/section>/)?.[1];
+  assert(storage, "browser storage section exists");
+  const explanation = text(storage);
+  for (const wording of [
+    "Lernen ohne Konto",
+    "bis 30 Tage nach der letzten Nutzung",
+    "Der Rückkehrhinweis liegt 24 Stunden im Session Storage.",
+    "Kündigungen und Widerrufe gelten 24 Stunden",
+    "Fristen prüft die App, wenn du die Seite wieder öffnest.",
+    "Cookies sendet dein Browser von selbst nur an die Weboberfläche",
+    "§ 25 Abs. 2 Nr. 2 TDDDG",
+    "nur die Zieladresse in der App und eine Ablaufzeit",
+    "auch in anderen offenen Tabs dieses Browsers",
+    "Beim Abmelden und nach einer Kontolöschung bleiben die Einträge",
+  ]) {
+    assert(explanation.includes(wording), wording);
+  }
+  assert(!explanation.includes("nicht an unsere Server übertragen"));
+  const reports = text(
+    privacy.match(/<h3>8\.2 Fehlerberichte<\/h3>([\s\S]*?)<\/section>/)?.[1] ?? ""
+  );
+  assert(
+    reports.includes(
+      "Werte aus dem Arbeitsspeicher des Programms nehmen wir in keinen Fehlerbericht auf"
+    )
+  );
+  assert(!/<code>/.test(storage), "categories replace individual storage keys");
 });
 
 test("new acquisition and storage descriptions distinguish preserved history from the current offer", () => {
