@@ -20,39 +20,43 @@
   "devDependencies": {
     "@types/dompurify": "^3.2.0",
     "@types/katex": "^0.16.8",
-    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it": "^14.2.0",
     "@types/node": "22.20.5",
-    "autoprefixer": "^10.5.4",
-    "eslint": "^10.4.1",
+    "autoprefixer": "^10.6.1",
+    "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-vue": "^10.9.2",
+    "eslint-plugin-vue": "^10.11.1",
     "vue-eslint-parser": "^10.4.1",
-    "prettier": "^3.8.4",
+    "prettier": "3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "nuxt": "4.5.2",
-    "postcss": "^8.5.26",
+    "postcss": "^8.5.28",
     "tailwindcss": "^3.4.19",
     "typescript": "^6.0.3",
-    "vue-i18n": "^11.4.10"
+    "vue-i18n": "^11.4.13"
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.7.6",
+    "@floating-ui/dom": "^1.8.0",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@panzoom/panzoom": "^4.6.2",
-    "@typescript-eslint/parser": "^8.60.1",
-    "@vueuse/core": "^14.3.0",
+    "@typescript-eslint/parser": "^8.71.0",
+    "@vueuse/core": "^14.4.0",
     "async-mutex": "^0.5.0",
-    "dompurify": "^3.4.14",
-    "highlight.js": "^11.11.1",
+    "dompurify": "^3.4.16",
+    "highlight.js": "^11.12.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
     "katex": "^0.17.0",
-    "markdown-it": "^14.2.0",
+    "markdown-it": "^14.3.2",
     "monaco-editor": "^0.55.1",
     "nanoid": "^5.1.11",
-    "npm": "^11.16.0",
-    "qrcode.vue": "^3.9.1",
+    "qrcode.vue": "^3.11.0",
     "vuedraggable": "^4.1.0"
+  },
+  "overrides": {
+    "monaco-editor": {
+      "dompurify": "^3.4.16"
+    }
   }
 }
