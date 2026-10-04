@@ -1,4 +1,5 @@
 import { useState } from "#app";
+import { decodeApiError } from "~/utils/apiError";
 
 export const useLoading = () => useState("loading", () => false);
 
@@ -25,7 +26,7 @@ export const useSnackbar = () =>
  */
 export function openSnackbar(
   type: string,
-  heading: string,
+  heading: unknown,
   body: string = "",
   noTimeout?: boolean,
   params: Record<string, any> = {}
@@ -34,7 +35,7 @@ export function openSnackbar(
   snackbar.value = {
     show: true,
     type,
-    heading,
+    heading: typeof heading === "string" ? heading : decodeApiError({ detail: heading }).messageKey,
     body,
     params,
   };

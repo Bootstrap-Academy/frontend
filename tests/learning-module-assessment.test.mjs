@@ -11,7 +11,12 @@ const compile = (source) =>
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
   }).outputText;
 const exerciseUrl = url(
-  compile(await readFile(new URL("../utils/learningExercise.ts", import.meta.url), "utf8"))
+  compile(
+    (await readFile(new URL("../utils/learningExercise.ts", import.meta.url), "utf8")).replaceAll(
+      '"./apiError"',
+      JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href)
+    )
+  )
 );
 const assessmentSource = await readFile(
   new URL("../utils/learningModuleAssessment.ts", import.meta.url),

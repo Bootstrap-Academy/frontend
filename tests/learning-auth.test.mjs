@@ -1,3 +1,4 @@
+import { decodeApiError } from "../utils/apiError.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
@@ -6,6 +7,7 @@ import { Mutex } from "async-mutex";
 import ts from "typescript";
 
 function evaluate(source, bindings, names) {
+  bindings = { decodeApiError, ...bindings };
   const ast = ts.createSourceFile("module.ts", source, ts.ScriptTarget.Latest, true);
   const body = ast.statements
     .filter((node) => !ts.isImportDeclaration(node))

@@ -1,60 +1,14 @@
-import { Matching, MatchingForSections } from "~~/types/matching";
-export const useMyMatchings = () => useState("myMatchings", () => []);
+import type { Matching, MatchingForSections } from "~~/types/matching";
 export const useMatchings = () => useState<Matching[]>("matchings", () => []);
 export const useMatchingsInLecture = () => useState<Matching[]>("matchingsInLecture", () => []);
-export const useMatching = () => useState<Matching>("matching", (): Matching => new Matching());
 export const useMatchingsForLectures = () =>
   useState<MatchingForSections[]>("matchingForLectures", (): MatchingForSections[] => []);
 export const useMatchingsInCourse = () => useState<Matching[]>("matchingsInCourse", () => []);
-
-export async function createMatching(body: any, task_id: any) {
-  try {
-    const response = await POST(`/challenges/tasks/${task_id}/matchings`, body);
-    const user: any = useUser();
-    await getMyMatchingsInTask(task_id, user?.value.id ?? "");
-    return [response, null];
-  } catch (error: any) {
-    console.log("error is", error);
-    let msg = error?.data?.error ?? "";
-    if (msg == "subtask_not_found") {
-      return [null, "Error.QuizOrCodingChallengeNotFound"];
-    } else if (msg == "permission_denied") {
-      return [null, "Error.NotAllowedForRatings"];
-    } else if (msg == "banned") {
-      return [null, "Error.UserIsBanned"];
-    }
-    return [null, error];
-  }
-}
-
-export async function updateMatching(body: any, task_id: any, matching_id: any) {
-  try {
-    const response = await PATCH(`/challenges/tasks/${task_id}/matchings/${matching_id}`, body);
-    console.log("response ", response);
-    return [response, null];
-  } catch (error) {
-    console.log("error is", error);
-    return [null, error];
-  }
-}
 
 export async function getMatching(matching_id: any, task_id: any) {
   try {
     const response = await GET(`/challenges/tasks/${task_id}/matchings/${matching_id}`);
     console.log("response ", response);
-    return [response, null];
-  } catch (error) {
-    console.log("error is", error);
-    return [null, error];
-  }
-}
-
-export async function getMatchingAndSolution(matching_id: any, task_id: any) {
-  try {
-    const response = await GET(`/challenges/tasks/${task_id}/matchings/${matching_id}/solution`);
-    console.log("response ", response);
-    const matching = useMatching();
-    matching.value = response ?? null;
     return [response, null];
   } catch (error) {
     console.log("error is", error);
@@ -91,56 +45,13 @@ export async function getMatchingsInSkill(skillId: any) {
   }
 }
 
-export async function getMyMatchingsInTask(task_id: any, creator: any) {
-  try {
-    const response = await GET(`/challenges/tasks/${task_id}/matchings?creator=${creator}`);
-    const myMatchings = useMyMatchings();
-    myMatchings.value = response;
-
-    return [response, null];
-  } catch (error) {
-    console.log("error is", error);
-    return [null, error];
-  }
-}
-
-export async function deleteMatching(taskId: any, subTaskId: any) {
-  try {
-    const res = await DELETE(`/challenges/tasks/${taskId}/subtasks/${subTaskId}`);
-    const route = useRoute();
-    const containQuizWord = route.fullPath.includes("/quizzes/");
-    const containCreateWord = route.fullPath.includes("/create");
-
-    if (containCreateWord && containQuizWord) {
-      const user = useUser();
-      await getMyMatchingsInTask(taskId, user?.value.id ?? "");
-    } else {
-      await getMatchingsInTask(taskId);
-    }
-    return [res, null];
-  } catch (error) {
-    return [null, error];
-  }
-}
-
 export async function solveMatching(task_id: any, subTask_id: any, body: any) {
   try {
     const res = await POST(`/challenges/tasks/${task_id}/matchings/${subTask_id}/attempts`, body);
-    let success = null;
-    console.log("ress", res);
-    if (!!res.solved) {
-      success = true;
-    } else if (!!!res.solved) {
-      success = false;
-    }
-    return [success, null];
-  } catch (error: any) {
-    if (error?.data?.error == "not_enough_hearts") {
-      return [null, "Error.NotEnoughHeartsForMatching"];
-    } else if (error?.detail == "Error.TooManyAttemptsForQuiz") {
-      return [null, "Error.TooManyAttemptsForQuiz"];
-    }
-    console.log("error", error);
+    if (res?.error || typeof res?.solved !== "boolean")
+      throw { statusCode: 502, data: { error: "invalid_attempt_response" } };
+    return [res.solved, null];
+  } catch (error: unknown) {
     return [null, error];
   }
 }

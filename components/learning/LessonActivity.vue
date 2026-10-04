@@ -157,13 +157,15 @@ const nativeRequest = computed(
       path.startsWith("/challenges/") &&
       !(await lessonStart.start())
     ) {
-      throw {
-        statusCode: lessonStart.limited.value ? 429 : 503,
-        data: {
-          code: lessonStart.limited.value ? "daily_limit_reached" : "lesson_start_unavailable",
-          daily: lessonStart.limited.value,
-        },
-      };
+      throw (
+        lessonStart.failure.value || {
+          statusCode: lessonStart.limited.value ? 429 : 503,
+          data: {
+            code: lessonStart.limited.value ? "daily_limit_reached" : "lesson_start_unavailable",
+            daily: lessonStart.limited.value,
+          },
+        }
+      );
     }
     return send(path, method, body);
   }

@@ -1,3 +1,4 @@
+import { decodeApiError } from "../utils/apiError.ts";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
@@ -5,6 +6,7 @@ import ts from "typescript";
 import * as Vue from "vue";
 
 async function evaluate(file, bindings, exported) {
+  bindings = { decodeApiError, ...bindings };
   const input = (await readFile(new URL(`../${file}`, import.meta.url), "utf8")).replaceAll(
     "import.meta.client",
     "true"
