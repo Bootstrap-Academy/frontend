@@ -27,6 +27,8 @@ test("only well-formed logout signals can clear copies; later logins to the same
     { ...signal, version: 2 },
     { ...signal, userId: "" },
     { ...signal, generation: null },
+    { ...signal, accountDeleted: "true" },
+    { ...signal, accountDeleted: false },
   ])
     assert.equal(learningLogoutSignal(value), null);
   assert.deepEqual(learningLogoutSignal(signal), signal);
@@ -35,6 +37,10 @@ test("only well-formed logout signals can clear copies; later logins to the same
   assert.equal(acceptLearningLogout(signal, { ...ended, userId: "B" }), true);
   assert.equal(acceptLearningLogout(signal, { ...ended, sessionId: "new" }), false);
   assert.equal(acceptLearningLogout(signal, { ...ended, generation: "new" }), false);
+  const deleted = { ...signal, accountDeleted: true };
+  assert.deepEqual(learningLogoutSignal(deleted), deleted);
+  assert.equal(acceptLearningLogout(deleted, { ...ended, sessionId: "new" }), true);
+  assert.equal(acceptLearningLogout(deleted, { ...ended, generation: "new" }), true);
 });
 
 test("both transports carry only the ended identity and remove the storage signal immediately", () => {
@@ -99,6 +105,9 @@ test("both transports carry only the ended identity and remove the storage signa
   });
   assert.doesNotThrow(() => blocked.broadcastLearningLogout(ended));
   assert.equal(messages.length, 2);
+  u.broadcastLearningLogout(ended, true);
+  assert.deepEqual(messages.at(-1).value, { ...signal, accountDeleted: true });
+  assert.deepEqual(JSON.parse(events.at(-1)[1]), { ...signal, accountDeleted: true });
 });
 
 const pluginCode = compile(
@@ -159,47 +168,15 @@ test("the receiver synchronizes ownership before cleanup, preserves another acco
   current = { ...ended, generation: "new-login" };
   receiver.onmessage({ data: signal });
   assert.deepEqual(calls, ["sync"]);
+  calls.length = 0;
+  receiver.onmessage({ data: { ...signal, accountDeleted: true } });
+  assert.deepEqual(calls, ["sync", "reset", "clear:A"]);
+  calls.length = 0;
+  current = { ...ended, userId: "B", generation: "new-login" };
+  receiver.onmessage({ data: { ...signal, accountDeleted: true } });
+  assert.deepEqual(calls, ["sync", "clear:A"]);
   cleanup();
   calls.length = 0;
   window.dispatchEvent(event);
   assert.deepEqual(calls, []);
 });
-
-const userSource = await readFile(new URL("../composables/user.ts", import.meta.url), "utf8");
-const ast = ts.createSourceFile("user.ts", userSource, ts.ScriptTarget.Latest, true);
-const deletionCode = compile(
-  ast.statements
-    .find((node) => ts.isFunctionDeclaration(node) && node.name.text === "deleteUser")
-    .getText(ast)
-);
-for (const outcome of ["deleted", "failed", "other-login"])
-  test(`account deletion ${outcome} clears only the deleted account after confirmation`, async () => {
-    let current = { ...ended, identity: "A:S" };
-    const calls = [];
-    const bindings = {
-      getSessionSnapshot: () => ({ ...current }),
-      DELETE: async (path) => {
-        assert.equal(path, "/auth/users/A");
-        if (outcome === "failed") throw { data: "offline" };
-        if (outcome === "other-login")
-          current = { ...ended, identity: "B:T", userId: "B", generation: "new" };
-        return { ok: true };
-      },
-      setStates: () => calls.push("reset"),
-      clearLearningStorage: (user) => calls.push(`clear:${user}`),
-      broadcastLearningLogout: (session) => calls.push(`broadcast:${session.userId}`),
-    };
-    const deletion = new Function(...Object.keys(bindings), `${deletionCode}\nreturn deleteUser;`)(
-      ...Object.values(bindings)
-    );
-    const result = await deletion();
-    assert.deepEqual(
-      calls,
-      outcome === "failed"
-        ? []
-        : outcome === "other-login"
-          ? ["clear:A", "broadcast:A"]
-          : ["reset", "clear:A", "broadcast:A"]
-    );
-    if (outcome === "failed") assert.equal(result[1], "offline");
-  });

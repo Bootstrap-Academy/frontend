@@ -260,13 +260,12 @@ export async function deleteUser() {
       throw { data: "Invalid User Id" };
     }
 
-    const response = await DELETE(`/auth/users/${user_id}`);
+    const response = await DELETE_ACCOUNT(expected);
 
     const current = getSessionSnapshot();
-    if (current.identity === expected.identity && current.generation === expected.generation)
-      setStates(null);
+    if (current.userId === user_id) setStates(null);
     clearLearningStorage(user_id);
-    broadcastLearningLogout(expected);
+    broadcastLearningLogout(expected, true);
 
     return [response, null];
   } catch (error: any) {

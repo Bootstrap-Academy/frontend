@@ -3,7 +3,7 @@ import type { SessionSnapshot } from "./sessionRefresh";
 export const LEARNING_LOGOUT_SIGNAL = "academy-learning-logout:1";
 export const LEARNING_LOGOUT_CHANNEL = "academy-learning-logout";
 type EndedSession = Pick<SessionSnapshot, "userId" | "sessionId" | "generation">;
-type Signal = EndedSession & { version: 1 };
+type Signal = EndedSession & { version: 1; accountDeleted?: true };
 
 export function learningLogoutSignal(value: unknown): Signal | null {
   const signal = value as Signal | null;
@@ -12,27 +12,30 @@ export function learningLogoutSignal(value: unknown): Signal | null {
     signal.userId.length > 0 &&
     signal.userId.length <= 128 &&
     typeof signal.sessionId === "string" &&
-    typeof signal.generation === "string"
+    typeof signal.generation === "string" &&
+    (signal.accountDeleted === undefined || signal.accountDeleted === true)
     ? signal
     : null;
 }
 
-/** A delayed logout must never discard work from a subsequent login to the same account. */
+/** Logout fences later logins; confirmed account deletion invalidates every target session. */
 export function acceptLearningLogout(signal: Signal, current: EndedSession) {
   return (
+    signal.accountDeleted === true ||
     current.userId !== signal.userId ||
     (current.sessionId === signal.sessionId && current.generation === signal.generation)
   );
 }
 
 /** No credentials or work leave the tab; the fallback signal is removed immediately. */
-export function broadcastLearningLogout(ended: EndedSession) {
+export function broadcastLearningLogout(ended: EndedSession, accountDeleted = false) {
   if (!ended.userId) return;
   const signal: Signal = {
     version: 1,
     userId: ended.userId,
     sessionId: ended.sessionId,
     generation: ended.generation,
+    ...(accountDeleted ? { accountDeleted: true as const } : {}),
   };
   try {
     const channel = new BroadcastChannel(LEARNING_LOGOUT_CHANNEL);

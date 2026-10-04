@@ -30,9 +30,20 @@ export function DELETE(url, body = null) {
   return createApiFetch(url, "DELETE", body);
 }
 
-async function createApiFetch(url, method, body, query) {
+/** A confirmed deletion belongs to its captured account even if the session has changed. */
+export function DELETE_ACCOUNT(expected) {
+  return createApiFetch(
+    `/auth/users/${encodeURIComponent(expected.userId)}`,
+    "DELETE",
+    null,
+    undefined,
+    expected
+  );
+}
+
+async function createApiFetch(url, method, body, query, deletedAccount) {
   const config = useRuntimeConfig().public;
-  const snapshot = getSessionSnapshot();
+  const snapshot = deletedAccount ?? getSessionSnapshot();
   const accessToken = snapshot.accessToken;
 
   const requestOptions = {
@@ -41,6 +52,7 @@ async function createApiFetch(url, method, body, query) {
     body: body,
     query: query,
     _session: snapshot,
+    _deletedAccountId: deletedAccount?.userId,
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -77,8 +89,19 @@ const onRequest = async ({ options }) => {
   options.headers.set("Authorization", `Bearer ${getAccessToken()}`);
 };
 
-const onResponse = async ({ request, options, response }) => {
-  if (options._session && !sameSessionContext(options._session, getSessionSnapshot()))
+const onResponse = async ({ options, response }) => {
+  const confirmedAccountDeletion =
+    response?.ok &&
+    options.method === "DELETE" &&
+    options._deletedAccountId &&
+    options._deletedAccountId === options._session?.userId;
+  // Only the targeted account DELETE may deliver a committed result across a session change.
+  // Dispatch and authentication retries still use the captured session's existing guards.
+  if (
+    !confirmedAccountDeletion &&
+    options._session &&
+    !sameSessionContext(options._session, getSessionSnapshot())
+  )
     throw { statusCode: 401, data: { error: "session_changed" } };
   let status = response?.ok ?? null;
   const config = useRuntimeConfig().public;
