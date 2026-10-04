@@ -245,7 +245,7 @@ test("coding keeps an accepted submission when its follow-up read fails", async 
   assert.equal(result, null);
   assert.equal(decodeApiError(error).kind, "unavailable");
 });
-test("a coding evaluator failure stays pending without another submission or an incorrect verdict", async () => {
+test("an unknown coding verdict is never wrong and never repeats the submission", async () => {
   let view,
     posts = 0;
   const controller = createLearningExercise({
@@ -268,8 +268,9 @@ test("a coding evaluator failure stays pending without another submission or an 
   });
   await controller.load({ type: "coding", task_id: "task", subtask_id: "unit" }, "student");
   await controller.submit({ code: "keep this code", environment: "python" });
-  assert.equal(view.phase, "pending");
-  assert.equal(view.error, "RequestError");
+  // The learner is not stuck behind a result this version cannot read.
+  assert.equal(view.phase, "ready");
+  assert.equal(view.error, "UnknownResult");
   assert.equal(posts, 1);
   assert.equal(view.result, null);
   controller.dispose();

@@ -130,6 +130,7 @@
 
 <script lang="ts" setup>
 import { decodeApiError } from "~/utils/apiError";
+import { codingVerdictKey } from "~/utils/learningExercise";
 import { useI18n } from "vue-i18n";
 import type { PropType } from "vue";
 import type { CodingExampleView } from "~/types/codingChallengeViews";
@@ -159,18 +160,6 @@ const props = defineProps({
 const { t } = useI18n();
 const exampleElements = ref<CodingExampleView[]>([]);
 const exampleDetails = ref<Record<string, boolean>>({});
-
-const verdictLabelMap: Record<string, string> = {
-  COMPILATION_ERROR: "Error.Verdict.COMPILATION_ERROR",
-  INVALID_OUTPUT_FORMAT: "Error.Verdict.INVALID_OUTPUT_FORMAT",
-  MEMORY_LIMIT_EXCEEDED: "Error.Verdict.MEMORY_LIMIT_EXCEEDED",
-  NO_OUTPUT: "Error.Verdict.NO_OUTPUT",
-  OK: "Error.Verdict.OK",
-  PRE_CHECK_FAILED: "Error.Verdict.PRE_CHECK_FAILED",
-  RUNTIME_ERROR: "Error.Verdict.RUNTIME_ERROR",
-  TIME_LIMIT_EXCEEDED: "Error.Verdict.TIME_LIMIT_EXCEEDED",
-  WRONG_ANSWER: "Error.Verdict.WRONG_ANSWER",
-};
 
 function getExampleIndexById(id: any) {
   return exampleElements.value.findIndex((example: any) => example.id == id);
@@ -262,8 +251,7 @@ function verdictIcons(verdict: string | null) {
 function exampleVerdictTitle(example: any) {
   const message = example.message;
   if (message?.title_key) return t(message.title_key);
-  const key = verdictLabelMap[example.verdict as string] ?? "";
-  return key ? t(key) : "";
+  return example.verdict ? t(codingVerdictKey(example.verdict)) : "";
 }
 
 function exampleVerdictBody(example: any) {

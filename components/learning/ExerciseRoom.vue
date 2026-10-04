@@ -126,7 +126,15 @@
           </details>
         </div>
         <p v-if="view.phase === 'pending'" role="status">
-          {{ t(view.result ? "LearningRooms.BalanceUpdating" : "LearningRooms.Running") }}
+          {{
+            t(
+              view.result
+                ? "LearningRooms.BalanceUpdating"
+                : view.slow
+                  ? "LearningRooms.StillChecking"
+                  : "LearningRooms.Running"
+            )
+          }}
         </p>
         <p v-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
         <button
@@ -191,7 +199,7 @@ import type {
   ExerciseView,
   LearningRequest,
 } from "~/types/learningRooms";
-import { createLearningExercise } from "~/utils/learningExercise";
+import { codingVerdictKey, createLearningExercise } from "~/utils/learningExercise";
 
 const { showHearts } = useDailyLearning();
 const props = defineProps<{
@@ -305,7 +313,7 @@ const valid = computed(() => {
 const resultTitle = computed(() => {
   const result = view.value.result;
   if (result?.message?.title_key) return t(result.message.title_key);
-  return result?.verdict ? t(`Error.Verdict.${result.verdict}`) : "";
+  return result?.verdict ? t(codingVerdictKey(result.verdict)) : "";
 });
 const resultBody = computed(() =>
   view.value.result?.message?.body_key

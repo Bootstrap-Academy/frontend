@@ -47,6 +47,8 @@ export interface CodingSubmissionView {
   creation_timestamp: string;
   environment: string;
   result: CodingResult | null;
+  /** Closed without a verdict after technical failures; absent on older services. */
+  technical_failure?: boolean;
 }
 
 export interface CodingExampleView {
