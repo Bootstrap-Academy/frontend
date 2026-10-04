@@ -129,6 +129,7 @@
 </template>
 
 <script lang="ts" setup>
+import { decodeApiError } from "~/utils/apiError";
 import { useI18n } from "vue-i18n";
 import type { PropType } from "vue";
 import type { CodingExampleView } from "~/types/codingChallengeViews";
@@ -236,7 +237,7 @@ function successHandler(success: any, id: any) {
 }
 
 function errorHandler(error: any) {
-  openSnackbar("error", error);
+  openSnackbar("error", decodeApiError(error).messageKey);
 }
 
 function verdictIcons(verdict: string | null) {

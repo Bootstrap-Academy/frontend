@@ -10,6 +10,7 @@ export function useLessonStart(course: Ref<string>, lesson: Ref<string>) {
   const local = ref<DailyLearning | null>(null);
   const pending = ref(false);
   const error = ref(false);
+  const failure = ref<unknown>(null);
   const limited = ref<DailyLearning | null>(null);
   const owner = computed(
     () => `${user.value?.id || ""}:${session.value?.id || ""}:${course.value}:${lesson.value}`
@@ -42,6 +43,7 @@ export function useLessonStart(course: Ref<string>, lesson: Ref<string>) {
     const expected = owner.value;
     pending.value = true;
     error.value = false;
+    failure.value = null;
     try {
       await dailyState.refresh();
       if (!alive || expected !== owner.value) return false;
@@ -57,6 +59,7 @@ export function useLessonStart(course: Ref<string>, lesson: Ref<string>) {
       return true;
     } catch (cause) {
       if (alive && expected === owner.value) {
+        failure.value = cause;
         limited.value = dailyError(cause);
         if (limited.value) dailyState.observe(limited.value, course.value, lesson.value);
         else error.value = true;
@@ -73,6 +76,7 @@ export function useLessonStart(course: Ref<string>, lesson: Ref<string>) {
       requestId = "";
       local.value = limited.value = null;
       pending.value = error.value = false;
+      failure.value = null;
       void read();
     },
     { immediate: true }
@@ -81,5 +85,5 @@ export function useLessonStart(course: Ref<string>, lesson: Ref<string>) {
     alive = false;
     generation++;
   });
-  return { daily, pending, error, limited, start, read };
+  return { daily, pending, error, failure, limited, start, read };
 }

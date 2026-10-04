@@ -245,14 +245,11 @@ export async function createSubmission(challengeId: any, codingChallengeId: any,
       `/challenges/tasks/${challengeId}/coding_challenges/${codingChallengeId}/submissions`,
       body
     );
+    if (typeof res?.id !== "string" || !res.id)
+      throw { statusCode: 502, data: { error: "invalid_submission_response" } };
     await getSubmissions(challengeId, codingChallengeId);
     return [res, null];
-  } catch (error: any) {
-    if (error?.data?.error == "not_enough_hearts") {
-      return [null, "Error.NotEnoughHearts"];
-    } else if (error?.data?.error == "too_many_requests") {
-      return [null, "Error.TooManyAttemptsForCodingChallenge"];
-    }
+  } catch (error: unknown) {
     return [null, error];
   }
 }
@@ -339,10 +336,8 @@ export async function testAgainstCodingExample(
       body
     );
     return [res, null];
-  } catch (error: any) {
-    if (error.data.error == "not_enough_hearts") {
-      return [null, "Error.NotEnoughHearts"];
-    } else return [null, error];
+  } catch (error: unknown) {
+    return [null, error];
   }
 }
 

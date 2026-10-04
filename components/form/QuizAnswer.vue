@@ -102,6 +102,7 @@
 </template>
 
 <script lang="ts">
+import { decodeApiError } from "~/utils/apiError";
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
@@ -220,12 +221,11 @@ export default defineComponent({
 
     function errorHandler(error: any) {
       if (handleLimit(error)) return;
-      if (error == "Error.TooManyAttemptsForQuiz") {
+      const decoded = decodeApiError(error);
+      if (decoded.kind === "throttle" && decoded.retryAfter !== null) {
         showMaxAttemptsError.value = true;
-        secondsForTryAgain.value = error.details ?? "";
-      } else {
-        openSnackbar("error", typeof error === "string" ? error : "Error.TryAgainLater");
-      }
+        secondsForTryAgain.value = decoded.retryAfter;
+      } else openSnackbar("error", decoded.messageKey);
     }
 
     function nextQuestion() {
