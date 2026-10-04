@@ -1,7 +1,12 @@
 <template>
   <section>
     <article class="flex justify-end">
-      <InputSelect v-model="selectedLanguage" :options="languages" v-if="languages.length" />
+      <InputSelect
+        v-model="selectedLanguage"
+        :options="languages"
+        aria-label="LearningRooms.Language"
+        v-if="languages.length"
+      />
     </article>
     <LeaderboardStatus v-if="page.error" :error="page.error" @reload="reload" />
     <SkeletonLeaderboard v-else-if="loading" />

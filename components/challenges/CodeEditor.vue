@@ -5,6 +5,7 @@
         <InputSelect
           class="z-0"
           id="code-language"
+          aria-label="LearningRooms.Language"
           :options="languages"
           sm
           btn-type

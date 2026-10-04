@@ -1,5 +1,7 @@
 <template>
   <div
+    role="group"
+    :aria-label="label ? t(label) : undefined"
     :class="[
       !!mobileResponsive ? 'flex-col rounded-lg sm:flex-row sm:rounded-full' : 'rounded-full',
       !!primary && !secondary ? 'border border-accent bg-primary' : '',
@@ -7,27 +9,27 @@
     ]"
     class="flex w-fit gap-3 p-2"
   >
-    <section
+    <button
       v-for="(button, i) of options"
       :key="i"
-      @click="!button.disabled ? emitSelected(i) : null"
+      type="button"
+      :aria-pressed="selectedOption == i"
+      :disabled="!!button.disabled"
+      @click="emitSelected(i)"
+      class="cursor-pointer rounded-full px-2 py-2 text-left text-xs font-semibold capitalize text-black transition-all duration-300 font-body focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default sm:px-6 sm:text-sm md:px-8"
+      :class="[
+        {
+          'px-2.5': smInMobile,
+          'px-4': !smInMobile,
+        },
+        selectedOption == i && primary && !secondary ? 'bg-accent' : 'text-white',
+        selectedOption == i && secondary ? 'bg-light' : '',
+        button.disabled ? 'opacity-50' : '',
+        mobileResponsive ? 'rounded-lg sm:flex-row sm:rounded-full' : 'rounded-full',
+      ]"
     >
-      <p
-        class="cursor-pointer rounded-full px-2 py-2 text-xs font-semibold capitalize text-black transition-all duration-300 sm:px-6 sm:text-sm md:px-8"
-        :class="[
-          {
-            'px-2.5': smInMobile,
-            'px-4': !smInMobile,
-          },
-          selectedOption == i && primary && !secondary ? 'bg-accent' : 'text-white',
-          selectedOption == i && secondary ? 'bg-light' : '',
-          button.disabled ? 'opacity-50' : '',
-          mobileResponsive ? 'rounded-lg sm:flex-row sm:rounded-full' : 'rounded-full',
-        ]"
-      >
-        {{ t(button.name) }}
-      </p>
-    </section>
+      {{ t(button.name) }}
+    </button>
   </div>
 </template>
 
@@ -40,6 +42,7 @@ const props = defineProps({
   secondary: { type: Boolean, default: false },
   mobileResponsive: { type: Boolean, default: true },
   smInMobile: { type: Boolean, default: false },
+  label: { type: String, default: "" },
 });
 
 const emits = defineEmits(["update:modelValue"]);

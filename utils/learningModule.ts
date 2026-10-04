@@ -20,7 +20,7 @@ function dataSnapshot(value: LearningModuleData): LearningModuleData {
 }
 
 /** A private asset grant authorizes transport; it does not identify different module code. */
-export function learningModuleIdentity(descriptor?: LearningModuleDescriptor): string {
+export function learningModuleIdentity(descriptor?: LearningModuleDescriptor | null): string {
   if (!descriptor) return "";
   let entry: string | string[] = descriptor.entry_url;
   try {
@@ -28,6 +28,7 @@ export function learningModuleIdentity(descriptor?: LearningModuleDescriptor): s
     const match = url.pathname.match(
       /^\/skills\/lesson-assets\/[A-Za-z0-9_-]{43}\/([a-f0-9]{64})\/(.+)$/
     );
+    const [, hash, path] = match ?? [];
     if (
       url.protocol === "https:" &&
       url.href === descriptor.entry_url &&
@@ -35,13 +36,14 @@ export function learningModuleIdentity(descriptor?: LearningModuleDescriptor): s
       !url.password &&
       !url.search &&
       !url.hash &&
-      match &&
-      match[2].split("/").every((part) => {
+      hash &&
+      path &&
+      path.split("/").every((part) => {
         const decoded = decodeURIComponent(part);
         return decoded && !decoded.startsWith(".") && !/[\\/\u0000-\u001f\u007f]/.test(decoded);
       })
     ) {
-      entry = [url.origin, match[1], match[2]];
+      entry = [url.origin, hash, path];
     }
   } catch {
     // Unrecognized URLs retain their existing exact identity and loader validation.

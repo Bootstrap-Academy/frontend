@@ -5,14 +5,16 @@
     </p>
 
     <div class="flex h-fit w-fit items-center justify-center gap-5">
-      <p class="flex-shrink-0 text-sm">{{ t(text) }}</p>
-      <InputSelect id="sort" sm :options="options" btn-type v-model="selected" />
+      <label :for="selectId" class="flex-shrink-0 text-sm font-light text-body font-body">{{
+        t(text)
+      }}</label>
+      <InputSelect :id="selectId" sm :options="options" btn-type v-model="selected" />
     </div>
   </article>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -37,6 +39,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     const selected = ref();
+    const selectId = `${useId()}-sort`;
 
     watch(
       () => selected.value,
@@ -45,7 +48,7 @@ export default defineComponent({
       }
     );
 
-    return { t, selected };
+    return { t, selected, selectId };
   },
 });
 </script>
