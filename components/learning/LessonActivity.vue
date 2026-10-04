@@ -137,6 +137,11 @@ const {
     : {}),
   syncLocation: false,
   loadRoom: !!roomSource,
+  protocolNext: () => {
+    if (!alive) return false;
+    emit("next");
+    return true;
+  },
 });
 const { t } = useI18n();
 const lessonStart = useLessonStart(
