@@ -3,13 +3,15 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import ts from "typescript";
 
-const source = (await readFile(new URL("../utils/learningExercise.ts", import.meta.url), "utf8"))
-  .replace(/^import[^\n]*\n/gm, "")
-  .replace(/^export /gm, "");
+const source = (
+  await readFile(new URL("../utils/learningExercise.ts", import.meta.url), "utf8")
+).replaceAll('"./apiError"', JSON.stringify(new URL("../utils/apiError.ts", import.meta.url).href));
 const code = ts.transpileModule(source, {
-  compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
+  compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
 }).outputText;
-const create = new Function(`${code}\nreturn createLearningExercise;`)();
+const { createLearningExercise: create } = await import(
+  `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
+);
 const reference = { type: "multiple_choice", task_id: "task", subtask_id: "exercise" };
 const path = "/challenges/tasks/task/multiple_choice/exercise";
 
