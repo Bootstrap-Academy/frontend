@@ -28,6 +28,7 @@ const {
   UPDATE_NOTICE_BROWSER,
   UPDATE_NOTICE_WINDOW,
   UPDATE_NOTICE_LINK,
+  clearExpiredUpdateNotices,
 } = await import(output("updateNotice"));
 const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
 const A = "10000000-0000-4000-8000-000000000001";
@@ -37,6 +38,14 @@ function fixture(data = new Map(), unavailable = false, timing = {}) {
   const writes = [],
     reads = [];
   const storage = {
+    get length() {
+      return data.size;
+    },
+    key: (i) => [...data.keys()][i] ?? null,
+    removeItem: (key) => {
+      if (unavailable) throw Error("blocked cleanup");
+      data.delete(key);
+    },
     getItem(key) {
       reads.push(key);
       if (unavailable) throw new Error("blocked read");
@@ -639,4 +648,25 @@ test("blocked storage dismissal survives keyed default/inner layout remounts wit
     },
     { blocked: true }
   );
+});
+
+test("expired notice cleanup removes all old subjects and preserves a newer notice", () => {
+  const old = updateNoticeKey(A),
+    other = updateNoticeKey(B),
+    next = updateNoticeKey(A, "next-notice");
+  const f = fixture(
+    new Map([
+      [old, "1"],
+      [other, "1"],
+      [next, "1"],
+      ["payment", "pending"],
+    ])
+  );
+  clearExpiredUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt - 1);
+  assert(f.data.has(old));
+  clearExpiredUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt);
+  assert(!f.data.has(old));
+  assert(!f.data.has(other));
+  assert.equal(f.data.get(next), "1");
+  assert.equal(f.data.get("payment"), "pending");
 });

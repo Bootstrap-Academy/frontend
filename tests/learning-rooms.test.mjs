@@ -1069,6 +1069,56 @@ test("a refused or mismatched course selection never silently opens a different 
   }
 });
 
+test("reentry retries a lost state save with its original request and preserves newer edits", async () => {
+  const body = { request_id: "original", expected_revision: 0, state: { value: 1 } };
+  const f = fixture((path, method, sent) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "PUT") return room(sent.expected_revision + 1, sent.state, "in_progress");
+    if (path.includes("loops-intro")) return room(1, { value: 1 }, "in_progress");
+    return selection(room(1, { value: 1 }, "in_progress"));
+  });
+  await f.controller.start(true, undefined, true);
+  await f.controller.restore({
+    unitId: "loops-intro",
+    revision: 0,
+    draft: { value: 2 },
+    dirty: true,
+    editVersion: 2,
+    pendingSave: { body, version: 1 },
+  });
+  assert.deepEqual(
+    f.calls.filter((c) => c.method === "PUT").map((c) => c.body),
+    [body, { request_id: "request-1", expected_revision: 1, state: { value: 2 } }]
+  );
+  assert.equal(f.controller.recovery(), null);
+});
+
+test("a finished different review cannot discard the unresolved draft", async () => {
+  const finished = room(8, { server: true }, "completed");
+  finished.progress.review_id = "new-review";
+  const f = fixture((path) =>
+    path.endsWith("capabilities")
+      ? { enabled: true }
+      : path.includes("loops-intro")
+        ? finished
+        : selection(finished)
+  );
+  await f.controller.start(true, undefined, true);
+  const original = {
+    unitId: "loops-intro",
+    revision: 1,
+    reviewId: "old-review",
+    draft: { private: "kept" },
+    dirty: true,
+    pendingComplete: { request_id: "lost", expected_revision: 1 },
+  };
+  assert(await f.controller.restore(original));
+  assert(f.view.conflict);
+  assert.deepEqual(f.controller.recovery().draft, original.draft);
+  assert.deepEqual(f.controller.recovery().pendingComplete, original.pendingComplete);
+  assert.equal(f.calls.filter((c) => c.method !== "GET").length, 0);
+});
+
 test("opening a confirmed previous continuous room reads its own state without marking completion", async () => {
   const previous = { ...room(7, { note: "kept" }), unit: { ...room().unit, id: "earlier" } };
   const f = fixture((path) =>

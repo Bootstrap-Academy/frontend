@@ -60,9 +60,16 @@ export default {
   setup() {
     const { t } = useI18n();
     const loading = ref(false);
-    const selectedbutton: any = ref(localStorage.getItem("selectedButtonLeaderBoard") ?? 0);
     const router = useRouter();
     const route = useRoute();
+    const selected = Number(route.query.selectedButton ?? 0);
+    const selectedbutton = ref([0, 1, 2].includes(selected) ? selected : 0);
+    // The URL already preserves this view. Retire the old persistent duplicate.
+    try {
+      localStorage.removeItem("selectedButtonLeaderBoard");
+    } catch {
+      /* View works without storage. */
+    }
     let buttonOptions: any = [
       // { name: "Buttons.SeasonalBased" },
       { name: "Buttons.LanguageBased" },
@@ -73,7 +80,6 @@ export default {
     watch(
       () => selectedbutton.value,
       (newValue: any, oldValue) => {
-        localStorage.setItem("selectedButtonLeaderBoard", newValue);
         router.replace({
           path: route.path,
           query: {
@@ -83,9 +89,6 @@ export default {
       },
       { immediate: true }
     );
-    onUnmounted(() => {
-      localStorage.removeItem("selectedButtonLeaderBoard");
-    });
 
     return { buttonOptions, selectedbutton, t, loading, TrophyIcon };
   },

@@ -24,6 +24,7 @@ export function usePaypalCheckout() {
   const checkout = computed(() => (stored.value?.owner === user.value?.id ? stored.value : null));
 
   function read(owner: string): Checkout | null {
+    localStorage.removeItem(`${storageKey(owner)}:probe`);
     const raw = localStorage.getItem(storageKey(owner));
     if (!raw) return null;
     const value = JSON.parse(raw);
@@ -36,6 +37,10 @@ export function usePaypalCheckout() {
       !["approval", "pending", "complete"].includes(value.phase)
     )
       throw new Error("Invalid saved checkout");
+    if (value.phase === "complete") {
+      localStorage.removeItem(storageKey(owner));
+      return null;
+    }
     return value;
   }
 
@@ -60,7 +65,10 @@ export function usePaypalCheckout() {
   });
 
   function save(value: Checkout) {
-    localStorage.setItem(storageKey(value.owner), JSON.stringify(value));
+    // A confirmed capture needs no persistent recovery. Keep its end card only
+    // in this mounted app; approval and every uncertain capture stay durable.
+    if (value.phase === "complete") localStorage.removeItem(storageKey(value.owner));
+    else localStorage.setItem(storageKey(value.owner), JSON.stringify(value));
     if (user.value?.id === value.owner) stored.value = value;
   }
 
@@ -144,6 +152,15 @@ export function usePaypalCheckout() {
     if (!owner) return;
     try {
       await locked(owner, () => {
+        if (
+          phase === "complete" &&
+          stored.value?.owner === owner &&
+          stored.value.orderId === orderId &&
+          stored.value.phase === "complete"
+        ) {
+          stored.value = null;
+          return;
+        }
         const current = read(owner);
         // Late cancellation, including in another tab, cannot erase capture.
         if (current?.orderId !== orderId || current.phase !== phase) return;
