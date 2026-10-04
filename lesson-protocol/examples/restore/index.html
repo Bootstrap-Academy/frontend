@@ -2,13 +2,29 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Protocol example</title>
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="main.js"></script>
   </head>
   <body>
-    <main>
+    <div id="world" data-lesson-navigation>
+      <div id="stage">
+        <div class="backup">Sicherung / Backup</div>
+        <svg class="route" viewBox="0 0 360 640" aria-hidden="true">
+          <path d="M 86 110 Q 220 75 268 160" />
+          <circle cx="268" cy="160" r="38" />
+        </svg>
+        <button id="parcel" data-lesson-scene disabled aria-label="Notiz bewegen / Move note">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M10 4h20l8 8v32H10z" />
+            <path d="M18 23h13M18 30h13" />
+          </svg>
+        </button>
+        <div class="destination">Arbeitsplatz / Workspace</div>
+      </div>
+    </div>
+    <main class="semantic">
       <h1 id="title">Rette deine Notiz</h1>
       <label id="label" for="note">Deine Notiz</label
       ><textarea id="note" rows="3" maxlength="2000" disabled></textarea>

@@ -1,4 +1,6 @@
 export { LessonSDK, type SDKOptions } from "./sdk";
+export { bindLessonPointers, bindLessonStage, bindSceneKeyboard } from "./input";
+export { calculateSurface, stagePoint, stageSize, minimumHitSize, type Surface } from "./surface";
 export {
   validateManifest,
   validateMessage,

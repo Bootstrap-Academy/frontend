@@ -273,7 +273,7 @@ export function createLessonFrame(
   surface: HTMLElement,
   verified: VerifiedPackage,
   failed: () => void
-): { transport: Transport; dispose(): void; load: Promise<void> } {
+): { element: HTMLIFrameElement; transport: Transport; dispose(): void; load: Promise<void> } {
   const frame = surface.ownerDocument.createElement("iframe");
   frame.title = verified.manifest.id;
   frame.setAttribute("sandbox", "allow-scripts allow-same-origin");
@@ -283,7 +283,8 @@ export function createLessonFrame(
   );
   frame.referrerPolicy = "no-referrer";
   frame.style.width = "100%";
-  frame.style.height = "540px";
+  frame.style.height = "100%";
+  frame.style.display = "block";
   frame.style.border = "0";
   const channel = new MessageChannel();
   let closed = false;
@@ -337,6 +338,7 @@ export function createLessonFrame(
   surface.replaceChildren(frame);
   let connected = false;
   return {
+    element: frame,
     load,
     dispose,
     transport: {

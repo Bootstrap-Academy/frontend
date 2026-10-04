@@ -18,6 +18,9 @@ export interface RoomController {
 export interface RoomProtocolSource {
   data: RoomController;
   owner(): string | null;
+  previous?: () => Promise<boolean>;
+  /** Parent-owned continuation survives a successful completion removing the frame. */
+  advance?: () => Promise<boolean>;
 }
 export interface RoomProtocolBinding {
   bind(options: {
@@ -150,7 +153,6 @@ export function createRoomProtocolBinding(
           assertCurrent();
           if (direction === "skip" && !(await data.complete("skip"))) throw failure();
           assertCurrent();
-          if (direction === "previous") return false;
           if (
             direction === "next" &&
             !["completed", "skipped"].includes(data.protocolSnapshot().room!.progress.status)

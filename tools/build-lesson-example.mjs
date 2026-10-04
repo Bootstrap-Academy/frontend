@@ -2,9 +2,16 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { build } from "esbuild";
-const [out, origin] = process.argv.slice(2);
-if (!out || !origin || new URL(origin).origin !== origin)
-  throw new Error("Usage: node tools/build-lesson-example.mjs OUT CONTENT_ORIGIN");
+const [out, origin, orientation] = process.argv.slice(2);
+if (
+  !out ||
+  !origin ||
+  new URL(origin).origin !== origin ||
+  ![undefined, "portrait", "landscape"].includes(orientation)
+)
+  throw new Error(
+    "Usage: node tools/build-lesson-example.mjs OUT CONTENT_ORIGIN [portrait|landscape]"
+  );
 const source = path.resolve(import.meta.dirname, "../lesson-protocol/examples/restore");
 const sha = (data) => createHash("sha256").update(data).digest("hex");
 const canonical = (value) =>
@@ -28,6 +35,18 @@ const code = await build({
 const files = new Map([["main.js", code.outputFiles[0].contents]]);
 for (const file of ["index.html", "style.css", "state.schema.json"])
   files.set(file, await fs.readFile(path.join(source, file)));
+// The package directory is the asset digest. Distinct manifest variants must
+// also have distinct bytes so neither overwrites the other's immutable manifest.
+if (orientation === "landscape")
+  files.set(
+    "index.html",
+    Buffer.from(
+      files
+        .get("index.html")
+        .toString()
+        .replace('<html lang="de">', '<html lang="de" data-stage="landscape">')
+    )
+  );
 const types = {
   "index.html": "text/html",
   "main.js": "text/javascript",
@@ -46,6 +65,16 @@ const assets = [...files]
 const manifest = JSON.parse(
   await fs.readFile(path.resolve(source, "../../fixtures/manifest.json"), "utf8")
 );
+if (orientation === "landscape")
+  manifest.stage = {
+    ...manifest.stage,
+    orientation,
+    logical: { width: 640, height: 360 },
+    reason: {
+      de: "Breites Koordinatenbild für die Geräteprobe.",
+      en: "Wide coordinate drawing for the device check.",
+    },
+  };
 manifest.requires = [];
 manifest.optional = [];
 manifest.assets = assets;

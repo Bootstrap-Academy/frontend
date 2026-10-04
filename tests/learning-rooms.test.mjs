@@ -1067,3 +1067,95 @@ test("a refused or mismatched course selection never silently opens a different 
     assert(f.calls.every((c) => c.method === "GET"));
   }
 });
+
+test("opening a confirmed previous continuous room reads its own state without marking completion", async () => {
+  const previous = { ...room(7, { note: "kept" }), unit: { ...room().unit, id: "earlier" } };
+  const f = fixture((path) =>
+    path.endsWith("capabilities")
+      ? { enabled: true }
+      : path === "/skills/rooms/earlier"
+        ? previous
+        : selection()
+  );
+  await f.controller.start(true, "python-loops");
+  assert.equal(await f.controller.openConfirmed("earlier", "python-loops"), true);
+  assert.equal(f.view.room.unit.id, "earlier");
+  assert.deepEqual(f.view.draft, { note: "kept" });
+  assert(f.calls.every((call) => call.method === "GET"));
+  f.controller.dispose();
+});
+test("failed previous access or a mismatched room retains the current work", async () => {
+  const f = fixture((path) =>
+    path.endsWith("capabilities")
+      ? { enabled: true }
+      : path === "/skills/rooms/earlier"
+        ? room(9, { wrong: true })
+        : selection(room(3, { current: true }))
+  );
+  await f.controller.start(true, "python-loops");
+  assert.equal(await f.controller.openConfirmed("earlier", "python-loops"), false);
+  assert.equal(f.view.room.unit.id, "loops-intro");
+  assert.deepEqual(f.view.draft, { current: true });
+  f.controller.dispose();
+});
+
+test("an edit while the previous room is loading retains current work", async () => {
+  const waiting = deferred();
+  const f = fixture((path) =>
+    path.endsWith("capabilities")
+      ? { enabled: true }
+      : path === "/skills/rooms/earlier"
+        ? waiting.promise
+        : selection()
+  );
+  await f.controller.start(true, "python-loops");
+  const opened = f.controller.openConfirmed("earlier", "python-loops");
+  await new Promise((resolve) => setImmediate(resolve));
+  f.controller.edit({ note: "new work during previous read" });
+  waiting.resolve({ ...room(7, { saved: true }), unit: { ...room().unit, id: "earlier" } });
+  assert.equal(await opened, false);
+  assert.equal(f.view.room.unit.id, "loops-intro");
+  assert.deepEqual(f.view.draft, { note: "new work during previous read" });
+  assert.equal(f.view.dirty, true);
+  f.controller.dispose();
+});
+
+test("previous course room is a guarded read, never an implicit review", async () => {
+  for (const outcome of ["confirmed", "denied", "late edit", "wrong course"]) {
+    const waiting = deferred();
+    const course = "python-foundations";
+    const previous = {
+      ...room(7, { note: "confirmed" }, "completed"),
+      course_id: outcome === "wrong course" ? "other" : course,
+      review_available: true,
+      unit: { ...room().unit, id: "earlier" },
+    };
+    const f = fixture((path) => {
+      if (path.endsWith("capabilities")) return { enabled: true };
+      if (path === `/skills/rooms/earlier?course=${course}`) {
+        if (outcome === "denied") throw { statusCode: 403 };
+        return outcome === "late edit" ? waiting.promise : previous;
+      }
+      return selection({ ...room(3, { note: "current" }), course_id: course });
+    });
+    await f.controller.start(true, "python-loops", false, { courseId: course });
+    const opening = f.controller.openConfirmed("earlier", "python-loops", course);
+    if (outcome === "late edit") {
+      await new Promise((resolve) => setImmediate(resolve));
+      assert.equal(f.view.status, "ready");
+      f.controller.edit({ note: "new work" });
+      waiting.resolve(previous);
+    }
+    assert.equal(await opening, outcome === "confirmed");
+    assert.equal(f.view.courseId, course);
+    assert.equal(f.view.status, "ready");
+    assert(f.calls.every((call) => call.method === "GET"));
+    assert.equal(f.view.room.unit.id, outcome === "confirmed" ? "earlier" : "loops-intro");
+    assert.deepEqual(f.view.draft, {
+      note:
+        outcome === "confirmed" ? "confirmed" : outcome === "late edit" ? "new work" : "current",
+    });
+    if (outcome === "confirmed") assert.equal(f.view.room.progress.status, "completed");
+    f.controller.dispose();
+  }
+});

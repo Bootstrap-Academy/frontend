@@ -137,6 +137,11 @@ const {
     : {}),
   syncLocation: false,
   loadRoom: !!roomSource,
+  protocolNext: () => {
+    if (!alive) return false;
+    emit("next");
+    return true;
+  },
 });
 const { t } = useI18n();
 const lessonStart = useLessonStart(
@@ -343,6 +348,7 @@ async function handIn(result: LearningActivityCompletion) {
     return;
   }
   const source = props.activity.source;
+  if (source.kind !== "lecture") return;
   const expectedOwner = owner.value;
   completing.value = true;
   saveError.value = false;

@@ -6,13 +6,93 @@
 body {
   margin: 0;
 }
-main {
-  padding: 16px;
-  max-width: 520px;
-  margin: auto;
+html,
+body {
+  height: 100%;
+  width: 100%;
 }
+main {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding: 12px 16px;
+  background: #111827ed;
+}
+#world {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+#stage .backup {
+  position: absolute;
+  left: 32px;
+  top: 42px;
+}
+#stage .destination {
+  position: absolute;
+  right: 24px;
+  top: 205px;
+}
+.route {
+  position: absolute;
+  inset: 0;
+  width: 360px;
+  height: 640px;
+  pointer-events: none;
+}
+.route path {
+  stroke: #67e8f9;
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: 6 5;
+}
+.route circle {
+  stroke: #67e8f9;
+  stroke-width: 3;
+  fill: #164e63;
+}
+#parcel {
+  position: absolute;
+  width: 64px;
+  height: 80px;
+  min-width: var(--lesson-hit-size, 44px);
+  min-height: var(--lesson-hit-size, 44px);
+  touch-action: none;
+  background: #67e8f9;
+  transition: background-color 180ms;
+}
+#parcel svg {
+  width: 40px;
+  height: 48px;
+  fill: #164e63;
+  stroke: #e8efff;
+  stroke-width: 2;
+}
+#stage[data-reduced-motion="true"] #parcel {
+  transition: none;
+}
+button:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 2px;
+}
+@media (max-height: 440px) {
+  main {
+    top: 0;
+    max-height: 100%;
+  }
+  #world {
+    visibility: hidden;
+  }
+}
+
 h1 {
-  font-size: 24px;
+  font-size: 1.15rem;
+  margin: 0 0 8px;
 }
 label {
   display: block;
@@ -25,8 +105,8 @@ textarea {
   padding: 8px;
 }
 #file {
-  padding: 16px;
-  margin: 12px 0;
+  padding: 8px;
+  margin: 8px 0;
   border: 2px dashed #64748b;
 }
 #file[data-restored="true"] {
