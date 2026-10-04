@@ -144,7 +144,7 @@ test("profile sharing is described as consent with its exact audience, scope and
   assert(!notice.includes("Bestenliste (motivierende Lernumgebung)"));
   assert(!notice.includes("Der Nickname ist für andere angemeldete Nutzer sichtbar"));
   assert(!explanation.includes("Nutzerkennung"), "public leaderboards carry no account ID");
-  assert(explanation.includes("Freigeben kannst nur du."));
+  assert(explanation.includes("Für dich freigeben werden wir dein Profil nie"));
 });
 
 test("browser storage section names its categories without promising more than the app does", () => {
@@ -159,13 +159,21 @@ test("browser storage section names its categories without promising more than t
     "Fristen prüft die App, wenn du die Seite wieder öffnest.",
     "Cookies sendet dein Browser von selbst nur an die Weboberfläche",
     "§ 25 Abs. 2 Nr. 2 TDDDG",
-    "nur der Zielpfad und eine Ablaufzeit",
+    "nur die Zieladresse in der App und eine Ablaufzeit",
     "auch in anderen offenen Tabs dieses Browsers",
-    "Offene Vorgänge bleiben auch beim Abmelden und bei einer Kontolöschung gespeichert",
+    "Beim Abmelden und nach einer Kontolöschung bleiben die Einträge",
   ]) {
     assert(explanation.includes(wording), wording);
   }
   assert(!explanation.includes("nicht an unsere Server übertragen"));
+  const reports = text(
+    privacy.match(/<h3>8\.2 Fehlerberichte<\/h3>([\s\S]*?)<\/section>/)?.[1] ?? ""
+  );
+  assert(
+    reports.includes(
+      "Werte aus dem Arbeitsspeicher des Programms nehmen wir in keinen Fehlerbericht auf"
+    )
+  );
   assert(!/<code>/.test(storage), "categories replace individual storage keys");
 });
 

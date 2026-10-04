@@ -632,43 +632,47 @@
         Unsere Webserver für api.bootstrap.academy, api.test.bootstrap.academy und
         sandkasten.bootstrap.academy protokollieren jede Anfrage mit IP-Adresse, Zeitpunkt,
         aufgerufener Adresse (URL) und Methode, HTTP-Status, Browserkennung (User-Agent) und
-        Referrer. Die Systemprotokolle der Dienste enthalten technische Meldungen, die im Einzelfall
-        Nutzerkennungen oder aufgerufene Adressen enthalten können; schlägt die Auswertung einer
-        Programmieraufgabe wegen eines Fehlers im Auswertungsskript der Aufgabe fehl, kann die
-        Fehlermeldung auch Ausgaben dieses Skripts enthalten. Namen, E-Mail-Adressen, Anschriften,
-        Passwörter, Token und die Inhalte deiner Eingaben schreiben die Dienste nicht in die
-        Systemprotokolle; die IP-Adresse kann dort im Fehlerfall vermerkt werden, etwa wenn zu einer
-        Kündigungs- oder Widerrufserklärung (Abschnitt 15.6) die Bestätigungs-E-Mail nicht
-        zugestellt werden kann. In der Testumgebung (Abschnitt 4) laufen die Dienste mit
-        ausführlicherer Protokollierung; dort enthalten die Systemprotokolle zu jeder Anfrage
-        IP-Adresse, Anfragekennung und das Muster des aufgerufenen Pfads, ohne die darin enthaltenen
-        Kennungen, und können die E-Mail-Adressen von Empfängern unserer E-Mails enthalten. Zweck
-        ist der sichere und stabile Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von
-        Anfrageraten, Fehlersuche. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle
-        werden nach 30 Tagen gelöscht und sind nicht Teil der Datensicherungen. Aus den
-        Webserver-Protokollen erzeugen wir auf einem selbst betriebenen Monitoring-System
-        aggregierte Kennzahlen (Anzahl der Anfragen, Antwortzeiten, Fehlerquoten); diese enthalten
-        keine IP-Adressen und keinen Personenbezug. Beim Abruf der Vorschaubilder von
-        static.bootstrap.academy (Abschnitt 7.1) protokolliert der Webserver dieses
-        Webhosting-Pakets Zeitpunkt, aufgerufene Datei und Browserkennung; die IP-Adresse wird dort
-        nach der Dokumentation des Hosters nur anonymisiert abgelegt. Wir werten diese Protokolle
-        nicht aus; sie werden nach 30 Tagen automatisch gelöscht.
+        Referrer. Die Dienste Skills, Events und Jobs protokollieren jede Anfrage zusätzlich mit
+        Client-Adresse und aufgerufener Adresse. Die Systemprotokolle der Dienste enthalten
+        technische Meldungen, die im Einzelfall Nutzerkennungen oder aufgerufene Adressen enthalten
+        können; schlägt die Auswertung einer Programmieraufgabe wegen eines Fehlers im
+        Auswertungsskript der Aufgabe fehl, kann die Fehlermeldung auch Ausgaben dieses Skripts
+        enthalten. Namen, E-Mail-Adressen, Anschriften, Passwörter, Token und die Inhalte deiner
+        Eingaben schreiben die Dienste nicht in die Systemprotokolle; die IP-Adresse kann dort im
+        Fehlerfall vermerkt werden, etwa wenn zu einer Kündigungs- oder Widerrufserklärung
+        (Abschnitt 15.6) die Bestätigungs-E-Mail nicht zugestellt werden kann. In der Testumgebung
+        (Abschnitt 4) laufen die Dienste mit ausführlicherer Protokollierung. Dort können die
+        Systemprotokolle die E-Mail-Adressen von Empfängern unserer E-Mails enthalten, und der
+        Kerndienst protokolliert zu jeder Anfrage IP-Adresse, Anfragekennung und das Muster des
+        aufgerufenen Pfads, ohne die darin enthaltenen Kennungen. Zweck ist der sichere und stabile
+        Betrieb: Erkennen und Abwehren von Angriffen, Begrenzen von Anfrageraten, Fehlersuche.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Die Protokolle werden nach 30 Tagen gelöscht
+        und sind nicht Teil der Datensicherungen. Aus den Webserver-Protokollen erzeugen wir auf
+        einem selbst betriebenen Monitoring-System aggregierte Kennzahlen (Anzahl der Anfragen,
+        Antwortzeiten, Fehlerquoten); diese enthalten keine IP-Adressen und keinen Personenbezug.
+        Beim Abruf der Vorschaubilder von static.bootstrap.academy (Abschnitt 7.1) protokolliert der
+        Webserver dieses Webhosting-Pakets Zeitpunkt, aufgerufene Datei und Browserkennung; die
+        IP-Adresse wird dort nach der Dokumentation des Hosters nur anonymisiert abgelegt. Wir
+        werten diese Protokolle nicht aus; sie werden nach 30 Tagen automatisch gelöscht.
       </p>
       <h3>8.2 Fehlerberichte</h3>
       <p>
         Tritt in einem unserer Dienste ein Fehler auf, wird ein Fehlerbericht an unser selbst
         betriebenes Fehlerberichtssystem (GlitchTip) auf unserem Server bei Hetzner gesendet. Ein
-        Bericht enthält die Fehlermeldung, den Programmablauf (Stacktrace), die aufgerufene Adresse,
-        die Kennung der auslösenden Anfrage, je nach Fehler auch deren IP-Adresse, und – wenn der
-        Fehler in einer angemeldeten Sitzung auftrat – deine Nutzerkennung; bei fehlgeschlagenen
-        Zahlungen kann er die Fehlerantwort von PayPal enthalten. Außerdem kann er die letzten
-        Systemmeldungen des Dienstes vor dem Fehler enthalten. Passwörter, Token, Codes,
-        Anfrageinhalte und Inhalte von E-Mails nehmen wir nicht in Fehlerberichte auf. Fehler der
-        Testumgebung gehen an dasselbe System. Das System ist nur aus unserem Administrationsnetz
-        erreichbar; ein Dienst Dritter ist nicht beteiligt. Die Weboberfläche im Browser sendet
-        keine Fehlerberichte. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Fehlerbehebung).
-        Speicherdauer: 90 Tage; danach werden die Berichte automatisch gelöscht. Weil die Löschung
-        tageweise läuft, können einzelne Berichte bis zu drei Tage länger gespeichert sein.
+        Bericht enthält technische Angaben zum Fehler, etwa Fehlertyp, Programmablauf (Stacktrace)
+        und die Anfragemethode, dazu je nach Dienst das Muster der aufgerufenen Route oder die
+        Kennung der Anfrage. Beim Kerndienst und beim Dienst Challenges kommen die Fehlermeldung und
+        die letzten Systemmeldungen vor dem Fehler hinzu; für sie gelten dieselben Grenzen wie für
+        die Systemprotokolle (Abschnitt 8.1). Trat der Fehler dort in einer angemeldeten Sitzung
+        auf, kann der Bericht deine Nutzerkennung enthalten, bei fehlgeschlagenen Zahlungen auch die
+        Fehlerantwort von PayPal. Die konkrete Adresse mit ihren Parametern, Header, Cookies,
+        Anfrageinhalte, weitere Angaben zu deiner Person und Werte aus dem Arbeitsspeicher des
+        Programms nehmen wir in keinen Fehlerbericht auf. Fehler der Testumgebung gehen an dasselbe
+        System. Das System ist nur aus unserem Administrationsnetz erreichbar; ein Dienst Dritter
+        ist nicht beteiligt. Die Weboberfläche im Browser sendet keine Fehlerberichte.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (Fehlerbehebung). Speicherdauer: 90 Tage;
+        danach werden die Berichte automatisch gelöscht. Weil die Löschung tageweise läuft, können
+        einzelne Berichte bis zu drei Tage länger gespeichert sein.
       </p>
     </section>
 
@@ -744,10 +748,11 @@
                 PayPal auch Coin-Menge und Stand der Zahlung
               </td>
               <td>
-                Local Storage, bis der Kauf abgeschlossen, abgelaufen oder verworfen ist.
-                Abgelaufene Angebote entfernt die App, wenn du wieder angemeldet bist. Offene
-                Vorgänge bleiben auch beim Abmelden und bei einer Kontolöschung gespeichert, bis
-                geklärt ist, ob gezahlt wurde.
+                Local Storage. Die App entfernt einen Eintrag, sobald sie bei angemeldetem Konto
+                feststellt, dass der Kauf abgeschlossen, abgelaufen oder verworfen ist, etwa wenn du
+                deine Bestellungen öffnest. Ist unklar, ob gezahlt wurde, bleibt der Eintrag ohne
+                Frist. Beim Abmelden und nach einer Kontolöschung bleiben die Einträge; du kannst
+                sie über die Browserdaten löschen.
               </td>
             </tr>
             <tr>
@@ -768,8 +773,8 @@
                 Welche Hinweise du für dein Konto oder als Gast geschlossen hast (das ist keine
                 Zustimmung); Zufallswerte und gegebenenfalls deine Nutzerkennung, damit sich Tabs
                 und Anmeldevorgänge nicht in die Quere kommen und andere Tabs Änderungen an deinem
-                Profil mitbekommen; beim technischen Neuladen nach einem Update nur der Zielpfad und
-                eine Ablaufzeit, damit sich die Seite nicht wiederholt neu lädt
+                Profil mitbekommen; beim technischen Neuladen nach einem Update nur die Zieladresse
+                in der App und eine Ablaufzeit, damit sich die Seite nicht wiederholt neu lädt
               </td>
               <td>
                 Cookies, Local und Session Storage, jeweils so lange, wie unten beschrieben.
@@ -1170,8 +1175,8 @@
         oder kopiert haben, können wir nicht zurückholen. Deine XP und dein Lernstand bleiben
         erhalten, und privat zu bleiben kostet dich nichts. Administratoren sehen für den Support,
         ob du freigegeben hast, und können dein Profil wieder privat stellen, etwa wenn du uns darum
-        bittest. Freigeben kannst nur du. Administratoren tun das nie für dich, auch nicht, wenn sie
-        sich zur Fehlersuche in deinem Konto anmelden (Abschnitt 10.5).
+        bittest. Für dich freigeben werden wir dein Profil nie, auch nicht, wenn sich ein
+        Administrator zur Fehlersuche in deinem Konto anmeldet (Abschnitt 10.5).
       </p>
       <p>
         Rechtsgrundlage der Freigabe ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Du kannst
@@ -1349,7 +1354,8 @@
         Rechte erreichbar. Soweit noch Daten zu deinem Konto vorhanden sind, können dazu frühere
         Angebote, Buchungen, Zeitfenster, Bewertungen, Nutzerkennungen, Zahlungs- und
         Vertragsnachweise gehören. Wir nutzen sie nur noch für diese bestehenden Vorgänge. Namen
-        anderer Nutzer, etwa von Kursleitern, zeigt der Eventdienst nur noch Administratoren.
+        anderer Nutzer, etwa von Kursleitern, zeigt der Eventdienst nur noch Administratoren. In den
+        Vertragsunterlagen früherer Buchungen steht weiterhin der Anzeigename des Kursleiters.
         Notwendige Kontaktangaben rufen wir dafür aus dem Kerndienst ab; der Zwischenspeicher dafür
         läuft nach höchstens fünf Minuten ab. Für wichtige Nachrichten zu einem bestehenden Vertrag
         gilt Abschnitt 17.1.
