@@ -17,6 +17,15 @@ const scope = (offer: PurchaseOffer) =>
       ? "backend:premium"
       : `${offer.source}:${offer.product.kind}:${offer.product.reference}`;
 const recoveryKey = (owner: string, product: string) => `purchase-checkout:${owner}:${product}`;
+/** The server checks expiry inside the accepting transaction, so only a request that
+ * started before expiry can still commit. Waiting this long after expiry lets such a
+ * commit, whose response this browser lost, become visible before the identity is
+ * removed; it also absorbs moderate clock skew. */
+const ACCEPTANCE_SETTLE_MS = 10 * 60 * 1000;
+const settledExpired = (offer: PurchaseOffer | undefined) => {
+  const expires = Date.parse(offer?.expires_at ?? "");
+  return Number.isFinite(expires) && expires + ACCEPTANCE_SETTLE_MS <= Date.now();
+};
 function pathScope(path: string): string | null {
   if (/^\/shop\/coins\/paypal\/offers\/\d+$/.test(path)) return "paypal:coins";
   if (/^\/shop\/purchases\/offers\/premium_(monthly|yearly)$/.test(path)) return "backend:premium";
@@ -73,16 +82,14 @@ export function finishPurchaseRecovery(offer: PurchaseOffer, status: any) {
   if (readRecovery(owner, scope(offer))?.orderId === offer.id) localStorage.removeItem(key);
 }
 /** Final states are stable. An expired offered row may predate another tab's
- * acceptance, so reread it under the checkout lock before removing its identity. */
+ * acceptance, so wait out the settle time and reread it under the checkout lock
+ * before removing its identity. */
 export async function cleanupPurchaseRecovery(status: any) {
   const offer: PurchaseOffer = status?.offer;
   const owner = useUser().value?.id;
   if (!owner || offer?.user_id !== owner || !offer?.id || !offer?.product?.kind) return;
   const terminal = ["fulfilled", "failed"].includes(status.state);
-  const expired =
-    status.state === "offered" &&
-    Number.isFinite(Date.parse(offer.expires_at)) &&
-    Date.parse(offer.expires_at) <= Date.now();
+  const expired = status.state === "offered" && settledExpired(offer);
   if (!terminal && !expired) return;
   const key = recoveryKey(owner, scope(offer));
   const clean = async () => {
@@ -95,11 +102,7 @@ export async function cleanupPurchaseRecovery(status: any) {
       if (
         fresh?.offer?.id !== offer.id ||
         (!["fulfilled", "failed"].includes(fresh.state) &&
-          !(
-            fresh.state === "offered" &&
-            Number.isFinite(Date.parse(fresh.offer.expires_at)) &&
-            Date.parse(fresh.offer.expires_at) <= Date.now()
-          ))
+          !(fresh.state === "offered" && settledExpired(fresh.offer)))
       )
         return;
     }
@@ -108,7 +111,7 @@ export async function cleanupPurchaseRecovery(status: any) {
   };
   try {
     if (navigator.locks) await navigator.locks.request(key, clean);
-    else clean();
+    else await clean();
   } catch {
     /* Unreadable/unavailable recovery stays protected. */
   }

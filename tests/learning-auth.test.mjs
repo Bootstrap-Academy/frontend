@@ -735,3 +735,25 @@ test("daily or Premium refresh reopens an empty queue and updates a mounted less
   assert.equal(f.api.view.value.draft.code, "my private draft");
   assert.equal(f.calls.length, reads);
 });
+
+test("tab recovery read drops only fully clean snapshots", () => {
+  const map = new Map();
+  const recovery = createLearningRecovery({
+    getItem: (k) => map.get(k) ?? null,
+    setItem: (k, v) => map.set(k, v),
+    removeItem: (k) => map.delete(k),
+  });
+  const owner = "10000000-0000-4000-8000-000000000001";
+  for (const [state, kept] of [
+    [{ dirty: false }, false],
+    [{ dirty: true, draft: {} }, true],
+    [{ draft: {} }, true], // older snapshot without the flag
+    [{ dirty: false, pendingSave: { body: {} } }, true],
+    [{ dirty: false, pendingComplete: {} }, true],
+    [{ dirty: false, pendingReviewStart: {} }, true],
+  ]) {
+    recovery.save(owner, state);
+    assert.equal(recovery.read(owner) !== null, kept, JSON.stringify(state));
+    assert.equal(map.size, kept ? 1 : 0, JSON.stringify(state));
+  }
+});
