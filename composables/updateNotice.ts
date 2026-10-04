@@ -29,19 +29,24 @@ export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION
   return `bootstrap-academy:update-notice:${version}:${subject}`;
 }
 
-/** The dismissal has no purpose after its notice's display window ends.
- * Only this known version is removed; an older open tab must not erase a newer notice. */
-export function clearExpiredUpdateNotices(
+/** Versions no build shows any more. When a notice is replaced, add its version here. */
+export const RETIRED_UPDATE_NOTICE_VERSIONS: readonly string[] = ["2026-09-update-1"];
+
+/** A dismissal has no purpose once its notice can no longer appear: retired versions
+ * always, the current version after its display window. Unknown versions stay, so an
+ * older open tab cannot erase the dismissal of a newer notice. */
+export function clearObsoleteUpdateNotices(
   storage: Pick<Storage, "length" | "key" | "removeItem">,
   window = UPDATE_NOTICE_WINDOW,
   now = Date.now()
 ) {
-  if (!Number.isFinite(now) || now < window.expiresAt) return;
-  const prefix = `bootstrap-academy:update-notice:${window.version}:`;
+  const versions = RETIRED_UPDATE_NOTICE_VERSIONS.filter((version) => version !== window.version);
+  if (Number.isFinite(now) && now >= window.expiresAt) versions.push(window.version);
+  const prefixes = versions.map((version) => updateNoticeKey("", version));
   const keys: string[] = [];
   for (let i = 0; i < storage.length; i++) {
     const key = storage.key(i);
-    if (key?.startsWith(prefix)) keys.push(key);
+    if (key && prefixes.some((prefix) => key.startsWith(prefix))) keys.push(key);
   }
   for (const key of keys) storage.removeItem(key);
 }
@@ -75,7 +80,7 @@ export function createUpdateNotice(options: {
 
   function readDismissal() {
     try {
-      clearExpiredUpdateNotices(options.storage(), window, now());
+      clearObsoleteUpdateNotices(options.storage(), window, now());
     } catch {
       /* Best-effort cleanup if storage is blocked. */
     }

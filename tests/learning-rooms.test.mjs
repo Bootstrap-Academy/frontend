@@ -1210,3 +1210,96 @@ test("previous course room is a guarded read, never an implicit review", async (
     f.controller.dispose();
   }
 });
+
+const lostSave = { request_id: "original", expected_revision: 3, state: { code: "v1" } };
+function resumeFixture(handler) {
+  let checkpoints = 0;
+  const f = fixture(handler, { checkpoint: () => (checkpoints++, true) });
+  return Object.assign(f, { checkpoints: () => checkpoints });
+}
+
+test("reentry replays only the lost state save; a pending completion is never sent automatically", async () => {
+  const f = resumeFixture((path, method, body) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "PUT") return room(body.expected_revision + 1, body.state, "in_progress");
+    if (path.startsWith("/skills/rooms?")) return selection(room(4, { code: "v1" }, "in_progress"));
+    return room(4, { code: "v1" }, "in_progress");
+  });
+  await f.controller.start(true, undefined, true);
+  await f.controller.restore({
+    unitId: "loops-intro",
+    revision: 3,
+    draft: { code: "v1" },
+    dirty: false,
+    editVersion: 1,
+    pendingSave: { body: lostSave, version: 1 },
+    pendingComplete: {
+      request_id: "c1",
+      expected_revision: 4,
+      action: "complete",
+      answer: { a: 1 },
+    },
+  });
+  const writes = f.calls.filter((c) => c.method !== "GET");
+  assert.deepEqual(
+    writes.map((c) => [c.method, c.path]),
+    [["PUT", "/skills/rooms/loops-intro/state"]]
+  );
+  assert.deepEqual(writes[0].body, lostSave, "identical replay");
+  assert.equal(
+    f.controller.recovery().pendingComplete.request_id,
+    "c1",
+    "completion stays pending"
+  );
+});
+
+test("a failed or refused replay keeps the original body and the newer draft for the next reentry", async () => {
+  for (const failure of [new Error("network"), { statusCode: 409 }, { statusCode: 422 }]) {
+    const f = resumeFixture((path, method) => {
+      if (path.endsWith("capabilities")) return { enabled: true };
+      if (method === "PUT") throw failure;
+      if (path.startsWith("/skills/rooms?"))
+        return selection(room(3, { code: "v0" }, "in_progress"));
+      return room(3, { code: "v0" }, "in_progress");
+    });
+    await f.controller.start(true, undefined, true);
+    await f.controller.restore({
+      unitId: "loops-intro",
+      revision: 3,
+      draft: { code: "v2" },
+      dirty: true,
+      editVersion: 2,
+      pendingSave: { body: lostSave, version: 1 },
+    });
+    const kept = f.controller.recovery();
+    assert.deepEqual(kept.pendingSave.body, lostSave, String(failure.statusCode));
+    assert.deepEqual(kept.draft, { code: "v2" });
+    assert(f.checkpoints() >= 1, "the failed replay is checkpointed");
+  }
+});
+
+test("a dispatched save is checkpointed once its failure is observed; before that only beforeunload warns", async () => {
+  // Boundary of the reentry replay: a hard reload during the request leaves no snapshot with this save.
+  const inflight = deferred();
+  let persisted = null;
+  const f = fixture(
+    (path, method) => {
+      if (path.endsWith("capabilities")) return { enabled: true };
+      if (method === "PUT") return inflight.promise;
+      if (path.startsWith("/skills/rooms?"))
+        return selection(room(1, { code: "a" }, "in_progress"));
+      return room(1, { code: "a" }, "in_progress");
+    },
+    { checkpoint: () => ((persisted = f.controller.recovery()), true) }
+  );
+  await f.controller.start(true);
+  f.controller.edit({ code: "typed" });
+  const saving = f.controller.save();
+  await new Promise((r) => setTimeout(r, 0));
+  assert.equal(f.calls.filter((c) => c.method === "PUT").length, 1);
+  assert.equal(persisted, null, "no snapshot exists while the save is in flight");
+  inflight.reject(new Error("tab closed"));
+  await saving;
+  assert.equal(persisted.pendingSave.body.request_id, "request-1");
+  assert.deepEqual(persisted.pendingSave.body.state, { code: "typed" });
+});

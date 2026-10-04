@@ -28,7 +28,8 @@ const {
   UPDATE_NOTICE_BROWSER,
   UPDATE_NOTICE_WINDOW,
   UPDATE_NOTICE_LINK,
-  clearExpiredUpdateNotices,
+  clearObsoleteUpdateNotices,
+  RETIRED_UPDATE_NOTICE_VERSIONS,
 } = await import(output("updateNotice"));
 const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
 const A = "10000000-0000-4000-8000-000000000001";
@@ -662,11 +663,71 @@ test("expired notice cleanup removes all old subjects and preserves a newer noti
       ["payment", "pending"],
     ])
   );
-  clearExpiredUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt - 1);
+  clearObsoleteUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt - 1);
   assert(f.data.has(old));
-  clearExpiredUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt);
+  clearObsoleteUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, UPDATE_NOTICE_WINDOW.expiresAt);
   assert(!f.data.has(old));
   assert(!f.data.has(other));
   assert.equal(f.data.get(next), "1");
   assert.equal(f.data.get("payment"), "pending");
+});
+
+test("app start removes dismissals of the retired September notice at any time; unknown versions stay", () => {
+  // 2026-09-update-1 ran on production without a display window and stored account UUIDs.
+  const retired = "bootstrap-academy:update-notice:2026-09-update-1:" + A;
+  const lookalike = "bootstrap-academy:update-notice:2026-09-update-10:" + A;
+  const unknown = updateNoticeKey(A, "2027-01-next-1");
+  const current = updateNoticeKey(UPDATE_NOTICE_BROWSER);
+  for (const now of [
+    UPDATE_NOTICE_WINDOW.startsAt - 1,
+    UPDATE_NOTICE_WINDOW.startsAt,
+    Date.parse("2030-01-01T00:00:00Z"),
+  ]) {
+    const f = fixture(
+      new Map([
+        [retired, "1"],
+        [lookalike, "1"],
+        [unknown, "1"],
+        [current, "1"],
+      ])
+    );
+    clearObsoleteUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, now);
+    assert(!f.data.has(retired), String(now));
+    assert.equal(f.data.get(lookalike), "1");
+    assert.equal(f.data.get(unknown), "1");
+    assert.equal(f.data.has(current), now < UPDATE_NOTICE_WINDOW.expiresAt);
+  }
+  assert(RETIRED_UPDATE_NOTICE_VERSIONS.includes("2026-09-update-1"));
+  assert(
+    !RETIRED_UPDATE_NOTICE_VERSIONS.includes(UPDATE_NOTICE_VERSION),
+    "the shown notice is never retired"
+  );
+});
+
+test("the client storage plugin runs the cleanup and blocked storage cannot break app start", async () => {
+  const source = await readFile(
+    new URL("../plugins/storage-cleanup.client.ts", import.meta.url),
+    "utf8"
+  );
+  const code = transpile(source.replace(/^import .*;\n/gm, "")).replace(
+    /^export default /m,
+    "return "
+  );
+  const retired = "bootstrap-academy:update-notice:2026-09-update-1:" + A;
+  const f = fixture(
+    new Map([
+      [retired, "1"],
+      ["selectedButtonLeaderBoard", "x"],
+      ["payment", "pending"],
+    ])
+  );
+  const run = (localStorage) =>
+    new Function("defineNuxtPlugin", "clearObsoleteUpdateNotices", "window", code)(
+      (setup) => setup(),
+      clearObsoleteUpdateNotices,
+      { localStorage }
+    );
+  run(f.storage);
+  assert.deepEqual([...f.data.keys()], ["payment"]);
+  assert.doesNotThrow(() => run(fixture(new Map([[retired, "1"]]), true).storage));
 });
