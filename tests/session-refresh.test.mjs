@@ -337,6 +337,7 @@ for (const result of ["success", "unauthorized", "offline"]) {
       useUser: () => ({ value: { id: "A" } }),
       prepareLearningLogout: async () => true,
       clearLearningStorage: () => {},
+      broadcastLearningLogout: (ended) => assert.deepEqual(ended, captured),
       setStates: (value) => {
         assert.equal(value, null);
         current = { ...current, identity: null, generation: "logout" };

@@ -1,7 +1,7 @@
 import { PUBLICATION_SCOPE } from "~/utils/profilePublication";
 
 export interface LeaderboardEntry {
-  user: { id: string; display_name: string; avatar_url: null };
+  user: { display_name: string; avatar_url: null };
   rank: number;
   score: number;
 }
@@ -56,7 +56,6 @@ export function normalizeLeaderboardPage(value: any, policySeen = false) {
     // while displaying no anonymous person/score as a substitute for identity.
     if (!active && item?.user == null) return [];
     if (
-      typeof item?.user?.id !== "string" ||
       typeof item?.user?.display_name !== "string" ||
       !Number.isSafeInteger(item.rank) ||
       item.rank < 1 ||
@@ -67,7 +66,7 @@ export function normalizeLeaderboardPage(value: any, policySeen = false) {
       throw { statusCode: 503 };
     return [
       {
-        user: { id: item.user.id, display_name: item.user.display_name, avatar_url: null },
+        user: { display_name: item.user.display_name, avatar_url: null },
         rank: item.rank,
         score: item.score,
       },

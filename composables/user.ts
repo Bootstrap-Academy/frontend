@@ -1,5 +1,7 @@
 import { useState } from "#app";
 import { User } from "~/types/userTypes";
+import { clearLearningStorage } from "~/utils/learningStorage";
+import { broadcastLearningLogout } from "~/utils/learningLogoutSync";
 
 export const useUser = () => useState<User>("user", () => new User());
 export const useSession = () => useState<{ id: string } | null>("session", () => null);
@@ -250,17 +252,20 @@ export async function exportUserData() {
 }
 
 export async function deleteUser() {
-  const user = <any>useUser();
-  let user_id = user?.value?.id ?? null;
+  const expected = getSessionSnapshot();
+  const user_id = expected.userId;
 
   try {
     if (!!!user_id) {
       throw { data: "Invalid User Id" };
     }
 
-    const response = await DELETE(`/auth/users/${user_id}`);
+    const response = await DELETE_ACCOUNT(expected);
 
-    setStates(null);
+    const current = getSessionSnapshot();
+    if (current.userId === user_id) setStates(null);
+    clearLearningStorage(user_id);
+    broadcastLearningLogout(expected, true);
 
     return [response, null];
   } catch (error: any) {

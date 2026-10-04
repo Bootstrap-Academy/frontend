@@ -860,6 +860,8 @@ test("actual app keeps public rights access and ordinary authentication without 
     const user = await moduleFrom("../composables/user.ts", {
       'import { useState } from "#app";': "",
       'import { User } from "~/types/userTypes";': "class User {}",
+      'import { clearLearningStorage } from "~/utils/learningStorage";': "",
+      'import { broadcastLearningLogout } from "~/utils/learningLogoutSync";': "",
     });
     const terms = await moduleFrom("../composables/terms.ts");
     const session = (await moduleFrom("../plugins/session.client.ts")).default;

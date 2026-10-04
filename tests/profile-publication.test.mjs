@@ -320,7 +320,7 @@ const page = (ids = ["A"], revision = 1) => ({
   epoch_revision: revision,
   scope_version: publication.PUBLICATION_SCOPE,
   leaderboard: ids.map((id) => ({
-    user: { id, display_name: id, avatar_url: null, bio: "private", admin: true },
+    user: { display_name: id, avatar_url: null, bio: "private", admin: true },
     score: 10,
     rank: 1,
   })),
@@ -352,7 +352,6 @@ test("legacy and publication leaderboards retain only the decided fields; partia
   for (const value of [active, legacy]) {
     const normalized = leaderboard.normalizeLeaderboardPage(value);
     assert.deepEqual(normalized.leaderboard[0].user, {
-      id: "A",
       display_name: "A",
       avatar_url: null,
     });
@@ -376,13 +375,25 @@ test("legacy and publication leaderboards retain only the decided fields; partia
   );
 });
 
+test("old leaderboard account identifiers are discarded in both policy states", () => {
+  const active = page();
+  active.leaderboard[0].user.id = "PRIVATE-ACCOUNT-UUID";
+  const legacy = { leaderboard: active.leaderboard, total: 3 };
+  for (const value of [active, legacy]) {
+    const normalized = leaderboard.normalizeLeaderboardPage(value);
+    assert.equal("id" in normalized.leaderboard[0].user, false);
+    assert.equal(JSON.stringify(normalized).includes("PRIVATE-ACCOUNT-UUID"), false);
+    assert.equal(normalized.leaderboard[0].user.display_name, "A");
+  }
+});
+
 test("pagination carries epoch, preserves ties and replaces page zero instead of duplicating it", async () => {
   const f = ranking((_, n) => page(n === 2 ? ["B"] : ["A"]));
   await f.load("/ranking", 0, 1);
   await f.load("/ranking", 1, 1);
   assert.ok(f.calls[1].includes(`publication_epoch=${epoch}`));
   assert.deepEqual(
-    f.state.entries.map((p) => p.user.id),
+    f.state.entries.map((p) => p.user.display_name),
     ["A", "B"]
   );
   assert.equal(f.state.entries[1].rank, 1);
@@ -405,7 +416,7 @@ test("a 409 or different epoch discards loaded pages and restarts at zero", asyn
     await f.load("/ranking", 0, 1);
     await f.load("/ranking", 1, 1);
     assert.deepEqual(
-      f.state.entries.map((p) => p.user.id),
+      f.state.entries.map((p) => p.user.display_name),
       ["new-page"]
     );
     assert.ok(f.calls[2].includes("offset=0"));
