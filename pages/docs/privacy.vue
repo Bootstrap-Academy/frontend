@@ -306,8 +306,9 @@
               <td>Fehlerberichte (Abschnitt 8.2)</td>
               <td>Fehlerbehebung</td>
               <td>
-                Fehlermeldung, Stacktrace, aufgerufene URL, Nutzerkennung, Kennung und je nach
-                Fehler IP-Adresse der auslösenden Anfrage
+                Fehlertyp, Stacktrace, Anfragemethode, Routenmuster oder Kennung der Anfrage; beim
+                Kerndienst und bei Challenges auch Fehlermeldung, vorherige Systemmeldungen und
+                gegebenenfalls Nutzerkennung
               </td>
               <td>Art. 6 Abs. 1 lit. f DSGVO</td>
               <td>90 Tage, durch die tageweise Löschung bis zu drei Tage länger</td>
@@ -632,10 +633,10 @@
         Unsere Webserver für api.bootstrap.academy, api.test.bootstrap.academy und
         sandkasten.bootstrap.academy protokollieren jede Anfrage mit IP-Adresse, Zeitpunkt,
         aufgerufener Adresse (URL) und Methode, HTTP-Status, Browserkennung (User-Agent) und
-        Referrer. Die Dienste Skills, Events und Jobs protokollieren jede Anfrage zusätzlich mit
-        Client-Adresse und aufgerufener Adresse. Die Systemprotokolle der Dienste enthalten
-        technische Meldungen, die im Einzelfall Nutzerkennungen oder aufgerufene Adressen enthalten
-        können; schlägt die Auswertung einer Programmieraufgabe wegen eines Fehlers im
+        Referrer. Die Dienste Challenges, Skills, Events und Jobs protokollieren jede Anfrage
+        zusätzlich mit Client-Adresse und aufgerufener Adresse. Die Systemprotokolle der Dienste
+        enthalten technische Meldungen, die im Einzelfall Nutzerkennungen oder aufgerufene Adressen
+        enthalten können; schlägt die Auswertung einer Programmieraufgabe wegen eines Fehlers im
         Auswertungsskript der Aufgabe fehl, kann die Fehlermeldung auch Ausgaben dieses Skripts
         enthalten. Namen, E-Mail-Adressen, Anschriften, Passwörter, Token und die Inhalte deiner
         Eingaben schreiben die Dienste nicht in die Systemprotokolle; die IP-Adresse kann dort im
