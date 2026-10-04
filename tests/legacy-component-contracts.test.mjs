@@ -83,7 +83,7 @@ test("submission rows keep their server identity when the newest result is inser
         messageTitle: () => "Pending",
         messageDescription: () => "",
         hasDetails: () => false,
-        verdictIcons: () => "span",
+        statusIcon: () => "span",
       },
       []
     );

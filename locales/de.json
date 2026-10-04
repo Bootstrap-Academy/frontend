@@ -96,6 +96,7 @@
     "NoOutput": "Es gibt keine Ausgabe für deinen Code 🫣",
     "SubmissionSolved": "Gelöst✅",
     "PendingResult": "Warte! Wir verarbeiten deinen Code",
+    "NotChecked": "Nicht geprüft",
     "UpdateYourCode": "Aktualisiere deinen Code",
     "Since": "seit",
     "Until": "bis",
@@ -1102,13 +1103,14 @@
     "Verdict": {
       "COMPILATION_ERROR": "Kompilierung fehlgeschlagen",
       "INVALID_OUTPUT_FORMAT": "Ungültige Ausgabe",
-      "MEMORY_LIMIT_EXCEEDED": "RAM-Limit überschritten",
+      "MEMORY_LIMIT_EXCEEDED": "Dein Programm hat zu viel Arbeitsspeicher gebraucht.",
       "NO_OUTPUT": "Keine Ausgabe",
       "OK": "Erfolgreich",
       "PRE_CHECK_FAILED": "Vorbedingungen nicht erfüllt",
       "RUNTIME_ERROR": "Laufzeitfehler",
       "TIME_LIMIT_EXCEEDED": "Zeitlimit überschritten",
-      "WRONG_ANSWER": "Falsche Antwort"
+      "WRONG_ANSWER": "Falsche Antwort",
+      "Unknown": "Unbekanntes Ergebnis"
     },
     "EvaluatorInvalidOutput": "Die Ausgabe für deinen Evaluator ist ungültig",
     "EvaluatorFailed": "Es liegt ein Fehler im Evaluatorcode vor ❌",
@@ -1933,6 +1935,8 @@
     "Details": "Details ansehen",
     "Running": "Dein Ergebnis wird geprüft.",
     "StillRunning": "Die Prüfung dauert noch. Du kannst das Ergebnis gleich erneut abrufen.",
+    "TechnicalFailure": "Wir konnten deinen Code wegen eines technischen Problems nicht prüfen. Das kostet dich keine Herzen oder Versuche. Gib ihn einfach noch einmal ab.",
+    "UnknownResult": "Dieses Ergebnis können wir hier leider nicht anzeigen. Du kannst deinen Code noch einmal abgeben.",
     "CheckResult": "Ergebnis abrufen",
     "Submitting": "Wird abgegeben …",
     "CheckAnswer": "Antwort prüfen",

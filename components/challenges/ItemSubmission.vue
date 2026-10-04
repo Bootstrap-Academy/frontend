@@ -51,7 +51,7 @@
             <div class="space-y-3 rounded-md bg-primary p-3 text-sm">
               <div class="flex items-start space-x-3">
                 <div class="mt-0.5 min-w-max">
-                  <component :is="verdictIcons(submission.result?.verdict)" class="h-5 w-5" />
+                  <component :is="statusIcon(submission)" class="h-5 w-5" />
                 </div>
                 <div class="space-y-1">
                   <p class="font-semibold">
@@ -131,6 +131,7 @@ import type { CodingSubmissionView } from "~/types/codingChallengeViews";
 import { useI18n } from "vue-i18n";
 import { CodeBracketIcon, CheckBadgeIcon } from "@heroicons/vue/24/solid";
 import { useCodingSubmissions } from "~~/composables/codingChallenges";
+import { codingSubmissionStatus, codingTechnicalFailure } from "~/utils/learningExercise";
 import { useDateFormat } from "@vueuse/core";
 import {
   CheckIcon,
@@ -143,6 +144,8 @@ import {
   PowerIcon,
   ClockIcon,
   XMarkIcon,
+  ExclamationTriangleIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/vue/24/outline";
 
 export default defineComponent({
@@ -157,28 +160,6 @@ export default defineComponent({
     const { t } = useI18n();
     const submissions: Ref<CodingSubmissionView[]> = useCodingSubmissions();
     const expandedRows = ref<Record<string, boolean>>({});
-
-    const verdictIs: any = (submission: any) => {
-      const verdictMapping: { [key: string]: string } = {
-        COMPILATION_ERROR: "Error.Verdict.COMPILATION_ERROR",
-        INVALID_OUTPUT_FORMAT: "Error.Verdict.INVALID_OUTPUT_FORMAT",
-        MEMORY_LIMIT_EXCEEDED: "Error.Verdict.MEMORY_LIMIT_EXCEEDED",
-        NO_OUTPUT: "Error.Verdict.NO_OUTPUT",
-        OK: "Error.Verdict.OK",
-        PRE_CHECK_FAILED: "Error.Verdict.PRE_CHECK_FAILED",
-        RUNTIME_ERROR: "Error.Verdict.RUNTIME_ERROR",
-        TIME_LIMIT_EXCEEDED: "Error.Verdict.TIME_LIMIT_EXCEEDED",
-        WRONG_ANSWER: "Error.Verdict.WRONG_ANSWER",
-      };
-
-      const verdict = submission.result?.verdict ?? "";
-
-      if (!submission.result) {
-        return "Headings.PendingResult";
-      }
-
-      return verdictMapping[verdict] || "No_Output";
-    };
 
     const dateFormat = (date: any) => {
       let utcDate = new Date(date);
@@ -198,7 +179,10 @@ export default defineComponent({
       if (!!error) openSnackbar("error", error);
     }
 
-    function verdictIcons(verdict?: string) {
+    function statusIcon(submission: any) {
+      if (codingTechnicalFailure(submission)) return ExclamationTriangleIcon;
+      const verdict = submission.result?.verdict;
+      if (!verdict) return undefined;
       const verdictIconMapping: { [key: string]: any } = {
         COMPILATION_ERROR: NoSymbolIcon,
         INVALID_OUTPUT_FORMAT: FlagIcon,
@@ -210,21 +194,20 @@ export default defineComponent({
         TIME_LIMIT_EXCEEDED: ClockIcon,
         WRONG_ANSWER: XMarkIcon,
       };
-      return verdictIconMapping[verdict ?? ""];
+      return verdictIconMapping[verdict] ?? QuestionMarkCircleIcon;
     }
 
     function messageTitle(submission: any) {
       const message = submission.result?.message;
-      if (!submission.result) return t("Headings.PendingResult");
       if (message?.title_key) return t(message.title_key);
-      return t(verdictIs(submission));
+      return t(codingSubmissionStatus(submission).title);
     }
 
     function messageDescription(submission: any) {
       const message = submission.result?.message;
-      if (!message?.body_key) return "";
-      const params = message.body_params ?? {};
-      return t(message.body_key, params);
+      if (message?.body_key) return t(message.body_key, message.body_params ?? {});
+      const body = codingSubmissionStatus(submission).body;
+      return body ? t(body) : "";
     }
 
     function detailSummary(submission: any) {
@@ -257,8 +240,7 @@ export default defineComponent({
       formattedTimeStamp,
       loadSubmission,
       dateFormat,
-      verdictIs,
-      verdictIcons,
+      statusIcon,
       messageTitle,
       messageDescription,
       detailSummary,

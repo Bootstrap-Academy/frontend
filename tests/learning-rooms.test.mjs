@@ -21,7 +21,8 @@ async function module(name) {
 }
 await module("apiError");
 const { createLearningRooms } = await module("learningRooms");
-const { createLearningExercise } = await module("learningExercise");
+const { codingSubmissionStatus, codingTechnicalFailure, codingVerdictKey, createLearningExercise } =
+  await module("learningExercise");
 const deferred = () => {
   let resolve, reject;
   const promise = new Promise((yes, no) => {
@@ -409,6 +410,111 @@ test("coding polling is bounded and checks only the ID returned by the single su
   await f.controller.check();
   assert.equal(f.view.phase, "correct");
   assert.equal(f.calls.filter(({ method }) => method === "POST").length, 1);
+});
+
+test("a coding submission closed after technical failures can simply be submitted again", async () => {
+  let closed = false;
+  let posts = 0;
+  const f = exerciseFixture((path, method) => {
+    if (method === "POST") return { id: `mine-${++posts}` };
+    // Older services omit the field; the closed entry then looks like a pending one.
+    const first = { id: "mine-1", result: null, queue_position: null };
+    if (posts < 2) return [closed ? { ...first, technical_failure: true } : first];
+    return [
+      { id: "mine-2", result: { verdict: "OK" }, technical_failure: false },
+      { ...first, technical_failure: true },
+    ];
+  });
+  const polls = () =>
+    f.calls.filter(({ path, method }) => path.endsWith("/submissions") && method === "GET").length;
+  await f.controller.load(reference, "learner");
+  await f.controller.submit({ code: "print(1)", environment: "python" });
+  assert.equal(f.view.phase, "pending");
+  assert.equal(f.view.error, "StillRunning");
+
+  closed = true;
+  await f.controller.check();
+  assert.equal(f.view.phase, "ready");
+  assert.equal(f.view.error, "TechnicalFailure");
+  assert.equal(f.view.result, null);
+  assert.equal(f.view.submissionId, null);
+  const seen = polls();
+  await f.controller.check();
+  assert.equal(polls(), seen, "a closed submission is not polled again");
+
+  await f.controller.submit({ code: "print(1)", environment: "python" });
+  assert.equal(posts, 2);
+  assert.equal(f.view.phase, "correct");
+  assert.equal(f.view.error, "");
+});
+
+test("a reload finds a submission closed after technical failures ready for another try", async () => {
+  const f = exerciseFixture(() => [{ id: "mine", result: null, technical_failure: true }]);
+  await f.controller.load(reference, "learner", "mine");
+  assert.equal(f.view.phase, "ready");
+  assert.equal(f.view.error, "TechnicalFailure");
+  assert.equal(f.calls.filter(({ method }) => method === "POST").length, 0);
+});
+
+test("a memory kill is the learner's verdict and is shown as such", async () => {
+  const verdict = { verdict: "MEMORY_LIMIT_EXCEEDED", run: { stderr: "Killed" } };
+  const f = exerciseFixture((path, method) =>
+    method === "POST" ? { id: "mine" } : [{ id: "mine", result: verdict, technical_failure: false }]
+  );
+  await f.controller.load(reference, "learner");
+  await f.controller.submit({ code: "x = [0] * 10**10", environment: "python" });
+  assert.equal(f.view.phase, "incorrect");
+  assert.deepEqual(f.view.result, verdict);
+});
+
+test("submission list texts cover verdicts, technical closes, unknown values and old services", async () => {
+  const locales = await Promise.all(
+    ["de", "en-US"].map(async (name) =>
+      JSON.parse(await readFile(new URL(`../locales/${name}.json`, import.meta.url), "utf8"))
+    )
+  );
+  const text = (key) =>
+    locales.map((locale) => key.split(".").reduce((node, part) => node?.[part], locale));
+  const statuses = [
+    [{ result: { verdict: "MEMORY_LIMIT_EXCEEDED" } }, "Error.Verdict.MEMORY_LIMIT_EXCEEDED", ""],
+    [{ result: { verdict: "SOMETHING_NEW" } }, "Error.Verdict.Unknown", ""],
+    [
+      { result: null, technical_failure: true },
+      "Headings.NotChecked",
+      "LearningRooms.TechnicalFailure",
+    ],
+    // A verdict always wins over the flag.
+    [{ result: { verdict: "OK" }, technical_failure: true }, "Error.Verdict.OK", ""],
+    // Older services: no field, no result, still pending as before.
+    [{ result: null }, "Headings.PendingResult", ""],
+  ];
+  for (const [submission, title, body] of statuses)
+    assert.deepEqual(codingSubmissionStatus(submission), { title, body });
+  assert.equal(codingTechnicalFailure({ result: null, technical_failure: "true" }), false);
+  assert.equal(codingVerdictKey(undefined), "Error.Verdict.Unknown");
+  const keys = [
+    "Error.Verdict.Unknown",
+    "Headings.NotChecked",
+    "Headings.PendingResult",
+    "LearningRooms.TechnicalFailure",
+    "LearningRooms.UnknownResult",
+    ...[
+      "OK",
+      "COMPILATION_ERROR",
+      "INVALID_OUTPUT_FORMAT",
+      "MEMORY_LIMIT_EXCEEDED",
+      "NO_OUTPUT",
+      "PRE_CHECK_FAILED",
+      "RUNTIME_ERROR",
+      "TIME_LIMIT_EXCEEDED",
+      "WRONG_ANSWER",
+    ].map(codingVerdictKey),
+  ];
+  for (const key of keys)
+    for (const value of text(key)) assert.ok(typeof value === "string" && value.trim(), key);
+  const [de, en] = text("LearningRooms.TechnicalFailure");
+  assert.match(de, /keine Herzen oder Versuche/);
+  assert.match(en, /hearts or attempts/);
 });
 
 test("lost challenge response neither polls nor resubmits a possibly paid attempt", async () => {

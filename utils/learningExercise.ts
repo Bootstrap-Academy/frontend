@@ -13,6 +13,30 @@ const codingVerdicts = new Set([
   "TIME_LIMIT_EXCEEDED",
   "WRONG_ANSWER",
 ]);
+
+/** Title key for a coding verdict. A value this version does not know is neither right nor wrong. */
+export function codingVerdictKey(verdict: unknown) {
+  return typeof verdict === "string" && codingVerdicts.has(verdict)
+    ? `Error.Verdict.${verdict}`
+    : "Error.Verdict.Unknown";
+}
+
+/**
+ * The service closed the submission without a verdict after repeated technical
+ * failures; it cost nothing. Older services omit the field and stay pending.
+ */
+export function codingTechnicalFailure(submission: any) {
+  return submission?.technical_failure === true && !submission.result;
+}
+
+/** Title and optional body keys for one entry of the learner's submission list. */
+export function codingSubmissionStatus(submission: any) {
+  if (submission?.result) return { title: codingVerdictKey(submission.result.verdict), body: "" };
+  if (codingTechnicalFailure(submission))
+    return { title: "Headings.NotChecked", body: "LearningRooms.TechnicalFailure" };
+  return { title: "Headings.PendingResult", body: "" };
+}
+
 const segment = encodeURIComponent;
 export function exercisePath(reference: ExerciseReference) {
   const resource = {
@@ -114,9 +138,12 @@ export function createLearningExercise(options: {
         )
           throw new Error("Invalid attempt");
         if (coding ? response?.result?.verdict : typeof response?.solved === "boolean") {
-          if (coding && !codingVerdicts.has(response.result.verdict))
+          if (coding && typeof response.result.verdict !== "string")
             throw new Error("Invalid coding verdict");
-          view.result = coding ? response.result : { solved: response.solved };
+          // A final verdict this version cannot read may be a technical one:
+          // never show it as wrong, and let the learner go on.
+          const unknown = coding && !codingVerdicts.has(response.result.verdict);
+          view.result = coding ? (unknown ? null : response.result) : { solved: response.solved };
           if (response.hearts_pending === true) {
             view.phase = "pending";
             publish();
@@ -128,9 +155,25 @@ export function createLearningExercise(options: {
           await refreshHearts(ticket);
           if (!current(ticket)) return;
           view.posting = false;
+          if (unknown) {
+            view.submissionId = null;
+            view.phase = "ready";
+            view.error = "UnknownResult";
+            publish();
+            return;
+          }
           const correct = coding ? response.result.verdict === "OK" : response.solved;
           view.phase = correct ? "correct" : "incorrect";
           view.error = "";
+          publish();
+          return;
+        }
+        if (coding && codingTechnicalFailure(response)) {
+          // Nothing was charged or counted, so the learner can submit again.
+          view.submissionId = null;
+          view.result = null;
+          view.phase = "ready";
+          view.error = "TechnicalFailure";
           publish();
           return;
         }
