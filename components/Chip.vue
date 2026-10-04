@@ -64,6 +64,11 @@ export default defineComponent({
 });
 </script>
 <style scoped>
+/*
+  Text colors keep small chip text at 4.5:1 or more (WCAG 1.4.3) on every background:
+  brand dark where it is enough, black where neither white nor brand dark is.
+  tests/a11y-controls.test.mjs checks every variant.
+*/
 div {
   @apply flex h-fit items-center rounded-[100px] text-center font-bold uppercase tracking-widest text-primary font-heading transition-basic;
   font-family: Arial, Helvetica, sans-serif;
@@ -74,11 +79,11 @@ div {
   background-color: #00c9ef;
 }
 .chip-color-2 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #fb027c;
 }
 .chip-color-3 {
-  @apply text-white;
+  color: #000;
   background-color: #835aff;
 }
 .chip-color-4 {
@@ -86,7 +91,7 @@ div {
   background-color: #35dc85;
 }
 .chip-color-5 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #1680fd;
 }
 .chip-color-6 {
@@ -98,15 +103,15 @@ div {
   background-color: #ffcb30;
 }
 .chip-color-8 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #f6584f;
 }
 .chip-color-9 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #d278f0;
 }
 .chip-color-10 {
-  @apply text-white;
+  color: #000;
   background-color: #546bed;
 }
 .chip-color-11 {
@@ -114,15 +119,15 @@ div {
   background-color: #ff64d9;
 }
 .chip-color-12 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #fc8618;
 }
 .chip-color-13 {
-  @apply text-white;
+  @apply text-primary;
   background-color: #0cc9ab;
 }
 .bg-info {
-  color: var(--color-white);
+  color: #000;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ SIZE */
 .xs {

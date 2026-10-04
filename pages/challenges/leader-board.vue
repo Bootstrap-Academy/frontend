@@ -28,7 +28,11 @@
         <p class="text-heading-1 text-accent">{{ t("Headings.LeaderBoard") }}</p>
       </div>
 
-      <InputButtonToggle :buttonOptions="buttonOptions" v-model="selectedbutton" />
+      <InputButtonToggle
+        :buttonOptions="buttonOptions"
+        v-model="selectedbutton"
+        label="Headings.LeaderBoard"
+      />
     </div>
 
     <SkeletonLeaderboard v-if="loading && selectedbutton != 1" />

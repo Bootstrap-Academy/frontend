@@ -20,6 +20,7 @@
       <select
         :name="id"
         :id="id"
+        :aria-label="!label && ariaLabel ? t(ariaLabel) : undefined"
         v-model="input"
         class="relative z-20 cursor-pointer appearance-none bg-transparent"
       >
@@ -48,6 +49,8 @@ export default defineComponent({
   props: {
     hint: { type: String, default: "" },
     label: { type: String, default: "" },
+    /** Translation key naming a select that has no visible label. */
+    ariaLabel: { type: String, default: "" },
     id: { type: String, default: "select" },
     sm: { type: Boolean, default: false },
     btnType: { type: Boolean, default: false },
