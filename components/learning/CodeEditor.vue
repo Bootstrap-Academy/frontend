@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import type * as Monaco from "monaco-editor";
+import { loadMonaco } from "~/utils/monaco";
 
 const props = defineProps<{ modelValue: string; language: string; disabled?: boolean }>();
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();
@@ -36,7 +37,7 @@ onMounted(async () => {
   // browsers report a fine pointer when an external pointer is connected.
   if (window.matchMedia("(pointer: coarse), (max-width: 640px)").matches) return;
   try {
-    monaco = await import("monaco-editor");
+    monaco = await loadMonaco();
     if (!alive || !container.value) return;
     enhanced.value = true;
     await nextTick();

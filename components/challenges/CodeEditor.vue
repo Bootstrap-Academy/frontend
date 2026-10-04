@@ -62,6 +62,7 @@
 
 <script lang="ts">
 import { decodeApiError } from "~/utils/apiError";
+import { loadMonaco } from "~/utils/monaco";
 import { useI18n } from "vue-i18n";
 import { defineComponent, onMounted, onBeforeUnmount, watch, ref, computed, nextTick } from "vue";
 import type * as Monaco from "monaco-editor";
@@ -143,7 +144,7 @@ export default defineComponent({
       // Native editing supports small screens and touch keyboards without the large chunk.
       if (window.matchMedia("(pointer: coarse), (max-width: 640px)").matches) return;
       try {
-        monaco = await import("monaco-editor");
+        monaco = await loadMonaco();
         if (!alive) return;
         enhanced.value = true;
         await nextTick();
