@@ -29,7 +29,7 @@
       Rechtsform: Gesellschaft mit beschränkter Haftung (GmbH)
       <br />
       <strong>Vertreten durch den Geschäftsführer:</strong>
-      Daniel Michael Bauer
+      Daniel Bauer
     </p>
 
     <p>
@@ -52,7 +52,7 @@
 
     <h2 class="text-heading-2 mb-box mt-card">Verantwortlich im Sinne des § 18 Abs. 2 MStV</h2>
     <p>
-      Daniel Michael Bauer
+      Daniel Bauer
       <br />
       Wittelsbacherplatz 1
       <br />
