@@ -212,10 +212,6 @@ export default {
       return `0 0 ${iconSize.value} ${iconSize.value}`;
     });
 
-    onMounted(async () => {
-      await Promise.all([getUser()]);
-    });
-
     return {
       t,
       dashed,

@@ -159,10 +159,6 @@ export default defineComponent({
       }
     }
 
-    onMounted(async () => {
-      await Promise.all([getUser()]);
-    });
-
     return {
       current_node,
       nodeRef,
