@@ -154,11 +154,14 @@ export default defineComponent({
 
     // ============================================================= Form
     const user = <any>useUser();
+    const profileLoaded = useProfileLoaded();
     const router = useRouter();
 
     async function onclickSubmitForm() {
       let email_verified = user?.value?.email_verified ?? false;
-      if (!email_verified) {
+      // The cookie does not say whether the address is verified. Without the
+      // profile the order page decides; it loads the profile itself.
+      if (profileLoaded.value && !email_verified) {
         openSnackbar("error", "Error.AccountNotVerified");
         return;
       }
