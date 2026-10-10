@@ -4,6 +4,7 @@
     "CloseMenu": "Close menu",
     "MainMenu": "Main menu",
     "AccountMenu": "Account menu",
+    "Hearts": "{hearts} of {max} hearts",
     "Footer": "More pages",
     "Legal": "Legal information",
     "Social": "Bootstrap Academy on {name}"
@@ -918,6 +919,7 @@
     "DeleteAccount": "Yes, Delete Account",
     "DownloadMyData": "Download my data",
     "RemoveLink": "Remove",
+    "RemoveTag": "Remove {tag}",
     "LinkAccount": "Link {provider}",
     "LoginWithProvider": "Log in with {provider}",
     "AcceptTermsAndConditions": "Accept terms",
@@ -1846,6 +1848,8 @@
     "Unconfirmed": "We could not confirm receipt yet. Check the status again.",
     "Check": "Check status",
     "Submit": "Send report",
+    "Start": "Report this task",
+    "Reason": "What’s wrong?",
     "Open": "View my report"
   },
   "CharacterDashboard": {
@@ -1997,6 +2001,8 @@
     "Unavailable": "We could not confirm the current state. Please try again.",
     "CheckAgain": "Check setting",
     "Reload": "Reload",
+    "RankingSignIn": "Sign in again to see the leaderboards.",
+    "RankingVerify": "Verify your email address to see the leaderboards.",
     "RankingUnavailable": "The leaderboard is currently unavailable. Please try again."
   }
 }

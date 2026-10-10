@@ -132,8 +132,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* From 768 px on the floating feedback launcher needs this band; on phones it sits above. */
 footer {
-  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 768px) {
+  footer {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 footer a {

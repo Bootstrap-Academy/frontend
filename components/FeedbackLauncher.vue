@@ -199,16 +199,20 @@ const errorText = computed(() => {
 </script>
 
 <template>
+  <!--
+    Below 768 px the content column is the whole screen, so a floating button would cover
+    text. There the launcher sits in the page flow above the footer, as on the guest page.
+  -->
   <div
     v-if="ready"
-    class="feedback-launcher print:hidden"
-    :class="props.inline ? 'container flex justify-end pb-6' : ''"
+    class="feedback-launcher container flex justify-end pb-6 print:hidden"
+    :class="props.inline ? '' : 'md:pb-0'"
   >
     <button
       v-show="!opened && stack.length === 0"
       type="button"
       class="feedback-open inline-flex min-h-12 items-center gap-2 rounded-full border border-accent bg-primary px-4 py-3 font-semibold text-heading"
-      :class="props.inline ? 'relative' : 'fixed right-4 z-40 shadow-lg'"
+      :class="props.inline ? 'relative' : 'md:fixed md:right-4 md:z-40 md:shadow-lg'"
       :style="props.inline ? undefined : { bottom: 'calc(1rem + env(safe-area-inset-bottom))' }"
       aria-haspopup="dialog"
       @click="opened = true"
@@ -500,14 +504,16 @@ const errorText = computed(() => {
 
 <style>
 /*
-  The launcher floats over the bottom-right corner of every page (1rem offset plus a 50px
-  button). On a phone that corner is part of the content column. Keeping the band (with a
-  small gap) out of the area the browser scrolls content into means a focused control, a
+  From 768 px on, the launcher floats over the bottom-right corner of every page (1rem offset
+  plus a 50px button), which can still reach into the content column. Keeping the band (with
+  a small gap) out of the area the browser scrolls content into means a focused control, a
   message a page brings into view or a find-in-page hit stops above the launcher instead of
   under it. The footer keeps the same band free at the end of the page.
 */
-html {
-  scroll-padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+@media (min-width: 768px) {
+  html {
+    scroll-padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 .feedback-primary,
 .feedback-secondary {

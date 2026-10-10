@@ -4,6 +4,7 @@
     "CloseMenu": "Menü schließen",
     "MainMenu": "Hauptmenü",
     "AccountMenu": "Kontomenü",
+    "Hearts": "{hearts} von {max} Herzen",
     "Footer": "Weitere Seiten",
     "Legal": "Rechtliches",
     "Social": "Bootstrap Academy auf {name}"
@@ -912,6 +913,7 @@
     "DeleteAccount": "Ja, Konto löschen",
     "DownloadMyData": "Meine Daten herunterladen",
     "RemoveLink": "Entfernen",
+    "RemoveTag": "{tag} entfernen",
     "LinkAccount": "{provider} verknüpfen",
     "LoginWithProvider": "Mit {provider} anmelden",
     "AcceptTermsAndConditions": "AGB akzeptieren",
@@ -1849,6 +1851,8 @@
     "Unconfirmed": "Der Eingang konnte noch nicht bestätigt werden. Prüfe den Status erneut.",
     "Check": "Status prüfen",
     "Submit": "Meldung senden",
+    "Start": "Aufgabe melden",
+    "Reason": "Was stimmt nicht?",
     "Open": "Meine Meldung ansehen"
   },
   "CharacterDashboard": {
@@ -2000,6 +2004,8 @@
     "Unavailable": "Wir konnten den aktuellen Stand gerade nicht bestätigen. Bitte versuch es noch einmal.",
     "CheckAgain": "Einstellung prüfen",
     "Reload": "Neu laden",
+    "RankingSignIn": "Melde dich wieder an, um die Bestenlisten zu sehen.",
+    "RankingVerify": "Bestätige deine E-Mail-Adresse, um die Bestenlisten zu sehen.",
     "RankingUnavailable": "Die Bestenliste ist gerade nicht verfügbar. Bitte versuch es noch einmal."
   }
 }

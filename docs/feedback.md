@@ -1,6 +1,6 @@
 # Public feedback
 
-`FeedbackLauncher` lives outside `NuxtLayout` in `app.vue`, alongside the single footer, so closing it or navigating between layouts preserves the in-memory draft. The separate `error.vue` entry also renders one footer and launcher. An account/session change or reload clears the draft. No draft, screenshot, account identifier or consent is stored in browser persistence.
+`FeedbackLauncher` lives outside `NuxtLayout` in `app.vue`, alongside the single footer, so closing it or navigating between layouts preserves the in-memory draft. From 768 px on, its button floats in the bottom-right corner; below that, and on the guest page `/start`, it sits in the page flow above the footer so it never covers text. The separate `error.vue` entry also renders one footer and launcher. An account/session change or reload clears the draft. No draft, screenshot, account identifier or consent is stored in browser persistence.
 
 The dialog submits through its own credential-free `POST /feedback` to `BASE_API_URL`. It does not use the authenticated API wrapper, refresh tokens or automatic retries. Optional diagnostics are collected only after the unchecked consent control is selected and are shown exactly before sending. `FEEDBACK_BUILD` is determined at build time from Git; a dirty or unavailable source is identified explicitly.
 
@@ -27,4 +27,4 @@ NUXT_PUBLIC_BASE_API_URL=http://127.0.0.1:56623 npx nuxt dev --host 127.0.0.1 --
 node tests/feedback.browser.mjs
 ```
 
-The mounted-browser checks cover text-only submission, consent withdrawal, exact explicit pending retry, local image selection/attachment, crop and opaque exported pixels, close/reopen preservation, 320px layout, content scrolled into view at 390px stopping above the launcher, Escape focus return and account-boundary cleanup. Capture checks use synthetic browser media tracks to cover cancellation, wrong-source rejection, stop-on-completion and late-result cleanup. They do not automate the OS permission UI or replace an integration check against the actual Rust router.
+The mounted-browser checks cover text-only submission, consent withdrawal, exact explicit pending retry, local image selection/attachment, crop and opaque exported pixels, close/reopen preservation, 320px layout, the launcher in the page flow at 390px with no revealed content under it, Escape focus return and account-boundary cleanup. Capture checks use synthetic browser media tracks to cover cancellation, wrong-source rejection, stop-on-completion and late-result cleanup. They do not automate the OS permission UI or replace an integration check against the actual Rust router.

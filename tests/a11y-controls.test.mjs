@@ -227,6 +227,37 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
+test("heart icons are decorative and never an empty, focusable button", async () => {
+  for (const name of ["FullHeart", "HalfHeart"]) {
+    const Heart = await compile(`../components/svg/${name}.vue`, name);
+    const html = await renderToString(Vue.createSSRApp({ render: () => Vue.h(Heart) }));
+    assert.doesNotMatch(html, /<button|tabindex/, name);
+    assert.match(html, /^<\w+[^>]* aria-hidden="true"/, name);
+  }
+});
+
+test("every tag has its own named remove button", async () => {
+  const Tags = await compile("../components/input/Tags.vue", "Tags");
+  for (const [locale, label] of [
+    ["de", "python entfernen"],
+    ["en-US", "Remove python"],
+  ]) {
+    const app = Vue.createSSRApp({ render: () => Vue.h(Tags, { modelValue: ["python", "vue"] }) });
+    app.component("Input", { render: () => Vue.h("input") });
+    app.component("Chip", {
+      setup:
+        (_, { slots }) =>
+        () =>
+          Vue.h("div", slots.default?.()),
+    });
+    const html = await renderToString(app.use(i18n(locale)));
+    const buttons = [...html.matchAll(/<button\b[^>]*>/g)].map(([tag]) => tag);
+    assert.equal(buttons.length, 2, html);
+    assert.ok(buttons.every((tag) => tag.includes('type="button"')));
+    assert.ok(buttons[0].includes(`aria-label="${label}"`), buttons[0]);
+  }
+});
+
 test("the contrast calculation matches WCAG reference values", () => {
   assert.equal(contrast("#ffffff", "#000000"), 21);
   assert.equal(contrast("#777777", "#777777"), 1);
