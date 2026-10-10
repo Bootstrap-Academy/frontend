@@ -597,7 +597,8 @@
     "PurchaseReference": "Bestellnummer",
     "AddRenewalReference": "Nummer einer Premium-Verlängerung ergänzen (optional)",
     "WrongAnswerCostsOneHeart": "Nur eine falsche Lösung kostet 1 Herz. Richtige Lösungen sind kostenlos.",
-    "HeartsEmpty": "Deine Herzen sind leer. Um {time} Uhr sind sie kostenlos wieder voll."
+    "HeartsEmpty": "Deine Herzen sind leer. Um {time} Uhr sind sie kostenlos wieder voll.",
+    "CountryForInvoice": "Für die Rechnung brauchen wir noch dein Land."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -745,6 +746,7 @@
     "AddressStreet": "Straße",
     "AddressPLZ": "PLZ",
     "Country": "Land",
+    "OtherCountry": "Anderes Land",
     "Address": "Adresse",
     "VAT_ID": "Umsatzsteuer-ID",
     "NoPriceLimit": "Keine Preisbegrenzung",

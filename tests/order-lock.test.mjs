@@ -4,49 +4,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
-import ts from "typescript";
 import { parse } from "@vue/compiler-sfc";
 import * as Vue from "vue";
+import { pieces } from "./helpers/component-pieces.mjs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-/** Named functions and constants of a component, run against stand-ins for everything they reach. */
-async function pieces(path, names, scope) {
-  const { descriptor } = parse(await read(path));
-  const script = (descriptor.scriptSetup ?? descriptor.script).content;
-  const ast = ts.createSourceFile("component.ts", script, ts.ScriptTarget.Latest, true);
-  const found = new Map();
-  (function visit(node) {
-    if (ts.isFunctionDeclaration(node) && names.includes(node.name?.text))
-      found.set(node.name.text, node.getText(ast));
-    if (
-      ts.isVariableStatement(node) &&
-      node.declarationList.declarations.some((d) => names.includes(d.name.getText(ast)))
-    )
-      found.set(node.declarationList.declarations[0].name.getText(ast), node.getText(ast));
-    ts.forEachChild(node, visit);
-  })(ast);
-  assert.deepEqual([...found.keys()].sort(), [...names].sort(), path);
-  const code = ts.transpileModule([...found.values()].join("\n"), {
-    compilerOptions: { target: ts.ScriptTarget.ES2023 },
-  }).outputText;
-  // Every other name resolves to the stand-ins, then to the runtime, then to a no-op.
-  const environment = new Proxy(scope, {
-    has: () => true,
-    get: (target, key) =>
-      key === Symbol.unscopables
-        ? undefined
-        : key in target
-          ? target[key]
-          : key in globalThis
-            ? globalThis[key]
-            : () => {},
-  });
-  return new Function(
-    "environment",
-    `with (environment) { ${code}\nreturn { ${names.join(", ")} }; }`
-  )(environment);
-}
 function spy(result) {
   const calls = [];
   const fn = (...args) => {

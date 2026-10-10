@@ -49,7 +49,56 @@
           </h2>
 
           <p
-            v-if="!canBuy"
+            v-if="user?.email_verified === false"
+            class="text-body-1 flex w-fit flex-wrap border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
+          >
+            <ExclamationCircleIcon class="h-7 w-7" />
+
+            {{ t("Error.AccountNotVerified") }}
+
+            <NuxtLink to="/auth/verify-account" class="font-bold underline">
+              {{ t("Buttons.VerifyAccount") }}
+            </NuxtLink>
+          </p>
+
+          <!--
+            A private buyer only lacks the country for the invoice. It is asked
+            for here and saved to the profile with the button, so the order
+            goes on without a detour through the profile form.
+          -->
+          <form
+            v-else-if="needsCountry"
+            class="grid max-w-md gap-box mt-card mb-card"
+            @submit.prevent
+          >
+            <label for="order-country" class="text-body-1 text-black">
+              {{ t("Body.CountryForInvoice") }}
+            </label>
+            <select
+              id="order-country"
+              v-model="countryChoice"
+              class="block w-full rounded-md bg-white px-4 py-3 text-base text-primary ring-2 ring-primary focus:outline-none focus:ring-offset-2"
+            >
+              <option v-for="option of countryOptions" :key="option.value" :value="option.value">
+                {{ option.label }}
+              </option>
+              <option value="">{{ t("Inputs.OtherCountry") }}</option>
+            </select>
+            <Input
+              v-if="!countryChoice"
+              v-model="otherCountry"
+              light
+              label="Inputs.Country"
+              :rules="countryRules"
+              :show-error="countryAttempted"
+            />
+            <InputBtn class="w-fit" :loading="savingCountry" @click="saveCountry">
+              {{ t("Buttons.Continue") }}
+            </InputBtn>
+          </form>
+
+          <p
+            v-else-if="!canBuy"
             class="text-body-1 flex w-fit border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
           >
             <ExclamationCircleIcon class="h-7 w-7" />
@@ -117,7 +166,7 @@
           </template>
 
           <template v-else>
-            <div class="flex gap-box">
+            <div v-if="!needsCountry" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Country") }}:</h3>
               <p v-if="user && user.country" class="text-body-1 m-0 text-black">
                 {{ user.country }}
@@ -232,6 +281,8 @@ export default {
 
     const canBuy = computed(() => {
       if (!!!user.value) return false;
+      // The server makes no offer before the email address is verified.
+      if (user.value.email_verified === false) return false;
       if (!user.value.business) {
         return user.value.email && user.value.country;
       } else {
@@ -244,6 +295,57 @@ export default {
         );
       }
     });
+
+    // The invoice is German. These are the spellings most profiles already
+    // have; any other country stays free text, as in the profile form.
+    const COUNTRIES = { DE: "Deutschland", AT: "Österreich", CH: "Schweiz" };
+    const needsCountry = computed(
+      () => !!user.value && !user.value.business && !user.value.country
+    );
+    const countryOptions = computed(() => {
+      let names;
+      try {
+        names = new Intl.DisplayNames([locale.value], { type: "region" });
+      } catch {
+        // The stored German names are shown instead.
+      }
+      return Object.entries(COUNTRIES).map(([code, value]) => ({
+        value,
+        label: names?.of(code) ?? value,
+      }));
+    });
+    function suggestedCountry(language) {
+      let region = "";
+      try {
+        region = new Intl.Locale(language).region ?? "";
+      } catch {
+        // An unreadable language keeps the most common country.
+      }
+      return COUNTRIES[region] ?? COUNTRIES.DE;
+    }
+    // Preselected from the browser language, visible and changeable. The empty
+    // choice stands for another country, typed into the field below.
+    const countryChoice = ref(COUNTRIES.DE);
+    const otherCountry = ref("");
+    const countryAttempted = ref(false);
+    const savingCountry = ref(false);
+    const countryRules = [
+      (v) => !!String(v).trim() || "Error.InputEmpty_Inputs.Country",
+      (v) => String(v).trim().length <= 64 || "Error.InputMaxLength_64",
+    ];
+    onMounted(() => {
+      countryChoice.value = suggestedCountry(navigator.language);
+    });
+    async function saveCountry() {
+      const country = (countryChoice.value || otherCountry.value).trim();
+      countryAttempted.value = true;
+      if (savingCountry.value || !country || country.length > 64) return;
+      savingCountry.value = true;
+      // The server sells coins to a private buyer with `business: false` and a country.
+      const [saved, failure] = await editUser({ country, business: false });
+      savingCountry.value = false;
+      if (!saved) openSnackbar("error", failure || "Error.TryAgainLater");
+    }
 
     const paypal = ref(null);
     const ordered = ref(false);
@@ -422,6 +524,14 @@ export default {
       validAmount,
       user,
       canBuy,
+      needsCountry,
+      countryOptions,
+      countryChoice,
+      otherCountry,
+      countryAttempted,
+      savingCountry,
+      countryRules,
+      saveCountry,
       paypal,
       ordered,
       busy,
