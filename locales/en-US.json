@@ -598,7 +598,8 @@
     "PurchaseReference": "Order number",
     "AddRenewalReference": "Add a Premium renewal reference (optional)",
     "WrongAnswerCostsOneHeart": "Only an incorrect solution costs 1 heart. Correct solutions are free.",
-    "HeartsEmpty": "You’re out of hearts. They refill for free at {time}."
+    "HeartsEmpty": "You’re out of hearts. They refill for free at {time}.",
+    "CountryForInvoice": "We still need your country for the invoice."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -746,6 +747,7 @@
     "AddressStreet": "Street",
     "AddressPLZ": "PLZ",
     "Country": "Country",
+    "OtherCountry": "Other country",
     "Address": "Address",
     "VAT_ID": "VAT ID",
     "NoPriceLimit": "No price limit",
