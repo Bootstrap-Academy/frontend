@@ -50,8 +50,10 @@ button. It renders the two declarations the consumer gives so that the right of
 withdrawal expires early, taken verbatim from `/docs/right-of-withdrawal`:
 `kind="service"` for premium, webinars and coachings, `kind="digital"` for
 Morphcoins, courses and hearts. Both boxes start unticked and the order button
-stays disabled until both are ticked. The wording is German in both locales,
-because the contract language is German.
+places no order until both are ticked. Pressed earlier, it shows which
+declarations are still open and moves to the first one; the order handlers
+refuse an order without them as well (`tests/order-lock.test.mjs`). The wording
+is German in both locales, because the contract language is German.
 
 All five order surfaces use both components:
 

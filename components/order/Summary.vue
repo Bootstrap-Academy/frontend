@@ -22,12 +22,12 @@
     >
       <template v-if="breakdown">
         <dt class="text-body-1 m-0 text-body">{{ t("Headings.NetAmount") }}</dt>
-        <dd class="text-body-1 m-0 sm:text-end">{{ formatEuros(net, locale) }}</dd>
+        <dd class="text-body-1 m-0 text-heading sm:text-end">{{ formatEuros(net, locale) }}</dd>
 
         <dt class="text-body-1 m-0 text-body">
           {{ t("Headings.VatAmount", { vat: vatPercent }) }}
         </dt>
-        <dd class="text-body-1 m-0 sm:text-end">{{ formatEuros(vat, locale) }}</dd>
+        <dd class="text-body-1 m-0 text-heading sm:text-end">{{ formatEuros(vat, locale) }}</dd>
       </template>
 
       <dt class="text-heading-4 m-0 text-heading">{{ t("Headings.TotalPrice") }}</dt>
@@ -70,16 +70,29 @@
     </p>
 
     <!-- Terms and the withdrawal declarations (§ 356 Abs. 6 BGB). -->
-    <div v-if="$slots.consent" class="grid min-w-0 grid-cols-1 gap-box">
+    <div
+      v-if="$slots.consent"
+      ref="consent"
+      class="grid min-w-0 grid-cols-1 gap-box"
+      :class="{ 'declarations-missing': missing }"
+    >
       <slot name="consent" />
     </div>
+
+    <p
+      v-if="missing"
+      class="text-body-1 m-0 border-l-4 border-error pl-3 text-heading"
+      role="alert"
+    >
+      {{ t("Error.WithdrawalConsentMissing") }}
+    </p>
 
     <div v-if="!hideActions" class="flex flex-wrap justify-end gap-card">
       <slot name="actions" />
       <InputBtn
         :loading="loading"
         :aria-disabled="disabled"
-        :class="{ 'pointer-events-none opacity-70': disabled }"
+        :class="{ 'opacity-70': disabled }"
         @click="onclickOrder"
       >
         {{ t(submitLabel) }}
@@ -118,11 +131,33 @@ const props = defineProps({
 
 const emit = defineEmits<{ (e: "order"): void }>();
 
+const consent = ref<HTMLElement | null>(null);
+// Set by the order button while a declaration is still open.
+const missing = ref(false);
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (!disabled) missing.value = false;
+  }
+);
+
 // The order must not be placeable while something is still missing, no matter
-// how the button is activated.
+// how the button is activated. The button stays operable, so that it can say
+// what is missing and take the buyer there.
 function onclickOrder() {
-  if (props.disabled || props.loading) return;
+  if (props.loading) return;
+  if (props.disabled) return showMissing();
   emit("order");
+}
+
+function showMissing() {
+  const open = consent.value?.querySelector<HTMLInputElement>("input[type=checkbox]:not(:checked)");
+  if (!open) return;
+  missing.value = true;
+  // A declaration that is already on screen stays where it is, next to the button.
+  const { top, bottom } = open.getBoundingClientRect();
+  if (top < 0 || bottom > window.innerHeight) open.scrollIntoView({ block: "center" });
+  open.focus({ preventScroll: true });
 }
 
 const { t, locale } = useI18n();
@@ -139,3 +174,12 @@ const vatPercent = computed(() =>
   }).format(config.value.vat_percent)
 );
 </script>
+
+<style scoped>
+/* Marks the declarations that are still open once the order button asked for them. */
+.declarations-missing :deep(input[type="checkbox"]:not(:checked)),
+.declarations-missing :deep(input[type="checkbox"]:not(:checked) + .tick) {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+}
+</style>
