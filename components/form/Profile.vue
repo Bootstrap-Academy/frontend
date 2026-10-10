@@ -323,6 +323,9 @@ export default defineComponent({
         });
         form.submitting = false;
 
+        // The form shows what the server holds now. It keeps a value the form
+        // had cleared, and its answer is then the profile as it was.
+        if (success) setFormInputs(success);
         success ? successHandler(success, hasEmailChanged) : errorHandler(error);
       } else {
         openSnackbar("error", "Error.InvalidForm");

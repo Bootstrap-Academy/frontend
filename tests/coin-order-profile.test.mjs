@@ -124,6 +124,7 @@ async function open(t, profile, loaded = true) {
     require: (name) =>
       ({
         vue: Vue,
+        "@vueuse/core": { useDocumentVisibility: () => Vue.ref("visible") },
         "vue-i18n": { useI18n: () => ({ t: (key) => key, locale: Vue.ref("de") }) },
         "@heroicons/vue/24/outline": { ExclamationCircleIcon: tag("svg") },
       })[name],
@@ -147,6 +148,7 @@ async function open(t, profile, loaded = true) {
     usePaypalClientID: () => Vue.ref(""),
     useUser: () => user,
     useProfileLoaded: () => profileLoaded,
+    useAccessToken: () => Vue.ref("token"),
     // Answered by the test. As in the app, the state is written before the flag.
     getUser: () =>
       new Promise((resolve) =>

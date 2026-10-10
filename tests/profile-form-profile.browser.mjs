@@ -17,6 +17,8 @@ if (evidence) await mkdir(evidence, { recursive: true });
 const de = JSON.parse(await readFile(new URL("../locales/de.json", import.meta.url), "utf8"));
 
 const edit = "/profile/edit";
+// The build decides whether the form carries the leaderboard checkbox or the publication control.
+const publication = /profilePublicationEnabled"?:\s*"?true/.test(await (await fetch(app)).text());
 // The snackbar is an article with a heading as well; it announces itself as an alert.
 const dialogHeadings = "article:not([role]) h6";
 const account = (tail, patch) => ({
@@ -74,7 +76,7 @@ const body = (user) => ({
   tags: user.tags,
   vat_id: user.vat_id,
   business: user.business,
-  leaderboard_opt_out: user.leaderboard_opt_out,
+  ...(publication ? {} : { leaderboard_opt_out: user.leaderboard_opt_out }),
 });
 
 const token = (user) =>
@@ -163,15 +165,20 @@ async function fixture(accounts, profile = () => {}, { userCookie = true } = {})
         })
         // The context of a finished case may already be closed.
         .catch(() => {});
+    if (path === "/auth/oauth/providers") return answer([]);
     if (!owner) return answer({ detail: "x" }, 401);
     if (path === "/auth/users/me" && method === "GET") {
       const status = (await profile(profileRequests++))?.status ?? 200;
       return status === 200 ? answer(owner) : answer({ detail: "Internal Server Error" }, status);
     }
     if (path === `/auth/users/${owner.id}` && method === "PATCH") {
-      if (sent.email !== owner.email) owner.email_verified = false;
-      return answer(Object.assign(owner, sent));
+      // As the server does: an empty string leaves the stored value as it is.
+      const kept = Object.fromEntries(Object.entries(sent).filter(([, value]) => value !== ""));
+      if ("email" in kept && kept.email !== owner.email) owner.email_verified = false;
+      return answer(Object.assign(owner, kept));
     }
+    if (path === "/auth/users/me/publication" && method === "GET")
+      return answer({ profile_visibility: "private", visibility_revision: 0 });
     if (path === "/auth/session" && method === "PUT")
       return answer({
         user: owner,
@@ -189,8 +196,8 @@ async function fixture(accounts, profile = () => {}, { userCookie = true } = {})
   const page = await context.newPage();
   page.setDefaultTimeout(30000);
   page.on("pageerror", (e) => errors.push(e.message));
-  const count = (method, start) =>
-    calls.filter((c) => c.method === method && c.path.startsWith(start)).length;
+  const count = (method, path) =>
+    calls.filter((c) => c.method === method && c.path === path).length;
   /** The API has been quiet for a second. */
   async function settled() {
     for (let last = -1; last !== calls.length || Date.now() - (calls.at(-1)?.at ?? 0) < 1000; ) {
@@ -237,6 +244,25 @@ async function fixture(accounts, profile = () => {}, { userCookie = true } = {})
     field: (label) => page.getByLabel(label, { exact: true }),
     profileRequests: () => count("GET", "/auth/users/me"),
     saved: () => calls.filter((c) => c.method === "PATCH").map((c) => c.body),
+    /** Another tab ends the session: its cookies go, and this tab reads them again. */
+    endSession: () =>
+      page.evaluate(() => {
+        for (const name of ["user", "session", "accessToken", "refreshToken"])
+          document.cookie = `${name}=; Path=/; Max-Age=0`;
+        window.dispatchEvent(new Event("focus"));
+      }),
+    /** Puts this tab into the background or brings it back. */
+    background: (hidden) =>
+      page.evaluate(
+        (state) => {
+          Object.defineProperty(document, "visibilityState", {
+            configurable: true,
+            get: () => state,
+          });
+          document.dispatchEvent(new Event("visibilitychange"));
+        },
+        hidden ? "hidden" : "visible"
+      ),
     foreign: () => foreign,
     picture: (name) =>
       evidence ? page.screenshot({ path: join(evidence, name), fullPage: true }) : null,
@@ -442,8 +468,52 @@ try {
     assert.deepEqual(f.saved(), []);
     await done("account-changed-in-another-tab", f);
   }
+  {
+    // The server keeps a value the form sends empty and answers with the profile as it was.
+    const user = account("0d", {
+      street: "Example Street 1",
+      description: "A description the account has.",
+    });
+    const f = await fixture([user]);
+    await f.page.goto(app + edit);
+    await form(f.page).waitFor();
+    await f.settled();
+    const expected = body({ ...user, street: "", description: "" });
+    await f.field(de.Inputs.Street).fill("");
+    await f.field(de.Inputs.Description).fill("");
+    await save(f.page).click();
+    await f.page.locator("article[role=alert]", { hasText: de.Success.EditProfile }).waitFor();
+    await f.settled();
+    assert.deepEqual(f.saved(), [expected]);
+    assert.deepEqual(await f.shown(), editing(user));
+    assert.equal(await f.field(de.Inputs.Description).inputValue(), user.description);
+    await done("cleared-fields-the-server-keeps", f);
+  }
+  {
+    // The session ends in another tab while this one is in the background with the form open.
+    // Nothing is left of the form, and the page leaves for the login once someone looks at it.
+    const f = await fixture([privateBuyer()]);
+    await f.page.goto(app + edit);
+    await form(f.page).waitFor();
+    await f.settled();
+    await f.field(de.Inputs.Street).fill("Typed Street 3");
+    await f.background(true);
+    await f.endSession();
+    await form(f.page).waitFor({ state: "detached", timeout: 5000 });
+    await f.settled();
+    assert.equal(new URL(f.page.url()).pathname, edit, "nobody is looking yet");
+    await f.background(false);
+    await f.page.waitForURL(
+      (url) => url.pathname === "/auth/login" && url.searchParams.get("redirect") === edit,
+      { timeout: 5000 }
+    );
+    await f.settled();
+    assert.equal(f.profileRequests(), 1);
+    assert.deepEqual(f.saved(), []);
+    await done("session-ended-in-another-tab", f);
+  }
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, results }));
+  console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, publication, results }));
 } finally {
   await browser.close();
 }
