@@ -42,9 +42,13 @@ code = code
     /import \{\s*createSubmission,[\s\S]*?\} from "~~\/composables\/codingChallenges";/,
     "const createSubmission = (...args) => globalThis.__challengeEditorDependencies.createSubmission(...args); const getEnvironments = () => globalThis.__challengeEditorDependencies.getEnvironments(); const useEnvironments = () => globalThis.__challengeEditorDependencies.useEnvironments(); const useCodingSubmission = () => globalThis.__challengeEditorDependencies.useCodingSubmission();"
   )
-  .replace('import("monaco-editor")', "globalThis.__loadChallengeEditorMonaco()");
+  .replace(
+    'import { loadMonaco } from "~/utils/monaco";',
+    "const loadMonaco = () => globalThis.__loadChallengeEditorMonaco();"
+  );
 // Keep the import replacement scoped to the coding dependency, never Vue imports.
 assert(code.includes("defineComponent"));
+assert(code.includes("__loadChallengeEditorMonaco") && !code.includes("~/utils/monaco"));
 const { default: component } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
 );

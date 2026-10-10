@@ -49,14 +49,9 @@
     "jwt-decode": "^4.0.0",
     "katex": "^0.17.0",
     "markdown-it": "^14.3.2",
-    "monaco-editor": "^0.55.1",
+    "monaco-editor": "^0.57.0",
     "nanoid": "^5.1.11",
     "qrcode.vue": "^3.11.0",
     "vuedraggable": "^4.1.0"
-  },
-  "overrides": {
-    "monaco-editor": {
-      "dompurify": "^3.4.16"
-    }
   }
 }
