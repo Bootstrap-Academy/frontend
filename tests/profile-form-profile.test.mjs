@@ -41,7 +41,11 @@ const withoutEmail = account({ email: "", email_verified: false });
 const saved = ({ id, email_verified, ...fields }) => fields;
 
 /** Opens the edit page for `profile`, either already loaded or with only the cookie in the state. */
-async function open(t, profile, { loaded = true, coins, unsynced = false } = {}) {
+async function open(
+  t,
+  profile,
+  { loaded = true, coins, unsynced = false, publication = false } = {}
+) {
   const user = Vue.ref(unsynced ? null : loaded ? profile : cookie(profile));
   const profileLoaded = Vue.ref(loaded);
   const calls = {
@@ -58,6 +62,7 @@ async function open(t, profile, { loaded = true, coins, unsynced = false } = {})
     require: (name) =>
       ({
         vue: Vue,
+        "@vueuse/core": { useDocumentVisibility: () => Vue.ref("visible") },
         "vue-i18n": { useI18n: () => ({ t: (key) => key }) },
         "@heroicons/vue/24/outline": { ExclamationCircleIcon: tag("svg") },
       })[name],
@@ -71,6 +76,7 @@ async function open(t, profile, { loaded = true, coins, unsynced = false } = {})
     setInterval: timer,
     useUser: () => user,
     useProfileLoaded: () => profileLoaded,
+    useAccessToken: () => Vue.ref("token"),
     // What every request does first: the state takes over the account the cookies name.
     syncSessionCookies: () => {
       if (!unsynced || user.value) return;
@@ -78,7 +84,7 @@ async function open(t, profile, { loaded = true, coins, unsynced = false } = {})
       profileLoaded.value = false;
     },
     hasEmail: Vue.computed(() => !!(user.value?.email ?? "")),
-    profilePublicationEnabled: () => false,
+    profilePublicationEnabled: () => publication,
     useRoute: () => ({ query: coins ? { coins } : {} }),
     useRouter: () => ({ push: (path) => calls.pushed.push(path) }),
     // Answered by the test. As in the app, the state is written before the flag.
@@ -91,9 +97,11 @@ async function open(t, profile, { loaded = true, coins, unsynced = false } = {})
           resolve([answer, null]);
         })
       ),
+    // As the server does: an empty string leaves the stored value as it is.
     editUser: async (body) => {
       calls.saved.push(body);
-      user.value = { ...user.value, ...body };
+      const kept = Object.entries(body).filter(([, value]) => value !== "");
+      user.value = { ...user.value, ...Object.fromEntries(kept) };
       return [user.value, null];
     },
     refresh: async () => calls.renewed++,
@@ -166,7 +174,10 @@ async function open(t, profile, { loaded = true, coins, unsynced = false } = {})
       ),
       vat_id: input("Inputs.VAT_ID")?.props.modelValue ?? "",
       business: !!input("Inputs.VAT_ID"),
-      leaderboard_opt_out: !input("Inputs.ShowOnLeaderboard").props.modelValue,
+      // The checkbox belongs to the form only while profile publication is switched off.
+      ...(input("Inputs.ShowOnLeaderboard")
+        ? { leaderboard_opt_out: !input("Inputs.ShowOnLeaderboard").props.modelValue }
+        : {}),
     }),
   };
 }
@@ -301,6 +312,16 @@ test("with the profile loaded the form shows and saves what it did before", asyn
     assert.equal(page.calls.renewed + page.calls.verification, 0);
   }
 
+  // With profile publication switched on the form leaves the leaderboard to that control.
+  const { leaderboard_opt_out, ...withoutLeaderboard } = saved({ ...business, city: "Vienna" });
+  const published = await open(t, business, { publication: true });
+  assert.deepEqual(published.form(), { ...withoutLeaderboard, city: business.city });
+  await published.type("Inputs.EmailAddress", business.email);
+  await published.type("Inputs.City", "Vienna");
+  await published.press("Buttons.Safe");
+  assert.deepEqual(published.calls.saved, [withoutLeaderboard]);
+  assert.equal(leaderboard_opt_out, true);
+
   // A new address renews the session and asks for its verification.
   const page = await open(t, withoutEmail, { coins: "500" });
   await page.type("Inputs.EmailAddress", "new@example.invalid");
@@ -309,4 +330,25 @@ test("with the profile loaded the form shows and saves what it did before", asyn
   assert.deepEqual([page.calls.renewed, page.calls.verification], [1, 1]);
   assert.deepEqual(page.calls.dialogs, ["Headings.MissingEmail", "Headings.AddedEmail"]);
   assert.deepEqual(page.calls.pushed, []);
+});
+
+test("after saving the form shows what the server holds, also for a field it kept", async (t) => {
+  const stored = { ...business, description: "A description the account has." };
+  const page = await open(t, stored);
+  await page.type("Inputs.EmailAddress", stored.email);
+  await page.type("Inputs.Street", "");
+  await page.type("Inputs.Description", "");
+  await page.type("Inputs.City", "Vienna");
+  await page.press("Buttons.Safe");
+  assert.deepEqual(page.calls.saved, [
+    saved({ ...stored, street: "", description: "", city: "Vienna" }),
+  ]);
+  assert.deepEqual(page.form(), saved({ ...stored, city: "Vienna" }));
+  assert.deepEqual(page.calls.notices, [["success", "Success.EditProfile"]]);
+
+  // The answer is the profile as it was when nothing but cleared fields was sent.
+  await page.type("Inputs.Street", "");
+  await page.press("Buttons.Safe");
+  assert.equal(page.calls.saved.length, 2);
+  assert.equal(page.field("Inputs.Street"), stored.street);
 });

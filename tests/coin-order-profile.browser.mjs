@@ -49,15 +49,17 @@ const businessIncomplete = () => account("0d", { ...invoice, vat_id: "" });
 
 const token = (user) =>
   `e30.${Buffer.from(JSON.stringify({ sub: user.id, exp: 4102444800 })).toString("base64url")}.synthetic`;
+/** The cookies a sign-in writes. */
+const signedIn = (user) => ({
+  user: { id: user.id, name: user.name, display_name: user.display_name },
+  session: { id: `coin-order-session-${user.name}` },
+  accessToken: token(user),
+  refreshToken: `synthetic-refresh-${user.name}`,
+  authGeneration: `generation-${user.name}`,
+});
+const signedOut = { user: null, session: null, accessToken: null, refreshToken: null };
 const cookies = (user) =>
-  Object.entries({
-    locale: "de",
-    user: { id: user.id, name: user.name, display_name: user.display_name },
-    session: { id: `coin-order-session-${user.name}` },
-    accessToken: token(user),
-    refreshToken: `synthetic-refresh-${user.name}`,
-    authGeneration: `generation-${user.name}`,
-  }).map(([name, value]) => ({
+  Object.entries({ locale: "de", ...signedIn(user) }).map(([name, value]) => ({
     name,
     value: encodeURIComponent(typeof value === "string" ? value : JSON.stringify(value)),
     url: app,
@@ -123,6 +125,7 @@ async function fixture(accounts, profile = () => {}) {
         })
         // The context of a finished case may already be closed.
         .catch(() => {});
+    if (path === "/auth/oauth/providers") return answer([]);
     if (!owner) return answer({ detail: "x" }, 401);
     if (path === "/auth/users/me" && method === "GET") {
       const status = (await profile(profileRequests++))?.status ?? 200;
@@ -192,6 +195,28 @@ async function fixture(accounts, profile = () => {}) {
     profileRequests: () => count("GET", "/auth/users/me"),
     offers: () => count("POST", "/shop/coins/paypal/offers/"),
     saved: () => calls.filter((c) => c.method === "PATCH").map((c) => c.body),
+    /** Another tab changes the session cookies, and this tab reads them again. */
+    otherTab: (changes) =>
+      page.evaluate((entries) => {
+        for (const [name, value] of entries)
+          document.cookie =
+            value === null
+              ? `${name}=; Path=/; Max-Age=0`
+              : `${name}=${encodeURIComponent(typeof value === "string" ? value : JSON.stringify(value))}; Path=/`;
+        window.dispatchEvent(new Event("focus"));
+      }, Object.entries(changes)),
+    /** Puts this tab into the background or brings it back. */
+    background: (hidden) =>
+      page.evaluate(
+        (state) => {
+          Object.defineProperty(document, "visibilityState", {
+            configurable: true,
+            get: () => state,
+          });
+          document.dispatchEvent(new Event("visibilitychange"));
+        },
+        hidden ? "hidden" : "visible"
+      ),
     foreign: () => foreign,
     picture: (name) =>
       evidence ? page.screenshot({ path: join(evidence, name), fullPage: true }) : null,
@@ -389,6 +414,45 @@ try {
     assert.equal(f.offers(), 1, "one offer, although the profile arrives while the page opens");
     assert.deepEqual(f.saved(), []);
     await done("coin-shop-without-profile", f);
+  }
+  {
+    // This tab is in the background while another tab signs out and signs the same account in again.
+    const user = business();
+    const f = await fixture([user], (n) => (n < 2 ? { status: 500 } : null));
+    await f.page.goto(app + order);
+    await userType(f.page).waitFor();
+    await f.settled();
+    assert.equal(f.profileRequests(), 3, "the page has asked for this account itself");
+    await f.background(true);
+    await f.otherTab(signedOut);
+    await loadingNotice(f.page).waitFor();
+    await f.otherTab(signedIn(user));
+    await userType(f.page).waitFor({ timeout: 5000 });
+    await f.background(false);
+    await f.settled();
+    const after = await f.shown();
+    assert.deepEqual({ ...after, ever: null }, { ...loaded, buyer: "business", ever: null });
+    assert.equal(new URL(f.page.url()).pathname + new URL(f.page.url()).search, order);
+    assert.equal(f.profileRequests(), 4, "the returning account is asked for again");
+    assert.deepEqual(f.saved(), []);
+    await done("same-account-signed-in-again", f);
+  }
+  {
+    // The session ends in another tab: a page behind the login leaves for it.
+    const f = await fixture([business()]);
+    await f.page.goto(app + order);
+    await userType(f.page).waitFor();
+    await f.settled();
+    await f.otherTab(signedOut);
+    await f.page.waitForURL(
+      (url) => url.pathname === "/auth/login" && url.searchParams.get("redirect") === order,
+      { timeout: 5000 }
+    );
+    await f.settled();
+    assert.equal(f.profileRequests(), 1);
+    assert.equal(f.offers(), 1, "no offer is requested for nobody");
+    assert.deepEqual(f.saved(), []);
+    await done("session-ended-in-another-tab", f);
   }
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, results }));
