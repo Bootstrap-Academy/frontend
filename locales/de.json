@@ -596,7 +596,8 @@
     "PurchaseDetails": "Bestelldetails und Unterlagen",
     "PurchaseReference": "Bestellnummer",
     "AddRenewalReference": "Nummer einer Premium-Verlängerung ergänzen (optional)",
-    "WrongAnswerCostsOneHeart": "Nur eine falsche Lösung kostet 1 Herz. Richtige Lösungen sind kostenlos."
+    "WrongAnswerCostsOneHeart": "Nur eine falsche Lösung kostet 1 Herz. Richtige Lösungen sind kostenlos.",
+    "HeartsEmpty": "Deine Herzen sind leer. Um {time} Uhr sind sie kostenlos wieder voll."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",
@@ -961,6 +962,7 @@
     "Subscription": "Abonnement",
     "SubscriptionAndHearts": "Abonnement & Herzen",
     "MorePremium": "Premium ansehen",
+    "UnlimitedHeartsWithPremium": "Unbegrenzte Herzen mit Premium",
     "GoToCourse": "Gehe zum Kurs",
     "GoToChallenges": "Zurück zu den Challenges",
     "Link": "Link",

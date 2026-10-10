@@ -112,9 +112,15 @@
         </InputBtn>
 
         <!--
-          The caption explains when a whole heart is charged.
+          Without a heart for another attempt the way forward replaces the
+          button. Otherwise the caption explains when a whole heart is charged.
         -->
-        <template v-if="!data?.solved && user?.id != data?.creator && !heartFree">
+        <UserHeartsEmpty
+          v-if="!data?.solved && user?.id != data?.creator && heartsEmpty"
+          class="mx-auto w-full max-w-md"
+        />
+
+        <template v-else-if="!data?.solved && user?.id != data?.creator && !heartFree">
           <InputBtn
             class="mx-auto block w-full max-w-md"
             :loading="formSubmitting"
@@ -183,6 +189,7 @@ const { attemptLimit, handleLimit } = useDailyAttemptLimit();
 const heartFree = computed(() => {
   return premiumInfo.value?.premium || isDaily.value;
 });
+const { heartsEmpty, handleNoHearts } = useHeartsEmpty();
 
 // Computed connections for SVG lines
 const connections = computed(() => {
@@ -364,7 +371,7 @@ function successHandler(res: any) {
 }
 
 function errorHandler(error: any) {
-  if (handleLimit(error)) return;
+  if (handleLimit(error) || handleNoHearts(error)) return;
   console.log("error", error);
   openSnackbar("error", decodeApiError(error).messageKey);
 }

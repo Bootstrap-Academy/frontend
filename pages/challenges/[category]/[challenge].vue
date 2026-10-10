@@ -21,7 +21,6 @@
 <template>
   <div>
     <section v-if="hearts == 0" class="flex justify-end px-8 pt-3">
-      <UserRefillHeartBtn />
       <UserCoins />
     </section>
     <main

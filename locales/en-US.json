@@ -597,7 +597,8 @@
     "PurchaseDetails": "Order details and documents",
     "PurchaseReference": "Order number",
     "AddRenewalReference": "Add a Premium renewal reference (optional)",
-    "WrongAnswerCostsOneHeart": "Only an incorrect solution costs 1 heart. Correct solutions are free."
+    "WrongAnswerCostsOneHeart": "Only an incorrect solution costs 1 heart. Correct solutions are free.",
+    "HeartsEmpty": "You’re out of hearts. They refill for free at {time}."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -966,6 +967,7 @@
     "LeaderBoard": "LeaderBoard",
     "SubscriptionAndHearts": "Subscription & Hearts",
     "MorePremium": "See premium",
+    "UnlimitedHeartsWithPremium": "Unlimited hearts with Premium",
     "Subscription": "Subscription",
     "GoToChallenges": "Back To Challenges",
     "Link": "Link",
