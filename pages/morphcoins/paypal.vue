@@ -48,8 +48,30 @@
             </NuxtLink>
           </h2>
 
+          <!--
+            The session cookie only says who is signed in. Buyer type, country
+            and invoice data are shown once the profile has arrived.
+          -->
           <p
-            v-if="user?.email_verified === false"
+            v-if="!profileLoaded && profileFailed"
+            class="text-body-1 flex w-fit flex-wrap items-center border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
+            role="alert"
+          >
+            <ExclamationCircleIcon class="h-7 w-7" />
+
+            {{ t("Error.TryAgainLater") }}
+
+            <button type="button" class="min-h-11 font-bold underline" @click="loadProfile">
+              {{ t("Buttons.TryAgain") }}
+            </button>
+          </p>
+
+          <p v-else-if="!profileLoaded" class="text-body-1 text-body mt-card mb-card" role="status">
+            {{ t("Moderation.Loading") }}
+          </p>
+
+          <p
+            v-else-if="user?.email_verified === false"
             class="text-body-1 flex w-fit flex-wrap border border-dashed border-error px-3 py-1 text-error bg-error-light style-box gap-box mt-card mb-card"
           >
             <ExclamationCircleIcon class="h-7 w-7" />
@@ -106,14 +128,14 @@
             {{ t("Body.MissingProfileInfo") }}
           </p>
 
-          <div class="flex gap-box">
+          <div v-if="profileLoaded" class="flex gap-box">
             <h3 class="text-body-1 text-body">{{ t("Headings.UserType") }}:</h3>
             <p class="text-body-1 text-black">
               {{ t(user?.business ? "Headings.Business" : "Headings.Person") }}
             </p>
           </div>
 
-          <template v-if="user?.business">
+          <template v-if="profileLoaded && user?.business">
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.FirstName") }}:</h3>
               <p v-if="user && user.first_name" class="text-body-1 m-0 text-black">
@@ -165,7 +187,7 @@
             </div>
           </template>
 
-          <template v-else>
+          <template v-else-if="profileLoaded">
             <div v-if="!needsCountry" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Country") }}:</h3>
               <p v-if="user && user.country" class="text-body-1 m-0 text-black">
@@ -278,9 +300,37 @@ export default {
       formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
     );
     const user = useUser();
+    // The `user` cookie only carries the id and the two names. Until the
+    // profile has arrived, a missing field says nothing about the account.
+    const profileLoaded = useProfileLoaded();
+    const profileFailed = ref(false);
+    let profileOwner = null;
+    async function loadProfile() {
+      const owner = user.value?.id;
+      // One request at a time; the button only repeats a failed one.
+      if (owner === profileOwner && !profileFailed.value) return;
+      profileOwner = owner;
+      profileFailed.value = false;
+      const [, failure] = await getUser();
+      if (!active || profileLoaded.value || user.value?.id !== owner) return;
+      profileFailed.value = true;
+      openSnackbar("error", failure || "Error.TryAgainLater");
+    }
+    // The page asks once per account when it finds the profile missing: after a
+    // slow or failed load at app start, or after another tab changed the account.
+    // It starts with the mounted page, so the offer below is requested once.
+    onMounted(() =>
+      watch(
+        () => [user.value?.id, profileLoaded.value],
+        ([owner, loaded]) => {
+          if (owner && !loaded && owner !== profileOwner) loadProfile();
+        },
+        { immediate: true }
+      )
+    );
 
     const canBuy = computed(() => {
-      if (!!!user.value) return false;
+      if (!profileLoaded.value || !!!user.value) return false;
       // The server makes no offer before the email address is verified.
       if (user.value.email_verified === false) return false;
       if (!user.value.business) {
@@ -300,7 +350,7 @@ export default {
     // have; any other country stays free text, as in the profile form.
     const COUNTRIES = { DE: "Deutschland", AT: "Österreich", CH: "Schweiz" };
     const needsCountry = computed(
-      () => !!user.value && !user.value.business && !user.value.country
+      () => profileLoaded.value && !!user.value && !user.value.business && !user.value.country
     );
     const countryOptions = computed(() => {
       let names;
@@ -337,6 +387,8 @@ export default {
       countryChoice.value = suggestedCountry(navigator.language);
     });
     async function saveCountry() {
+      // Only the loaded profile of a private buyer without a country is completed here.
+      if (!needsCountry.value) return;
       const country = (countryChoice.value || otherCountry.value).trim();
       countryAttempted.value = true;
       if (savingCountry.value || !country || country.length > 64) return;
@@ -379,6 +431,7 @@ export default {
       () =>
         JSON.stringify([
           route.query.coins,
+          profileLoaded.value,
           user.value?.id,
           user.value?.email,
           user.value?.country,
@@ -523,6 +576,9 @@ export default {
       totalPrice,
       validAmount,
       user,
+      profileLoaded,
+      profileFailed,
+      loadProfile,
       canBuy,
       needsCountry,
       countryOptions,

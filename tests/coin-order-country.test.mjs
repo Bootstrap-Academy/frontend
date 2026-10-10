@@ -10,17 +10,22 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const account = (patch) => ({ email: "buyer@example.invalid", email_verified: true, ...patch });
 
 test("only a private buyer without a country is asked for it", async () => {
-  for (const [user, asked, offer] of [
+  for (const [user, asked, offer, loaded = true] of [
     [null, false, false],
     [account({ business: null, country: null }), true, false],
     [account({ business: false, country: "" }), true, false],
     [account({ business: false, country: "Deutschland" }), false, true],
     [account({ business: false, country: "Deutschland", email_verified: false }), false, false],
     [account({ business: true, country: null }), false, false],
+    // Before the profile has arrived the state only holds what the cookie carries.
+    [{ id: "buyer", name: "buyer", display_name: "Buyer" }, false, false, false],
+    [account({ business: false, country: null }), false, false, false],
+    [account({ business: false, country: "Deutschland" }), false, false, false],
   ]) {
     const { needsCountry, canBuy } = await pieces(page, ["canBuy", "needsCountry"], {
       computed: Vue.computed,
       user: Vue.ref(user),
+      profileLoaded: Vue.ref(loaded),
     });
     assert.equal(!!needsCountry.value, asked, JSON.stringify(user));
     assert.equal(!!canBuy.value, offer, JSON.stringify(user));
@@ -67,6 +72,7 @@ test("the country is saved by the button only, trimmed and at most 64 characters
     const calls = [];
     const attempted = Vue.ref(false);
     const { saveCountry } = await pieces(page, ["saveCountry"], {
+      needsCountry: Vue.ref(true),
       countryChoice: Vue.ref(choice),
       otherCountry: Vue.ref(other),
       countryAttempted: attempted,
@@ -80,12 +86,25 @@ test("the country is saved by the button only, trimmed and at most 64 characters
     assert.deepEqual(calls, saved ? [{ country: saved, business: false }] : [], other || choice);
     assert.equal(attempted.value, true);
   }
+  // Nothing is written for an account the page does not ask.
+  const unasked = [];
+  const { saveCountry: idle } = await pieces(page, ["saveCountry"], {
+    needsCountry: Vue.ref(false),
+    countryChoice: Vue.ref("Deutschland"),
+    otherCountry: Vue.ref(""),
+    countryAttempted: Vue.ref(false),
+    savingCountry: Vue.ref(false),
+    editUser: async (body) => unasked.push(body),
+  });
+  await idle();
+  assert.deepEqual(unasked, []);
   for (const [failure, shown] of [
     [{ detail: "Internal Server Error" }, { detail: "Internal Server Error" }],
     [undefined, "Error.TryAgainLater"],
   ]) {
     const notices = [];
     const { saveCountry } = await pieces(page, ["saveCountry"], {
+      needsCountry: Vue.ref(true),
       countryChoice: Vue.ref("Deutschland"),
       otherCountry: Vue.ref(""),
       countryAttempted: Vue.ref(false),
