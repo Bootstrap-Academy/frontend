@@ -141,7 +141,9 @@
           <p>{{ t("Headings.NotChecked") }}</p>
           <p>{{ t("LearningRooms.TechnicalFailure") }}</p>
         </div>
-        <p v-else-if="view.error" role="alert">{{ t(`LearningRooms.${view.error}`) }}</p>
+        <p v-else-if="view.error && !(view.error === 'NoHearts' && heartsEmpty)" role="alert">
+          {{ t(`LearningRooms.${view.error}`) }}
+        </p>
         <button
           v-if="
             (view.phase === 'uncertain' && !reviewId) || (view.phase === 'pending' && view.error)
@@ -164,18 +166,22 @@
           </button>
         </div>
         <div v-if="!['pending', 'uncertain'].includes(view.phase)" class="submit-action">
-          <p v-if="view.premium === false && showHearts">
-            {{ t("Body.WrongAnswerCostsOneHeart") }}
-          </p>
-          <button type="button" :disabled="locked || !valid" @click="submit">
-            {{
-              t(
-                view.phase === "submitting"
-                  ? "LearningRooms.Submitting"
-                  : "LearningRooms.CheckAnswer"
-              )
-            }}
-          </button>
+          <!-- Without a heart for another attempt the way forward replaces the button. -->
+          <UserHeartsEmpty v-if="heartsEmpty" class="ml-auto w-full max-w-md" />
+          <template v-else>
+            <p v-if="view.premium === false && showHearts">
+              {{ t("Body.WrongAnswerCostsOneHeart") }}
+            </p>
+            <button type="button" :disabled="locked || !valid" @click="submit">
+              {{
+                t(
+                  view.phase === "submitting"
+                    ? "LearningRooms.Submitting"
+                    : "LearningRooms.CheckAnswer"
+                )
+              }}
+            </button>
+          </template>
         </div>
       </template>
       <button
@@ -207,6 +213,7 @@ import type {
 import { codingVerdictKey, createLearningExercise } from "~/utils/learningExercise";
 
 const { showHearts } = useDailyLearning();
+const { heartsEmpty, reportNoHearts } = useHeartsEmpty();
 const props = defineProps<{
   reference: ExerciseReference;
   state: Record<string, any>;
@@ -288,6 +295,13 @@ const controller = createLearningExercise({
     return await props.save();
   },
 });
+// A refused attempt counts as an empty balance until the balance says otherwise.
+watch(
+  () => view.value.error,
+  (error) => {
+    if (error === "NoHearts") reportNoHearts();
+  }
+);
 const locked = computed(
   () => props.disabled || preparing.value || !["ready", "incorrect"].includes(view.value.phase)
 );

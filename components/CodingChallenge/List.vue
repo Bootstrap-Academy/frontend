@@ -11,16 +11,23 @@
       {{ t("Headings.NoCodingChallengeCreated") }}
     </p>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2" v-else-if="codingChallenges.length">
-      <CodingChallengeCard
-        @click="solveCodingChallenge(codingChallenge)"
-        v-for="(codingChallenge, i) of codingChallenges"
-        :codingChallenge="codingChallenge"
-        :key="i"
-        class="rounded-md border border-light"
-      >
-      </CodingChallengeCard>
-    </div>
+    <template v-else-if="codingChallenges.length">
+      <!-- Without a heart a task stays closed; the way forward stands above the tasks. -->
+      <div v-if="heartsEmpty" ref="heartsBlock" class="mx-auto mb-4 max-w-md px-2 pt-2">
+        <UserHeartsEmpty />
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <CodingChallengeCard
+          @click="solveCodingChallenge(codingChallenge)"
+          v-for="(codingChallenge, i) of codingChallenges"
+          :codingChallenge="codingChallenge"
+          :key="i"
+          class="rounded-md border border-light"
+        >
+        </CodingChallengeCard>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -42,6 +49,8 @@ export default defineComponent({
     const codingChallenges = useAllCodingChallengesInATask();
     const loading = ref(true);
     const { isDaily } = useDailyLearning();
+    const { heartsEmpty, reportNoHearts } = useHeartsEmpty();
+    const heartsBlock = ref<HTMLElement | null>(null);
     const heartInfo: any = useHeartInfo();
     const premiumInfo: any = usePremiumInfo();
     const hearts = computed(() => {
@@ -62,9 +71,12 @@ export default defineComponent({
       loading.value = false;
     }
 
-    function solveCodingChallenge(codingChallenge: any) {
+    async function solveCodingChallenge(codingChallenge: any) {
       if (!isDaily.value && !isPremium.value && hearts.value < 2) {
-        return openSnackbar("info", "Error.NotEnoughHearts");
+        reportNoHearts();
+        await nextTick();
+        heartsBlock.value?.scrollIntoView({ block: "nearest" });
+        return;
       } else if (isDaily.value || isPremium.value || hearts.value >= 2) {
         navigateTo(
           `/challenges/${baseQuery.value.category}/${props.taskId}?codingChallenge=${codingChallenge.id}`
@@ -86,7 +98,7 @@ export default defineComponent({
         getcodingChallenges();
       }
     });
-    return { codingChallenges, loading, solveCodingChallenge, t };
+    return { codingChallenges, loading, solveCodingChallenge, heartsEmpty, heartsBlock, t };
   },
   components: { ArrowRightIcon, CheckIcon },
 });
