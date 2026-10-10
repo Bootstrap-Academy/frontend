@@ -34,6 +34,7 @@ function fixture({
   refuseAll = false,
   beforeResponse,
   refreshFailure,
+  fullPath = "/subscription",
 } = {}) {
   let accessToken = token("original", expired ? -3600 : 3600);
   let generation = "first";
@@ -135,7 +136,7 @@ function fixture({
       clear();
     },
     () => ({ push: (path) => redirects.push(path) }),
-    () => ({ fullPath: "/subscription" }),
+    () => ({ fullPath }),
     () => false,
     { log() {} }
   );
@@ -209,6 +210,26 @@ test("a genuine 401 after fresh-token retry still clears the session and stops r
   assert.equal(f.accessToken, null);
   assert.ok(f.clearings > 0);
   assert.ok(f.redirects.length > 0);
+});
+
+test("a session the server no longer accepts leads to the login with the whole way back", async () => {
+  for (const fullPath of [
+    "/subscription",
+    "/morphcoins/paypal?coins=500&next=subscription",
+    "/profile/edit?coins=1000#address",
+    "/courses?redirect=/dashboard&page=2",
+  ]) {
+    const f = fixture({ refuseAll: true, fullPath });
+    await assert.rejects(f.api.GET("/auth/users/me"), (error) => error.response.status === 401);
+    // The router encodes the query itself, so nothing after an `&` or a `#` is lost.
+    assert.deepEqual(f.redirects, [{ path: "/auth/login", query: { redirect: fullPath } }]);
+  }
+  // Pages that need no session stay where they are.
+  for (const fullPath of ["/", "/contact", "/skill-tree", "/auth/login?redirect=/dashboard"]) {
+    const f = fixture({ refuseAll: true, fullPath });
+    await assert.rejects(f.api.GET("/auth/users/me"), (error) => error.response.status === 401);
+    assert.deepEqual(f.redirects, [], fullPath);
+  }
 });
 
 function deferred() {

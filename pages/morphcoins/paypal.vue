@@ -89,7 +89,7 @@
             goes on without a detour through the profile form.
           -->
           <form
-            v-else-if="needsCountry"
+            v-else-if="countryAsked"
             class="grid max-w-md gap-box mt-card mb-card"
             @submit.prevent
           >
@@ -225,7 +225,7 @@
             kind="coins"
             breakdown
             :disabled="!canBuy || !offer || !withdrawalConsent"
-            :hide-actions="ordered || !profileLoaded || needsCountry"
+            :hide-actions="ordered || !profileLoaded || countryAsked"
             :loading="busy || placing"
             @order="onclickOrder"
           >
@@ -243,11 +243,12 @@
                 v-model="withdrawalConsent"
               />
               <!--
-                Without an offer the summary says what comes next. That the
-                purchase is unavailable is only said once an offer was asked
-                for and none came, or the profile itself stands in the way.
+                Without an offer the summary says what comes next: the choice
+                of the country while the page asks for it. That the purchase is
+                unavailable is only said once an offer was asked for and none
+                came, or the profile itself stands in the way.
               -->
-              <p v-else-if="needsCountry" role="status">
+              <p v-else-if="countryAsked" role="status">
                 {{ t("Body.CountryThenOffer", { button: t("Buttons.Continue") }) }}
               </p>
               <p v-else-if="offerPending" role="status">{{ t("Moderation.Loading") }}</p>
@@ -341,6 +342,11 @@ export default {
     const needsCountry = computed(
       () => profileLoaded.value && !!user.value && !user.value.business && !user.value.country
     );
+    // The page asks for the country once nothing stands before it: an
+    // unverified e-mail address comes first. The question, the note in the
+    // order summary and the missing order button follow this one value, so
+    // the summary never names a step the page does not offer.
+    const countryAsked = computed(() => needsCountry.value && user.value?.email_verified !== false);
     const countryOptions = computed(() => {
       let names;
       try {
@@ -376,8 +382,9 @@ export default {
       countryChoice.value = suggestedCountry(navigator.language);
     });
     async function saveCountry() {
-      // Only the loaded profile of a private buyer without a country is completed here.
-      if (!needsCountry.value) return;
+      // Only the loaded profile of a private buyer without a country is completed
+      // here, and only while the page asks for it.
+      if (!countryAsked.value) return;
       const country = (countryChoice.value || otherCountry.value).trim();
       countryAttempted.value = true;
       if (savingCountry.value || !country || country.length > 64) return;
@@ -575,6 +582,7 @@ export default {
       loadProfile,
       canBuy,
       needsCountry,
+      countryAsked,
       countryOptions,
       countryChoice,
       otherCountry,

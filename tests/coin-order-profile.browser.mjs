@@ -508,6 +508,35 @@ try {
     assert.deepEqual(f.saved(), []);
     await done("offer-not-available", f);
   }
+  // Unverified and without a country: the page asks to verify first and has no question for
+  // the country, so the summary keeps its notice and names no step the page does not offer.
+  for (const [name, user, incomplete] of [
+    ["unverified-without-country", account("0e", { email_verified: false }), false],
+    // The missing address is marked in the profile data, as before.
+    ["no-email-without-country", account("0f", { email: null, email_verified: false }), true],
+  ]) {
+    const f = await fixture([user]);
+    await f.page.goto(app + order);
+    await f.page.locator("main p", { hasText: de.Error.AccountNotVerified }).waitFor();
+    await f.page.locator('main a[href="/auth/verify-account"]').waitFor();
+    await f.settled();
+    assert.deepEqual(
+      await f.shown(),
+      {
+        ...loaded,
+        buyer: "private",
+        incomplete,
+        offer: false,
+        unavailable: true,
+        ever: { ...never, privateBuyer: true, unavailable: true },
+      },
+      name
+    );
+    assert.equal(f.offers(), 0, name);
+    assert.deepEqual(f.saved(), [], name);
+    await f.picture(`coin-order-${name}-390.png`);
+    await done(name, f);
+  }
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, results }));
 } finally {

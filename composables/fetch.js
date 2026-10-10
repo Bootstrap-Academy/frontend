@@ -220,7 +220,9 @@ function logoutAfterInvalidToken(expected) {
     return;
   }
 
-  router.push(`/auth/login?redirect=${route.fullPath}`);
+  // The whole address is the way back, with its query and anchor, as in the
+  // `auth` middleware and in `useProfileLoad`.
+  router.push({ path: "/auth/login", query: { redirect: route.fullPath } });
 }
 
 function normalizeHeaders(headers) {

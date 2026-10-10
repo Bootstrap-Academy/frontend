@@ -79,7 +79,8 @@ async function fixture(user, { session = true, language = "de" } = {}) {
     )
   );
   const calls = [];
-  let foreign = 0;
+  let foreign = 0,
+    refused = "";
   await context.route("**/*", async (route) => {
     const req = route.request(),
       url = new URL(req.url());
@@ -102,16 +103,22 @@ async function fixture(user, { session = true, language = "de" } = {}) {
         // The context of a finished case may already be closed.
         .catch(() => {});
     if (path === "/auth/oauth/providers") return answer([]);
+    const fresh = () => ({
+      user,
+      session: signedIn(user).session,
+      access_token: token(user),
+      refresh_token: signedIn(user).refreshToken,
+    });
     // The synthetic login accepts the account by its name; no password is checked.
-    if (path === "/auth/sessions" && method === "POST")
-      return req.postDataJSON()?.name_or_email === user.name
-        ? answer({
-            user,
-            session: signedIn(user).session,
-            access_token: token(user),
-            refresh_token: signedIn(user).refreshToken,
-          })
-        : answer({ detail: "Invalid credentials" }, 401);
+    if (path === "/auth/sessions" && method === "POST") {
+      if (req.postDataJSON()?.name_or_email !== user.name)
+        return answer({ detail: "Invalid credentials" }, 401);
+      refused = "";
+      return answer(fresh());
+    }
+    // Until the next login the server renews the session and still refuses one request.
+    if (refused && path === "/auth/session" && method === "PUT") return answer(fresh());
+    if (refused && path.endsWith(refused)) return answer({ detail: "Invalid token" }, 401);
     if ((req.headers()["authorization"] || "") !== `Bearer ${token(user)}`)
       return answer({ detail: "x" }, 401);
     if (path === "/auth/users/me") return answer(user);
@@ -138,7 +145,10 @@ async function fixture(user, { session = true, language = "de" } = {}) {
     page,
     calls,
     foreign: () => foreign,
-    here: () => new URL(page.url()).pathname + new URL(page.url()).search,
+    here: () =>
+      new URL(page.url()).pathname + new URL(page.url()).search + new URL(page.url()).hash,
+    /** From now on the server refuses the requests whose path ends like this. */
+    refuse: (ending) => (refused = ending),
     /** Signs in through the form of the login page. */
     async login() {
       await page.locator('input[autocomplete="username"]').fill(user.name);
@@ -239,6 +249,23 @@ const cases = {
     await f.page.locator("main h3", { hasText: de.Headings.UserType }).waitFor();
     return f;
   },
+  // A request stays refused although the session was renewed, so the page ends the session:
+  // the login gets the whole address as the way back, with everything after the first "&"
+  // and the anchor.
+  "refused-request-keeps-way-back": async () => {
+    const target = "/account?from=menu&view=data#account-documents-heading";
+    const f = await fixture(account("0a"));
+    await f.page.goto(app + target);
+    const download = f.page.getByRole("button", { name: de.Buttons.DownloadMyData });
+    await download.waitFor();
+    f.refuse("/export");
+    await download.click();
+    await f.page.waitForURL(loginPage(target), { timeout: 5000 });
+    await f.login();
+    await f.page.waitForURL(app + target, { timeout: 5000 });
+    await f.page.getByRole("button", { name: de.Buttons.DownloadMyData }).waitFor();
+    return f;
+  },
   // A way back that names another site is not followed.
   "login-ignores-foreign-target": async () => {
     let last;
@@ -246,6 +273,10 @@ const cases = {
       "//example.invalid/x",
       "https://example.invalid/x",
       "/\\example.invalid",
+      // Harmless in the address, another host once the router has decoded the path.
+      "/%2F%2Fexample.invalid",
+      "/%5Cexample.invalid",
+      "/..//example.invalid",
     ]) {
       const f = await fixture(account("0a"), { session: false });
       await f.page.goto(app + "/auth/login?redirect=" + encodeURIComponent(target));

@@ -425,10 +425,21 @@ test("the order summary says what comes next and calls the purchase unavailable 
   for (const profile of [
     businessIncomplete,
     account({ email_verified: false, country: "Deutschland" }),
+    // Unverified and without a country: the page asks to verify first and has no question
+    // for the country, so the summary must not send the buyer to one.
+    account({ email_verified: false, business: false, country: null }),
+    account({ email: null, email_verified: false, business: null, country: "" }),
   ]) {
     const blocked = await open(t, profile);
     assert.deepEqual(blocked.summary(), { next: false, unavailable: true, button: true });
+    assert.equal(blocked.shown().question, false, JSON.stringify(profile));
+    assert.ok(!blocked.ui.ever("#order-country"), "the question was never on the page");
+    assert.ok(!blocked.ui.ever("Body.CountryThenOffer"), "the note was never on the page");
     assert.deepEqual(blocked.calls.offers, []);
+    // No button offers it, and a call that arrives anyway saves nothing.
+    await blocked.vm.saveCountry();
+    await settle();
+    assert.deepEqual(blocked.calls.saved, []);
   }
 
   // Both languages have the new sentence.
