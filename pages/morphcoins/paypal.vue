@@ -302,32 +302,8 @@ export default {
     const user = useUser();
     // The `user` cookie only carries the id and the two names. Until the
     // profile has arrived, a missing field says nothing about the account.
-    const profileLoaded = useProfileLoaded();
-    const profileFailed = ref(false);
-    let profileOwner = null;
-    async function loadProfile() {
-      const owner = user.value?.id;
-      // One request at a time; the button only repeats a failed one.
-      if (owner === profileOwner && !profileFailed.value) return;
-      profileOwner = owner;
-      profileFailed.value = false;
-      const [, failure] = await getUser();
-      if (!active || profileLoaded.value || user.value?.id !== owner) return;
-      profileFailed.value = true;
-      openSnackbar("error", failure || "Error.TryAgainLater");
-    }
-    // The page asks once per account when it finds the profile missing: after a
-    // slow or failed load at app start, or after another tab changed the account.
-    // It starts with the mounted page, so the offer below is requested once.
-    onMounted(() =>
-      watch(
-        () => [user.value?.id, profileLoaded.value],
-        ([owner, loaded]) => {
-          if (owner && !loaded && owner !== profileOwner) loadProfile();
-        },
-        { immediate: true }
-      )
-    );
+    // The request starts with the mounted page, so the offer below is requested once.
+    const { profileLoaded, profileFailed, loadProfile } = useProfileLoad();
 
     const canBuy = computed(() => {
       if (!profileLoaded.value || !!!user.value) return false;

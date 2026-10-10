@@ -18,7 +18,9 @@ const template = compileTemplate({
   id: "coin-order",
 });
 assert.deepEqual(template.errors, []);
-const code = ts.transpileModule(`${descriptor.script.content}\n${template.code}`, {
+// The profile request the page shares with other pages runs against the same stand-ins.
+const shared = await read("composables/profileLoad.ts");
+const code = ts.transpileModule(`${shared}\n${descriptor.script.content}\n${template.code}`, {
   compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.CommonJS },
 }).outputText;
 
