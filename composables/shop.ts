@@ -121,3 +121,11 @@ export function formatHearts(hearts: number, locale: string): string {
 export function nextHeartRefill(now: Date = new Date()): number {
   return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0);
 }
+
+/** The next automatic refill as the visitor's own time of day, e.g. `02:00` in Berlin in summer. */
+export function heartRefillTime(locale: string, now: Date = new Date()): string {
+  return new Intl.DateTimeFormat(locale.startsWith("de") ? "de-DE" : "en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(nextHeartRefill(now));
+}

@@ -59,7 +59,7 @@ All five order surfaces use both components:
 | -------------------------- | -------------------------------------- | --------- |
 | Morphcoin purchase         | `pages/morphcoins/paypal.vue`          | `digital` |
 | Premium membership         | `pages/subscription/index.vue`         | `service` |
-| Heart refill               | `components/user/RefillHeartBtn.vue`   | `digital` |
+| Heart refill               | `components/user/HeartsEmpty.vue`      | `digital` |
 | Course unlock              | `components/course/Overview.vue`       | `digital` |
 | Webinar / coaching booking | `components/calendar/EventBooking.vue` | `service` |
 

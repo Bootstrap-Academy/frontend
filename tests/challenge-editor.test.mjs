@@ -71,6 +71,7 @@ function fixture(mobile = false) {
     "usePremiumInfo",
     "useDailyLearning",
     "useDailyAttemptLimit",
+    "useHeartsEmpty",
     "getPremiumStatus",
     "openSnackbar",
     "__loadChallengeEditorMonaco",
@@ -94,6 +95,7 @@ function fixture(mobile = false) {
   globalThis.usePremiumInfo = () => ref({ premium: true });
   globalThis.useDailyLearning = () => ({ isDaily: ref(false) });
   globalThis.useDailyAttemptLimit = () => ({ attemptLimit: ref(null), handleLimit: () => false });
+  globalThis.useHeartsEmpty = () => ({ heartsEmpty: ref(false), handleNoHearts: () => false });
   globalThis.getPremiumStatus = async () => {};
   const attempts = [];
   globalThis.openSnackbar = () => {};

@@ -15,7 +15,10 @@
         <p class="mt-2"><span class="text-accent">XP:</span> {{ xp }}</p>
       </div>
 
-      <article class="flex flex-wrap items-center gap-card-sm">
+      <!-- Without a heart for another attempt the way forward replaces the button. -->
+      <UserHeartsEmpty v-if="heartsEmpty" class="ml-auto w-full max-w-md" />
+
+      <article v-else class="flex flex-wrap items-center gap-card-sm">
         <!--
           The caption explains when a whole heart is charged.
         -->
@@ -109,6 +112,7 @@ export default defineComponent({
     const heartFree = computed(() => {
       return premiumInfo.value?.premium || isDaily.value;
     });
+    const { heartsEmpty, handleNoHearts } = useHeartsEmpty();
     const interval: any = ref(null);
 
     const languages: any = computed(() => {
@@ -196,7 +200,8 @@ export default defineComponent({
       });
       submitButtonLoading.value = false;
       if (!success) {
-        if (!handleLimit(error)) openSnackbar("error", decodeApiError(error).messageKey);
+        if (!handleLimit(error) && !handleNoHearts(error))
+          openSnackbar("error", decodeApiError(error).messageKey);
         return;
       }
       await getHearts();
@@ -328,6 +333,7 @@ export default defineComponent({
       fnCreateSubmission,
       HeartIcon,
       heartFree,
+      heartsEmpty,
       attemptLimit,
       openDialogSubmission,
     };

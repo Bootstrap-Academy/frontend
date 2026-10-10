@@ -67,9 +67,15 @@
         </InputBtn>
 
         <!--
-          The caption explains when a whole heart is charged.
+          Without a heart for another attempt the way forward replaces the
+          button. Otherwise the caption explains when a whole heart is charged.
         -->
-        <template v-if="!data?.solved && user?.id != subtask?.creator && !heartFree">
+        <UserHeartsEmpty
+          v-if="!data?.solved && user?.id != subtask?.creator && heartsEmpty"
+          class="mt-2 md:mt-4 xl:mt-6"
+        />
+
+        <template v-else-if="!data?.solved && user?.id != subtask?.creator && !heartFree">
           <InputBtn
             full
             :loading="formSubmitting"
@@ -143,6 +149,7 @@ export default defineComponent({
     const heartFree = computed(() => {
       return premiumInfo.value?.premium || isDaily.value;
     });
+    const { heartsEmpty, handleNoHearts } = useHeartsEmpty();
     // ============================================================= Checks
 
     function setArrayOfAnswers(index: any) {
@@ -220,7 +227,7 @@ export default defineComponent({
     }
 
     function errorHandler(error: any) {
-      if (handleLimit(error)) return;
+      if (handleLimit(error) || handleNoHearts(error)) return;
       const decoded = decodeApiError(error);
       if (decoded.kind === "throttle" && decoded.retryAfter !== null) {
         showMaxAttemptsError.value = true;
@@ -313,6 +320,7 @@ export default defineComponent({
       secondsForTryAgain,
       nextQuestion,
       heartFree,
+      heartsEmpty,
       attemptLimit,
       fnRated,
       wasOptionsCorrect,
