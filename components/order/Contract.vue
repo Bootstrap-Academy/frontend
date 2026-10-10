@@ -22,7 +22,7 @@
         Widerrufsinformationen dieses Angebots herunterladen (PDF)
       </button>
     </div>
-    <label class="flex items-start gap-3"
+    <label class="flex items-start gap-3 text-body"
       ><input
         v-model="accepted"
         data-purchase-acceptance
@@ -34,7 +34,7 @@
         Widerrufsinformationen an.</span
       ></label
     >
-    <label class="flex items-start gap-3"
+    <label class="flex items-start gap-3 text-body"
       ><input v-model="early" data-purchase-early type="checkbox" class="mt-1 h-5 w-5 shrink-0" />
       <span class="min-w-0 flex-1">{{ offer.declaration }}</span></label
     >
