@@ -37,7 +37,7 @@ function fixture(authenticated) {
   runInNewContext(profileScript.content, context);
   const visitProfile = () => {
     for (const entry of context.meta.middleware) {
-      const result = (entry === "auth" ? auth : entry)();
+      const result = (entry === "auth" ? auth : entry)({ fullPath: "/profile" });
       if (result) return result;
     }
   };
@@ -45,7 +45,12 @@ function fixture(authenticated) {
 }
 
 test("the old personal URL retains its login gate and replaces history for signed-in users", () => {
-  assert.deepEqual(fixture(false).visitProfile(), { path: "/auth/login", replace: false });
+  // The gate leads to the login, and the login back to the URL that was asked for.
+  // The target is built inside the middleware's own context, hence the plain copy.
+  assert.deepEqual(JSON.parse(JSON.stringify(fixture(false).visitProfile())), {
+    path: { path: "/auth/login", query: { redirect: "/profile" } },
+    replace: false,
+  });
   assert.deepEqual(fixture(true).visitProfile(), { path: "/dashboard", replace: true });
 });
 

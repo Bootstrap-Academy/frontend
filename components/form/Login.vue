@@ -211,8 +211,9 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
+    // Only a path of this site is followed after the login.
     const redirect = computed(() => {
-      return (route?.query?.redirect ?? "").toString();
+      return internalPath(route?.query?.redirect);
     });
 
     // ============================================================= functions

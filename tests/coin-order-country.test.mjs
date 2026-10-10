@@ -10,26 +10,38 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const account = (patch) => ({ email: "buyer@example.invalid", email_verified: true, ...patch });
 
 test("only a private buyer without a country is asked for it", async () => {
-  for (const [user, asked, offer, loaded = true] of [
+  for (const [user, asked, offer, loaded = true, lacking = asked] of [
     [null, false, false],
     [account({ business: null, country: null }), true, false],
     [account({ business: false, country: "" }), true, false],
     [account({ business: false, country: "Deutschland" }), false, true],
     [account({ business: false, country: "Deutschland", email_verified: false }), false, false],
+    // An unverified e-mail address comes first: the country is missing and not yet asked for.
+    [account({ business: false, country: null, email_verified: false }), false, false, true, true],
+    [account({ business: null, country: "", email_verified: false }), false, false, true, true],
     [account({ business: true, country: null }), false, false],
     // Before the profile has arrived the state only holds what the cookie carries.
     [{ id: "buyer", name: "buyer", display_name: "Buyer" }, false, false, false],
     [account({ business: false, country: null }), false, false, false],
     [account({ business: false, country: "Deutschland" }), false, false, false],
   ]) {
-    const { needsCountry, canBuy } = await pieces(page, ["canBuy", "needsCountry"], {
-      computed: Vue.computed,
-      user: Vue.ref(user),
-      profileLoaded: Vue.ref(loaded),
-    });
-    assert.equal(!!needsCountry.value, asked, JSON.stringify(user));
+    const { needsCountry, countryAsked, canBuy } = await pieces(
+      page,
+      ["canBuy", "needsCountry", "countryAsked"],
+      { computed: Vue.computed, user: Vue.ref(user), profileLoaded: Vue.ref(loaded) }
+    );
+    assert.equal(!!needsCountry.value, lacking, JSON.stringify(user));
+    assert.equal(!!countryAsked.value, asked, JSON.stringify(user));
     assert.equal(!!canBuy.value, offer, JSON.stringify(user));
   }
+  // The question, the note in the order summary and the missing order button share one value.
+  const source = await read(page);
+  assert.match(source, /<form\s+v-else-if="countryAsked"/);
+  assert.match(source, /:hide-actions="ordered \|\| !profileLoaded \|\| countryAsked"/);
+  assert.match(
+    source,
+    /<p v-else-if="countryAsked" role="status">\s+\{\{ t\("Body\.CountryThenOffer"/
+  );
 });
 
 test("the browser language preselects Austria and Switzerland, everything else Germany", async () => {
@@ -72,7 +84,7 @@ test("the country is saved by the button only, trimmed and at most 64 characters
     const calls = [];
     const attempted = Vue.ref(false);
     const { saveCountry } = await pieces(page, ["saveCountry"], {
-      needsCountry: Vue.ref(true),
+      countryAsked: Vue.ref(true),
       countryChoice: Vue.ref(choice),
       otherCountry: Vue.ref(other),
       countryAttempted: attempted,
@@ -89,7 +101,7 @@ test("the country is saved by the button only, trimmed and at most 64 characters
   // Nothing is written for an account the page does not ask.
   const unasked = [];
   const { saveCountry: idle } = await pieces(page, ["saveCountry"], {
-    needsCountry: Vue.ref(false),
+    countryAsked: Vue.ref(false),
     countryChoice: Vue.ref("Deutschland"),
     otherCountry: Vue.ref(""),
     countryAttempted: Vue.ref(false),
@@ -104,7 +116,7 @@ test("the country is saved by the button only, trimmed and at most 64 characters
   ]) {
     const notices = [];
     const { saveCountry } = await pieces(page, ["saveCountry"], {
-      needsCountry: Vue.ref(true),
+      countryAsked: Vue.ref(true),
       countryChoice: Vue.ref("Deutschland"),
       otherCountry: Vue.ref(""),
       countryAttempted: Vue.ref(false),

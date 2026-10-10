@@ -417,7 +417,7 @@
     "SubscribeFirst": "To Select Autopay you have to subscribe to any subscription first",
     "AutoPay": "Opt for stress-free ease with our auto-pay option",
     "HeartsAreFilled": "First consume your hearts to refill them later.",
-    "NeedCoinsForRefill": "You need at least {coins} Morphcoins to refill your hearts.",
+    "NeedCoinsForRefill": "A refill costs {coins} Morphcoins. The smallest purchase is {min} Morphcoins for {price}, and the rest stays in your account.",
     "AutomaticRefillAtUtc": "Your hearts are refilled for free every day at 00:00 UTC.",
     "WaitMinutes": "{n} minute | {n} minutes",
     "WaitSeconds": "{n} second | {n} seconds",
@@ -599,7 +599,8 @@
     "AddRenewalReference": "Add a Premium renewal reference (optional)",
     "WrongAnswerCostsOneHeart": "Only an incorrect solution costs 1 heart. Correct solutions are free.",
     "HeartsEmpty": "You’re out of hearts. They refill for free at {time}.",
-    "CountryForInvoice": "We still need your country for the invoice."
+    "CountryForInvoice": "We still need your country for the invoice.",
+    "CountryThenOffer": "Choose your country above and select “{button}”. Your offer then appears here, and you can place your order."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy logo",
@@ -891,7 +892,7 @@
     "CreateWebinar": "Create Webinar",
     "HoldCoachings": "Hold Coachings",
     "JoinLink": "Join Link",
-    "Safe": "Safe",
+    "Safe": "Save",
     "Login": "Login",
     "CreateAccount": "Create Account",
     "Signup": "Signup",

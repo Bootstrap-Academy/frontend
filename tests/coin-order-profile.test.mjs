@@ -35,8 +35,12 @@ const children = {
   Input: tag("input"),
   PaypalCheckoutStatus: tag("aside"),
   OrderContract: tag("div"),
+  // The summary with its slots; the order button is the summary's own and can be left out.
   OrderSummary: (props, { slots }) =>
-    Vue.h("section", [slots.characteristics?.(), slots.consent?.()]),
+    Vue.h("section", { "data-order-button": !props["hide-actions"] }, [
+      slots.characteristics?.(),
+      slots.consent?.(),
+    ]),
 };
 
 /** Element tree that keeps everything ever written to it, so a passing state cannot hide. */
@@ -114,7 +118,7 @@ const business = account({ business: true, ...invoice, zip_code: "12345", vat_id
 const businessIncomplete = account({ business: true, ...invoice, zip_code: "12345", vat_id: "" });
 
 /** Opens the page for `profile`, either already loaded or with only the cookie in the state. */
-async function open(t, profile, loaded = true) {
+async function open(t, profile, loaded = true, offerAnswer = null) {
   const user = Vue.ref(loaded ? profile : cookie(profile));
   const profileLoaded = Vue.ref(loaded);
   const calls = { profile: [], saved: [], offers: [], notices: [] };
@@ -125,7 +129,13 @@ async function open(t, profile, loaded = true) {
       ({
         vue: Vue,
         "@vueuse/core": { useDocumentVisibility: () => Vue.ref("visible") },
-        "vue-i18n": { useI18n: () => ({ t: (key) => key, locale: Vue.ref("de") }) },
+        "vue-i18n": {
+          // A sentence with a named part shows as its key and the part it was given.
+          useI18n: () => ({
+            t: (key, named) => (named ? `${key} ${JSON.stringify(named)}` : key),
+            locale: Vue.ref("de"),
+          }),
+        },
         "@heroicons/vue/24/outline": { ExclamationCircleIcon: tag("svg") },
       })[name],
     ref: Vue.ref,
@@ -166,6 +176,7 @@ async function open(t, profile, loaded = true) {
     },
     requestPurchaseOffer: async (path) => {
       calls.offers.push(path);
+      if (offerAnswer) return offerAnswer();
       return { id: "offer-1", user_id: user.value.id, product: { coins: 500 } };
     },
     openSnackbar: (...args) => calls.notices.push(args),
@@ -210,7 +221,14 @@ async function open(t, profile, loaded = true) {
     buyer: says("Headings.Business") ? "business" : says("Headings.Person") ? "private" : null,
     incomplete: says("Body.MissingProfileInfo") || says("Headings.Missing"),
   });
-  return { ui, vm, user, profileLoaded, calls, shown, press, answer };
+  /** What the order summary says without an offer, and whether it has its order button. */
+  const summary = () => ({
+    // The sentence names the button that leads on.
+    next: says('Body.CountryThenOffer {"button":"Buttons.Continue"}'),
+    unavailable: says("Body.PurchaseOfferUnavailable"),
+    button: ui.all().some((n) => n.props["data-order-button"] === true),
+  });
+  return { ui, vm, user, profileLoaded, calls, shown, summary, press, answer };
 }
 
 const silent = { loading: true, failed: false, question: false, buyer: null, incomplete: false };
@@ -371,5 +389,62 @@ test("the loading state and the retry use texts both languages already have", as
     assert.equal(typeof locale.Moderation.Loading, "string");
     assert.equal(typeof locale.Error.TryAgainLater, "string");
     assert.equal(typeof locale.Buttons.TryAgain, "string");
+  }
+});
+
+test("the order summary says what comes next and calls the purchase unavailable only when no offer came", async (t) => {
+  const quiet = { next: false, unavailable: false, button: false };
+
+  // Profile on its way, then failed: nothing is said about the purchase, and nothing can be ordered.
+  const order = await open(t, privateWithoutCountry, false);
+  assert.deepEqual(order.summary(), quiet);
+  await order.answer(null);
+  assert.deepEqual(order.summary(), quiet);
+
+  // Only the country is missing: the summary names the next step and has no button of its own.
+  await order.press("Buttons.TryAgain");
+  await order.answer(privateWithoutCountry);
+  assert.deepEqual(order.summary(), { next: true, unavailable: false, button: false });
+
+  // With the country the offer follows, and the order button with it.
+  await order.press("Buttons.Continue");
+  assert.deepEqual(order.summary(), { next: false, unavailable: false, button: true });
+  assert.ok(!order.ui.ever("Body.PurchaseOfferUnavailable"), "never said on the way to the offer");
+
+  // While the offer is on its way the page waits; an offer that does not come is the real case.
+  let arrive;
+  const asked = await open(t, privateWithCountry, true, () => new Promise((r) => (arrive = r)));
+  assert.deepEqual(asked.summary(), { next: false, unavailable: false, button: true });
+  assert.equal(asked.shown().loading, true);
+  arrive(null);
+  await settle();
+  assert.deepEqual(asked.summary(), { next: false, unavailable: true, button: true });
+  assert.equal(asked.shown().loading, false);
+
+  // A profile that stands in the way itself keeps the notice, as before.
+  for (const profile of [
+    businessIncomplete,
+    account({ email_verified: false, country: "Deutschland" }),
+    // Unverified and without a country: the page asks to verify first and has no question
+    // for the country, so the summary must not send the buyer to one.
+    account({ email_verified: false, business: false, country: null }),
+    account({ email: null, email_verified: false, business: null, country: "" }),
+  ]) {
+    const blocked = await open(t, profile);
+    assert.deepEqual(blocked.summary(), { next: false, unavailable: true, button: true });
+    assert.equal(blocked.shown().question, false, JSON.stringify(profile));
+    assert.ok(!blocked.ui.ever("#order-country"), "the question was never on the page");
+    assert.ok(!blocked.ui.ever("Body.CountryThenOffer"), "the note was never on the page");
+    assert.deepEqual(blocked.calls.offers, []);
+    // No button offers it, and a call that arrives anyway saves nothing.
+    await blocked.vm.saveCountry();
+    await settle();
+    assert.deepEqual(blocked.calls.saved, []);
+  }
+
+  // Both languages have the new sentence.
+  for (const language of ["de", "en-US"]) {
+    const locale = JSON.parse(await read(`locales/${language}.json`));
+    assert.match(locale.Body.CountryThenOffer, /\{button\}/);
   }
 });
