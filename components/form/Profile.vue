@@ -293,16 +293,24 @@ export default defineComponent({
       showOnLeaderboard.value = data?.leaderboard_opt_out === false;
     }
 
+    // The form follows the profile when its content changes. The same profile
+    // delivered again, by a second answer or a renewed session, leaves what
+    // has been typed alone.
     watch(
-      () => props.data,
-      (newValue, oldValue) => {
-        setFormInputs(newValue);
+      () => JSON.stringify(props.data),
+      () => {
+        setFormInputs(props.data);
       },
-      { deep: true, immediate: true }
+      { immediate: true }
     );
 
     // ============================================================= functions
+    const profileLoaded = useProfileLoaded();
+
     async function onclickSubmitForm() {
+      // Every field is saved, so nothing is saved from the cookie alone.
+      if (!profileLoaded.value) return;
+
       if (form.validate()) {
         form.submitting = true;
 
