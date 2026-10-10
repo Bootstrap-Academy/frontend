@@ -92,7 +92,8 @@ export default defineComponent({
       }
       // ! Morphcoins
       else if (name == "morphcoins-paypal") {
-        pathname = "/morphcoins/buy";
+        // A coin order that began on the Premium page goes back there.
+        pathname = route.query.next === "subscription" ? "/subscription" : "/morphcoins/buy";
         label = "Links.GoBack";
       }
       // ! Courses

@@ -77,6 +77,19 @@ export function coinsToEuros(coins: number, config: CoinConfig): number {
   return (Number(coins) || 0) / rate;
 }
 
+/**
+ * What the note about a heart refill without enough Morphcoins names: the
+ * price of the refill, and the smallest purchase the coin shop takes with its
+ * price in Euro.
+ */
+export function heartRefillNotice(hearts: HeartConfig, coins: CoinConfig, locale: string) {
+  return {
+    coins: hearts.hearts_refill_price,
+    min: COIN_PURCHASE_MIN,
+    price: formatEuros(coinsToEuros(COIN_PURCHASE_MIN, coins), locale),
+  };
+}
+
 /** Share of the gross price that is VAT. */
 export function vatShare(gross: number, config: CoinConfig): number {
   const vat = config.vat_percent;

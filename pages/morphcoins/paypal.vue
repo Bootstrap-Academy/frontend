@@ -225,7 +225,7 @@
             kind="coins"
             breakdown
             :disabled="!canBuy || !offer || !withdrawalConsent"
-            :hide-actions="ordered"
+            :hide-actions="ordered || !profileLoaded || needsCountry"
             :loading="busy || placing"
             @order="onclickOrder"
           >
@@ -242,7 +242,18 @@
                 :offer="offer"
                 v-model="withdrawalConsent"
               />
-              <p v-else role="status">{{ t("Body.PurchaseOfferUnavailable") }}</p>
+              <!--
+                Without an offer the summary says what comes next. That the
+                purchase is unavailable is only said once an offer was asked
+                for and none came, or the profile itself stands in the way.
+              -->
+              <p v-else-if="needsCountry" role="status">
+                {{ t("Body.CountryThenOffer", { button: t("Buttons.Continue") }) }}
+              </p>
+              <p v-else-if="offerPending" role="status">{{ t("Moderation.Loading") }}</p>
+              <p v-else-if="profileLoaded" role="status">
+                {{ t("Body.PurchaseOfferUnavailable") }}
+              </p>
             </template>
           </OrderSummary>
         </article>
@@ -279,6 +290,8 @@ export default {
     const { checkout, busy, error, create, capture, dismiss } = usePaypalCheckout();
     const sdkError = ref(false);
     const offer = ref(null);
+    // The offer has been asked for and the answer is still on its way.
+    const offerPending = ref(false);
     const placing = ref(false);
     let active = true;
     onBeforeUnmount(() => {
@@ -397,10 +410,15 @@ export default {
       const generation = ++offerGeneration;
       invalidateAction();
       offer.value = null;
+      offerPending.value = false;
       withdrawalConsent.value = false;
       if (!canBuy.value || !validAmount.value || checkout.value || ordered.value) return;
+      offerPending.value = true;
       const result = await requestPurchaseOffer(`/shop/coins/paypal/offers/${coinsToBuy.value}`);
-      if (active && generation === offerGeneration) offer.value = result;
+      if (active && generation === offerGeneration) {
+        offer.value = result;
+        offerPending.value = false;
+      }
     }
     onMounted(refreshOffer);
     watch(
@@ -570,6 +588,7 @@ export default {
       placing,
       withdrawalConsent,
       offer,
+      offerPending,
       onclickOrder,
     };
   },

@@ -417,7 +417,7 @@
     "SubscribeFirst": "Um Autopay auszuwählen, musst du zunächst ein Abonnement abschließen",
     "AutoPay": "Option für stressfreien Zahlung mit unserer Auto-Pay-Option",
     "HeartsAreFilled": "Verbrauche zuerst deine Herzen, um sie anschließend wieder aufzufüllen.",
-    "NeedCoinsForRefill": "Du benötigst mindestens {coins} Morphcoins, um deine Herzen wieder aufzufüllen.",
+    "NeedCoinsForRefill": "Das Auffüllen kostet {coins} Morphcoins. Der kleinste Kauf sind {min} Morphcoins für {price}, und der Rest bleibt auf deinem Konto.",
     "AutomaticRefillAtUtc": "Deine Herzen werden täglich um 00:00 UTC kostenlos aufgefüllt.",
     "WaitMinutes": "{n} Minute | {n} Minuten",
     "WaitSeconds": "{n} Sekunde | {n} Sekunden",
@@ -598,7 +598,8 @@
     "AddRenewalReference": "Nummer einer Premium-Verlängerung ergänzen (optional)",
     "WrongAnswerCostsOneHeart": "Nur eine falsche Lösung kostet 1 Herz. Richtige Lösungen sind kostenlos.",
     "HeartsEmpty": "Deine Herzen sind leer. Um {time} Uhr sind sie kostenlos wieder voll.",
-    "CountryForInvoice": "Für die Rechnung brauchen wir noch dein Land."
+    "CountryForInvoice": "Für die Rechnung brauchen wir noch dein Land.",
+    "CountryThenOffer": "Wähle oben dein Land und klicke auf „{button}“. Danach steht hier dein Angebot, und du kannst bestellen."
   },
   "AltAttributes": {
     "BootstrapAcademyLogo": "Bootstrap Academy Logo",

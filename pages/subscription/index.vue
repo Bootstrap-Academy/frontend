@@ -25,10 +25,17 @@
             {{ t("Headings.RefillHeartsNow") }}
           </h2>
 
-          <div v-if="coins < refillPrice" class="mt-4 flex justify-center">
+          <!-- Without enough Morphcoins the box says what a refill takes and leads to the coin shop. -->
+          <div v-if="coins < refillPrice" class="mt-4 flex flex-col items-center gap-4">
             <p class="max-w-sm text-xl">
-              {{ t("Body.NeedCoinsForRefill", { coins: refillPrice }) }}
+              {{ t("Body.NeedCoinsForRefill", refillNotice) }}
             </p>
+            <NuxtLink
+              :to="{ path: '/morphcoins/buy', query: { for: 'hearts' } }"
+              class="inline-flex min-h-11 items-center text-accent underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            >
+              {{ t("Headings.BuyMorphcoins") }}
+            </NuxtLink>
           </div>
           <div v-else>
             <div class="flex justify-center" v-if="hearts != 0">
@@ -305,6 +312,10 @@ export default {
     const monthlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "MONTHLY"));
     const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
     const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
+    const coinConfig = useCoinConfig();
+    const refillNotice = computed(() =>
+      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
+    );
 
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
@@ -632,6 +643,7 @@ export default {
       monthlyPrice,
       yearlyPrice,
       refillPrice,
+      refillNotice,
       currentCard,
       selectedButton,
       buttonOptions,

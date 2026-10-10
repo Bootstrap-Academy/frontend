@@ -16,7 +16,7 @@
 
     <!-- Sent here by "Refill hearts" without enough coins: what the coins are needed for. -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
-      {{ t("Body.NeedCoinsForRefill", { coins: heartConfig.hearts_refill_price }) }}
+      {{ t("Body.NeedCoinsForRefill", refillNotice) }}
     </p>
 
     <article
@@ -109,6 +109,9 @@ export default defineComponent({
     const heartConfig = useHeartConfig();
     const route = useRoute();
     const forHearts = computed(() => route.query.for === "hearts");
+    const refillNotice = computed(() =>
+      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
+    );
 
     onMounted(loadCoinConfig);
     onMounted(loadHeartConfig);
@@ -248,8 +251,8 @@ export default defineComponent({
       t,
       form,
       formRef,
-      heartConfig,
       forHearts,
+      refillNotice,
       coinsToBuy,
       totalPrice,
       formattedRate,

@@ -82,7 +82,7 @@ const results = [],
  * A signed in browser at phone width. `profile(n)` decides the n-th profile request:
  * it may wait before the answer and may return a failing status.
  */
-async function fixture(accounts, profile = () => {}) {
+async function fixture(accounts, profile = () => {}, { offers = true } = {}) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     locale: "de-DE",
@@ -90,13 +90,18 @@ async function fixture(accounts, profile = () => {}) {
   });
   await context.addCookies(cookies(accounts[0]));
   // Everything the page ever said about the buyer, however briefly.
-  await context.addInitScript((privateBuyer) => {
-    const seen = (window.__seen = { question: false, privateBuyer: false });
-    new MutationObserver(() => {
-      seen.question ||= !!document.getElementById("order-country");
-      seen.privateBuyer ||= !!document.querySelector("main")?.textContent.includes(privateBuyer);
-    }).observe(document, { childList: true, subtree: true, characterData: true });
-  }, de.Headings.Person);
+  await context.addInitScript(
+    ([privateBuyer, unavailable]) => {
+      const seen = (window.__seen = { question: false, privateBuyer: false, unavailable: false });
+      new MutationObserver(() => {
+        const text = document.querySelector("main")?.textContent ?? "";
+        seen.question ||= !!document.getElementById("order-country");
+        seen.privateBuyer ||= text.includes(privateBuyer);
+        seen.unavailable ||= text.includes(unavailable);
+      }).observe(document, { childList: true, subtree: true, characterData: true });
+    },
+    [de.Headings.Person, de.Body.PurchaseOfferUnavailable]
+  );
   const owners = new Map(accounts.map((user) => [token(user), user]));
   const calls = [];
   let profileRequests = 0,
@@ -134,6 +139,7 @@ async function fixture(accounts, profile = () => {}) {
     if (path === `/auth/users/${owner.id}` && method === "PATCH")
       return answer(Object.assign(owner, call.body));
     if (path.startsWith("/shop/coins/paypal/offers/") && method === "POST") {
+      if (!offers) return answer({ detail: "Service Unavailable" }, 503);
       const coins = Number(path.split("/").pop());
       return answer({
         state: "offered",
@@ -168,15 +174,23 @@ async function fixture(accounts, profile = () => {}) {
   }
   /** What the order page tells the buyer right now, and what it ever showed. */
   async function shown() {
-    const { text, ...rest } = await page.evaluate(() => ({
-      text: document.querySelector("main")?.innerText ?? "",
-      question: !!document.getElementById("order-country"),
-      offer: !!document.querySelector("[data-purchase-contract]"),
-      ever: window.__seen,
-    }));
+    const { text, ...rest } = await page.evaluate(
+      (order) => ({
+        text: document.querySelector("main")?.innerText ?? "",
+        question: !!document.getElementById("order-country"),
+        offer: !!document.querySelector("[data-purchase-contract]"),
+        orderButton: [...document.querySelectorAll("main button")].some(
+          (button) => button.textContent.trim() === order
+        ),
+        ever: window.__seen,
+      }),
+      de.Buttons.OrderWithObligationToPay
+    );
     return {
       loading: text.includes(de.Moderation.Loading),
       failed: text.includes(de.Error.TryAgainLater),
+      next: text.includes(de.Body.CountryThenOffer.replace("{button}", de.Buttons.Continue)),
+      unavailable: text.includes(de.Body.PurchaseOfferUnavailable),
       buyer: !text.includes(`${de.Headings.UserType}:`)
         ? null
         : text.includes(de.Headings.Business)
@@ -223,17 +237,39 @@ async function fixture(accounts, profile = () => {}) {
   };
 }
 
-const never = { question: false, privateBuyer: false };
+const never = { question: false, privateBuyer: false, unavailable: false };
+// Without the profile the page says nothing about the buyer or the purchase and offers no order.
 const silent = {
   loading: true,
   failed: false,
+  next: false,
+  unavailable: false,
   buyer: null,
   incomplete: false,
   question: false,
   offer: false,
+  orderButton: false,
   ever: never,
 };
-const loaded = { loading: false, failed: false, incomplete: false, question: false, offer: true };
+const loaded = {
+  loading: false,
+  failed: false,
+  next: false,
+  unavailable: false,
+  incomplete: false,
+  question: false,
+  offer: true,
+  orderButton: true,
+};
+// Only the country is missing: the summary names the next step and has no order button yet.
+const asking = {
+  ...loaded,
+  buyer: "private",
+  question: true,
+  next: true,
+  offer: false,
+  orderButton: false,
+};
 const loadingNotice = (page) =>
   page.locator("main [role=status]", { hasText: de.Moderation.Loading });
 const userType = (page) => page.locator("main h3", { hasText: de.Headings.UserType });
@@ -313,11 +349,8 @@ try {
     await f.page.locator("#order-country").waitFor();
     await f.settled();
     assert.deepEqual(await f.shown(), {
-      ...loaded,
-      buyer: "private",
-      question: true,
-      offer: false,
-      ever: { question: true, privateBuyer: true },
+      ...asking,
+      ever: { ...never, question: true, privateBuyer: true },
     });
     assert.equal(f.profileRequests(), 5);
     assert.deepEqual(f.saved(), []);
@@ -329,11 +362,8 @@ try {
     await f.page.locator("#order-country").waitFor();
     await f.settled();
     assert.deepEqual(await f.shown(), {
-      ...loaded,
-      buyer: "private",
-      question: true,
-      offer: false,
-      ever: { question: true, privateBuyer: true },
+      ...asking,
+      ever: { ...never, question: true, privateBuyer: true },
     });
     assert.equal(await f.page.locator("#order-country").inputValue(), "Deutschland");
     assert.equal(f.offers(), 0);
@@ -347,6 +377,7 @@ try {
       { ...after, ever: null },
       { ...loaded, buyer: "private", question: false, ever: null }
     );
+    assert.equal(after.ever.unavailable, false, "never called unavailable on the way to the offer");
     assert.equal(f.profileRequests(), 1, "a loaded profile is not requested again");
     assert.equal(f.offers(), 1);
     await done("loaded-private-without-country", f);
@@ -357,7 +388,8 @@ try {
     [
       "loaded-business-incomplete",
       businessIncomplete(),
-      { buyer: "business", incomplete: true, offer: false },
+      // The profile itself stands in the way; the notice stays as it was.
+      { buyer: "business", incomplete: true, offer: false, unavailable: true },
       0,
     ],
   ]) {
@@ -365,7 +397,11 @@ try {
     await f.page.goto(app + order);
     await userType(f.page).waitFor();
     await f.settled();
-    const ever = { question: false, privateBuyer: expected.buyer === "private" };
+    const ever = {
+      ...never,
+      privateBuyer: expected.buyer === "private",
+      unavailable: !!expected.unavailable,
+    };
     assert.deepEqual(await f.shown(), { ...loaded, ...expected, ever }, name);
     assert.equal(f.profileRequests(), 1, name);
     assert.equal(f.offers(), offers, name);
@@ -408,7 +444,7 @@ try {
     assert.deepEqual(await f.shown(), {
       ...loaded,
       buyer: "private",
-      ever: { question: false, privateBuyer: true },
+      ever: { ...never, privateBuyer: true },
     });
     assert.equal(f.profileRequests(), 3);
     assert.equal(f.offers(), 1, "one offer, although the profile arrives while the page opens");
@@ -453,6 +489,24 @@ try {
     assert.equal(f.offers(), 1, "no offer is requested for nobody");
     assert.deepEqual(f.saved(), []);
     await done("session-ended-in-another-tab", f);
+  }
+  {
+    // The offer cannot be fetched: this is what the unavailable notice is for.
+    const f = await fixture([privateWithCountry()], () => {}, { offers: false });
+    await f.page.goto(app + order);
+    await f.page
+      .locator("main [role=status]", { hasText: de.Body.PurchaseOfferUnavailable })
+      .waitFor();
+    await f.settled();
+    assert.deepEqual(await f.shown(), {
+      ...loaded,
+      buyer: "private",
+      offer: false,
+      unavailable: true,
+      ever: { ...never, privateBuyer: true, unavailable: true },
+    });
+    assert.deepEqual(f.saved(), []);
+    await done("offer-not-available", f);
   }
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, results }));

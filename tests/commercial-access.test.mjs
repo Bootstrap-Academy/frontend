@@ -943,8 +943,11 @@ test("actual app keeps public rights access and ordinary authentication without 
         assert(ui.all().some((n) => n.props["data-blocker"] === "ordinary-loading"));
         user.setStates(null);
         assert.equal(navigations.at(-1), "/auth/login");
-        protectedMiddleware({ path: "/dashboard" }, { path: "/" });
-        assert.equal(navigations.at(-1), "/auth/login");
+        protectedMiddleware({ path: "/dashboard", fullPath: "/dashboard" }, { path: "/" });
+        assert.deepEqual(navigations.at(-1), {
+          path: "/auth/login",
+          query: { redirect: "/dashboard" },
+        });
       } finally {
         app.unmount();
       }
