@@ -38,6 +38,7 @@
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 const { checkout, busy, error, coordinationUnavailable, capture, dismiss } = usePaypalCheckout();
 const paypal = ref<HTMLElement | null>(null);
 const resuming = ref(false);
@@ -78,6 +79,7 @@ async function resume() {
 async function finish() {
   if (!checkout.value) return;
   await dismiss(checkout.value.orderId, "complete");
-  router.push("/morphcoins/buy");
+  // A purchase that began on the Premium page continues there.
+  router.push(route.query.next === "subscription" ? "/subscription" : "/morphcoins/buy");
 }
 </script>

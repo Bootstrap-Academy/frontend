@@ -64,26 +64,43 @@
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}
           </p>
-          <button
-            type="button"
-            :disabled="disabled || !hasEnoughCoins"
-            @click="onclickSubscribe"
-            :class="{
-              'flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95':
-                hasEnoughCoins,
-              'flex w-full cursor-default items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 duration-200':
-                !hasEnoughCoins,
-            }"
-          >
-            <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
-            <Price :coins="planPrice" class="justify-center font-bold text-black" />
-          </button>
-          <p v-if="!hasEnoughCoins" class="mt-2 text-center font-bold text-error">
-            {{ t("Body.NotEnoughMorphcoins") }}
-          </p>
-          <p v-else-if="yearly" class="mt-2 text-center text-black">
-            {{ t("Body.PricePerMonth", { amount: pricePerMonth }) }}
-          </p>
+          <template v-if="hasEnoughCoins">
+            <button
+              type="button"
+              :disabled="disabled"
+              @click="onclickSubscribe"
+              class="flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95"
+            >
+              <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
+              <Price :coins="planPrice" class="justify-center font-bold text-black" />
+            </button>
+            <p v-if="yearly" class="mt-2 text-center text-black">
+              {{ t("Body.PricePerMonth", { amount: pricePerMonth }) }}
+            </p>
+          </template>
+
+          <!--
+            Without enough Morphcoins the price is plain text, and the button
+            below leads straight to the order of the missing coins.
+          -->
+          <template v-else>
+            <div
+              class="flex w-full items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 text-center"
+            >
+              <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
+              <Price :coins="planPrice" class="justify-center font-bold text-black" />
+            </div>
+            <p class="mt-2 text-center font-bold text-black">
+              {{ t("Body.NotEnoughMorphcoins") }}
+            </p>
+            <NuxtLink
+              :to="coinOrder"
+              class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-white bg-white px-6 py-3 text-center text-black shadow-lg duration-200 hover:scale-105 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
+            >
+              <span class="font-bold">{{ t("Headings.BuyMorphcoins") }}</span>
+              <Price :coins="missingCoins" class="justify-center text-sm" />
+            </NuxtLink>
+          </template>
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
@@ -138,6 +155,12 @@ const isPremium = computed(() => {
 const coins = useCoins();
 const planPrice = computed(() => (props.yearly ? props.yearlyPrice : props.monthlyPrice));
 const hasEnoughCoins = computed(() => coins.value >= planPrice.value);
+
+// What is still missing for the plan, at least the smallest amount the shop sells.
+const missingCoins = computed(() => Math.max(COIN_PURCHASE_MIN, planPrice.value - coins.value));
+const coinOrder = computed(
+  () => `/morphcoins/paypal?coins=${missingCoins.value}&next=subscription`
+);
 
 // Art. 246a § 1 Abs. 1 Nr. 8 EGBGB: the monthly cost of a yearly plan.
 const pricePerMonth = computed(() =>

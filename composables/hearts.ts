@@ -28,15 +28,20 @@ export function useHeartsEmpty() {
     return showHearts.value && premiumKnown.value && !!heartInfo.value && !enough.value;
   });
 
+  /** An attempt was refused for lack of hearts; the balance is read again to confirm or clear it. */
+  function reportNoHearts() {
+    refused.value = true;
+    void getHearts();
+  }
+
   /** Takes over the "not enough hearts" refusal of a submission; any other error stays with the caller. */
   function handleNoHearts(error: unknown) {
     if (decodeApiError(error).kind !== "hearts") return false;
-    refused.value = true;
-    void getHearts();
+    reportNoHearts();
     return true;
   }
 
-  return { heartsEmpty, handleNoHearts };
+  return { heartsEmpty, handleNoHearts, reportNoHearts };
 }
 
 /**

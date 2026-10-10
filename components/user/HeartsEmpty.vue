@@ -110,10 +110,8 @@ export default {
         // The balance decides between the order and the coin shop, so it is read now.
         await getBalance();
         if (coins.value < refillPrice.value) {
-          openSnackbar("info", "Error.NeedCoinsForRefill", "", false, {
-            coins: refillPrice.value,
-          });
-          return await navigateTo("/morphcoins/buy");
+          // The coin shop says what the coins are needed for.
+          return await navigateTo({ path: "/morphcoins/buy", query: { for: "hearts" } });
         }
 
         // The dialog is rebuilt every time it opens, so the boxes start unticked.

@@ -110,6 +110,19 @@ test("a refusal that the balance contradicts does not keep the submit button awa
   assert.equal(f.api.heartsEmpty.value, false);
 });
 
+test("a refusal reported without an error object counts the same way", async (t) => {
+  const f = await fixture(t, { hearts: null, premium: null, premiumKnown: false, mode: null });
+  f.state.server = 0;
+  f.api.reportNoHearts();
+  assert.equal(f.api.heartsEmpty.value, true);
+  await settle();
+  assert.deepEqual(f.reads, ["/shop/hearts/learner"]);
+  assert.equal(f.api.heartsEmpty.value, true);
+  f.heartInfo.value = { hearts: 2 };
+  await settle();
+  assert.equal(f.api.heartsEmpty.value, false);
+});
+
 test("the free refill is shown as 00:00 UTC in the visitor's own time of day", () => {
   const summer = new Date("2026-10-10T12:00:00Z");
   assert.equal(shop.nextHeartRefill(summer), Date.UTC(2026, 9, 11));
@@ -133,4 +146,19 @@ test("quiz, matching and coding hand the hearts refusal to the way forward in bo
     assert.match(locale.Body.HeartsEmpty, /\{time\}/);
     assert.equal(typeof locale.Links.UnlimitedHeartsWithPremium, "string");
   }
+});
+
+test("the learning room and the coding task list show the same way forward", async () => {
+  const room = await read("components/learning/ExerciseRoom.vue");
+  assert.match(room, /<UserHeartsEmpty v-if="heartsEmpty"/);
+  assert.match(room, /if \(error === "NoHearts"\) reportNoHearts\(\);/);
+  // The sentence about the missing heart is not repeated next to the block.
+  assert.match(room, /view\.error && !\(view\.error === 'NoHearts' && heartsEmpty\)/);
+  const list = await read("components/CodingChallenge/List.vue");
+  assert.match(list, /<div v-if="heartsEmpty"[^>]*>\s*<UserHeartsEmpty \/>/);
+  assert.match(list, /hearts\.value < 2\) \{\s*reportNoHearts\(\);/);
+  assert(
+    !list.includes("Error.NotEnoughHearts"),
+    "a refused task no longer answers with a snackbar"
+  );
 });

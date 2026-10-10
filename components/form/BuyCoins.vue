@@ -14,6 +14,11 @@
       class="mb-card"
     />
 
+    <!-- Sent here by "Refill hearts" without enough coins: what the coins are needed for. -->
+    <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
+      {{ t("Body.NeedCoinsForRefill", { coins: heartConfig.hearts_refill_price }) }}
+    </p>
+
     <article
       class="relative z-10 grid w-full max-w-full grid-cols-[2em_auto_minmax(0,1fr)] items-center rounded-md border bg-secondary px-4 py-3 text-base text-white transition-all gap-box"
       :class="[!form.euros.valid ? 'border-error' : 'border-transparent']"
@@ -101,8 +106,12 @@ export default defineComponent({
   setup(props) {
     const { t, locale } = useI18n();
     const coinConfig = useCoinConfig();
+    const heartConfig = useHeartConfig();
+    const route = useRoute();
+    const forHearts = computed(() => route.query.for === "hearts");
 
     onMounted(loadCoinConfig);
+    onMounted(loadHeartConfig);
 
     const formRef = ref<HTMLFormElement | null>(null);
 
@@ -236,6 +245,8 @@ export default defineComponent({
       t,
       form,
       formRef,
+      heartConfig,
+      forHearts,
       coinsToBuy,
       totalPrice,
       formattedRate,
