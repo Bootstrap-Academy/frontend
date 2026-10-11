@@ -7,10 +7,7 @@
         The amount and its price stand once on this page: in the order summary
         right above the order button, where § 312j Abs. 2 BGB asks for them.
       -->
-      <h1 class="text-heading-1 mb-2 text-black">{{ t("Headings.BuyMorphcoins") }}</h1>
-      <p class="mb-2 text-black mb-card">
-        {{ t("Body.BuyCoins") }}
-      </p>
+      <h1 class="text-heading-1 text-black mb-card">{{ t("Headings.BuyMorphcoins") }}</h1>
 
       <p
         v-if="!validAmount"

@@ -257,12 +257,16 @@ test("the coin order page shows the e-mail address once, where the confirmation 
   );
 });
 
-test("the sentence under the heading of the coin order page does not say the heading again", async () => {
-  for (const language of ["de", "en-US"]) {
-    const texts = JSON.parse(await read(`locales/${language}.json`));
-    const sentence = texts.Body.BuyCoins;
-    assert.match(sentence, /Profilangaben|profile details/, language);
-    for (const word of texts.Headings.BuyMorphcoins.split(" "))
-      assert(!sentence.toLowerCase().includes(word.toLowerCase()), `${language}: ${word}`);
-  }
+test("on the coin order page no sentence stands between the heading and the profile block", async () => {
+  const all = elements(await template("pages/morphcoins/paypal.vue")).map(({ node }) => node);
+  const heading = all.findIndex((node) => node.tag === "h1");
+  const profile = all.findIndex(
+    (node) => node.tag === "h2" && node.loc.source.includes('t("Headings.YourProfileInformation")')
+  );
+  assert(heading >= 0 && profile > heading);
+  // Only the note about an amount that cannot be ordered may come first; it replaces the block.
+  const sentences = all.slice(heading + 1, profile).filter((node) => node.tag === "p");
+  assert.deepEqual(sentences.map(condition), ["!validAmount"]);
+  for (const language of ["de", "en-US"])
+    assert.equal(JSON.parse(await read(`locales/${language}.json`)).Body.BuyCoins, undefined);
 });

@@ -182,7 +182,7 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-test("the heading and the sentence of the coin order are as readable as the text around them", async () => {
+test("the heading of the coin order is as readable as the text around it", async () => {
   const css = await read("assets/css/tailwind.css");
   const colour = (name) => css.match(new RegExp(`--color-${name}: (#[0-9a-f]{6});`))[1];
   const all = elements((await template("pages/morphcoins/paypal.vue")).ast);
@@ -193,18 +193,15 @@ test("the heading and the sentence of the coin order are as readable as the text
     "the page is white in every colour scheme"
   );
   const headings = all.filter(({ node }) => node.tag === "h1").map(({ node }) => node);
-  const sentence = all.find(
-    ({ node }) => node.tag === "p" && node.loc.source.includes('t("Body.BuyCoins")')
-  ).node;
   assert.equal(headings.length, 1, "one heading");
-  for (const node of [...headings, sentence]) {
+  for (const node of headings) {
     const classes = attribute(node, "class").split(/\s+/);
     const text = classes.filter((c) =>
       /^text-(black|body|subheading|heading|white|accent)$/.test(c)
     );
     assert.deepEqual(text, ["text-black"], node.loc.source.split("\n")[0]);
   }
-  // The colour the page uses for its running text, and the one these lines had before.
+  // The colour the page uses for its running text, and the one the heading had before.
   assert(contrast(colour("black"), colour("white")) >= 7);
   assert(contrast(colour("subheading"), colour("white")) < 3);
 });
