@@ -112,3 +112,16 @@ test("the coin order page states the amount and its price once, in the order sum
     assert(!/[\d{]/.test(heading), `${language}: ${heading}`);
   }
 });
+
+test("the coin shop states the total once, with the tax", async () => {
+  const ast = await template("components/form/BuyCoins.vue");
+  const prices = elements(ast).filter(({ node }) => node.tag === "Price");
+  assert.equal(prices.length, 1);
+  assert.equal(bound(prices[0].node, "coins"), "coinsToBuy");
+  assert.equal(condition(prices[0].node), undefined);
+  // The line carries the tax note: `Price` adds it unless told otherwise.
+  assert.equal(bound(prices[0].node, "vat"), undefined);
+  assert.equal(bound(prices[0].node, "euroOnly") ?? bound(prices[0].node, "euro-only"), undefined);
+  for (const { says } of sayings(ast)) assert(!/totalPrice|coinsToBuy|Euros\(/.test(says), says);
+  assert(!(await read("components/form/BuyCoins.vue")).includes("totalPrice"));
+});

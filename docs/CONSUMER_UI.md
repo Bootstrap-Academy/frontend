@@ -46,6 +46,14 @@ instruction, and the order button. Its `submitLabel` defaults to
 `Buttons.OrderWithObligationToPay` — override it only where nothing has to be
 paid.
 
+A page states the same thing once. What is ordered and what it costs stand in
+`OrderSummary`, right before the order button, and the page around it does not
+say them again: the coin order page is headed by its action alone. The same
+holds on the way there. On the Premium card the price of the plan stands above
+the button to the coin order, so the button names an amount only when it
+orders another one, and the coin shop states its total in one line with the
+tax note (`tests/no-repeated-statements.test.mjs`).
+
 `OrderWithdrawalConsent` goes into the `consent` slot, directly above the
 button. It renders the two declarations the consumer gives so that the right of
 withdrawal expires early, taken verbatim from `/docs/right-of-withdrawal`:
