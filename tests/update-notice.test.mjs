@@ -25,7 +25,6 @@ const {
   updateNoticeKey,
   updateNoticeSubject,
   UPDATE_NOTICE_VERSION,
-  UPDATE_NOTICE_BROWSER,
   UPDATE_NOTICE_WINDOW,
   UPDATE_NOTICE_LINK,
   clearObsoleteUpdateNotices,
@@ -34,6 +33,8 @@ const {
 const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
 const A = "10000000-0000-4000-8000-000000000001";
 const B = "10000000-0000-4000-8000-000000000002";
+// Earlier builds showed the notice without a session and stored its close under this subject.
+const LEFT_BY_A_VISITOR = updateNoticeKey("browser");
 
 function fixture(data = new Map(), unavailable = false, timing = {}) {
   const writes = [],
@@ -155,7 +156,11 @@ function host() {
     [n.type === "comment" ? "" : n.text, ...n.children.map(text)].join(" ");
   return { root, renderer, all, text };
 }
-async function mounted(language, fn, { blocked = false, data = new Map() } = {}) {
+async function mounted(
+  language,
+  fn,
+  { blocked = false, data = new Map(), signedOut = false } = {}
+) {
   const actualNow = Date.now;
   Date.now = () => UPDATE_NOTICE_WINDOW.startsAt + 1000;
   const f = fixture(data, blocked),
@@ -163,9 +168,9 @@ async function mounted(language, fn, { blocked = false, data = new Map() } = {})
     listeners = new Map(),
     layoutLifetimes = [];
   const route = Vue.reactive({ path: "/dashboard" });
-  const user = Vue.ref({ id: A, terms_version: "old" }),
-    token = Vue.ref("current"),
-    loaded = Vue.ref(true);
+  const user = Vue.ref(signedOut ? null : { id: A, terms_version: "old" }),
+    token = Vue.ref(signedOut ? "" : "current"),
+    loaded = Vue.ref(!signedOut);
   const hooks = {},
     requests = [],
     window = {
@@ -286,7 +291,7 @@ async function mounted(language, fn, { blocked = false, data = new Map() } = {})
       else delete globalThis[key];
   }
 }
-test("guests use a browser marker; authenticated accounts need a loaded UUID profile", () => {
+test("a visitor without a session has no subject; an account needs a loaded UUID profile", () => {
   assert.equal(updateNoticeSubject(A, "current", true), A);
   for (const args of [
     [A, "current", false],
@@ -296,7 +301,12 @@ test("guests use a browser marker; authenticated accounts need a loaded UUID pro
   ])
     assert.equal(updateNoticeSubject(...args), null);
   for (const token of ["", null, undefined])
-    assert.equal(updateNoticeSubject(null, token, false), UPDATE_NOTICE_BROWSER);
+    for (const [id, loaded] of [
+      [null, false],
+      [null, true],
+      [A, true],
+    ])
+      assert.equal(updateNoticeSubject(id, token, loaded), null);
   assert.notEqual(UPDATE_NOTICE_VERSION, "2026-09-r2");
 });
 test("display/auth changes never write; explicit dismissal persists one user/version marker", () => {
@@ -456,7 +466,7 @@ for (const language of ["de", "en-US"]) {
     });
   });
 }
-test("actual app suppresses on public/legal routes and while an authenticated profile is loading", async () => {
+test("actual app suppresses on public/legal routes, while a profile is loading and without a session", async () => {
   await mounted("de", async (f) => {
     for (const path of [
       "/docs/privacy",
@@ -480,7 +490,7 @@ test("actual app suppresses on public/legal routes and while an authenticated pr
     f.loaded.value = true;
     f.token.value = "";
     await f.tick();
-    assert(f.notice(), "a guest sees the same notice without needing an account");
+    assert.equal(Boolean(f.notice()), false, "a visitor without a session sees no notice");
     f.token.value = "fresh";
     await f.tick();
     assert(f.notice());
@@ -531,30 +541,77 @@ test("a saved dismissal is honored when the window opens, and a new version has 
   assert.deepEqual(f.writes, [[updateNoticeKey(A, "next-notice"), "1"]]);
 });
 
-test("actual guest dismissal survives reload and stays separate from a signed-in account", async () => {
-  const data = new Map();
+for (const language of ["de", "en-US"]) {
+  test(`actual app ${language}: without a session the entry pages show no notice and nothing is read or written`, async () => {
+    await mounted(
+      language,
+      async (f) => {
+        for (const path of ["/", "/auth/login", "/auth/signup", "/start", "/skill-tree"]) {
+          f.route.path = path;
+          await f.tick();
+          assert.equal(Boolean(f.notice()), false, path);
+          assert(!f.ui.text().includes(messages[language].UpdateNotice.Body), path);
+          assert(f.ui.all().some((n) => n.type === "main"));
+        }
+        for (const token of [null, undefined, ""]) {
+          f.token.value = token;
+          await f.tick();
+          assert.equal(Boolean(f.notice()), false);
+        }
+        assert.deepEqual(f.reads, []);
+        assert.deepEqual(f.writes, []);
+        assert.deepEqual(f.requests, []);
+      },
+      { signedOut: true }
+    );
+  });
+}
+test("actual app: opened signed out, the notice appears after the login and stays until it is closed", async () => {
+  // The marker of a visitor must never count for the account that signs in afterwards.
+  const data = new Map([[LEFT_BY_A_VISITOR, "1"]]);
   await mounted(
     "de",
     async (f) => {
-      f.token.value = "";
-      f.user.value = null;
-      await f.tick();
-      assert(f.notice());
-      f.button().props.onClick();
+      f.route.path = "/auth/login";
       await f.tick();
       assert.equal(Boolean(f.notice()), false);
-      assert.deepEqual(f.writes, [[updateNoticeKey(UPDATE_NOTICE_BROWSER), "1"]]);
+      // The login answers with the token and the full profile.
+      f.user.value = { id: A };
+      f.token.value = "after-login";
+      f.loaded.value = true;
+      f.route.path = "/dashboard";
+      await f.tick();
+      assert(f.notice(), "signed in and not closed: the notice is there");
+      f.route.path = "/profile/courses";
+      await f.tick();
+      f.route.path = "/dashboard";
+      await f.tick();
+      assert(f.notice(), "it stays while the account moves through the app");
+      assert.deepEqual(f.writes, []);
+      f.button().props.onClick();
+      await f.tick();
+      assert.equal(Boolean(f.notice()), false, "signed in and closed: the notice is gone");
+      assert.deepEqual(f.writes, [[updateNoticeKey(A), "1"]]);
+      assert.equal(f.data.get(LEFT_BY_A_VISITOR), "1");
     },
-    { data }
+    { data, signedOut: true }
   );
   await mounted(
     "de",
     async (f) => {
-      assert(f.notice(), "the account has its own marker");
-      f.token.value = "";
+      assert.equal(Boolean(f.notice()), false, "closed stays closed after a reload");
+      f.token.value = null;
       f.user.value = null;
+      f.loaded.value = false;
+      f.route.path = "/auth/login";
       await f.tick();
-      assert.equal(Boolean(f.notice()), false);
+      assert.equal(Boolean(f.notice()), false, "signed out again: no notice");
+      f.user.value = { id: B };
+      f.token.value = "other";
+      f.loaded.value = true;
+      f.route.path = "/dashboard";
+      await f.tick();
+      assert(f.notice(), "another account on this browser has not closed it");
       assert.deepEqual(f.writes, []);
     },
     { data }
@@ -644,7 +701,7 @@ test("blocked storage dismissal survives keyed default/inner layout remounts wit
       f.token.value = "";
       f.route.path = "/auth/login";
       await f.tick();
-      assert(f.notice(), "the guest browser has its own notice after logout");
+      assert.equal(Boolean(f.notice()), false, "no notice on the login after logout");
       f.user.value = { id: B };
       f.token.value = "new";
       f.route.path = "/dashboard";
@@ -685,7 +742,7 @@ test("app start removes dismissals of the retired September notice at any time; 
   const retired = "bootstrap-academy:update-notice:2026-09-update-1:" + A;
   const lookalike = "bootstrap-academy:update-notice:2026-09-update-10:" + A;
   const unknown = updateNoticeKey(A, "2027-01-next-1");
-  const current = updateNoticeKey(UPDATE_NOTICE_BROWSER);
+  const current = LEFT_BY_A_VISITOR;
   for (const now of [
     UPDATE_NOTICE_WINDOW.startsAt - 1,
     UPDATE_NOTICE_WINDOW.startsAt,
