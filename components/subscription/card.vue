@@ -96,7 +96,9 @@
 
           <!--
             Without enough Morphcoins the price is plain text, and the button
-            below leads straight to the order of the missing coins.
+            below leads straight to the order of the missing coins. The button
+            names an amount only when it orders another one than the price
+            above it, because the account already holds a part.
           -->
           <template v-else>
             <div
@@ -113,7 +115,7 @@
               class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-center text-heading shadow-lg duration-200 hover:scale-105 hover:text-heading focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <span class="font-bold">{{ t("Headings.BuyMorphcoins") }}</span>
-              <Price :coins="missingCoins" class="justify-center text-sm" />
+              <Price v-if="orderDiffers" :coins="missingCoins" class="justify-center text-sm" />
             </NuxtLink>
           </template>
         </div>
@@ -178,6 +180,8 @@ const missingCoins = computed(() => Math.max(COIN_PURCHASE_MIN, planPrice.value 
 const coinOrder = computed(
   () => `/morphcoins/paypal?coins=${missingCoins.value}&next=subscription`
 );
+// The same amount is said once: the price of the plan stands above the button.
+const orderDiffers = computed(() => missingCoins.value !== planPrice.value);
 
 // Art. 246a § 1 Abs. 1 Nr. 8 EGBGB: the monthly cost of a yearly plan.
 const pricePerMonth = computed(() =>
