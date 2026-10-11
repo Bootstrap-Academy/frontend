@@ -5,6 +5,8 @@ import { ref } from "vue";
 const { t } = useI18n();
 const props = defineProps({
   heading: String,
+  /** Named values for the heading, such as a time of day. */
+  params: { type: Object, default: () => ({}) },
   content: String,
   placement: {
     type: String,
@@ -81,7 +83,7 @@ function show() {
         isHidden && 'hidden',
       ]"
     >
-      <p class="block text-white" v-if="!!heading">{{ t(heading) }}</p>
+      <p class="block text-white" v-if="!!heading">{{ t(heading, params) }}</p>
       <p class="mt-3" v-if="!!props.content">
         {{ t(props.content) }}
       </p>

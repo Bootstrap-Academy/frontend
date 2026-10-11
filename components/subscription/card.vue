@@ -25,7 +25,11 @@
                 : t("Body.HeartsEveryDay", { n: dailyHearts })
             }}
           </p>
-          <Tooltip v-if="!isDaily" :heading="'Body.UnlimitedHeartsTooltip'">
+          <Tooltip
+            v-if="!isDaily"
+            :heading="'Body.UnlimitedHeartsTooltip'"
+            :params="{ time: refillTime }"
+          >
             <InformationCircleIcon class="h-6 w-6 text-accent" />
           </Tooltip>
         </div>
@@ -42,8 +46,13 @@
         </div>
       </div>
 
+      <!--
+        `#premium` is where the link at the heart limit lands. On a phone the card starts at
+        the top of the screen; on wider screens the plan switch above it stays in view.
+      -->
       <div
-        class="my-3 w-full rounded-xl bg-accent p-8 text-black shadow-xl"
+        id="premium"
+        class="my-3 w-full scroll-mt-4 rounded-xl bg-accent p-8 text-black shadow-xl md:scroll-mt-32"
         :class="{ 'md:w-1/2': !isPremium }"
       >
         <div class="mb-4 flex justify-center">
@@ -147,6 +156,8 @@ onMounted(loadHeartConfig);
 
 // Hearts are shown in whole hearts, not in the half hearts the API counts.
 const dailyHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
+// The same time of day as the block at the heart limit names.
+const refillTime = computed(() => heartRefillTime(locale.value));
 
 const isPremium = computed(() => {
   return premiumInfo.value?.premium;

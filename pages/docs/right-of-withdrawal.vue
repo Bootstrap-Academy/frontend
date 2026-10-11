@@ -323,17 +323,8 @@ ul li {
   @apply ml-10 list-disc mt-box;
 }
 
+/* The line belongs to the text of the link, so it follows a link onto a second line. */
 a {
-  @apply relative cursor-pointer pb-2;
-}
-
-a::after {
-  content: "";
-  position: absolute;
-  width: max(50%, 25px);
-  height: 1px;
-  background-color: var(--color-accent);
-  bottom: 0;
-  left: 0;
+  @apply cursor-pointer underline decoration-accent decoration-1 underline-offset-4;
 }
 </style>

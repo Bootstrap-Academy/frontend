@@ -3,7 +3,7 @@
     <PaypalCheckoutStatus v-if="showRecovery" />
     <template v-else>
       <p v-if="sdkError" role="alert">{{ t("PaypalRecovery.BeforeCaptureError") }}</p>
-      <h1 v-if="locale == 'de'" class="text-heading-1 mb-2 text-subheading">
+      <h1 v-if="locale == 'de'" class="text-heading-1 mb-2 text-black">
         <span class="font-black text-black font-body">
           {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
         </span>
@@ -11,7 +11,7 @@
         <span class="font-black text-black font-body"> {{ totalPrice }} </span>
         kaufen
       </h1>
-      <h1 v-else class="text-heading-1 mb-2 text-subheading">
+      <h1 v-else class="text-heading-1 mb-2 text-black">
         Buying
         <span class="font-black text-black font-body">
           {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
@@ -19,7 +19,7 @@
         for
         <span class="font-black text-black font-body"> {{ totalPrice }} </span>
       </h1>
-      <p class="mb-2 text-subheading mb-card">
+      <p class="mb-2 text-black mb-card">
         {{ t("Body.BuyCoins") }}
       </p>
 
