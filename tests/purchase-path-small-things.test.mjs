@@ -260,8 +260,13 @@ test("a long e-mail address wraps in the profile block of the coin order page", 
   );
   assert.equal(address.length, 1);
   const classes = attribute(address[0].node, "class").split(/\s+/);
-  // An address has no place to break at; in a row of two it may shrink and break anywhere.
-  assert(classes.includes("min-w-0") && classes.includes("break-all"), classes.join(" "));
+  // In a row of two the address may shrink. It breaks where it has a place to break at,
+  // and anywhere only when a part of it is longer than the line.
+  assert(
+    classes.includes("min-w-0") && classes.includes("[overflow-wrap:anywhere]"),
+    classes.join(" ")
+  );
+  assert(!classes.includes("break-all"), "no break in the middle of a word without need");
 });
 
 test("links of the legal pages are underlined along their text, on every line they run over", async () => {
