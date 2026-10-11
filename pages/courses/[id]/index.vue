@@ -17,7 +17,17 @@
       </header>
 
       <aside class="course-action">
+        <section v-if="guest" class="card grid gap-4 bg-secondary style-card">
+          <p>{{ copy.accountNeeded }}</p>
+          <NuxtLink to="/auth/signup" class="account-link">{{ guestText.signup }}</NuxtLink>
+          <NuxtLink
+            :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
+            class="login-link"
+            >{{ guestText.login }}</NuxtLink
+          >
+        </section>
         <CourseOverview
+          v-else
           :data="course"
           :learning-plan="learningPlan"
           :curriculum="curriculum"
@@ -108,15 +118,23 @@
 
 <script setup lang="ts">
 import type { Ref } from "vue";
+import { useI18n } from "vue-i18n";
 import type { SessionIdentity } from "~/types/sessionIdentity";
 import type { Course, CourseLearningPlan } from "~/types/courseTypes";
 import type { CourseCurriculum } from "~/types/learningActivities";
 import { courseSteps, courseWatchLocation } from "~/utils/courseJourney";
+import { guestCopy } from "~/utils/guest/copy";
+import { pageTitle, shortDescription } from "~/utils/siteHead";
 
-definePageMeta({ middleware: ["auth"] });
+// Anyone may read what a course is about. Learning, exercises and progress belong to an
+// account: without one the page shows the way to it and nothing that needs a login.
 const route = useRoute();
 const router = useRouter();
+const { locale } = useI18n();
 const { copy, localized, localizeCourse } = useCourseExperienceCopy();
+const guestText = computed(() => guestCopy(locale.value));
+const token = useAccessToken();
+const guest = computed(() => !token.value);
 const user = useUser();
 const session: Ref<SessionIdentity | null> = useSession();
 const originalCourse = ref<Course | null>(null);
@@ -137,9 +155,17 @@ const subSkillID = computed(() =>
 const backLink = computed(() =>
   skillID.value && subSkillID.value
     ? `/skill-tree/${encodeURIComponent(skillID.value)}/${encodeURIComponent(subSkillID.value)}`
-    : "/profile/courses"
+    : guest.value
+      ? "/courses"
+      : "/profile/courses"
 );
-useHead(() => ({ title: course.value?.title || copy.value.course }));
+const about = computed(() => shortDescription(course.value?.description) || undefined);
+useSeoMeta({
+  title: () => (course.value ? pageTitle(course.value.title) : undefined),
+  ogTitle: () => (course.value ? pageTitle(course.value.title) : undefined),
+  description: () => about.value,
+  ogDescription: () => about.value,
+});
 let generation = 0;
 let alive = true;
 async function load() {
@@ -160,14 +186,18 @@ async function load() {
   try {
     let detail: Course;
     let owns = false;
-    try {
-      detail = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
-      owns = true;
-    } catch (cause: any) {
-      const status = cause?.response?.status || cause?.statusCode || cause?.status;
-      if (![401, 403].includes(status)) throw cause;
-      detail = await GET(`/skills/courses/${encodeURIComponent(id.value)}/summary`);
-    }
+    const summary = () => GET(`/skills/courses/${encodeURIComponent(id.value)}/summary`);
+    // Without an account only the summary is public, so nothing else is asked for.
+    if (guest.value) detail = await summary();
+    else
+      try {
+        detail = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
+        owns = true;
+      } catch (cause: any) {
+        const status = cause?.response?.status || cause?.statusCode || cause?.status;
+        if (![401, 403].includes(status)) throw cause;
+        detail = await summary();
+      }
     if (!current()) return;
     originalCourse.value = detail;
     accessible.value = owns;
@@ -209,7 +239,7 @@ function openLecture({ sectionID, lectureID }: { sectionID: string; lectureID: s
   );
 }
 onMounted(load);
-watch([id, () => user.value?.id, () => session.value?.id], load, { flush: "sync" });
+watch([id, () => user.value?.id, () => session.value?.id, guest], load, { flush: "sync" });
 onBeforeUnmount(() => {
   alive = false;
   generation++;
@@ -319,6 +349,19 @@ h2 {
 .course-state button {
   color: var(--color-accent);
   padding: 0.75rem 0;
+}
+.account-link {
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.25rem;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  font-weight: 700;
+  text-align: center;
+}
+.login-link {
+  justify-self: center;
+  padding: 0.5rem;
+  color: var(--color-accent);
 }
 a:focus-visible,
 button:focus-visible,

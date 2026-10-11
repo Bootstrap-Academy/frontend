@@ -93,9 +93,7 @@
         >
           {{ copy.later }}
         </button>
-        <NuxtLink v-if="!authenticated" to="/skill-tree" class="secondary">{{
-          copy.browse
-        }}</NuxtLink>
+        <NuxtLink v-if="!authenticated" to="/courses" class="secondary">{{ copy.browse }}</NuxtLink>
       </section>
     </main>
   </GuestFrame>

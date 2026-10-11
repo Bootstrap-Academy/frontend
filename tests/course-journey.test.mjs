@@ -191,6 +191,10 @@ async function pageFixture(file, request, { reactiveWatches = false } = {}) {
     computed: Vue.computed,
     useUser: () => user,
     useSession: () => session,
+    // These pages are opened with an account; the course page without one is in
+    // public-courses.test.mjs.
+    useAccessToken: () => Vue.ref("token-a"),
+    useSeoMeta: () => {},
     useI18n: () => ({ locale: Vue.ref("de") }),
     useRoute: () => route,
     useRouter: () => ({
