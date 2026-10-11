@@ -278,7 +278,7 @@ test("the log-in page starts with its form; the note for moved accounts unfolds 
 test("a refused log-in says in plain words what does not fit", () => {
   assert.equal(
     locales.de.Error.InvalidCredentials,
-    "E-Mail-Adresse, Nickname oder Passwort stimmen nicht."
+    "E-Mail-Adresse, Nickname oder Passwort stimmt nicht."
   );
   assert.equal(
     locales["en-US"].Error.InvalidCredentials,

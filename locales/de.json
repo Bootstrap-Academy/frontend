@@ -1217,7 +1217,7 @@
     "InvalidOAuthToken": "Dein OAuth-Token ist ungültig.",
     "RegistrationDisabled": "Die Registrierung ist derzeit deaktiviert.",
     "NoLoginMethod": "Keine Anmeldemethode",
-    "InvalidCredentials": "E-Mail-Adresse, Nickname oder Passwort stimmen nicht.",
+    "InvalidCredentials": "E-Mail-Adresse, Nickname oder Passwort stimmt nicht.",
     "TooManyFailedLoginAttempts": "Zu viele fehlgeschlagene Anmeldeversuche. Versuche es in {wait} erneut.",
     "TooManyFailedLoginAttemptsUnknownWait": "Zu viele fehlgeschlagene Anmeldeversuche. Versuche es später erneut.",
     "UserDisabled": "Dein Konto ist derzeit deaktiviert. Kontaktiere uns für weitere Einzelheiten.",
