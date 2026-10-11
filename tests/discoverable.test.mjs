@@ -10,12 +10,14 @@ import { evaluate } from "./helpers/mounted-page.mjs";
 
 const read = (file) => readFile(new URL(`../${file}`, import.meta.url), "utf8");
 const head = await evaluate("utils/siteHead.ts", {});
+const courseIds = JSON.parse(await read("assets/public-course-ids.json"));
 const built = await evaluate("modules/discoverable.ts", {
   require: (name) =>
     ({
       "node:fs/promises": fs,
       "node:path": path,
       "nuxt/kit": { defineNuxtModule: (definition) => definition },
+      "../assets/public-course-ids.json": courseIds,
       "../utils/siteHead": head,
     })[name],
 });
@@ -128,6 +130,9 @@ test("no address of the site is written into the code: it comes from the runtime
     "plugins/i18n.ts",
     "pages/index.vue",
     "pages/start.vue",
+    "pages/courses/index.vue",
+    "pages/courses/[id]/index.vue",
+    "scripts/build-course-list.mjs",
   ]) {
     const source = (await read(file)).replace(/BASE_(API|WEB)_URL: "[^"]*"/g, "");
     assert(!/https?:\/\/(test\.|api\.|www\.)?bootstrap\.academy/.test(source), file);
@@ -153,8 +158,19 @@ test("the guest exercise has its own title, description and address in its built
   // The image and the language stay those of the site.
   assert.match(start, /<html lang="de">/);
   assert.match(start, /og:image" content="https:\/\/academy\.example\/images\/preview\.png"/);
+  // The course list has its own as well.
+  const courses = page("/courses/");
+  assert.equal(tag(courses, /<title>([^<]*)<\/title>/), "Kurse · Bootstrap Academy");
+  assert.equal(
+    tag(courses, /<meta name="description" content="([^"]*)">/),
+    head.siteHead.de.courses.description
+  );
+  assert.equal(
+    tag(courses, /<link rel="canonical" href="([^"]*)">/),
+    "https://academy.example/courses/"
+  );
   // Every other address keeps the HTML of the start page, untouched.
-  for (const route of ["/", "/auth/login", "/docs/imprint", "/200.html"])
+  for (const route of ["/", "/auth/login", "/docs/imprint", "/courses/python", "/200.html"])
     assert.equal(page(route), shell(config), route);
 });
 
@@ -180,6 +196,63 @@ test("crawlers are let in by a robots.txt that the build writes", async (t) => {
   const robots = await readFile(path.join(directory, "robots.txt"), "utf8");
   assert.deepEqual(robots.split("\n").slice(0, 2), ["User-agent: *", "Allow: /"]);
   assert(!/Disallow/i.test(robots));
+  // It names the sitemap, with the address of the site it was built for.
+  assert.deepEqual(
+    robots.split("\n").filter((line) => line.startsWith("Sitemap:")),
+    ["Sitemap: https://academy.example/sitemap.xml"]
+  );
+});
+
+test("the build writes a sitemap with the public pages and every course", async (t) => {
+  const { hooks } = site("https://academy.example");
+  const directory = await mkdtemp(path.join(tmpdir(), "academy-discoverable-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  await hooks["nitro:build:public-assets"]({ options: { output: { publicDir: directory } } });
+  const sitemap = await readFile(path.join(directory, "sitemap.xml"), "utf8");
+  assert(sitemap.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns='));
+  assert(sitemap.endsWith("</urlset>\n"));
+  const addresses = [...sitemap.matchAll(/<url><loc>([^<]*)<\/loc><\/url>/g)].map((m) => m[1]);
+  assert.equal(addresses.length, sitemap.split("<url>").length - 1);
+  // Exactly these: the start page, the guest exercise, the course list, every course of the
+  // list in the repository, and the legal texts. Each in the form the page names as its own.
+  const fixed = [
+    "/",
+    "/start/",
+    "/courses/",
+    "/docs/privacy/",
+    "/docs/terms-and-conditions/",
+    "/docs/right-of-withdrawal/",
+    "/docs/imprint/",
+  ];
+  assert.deepEqual(
+    [...addresses].sort(),
+    [...fixed, ...courseIds.map((id) => `/courses/${id}/`)]
+      .map((address) => "https://academy.example" + address)
+      .sort()
+  );
+  assert.equal(new Set(addresses).size, addresses.length);
+  for (const address of addresses)
+    assert.equal(head.canonicalUrl("https://academy.example", new URL(address).pathname), address);
+  // Each of the fixed addresses is a page of the app.
+  for (const address of fixed.slice(1)) {
+    const page = address.slice(0, -1);
+    const file = await read(`pages${page}.vue`).catch(() => read(`pages${page}/index.vue`));
+    assert(file.includes("<template>"), address);
+  }
+  // Pages that need a login or that are steps of a purchase are not named.
+  assert(!/dashboard|profile|auth|orders|morphcoins|subscription/.test(sitemap));
+
+  // The list of courses is plain: ids in order, each once, each usable as part of an address.
+  assert(courseIds.length > 0);
+  assert.deepEqual(courseIds, [...new Set(courseIds)].sort());
+  for (const id of courseIds) assert.match(id, /^[a-z0-9_-]+$/i);
+  assert.throws(
+    () => built.sitemapXml("https://academy.example", ["python", "a/b"]),
+    /unexpected course ids \["a\/b"\]/
+  );
+  // The build reads the list from the repository and asks no one for it.
+  const module = await read("modules/discoverable.ts");
+  assert(!/fetch\(|\$fetch|BASE_API_URL/.test(module));
 });
 
 test("each page names one address for itself, and pages are called by what they are", async () => {

@@ -9,11 +9,14 @@
  * - For the pages listed in `builtHeads`, their own title, description and address in the
  *   HTML that is built for them. Every other address is answered with the HTML of the start
  *   page; there the app sets the head of the page once it has loaded.
- * - `robots.txt`.
+ * - `robots.txt` and `sitemap.xml`. The sitemap names the start page, the guest exercise, the
+ *   course list, every course and the legal texts. The courses come from a list in the
+ *   repository (`scripts/build-course-list.mjs` writes it), so a build does not need the API.
  */
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { defineNuxtModule } from "nuxt/kit";
+import courseIds from "../assets/public-course-ids.json";
 import { SITE_NAME, builtHeads, canonicalUrl, siteHead } from "../utils/siteHead";
 
 const escape = (text: string) =>
@@ -49,7 +52,31 @@ export function withHead(html: string, head: { title: string; description: strin
   return html;
 }
 
-export const robotsTxt = () => ["User-agent: *", "Allow: /", ""].join("\n");
+/** Every address a search engine should know, each in the one form `canonicalUrl` gives it. */
+export function sitemapXml(web: string, courses: string[]) {
+  const odd = courses.filter((id) => !/^[a-z0-9_-]+$/i.test(id));
+  if (odd.length) throw new Error(`Sitemap: unexpected course ids ${JSON.stringify(odd)}`);
+  const paths = [
+    "/",
+    "/start",
+    "/courses",
+    ...courses.map((id) => `/courses/${id}`),
+    "/docs/privacy",
+    "/docs/terms-and-conditions",
+    "/docs/right-of-withdrawal",
+    "/docs/imprint",
+  ];
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...paths.map((path) => `  <url><loc>${escape(canonicalUrl(web, path))}</loc></url>`),
+    `</urlset>`,
+    "",
+  ].join("\n");
+}
+
+export const robotsTxt = (web: string) =>
+  ["User-agent: *", "Allow: /", "", `Sitemap: ${web}/sitemap.xml`, ""].join("\n");
 
 export default defineNuxtModule({
   meta: { name: "discoverable" },
@@ -83,7 +110,9 @@ export default defineNuxtModule({
     });
 
     nuxt.hook("nitro:build:public-assets", async (nitro) => {
-      await writeFile(join(nitro.options.output.publicDir, "robots.txt"), robotsTxt());
+      const folder = nitro.options.output.publicDir;
+      await writeFile(join(folder, "robots.txt"), robotsTxt(web));
+      await writeFile(join(folder, "sitemap.xml"), sitemapXml(web, courseIds));
     });
   },
 });
