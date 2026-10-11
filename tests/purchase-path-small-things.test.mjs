@@ -196,7 +196,7 @@ test("the heading and the sentence of the coin order are as readable as the text
   const sentence = all.find(
     ({ node }) => node.tag === "p" && node.loc.source.includes('t("Body.BuyCoins")')
   ).node;
-  assert.equal(headings.length, 2, "one heading per language");
+  assert.equal(headings.length, 1, "one heading");
   for (const node of [...headings, sentence]) {
     const classes = attribute(node, "class").split(/\s+/);
     const text = classes.filter((c) =>

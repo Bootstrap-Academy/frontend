@@ -19,6 +19,16 @@ function elements(root) {
   })(root, []);
   return found;
 }
+/** Every `{{ … }}` of a template, each with the elements it stands in. */
+function sayings(root) {
+  const found = [];
+  (function visit(node, parents) {
+    if (node.type === 5) found.push({ says: node.content.content, parents });
+    for (const child of node.children ?? [])
+      visit(child, node.type === 1 ? [...parents, node] : parents);
+  })(root, []);
+  return found;
+}
 const bound = (node, name) => node.props.find((p) => p.arg?.content === name)?.exp?.content;
 const condition = (node) =>
   node.props.find((p) => p.type === 7 && ["if", "else-if", "show"].includes(p.name))?.exp?.content;
@@ -78,4 +88,27 @@ test("the Premium card button names an amount only when it orders another one th
   assert.equal(above.length, 1);
   assert.equal(bound(above[0].node, "coins"), "planPrice");
   assert.equal(condition(above[0].node), undefined);
+});
+
+test("the coin order page states the amount and its price once, in the order summary", async () => {
+  const ast = await template("pages/morphcoins/paypal.vue");
+  const all = elements(ast);
+  const headings = all.filter(({ node }) => node.tag === "h1");
+  assert.equal(headings.length, 1);
+  assert.match(headings[0].node.loc.source, /\{\{ t\("Headings\.BuyMorphcoins"\) \}\}/);
+  // § 312j Abs. 2 BGB asks for the price right before the order is placed: the summary has it.
+  const summaries = all.filter(({ node }) => node.tag === "OrderSummary");
+  assert.equal(summaries.length, 1);
+  assert.equal(bound(summaries[0].node, "coins"), "coinsToBuy");
+  // Nothing else on the page says the amount or the price.
+  const elsewhere = sayings(ast).filter(({ parents }) => !parents.includes(summaries[0].node));
+  for (const { says } of elsewhere) assert(!/coinsToBuy|totalPrice|Euros|Price/.test(says), says);
+  const outside = all.filter(
+    ({ node, parents }) => node.tag === "Price" && !parents.includes(summaries[0].node)
+  );
+  assert.equal(outside.length, 0);
+  for (const language of ["de", "en-US"]) {
+    const heading = JSON.parse(await read(`locales/${language}.json`)).Headings.BuyMorphcoins;
+    assert(!/[\d{]/.test(heading), `${language}: ${heading}`);
+  }
 });
