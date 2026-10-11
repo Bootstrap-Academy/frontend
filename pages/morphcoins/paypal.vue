@@ -187,14 +187,15 @@
               </p>
             </div>
 
-            <div class="flex gap-box">
+            <!--
+              The address itself stands once on the page: in the order summary, as the
+              place the confirmation goes to. Here only a missing one is named.
+            -->
+            <div v-if="!user?.email" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">
                 {{ t("Inputs.EmailAddress") }}
               </h3>
-              <p v-if="user && user.email" class="text-body-1 m-0 text-black">
-                {{ user.email }}
-              </p>
-              <p v-else class="text-body-1 m-0 text-error">
+              <p class="text-body-1 m-0 text-error">
                 {{ t("Headings.Missing") }}
               </p>
             </div>

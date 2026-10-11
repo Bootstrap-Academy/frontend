@@ -239,3 +239,20 @@ test("the coin shop explains a refill without the price that its total states", 
     assert(Body.NeedCoinsForRefill.includes("{price}"), language);
   }
 });
+
+test("the coin order page shows the e-mail address once, where the confirmation goes", async () => {
+  const ast = await template("pages/morphcoins/paypal.vue");
+  // The profile block prints no address; it only names a missing one.
+  for (const { says } of sayings(ast)) assert(!/user\??\.email\b(?!_)/.test(says), says);
+  const rows = elements(ast).filter(
+    ({ node }) => node.tag === "div" && node.loc.source.includes('t("Inputs.EmailAddress")')
+  );
+  const row = rows.at(-1).node;
+  assert.equal(condition(row), "!user?.email");
+  assert(row.loc.source.includes('t("Headings.Missing")'));
+  // The order summary keeps the line with the recipient of the confirmation.
+  assert.match(
+    await read("components/order/Contract.vue"),
+    /Bestätigung an: \{\{ offer\.recipient \}\}/
+  );
+});
