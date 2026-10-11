@@ -259,6 +259,14 @@ test("the log-in page starts with its form; the note for moved accounts unfolds 
   const summary = page.find(({ node }) => node.tag === "summary");
   assert(summary.parents.includes(fold));
   assert.match(summary.node.loc.source, /t\("Body\.ChallengesNicknameQuestion"\)/);
+  // Unfolding it does not take the focus from the first field, which would then report
+  // itself as required: the press on the line leaves the focus alone.
+  const press = summary.node.props.find((p) => p.name === "on" && p.arg?.content === "mousedown");
+  assert(press && !press.exp, "the press itself does nothing");
+  assert.deepEqual(
+    press.modifiers.map((modifier) => modifier.content ?? modifier),
+    ["prevent"]
+  );
   // Nothing but the heading stands between the top of the page and the form.
   const before = page.filter(
     ({ node, parents }) =>

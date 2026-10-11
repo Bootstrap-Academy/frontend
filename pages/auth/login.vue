@@ -12,9 +12,14 @@
       <!--
         The note about accounts that moved here from the-morpheus.cc concerns few who log in.
         It stands below the form and unfolds for those it is for.
+
+        The first field of the form holds the focus when the page opens, and a field that
+        loses the focus empty reports itself as required. Pressing the line would take the
+        focus away, so the press leaves it where it is; the click still unfolds the note.
       -->
       <details class="text-body mt-card">
         <summary
+          @mousedown.prevent
           class="text-body-1 cursor-pointer font-body focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {{ t("Body.ChallengesNicknameQuestion") }}
