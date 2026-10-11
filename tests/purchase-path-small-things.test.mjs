@@ -223,6 +223,17 @@ test("the coin order page is dark, and only what PayPal draws stands on a light 
   assert(contrast(colour("body"), colour("secondary")) >= 4.5);
 });
 
+test("a long e-mail address wraps in the profile block of the coin order page", async () => {
+  const all = elements((await template("pages/morphcoins/paypal.vue")).ast);
+  const address = all.filter(
+    ({ node }) => node.tag === "p" && node.loc.source.includes("user.email }}")
+  );
+  assert.equal(address.length, 1);
+  const classes = attribute(address[0].node, "class").split(/\s+/);
+  // An address has no place to break at; in a row of two it may shrink and break anywhere.
+  assert(classes.includes("min-w-0") && classes.includes("break-all"), classes.join(" "));
+});
+
 test("links of the legal pages are underlined along their text, on every line they run over", async () => {
   for (const path of [
     "pages/docs/privacy.vue",

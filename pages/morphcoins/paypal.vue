@@ -197,7 +197,9 @@
               <h3 class="text-body-1 m-0 text-body">
                 {{ t("Inputs.EmailAddress") }}
               </h3>
-              <p v-if="user?.email" class="text-body-1 m-0 text-heading">{{ user.email }}</p>
+              <p v-if="user?.email" class="text-body-1 m-0 min-w-0 break-all text-heading">
+                {{ user.email }}
+              </p>
               <p v-else class="text-body-1 m-0 text-error">
                 {{ t("Headings.Missing") }}
               </p>
