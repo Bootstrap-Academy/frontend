@@ -400,19 +400,27 @@ test("a description for a search result is the beginning of the text, cut at a w
   assert(!/\s…$/.test(short) && /[A-Za-zäöüß.]…$/.test(short), "cut at the end of a word");
 });
 
-test("the test host asks not to be indexed, the production host does not", async () => {
+test("every copy of the site asks not to be indexed, the production host does not", async () => {
   const blocks = (await read("public/_headers"))
     .split(/\n(?=https:)/)
     .filter((block) => block.startsWith("https:"));
   const rules = Object.fromEntries(
     blocks.map((block) => [block.split("\n")[0], block.split("\n").slice(1).join("\n")])
   );
-  assert.deepEqual(Object.keys(rules), [
+  // The test host, and the pages.dev addresses of the project and of each of its deployments.
+  const copies = [
     "https://test.bootstrap.academy/*",
-    "https://bootstrap.academy/*",
-  ]);
-  assert.match(rules["https://test.bootstrap.academy/*"], /^ {2}X-Robots-Tag: noindex$/m);
+    "https://:project.pages.dev/*",
+    "https://:version.:project.pages.dev/*",
+  ];
+  assert.deepEqual(Object.keys(rules), [...copies, "https://bootstrap.academy/*"]);
+  for (const host of copies) assert.match(rules[host], /^ {2}X-Robots-Tag: noindex$/m, host);
   assert(!/X-Robots-Tag/.test(rules["https://bootstrap.academy/*"]));
+  // The other rule of this file stays where it was: on the two hosts of the Academy.
+  assert.deepEqual(
+    Object.keys(rules).filter((host) => /Strict-Transport-Security/.test(rules[host])),
+    ["https://test.bootstrap.academy/*", "https://bootstrap.academy/*"]
+  );
 });
 
 test("the preview image is a landscape picture of the usual size", async () => {
