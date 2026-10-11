@@ -15,7 +15,7 @@
             {{ t("Headings.AutomaticRefill") }}
           </h2>
           <SubscriptionTimer :target-time="nextRefill" />
-          <p class="mt-4 text-sm">{{ t("Body.AutomaticRefillAtUtc") }}</p>
+          <p class="mt-4 text-sm">{{ t("Body.AutomaticRefillAt", { time: refillTime }) }}</p>
         </div>
         <div class="flex items-center uppercase max-md:my-4 max-md:justify-center">
           <p class="text-3xl">{{ t("Headings.Or") }}</p>
@@ -491,8 +491,10 @@ export default {
       }
     };
 
-    // The backend refills at 00:00 UTC, which is not the visitor's midnight.
+    // The backend refills at 00:00 UTC, which is not the visitor's midnight. The page names
+    // it as the visitor's own time of day, like the block at the heart limit.
     const nextRefill = computed(() => nextHeartRefill());
+    const refillTime = computed(() => heartRefillTime(locale.value));
 
     async function fnUpdatePremiumAutoPay(value: any) {
       if (premiumBusy.value || order.value || renewalOrder.value) return;
@@ -656,6 +658,7 @@ export default {
       coins,
       formatTime,
       nextRefill,
+      refillTime,
       filHearts,
       fnUpdatePremiumAutoPay,
       refreshPremiumStatus,

@@ -23,20 +23,13 @@ const offer = { id: "offer-1", hash: "hash", user_id: "buyer", product: { coins:
 
 test("the order button never orders while a declaration is open and takes the buyer to it", async () => {
   const emitted = [];
-  const box = {
-    top: 900,
-    scrolled: 0,
-    focused: 0,
-    getBoundingClientRect() {
-      return { top: this.top, bottom: this.top + 20 };
-    },
-    scrollIntoView() {
-      this.scrolled++;
-    },
-    focus() {
-      this.focused++;
-    },
-  };
+  // What happens in which order once the button is pressed with a declaration open.
+  const steps = [];
+  const element = (name) => ({
+    scrollIntoView: (options) => steps.push([name + " into view", options]),
+    focus: (options) => steps.push([name + " focused", options]),
+  });
+  const box = element("declaration");
   let open = box;
   const props = { disabled: true, loading: false };
   const missing = Vue.ref(false);
@@ -46,8 +39,10 @@ test("the order button never orders while a declaration is open and takes the bu
     {
       props,
       missing,
-      window: { innerHeight: 800 },
       emit: (event) => emitted.push(event),
+      // The hint is rendered by the time the tick resolves.
+      nextTick: () => Promise.resolve().then(() => steps.push(["hint rendered", missing.value])),
+      actions: { value: element("buttons") },
       consent: {
         value: {
           querySelector(selector) {
@@ -58,20 +53,29 @@ test("the order button never orders while a declaration is open and takes the bu
       },
     }
   );
-  onclickOrder();
+  const pressed = onclickOrder();
   assert.deepEqual(emitted, []);
   assert.equal(missing.value, true, "the hint is shown");
-  assert.deepEqual([box.scrolled, box.focused], [1, 1], "the first open declaration is in view");
-  box.top = 400;
-  onclickOrder();
-  assert.deepEqual([box.scrolled, box.focused], [1, 2], "a visible declaration is not moved");
+  assert.deepEqual(steps, [], "nothing moves before the hint has taken its place");
+  await pressed;
+  // The buttons first, the open declaration last: where the three do not fit on the
+  // screen, the declaration wins. `nearest` leaves alone what is already in view.
+  const nearest = { block: "nearest", behavior: "instant" };
+  assert.deepEqual(steps, [
+    ["hint rendered", true],
+    ["buttons into view", nearest],
+    ["declaration into view", nearest],
+    ["declaration focused", { preventScroll: true }],
+  ]);
 
   // Locked for another reason: still no order, and no hint about declarations.
   missing.value = false;
+  steps.length = 0;
   open = null;
-  onclickOrder();
+  await onclickOrder();
   assert.deepEqual(emitted, []);
   assert.equal(missing.value, false);
+  assert.deepEqual(steps, []);
 
   props.disabled = false;
   props.loading = true;
@@ -85,6 +89,11 @@ test("the order button never orders while a declaration is open and takes the bu
   assert.match(template, /:aria-disabled="disabled"/);
   assert(!template.includes("pointer-events-none"), "the button has to receive the click");
   assert.match(template, /v-if="missing"[^>]*role="alert"/);
+  // The hint stands between the declarations and the buttons that are brought into view.
+  const consentAt = template.indexOf('ref="consent"'),
+    hintAt = template.indexOf('v-if="missing"'),
+    actionsAt = template.indexOf('ref="actions"');
+  assert(consentAt > 0 && consentAt < hintAt && hintAt < actionsAt);
 });
 
 test("the heart refill is not accepted without the declarations", async () => {

@@ -87,7 +87,7 @@
       {{ t("Error.WithdrawalConsentMissing") }}
     </p>
 
-    <div v-if="!hideActions" class="flex flex-wrap justify-end gap-card">
+    <div v-if="!hideActions" ref="actions" class="flex scroll-mb-4 flex-wrap justify-end gap-card">
       <slot name="actions" />
       <InputBtn
         :loading="loading"
@@ -132,6 +132,7 @@ const props = defineProps({
 const emit = defineEmits<{ (e: "order"): void }>();
 
 const consent = ref<HTMLElement | null>(null);
+const actions = ref<HTMLElement | null>(null);
 // Set by the order button while a declaration is still open.
 const missing = ref(false);
 watch(
@@ -150,13 +151,16 @@ function onclickOrder() {
   emit("order");
 }
 
-function showMissing() {
+async function showMissing() {
   const open = consent.value?.querySelector<HTMLInputElement>("input[type=checkbox]:not(:checked)");
   if (!open) return;
   missing.value = true;
-  // A declaration that is already on screen stays where it is, next to the button.
-  const { top, bottom } = open.getBoundingClientRect();
-  if (top < 0 || bottom > window.innerHeight) open.scrollIntoView({ block: "center" });
+  // The hint takes its place between the declarations and the button. Once it stands,
+  // the open declaration, the hint and the button are brought on screen together, moving
+  // as little as possible. Where they do not fit, the open declaration comes first.
+  await nextTick();
+  actions.value?.scrollIntoView({ block: "nearest", behavior: "instant" });
+  open.scrollIntoView({ block: "nearest", behavior: "instant" });
   open.focus({ preventScroll: true });
 }
 
@@ -181,5 +185,9 @@ const vatPercent = computed(() =>
 .declarations-missing :deep(input[type="checkbox"]:not(:checked) + .tick) {
   outline: 2px solid var(--color-error);
   outline-offset: 2px;
+}
+/* Room for that outline when an open declaration is brought to the edge of the screen. */
+.declarations-missing :deep(input[type="checkbox"]) {
+  scroll-margin: 1rem;
 }
 </style>

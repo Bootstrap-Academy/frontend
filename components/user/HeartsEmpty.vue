@@ -26,7 +26,7 @@
     </InputBtn>
 
     <NuxtLink
-      to="/subscription"
+      to="/subscription#premium"
       class="inline-flex min-h-11 items-center text-accent underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
       {{ t("Links.UnlimitedHeartsWithPremium") }}
