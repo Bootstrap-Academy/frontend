@@ -120,12 +120,6 @@
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
           <p class="text-black">{{ t("Body.AccessToAllCourses") }}</p>
         </div>
-        <div class="mt-4 flex items-center space-x-4">
-          <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
-          <p class="text-black">
-            {{ t(isDaily ? "DailyLearning.FreeReview" : "Body.LearnNewThings") }}
-          </p>
-        </div>
       </div>
     </div>
   </div>

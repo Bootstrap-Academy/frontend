@@ -155,3 +155,13 @@ test("the Premium card says what Premium brings once, in its list", async () => 
     assert.equal(texts.DailyLearning.PremiumIntro, undefined);
   }
 });
+
+test("what both plans have in common stands in the free card only", async () => {
+  const { premium, free, inside } = await cards();
+  const common = (card) =>
+    inside(card).filter(
+      (node) => node.tag === "p" && /LearnNewThings|FreeReview/.test(node.loc.source)
+    );
+  assert.equal(common(free).length, 1);
+  assert.equal(common(premium).length, 0);
+});
