@@ -1,7 +1,7 @@
 <template>
   <main class="h-screen-main relative grid select-none place-items-center">
     <Head>
-      <Title>Sub Skill Tree - {{ subTreeName }}</Title>
+      <Title>{{ pageTitle(`${subTreeName} · ${t("Links.SkillTree")}`) }}</Title>
     </Head>
 
     <SkillTreeHeader :breadcrumbs="breadcrumbs" />
@@ -64,9 +64,6 @@ import Panzoom, { type PanzoomObject } from "@panzoom/panzoom";
 import { useSubSkillTree, getSubSkillTree, createPathwaysForTree } from "~/composables/skilltree";
 
 export default {
-  head: {
-    title: "Sub Skill Tree",
-  },
   setup() {
     const subTreeId = computed(() => {
       return <string>(route.params?.id ?? "");
@@ -404,6 +401,7 @@ export default {
     });
 
     return {
+      pageTitle,
       setupComplete,
       loading,
 
