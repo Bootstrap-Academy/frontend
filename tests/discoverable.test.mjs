@@ -38,14 +38,14 @@ const shell = (config) =>
   `</head><body><div id="__nuxt"></div></body></html>`;
 
 /** The module set up for a site at `web`, with what it registers and adds to the head. */
-function site(web) {
+function site(web, module = built) {
   const hooks = {};
   const prerender = {};
   const nuxt = {
     options: { runtimeConfig: { public: { BASE_WEB_URL: web } }, app: { head: { meta: [] } } },
     hook: (name, run) => (hooks[name] = run),
   };
-  built.default.setup({}, nuxt);
+  module.default.setup({}, nuxt);
   hooks["nitro:init"]({ hooks: { hook: (name, run) => (prerender[name] = run) } });
   const config = nuxt.options.app.head;
   return {
@@ -275,6 +275,28 @@ test("the build writes a sitemap with the public pages and every course", async 
   // The build reads the list from the repository and asks no one for it.
   const module = await read("modules/discoverable.ts");
   assert(!/fetch\(|\$fetch|BASE_API_URL/.test(module));
+});
+
+test("a build without a usable list of courses stops", async () => {
+  const message = /public-course-ids\.json must be a list of course ids and must not be empty/;
+  for (const list of [[], {}, null, "python", [1], ["python", null]]) {
+    const label = JSON.stringify(list);
+    assert.throws(() => built.sitemapXml("https://academy.example", list), message, label);
+    // The module stops while it is set up, before anything is built or written.
+    const broken = await evaluate("modules/discoverable.ts", {
+      require: (name) =>
+        ({
+          "node:fs/promises": fs,
+          "node:path": path,
+          "nuxt/kit": { defineNuxtModule: (definition) => definition },
+          "../assets/public-course-ids.json": list,
+          "../utils/siteHead": head,
+        })[name],
+    });
+    assert.throws(() => site("https://academy.example", broken), message, label);
+  }
+  // The list in the repository passes.
+  assert.doesNotThrow(() => site("https://academy.example"));
 });
 
 test("each page names one address for itself, and pages are called by what they are", async () => {

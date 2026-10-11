@@ -54,6 +54,11 @@ export function withHead(html: string, head: { title: string; description: strin
 
 /** Every address a search engine should know, each in the one form `canonicalUrl` gives it. */
 export function sitemapXml(web: string, courses: string[]) {
+  // A build that lost its courses must not pass for a build with a sitemap.
+  if (!Array.isArray(courses) || !courses.length || courses.some((id) => typeof id !== "string"))
+    throw new Error(
+      "Sitemap: assets/public-course-ids.json must be a list of course ids and must not be empty"
+    );
   const odd = courses.filter((id) => !/^[a-z0-9_-]+$/i.test(id));
   if (odd.length) throw new Error(`Sitemap: unexpected course ids ${JSON.stringify(odd)}`);
   const paths = [
@@ -83,6 +88,8 @@ export default defineNuxtModule({
   setup(_options, nuxt) {
     const web = String(nuxt.options.runtimeConfig.public.BASE_WEB_URL || "").replace(/\/+$/, "");
     if (!/^https:\/\/[^/]+$/.test(web)) throw new Error("BASE_WEB_URL must be an https origin");
+    // Built here, so that a list of courses that cannot be used stops the build at its start.
+    const sitemap = sitemapXml(web, courseIds);
 
     const head = nuxt.options.app.head;
     const { title, description } = siteHead.de.home;
@@ -112,7 +119,7 @@ export default defineNuxtModule({
     nuxt.hook("nitro:build:public-assets", async (nitro) => {
       const folder = nitro.options.output.publicDir;
       await writeFile(join(folder, "robots.txt"), robotsTxt(web));
-      await writeFile(join(folder, "sitemap.xml"), sitemapXml(web, courseIds));
+      await writeFile(join(folder, "sitemap.xml"), sitemap);
     });
   },
 });
