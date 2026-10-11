@@ -1039,8 +1039,7 @@
     "OrderLegalHintEnd": " apply.",
     "RightOfWithdrawalLinkText": "withdrawal policy",
     "CancelContractsHere": "Cancel contracts here",
-    "WithdrawFromContract": "Withdraw from contract",
-    "CreateFreeAccount": "Create a free account"
+    "WithdrawFromContract": "Withdraw from contract"
   },
   "Success": {
     "RotateCalendarLink": "New subscription link created. Enter it in your calendar app.",

@@ -10,9 +10,7 @@
         </div>
         <h1 class="mb-2 text-center text-3xl font-bold">{{ t("Headings.Free") }}</h1>
         <p class="mb-8 text-center">{{ t("Body.LearnNewSkillsForFree") }}</p>
-        <!-- A visitor without an account has no plan yet, so nothing is marked as theirs. -->
         <div
-          v-if="!guest"
           class="mb-8 flex items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3"
         >
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
@@ -86,27 +84,7 @@
             labelled in the colour of headings. The interface has no white
             surfaces.
           -->
-          <!--
-            A visitor without an account sees the price and, where the button to buy
-            stands for an account, the way to a free account. Nothing is said about a
-            coin balance, because there is none.
-          -->
-          <template v-if="guest">
-            <div
-              class="flex w-full items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 text-center"
-            >
-              <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
-              <Price :coins="planPrice" class="justify-center font-bold text-black" />
-            </div>
-            <NuxtLink
-              to="/auth/signup"
-              data-guest-signup
-              class="mt-3 flex w-full items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-center font-bold text-heading shadow-lg duration-200 hover:scale-105 hover:text-heading focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
-            >
-              {{ t("Links.CreateFreeAccount") }}
-            </NuxtLink>
-          </template>
-          <template v-else-if="hasEnoughCoins">
+          <template v-if="hasEnoughCoins">
             <button
               type="button"
               :disabled="disabled"
@@ -171,8 +149,6 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   /** The page around the card already states when the hearts refill. */
   refillTimeStated: { type: Boolean, default: false },
-  /** The visitor has no account: the card shows its prices and the way to a free account. */
-  guest: { type: Boolean, default: false },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";
