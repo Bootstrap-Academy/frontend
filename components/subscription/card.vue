@@ -58,17 +58,8 @@
         <div class="mb-4 flex justify-center">
           <RocketLaunchIcon class="h-16 w-16 flex-none text-black" aria-hidden="true" />
         </div>
-        <h1 class="mb-2 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
-        <p class="mb-8 text-center text-black">
-          {{
-            isDaily
-              ? t("DailyLearning.PremiumIntro")
-              : t("Body.GetAllServices").replace(
-                  "%%%",
-                  props.yearly ? t("Body.Yearly") : t("Body.Monthly")
-                )
-          }}
-        </p>
+        <!-- No sentence under the name: the list below says what Premium brings, once. -->
+        <h1 class="mb-8 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
         <div class="mb-8">
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}

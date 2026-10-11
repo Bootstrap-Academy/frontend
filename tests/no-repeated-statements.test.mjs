@@ -125,3 +125,33 @@ test("the coin shop states the total once, with the tax", async () => {
   for (const { says } of sayings(ast)) assert(!/totalPrice|coinsToBuy|Euros\(/.test(says), says);
   assert(!(await read("components/form/BuyCoins.vue")).includes("totalPrice"));
 });
+
+/** The elements of the two cards of the Premium page. */
+async function cards() {
+  const all = elements(await template("components/subscription/card.vue"));
+  const premium = all.find(({ node }) =>
+    node.props.some((p) => p.name === "id" && p.value?.content === "premium")
+  ).node;
+  const free = all.find(({ node, parents }) => parents.length === 2 && node !== premium).node;
+  const inside = (card) =>
+    all.filter(({ parents }) => parents.includes(card)).map(({ node }) => node);
+  return { all, premium, free, inside };
+}
+
+test("the Premium card says what Premium brings once, in its list", async () => {
+  const { premium, inside } = await cards();
+  // Under the name follows the price; no sentence stands between them, in either mode.
+  const paragraphs = inside(premium).filter((node) => node.tag === "p");
+  const says = (node) => node.loc.source;
+  assert(!says(premium).includes("GetAllServices"));
+  assert(!says(premium).includes("PremiumIntro"));
+  const benefits = paragraphs.filter((node) =>
+    /UnlimitedHearts|PremiumPace|AccessToAllCourses/.test(says(node))
+  );
+  assert.equal(benefits.length, 2);
+  for (const language of ["de", "en-US"]) {
+    const texts = JSON.parse(await read(`locales/${language}.json`));
+    assert.equal(texts.Body.GetAllServices, undefined);
+    assert.equal(texts.DailyLearning.PremiumIntro, undefined);
+  }
+});
