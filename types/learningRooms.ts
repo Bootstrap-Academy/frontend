@@ -29,6 +29,8 @@ export interface ExerciseData {
   left?: string[];
   right?: string[];
   solved?: boolean;
+  /** The XP the first solution of this exercise brings. */
+  xp?: number;
   enabled?: boolean;
   retired?: boolean;
   creator?: string;

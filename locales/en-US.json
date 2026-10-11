@@ -1942,6 +1942,7 @@
     "Input": "Input",
     "Output": "Expected output",
     "Correct": "You got it!",
+    "EarnedXp": "+{xp} XP",
     "Incorrect": "That’s not quite right yet. Change your answer and check it again.",
     "MatchesCorrect": "Matched correctly: {correct} of {total}.",
     "AnswersCorrect": "You are right about {correct} of {total} answers.",

@@ -40,7 +40,7 @@ const exerciseData = (extra) => ({
  * One exercise as the learning room shows it. `answerTo` is the service: it gets each answer
  * that is sent and says what the check found.
  */
-async function room({ type, data, answerTo, language = "de", state = {}, attempt }) {
+async function room({ type, data, answerTo, language = "de", state = {}, attempt, reviewId }) {
   const sentence = (key, named = {}) =>
     key
       .split(".")
@@ -98,6 +98,7 @@ async function room({ type, data, answerTo, language = "de", state = {}, attempt
         state: saved.value,
         request,
         userId: "learner",
+        reviewId,
         disabled: false,
         save: async () => true,
         onChange: (next) => (saved.value = next),
@@ -323,4 +324,58 @@ test("code that was found wrong can be handed in again unchanged", async (t) => 
   assert.equal(r.check().props.disabled, false);
   await r.press(r.check());
   assert.equal(r.sent.length, 2);
+});
+
+test("a solved exercise shows what it brought, with one button that leads on", async (t) => {
+  for (const language of ["de", "en-US"]) {
+    const r = await room({
+      type: "matching",
+      data: { ...matching, xp: 5 },
+      answerTo: judge([0, 1, 2]),
+      language,
+    });
+    t.after(r.stop);
+    for (const row of [0, 1, 2]) await r.choose(row, row);
+    await r.press(r.check());
+    const earned = r.texts.EarnedXp.replace("{xp}", 5);
+    assert.equal(earned, "+5 XP");
+    assert.deepEqual(r.lines().filter(Boolean), [r.texts.Correct, earned], language);
+    // The button hands the solved attempt to the page, which opens the next unit.
+    await r.press(r.button(r.texts.Continue));
+    assert.deepEqual(r.completed, ["attempt-1"], language);
+  }
+});
+
+test("XP are shown for a first solution only", async (t) => {
+  const solve = async (r) => {
+    for (const row of [0, 1, 2]) await r.choose(row, row);
+    await r.press(r.check());
+  };
+  // An exercise that opens already solved brought its XP earlier.
+  const solvedBefore = await room({
+    type: "matching",
+    data: { ...matching, xp: 5, solved: true },
+    answerTo: judge([0, 1, 2]),
+  });
+  t.after(solvedBefore.stop);
+  assert.deepEqual(solvedBefore.lines().filter(Boolean), [solvedBefore.texts.Correct]);
+  // A repetition of a solved exercise brings none.
+  const repeated = await room({
+    type: "matching",
+    data: { ...matching, xp: 5, solved: true },
+    answerTo: judge([0, 1, 2]),
+    reviewId: "review",
+  });
+  t.after(repeated.stop);
+  await solve(repeated);
+  assert.deepEqual(repeated.lines().filter(Boolean), [repeated.texts.Correct]);
+  // An exercise without XP says nothing about XP.
+  const none = await room({
+    type: "matching",
+    data: { ...matching, xp: 0 },
+    answerTo: judge([0, 1, 2]),
+  });
+  t.after(none.stop);
+  await solve(none);
+  assert.deepEqual(none.lines().filter(Boolean), [none.texts.Correct]);
 });

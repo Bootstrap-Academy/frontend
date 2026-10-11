@@ -144,3 +144,77 @@ test("the actual room shell blocks an in-flight POST but allows a saved unknown 
   owner.value = null;
   assert.equal(await leave({ path: "/auth/login" }), true);
 });
+
+test("a finished or skipped unit leads straight to the next one; a refused completion stays", async (t) => {
+  const calls = [];
+  let accepted = true;
+  const view = vue.ref({
+    status: "ready",
+    room: { unit: { id: "unit-a", content: {} }, progress: { status: "in_progress" } },
+    path: { id: "path-a" },
+    draft: {},
+  });
+  const scope = vue.effectScope();
+  t.after(() => scope.stop());
+  const bindings = {
+    ref: vue.ref,
+    computed: vue.computed,
+    watch: vue.watch,
+    definePageMeta: () => {},
+    useHead: () => {},
+    useI18n: () => ({ t: (key) => key, locale: vue.ref("de") }),
+    useRouter: () => ({ replace: async () => {} }),
+    useLearningRooms: () => ({
+      daily: vue.ref(null),
+      limitReached: vue.ref(null),
+      keepDailyDraft: () => true,
+      view,
+      data: {
+        save: async () => true,
+        next: async (path, after) => {
+          calls.push(["next", path, after]);
+          return true;
+        },
+        complete: async (action, answer, attempt) => {
+          calls.push(["complete", action, attempt]);
+          return accepted;
+        },
+      },
+      edit: () => {},
+      request: async () => {},
+      owner: vue.ref("user-a:session-a"),
+      user: vue.ref({ id: "user-a" }),
+      syncLocation: async () => calls.push(["location"]),
+      matchesLocation: () => false,
+      openLocation: async () => true,
+    }),
+    onBeforeRouteLeave: () => {},
+    onBeforeRouteUpdate: () => {},
+    onMounted: () => {},
+    onBeforeUnmount: () => {},
+  };
+  const code = ts.transpileModule(setup, {
+    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
+  }).outputText;
+  const page = scope.run(() =>
+    new Function(...Object.keys(bindings), `${code}\nreturn { completeActivity, skip };`)(
+      ...Object.values(bindings)
+    )
+  );
+  const opened = [["next", "path-a", "unit-a"], ["location"]];
+  await page.completeActivity({ attempt_id: "attempt" });
+  assert.deepEqual(calls, [["complete", "complete", "attempt"], ...opened]);
+  calls.length = 0;
+  await page.skip();
+  assert.deepEqual(calls, [["complete", "skip", undefined], ...opened]);
+  // An answer the service does not accept keeps the learner in the unit.
+  accepted = false;
+  calls.length = 0;
+  await page.completeActivity({ answer: {} });
+  assert.deepEqual(calls, [["complete", "complete", undefined]]);
+  // The card of a finished room stays for a room that opens finished.
+  assert.match(
+    descriptor.template.content,
+    /<div v-if="finished" class="finished-room" role="status">/
+  );
+});

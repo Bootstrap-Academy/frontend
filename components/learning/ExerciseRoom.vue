@@ -97,8 +97,10 @@
           }}
         </button>
       </aside>
+      <!-- The result of a solved exercise: what it brought, and the way on. -->
       <div v-if="view.phase === 'correct'" class="exercise-result correct" role="status">
         <p>{{ t("LearningRooms.Correct") }}</p>
+        <p v-if="earned" class="earned">{{ t("LearningRooms.EarnedXp", { xp: earned }) }}</p>
         <button
           type="button"
           :disabled="disabled"
@@ -354,6 +356,13 @@ watch(
   // Every change of the phase counts, also two within one tick.
   { flush: "sync" }
 );
+// XP come with the first solution only, so an exercise that was solved before this visit
+// has none to show: one that opens solved, and one that is repeated.
+const earned = computed(() =>
+  view.value.phase === "correct" && view.value.data?.solved !== true
+    ? Math.max(0, Number(view.value.data?.xp) || 0)
+    : 0
+);
 const unchanged = computed(
   () => view.value.phase === "incorrect" && answer.value !== null && answer.value === rejected.value
 );
@@ -590,6 +599,11 @@ button:disabled {
 }
 .correct button {
   justify-self: start;
+}
+.earned {
+  color: #85e4d2;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 pre {
   white-space: pre-wrap;

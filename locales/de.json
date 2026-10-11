@@ -1945,6 +1945,7 @@
     "Input": "Eingabe",
     "Output": "Erwartete Ausgabe",
     "Correct": "Richtig gelöst!",
+    "EarnedXp": "+{xp} XP",
     "Incorrect": "Das passt noch nicht. Ändere deine Antwort und prüfe sie noch einmal.",
     "MatchesCorrect": "Richtig zugeordnet: {correct} von {total}.",
     "AnswersCorrect": "Bei {correct} von {total} Antworten liegst du richtig.",
