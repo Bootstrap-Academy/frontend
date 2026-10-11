@@ -324,6 +324,26 @@
       "if": {
         "properties": {
           "type": {
+            "const": "task.start"
+          }
+        },
+        "required": ["type"]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "request"
+          },
+          "payload": {
+            "$ref": "#/$defs/task.start.payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
             "const": "assessment.submit"
           }
         },
@@ -1043,6 +1063,9 @@
         },
         "availability": {
           "enum": ["paused", "available"]
+        },
+        "revisionId": {
+          "$ref": "#/$defs/id"
         }
       },
       "required": ["id", "major", "minor", "implementation", "sha256"],
@@ -1125,6 +1148,12 @@
         },
         "source": {
           "enum": ["server", "example", "model"]
+        },
+        "public_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": ["summary"],
@@ -1154,6 +1183,34 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 100
+        },
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "xp": {
+          "type": "object",
+          "properties": {
+            "awardId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "xp": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "persisted": {
+              "const": true
+            }
+          },
+          "required": ["awardId", "xp", "persisted"],
+          "additionalProperties": true
+        },
+        "completed": {
+          "type": "boolean"
         }
       },
       "required": ["assessmentId", "status", "outcome", "feedback", "counts"],
@@ -1221,6 +1278,86 @@
           }
         }
       ]
+    },
+    "assessmentView": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "assessmentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "status": {
+              "const": "pending"
+            },
+            "goalId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          "required": ["assessmentId", "status", "goalId"],
+          "additionalProperties": true
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/assessmentFinal"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "outcome": {
+                  "enum": ["passed", "not_passed"]
+                },
+                "feedback": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "const": "server"
+                    }
+                  },
+                  "required": ["source", "summary", "public_reasons"],
+                  "additionalProperties": true
+                }
+              },
+              "required": ["goalId"],
+              "additionalProperties": true
+            }
+          ]
+        }
+      ]
+    },
+    "publicStart": {
+      "type": "object",
+      "properties": {
+        "startId": {
+          "$ref": "#/$defs/id"
+        },
+        "revisionId": {
+          "$ref": "#/$defs/id"
+        },
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "caseId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "config": {},
+        "initial": {},
+        "seed": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        }
+      },
+      "required": ["startId", "revisionId", "goalId", "caseId", "config", "initial", "seed"],
+      "additionalProperties": true
     },
     "host.connect.payload": {
       "type": "object",
@@ -1518,6 +1655,37 @@
       "required": ["goalId", "fraction"],
       "additionalProperties": true
     },
+    "task.start.payload": {
+      "type": "object",
+      "properties": {
+        "goalId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "revisionId": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": ["goalId", "revisionId"],
+      "additionalProperties": true
+    },
+    "task.start.result": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/publicStart"
+        },
+        "assessments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assessmentView"
+          }
+        }
+      },
+      "required": ["start", "assessments"],
+      "additionalProperties": true
+    },
     "assessment.submit.payload": {
       "type": "object",
       "properties": {
@@ -1550,6 +1718,11 @@
             },
             "status": {
               "const": "pending"
+            },
+            "goalId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
             }
           },
           "required": ["assessmentId", "status"],
@@ -1584,6 +1757,11 @@
             },
             "status": {
               "const": "pending"
+            },
+            "goalId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
             }
           },
           "required": ["assessmentId", "status"],
@@ -1623,6 +1801,29 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 100
+        },
+        "xp": {
+          "type": "object",
+          "properties": {
+            "awardId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "xp": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "persisted": {
+              "const": true
+            }
+          },
+          "required": ["awardId", "xp", "persisted"],
+          "additionalProperties": true
+        },
+        "completed": {
+          "type": "boolean"
         }
       },
       "required": ["assessmentId", "status", "outcome", "feedback", "counts", "goalId"],
@@ -2410,6 +2611,21 @@
       "kind": "event",
       "payload": {
         "$ref": "#/$defs/goals.progress.payload"
+      }
+    },
+    "task.start": {
+      "senders": ["lesson"],
+      "kind": "request",
+      "payload": {
+        "$ref": "#/$defs/task.start.payload"
+      },
+      "result": {
+        "$ref": "#/$defs/task.start.result"
+      },
+      "capability": {
+        "id": "host.assessment",
+        "major": 1,
+        "minMinor": 0
       }
     },
     "assessment.submit": {

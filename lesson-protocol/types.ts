@@ -19,6 +19,8 @@ export interface Capability {
   implementation: string;
   sha256: string;
   availability?: "paused" | "available";
+  /** host.assessment: the package revision the server evaluates against. */
+  revisionId?: string;
 }
 export interface Manifest {
   id: string;
@@ -68,6 +70,36 @@ export interface Init {
   capabilities: Capability[];
   limits: { messageBytes: number; stateBytes: number; projectBytes?: number };
   surface: JsonObject;
+}
+/** Protocol 2.1, capability host.assessment 1.0: the public start of one task. */
+export interface PublicStart {
+  startId: string;
+  revisionId: string;
+  goalId: string;
+  caseId: string;
+  config: JsonValue;
+  initial: JsonValue;
+  seed: string;
+}
+/** A submission as the server reports it. Only a final view carries a verdict. */
+export type AssessmentView = {
+  assessmentId: string;
+  goalId: string;
+  xp?: { awardId: string; xp: number; persisted: true };
+  completed?: boolean;
+} & (
+  | { status: "pending" }
+  | {
+      status: "final";
+      outcome: "passed" | "not_passed";
+      counts: boolean;
+      feedback: { source: "server"; summary: string; public_reasons: string[] };
+      receiptHandle?: string;
+    }
+);
+export interface TaskStart {
+  start: PublicStart;
+  assessments: AssessmentView[];
 }
 export interface Operation {
   senders: Sender[];

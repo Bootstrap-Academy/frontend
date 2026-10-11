@@ -1,7 +1,7 @@
 import type { RoomEnvelope } from "../types/learningRooms";
 import { canonicalJson, cloneJson } from "./schema";
 import { ProtocolError, type JsonObject, type StateSnapshot } from "./types";
-import type { HostActions } from "./host";
+import type { HostActions, HostAssessment } from "./host";
 
 export interface RoomController {
   protocolSnapshot(): { room: RoomEnvelope | null; error: string; conflict: boolean };
@@ -21,6 +21,16 @@ export interface RoomProtocolSource {
   previous?: () => Promise<boolean>;
   /** Parent-owned continuation survives a successful completion removing the frame. */
   advance?: () => Promise<boolean>;
+  /**
+   * Protocol 2.1: the parent's adapters to the server assessment of this unit,
+   * for the package revision whose bytes were loaded. Without them the host
+   * grants no host.assessment.
+   */
+  assessment?: (binding: {
+    unitId: string;
+    revisionId: string;
+    packageHash: string;
+  }) => HostAssessment | undefined;
 }
 export interface RoomProtocolBinding {
   bind(options: {

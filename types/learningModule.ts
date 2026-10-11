@@ -14,6 +14,8 @@ export interface LearningModuleV2Descriptor {
   manifest_url: string;
   manifest_hash: string;
   package_hash: string;
+  /** Protocol 2.1: the server's revision of these bytes, needed for server assessment. */
+  revision_id?: string;
 }
 export type LearningModuleDescriptor = LearningModuleV1Descriptor | LearningModuleV2Descriptor;
 
