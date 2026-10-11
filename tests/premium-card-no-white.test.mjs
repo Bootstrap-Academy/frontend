@@ -111,16 +111,32 @@ function assertFitsTheCard(button, what) {
   return { fill, rims, texts, outlines };
 }
 
-test("without enough Morphcoins the button of the Premium card is no white surface", () => {
+/** Fill and label colour of the pill that opens the feedback form on every page. */
+async function feedbackPill() {
+  const launcher = elements(
+    parse(await read("components/FeedbackLauncher.vue")).descriptor.template.ast
+  ).filter(({ node }) => /(^|\s)feedback-open(\s|$)/.test(attribute(node, "class") ?? ""));
+  assert.equal(launcher.length, 1);
+  const own = (kind) =>
+    attribute(launcher[0].node, "class")
+      .split(/\s+/)
+      .map((c) => c.match(new RegExp(`^${kind}-([a-z]+)$`))?.[1])
+      .filter((name) => name in theme);
+  assert.match(attribute(launcher[0].node, "class"), /(^|\s)rounded-full(\s|$)/);
+  return { fill: own("bg")[0], texts: own("text") };
+}
+
+test("without enough Morphcoins the button of the Premium card is no white surface", async () => {
   assert.match(attribute(card, "class"), /\bbg-accent\b/, "the card is the accent surface");
   const toCoinOrder = within(card).filter(
     ({ node }) => node.tag === "NuxtLink" && bound(node, "to") === "coinOrder"
   );
   assert.equal(toCoinOrder.length, 1);
   const { fill, texts } = assertFitsTheCard(toCoinOrder[0].node, "the way to the coin order");
-  // The main button of the dark pages the other way round: page colour, labelled in accent.
+  // No look of its own: fill and label are those of the pill the interface already has.
+  assert.deepEqual({ fill, texts }, await feedbackPill());
   assert.equal(fill, "primary");
-  assert.deepEqual(texts, ["accent"]);
+  assert.deepEqual(texts, ["heading"]);
 });
 
 test("the buy button of the Premium card looks the same, and nothing on the card is white", () => {
