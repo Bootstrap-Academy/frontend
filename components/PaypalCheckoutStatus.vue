@@ -4,7 +4,7 @@
       <h1 class="text-heading-1 font-bold">{{ t(`PaypalRecovery.${checkout.phase}Title`) }}</h1>
       <p>{{ t(`PaypalRecovery.${checkout.phase}Body`) }}</p>
       <details>
-        <summary class="cursor-pointer">{{ t("PaypalRecovery.Order") }}</summary>
+        <summary class="cursor-pointer text-body">{{ t("PaypalRecovery.Order") }}</summary>
         <p class="break-all">{{ checkout.orderId }}</p>
       </details>
       <p v-if="checkout.phase === 'complete'">

@@ -223,6 +223,27 @@ test("the coin order page is dark, and only what PayPal draws stands on a light 
   assert(contrast(colour("body"), colour("secondary")) >= 4.5);
 });
 
+test("every line of a payment taken up again has a colour for the dark ground", async () => {
+  // The stylesheet colours paragraphs and headings. Anything else would be written in the
+  // black of the browser, which the dark ground swallows.
+  const all = elements((await template("components/PaypalCheckoutStatus.vue")).ast);
+  // A `NuxtLink` renders a link, which the stylesheet colours as well.
+  const coloured = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "a", "NuxtLink"]);
+  const writes = (node) =>
+    node.children.some((child) => child.type === 5 || (child.type === 2 && child.content.trim()));
+  const bare = all
+    .map(({ node }) => node)
+    .filter((node) => writes(node) && !coloured.has(node.tag) && node.tag !== "Btn")
+    .filter(
+      (node) =>
+        !/(^|\s)text-(body|heading|subheading|accent)(\s|$)/.test(attribute(node, "class") ?? "")
+    );
+  assert.deepEqual(
+    bare.map((node) => node.loc.source.split("\n")[0]),
+    []
+  );
+});
+
 test("a long e-mail address wraps in the profile block of the coin order page", async () => {
   const all = elements((await template("pages/morphcoins/paypal.vue")).ast);
   const address = all.filter(
