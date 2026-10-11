@@ -165,3 +165,46 @@ test("what both plans have in common stands in the free card only", async () => 
   assert.equal(common(free).length, 1);
   assert.equal(common(premium).length, 0);
 });
+
+test("the Premium page names the time of the free refill once", async () => {
+  // The box with the countdown stands exactly while hearts are missing.
+  for (const [hearts, shown] of [
+    [0, true],
+    [5, true],
+    [6, false],
+  ]) {
+    const { refillBoxShown } = await pieces("pages/subscription/index.vue", ["refillBoxShown"], {
+      computed: Vue.computed,
+      hearts: Vue.ref(hearts),
+      heartConfig: Vue.ref({ hearts_max: 6 }),
+    });
+    assert.equal(refillBoxShown.value, shown, `hearts ${hearts}`);
+  }
+  const page = elements(await template("pages/subscription/index.vue"));
+  const section = page.find(({ node }) => condition(node) === "!isPremium && showHearts").node;
+  const inSection = page.filter(({ parents }) => parents.includes(section));
+  const full = inSection.find(({ node }) => condition(node) === "!refillBoxShown").node;
+  assert(full.loc.source.includes("Body.HeartsAreFilled"));
+  const sentences = sayings(await template("pages/subscription/index.vue")).filter(({ says }) =>
+    says.includes("Body.AutomaticRefillAt")
+  );
+  assert.equal(sentences.length, 1);
+  assert(sentences[0].parents.includes(section) && !sentences[0].parents.includes(full));
+  // The card is told, and its hint then leaves the time out.
+  const card = page.find(({ node }) => node.tag === "SubscriptionCard").node;
+  assert.equal(bound(card, "refill-time-stated"), "!isPremium && showHearts && refillBoxShown");
+  const { free, inside } = await cards();
+  const hint = inside(free).find(
+    (node) => node.tag === "Tooltip" && bound(node, "heading").includes("Hearts")
+  );
+  assert.equal(
+    bound(hint, "heading").trim(),
+    "refillTimeStated ? 'Body.WrongAnswerCostsOneHeart' : 'Body.UnlimitedHeartsTooltip'"
+  );
+  for (const language of ["de", "en-US"]) {
+    const { Body } = JSON.parse(await read(`locales/${language}.json`));
+    assert(!Body.WrongAnswerCostsOneHeart.includes("{time}"), language);
+    assert(Body.UnlimitedHeartsTooltip.includes("{time}"), language);
+    assert(Body.UnlimitedHeartsTooltip.startsWith(Body.WrongAnswerCostsOneHeart), language);
+  }
+});

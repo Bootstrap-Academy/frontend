@@ -25,9 +25,15 @@
                 : t("Body.HeartsEveryDay", { n: dailyHearts })
             }}
           </p>
+          <!--
+            The hint names the time of the free refill unless the page already does:
+            above the cards, in the box with the countdown.
+          -->
           <Tooltip
             v-if="!isDaily"
-            :heading="'Body.UnlimitedHeartsTooltip'"
+            :heading="
+              refillTimeStated ? 'Body.WrongAnswerCostsOneHeart' : 'Body.UnlimitedHeartsTooltip'
+            "
             :params="{ time: refillTime }"
           >
             <InformationCircleIcon class="h-6 w-6 text-accent" />
@@ -133,6 +139,8 @@ const props = defineProps({
   monthlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.MONTHLY },
   yearlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.YEARLY },
   disabled: { type: Boolean, default: false },
+  /** The page around the card already states when the hearts refill. */
+  refillTimeStated: { type: Boolean, default: false },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";

@@ -164,7 +164,7 @@ test("the free refill is named as the same time of day at the limit, on the Prem
   const card = elements((await template("components/subscription/card.vue")).ast);
   const tooltip = card.find(
     ({ node }) =>
-      node.tag === "Tooltip" && bound(node, "heading") === "'Body.UnlimitedHeartsTooltip'"
+      node.tag === "Tooltip" && bound(node, "heading").includes("'Body.UnlimitedHeartsTooltip'")
   ).node;
   assert.equal(bound(tooltip, "params"), "{ time: refillTime }");
 });
