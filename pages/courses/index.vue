@@ -5,7 +5,7 @@
     <input
       :value="search"
       type="search"
-      class="course-search mt-card mb-card"
+      class="course-search mt-card mb-card font-body"
       :placeholder="t('Body.SearchCourses')"
       :aria-label="t('Body.SearchCourses')"
       @input="search = ($event.target as HTMLInputElement).value"
