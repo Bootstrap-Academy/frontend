@@ -185,3 +185,62 @@ test("the sign-up form offers the sign-in providers of the log-in form, with the
     assert(Buttons.SignupWithProvider.includes("{provider}"), language);
   }
 });
+
+test("the practice step of the guest exercise says its result where the figure stands, once", async () => {
+  const Vue = await import("vue");
+  const { renderToString } = await import("vue/server-renderer");
+  const { compileScript } = await import("@vue/compiler-sfc");
+  const ts = (await import("typescript")).default;
+  const { descriptor } = parse(await read("components/learning/LoopExplorer.vue"));
+  const code = ts.transpileModule(
+    compileScript(descriptor, { id: "loop-explorer", inlineTemplate: true }).content,
+    { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.CommonJS } }
+  ).outputText;
+  const exports = {};
+  new Function("require", "exports", code)((name) => ({ vue: Vue })[name], exports);
+  const exercise = JSON.parse(await read("utils/guest/loops-intro.json"));
+  for (const language of ["de", "en"]) {
+    const content = exercise.content[language];
+    const explorer = async (practiceRepetitions) => {
+      const html = await renderToString(
+        Vue.createSSRApp({
+          render: () =>
+            Vue.h(exports.default, {
+              content,
+              state: { stage: 3, practiceRepetitions },
+              disabled: false,
+              locale: language,
+            }),
+        })
+      );
+      const result = html.match(/<p class="experiment-result[^"]*"[^>]*>(.*?)<\/p>/s);
+      return { html, result: result[0], says: result[1].trim() };
+    };
+    // On the way the line says where the figure stands.
+    const before = await explorer(3);
+    assert.equal(
+      before.says,
+      content.practice.position.replace("{count}", 3).replace("{position}", 6)
+    );
+    assert(!before.result.includes("reached"), language);
+    assert(!before.html.includes(content.practice.correct), language);
+    assert.match(before.html, /<button[^>]*class="action next-action"[^>]*disabled/, language);
+    // At the target the same line is the result, and nothing below the slider repeats it.
+    const at = await explorer(content.practice.target / content.practice.stride);
+    assert.equal(at.says, content.practice.correct, language);
+    assert(at.result.includes("reached"), language);
+    assert.equal(at.html.split(content.practice.correct).length - 1, 1, language);
+    assert(!/<button[^>]*class="action next-action"[^>]*disabled/.test(at.html), language);
+  }
+  // Letting go of the slider at the target brings the button that leads on into view.
+  const explorer = await elements("components/learning/LoopExplorer.vue");
+  const slider = explorer.find(({ node }) => attribute(node, "type") === "range").node;
+  assert.equal(slider.props.find((p) => p.arg?.content === "change").exp.content, "showWayOn");
+  const actions = explorer.find(({ node }) => attribute(node, "class") === "step-actions").node;
+  assert.equal(attribute(actions, "ref"), "actions");
+  const source = await read("components/learning/LoopExplorer.vue");
+  assert.match(
+    source,
+    /if \(stage\.value === 3 && practiceCorrect\.value\)\s+actions\.value\?\.scrollIntoView\(\{ block: "nearest" \}\);/
+  );
+});
