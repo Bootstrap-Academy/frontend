@@ -277,6 +277,8 @@ const hintLevel = computed(() =>
     : 0
 );
 const preparing = ref(false);
+// The answer that is being checked, as it goes out to the service.
+let submitted: (number | boolean)[] | undefined;
 const heartInfo = useHeartInfo();
 let alive = true;
 const controller = createLearningExercise({
@@ -294,6 +296,8 @@ const controller = createLearningExercise({
       submission_unknown: unknown ? true : undefined,
       submission_id: id,
       attempt_id: attemptId,
+      // What this attempt checked is saved with it, so a later visit knows it too.
+      checked_answer: attemptId ? submitted : undefined,
     });
     return await props.save();
   },
@@ -345,17 +349,6 @@ const answer = computed(() =>
       ? JSON.stringify((view.value.data?.answers || []).map((_, i) => !!draft.value.answers?.[i]))
       : null
 );
-// The answer the last check found wrong. The fields are locked while a check runs, and a
-// reload restores the checked answer, so the fields hold it when the result arrives.
-const rejected = ref<string | null>(null);
-watch(
-  () => view.value.phase,
-  (phase) => {
-    if (phase === "incorrect") rejected.value = answer.value;
-  },
-  // Every change of the phase counts, also two within one tick.
-  { flush: "sync" }
-);
 // XP come with the first solution only, so an exercise that was solved before this visit
 // has none to show: one that opens solved, and one that is repeated.
 const earned = computed(() =>
@@ -363,8 +356,16 @@ const earned = computed(() =>
     ? Math.max(0, Number(view.value.data?.xp) || 0)
     : 0
 );
+// A wrong answer is locked against one thing only: the answer its attempt really checked,
+// which was saved with the attempt. After a reload the fields hold the saved draft, and that
+// may have been changed since without being checked; such a draft is free. So is everything
+// when the attempt does not say what it checked.
 const unchanged = computed(
-  () => view.value.phase === "incorrect" && answer.value !== null && answer.value === rejected.value
+  () =>
+    view.value.phase === "incorrect" &&
+    answer.value !== null &&
+    Array.isArray(draft.value.checked_answer) &&
+    JSON.stringify(draft.value.checked_answer) === answer.value
 );
 const resultBody = computed(() => {
   const result = view.value.result;
@@ -430,6 +431,7 @@ async function submit() {
         ? { answer: draft.value.answer }
         : { answers: draft.value.answers };
   if (props.reference.type === "coding") update({ environment: body.environment });
+  submitted = answer.value === null ? undefined : JSON.parse(answer.value);
   preparing.value = true;
   try {
     await controller.submit(body);
@@ -463,7 +465,6 @@ watch(
     () => props.reviewId,
   ],
   () => {
-    rejected.value = null;
     controller.reset();
     load();
   },

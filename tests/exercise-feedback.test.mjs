@@ -153,6 +153,8 @@ async function room({ type, data, answerTo, language = "de", state = {}, attempt
       node.props.onClick();
       await settle();
     },
+    /** What the page has saved of this exercise: the state a later visit starts from. */
+    state: () => JSON.parse(JSON.stringify(saved.value)),
     stop: () => app.unmount(),
   };
 }
@@ -290,22 +292,140 @@ test("a question with several right answers says how many it judged right; one w
   assert.equal(single.check().props.disabled, false);
 });
 
-test("after a reload the wrong answer is still locked until it changes", async (t) => {
-  // The saved state holds the answer and the attempt; the service confirms it was wrong.
-  const r = await room({
-    type: "matching",
-    data: matching,
-    answerTo: judge([0, 1, 2]),
-    state: { answer: [0, 2, 1], attempt_id: "attempt-before-reload" },
-    attempt: { solved: false, hearts_pending: false },
+// What a visit finds when it comes back: the service still reports the last attempt as wrong,
+// and the fields hold the saved draft. The draft may be the checked answer or a later one.
+const choices = ["w", "x", "y", "z"];
+const judgeChoice = (solution) => (body, number) => {
+  const correct = body.answers.filter((value, index) => value === solution[index]).length;
+  return {
+    attempt_id: `attempt-${number}`,
+    hearts_pending: false,
+    solved: correct === solution.length,
+    correct,
+  };
+};
+const kinds = {
+  matching: {
+    exercise: { type: "matching", data: matching, answerTo: judge([0, 1, 2]) },
+    wrong: { answer: [0, 2, 1] },
+    right: { answer: [0, 1, 2] },
+    async setWrong(r) {
+      await r.choose(0, 0);
+      await r.choose(1, 2);
+      await r.choose(2, 1);
+    },
+    async setRight(r) {
+      await r.choose(1, 1);
+      await r.choose(2, 2);
+    },
+  },
+  "a choice with one answer": {
+    exercise: {
+      type: "multiple_choice",
+      data: { answers: choices, single_choice: true },
+      answerTo: judgeChoice([true, false, false, false]),
+    },
+    wrong: { answers: [false, false, false, true] },
+    right: { answers: [true, false, false, false] },
+    setWrong: (r) => r.tick(3),
+    setRight: (r) => r.tick(0),
+  },
+  "a choice with several right answers": {
+    exercise: {
+      type: "multiple_choice",
+      data: { answers: choices, single_choice: false },
+      answerTo: judgeChoice([true, false, true, false]),
+    },
+    wrong: { answers: [true, true, false, false] },
+    right: { answers: [true, false, true, false] },
+    async setWrong(r) {
+      await r.tick(0);
+      await r.tick(1);
+    },
+    async setRight(r) {
+      await r.tick(1);
+      await r.tick(2);
+    },
+  },
+};
+const reported = { solved: false, hearts_pending: false };
+
+for (const [name, kind] of Object.entries(kinds))
+  test(`coming back to ${name}: an answer changed after the check is free, the checked one stays locked`, async (t) => {
+    const checkedAnswer = Object.values(kind.wrong)[0];
+    // The first visit: a wrong answer is checked.
+    const first = await room(kind.exercise);
+    await kind.setWrong(first);
+    await first.press(first.check());
+    assert.deepEqual(first.sent, [kind.wrong]);
+    const afterCheck = first.state();
+    // The page saves what the attempt checked together with the attempt.
+    assert.equal(afterCheck.attempt_id, "attempt-1");
+    assert.deepEqual(afterCheck.checked_answer, checkedAnswer);
+    // The right answer is set and not sent. The page saves this draft too.
+    await kind.setRight(first);
+    const changedDraft = first.state();
+    assert.deepEqual({ ...changedDraft, ...kind.right }, changedDraft);
+    assert.deepEqual(changedDraft.checked_answer, checkedAnswer);
+    assert.equal(first.sent.length, 1);
+    first.stop();
+
+    // Back with the changed draft. It was never checked, so it can be sent, and it is right.
+    const back = await room({ ...kind.exercise, state: changedDraft, attempt: reported });
+    t.after(back.stop);
+    assert(back.lines().includes(back.texts.Incorrect));
+    assert.equal(back.check().props.disabled, false);
+    await back.press(back.check());
+    assert.deepEqual(back.sent, [kind.right]);
+    assert(back.lines().includes(back.texts.Correct));
+
+    // Back with the checked answer unchanged: it stays locked until it changes.
+    const same = await room({ ...kind.exercise, state: afterCheck, attempt: reported });
+    t.after(same.stop);
+    assert(same.lines().includes(same.texts.Incorrect));
+    assert.equal(same.check().props.disabled, true);
+    await same.press(same.check());
+    await same.force(same.check());
+    assert.equal(same.sent.length, 0);
+    await kind.setRight(same);
+    assert.equal(same.check().props.disabled, false);
+
+    // Back with an attempt that does not say what it checked, as an earlier version saved
+    // it: nothing is locked, whatever stands in the fields.
+    const { checked_answer: _unknown, ...withoutRecord } = afterCheck;
+    const old = await room({ ...kind.exercise, state: withoutRecord, attempt: reported });
+    t.after(old.stop);
+    assert(old.lines().includes(old.texts.Incorrect));
+    assert.equal(old.check().props.disabled, false);
+    await old.press(old.check());
+    assert.deepEqual(old.sent, [kind.wrong]);
   });
+
+test("a new check replaces what the page remembers of the last one", async (t) => {
+  const r = await room({ type: "matching", data: matching, answerTo: judge([0, 1, 2]) });
   t.after(r.stop);
-  assert(r.lines().includes(r.texts.Incorrect));
-  assert.equal(r.check().props.disabled, true);
+  for (const [row, value] of [
+    [0, 1],
+    [1, 2],
+    [2, 0],
+  ])
+    await r.choose(row, value);
   await r.press(r.check());
-  assert.equal(r.sent.length, 0);
-  await r.choose(1, 1);
-  await r.choose(2, 2);
+  assert.deepEqual(r.state().checked_answer, [1, 2, 0]);
+  await r.choose(0, 0);
+  await r.choose(1, 2);
+  await r.choose(2, 1);
+  await r.press(r.check());
+  const state = r.state();
+  assert.equal(state.attempt_id, "attempt-2");
+  assert.deepEqual(state.checked_answer, [0, 2, 1]);
+  // The first wrong answer is no longer the checked one: it could be sent again.
+  for (const [row, value] of [
+    [0, 1],
+    [1, 2],
+    [2, 0],
+  ])
+    await r.choose(row, value);
   assert.equal(r.check().props.disabled, false);
 });
 

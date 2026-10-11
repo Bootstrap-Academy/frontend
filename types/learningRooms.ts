@@ -15,6 +15,8 @@ export interface ExerciseDraft {
   submission_id?: string;
   submission_unknown?: boolean;
   attempt_id?: string;
+  /** The answer `attempt_id` checked, saved with it: one entry per row or per choice. */
+  checked_answer?: (number | boolean)[];
   hint_level?: number;
 }
 
