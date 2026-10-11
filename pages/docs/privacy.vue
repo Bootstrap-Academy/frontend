@@ -2253,6 +2253,16 @@ a {
   @apply cursor-pointer underline decoration-accent decoration-1 underline-offset-4;
 }
 
+/* Some links also carry the shared class `underline-link`, which draws a line of its
+ * own below the text. On this page the underline is the only line of a link. */
+a.underline-link {
+  @apply pb-0;
+}
+
+a.underline-link::after {
+  content: none;
+}
+
 .table-content li a {
   @apply block cursor-pointer no-underline mt-card-sm;
 }
