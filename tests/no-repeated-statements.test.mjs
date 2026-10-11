@@ -256,3 +256,13 @@ test("the coin order page shows the e-mail address once, where the confirmation 
     /Bestätigung an: \{\{ offer\.recipient \}\}/
   );
 });
+
+test("the sentence under the heading of the coin order page does not say the heading again", async () => {
+  for (const language of ["de", "en-US"]) {
+    const texts = JSON.parse(await read(`locales/${language}.json`));
+    const sentence = texts.Body.BuyCoins;
+    assert.match(sentence, /Profilangaben|profile details/, language);
+    for (const word of texts.Headings.BuyMorphcoins.split(" "))
+      assert(!sentence.toLowerCase().includes(word.toLowerCase()), `${language}: ${word}`);
+  }
+});
