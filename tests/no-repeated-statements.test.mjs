@@ -226,3 +226,16 @@ test("on the Premium page two ways to buy Morphcoins carry two labels", async ()
     assert.match(texts.Links.BuyMorphcoinsForHearts, /Herzen|hearts/);
   }
 });
+
+test("the coin shop explains a refill without the price that its total states", async () => {
+  const shop = await read("components/form/BuyCoins.vue");
+  assert.match(shop, /\{\{ t\("Body\.CoinsForRefill", refillNotice\) \}\}/);
+  assert(!shop.includes("Body.NeedCoinsForRefill"));
+  for (const language of ["de", "en-US"]) {
+    const { Body } = JSON.parse(await read(`locales/${language}.json`));
+    for (const value of ["{coins}", "{min}"]) assert(Body.CoinsForRefill.includes(value), language);
+    assert(!/\{price\}|€|\d/.test(Body.CoinsForRefill), `${language}: ${Body.CoinsForRefill}`);
+    // The box on the Premium page has no total next to it and keeps the price.
+    assert(Body.NeedCoinsForRefill.includes("{price}"), language);
+  }
+});

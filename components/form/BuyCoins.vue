@@ -14,9 +14,12 @@
       class="mb-card"
     />
 
-    <!-- Sent here by "Refill hearts" without enough coins: what the coins are needed for. -->
+    <!--
+      Sent here by "Refill hearts" without enough coins: what the coins are needed for. The
+      price of the smallest purchase is not said here; the total below states it.
+    -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
-      {{ t("Body.NeedCoinsForRefill", refillNotice) }}
+      {{ t("Body.CoinsForRefill", refillNotice) }}
     </p>
 
     <article
