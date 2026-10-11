@@ -73,15 +73,20 @@
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}
           </p>
+          <!--
+            Both buttons of the card are filled with the colour of the page and
+            labelled in the accent colour, the main button of the dark pages the
+            other way round: the interface has no white surfaces.
+          -->
           <template v-if="hasEnoughCoins">
             <button
               type="button"
               :disabled="disabled"
               @click="onclickSubscribe"
-              class="flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95"
+              class="flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-primary bg-primary px-6 py-3 shadow-lg duration-200 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
-              <Price :coins="planPrice" class="justify-center font-bold text-black" />
+              <Price :coins="planPrice" class="justify-center font-bold text-accent" />
             </button>
             <p v-if="yearly" class="mt-2 text-center text-black">
               {{ t("Body.PricePerMonth", { amount: pricePerMonth }) }}
@@ -90,10 +95,7 @@
 
           <!--
             Without enough Morphcoins the price is plain text, and the button
-            below leads straight to the order of the missing coins. It is filled
-            with the colour of the page and labelled in the accent colour, the
-            main button of the dark pages the other way round: the interface
-            has no white surfaces.
+            below leads straight to the order of the missing coins.
           -->
           <template v-else>
             <div

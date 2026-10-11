@@ -57,7 +57,10 @@ const named = (node, kind) =>
     .map((c) => c.match(new RegExp(`^(?:[a-z-]+:)*${kind}-([a-z]+)$`))?.[1])
     .filter((name) => name in theme);
 
-/** What a button of the card looks like: its fill, its rim and every colour its text takes. */
+/**
+ * What a button of the card looks like: its fill, its rim, every colour its text takes and the
+ * outline it shows to the keyboard.
+ */
 function look(button) {
   const [fill, ...moreFills] = named(button, "bg");
   const rims = named(button, "border");
@@ -76,7 +79,7 @@ function look(button) {
     for (const name of colours) texts.add(name);
   }
   assert(texts.size > 0, "the button has a label");
-  return { fill, rims, texts: [...texts] };
+  return { fill, rims, texts: [...texts], outlines: named(button, "outline") };
 }
 
 /** White as a surface: fills, rims, rings and the like. White text is no surface. */
@@ -85,7 +88,7 @@ const WHITE_SURFACE =
 
 function assertFitsTheCard(button, what) {
   assert.deepEqual(button.loc.source.match(WHITE_SURFACE) ?? [], [], `${what}: white surface`);
-  const { fill, rims, texts } = look(button);
+  const { fill, rims, texts, outlines } = look(button);
   assert(theme[fill].opaque, `${what}: the fill covers the card`);
   // Far from white, and a clear figure on the accent colour of the card.
   assert(contrast(theme[fill].hex, theme.white.hex) >= 4.5, `${what}: ${fill} is close to white`);
@@ -97,7 +100,15 @@ function assertFitsTheCard(button, what) {
     );
   for (const text of texts)
     assert(contrast(theme[text].hex, theme[fill].hex) >= 4.5, `${what}: ${text} on ${fill}`);
-  return { fill, rims, texts };
+  // The outline for the keyboard lies on the card, around the button. Without one of its own
+  // the browser draws its ring, which has a white line.
+  assert(outlines.length > 0, `${what}: no outline of its own`);
+  for (const outline of outlines)
+    assert(
+      contrast(theme[outline].hex, theme.accent.hex) >= 3,
+      `${what}: outline ${outline} on the card`
+    );
+  return { fill, rims, texts, outlines };
 }
 
 test("without enough Morphcoins the button of the Premium card is no white surface", () => {
@@ -110,4 +121,25 @@ test("without enough Morphcoins the button of the Premium card is no white surfa
   // The main button of the dark pages the other way round: page colour, labelled in accent.
   assert.equal(fill, "primary");
   assert.deepEqual(texts, ["accent"]);
+});
+
+test("the buy button of the Premium card looks the same, and nothing on the card is white", () => {
+  const buttons = within(card)
+    .map(({ node }) => node)
+    .filter(
+      (node) =>
+        (node.tag === "button" && node.loc.source.includes('@click="onclickSubscribe"')) ||
+        (node.tag === "NuxtLink" && bound(node, "to") === "coinOrder")
+    );
+  assert.deepEqual(
+    buttons.map((node) => node.tag),
+    ["button", "NuxtLink"],
+    "the card has its buy button and the way to the coin order"
+  );
+  const [buy, toCoinOrder] = buttons.map((node) =>
+    assertFitsTheCard(node, node.tag === "button" ? "the buy button" : "the way to the coin order")
+  );
+  // With and without enough Morphcoins the card shows the same kind of button.
+  assert.deepEqual(buy, toCoinOrder);
+  assert.deepEqual(card.loc.source.match(WHITE_SURFACE) ?? [], [], "white surface on the card");
 });
