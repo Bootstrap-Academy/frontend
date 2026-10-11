@@ -2,8 +2,14 @@
   <!--
     The page is dark like every other page. Only what PayPal draws keeps the light ground
     this page had from its first version: see the container of its buttons below.
+
+    It is also the one page that scrolls inside its `main`. Firefox draws the scrollbar of
+    such an area light unless it is told the colours. The other browsers keep the thin bar
+    of the stylesheet, so the colours are given to Firefox alone.
   -->
-  <main class="h-screen-inner container w-full overflow-scroll pt-container pb-container">
+  <main
+    class="h-screen-inner container w-full overflow-scroll pt-container pb-container supports-[-moz-appearance:none]:[scrollbar-color:var(--color-tertiary)_var(--color-primary)]"
+  >
     <PaypalCheckoutStatus v-if="showRecovery" />
     <template v-else>
       <p v-if="sdkError" role="alert">{{ t("PaypalRecovery.BeforeCaptureError") }}</p>

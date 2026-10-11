@@ -191,6 +191,15 @@ test("the coin order page is dark, and only what PayPal draws stands on a light 
   const light = (node) => /(^|\s)bg-white(\s|$)/.test(attribute(node, "class") ?? "");
   const main = all.find(({ node }) => node.tag === "main").node;
   assert(!light(main));
+  // The page scrolls inside `main`. Firefox is told the colours of that scrollbar, or it
+  // draws a light one; no other browser is, so the thin bar of the stylesheet stays.
+  assert(
+    attribute(main, "class")
+      .split(/\s+/)
+      .includes(
+        "supports-[-moz-appearance:none]:[scrollbar-color:var(--color-tertiary)_var(--color-primary)]"
+      )
+  );
   assert(!page.content.includes("text-black"), "no text written for a light ground");
   assert(
     !all.some(({ node }) => node.tag === "Input" && node.props.some((p) => p.name === "light"))
