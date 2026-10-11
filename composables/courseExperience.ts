@@ -56,6 +56,8 @@ const messages = {
     inProgress: "Angefangen",
     accountNeeded: "Zum Lernen brauchst du ein Konto.",
     paidCourse: "Dieser Kurs ist kostenpflichtig.",
+    courseLabel: "Kurs",
+    pathLabel: "Lernweg",
   },
   en: {
     back: "Back to overview",
@@ -110,6 +112,8 @@ const messages = {
     inProgress: "In progress",
     accountNeeded: "You need an account to learn.",
     paidCourse: "This is a paid course.",
+    courseLabel: "Course",
+    pathLabel: "Learning path",
   },
 };
 

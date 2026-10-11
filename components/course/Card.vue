@@ -33,7 +33,7 @@
       <Chip v-else xs color="bg-info">{{ t("Headings.Free") }}</Chip>
 
       <span v-if="data?.learning_path_id" class="text-body-2 text-subheading">{{
-        copy.course
+        plain ? copy.pathLabel : copy.course
       }}</span>
       <IconText v-else-if="lectures.value > 0" :highlightIcon="false" sm :icon="lectures.icon">
         {{ lectures.value }} {{ copy.lessons }}

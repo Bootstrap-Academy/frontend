@@ -9,7 +9,7 @@
     <template v-else>
       <header class="course-hero">
         <div class="hero-copy">
-          <p class="eyebrow">{{ copy.course }}</p>
+          <p class="eyebrow">{{ guest ? copy.courseLabel : copy.course }}</p>
           <h1>{{ course.title }}</h1>
           <p v-if="course.description" class="course-description">{{ course.description }}</p>
         </div>

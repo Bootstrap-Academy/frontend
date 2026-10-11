@@ -117,6 +117,8 @@ test("without an account the course page shows the course and the way to an acco
     const page = await coursePage({ token: "", answer: () => paid, locale });
     // The address opens without a login.
     assert(!page.middleware.includes("auth"), locale);
+    // The line above the title names what this is. "Your learning path" is for an account.
+    assert.deepEqual(page.eyebrow, [locale === "de" ? "Kurs" : "Course"], locale);
     // Only what is public is asked for: no request that needs a login leaves the browser.
     assert.deepEqual(page.calls, ["/skills/courses/nmap/summary"], locale);
     const text = page.h.text();
@@ -399,8 +401,8 @@ test("with an account the course list is the catalogue", async () => {
 });
 
 /** The card of one course, as the catalogue shows it or as the public list does. */
-async function card(data, plain) {
-  const { useCourseExperienceCopy } = await courseCopy("de");
+async function card(data, plain, locale = "de") {
+  const { useCourseExperienceCopy } = await courseCopy(locale);
   const icon = tag("svg");
   const Card = await evaluate("components/course/Card.vue", {
     require: (name) =>
@@ -441,7 +443,15 @@ test("the card of the public list says what a course is and leaves out price and
   }
   // What is left below the line: the number of lessons, or that the course leads step by step.
   assert((await card(paid, true)).h.text().includes("2 Lerneinheiten"));
-  assert((await card(catalogue[2], true)).h.text().includes("Dein Lernweg"));
+  for (const [locale, label, withAccount] of [
+    ["de", "Lernweg", "Dein Lernweg"],
+    ["en-US", "Learning path", "Your learning path"],
+  ]) {
+    const says = (await card(catalogue[2], true, locale)).h.text();
+    assert(says.includes(label) && !says.includes(withAccount), locale);
+    // In the catalogue of an account the card keeps its words.
+    assert((await card(catalogue[2], false, locale)).h.text().includes(withAccount), locale);
+  }
   // Nothing left to say there: no empty row under a line.
   assert(!(await card(catalogue[0], true)).types.includes("hr"));
   assert((await card(catalogue[0], false)).types.includes("hr"));
