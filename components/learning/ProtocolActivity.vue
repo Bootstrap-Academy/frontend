@@ -303,6 +303,14 @@ async function start() {
     });
     fullscreenAvailable.value = display.available;
     actions.display = (requested) => display!.request(requested);
+    // Server assessment needs the revision of exactly these bytes and adapters bound by the parent.
+    const revisionId = verified.descriptor.revision_id;
+    if (revisionId && source.assessment)
+      actions.assessment = source.assessment({
+        unitId: props.activityId,
+        revisionId,
+        packageHash: verified.descriptor.package_hash,
+      });
     frame = createLessonFrame(surface.value, verified, () => {
       if (current()) host?.fail();
     });

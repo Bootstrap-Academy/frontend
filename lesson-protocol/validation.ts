@@ -16,6 +16,10 @@ export { assertSchema, validateSchema, canonicalJson, jsonBytes } from "./schema
 export const operations = messageSchema["x-operations"] as Record<string, Operation>;
 export const schemas = { manifest: manifestSchema, message: messageSchema, replay: replaySchema };
 export const MESSAGE_BYTES = 262144;
+/** The newest minor version of protocol 2 that loader, SDK and host speak. */
+export const PROTOCOL_MINOR = 1;
+/** Server assessment of deterministic goals, added by protocol 2.1. */
+export const HOST_ASSESSMENT = { id: "host.assessment", major: 1, minor: 0 } as const;
 export function recognizedResult(type: string, data: JsonObject): JsonObject {
   const operation = Object.hasOwn(operations, type) ? operations[type] : undefined;
   return (
@@ -87,6 +91,11 @@ export function validateMessage(
     if (message.payload.ok) validateSchema(request.result!, message.payload.data, messageSchema);
   }
   return message;
+}
+
+/** Checks data against one named definition of the message schema, such as an adapter's answer. */
+export function validateDefinition(name: string, value: unknown): void {
+  validateSchema({ $ref: `#/$defs/${name}` }, value, messageSchema);
 }
 
 export function hasCapability(

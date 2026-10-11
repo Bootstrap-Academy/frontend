@@ -1,5 +1,5 @@
 import { canonicalJson, cloneJson, validateSchema, type Schema } from "./schema";
-import { validateManifest, validateMessage } from "./validation";
+import { PROTOCOL_MINOR, validateManifest, validateMessage } from "./validation";
 import { ProtocolError, type Envelope, type Manifest, type Transport } from "./types";
 
 export interface PackageDescriptor {
@@ -9,6 +9,8 @@ export interface PackageDescriptor {
   manifest_url: string;
   manifest_hash: string;
   package_hash: string;
+  /** Protocol 2.1: the server's revision of these bytes. Without it no assessment is offered. */
+  revision_id?: string;
 }
 export interface VerifiedPackage {
   descriptor: PackageDescriptor;
@@ -150,7 +152,7 @@ export async function verifyLessonPackage(
   if (
     manifest.id !== descriptor.id ||
     descriptor.entry_url !== base + manifest.entry.replace(/(?:index)?\.html$/, "") ||
-    manifest.protocol.minor !== 0
+    manifest.protocol.minor > PROTOCOL_MINOR
   )
     throw new ProtocolError("unsupported", "Package binding mismatch.");
   // The package digest covers the complete ordered resource inventory, independently of the manifest digest.
