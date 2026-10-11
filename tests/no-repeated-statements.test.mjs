@@ -227,34 +227,67 @@ test("on the Premium page two ways to buy Morphcoins carry two labels", async ()
   }
 });
 
-test("the coin shop explains a refill without the price that its total states", async () => {
+test("the coin shop explains a refill without the amount and price that its total states", async () => {
   const shop = await read("components/form/BuyCoins.vue");
   assert.match(shop, /\{\{ t\("Body\.CoinsForRefill", refillNotice\) \}\}/);
   assert(!shop.includes("Body.NeedCoinsForRefill"));
   for (const language of ["de", "en-US"]) {
     const { Body } = JSON.parse(await read(`locales/${language}.json`));
-    for (const value of ["{coins}", "{min}"]) assert(Body.CoinsForRefill.includes(value), language);
-    assert(!/\{price\}|€|\d/.test(Body.CoinsForRefill), `${language}: ${Body.CoinsForRefill}`);
+    // It names what a refill costs. Amount and price of the purchase are left to the total.
+    assert(Body.CoinsForRefill.includes("{coins}"), language);
+    assert(
+      !/\{min\}|\{price\}|€|\d/.test(Body.CoinsForRefill),
+      `${language}: ${Body.CoinsForRefill}`
+    );
     // The box on the Premium page has no total next to it and keeps the price.
     assert(Body.NeedCoinsForRefill.includes("{price}"), language);
   }
 });
 
-test("the coin order page shows the e-mail address once, where the confirmation goes", async () => {
-  const ast = await template("pages/morphcoins/paypal.vue");
-  // The profile block prints no address; it only names a missing one.
-  for (const { says } of sayings(ast)) assert(!/user\??\.email\b(?!_)/.test(says), says);
-  const rows = elements(ast).filter(
-    ({ node }) => node.tag === "div" && node.loc.source.includes('t("Inputs.EmailAddress")')
-  );
-  const row = rows.at(-1).node;
-  assert.equal(condition(row), "!user?.email");
-  assert(row.loc.source.includes('t("Headings.Missing")'));
-  // The order summary keeps the line with the recipient of the confirmation.
+test("the coin order page shows the e-mail address once: in the summary, or in the profile block until the summary has it", async () => {
+  const all = elements(await template("pages/morphcoins/paypal.vue"));
+  const row = all
+    .filter(
+      ({ node }) => node.tag === "div" && node.loc.source.includes('t("Inputs.EmailAddress")')
+    )
+    .at(-1).node;
+  const contract = all.find(({ node }) => node.tag === "OrderContract").node;
+  // The line with the recipient of the confirmation stands in the summary once there is an offer.
   assert.match(
     await read("components/order/Contract.vue"),
     /Bestätigung an: \{\{ offer\.recipient \}\}/
   );
+  const shown = (node, state) =>
+    !!new Function("user", "offer", "offerPending", `return ${condition(node)};`)(
+      state.user,
+      state.offer,
+      state.offerPending
+    );
+  const account = { email: "someone@example.invalid" };
+  const offer = { id: "offer", recipient: "someone@example.invalid" };
+  for (const [what, state, inProfile, inSummary] of [
+    ["the offer is there", { user: account, offer, offerPending: false }, false, true],
+    [
+      "the page asks for the country",
+      { user: account, offer: null, offerPending: false },
+      true,
+      false,
+    ],
+    ["no offer came", { user: account, offer: null, offerPending: false }, true, false],
+    ["the offer is on its way", { user: account, offer: null, offerPending: true }, false, false],
+    ["the account has no address", { user: {}, offer: null, offerPending: false }, true, false],
+    ["the profile is not there yet", { user: null, offer: null, offerPending: true }, true, false],
+  ]) {
+    assert.equal(shown(row, state), inProfile, what);
+    assert.equal(shown(contract, state), inSummary, what);
+    // Never both at once.
+    assert(!(shown(row, state) && state.user?.email && shown(contract, state)), what);
+  }
+  // In the profile block the address is printed when there is one, else it is called missing.
+  const lines = all.filter(({ parents }) => parents.includes(row)).map(({ node }) => node);
+  const address = lines.find((node) => node.loc.source.includes("{{ user.email }}"));
+  assert.equal(condition(address), "user?.email");
+  assert(lines.some((node) => node.loc.source.includes('t("Headings.Missing")')));
 });
 
 test("on the coin order page no sentence stands between the heading and the profile block", async () => {

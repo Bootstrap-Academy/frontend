@@ -15,8 +15,8 @@
     />
 
     <!--
-      Sent here by "Refill hearts" without enough coins: what the coins are needed for. The
-      price of the smallest purchase is not said here; the total below states it.
+      Sent here by "Refill hearts" without enough coins: what the coins are needed for. How
+      many coins are bought and at what price is not said here; the total below states both.
     -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
       {{ t("Body.CoinsForRefill", refillNotice) }}
