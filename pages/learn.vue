@@ -254,8 +254,11 @@ watch(
   },
   { flush: "sync" }
 );
+// A finished unit leads straight to the next one, without a card in between that says
+// nothing. The card of a finished room in the template is for a room that opens finished
+// and for a next unit that could not be opened.
 async function completeActivity(result: LearningActivityCompletion) {
-  await data.complete("complete", result.answer, result.attempt_id);
+  if (await data.complete("complete", result.answer, result.attempt_id)) await advance();
 }
 async function advance() {
   if (exercisePosting.value) return;
@@ -283,7 +286,7 @@ async function canLeave() {
 }
 async function skip() {
   if ((await exerciseComponent.value?.prepareNavigation?.()) === false) return;
-  await data.complete("skip");
+  if (await data.complete("skip")) await advance();
 }
 onBeforeRouteLeave(canLeave);
 onBeforeRouteUpdate(async (to) => {

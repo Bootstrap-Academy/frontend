@@ -97,8 +97,10 @@
           }}
         </button>
       </aside>
+      <!-- The result of a solved exercise: what it brought, and the way on. -->
       <div v-if="view.phase === 'correct'" class="exercise-result correct" role="status">
         <p>{{ t("LearningRooms.Correct") }}</p>
+        <p v-if="earned" class="earned">{{ t("LearningRooms.EarnedXp", { xp: earned }) }}</p>
         <button
           type="button"
           :disabled="disabled"
@@ -172,7 +174,8 @@
             <p v-if="view.premium === false && showHearts">
               {{ t("Body.WrongAnswerCostsOneHeart") }}
             </p>
-            <button type="button" :disabled="locked || !valid" @click="submit">
+            <!-- A wrong answer that has not been changed is not checked, and not charged, again. -->
+            <button type="button" :disabled="locked || !valid || unchanged" @click="submit">
               {{
                 t(
                   view.phase === "submitting"
@@ -274,6 +277,8 @@ const hintLevel = computed(() =>
     : 0
 );
 const preparing = ref(false);
+// The answer that is being checked, as it goes out to the service.
+let submitted: (number | boolean)[] | undefined;
 const heartInfo = useHeartInfo();
 let alive = true;
 const controller = createLearningExercise({
@@ -291,6 +296,8 @@ const controller = createLearningExercise({
       submission_unknown: unknown ? true : undefined,
       submission_id: id,
       attempt_id: attemptId,
+      // What this attempt checked is saved with it, so a later visit knows it too.
+      checked_answer: attemptId ? submitted : undefined,
     });
     return await props.save();
   },
@@ -334,11 +341,57 @@ const resultTitle = computed(() => {
   if (result?.message?.title_key) return t(result.message.title_key);
   return result?.verdict ? t(codingVerdictKey(result.verdict)) : "";
 });
-const resultBody = computed(() =>
-  view.value.result?.message?.body_key
-    ? t(view.value.result.message.body_key, view.value.result.message.body_params || {})
-    : ""
+// The answer in the fields as one value, for the kinds whose check always gives the same result.
+const answer = computed(() =>
+  props.reference.type === "matching"
+    ? JSON.stringify((view.value.data?.left || []).map((_, i) => draft.value.answer?.[i] ?? -1))
+    : props.reference.type === "multiple_choice"
+      ? JSON.stringify((view.value.data?.answers || []).map((_, i) => !!draft.value.answers?.[i]))
+      : null
 );
+// XP come with the first solution only, so an exercise that was solved before this visit
+// has none to show: one that opens solved, and one that is repeated.
+const earned = computed(() =>
+  view.value.phase === "correct" && view.value.data?.solved !== true
+    ? Math.max(0, Number(view.value.data?.xp) || 0)
+    : 0
+);
+// A wrong answer is locked against one thing only: the answer its attempt really checked,
+// which was saved with the attempt. After a reload the fields hold the saved draft, and that
+// may have been changed since without being checked; such a draft is free. So is everything
+// when the attempt does not say what it checked.
+const unchanged = computed(
+  () =>
+    view.value.phase === "incorrect" &&
+    answer.value !== null &&
+    Array.isArray(draft.value.checked_answer) &&
+    JSON.stringify(draft.value.checked_answer) === answer.value
+);
+const resultBody = computed(() => {
+  const result = view.value.result;
+  if (result?.message?.body_key)
+    return t(result.message.body_key, result.message.body_params || {});
+  // How much of the wrong answer is right, as far as the service says. It is a statement
+  // about the checked answer, so it goes once the answer changes.
+  const total =
+    props.reference.type === "matching"
+      ? view.value.data?.left?.length
+      : props.reference.type === "multiple_choice" && !view.value.data?.single_choice
+        ? view.value.data?.answers?.length
+        : 0;
+  return unchanged.value &&
+    total &&
+    Number.isInteger(result?.correct) &&
+    result!.correct >= 0 &&
+    result!.correct < total
+    ? t(
+        props.reference.type === "matching"
+          ? "LearningRooms.MatchesCorrect"
+          : "LearningRooms.AnswersCorrect",
+        { correct: result!.correct, total }
+      )
+    : "";
+});
 const resultDetails = computed(
   () =>
     view.value.result?.message?.detail ||
@@ -370,7 +423,7 @@ function chooseMatch(index: number, value: number) {
   update({ answer });
 }
 async function submit() {
-  if (!valid.value || locked.value) return;
+  if (!valid.value || locked.value || unchanged.value) return;
   const body =
     props.reference.type === "coding"
       ? { code: draft.value.code, environment: draft.value.environment || defaultEnvironment.value }
@@ -378,6 +431,7 @@ async function submit() {
         ? { answer: draft.value.answer }
         : { answers: draft.value.answers };
   if (props.reference.type === "coding") update({ environment: body.environment });
+  submitted = answer.value === null ? undefined : JSON.parse(answer.value);
   preparing.value = true;
   try {
     await controller.submit(body);
@@ -546,6 +600,11 @@ button:disabled {
 }
 .correct button {
   justify-self: start;
+}
+.earned {
+  color: #85e4d2;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 pre {
   white-space: pre-wrap;

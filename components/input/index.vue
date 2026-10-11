@@ -7,8 +7,8 @@
       <p
         v-if="hint"
         :id="`${inputId}-hint`"
-        class="relative z-0 pb-2 text-xs text-body"
-        :class="noLabel ? 'text-left' : 'text-right'"
+        class="relative z-0 pb-2 text-xs"
+        :class="[noLabel ? 'text-left' : 'text-right', hintBroken ? 'text-error' : 'text-body']"
       >
         {{ t(hint) }}
       </p>
@@ -48,7 +48,7 @@
       class="relative z-0 pt-2 text-xs text-error"
       :class="error ? 'translate-y-0 opacity-100' : 'translate-y-[-100%] opacity-0'"
     >
-      {{ error }}
+      {{ hintBroken ? "" : error }}
     </p>
   </div>
 </template>
@@ -124,12 +124,17 @@ export default defineComponent({
       emit("valid", !!!msg);
       return msg;
     });
+    // A rule that fails with the sentence of the hint is already written at the field.
+    // The hint turns red, and the sentence is not repeated below.
+    const hintBroken = computed(
+      () => !!props.hint && !!error.value && error.value === t(props.hint)
+    );
     onMounted(() => {
       if (props.focusThis == true) {
         DOM_INPUT.value?.focus();
       }
     });
-    return { t, input, inputId, error, DOM_INPUT, touched };
+    return { t, input, inputId, error, hintBroken, DOM_INPUT, touched };
   },
 });
 </script>

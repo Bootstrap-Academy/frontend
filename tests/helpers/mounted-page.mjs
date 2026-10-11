@@ -72,6 +72,7 @@ export function host() {
       selectedIndex: -1,
       addEventListener() {},
       reportValidity: () => true,
+      setCustomValidity() {},
     };
   };
   const detach = (n) => {

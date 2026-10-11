@@ -67,34 +67,7 @@
       <span class="text-accent">{{ t("Links.CreateOne") }}</span>
     </NuxtLink>
 
-    <article
-      v-if="providers && providers.length > 0"
-      class="grid grid-cols-[1fr_auto_1fr] items-center gap-card-sm mt-card mb-card"
-    >
-      <hr />
-      <p>{{ t("Body.OrLoginWith") }}</p>
-      <hr />
-    </article>
-
-    <article class="flex flex-wrap justify-center gap-container">
-      <button
-        v-for="{ id, name, icon } of providers"
-        :key="id"
-        type="button"
-        :disabled="startingProvider != ''"
-        :aria-label="t('Buttons.LoginWithProvider', { provider: name })"
-        class="cursor-pointer disabled:cursor-wait disabled:opacity-50"
-        @click="onclickProvider(id)"
-      >
-        <component
-          v-if="icon"
-          :is="icon"
-          lg
-          :color="id == 'github' ? 'fill-heading' : ''"
-        ></component>
-        <span v-else class="underline">{{ name }}</span>
-      </button>
-    </article>
+    <FormOAuthProviders label="Body.OrLoginWith" action="Buttons.LoginWithProvider" />
   </form>
 </template>
 
@@ -103,12 +76,8 @@ import { defineComponent, ref } from "vue";
 import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
-import IconGithub from "~/components/icon/Github.vue";
-import IconGoogle from "~/components/icon/Google.vue";
-import IconDiscord from "~/components/icon/Discord.vue";
 
 export default defineComponent({
-  components: { IconGithub, IconGoogle, IconDiscord },
   setup() {
     const { t } = useI18n();
 
@@ -161,51 +130,6 @@ export default defineComponent({
         return obj;
       },
     });
-
-    // ============================================================= OAuth Providers
-    const oauthProviders = useOauthProviders();
-
-    const providers = computed(() => {
-      if (!!!oauthProviders.value || oauthProviders.value.length <= 0) return [];
-
-      return oauthProviders.value
-        .filter((item: any) => !!item && !!item.id)
-        .map((item: any) => {
-          let icon = null;
-          if (item.id == "google") {
-            icon = IconGoogle;
-          } else if (item.id == "discord") {
-            icon = IconDiscord;
-          } else if (item.id == "github") {
-            icon = IconGithub;
-          }
-
-          return { ...item, icon };
-        });
-    });
-
-    /**
-     * The authorize URL is built by the backend, which puts an unguessable
-     * single use `state` and a PKCE challenge into it. The browser keeps the
-     * `state` until the provider sends it back, so a callback that this
-     * browser did not start is rejected on the callback page.
-     */
-    const startingProvider = ref("");
-
-    async function onclickProvider(provider_id: string) {
-      if (startingProvider.value != "") return;
-
-      startingProvider.value = provider_id;
-      const [success, error] = await startOAuthFlow(provider_id);
-
-      if (!!success?.authorize_url) {
-        window.location.href = success.authorize_url;
-        return;
-      }
-
-      startingProvider.value = "";
-      openSnackbar("error", "Error.UnableToOAuth", error?.detail ?? "");
-    }
 
     // ============================================================= Checks
     const router = useRouter();
@@ -298,11 +222,8 @@ export default defineComponent({
     return {
       form,
       onclickSubmitForm,
-      onclickProvider,
-      startingProvider,
       refForm,
       t,
-      providers,
       needMFA,
       needRecoveryCode,
       restrictedAccess,

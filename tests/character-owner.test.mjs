@@ -109,7 +109,16 @@ function fixture(t, get, roomsEnabled = false) {
           return get ? get(path, token, response) : response(path, token);
         },
       },
-      ["view", "focus", "details", "practiceMessage", "practiceLabel", "startPractice", "reload"]
+      [
+        "view",
+        "focus",
+        "details",
+        "practiceMessage",
+        "practiceLabel",
+        "nextStep",
+        "startPractice",
+        "reload",
+      ]
     )
   );
   t.after(() => {
@@ -247,4 +256,61 @@ test("enabled learning rooms preserve an explicit focus and label the selected d
   await f.page.startPractice();
   assert.equal(f.navigation.at(-1), "/learn");
   assert.equal(f.calls.length, previousReads);
+});
+
+const rooms = {
+  path: { title: { de: "Deine ersten Python-Programme", en: "Your first Python programs" } },
+  next: { unit: { title: { de: "Namen und Werte zuordnen", en: "Match names and values" } } },
+};
+const ROOMS = "/skills/rooms?continuous=true";
+
+test("the next step names the unit the learning room opens, and its topic", async (t) => {
+  const f = fixture(
+    t,
+    (path, token, response) => (path === ROOMS ? rooms : response(path, token)),
+    true
+  );
+  await settle();
+  // One read, the same the learning room sends when it opens without a chosen unit.
+  assert.equal(f.calls.filter(({ path }) => path === ROOMS).length, 1);
+  assert.deepEqual(f.page.nextStep.value, {
+    unit: "Namen und Werte zuordnen",
+    topic: "Deine ersten Python-Programme",
+  });
+  // A chosen focus leads to practice in that skill, so the card stops naming the room's unit.
+  f.page.focus.value = "programming";
+  assert.equal(f.page.practiceLabel.value, "CharacterDashboard.Practice");
+  assert.equal(f.page.nextStep.value, null);
+  f.page.focus.value = "";
+  assert.equal(f.page.nextStep.value?.unit, "Namen und Werte zuordnen");
+});
+
+test("without a known next unit the card keeps its general heading", async (t) => {
+  // The learning room has nothing to open.
+  const empty = fixture(
+    t,
+    (path, token, response) => (path === ROOMS ? { ...rooms, next: null } : response(path, token)),
+    true
+  );
+  // The read fails.
+  const failing = fixture(t, undefined, true);
+  // Learning rooms are off: nothing is asked.
+  const off = fixture(
+    t,
+    (path, token, response) => (path === ROOMS ? rooms : response(path, token)),
+    false
+  );
+  await settle();
+  assert.equal(empty.page.nextStep.value, null);
+  assert.equal(failing.page.nextStep.value, null);
+  assert.equal(failing.calls.filter(({ path }) => path === ROOMS).length, 1);
+  assert.equal(off.page.nextStep.value, null);
+  assert.equal(off.calls.filter(({ path }) => path === ROOMS).length, 0);
+  // The heading falls back to the general wording, and no topic line stands under it.
+  const heading = descriptor.template.content.match(/<h2 id="next-step-title">([^]*?)<\/h2>/)[1];
+  assert.equal(
+    heading.replace(/\s+/g, " ").trim(),
+    '{{ nextStep ? nextStep.unit : t("CharacterDashboard.KeepLearning") }}'
+  );
+  assert.match(descriptor.template.content, /<p v-if="nextStep\?\.topic" class="next-topic">/);
 });
