@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { after, test } from "node:test";
+import { after, mock, test } from "node:test";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -24,6 +24,7 @@ const {
   createUpdateNotice,
   updateNoticeKey,
   updateNoticeSubject,
+  isSessionEntryRoute,
   UPDATE_NOTICE_VERSION,
   UPDATE_NOTICE_WINDOW,
   UPDATE_NOTICE_LINK,
@@ -34,6 +35,7 @@ const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
 const A = "10000000-0000-4000-8000-000000000001";
 const B = "10000000-0000-4000-8000-000000000002";
 // Earlier builds showed the notice without a session and stored its close under this subject.
+// Nothing reads the marker any more; every start removes it.
 const LEFT_BY_A_VISITOR = updateNoticeKey("browser");
 
 function fixture(data = new Map(), unavailable = false, timing = {}) {
@@ -542,7 +544,7 @@ test("a saved dismissal is honored when the window opens, and a new version has 
 });
 
 for (const language of ["de", "en-US"]) {
-  test(`actual app ${language}: without a session the entry pages show no notice and nothing is read or written`, async () => {
+  test(`actual app ${language}: without a session the entry pages show no notice, and no marker is read or written`, async () => {
     await mounted(
       language,
       async (f) => {
@@ -575,6 +577,7 @@ test("actual app: opened signed out, the notice appears after the login and stay
       f.route.path = "/auth/login";
       await f.tick();
       assert.equal(Boolean(f.notice()), false);
+      assert(!f.data.has(LEFT_BY_A_VISITOR), "the start removes what a visitor left");
       // The login answers with the token and the full profile.
       f.user.value = { id: A };
       f.token.value = "after-login";
@@ -592,7 +595,7 @@ test("actual app: opened signed out, the notice appears after the login and stay
       await f.tick();
       assert.equal(Boolean(f.notice()), false, "signed in and closed: the notice is gone");
       assert.deepEqual(f.writes, [[updateNoticeKey(A), "1"]]);
-      assert.equal(f.data.get(LEFT_BY_A_VISITOR), "1");
+      assert.deepEqual([...f.data.keys()], [updateNoticeKey(A)]);
     },
     { data, signedOut: true }
   );
@@ -616,6 +619,115 @@ test("actual app: opened signed out, the notice appears after the login and stay
     },
     { data }
   );
+});
+test("the login and the registration are the pages where a session starts", () => {
+  for (const path of [
+    "/auth/login",
+    "/auth/login/",
+    "/AUTH/Login",
+    "/auth/login?redirect=/dashboard",
+    "/auth/signup",
+    "/auth/signup/#form",
+  ])
+    assert.equal(isSessionEntryRoute(path), true, path);
+  for (const path of [
+    "/",
+    "/auth",
+    "/auth/verify-account",
+    "/auth/forgot-password",
+    "/auth/login-help",
+    "/dashboard",
+    "/start",
+    "/profile/edit",
+  ])
+    assert.equal(isSessionEntryRoute(path), false, path);
+});
+for (const entry of ["/auth/login", "/auth/signup"]) {
+  test(`actual app: on ${entry} the notice waits for the page that follows`, async () => {
+    await mounted(
+      "de",
+      async (f) => {
+        f.route.path = entry;
+        await f.tick();
+        // The form is still on screen when the answer sets the token and the profile.
+        f.user.value = { id: A };
+        f.token.value = "after-login";
+        f.loaded.value = true;
+        await f.tick();
+        assert.equal(Boolean(f.notice()), false, "no notice above the form that was just sent");
+        assert(!f.ui.text().includes(messages.de.UpdateNotice.Body));
+        f.route.path = "/dashboard";
+        await f.tick();
+        assert(f.notice(), "the page after the login shows the notice");
+        // A signed-in account that opens the page again does not get the notice there either.
+        f.route.path = entry + "/";
+        await f.tick();
+        assert.equal(Boolean(f.notice()), false);
+        f.route.path = "/profile/edit";
+        await f.tick();
+        assert(f.notice());
+        assert.deepEqual(f.writes, []);
+        assert.deepEqual(f.requests, []);
+      },
+      { signedOut: true }
+    );
+  });
+}
+test("actual app: a renewed token keeps the same notice in place, and its close still works", async () => {
+  await mounted("en-US", async (f) => {
+    const shown = f.notice();
+    const close = f.button().props.onClick;
+    // A renewal replaces the access token of the same account in one step.
+    for (const token of ["renewed-1", "renewed-2"]) {
+      f.token.value = token;
+      await f.tick();
+      // Compared as a plain yes or no: a failure must not print two whole trees.
+      assert(f.notice() === shown, "the notice is neither removed nor built again");
+    }
+    assert.deepEqual(f.writes, []);
+    close();
+    await f.tick();
+    assert.equal(Boolean(f.notice()), false);
+    assert.deepEqual(f.writes, [[updateNoticeKey(A), "1"]]);
+    f.token.value = "renewed-3";
+    await f.tick();
+    assert.equal(Boolean(f.notice()), false, "closed stays closed across a renewal");
+    assert.deepEqual(f.requests, []);
+  });
+});
+test("actual app: the open notice leaves with the minute check once the window has ended", async () => {
+  mock.timers.enable({ apis: ["setInterval"] });
+  const stopped = [],
+    clear = globalThis.clearInterval;
+  globalThis.clearInterval = (timer) => (stopped.push(timer), clear(timer));
+  try {
+    const data = new Map([[updateNoticeKey(B), "1"]]);
+    await mounted(
+      "de",
+      async (f) => {
+        assert(f.notice());
+        Date.now = () => UPDATE_NOTICE_WINDOW.expiresAt - 1;
+        mock.timers.tick(60_000);
+        await f.tick();
+        assert(f.notice(), "the last moment of the window still shows it");
+        assert(f.data.has(updateNoticeKey(B)));
+        Date.now = () => UPDATE_NOTICE_WINDOW.expiresAt;
+        mock.timers.tick(59_999);
+        await f.tick();
+        assert(f.notice(), "nothing happens between two checks");
+        mock.timers.tick(1);
+        await f.tick();
+        assert.equal(Boolean(f.notice()), false, "the next check takes the notice away");
+        assert.deepEqual([...f.data.keys()], [], "and the markers of this notice with it");
+        assert.deepEqual(f.writes, []);
+      },
+      { data }
+    );
+    assert.equal(stopped.filter(Boolean).length, 1, "the check ends with the component");
+  } finally {
+    globalThis.clearInterval = clear;
+    mock.timers.reset();
+  }
 });
 test("actual app account switch/ABA invalidates held close; each user's dismissal remains separate", async () => {
   await mounted("en-US", async (f) => {
@@ -737,15 +849,19 @@ test("expired notice cleanup removes all old subjects and preserves a newer noti
   assert.equal(f.data.get("payment"), "pending");
 });
 
-test("app start removes dismissals of the retired September notice at any time; unknown versions stay", () => {
+test("app start removes retired notices and the marker of a visitor at any time; unknown versions stay", () => {
   // 2026-09-update-1 ran on production without a display window and stored account UUIDs.
   const retired = "bootstrap-academy:update-notice:2026-09-update-1:" + A;
   const lookalike = "bootstrap-academy:update-notice:2026-09-update-10:" + A;
   const unknown = updateNoticeKey(A, "2027-01-next-1");
-  const current = LEFT_BY_A_VISITOR;
+  // A later notice may speak to visitors again; an older tab must leave its marker alone.
+  const unknownVisitor = updateNoticeKey("browser", "2027-01-next-1");
+  const current = updateNoticeKey(A);
+  const visitorLookalike = updateNoticeKey("browser-2");
   for (const now of [
     UPDATE_NOTICE_WINDOW.startsAt - 1,
     UPDATE_NOTICE_WINDOW.startsAt,
+    UPDATE_NOTICE_WINDOW.expiresAt - 1,
     Date.parse("2030-01-01T00:00:00Z"),
   ]) {
     const f = fixture(
@@ -753,14 +869,20 @@ test("app start removes dismissals of the retired September notice at any time; 
         [retired, "1"],
         [lookalike, "1"],
         [unknown, "1"],
+        [unknownVisitor, "1"],
         [current, "1"],
+        [visitorLookalike, "1"],
+        [LEFT_BY_A_VISITOR, "1"],
       ])
     );
     clearObsoleteUpdateNotices(f.storage, UPDATE_NOTICE_WINDOW, now);
     assert(!f.data.has(retired), String(now));
+    assert(!f.data.has(LEFT_BY_A_VISITOR), "the marker of a visitor goes at every start");
     assert.equal(f.data.get(lookalike), "1");
     assert.equal(f.data.get(unknown), "1");
+    assert.equal(f.data.get(unknownVisitor), "1");
     assert.equal(f.data.has(current), now < UPDATE_NOTICE_WINDOW.expiresAt);
+    assert.equal(f.data.has(visitorLookalike), now < UPDATE_NOTICE_WINDOW.expiresAt);
   }
   assert(RETIRED_UPDATE_NOTICE_VERSIONS.includes("2026-09-update-1"));
   // The statistics notice ran only on test and was replaced by the bundled privacy notice.
@@ -784,6 +906,7 @@ test("the client storage plugin runs the cleanup and blocked storage cannot brea
   const f = fixture(
     new Map([
       [retired, "1"],
+      [LEFT_BY_A_VISITOR, "1"],
       ["selectedButtonLeaderBoard", "x"],
       ["payment", "pending"],
     ])

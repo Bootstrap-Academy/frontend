@@ -24,6 +24,7 @@ import { useI18n } from "vue-i18n";
 import { isPublicLegalRoute } from "../composables/publicLegalRoutes";
 import {
   createUpdateNotice,
+  isSessionEntryRoute,
   UPDATE_NOTICE_LINK,
   updateNoticeSubject,
   type UpdateNoticeView,
@@ -46,7 +47,7 @@ const notice = createUpdateNotice({
 
 watch(
   () =>
-    ready.value && !isPublicLegalRoute(route.path)
+    ready.value && !isPublicLegalRoute(route.path) && !isSessionEntryRoute(route.path)
       ? updateNoticeSubject(user.value?.id, accessToken.value, loaded.value)
       : null,
   (subject) => notice.select(subject),

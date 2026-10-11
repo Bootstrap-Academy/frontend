@@ -1,7 +1,8 @@
 import { guestReturnPath } from "~/utils/guest/handoff";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  if (to.path !== from.path && import.meta.client) {
+  // A target with an anchor is left to the router, which moves to the named section.
+  if (to.path !== from.path && !to.hash && import.meta.client) {
     setTimeout(() => {
       window.scrollTo({
         top: 0,

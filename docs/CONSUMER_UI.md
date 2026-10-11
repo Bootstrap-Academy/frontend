@@ -15,7 +15,8 @@ by itself change an existing account's acceptance.
 
 `components/UpdateNotice.vue` is an informational, dismissible card mounted once
 client-side by `app.vue`. It appears only after a signed-in profile is loaded,
-and stays hidden on public legal, declaration, and retained-access routes. Its
+and stays hidden on the login, the registration, and public legal, declaration,
+and retained-access routes. Its
 links and close button do not call a consent or terms endpoint. It does not
 capture focus, block navigation, or prevent use of the page.
 

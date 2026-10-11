@@ -26,6 +26,13 @@ export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean
     : null;
 }
 
+/** The login and the registration start the session while their form is still on
+ * screen. The notice waits for the page that follows them. */
+export function isSessionEntryRoute(path: string) {
+  const pathname = (path.split(/[?#]/, 1)[0] ?? "").toLowerCase().replace(/\/+$/, "");
+  return pathname === "/auth/login" || pathname === "/auth/signup";
+}
+
 export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION): string {
   return `bootstrap-academy:update-notice:${version}:${subject}`;
 }
@@ -36,9 +43,14 @@ export const RETIRED_UPDATE_NOTICE_VERSIONS: readonly string[] = [
   "2026-10-privacy-statistics-1",
 ];
 
+/** Earlier builds showed the notice to visitors without a session and stored their
+ * close under this subject. Nothing reads it any more. */
+const VISITOR_SUBJECT = "browser";
+
 /** A dismissal has no purpose once its notice can no longer appear: retired versions
- * always, the current version after its display window. Unknown versions stay, so an
- * older open tab cannot erase the dismissal of a newer notice. */
+ * always, the current version after its display window, and the marker of a visitor
+ * at any time. Unknown versions stay, so an older open tab cannot erase the dismissal
+ * of a newer notice. */
 export function clearObsoleteUpdateNotices(
   storage: Pick<Storage, "length" | "key" | "removeItem">,
   window = UPDATE_NOTICE_WINDOW,
@@ -47,10 +59,12 @@ export function clearObsoleteUpdateNotices(
   const versions = RETIRED_UPDATE_NOTICE_VERSIONS.filter((version) => version !== window.version);
   if (Number.isFinite(now) && now >= window.expiresAt) versions.push(window.version);
   const prefixes = versions.map((version) => updateNoticeKey("", version));
+  const visitor = updateNoticeKey(VISITOR_SUBJECT, window.version);
   const keys: string[] = [];
   for (let i = 0; i < storage.length; i++) {
     const key = storage.key(i);
-    if (key && prefixes.some((prefix) => key.startsWith(prefix))) keys.push(key);
+    if (key && (key === visitor || prefixes.some((prefix) => key.startsWith(prefix))))
+      keys.push(key);
   }
   for (const key of keys) storage.removeItem(key);
 }
