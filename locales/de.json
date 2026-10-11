@@ -1032,7 +1032,8 @@
     "OrderLegalHintEnd": ".",
     "RightOfWithdrawalLinkText": "Widerrufsbelehrung",
     "CancelContractsHere": "Verträge hier kündigen",
-    "WithdrawFromContract": "Vertrag widerrufen"
+    "WithdrawFromContract": "Vertrag widerrufen",
+    "CreateFreeAccount": "Kostenloses Konto anlegen"
   },
   "Success": {
     "RotateCalendarLink": "Neuer Abo-Link erstellt. Trage ihn in deiner Kalender-App ein.",
