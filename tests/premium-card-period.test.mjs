@@ -26,7 +26,7 @@ const code = ts.transpileModule(
 const PRICES = { MONTHLY: 1000, YEARLY: 10000 };
 
 /** The Premium card as the page shows it in one state, as text and as markup. */
-async function card({ language, yearly, balance, premium, daily }) {
+async function card({ language, yearly, balance, premium, daily, guest = false }) {
   const sentence = (key, named = {}) =>
     key
       .split(".")
@@ -75,10 +75,10 @@ async function card({ language, yearly, balance, premium, daily }) {
               : () => {},
   });
   new Function("environment", `with (environment) { ${code} }`)(environment);
-  const app = Vue.createSSRApp({ render: () => Vue.h(exports.default, { yearly }) });
+  const app = Vue.createSSRApp({ render: () => Vue.h(exports.default, { yearly, guest }) });
   // The price stands in for itself, so it shows where a price is said.
   app.component("Price", (props) => Vue.h("span", `[price of ${props.coins}]`));
-  app.component("NuxtLink", (props, { slots }) => Vue.h("a", slots.default?.()));
+  app.component("NuxtLink", (props, { slots }) => Vue.h("a", { to: props.to }, slots.default?.()));
   app.component("Tooltip", (props, { slots }) => Vue.h("span", slots.default?.()));
   const html = await renderToString(app);
   const markup = html.slice(html.indexOf('id="premium"'));
@@ -90,7 +90,7 @@ async function card({ language, yearly, balance, premium, daily }) {
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean);
-  return { markup, lines: text(markup), text };
+  return { markup, lines: text(markup), text, all: text(html) };
 }
 
 const WORDS = { de: /monat|jahr|jährlich/i, "en-US": /month|year/i };
@@ -135,6 +135,38 @@ test("the Premium card names the period of its price once, right above the price
             states++;
           }
   assert.equal(states, 48);
+});
+
+test("a visitor without an account sees the price of each plan and the way to a free account", async () => {
+  for (const language of ["de", "en-US"])
+    for (const yearly of [false, true])
+      for (const daily of [false, true]) {
+        const state = { language, yearly, balance: 0, premium: undefined, daily, guest: true };
+        const where = JSON.stringify(state);
+        const { markup, lines, text, all } = await card(state);
+        const { Body, Headings, Links } = locales[language];
+        // Both plans stand there with what they say, and the Premium card with its price.
+        assert(all.includes(Headings.Free) && lines.includes(Headings.Premium), where);
+        assert(lines.includes(`[price of ${yearly ? PRICES.YEARLY : PRICES.MONTHLY}]`), where);
+        // Where an account finds the button to buy, the visitor finds the way to an account.
+        const links = markup.match(/<a[^>]*>.*?<\/a>/gs) ?? [];
+        assert.equal(links.length, 1, where);
+        assert.match(links[0], /^<a[^>]* to="\/auth\/signup"/, where);
+        assert.deepEqual(text(links[0]), [Links.CreateFreeAccount], where);
+        assert.equal((markup.match(/<button/g) ?? []).length, 0, where);
+        const price = lines.findIndex((line) => line.startsWith("[price of "));
+        assert.equal(lines[price + 1], Links.CreateFreeAccount, where);
+        // Nothing speaks of a coin balance, and no plan is marked as the visitor's.
+        assert(!all.includes(Body.NotEnoughMorphcoins) && !all.includes(Headings.BuyMorphcoins));
+        assert(!all.includes(Body.CurrentPlan), where);
+      }
+  // With an account the card is as before: its plan is marked, and no link leads to the sign-up.
+  for (const language of ["de", "en-US"]) {
+    const { markup, all } = await card({ language, yearly: false, balance: 0, daily: false });
+    assert(all.includes(locales[language].Body.CurrentPlan), language);
+    assert(!all.includes(locales[language].Links.CreateFreeAccount), language);
+    assert(!markup.includes('to="/auth/signup"'), language);
+  }
 });
 
 test("the period reads as one purchase, not as a subscription", () => {

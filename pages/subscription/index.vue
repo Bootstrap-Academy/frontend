@@ -89,8 +89,14 @@
       <p v-if="isDaily && !planPricesKnown" role="status" class="mx-auto max-w-md text-center">
         {{ t("Error.PremiumStatusUnavailable") }}
       </p>
+      <!--
+        A visitor without an account sees both plans with their prices. What only an
+        account has (its Premium state, its hearts, its coins) is neither loaded nor
+        reported as missing.
+      -->
       <SubscriptionCard
-        v-else-if="policyKnown"
+        v-else-if="policyKnown || guest"
+        :guest="guest"
         :subscribeMonthly="() => subscribe(false)"
         :subscribeYearly="() => subscribe(true)"
         :yearly="selectedButton === 1"
@@ -194,7 +200,11 @@
         </OrderSummary>
       </section>
 
-      <div v-if="!premiumStatusKnown && !premiumBusy" class="mt-4 text-center" role="alert">
+      <div
+        v-if="!guest && !premiumStatusKnown && !premiumBusy"
+        class="mt-4 text-center"
+        role="alert"
+      >
         <p class="text-error">{{ t("Error.PremiumStatusUnavailable") }}</p>
         <Btn secondary class="mx-auto mt-3" @click="refreshPremiumStatus">
           {{ t("Buttons.TryAgain") }}
@@ -274,6 +284,9 @@ export default {
     const premiumBusy = ref(false);
     const user = useUser();
     const session = useSession();
+    // Without a session the page is a price list: the layout tells guests the same way.
+    const accessToken = useAccessToken();
+    const guest = computed(() => !accessToken.value);
     const renewalOrder = ref<any>(null);
     const renewalAccepted = ref(false);
     const renewalWithdrawalConsent = ref(false);
@@ -300,7 +313,8 @@ export default {
         loadCoinConfig(),
         loadHeartConfig(),
         getPremiumPlans(),
-        refreshPremiumStatus(),
+        // The Premium state belongs to an account; a guest has none to load.
+        ...(guest.value ? [] : [refreshPremiumStatus()]),
       ]);
     });
 
@@ -627,6 +641,7 @@ export default {
     );
 
     return {
+      guest,
       refillBoxShown,
       isDaily,
       showHearts,

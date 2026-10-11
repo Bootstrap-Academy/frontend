@@ -217,7 +217,10 @@ test("on the Premium page two ways to buy Morphcoins carry two labels", async ()
   assert.equal(toShop.length, 1);
   assert.match(toShop[0].node.loc.source, /\{\{ t\("Links\.BuyMorphcoinsForHearts"\) \}\}/);
   const { premium, inside } = await cards();
-  const toOrder = inside(premium).filter((node) => node.tag === "NuxtLink");
+  // The card has one more link, for a visitor without an account; it leads to the sign-up.
+  const toOrder = inside(premium).filter(
+    (node) => node.tag === "NuxtLink" && bound(node, "to") === "coinOrder"
+  );
   assert.equal(toOrder.length, 1);
   assert(toOrder[0].loc.source.includes('t("Headings.BuyMorphcoins")'));
   for (const language of ["de", "en-US"]) {
