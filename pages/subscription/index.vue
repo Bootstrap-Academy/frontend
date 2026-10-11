@@ -34,7 +34,7 @@
               :to="{ path: '/morphcoins/buy', query: { for: 'hearts' } }"
               class="inline-flex min-h-11 items-center text-accent underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              {{ t("Headings.BuyMorphcoins") }}
+              {{ t("Links.BuyMorphcoinsForHearts") }}
             </NuxtLink>
           </div>
           <div v-else>

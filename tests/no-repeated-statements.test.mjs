@@ -208,3 +208,21 @@ test("the Premium page names the time of the free refill once", async () => {
     assert(Body.UnlimitedHeartsTooltip.startsWith(Body.WrongAnswerCostsOneHeart), language);
   }
 });
+
+test("on the Premium page two ways to buy Morphcoins carry two labels", async () => {
+  const page = elements(await template("pages/subscription/index.vue"));
+  const toShop = page.filter(
+    ({ node }) => node.tag === "NuxtLink" && (bound(node, "to") ?? "").includes("/morphcoins/buy")
+  );
+  assert.equal(toShop.length, 1);
+  assert.match(toShop[0].node.loc.source, /\{\{ t\("Links\.BuyMorphcoinsForHearts"\) \}\}/);
+  const { premium, inside } = await cards();
+  const toOrder = inside(premium).filter((node) => node.tag === "NuxtLink");
+  assert.equal(toOrder.length, 1);
+  assert(toOrder[0].loc.source.includes('t("Headings.BuyMorphcoins")'));
+  for (const language of ["de", "en-US"]) {
+    const texts = JSON.parse(await read(`locales/${language}.json`));
+    assert.notEqual(texts.Links.BuyMorphcoinsForHearts, texts.Headings.BuyMorphcoins, language);
+    assert.match(texts.Links.BuyMorphcoinsForHearts, /Herzen|hearts/);
+  }
+});
