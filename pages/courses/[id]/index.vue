@@ -18,7 +18,7 @@
 
       <aside class="course-action">
         <section v-if="guest" class="card grid gap-4 bg-secondary style-card">
-          <p>{{ copy.accountNeeded }}</p>
+          <p>{{ accountSentence }}</p>
           <NuxtLink to="/auth/signup" class="account-link">{{ guestText.signup }}</NuxtLink>
           <NuxtLink
             :to="{ path: '/auth/login', query: { redirect: route.fullPath } }"
@@ -135,6 +135,13 @@ const { copy, localized, localizeCourse } = useCourseExperienceCopy();
 const guestText = computed(() => guestCopy(locale.value));
 const token = useAccessToken();
 const guest = computed(() => !token.value);
+// What the box says to a visitor without an account. A course with a price says that it
+// costs something; the amount and the purchase stay behind the login.
+const accountSentence = computed(() =>
+  (course.value?.price ?? 0) > 0
+    ? `${copy.value.accountNeeded} ${copy.value.paidCourse}`
+    : copy.value.accountNeeded
+);
 const user = useUser();
 const session: Ref<SessionIdentity | null> = useSession();
 const originalCourse = ref<Course | null>(null);

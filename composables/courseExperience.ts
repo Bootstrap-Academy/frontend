@@ -55,6 +55,7 @@ const messages = {
     saved: "Gespeichert",
     inProgress: "Angefangen",
     accountNeeded: "Zum Lernen brauchst du ein Konto.",
+    paidCourse: "Dieser Kurs ist kostenpflichtig.",
   },
   en: {
     back: "Back to overview",
@@ -108,6 +109,7 @@ const messages = {
     saved: "Saved",
     inProgress: "In progress",
     accountNeeded: "You need an account to learn.",
+    paidCourse: "This is a paid course.",
   },
 };
 

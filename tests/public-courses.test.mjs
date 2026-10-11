@@ -96,6 +96,15 @@ async function coursePage({ token, answer, locale = "de" }) {
     head: Object.fromEntries(Object.entries(head).map(([key, value]) => [key, value()])),
     links: links.map((node) => ({ to: node.props.to, says: h.text(node).trim() })),
     overview: h.all().find((node) => node.type === "CourseOverview"),
+    // The line above the title, and what the box for a visitor without an account says.
+    eyebrow: h
+      .all()
+      .filter((node) => node.props.class === "eyebrow")
+      .map((node) => h.text(node).trim()),
+    box: h
+      .all()
+      .filter((node) => node.type === "p" && node.parent?.parent?.type === "aside")
+      .map((node) => h.text(node).trim()),
     lessons: h.all().filter((node) => node.type === "button" && node.parent?.type === "li"),
   };
 }
@@ -137,9 +146,46 @@ test("without an account the course page shows the course and the way to an acco
   }
 });
 
+test("a course with a price says so to a visitor without an account, and names no amount", async () => {
+  for (const [locale, account, costs] of [
+    ["de", "Zum Lernen brauchst du ein Konto.", "Dieser Kurs ist kostenpflichtig."],
+    ["en-US", "You need an account to learn.", "This is a paid course."],
+  ]) {
+    const priced = await coursePage({ token: "", answer: () => paid, locale });
+    assert.deepEqual(priced.box, [`${account} ${costs}`], locale);
+    // Neither the amount nor a currency nor a way to buy: the buttons are the same two.
+    assert(!/500|coin|€|EUR|freischalten|unlock|premium/i.test(priced.h.text()), locale);
+    assert.deepEqual(
+      priced.links.slice(1).map((link) => link.to.path ?? link.to),
+      ["/auth/signup", "/auth/login"],
+      locale
+    );
+    // A course without a price, or with none given, keeps the box as it was.
+    for (const price of [0, undefined, null]) {
+      const free = await coursePage({ token: "", answer: () => ({ ...paid, price }), locale });
+      assert.deepEqual(free.box, [account], `${locale} ${price}`);
+      assert(!free.h.text().includes(costs), `${locale} ${price}`);
+    }
+    // With an account the page does not say it: there it shows the price itself.
+    const locked = await coursePage({
+      token: "token-a",
+      locale,
+      answer: (path) => {
+        if (path.endsWith("/summary")) return paid;
+        throw { statusCode: 403 };
+      },
+    });
+    assert.deepEqual(locked.box, [], locale);
+    assert(!locked.h.text().includes(costs), locale);
+    assert.equal(locked.overview.props.data.price, 500, locale);
+  }
+});
+
 test("with an account the course page asks and shows what it did before", async () => {
   // A course the account may open: the full course, then the box with progress and start.
   const owned = await coursePage({ token: "token-a", answer: () => paid });
+  assert.deepEqual(owned.eyebrow, ["Dein Lernweg"]);
+  assert.deepEqual(owned.box, []);
   assert.deepEqual(owned.calls, ["/skills/courses/nmap"]);
   assert.equal(owned.overview.props["is-course-accessible"], true);
   assert.equal(owned.overview.props.data.title, paid.title);
@@ -161,6 +207,9 @@ test("with an account the course page asks and shows what it did before", async 
   assert.equal(locked.overview.props["is-course-accessible"], false);
   assert.equal(locked.overview.props.data.price, 500);
   assert(!locked.h.text().includes("Zum Lernen brauchst du ein Konto."));
+  assert.deepEqual(locked.eyebrow, ["Dein Lernweg"]);
+  const english = await coursePage({ token: "token-a", answer: () => paid, locale: "en-US" });
+  assert.deepEqual(english.eyebrow, ["Your learning path"]);
 });
 
 test("a course page is titled and described by its course", async () => {
