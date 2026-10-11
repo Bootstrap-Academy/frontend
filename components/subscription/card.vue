@@ -90,7 +90,10 @@
 
           <!--
             Without enough Morphcoins the price is plain text, and the button
-            below leads straight to the order of the missing coins.
+            below leads straight to the order of the missing coins. It is filled
+            with the colour of the page and labelled in the accent colour, the
+            main button of the dark pages the other way round: the interface
+            has no white surfaces.
           -->
           <template v-else>
             <div
@@ -104,7 +107,7 @@
             </p>
             <NuxtLink
               :to="coinOrder"
-              class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-white bg-white px-6 py-3 text-center text-black shadow-lg duration-200 hover:scale-105 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
+              class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-center text-accent shadow-lg duration-200 hover:scale-105 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <span class="font-bold">{{ t("Headings.BuyMorphcoins") }}</span>
               <Price :coins="missingCoins" class="justify-center text-sm" />
