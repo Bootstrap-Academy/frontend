@@ -4,7 +4,7 @@
       <h1 class="text-heading-1 font-bold">{{ t(`PaypalRecovery.${checkout.phase}Title`) }}</h1>
       <p>{{ t(`PaypalRecovery.${checkout.phase}Body`) }}</p>
       <details>
-        <summary class="cursor-pointer">{{ t("PaypalRecovery.Order") }}</summary>
+        <summary class="cursor-pointer text-body">{{ t("PaypalRecovery.Order") }}</summary>
         <p class="break-all">{{ checkout.orderId }}</p>
       </details>
       <p v-if="checkout.phase === 'complete'">
@@ -22,7 +22,11 @@
         <Btn :disabled="busy" @click="dismiss(checkout.orderId, 'approval')">{{
           t("Buttons.Cancel")
         }}</Btn>
-        <div ref="paypal"></div>
+        <!-- What PayPal draws is made for a light ground; see the coin order page. -->
+        <div
+          ref="paypal"
+          class="max-w-md rounded-md bg-white p-4 empty:bg-transparent empty:p-0"
+        ></div>
         <p v-if="sdkError" role="alert">{{ t("PaypalRecovery.BeforeCaptureError") }}</p>
       </template>
       <Btn v-if="checkout.phase === 'complete' && !coordinationUnavailable" @click="finish">{{

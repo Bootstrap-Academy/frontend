@@ -1,5 +1,15 @@
 <template>
-  <main class="h-screen-inner container w-full overflow-scroll bg-white pt-container pb-container">
+  <!--
+    The page is dark like every other page. Only what PayPal draws keeps the light ground
+    this page had from its first version: see the container of its buttons below.
+
+    It is also the one page that scrolls inside its `main`. Firefox draws the scrollbar of
+    such an area light unless it is told the colours. The other browsers keep the thin bar
+    of the stylesheet, so the colours are given to Firefox alone.
+  -->
+  <main
+    class="h-screen-inner container w-full overflow-scroll pt-container pb-container supports-[-moz-appearance:none]:[scrollbar-color:var(--color-tertiary)_var(--color-primary)]"
+  >
     <PaypalCheckoutStatus v-if="showRecovery" />
     <template v-else>
       <p v-if="sdkError" role="alert">{{ t("PaypalRecovery.BeforeCaptureError") }}</p>
@@ -7,7 +17,7 @@
         The amount and its price stand once on this page: in the order summary
         right above the order button, where § 312j Abs. 2 BGB asks for them.
       -->
-      <h1 class="text-heading-1 text-black mb-card">{{ t("Headings.BuyMorphcoins") }}</h1>
+      <h1 class="text-heading-1 text-heading mb-card">{{ t("Headings.BuyMorphcoins") }}</h1>
 
       <p
         v-if="!validAmount"
@@ -25,12 +35,12 @@
       <template v-else>
         <article class="mb-card">
           <h2
-            class="text-heading-2 mb-2 flex flex-wrap items-center font-black text-black gap-card"
+            class="text-heading-2 mb-2 flex flex-wrap items-center font-black text-heading gap-card"
           >
             {{ t("Headings.YourProfileInformation") }}
 
             <NuxtLink :to="`/profile/edit?coins=${coinsToBuy}`">
-              <Btn>{{ t("Buttons.EditProfile") }}</Btn>
+              <Btn secondary>{{ t("Buttons.EditProfile") }}</Btn>
             </NuxtLink>
           </h2>
 
@@ -79,13 +89,13 @@
             class="grid max-w-md gap-box mt-card mb-card"
             @submit.prevent
           >
-            <label for="order-country" class="text-body-1 text-black">
+            <label for="order-country" class="text-body-1 text-heading">
               {{ t("Body.CountryForInvoice") }}
             </label>
             <select
               id="order-country"
               v-model="countryChoice"
-              class="block w-full rounded-md bg-white px-4 py-3 text-base text-primary ring-2 ring-primary focus:outline-none focus:ring-offset-2"
+              class="block w-full rounded-md bg-secondary px-4 py-3 text-base text-white ring-2 ring-tertiary focus:outline-none focus:ring-accent focus:ring-offset-2 focus:ring-offset-tertiary"
             >
               <option v-for="option of countryOptions" :key="option.value" :value="option.value">
                 {{ option.label }}
@@ -95,7 +105,6 @@
             <Input
               v-if="!countryChoice"
               v-model="otherCountry"
-              light
               label="Inputs.Country"
               :rules="countryRules"
               :show-error="countryAttempted"
@@ -116,7 +125,7 @@
 
           <div v-if="profileLoaded" class="flex gap-box">
             <h3 class="text-body-1 text-body">{{ t("Headings.UserType") }}:</h3>
-            <p class="text-body-1 text-black">
+            <p class="text-body-1 text-heading">
               {{ t(user?.business ? "Headings.Business" : "Headings.Person") }}
             </p>
           </div>
@@ -124,7 +133,7 @@
           <template v-if="profileLoaded && user?.business">
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.FirstName") }}:</h3>
-              <p v-if="user && user.first_name" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.first_name" class="text-body-1 m-0 text-heading">
                 {{ user.first_name }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -134,7 +143,7 @@
 
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.LastName") }}:</h3>
-              <p v-if="user && user.last_name" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.last_name" class="text-body-1 m-0 text-heading">
                 {{ user.last_name }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -144,7 +153,7 @@
 
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Street") }}:</h3>
-              <p v-if="user && user.street" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.street" class="text-body-1 m-0 text-heading">
                 {{ user.street }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -154,7 +163,7 @@
 
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.ZipCode") }}:</h3>
-              <p v-if="user && user.zip_code" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.zip_code" class="text-body-1 m-0 text-heading">
                 {{ user.zip_code }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -164,7 +173,7 @@
 
             <div class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.VAT_ID") }}:</h3>
-              <p v-if="user && user.vat_id" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.vat_id" class="text-body-1 m-0 text-heading">
                 {{ user.vat_id }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -176,7 +185,7 @@
           <template v-else-if="profileLoaded">
             <div v-if="!needsCountry" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">{{ t("Inputs.Country") }}:</h3>
-              <p v-if="user && user.country" class="text-body-1 m-0 text-black">
+              <p v-if="user && user.country" class="text-body-1 m-0 text-heading">
                 {{ user.country }}
               </p>
               <p v-else class="text-body-1 m-0 text-error">
@@ -194,7 +203,12 @@
               <h3 class="text-body-1 m-0 text-body">
                 {{ t("Inputs.EmailAddress") }}
               </h3>
-              <p v-if="user?.email" class="text-body-1 m-0 text-black">{{ user.email }}</p>
+              <p
+                v-if="user?.email"
+                class="text-body-1 m-0 min-w-0 text-heading [overflow-wrap:anywhere]"
+              >
+                {{ user.email }}
+              </p>
               <p v-else class="text-body-1 m-0 text-error">
                 {{ t("Headings.Missing") }}
               </p>
@@ -250,10 +264,19 @@
         </article>
 
         <article v-if="ordered" class="mb-card">
-          <h2 class="text-heading-2 mb-4 font-black text-black">
+          <h2 class="text-heading-2 mb-4 font-black text-heading">
             {{ t("Headings.PurchaseMorphcoins") }}
           </h2>
-          <div id="paypal-button-container" ref="paypal" class="w-full max-w-md"></div>
+          <!--
+            PayPal draws its buttons, its tagline and its card form for a light ground: on
+            the dark page the card button and the tagline all but disappear. So the
+            container is light, once PayPal has drawn into it.
+          -->
+          <div
+            id="paypal-button-container"
+            ref="paypal"
+            class="w-full max-w-md rounded-md bg-white p-4 empty:bg-transparent empty:p-0"
+          ></div>
         </article>
       </template>
     </template>

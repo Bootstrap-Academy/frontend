@@ -182,28 +182,91 @@ function contrast(a, b) {
   return (light + 0.05) / (dark + 0.05);
 }
 
-test("the heading of the coin order is as readable as the text around it", async () => {
+test("the coin order page is dark, and only what PayPal draws stands on a light ground", async () => {
   const css = await read("assets/css/tailwind.css");
   const colour = (name) => css.match(new RegExp(`--color-${name}: (#[0-9a-f]{6});`))[1];
-  const all = elements((await template("pages/morphcoins/paypal.vue")).ast);
+  const page = await template("pages/morphcoins/paypal.vue");
+  const all = elements(page.ast);
+  // The page takes the ground of every other page: nothing of its own is light.
+  const light = (node) => /(^|\s)bg-white(\s|$)/.test(attribute(node, "class") ?? "");
   const main = all.find(({ node }) => node.tag === "main").node;
-  assert.match(
-    attribute(main, "class"),
-    /\bbg-white\b/,
-    "the page is white in every colour scheme"
+  assert(!light(main));
+  // The page scrolls inside `main`. Firefox is told the colours of that scrollbar, or it
+  // draws a light one; no other browser is, so the thin bar of the stylesheet stays.
+  assert(
+    attribute(main, "class")
+      .split(/\s+/)
+      .includes(
+        "supports-[-moz-appearance:none]:[scrollbar-color:var(--color-tertiary)_var(--color-primary)]"
+      )
   );
-  const headings = all.filter(({ node }) => node.tag === "h1").map(({ node }) => node);
-  assert.equal(headings.length, 1, "one heading");
-  for (const node of headings) {
-    const classes = attribute(node, "class").split(/\s+/);
-    const text = classes.filter((c) =>
-      /^text-(black|body|subheading|heading|white|accent)$/.test(c)
+  assert(!page.content.includes("text-black"), "no text written for a light ground");
+  assert(
+    !all.some(({ node }) => node.tag === "Input" && node.props.some((p) => p.name === "light"))
+  );
+  // The one light surface is the container PayPal draws into, and only once it has drawn.
+  const surfaces = all.filter(({ node }) => light(node)).map(({ node }) => node);
+  assert.deepEqual(
+    surfaces.map((node) => attribute(node, "id")),
+    ["paypal-button-container"]
+  );
+  assert.match(attribute(surfaces[0], "class"), /(^|\s)empty:bg-transparent(\s|$)/);
+  // The same holds where a payment is taken up again.
+  const resumed = elements((await template("components/PaypalCheckoutStatus.vue")).ast)
+    .map(({ node }) => node)
+    .filter(light);
+  assert.equal(resumed.length, 1);
+  assert.equal(attribute(resumed[0], "ref"), "paypal");
+  assert.match(attribute(resumed[0], "class"), /(^|\s)empty:bg-transparent(\s|$)/);
+  // Headings and values are written in the heading colour, labels in the body colour.
+  const headings = all.filter(({ node }) => /^h[12]$/.test(node.tag)).map(({ node }) => node);
+  assert(headings.length >= 3);
+  for (const node of headings)
+    assert.match(
+      attribute(node, "class"),
+      /(^|\s)text-heading(\s|$)/,
+      node.loc.source.split("\n")[0]
     );
-    assert.deepEqual(text, ["text-black"], node.loc.source.split("\n")[0]);
-  }
-  // The colour the page uses for its running text, and the one the heading had before.
-  assert(contrast(colour("black"), colour("white")) >= 7);
-  assert(contrast(colour("subheading"), colour("white")) < 3);
+  assert(contrast(colour("heading"), colour("primary")) >= 7);
+  assert(contrast(colour("body"), colour("primary")) >= 4.5);
+  assert(contrast(colour("body"), colour("secondary")) >= 4.5);
+});
+
+test("every line of a payment taken up again has a colour for the dark ground", async () => {
+  // The stylesheet colours paragraphs and headings. Anything else would be written in the
+  // black of the browser, which the dark ground swallows.
+  const all = elements((await template("components/PaypalCheckoutStatus.vue")).ast);
+  // A `NuxtLink` renders a link, which the stylesheet colours as well.
+  const coloured = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "ol", "a", "NuxtLink"]);
+  const writes = (node) =>
+    node.children.some((child) => child.type === 5 || (child.type === 2 && child.content.trim()));
+  const bare = all
+    .map(({ node }) => node)
+    .filter((node) => writes(node) && !coloured.has(node.tag) && node.tag !== "Btn")
+    .filter(
+      (node) =>
+        !/(^|\s)text-(body|heading|subheading|accent)(\s|$)/.test(attribute(node, "class") ?? "")
+    );
+  assert.deepEqual(
+    bare.map((node) => node.loc.source.split("\n")[0]),
+    []
+  );
+});
+
+test("a long e-mail address wraps in the profile block of the coin order page", async () => {
+  const all = elements((await template("pages/morphcoins/paypal.vue")).ast);
+  const address = all.filter(
+    ({ node }) => node.tag === "p" && node.loc.source.includes("user.email }}")
+  );
+  assert.equal(address.length, 1);
+  const classes = attribute(address[0].node, "class").split(/\s+/);
+  // In a row of two the address may shrink. It breaks where it has a place to break at,
+  // and anywhere only when a part of it is longer than the line.
+  assert(
+    classes.includes("min-w-0") && classes.includes("[overflow-wrap:anywhere]"),
+    classes.join(" ")
+  );
+  assert(!classes.includes("break-all"), "no break in the middle of a word without need");
 });
 
 test("links of the legal pages are underlined along their text, on every line they run over", async () => {
