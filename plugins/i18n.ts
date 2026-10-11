@@ -23,6 +23,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
 
   vueApp.use(i18n);
   const route = useRoute();
+  const error = useError();
   const web = String(useRuntimeConfig().public.BASE_WEB_URL || "");
   // The legal pages are named in the tab and in a search result as in the footer.
   const legal: [RegExp, string][] = [
@@ -34,7 +35,8 @@ export default defineNuxtPlugin(({ vueApp }) => {
   useHead(() => {
     const key = legal.find(([pattern]) => pattern.test(route.path))?.[1];
     // One address per page, in the form with a trailing slash, without query and anchor.
-    const url = web ? canonicalUrl(web, route.path) : "";
+    // The error page stands for no address, so it names none.
+    const url = web && !error.value ? canonicalUrl(web, route.path) : "";
     return {
       htmlAttrs: { lang: i18n.global.locale.value === "en-US" ? "en" : "de" },
       // The built HTML carries the title of the start page. A page that names none of its

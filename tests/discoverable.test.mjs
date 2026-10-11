@@ -6,7 +6,9 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { tmpdir } from "node:os";
-import { evaluate } from "./helpers/mounted-page.mjs";
+import * as Vue from "vue";
+import * as vueI18n from "vue-i18n";
+import { component, evaluate } from "./helpers/mounted-page.mjs";
 
 const read = (file) => readFile(new URL(`../${file}`, import.meta.url), "utf8");
 const head = await evaluate("utils/siteHead.ts", {});
@@ -58,6 +60,26 @@ function site(web) {
   };
 }
 const tag = (html, pattern) => html.match(pattern)?.[1];
+
+const locales = {
+  "../locales/de.json": JSON.parse(await read("locales/de.json")),
+  "../locales/en-US.json": JSON.parse(await read("locales/en-US.json")),
+};
+/** What the app itself puts into the head of every page, for one address. */
+async function appHead({ path: address, web = "https://academy.example", locale, error = null }) {
+  let entry;
+  const plugin = await evaluate("plugins/i18n.ts", {
+    require: (name) => ({ "vue-i18n": vueI18n, "~/utils/siteHead": head, ...locales })[name],
+    defineNuxtPlugin: (setup) => setup,
+    useAppCookie: () => ({ value: locale }),
+    useRoute: () => ({ path: address }),
+    useError: () => Vue.ref(error),
+    useRuntimeConfig: () => ({ public: { BASE_WEB_URL: web } }),
+    useHead: (given) => (entry = given),
+  });
+  plugin.default({ vueApp: { use() {} } });
+  return entry();
+}
 
 test("the texts of the start page and of the guest exercise are the approved ones", () => {
   assert.deepEqual(head.siteHead.de.home, {
@@ -266,14 +288,37 @@ test("each page names one address for itself, and pages are called by what they 
     "https://academy.example/start/"
   );
   assert.equal(head.pageTitle("Kurse"), "Kurse · Bootstrap Academy");
-  const plugin = await read("plugins/i18n.ts");
   // The address comes from the route, at runtime, for every page.
-  assert.match(plugin, /const url = web \? canonicalUrl\(web, route\.path\) : "";/);
-  assert.match(plugin, /link: url \? \[\{ rel: "canonical", href: url \}\] : \[\]/);
-  assert.match(plugin, /meta: url \? \[\{ property: "og:url", content: url \}\] : \[\]/);
+  const python = await appHead({ path: "/courses/python" });
+  assert.deepEqual(python.link, [
+    { rel: "canonical", href: "https://academy.example/courses/python/" },
+  ]);
+  assert.deepEqual(python.meta, [
+    { property: "og:url", content: "https://academy.example/courses/python/" },
+  ]);
+  assert.equal(python.title, "Bootstrap Academy");
+  assert.equal(python.htmlAttrs.lang, "de");
+  assert.deepEqual((await appHead({ path: "/start/", web: "" })).link, []);
   // The legal pages take their names from the footer. Their own files are not touched.
-  for (const key of ["Privacy", "Imprint", "TermsAndConditions", "RightOfWithdrawal"])
-    assert(plugin.includes(`"Links.${key}"`), key);
+  const names = (locale) => locales[`../locales/${locale}.json`].Links;
+  for (const [address, key] of [
+    ["/docs/privacy", "Privacy"],
+    ["/docs/imprint/", "Imprint"],
+    ["/docs/terms-and-conditions", "TermsAndConditions"],
+    ["/docs/terms-and-conditions-2026-09-r2", "TermsAndConditions"],
+    ["/docs/right-of-withdrawal", "RightOfWithdrawal"],
+  ]) {
+    assert.equal(
+      (await appHead({ path: address })).title,
+      `${names("de")[key]} · Bootstrap Academy`,
+      address
+    );
+    const inEnglish = await appHead({ path: address, locale: "en-US" });
+    assert.equal(inEnglish.title, `${names("en-US")[key]} · Bootstrap Academy`, address);
+    assert.equal(inEnglish.htmlAttrs.lang, "en");
+    assert.notEqual(names("de")[key], names("en-US")[key], key);
+  }
+  assert.equal(names("de").Imprint, "Impressum");
   // The start page and the guest exercise set title and description in the chosen language.
   for (const [file, page] of [
     ["pages/index.vue", "home"],
@@ -288,6 +333,37 @@ test("each page names one address for itself, and pages are called by what they 
   const tree = await read("pages/skill-tree/index.vue");
   assert.match(tree, /useHead\(\(\) => \(\{ title: pageTitle\(t\("Links\.SkillTree"\)\) \}\)\);/);
   assert(!/^\s+head: \{/m.test(tree));
+});
+
+test("an address without a page asks not to be indexed and names no address for itself", async () => {
+  // The error page: its own title, the request to stay out of the index, in both languages.
+  for (const [statusCode, key] of [
+    [404, "Body.PageNotFound"],
+    [500, "Body.UnexpectedError"],
+  ]) {
+    let entry;
+    const page = await component(
+      "error.vue",
+      { useHead: (given) => (entry = given) },
+      {
+        "vue-i18n": { useI18n: () => ({ t: (name) => `<${name}>` }) },
+        "~/utils/siteHead": head,
+      }
+    );
+    page.setup({ error: { statusCode } }, { expose() {} });
+    assert.deepEqual(entry(), {
+      title: `<${key}> · Bootstrap Academy`,
+      meta: [{ name: "robots", content: "noindex" }],
+    });
+  }
+  // While the error page is shown, the app names no address: the one in the address bar has
+  // no page. Before and after, every page names its own.
+  const failed = await appHead({ path: "/gibt-es-nicht", error: { statusCode: 404 } });
+  assert.deepEqual([failed.link, failed.meta], [[], []]);
+  assert.equal((await appHead({ path: "/gibt-es-nicht" })).link.length, 1);
+  // Only the error page asks for it. The pages that exist say nothing about indexing.
+  for (const file of ["pages/index.vue", "pages/start.vue", "pages/courses/index.vue"])
+    assert(!/noindex/.test(await read(file)), file);
 });
 
 test("a description for a search result is the beginning of the text, cut at a word", () => {

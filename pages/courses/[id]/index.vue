@@ -143,6 +143,8 @@ const learningPlan = ref<CourseLearningPlan | null>(null);
 const curriculum = ref<CourseCurriculum | null>(null);
 const loading = ref(true);
 const error = ref(false);
+// The API knows no course of this name.
+const missing = ref(false);
 const learningError = ref(false);
 const accessible = ref(false);
 const id = computed(() => String(route.params.id || ""));
@@ -165,6 +167,8 @@ useSeoMeta({
   ogTitle: () => (course.value ? pageTitle(course.value.title) : undefined),
   description: () => about.value,
   ogDescription: () => about.value,
+  // An address without a course must not end up in a search index.
+  robots: () => (missing.value ? "noindex" : undefined),
 });
 let generation = 0;
 let alive = true;
@@ -178,7 +182,7 @@ async function load() {
     expectedUser === user.value?.id &&
     expectedSession === session.value?.id;
   loading.value = true;
-  error.value = learningError.value = false;
+  error.value = learningError.value = missing.value = false;
   originalCourse.value = null;
   learningPlan.value = null;
   curriculum.value = null;
@@ -222,8 +226,11 @@ async function load() {
         if (current()) learningError.value = true;
       }
     }
-  } catch {
-    if (current()) error.value = true;
+  } catch (cause: any) {
+    if (current()) {
+      error.value = true;
+      missing.value = (cause?.response?.status || cause?.statusCode || cause?.status) === 404;
+    }
   } finally {
     if (current()) loading.value = false;
   }

@@ -173,6 +173,7 @@ test("a course page is titled and described by its course", async () => {
   );
   assert.equal(page.head.ogDescription, page.head.description);
   assert(page.head.description.length <= 155);
+  assert.equal(page.head.robots, undefined);
 
   // A course without a description keeps the description of the site, and a course that
   // could not be loaded keeps its title as well: nothing empty is written into the head.
@@ -190,7 +191,32 @@ test("a course page is titled and described by its course", async () => {
     ogTitle: undefined,
     description: undefined,
     ogDescription: undefined,
+    // The address of a course that does not exist asks to stay out of the search index.
+    robots: "noindex",
   });
+  // A course that could not be read for another reason may well exist: nothing is said.
+  for (const [token, statusCode] of [
+    ["", 503],
+    ["token-a", 503],
+    ["", undefined],
+  ]) {
+    const down = await coursePage({
+      token,
+      answer: () => {
+        throw { statusCode };
+      },
+    });
+    assert.equal(down.head.robots, undefined, `${token} ${statusCode}`);
+    assert.equal(down.head.title, undefined);
+  }
+  // With an account the same holds for an unknown course.
+  const unknown = await coursePage({
+    token: "token-a",
+    answer: () => {
+      throw { response: { status: 404 } };
+    },
+  });
+  assert.equal(unknown.head.robots, "noindex");
 });
 
 const catalogue = [
