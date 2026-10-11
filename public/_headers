@@ -1,7 +1,10 @@
 # Cloudflare Pages: only the canonical Academy hosts learn this short HSTS policy.
 # PR previews and pages.dev hosts remain outside these rules.
+# The test host is a second copy of the product. It tells search engines not to index it;
+# the rule names that host alone and does not reach the production host below.
 https://test.bootstrap.academy/*
   Strict-Transport-Security: max-age=300
+  X-Robots-Tag: noindex
 
 # Prepared for the next approved production release; keep the initial trial short.
 # Increase max-age only after HTTPS checks, without broadening the host scope.

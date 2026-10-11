@@ -1,0 +1,251 @@
+// What a search engine and a link preview get to read: the head of the built pages, the
+// address of each page, and the files a crawler asks for.
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { tmpdir } from "node:os";
+import { evaluate } from "./helpers/mounted-page.mjs";
+
+const read = (file) => readFile(new URL(`../${file}`, import.meta.url), "utf8");
+const head = await evaluate("utils/siteHead.ts", {});
+const built = await evaluate("modules/discoverable.ts", {
+  require: (name) =>
+    ({
+      "node:fs/promises": fs,
+      "node:path": path,
+      "nuxt/kit": { defineNuxtModule: (definition) => definition },
+      "../utils/siteHead": head,
+    })[name],
+});
+
+// The head of a built page as the framework writes it, shortened to what matters here.
+const shell = (config) =>
+  `<!DOCTYPE html><html${config.lang ? ` lang="${config.lang}"` : ""}><head><meta charset="utf-8">` +
+  `<title>${config.title}</title>` +
+  config.meta
+    .map((tag) =>
+      tag.property
+        ? `<meta property="${tag.property}" content="${tag.content}">`
+        : `<meta name="${tag.name}" content="${tag.content}">`
+    )
+    .join("") +
+  `</head><body><div id="__nuxt"></div></body></html>`;
+
+/** The module set up for a site at `web`, with what it registers and adds to the head. */
+function site(web) {
+  const hooks = {};
+  const prerender = {};
+  const nuxt = {
+    options: { runtimeConfig: { public: { BASE_WEB_URL: web } }, app: { head: { meta: [] } } },
+    hook: (name, run) => (hooks[name] = run),
+  };
+  built.default.setup({}, nuxt);
+  hooks["nitro:init"]({ hooks: { hook: (name, run) => (prerender[name] = run) } });
+  const config = nuxt.options.app.head;
+  return {
+    config: { ...config, lang: config.htmlAttrs?.lang },
+    hooks,
+    /** The HTML that is built for one address. */
+    page(route) {
+      const entry = { route, contents: shell({ ...config, lang: config.htmlAttrs?.lang }) };
+      prerender["prerender:generate"](entry);
+      return entry.contents;
+    },
+  };
+}
+const tag = (html, pattern) => html.match(pattern)?.[1];
+
+test("the texts of the start page and of the guest exercise are the approved ones", () => {
+  assert.deepEqual(head.siteHead.de.home, {
+    title: "Bootstrap Academy: Programmieren und IT online lernen",
+    description:
+      "Deutschsprachige Kurse zu Programmierung, Linux, IT-Sicherheit und Informatik. Die erste Übung startest du ohne Konto direkt im Browser.",
+  });
+  assert.deepEqual(head.siteHead.de.start, {
+    title: "Python-Schleifen ausprobieren, ohne Konto · Bootstrap Academy",
+    description:
+      "Bewege eine Figur mit Anweisungen und Wiederholungen ans Ziel und sieh, wie daraus eine Python-Schleife wird.",
+  });
+  // The English interface has its own, and none is left empty.
+  for (const page of ["home", "start"])
+    for (const part of ["title", "description"]) {
+      assert(head.siteHead.en[page][part].length > 20, `${page} ${part}`);
+      assert.notEqual(head.siteHead.en[page][part], head.siteHead.de[page][part]);
+    }
+});
+
+test("the built HTML is German, describes the site and carries the preview of a shared link", () => {
+  const { config } = site("https://academy.example");
+  const html = shell(config);
+  assert.match(html, /^<!DOCTYPE html><html lang="de">/);
+  assert.equal(tag(html, /<title>([^<]*)<\/title>/), head.siteHead.de.home.title);
+  // One description, by name. The earlier head lost it to a second tag with the same key.
+  assert.deepEqual(html.match(/<meta name="description" content="[^"]*">/g), [
+    `<meta name="description" content="${head.siteHead.de.home.description}">`,
+  ]);
+  assert(!html.includes('property="description"'));
+  const og = Object.fromEntries(
+    [...html.matchAll(/<meta property="(og:[a-z:_]+)" content="([^"]*)">/g)].map((m) => [
+      m[1],
+      m[2],
+    ])
+  );
+  assert.deepEqual(og, {
+    "og:type": "website",
+    "og:site_name": "Bootstrap Academy",
+    "og:locale": "de_DE",
+    "og:title": head.siteHead.de.home.title,
+    "og:description": head.siteHead.de.home.description,
+    "og:image": "https://academy.example/images/preview.png",
+    "og:image:width": "1200",
+    "og:image:height": "630",
+  });
+  assert.match(html, /<meta name="twitter:card" content="summary_large_image">/);
+  // The HTML of the start page answers every address that has no file of its own, so it
+  // names no address: neither a canonical one nor one for the preview.
+  assert(!html.includes('rel="canonical"') && !("og:url" in og));
+});
+
+test("no address of the site is written into the code: it comes from the runtime config", async () => {
+  for (const web of ["https://academy.example", "https://test.academy.example/"]) {
+    const origin = web.replace(/\/$/, "");
+    const { config, page } = site(web);
+    assert.equal(
+      config.meta.find((entry) => entry.property === "og:image").content,
+      `${origin}/images/preview.png`
+    );
+    assert.match(page("/start"), new RegExp(`<link rel="canonical" href="${origin}/start/">`));
+  }
+  // Without a usable address the build stops.
+  for (const web of ["", "http://academy.example", "https://academy.example/path"])
+    assert.throws(() => site(web), /BASE_WEB_URL/, web);
+  for (const file of [
+    "nuxt.config.ts",
+    "modules/discoverable.ts",
+    "utils/siteHead.ts",
+    "plugins/i18n.ts",
+    "pages/index.vue",
+    "pages/start.vue",
+  ]) {
+    const source = (await read(file)).replace(/BASE_(API|WEB)_URL: "[^"]*"/g, "");
+    assert(!/https?:\/\/(test\.|api\.|www\.)?bootstrap\.academy/.test(source), file);
+  }
+});
+
+test("the guest exercise has its own title, description and address in its built HTML", () => {
+  const { page, config } = site("https://academy.example");
+  const start = page("/start");
+  const { title, description } = head.siteHead.de.start;
+  assert.equal(tag(start, /<title>([^<]*)<\/title>/), title);
+  assert.equal(tag(start, /<meta name="description" content="([^"]*)">/), description);
+  assert.equal(tag(start, /<meta property="og:title" content="([^"]*)">/), title);
+  assert.equal(tag(start, /<meta property="og:description" content="([^"]*)">/), description);
+  assert.equal(
+    tag(start, /<link rel="canonical" href="([^"]*)">/),
+    "https://academy.example/start/"
+  );
+  assert.equal(
+    tag(start, /<meta property="og:url" content="([^"]*)">/),
+    "https://academy.example/start/"
+  );
+  // The image and the language stay those of the site.
+  assert.match(start, /<html lang="de">/);
+  assert.match(start, /og:image" content="https:\/\/academy\.example\/images\/preview\.png"/);
+  // Every other address keeps the HTML of the start page, untouched.
+  for (const route of ["/", "/auth/login", "/docs/imprint", "/200.html"])
+    assert.equal(page(route), shell(config), route);
+});
+
+test("a head that lost its expected shape stops the build", () => {
+  const own = { title: 'A "quoted" <title> & more', description: "d" };
+  const ok = shell({ title: "t", meta: site("https://academy.example").config.meta });
+  const html = built.withHead(ok, own, "https://academy.example/x/");
+  assert.match(html, /<title>A &quot;quoted&quot; &lt;title> &amp; more<\/title>/);
+  assert.equal((html.match(/<title>/g) ?? []).length, 1);
+  for (const broken of [
+    ok.replace(/<title>[^<]*<\/title>/, ""),
+    ok.replace(/<meta name="description"[^>]*>/, ""),
+    ok.replace(/(<meta property="og:title"[^>]*>)/, "$1$1"),
+  ])
+    assert.throws(() => built.withHead(broken, own, "https://academy.example/x/"), /Built HTML/);
+});
+
+test("crawlers are let in by a robots.txt that the build writes", async (t) => {
+  const { hooks } = site("https://academy.example");
+  const directory = await mkdtemp(path.join(tmpdir(), "academy-discoverable-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  await hooks["nitro:build:public-assets"]({ options: { output: { publicDir: directory } } });
+  const robots = await readFile(path.join(directory, "robots.txt"), "utf8");
+  assert.deepEqual(robots.split("\n").slice(0, 2), ["User-agent: *", "Allow: /"]);
+  assert(!/Disallow/i.test(robots));
+});
+
+test("each page names one address for itself, and pages are called by what they are", async () => {
+  assert.equal(head.canonicalUrl("https://academy.example", "/"), "https://academy.example/");
+  assert.equal(
+    head.canonicalUrl("https://academy.example/", "/courses/python"),
+    "https://academy.example/courses/python/"
+  );
+  assert.equal(
+    head.canonicalUrl("https://academy.example", "/start/?from=mail#top"),
+    "https://academy.example/start/"
+  );
+  assert.equal(head.pageTitle("Kurse"), "Kurse · Bootstrap Academy");
+  const plugin = await read("plugins/i18n.ts");
+  // The address comes from the route, at runtime, for every page.
+  assert.match(plugin, /const url = web \? canonicalUrl\(web, route\.path\) : "";/);
+  assert.match(plugin, /link: url \? \[\{ rel: "canonical", href: url \}\] : \[\]/);
+  assert.match(plugin, /meta: url \? \[\{ property: "og:url", content: url \}\] : \[\]/);
+  // The legal pages take their names from the footer. Their own files are not touched.
+  for (const key of ["Privacy", "Imprint", "TermsAndConditions", "RightOfWithdrawal"])
+    assert(plugin.includes(`"Links.${key}"`), key);
+  // The start page and the guest exercise set title and description in the chosen language.
+  for (const [file, page] of [
+    ["pages/index.vue", "home"],
+    ["pages/start.vue", "start"],
+  ]) {
+    const source = await read(file);
+    assert(source.includes(`siteHead[locale.value.startsWith("en") ? "en" : "de"].${page}`), file);
+    for (const part of ["title", "ogTitle", "description", "ogDescription"])
+      assert(new RegExp(`${part}: \\(\\) => head\\.value\\.`).test(source), `${file} ${part}`);
+  }
+  // The skill tree is called by its name. The option `head` of a component has no effect here.
+  const tree = await read("pages/skill-tree/index.vue");
+  assert.match(tree, /useHead\(\(\) => \(\{ title: pageTitle\(t\("Links\.SkillTree"\)\) \}\)\);/);
+  assert(!/^\s+head: \{/m.test(tree));
+});
+
+test("a description for a search result is the beginning of the text, cut at a word", () => {
+  assert.equal(head.shortDescription("Kurz und gut."), "Kurz und gut.");
+  assert.equal(head.shortDescription("  Mit\nZeilen   und  Lücken. "), "Mit Zeilen und Lücken.");
+  assert.equal(head.shortDescription(""), "");
+  assert.equal(head.shortDescription(null), "");
+  const long = "Dieser Kurs ist ein Must-Have für alle Informatiker. ".repeat(6);
+  const short = head.shortDescription(long);
+  assert(short.length <= 155 && short.endsWith("…"), short);
+  assert(long.startsWith(short.slice(0, -1)), "nothing but the beginning of the text");
+  assert(!/\s…$/.test(short) && /[A-Za-zäöüß.]…$/.test(short), "cut at the end of a word");
+});
+
+test("the test host asks not to be indexed, the production host does not", async () => {
+  const blocks = (await read("public/_headers"))
+    .split(/\n(?=https:)/)
+    .filter((block) => block.startsWith("https:"));
+  const rules = Object.fromEntries(
+    blocks.map((block) => [block.split("\n")[0], block.split("\n").slice(1).join("\n")])
+  );
+  assert.deepEqual(Object.keys(rules), [
+    "https://test.bootstrap.academy/*",
+    "https://bootstrap.academy/*",
+  ]);
+  assert.match(rules["https://test.bootstrap.academy/*"], /^ {2}X-Robots-Tag: noindex$/m);
+  assert(!/X-Robots-Tag/.test(rules["https://bootstrap.academy/*"]));
+});
+
+test("the preview image is a landscape picture of the usual size", async () => {
+  const png = await readFile(new URL("../public/images/preview.png", import.meta.url));
+  assert.equal(png.toString("latin1", 1, 4), "PNG");
+  assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1200, 630]);
+});

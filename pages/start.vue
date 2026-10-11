@@ -107,11 +107,18 @@ import LoopExplorer from "~/components/learning/LoopExplorer.vue";
 import { guestCopy } from "~/utils/guest/copy";
 import { guestReturnPath, takeGuestAuthorization } from "~/utils/guest/handoff";
 import { guestExercise, guestDestination } from "~/utils/guest/learning";
+import { siteHead } from "~/utils/siteHead";
 
 definePageMeta({ layout: false });
 const { locale } = useI18n();
 const copy = computed(() => guestCopy(locale.value));
-useHead({ title: computed(() => `${copy.value.activity} · Bootstrap Academy`) });
+const head = computed(() => siteHead[locale.value.startsWith("en") ? "en" : "de"].start);
+useSeoMeta({
+  title: () => head.value.title,
+  ogTitle: () => head.value.title,
+  description: () => head.value.description,
+  ogDescription: () => head.value.description,
+});
 const content = computed(() => guestExercise.content[locale.value.startsWith("en") ? "en" : "de"]);
 const { view, data, user, authenticated, reauthRequired, reauthenticate } = useGuestLearning();
 const profileLoaded = useProfileLoaded();
