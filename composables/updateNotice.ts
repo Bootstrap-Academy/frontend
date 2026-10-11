@@ -1,5 +1,4 @@
 export const UPDATE_NOTICE_VERSION = "2026-10-privacy-r2";
-export const UPDATE_NOTICE_BROWSER = "browser";
 export const UPDATE_NOTICE_LINK = "/docs/privacy#aenderungen";
 
 export interface UpdateNoticeWindow {
@@ -14,8 +13,10 @@ export const UPDATE_NOTICE_WINDOW: UpdateNoticeWindow = {
   expiresAt: Date.parse("2026-11-04T00:00:00Z"),
 };
 
+/** The notice tells people with an account what changed for them. A visitor without a
+ * session has no subject and sees no notice; after signing in, the account's own marker
+ * decides. */
 export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean): string | null {
-  if (token === null || token === undefined || token === "") return UPDATE_NOTICE_BROWSER;
   return loaded &&
     typeof token === "string" &&
     token.length > 0 &&
