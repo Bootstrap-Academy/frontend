@@ -64,8 +64,16 @@
         <div class="mb-4 flex justify-center">
           <RocketLaunchIcon class="h-16 w-16 flex-none text-black" aria-hidden="true" />
         </div>
-        <!-- No sentence under the name: the list below says what Premium brings, once. -->
-        <h1 class="mb-8 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
+        <h1 class="mb-2 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
+        <!--
+          What the price below is for: one month or one year. The switch above the cards
+          says it too, but on a phone it is off screen once the card is. The line stands
+          here in every state of the card, so the price is never without its period. What
+          Premium brings is left to the list below.
+        -->
+        <p class="mb-8 text-center text-black" data-premium-period>
+          {{ t(yearly ? "Body.PremiumForOneYear" : "Body.PremiumForOneMonth") }}
+        </p>
         <div class="mb-8">
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}

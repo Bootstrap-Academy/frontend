@@ -513,6 +513,8 @@
     "UnlimitedHearts": "Unbegrenzte Herzen",
     "UnlimitedHeartsTooltip": "Nur eine falsche Lösung kostet 1 Herz. Richtige Lösungen sind kostenlos. Deine Herzen werden täglich um {time} Uhr kostenlos aufgefüllt.",
     "AccessToAllCourses": "Zugriff auf alle Kurse",
+    "PremiumForOneMonth": "Für einen Monat",
+    "PremiumForOneYear": "Für ein Jahr",
     "NotEnoughMorphcoins": "Du hast nicht genügend MorphCoins",
     "GetCodeViaEmail": "Erhalte einen Code per E-Mail",
     "IrreversibleAction": "nicht rückgängig machbar",
