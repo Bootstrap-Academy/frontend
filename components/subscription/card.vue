@@ -73,15 +73,21 @@
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}
           </p>
+          <!--
+            Both buttons of the card take the colours of the pill that opens the
+            feedback form on every page: filled with the colour of the page,
+            labelled in the colour of headings. The interface has no white
+            surfaces.
+          -->
           <template v-if="hasEnoughCoins">
             <button
               type="button"
               :disabled="disabled"
               @click="onclickSubscribe"
-              class="flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-white bg-white px-6 py-3 shadow-lg duration-200 hover:scale-105 active:scale-95"
+              class="flex w-full cursor-pointer items-center justify-center space-x-4 rounded-full border border-primary bg-primary px-6 py-3 shadow-lg duration-200 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
-              <Price :coins="planPrice" class="justify-center font-bold text-black" />
+              <Price :coins="planPrice" class="justify-center font-bold text-heading" />
             </button>
             <p v-if="yearly" class="mt-2 text-center text-black">
               {{ t("Body.PricePerMonth", { amount: pricePerMonth }) }}
@@ -104,7 +110,7 @@
             </p>
             <NuxtLink
               :to="coinOrder"
-              class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-white bg-white px-6 py-3 text-center text-black shadow-lg duration-200 hover:scale-105 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
+              class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-center text-heading shadow-lg duration-200 hover:scale-105 hover:text-heading focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <span class="font-bold">{{ t("Headings.BuyMorphcoins") }}</span>
               <Price :coins="missingCoins" class="justify-center text-sm" />

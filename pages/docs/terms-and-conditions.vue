@@ -1125,4 +1125,10 @@ ul li {
 a {
   @apply cursor-pointer underline decoration-accent decoration-1 underline-offset-4;
 }
+
+/* The table of contents is the list right below its heading. As on the privacy page its
+ * entries carry no line: a list of links reads as one without it. */
+h2 + ul a {
+  @apply no-underline;
+}
 </style>
