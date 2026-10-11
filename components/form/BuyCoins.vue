@@ -14,9 +14,12 @@
       class="mb-card"
     />
 
-    <!-- Sent here by "Refill hearts" without enough coins: what the coins are needed for. -->
+    <!--
+      Sent here by "Refill hearts" without enough coins: what the coins are needed for. The
+      price of the smallest purchase is not said here; the total below states it.
+    -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
-      {{ t("Body.NeedCoinsForRefill", refillNotice) }}
+      {{ t("Body.CoinsForRefill", refillNotice) }}
     </p>
 
     <article
@@ -65,10 +68,8 @@
       <h2 class="text-sm uppercase text-accent">
         {{ t("Headings.TotalBill") }}
       </h2>
-      <div class="flex items-center gap-box">
-        <h1 class="text-heading-1 m-0">{{ totalPrice }}</h1>
-      </div>
-      <Price :coins="coinsToBuy" class="text-body-2 text-body" />
+      <!-- One line says the total: the coins, their price and that it includes the tax. -->
+      <Price :coins="coinsToBuy" class="text-heading-3 text-heading" />
     </article>
 
     <InputCheckbox
@@ -183,9 +184,6 @@ export default defineComponent({
     );
 
     const coinsToBuy = computed(() => Number(form.morphCoins.value) || 0);
-    const totalPrice = computed(() =>
-      formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
-    );
 
     // ============================================================= Handling Euros
     const rate = computed(() => coinConfig.value.coins_per_euro);
@@ -254,7 +252,6 @@ export default defineComponent({
       forHearts,
       refillNotice,
       coinsToBuy,
-      totalPrice,
       formattedRate,
       onclickSubmitForm,
 

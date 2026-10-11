@@ -3,25 +3,11 @@
     <PaypalCheckoutStatus v-if="showRecovery" />
     <template v-else>
       <p v-if="sdkError" role="alert">{{ t("PaypalRecovery.BeforeCaptureError") }}</p>
-      <h1 v-if="locale == 'de'" class="text-heading-1 mb-2 text-black">
-        <span class="font-black text-black font-body">
-          {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
-        </span>
-        für
-        <span class="font-black text-black font-body"> {{ totalPrice }} </span>
-        kaufen
-      </h1>
-      <h1 v-else class="text-heading-1 mb-2 text-black">
-        Buying
-        <span class="font-black text-black font-body">
-          {{ t("Headings.Morphcoins", { n: coinsToBuy }, coinsToBuy) }}
-        </span>
-        for
-        <span class="font-black text-black font-body"> {{ totalPrice }} </span>
-      </h1>
-      <p class="mb-2 text-black mb-card">
-        {{ t("Body.BuyCoins") }}
-      </p>
+      <!--
+        The amount and its price stand once on this page: in the order summary
+        right above the order button, where § 312j Abs. 2 BGB asks for them.
+      -->
+      <h1 class="text-heading-1 text-black mb-card">{{ t("Headings.BuyMorphcoins") }}</h1>
 
       <p
         v-if="!validAmount"
@@ -198,14 +184,15 @@
               </p>
             </div>
 
-            <div class="flex gap-box">
+            <!--
+              The address itself stands once on the page: in the order summary, as the
+              place the confirmation goes to. Here only a missing one is named.
+            -->
+            <div v-if="!user?.email" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">
                 {{ t("Inputs.EmailAddress") }}
               </h3>
-              <p v-if="user && user.email" class="text-body-1 m-0 text-black">
-                {{ user.email }}
-              </p>
-              <p v-else class="text-body-1 m-0 text-error">
+              <p class="text-body-1 m-0 text-error">
                 {{ t("Headings.Missing") }}
               </p>
             </div>
@@ -299,7 +286,6 @@ export default {
       active = false;
       invalidateAction();
     });
-    const coinConfig = useCoinConfig();
     const coinsToBuy = computed(() => {
       return (
         checkout.value?.coins ?? offer.value?.product.coins ?? parseInt(route?.query?.coins ?? "0")
@@ -310,9 +296,6 @@ export default {
       const amount = coinsToBuy.value;
       return Number.isInteger(amount) && amount >= COIN_PURCHASE_MIN && amount <= COIN_PURCHASE_MAX;
     });
-    const totalPrice = computed(() =>
-      formatEuros(coinsToEuros(coinsToBuy.value, coinConfig.value), locale.value)
-    );
     const user = useUser();
     // The `user` cookie only carries the id and the two names. Until the
     // profile has arrived, a missing field says nothing about the account.
@@ -570,11 +553,9 @@ export default {
 
     return {
       t,
-      locale,
       showRecovery,
       sdkError,
       coinsToBuy,
-      totalPrice,
       validAmount,
       user,
       profileLoaded,

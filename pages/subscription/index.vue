@@ -5,7 +5,7 @@
         {{ t("Headings.RefillHearts") }}
       </h2>
 
-      <p v-if="hearts >= heartConfig.hearts_max" class="text-center text-xl">
+      <p v-if="!refillBoxShown" class="text-center text-xl">
         {{ t("Body.HeartsAreFilled") }}
       </p>
 
@@ -34,7 +34,7 @@
               :to="{ path: '/morphcoins/buy', query: { for: 'hearts' } }"
               class="inline-flex min-h-11 items-center text-accent underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
-              {{ t("Headings.BuyMorphcoins") }}
+              {{ t("Links.BuyMorphcoinsForHearts") }}
             </NuxtLink>
           </div>
           <div v-else>
@@ -97,6 +97,7 @@
         :monthlyPrice="monthlyPrice"
         :yearlyPrice="yearlyPrice"
         :disabled="premiumBusy || !!order || !!renewalOrder"
+        :refill-time-stated="!isPremium && showHearts && refillBoxShown"
         class="mb-5 mt-5 px-2"
       />
 
@@ -337,6 +338,8 @@ export default {
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
     });
+    // While hearts are missing, the box with the countdown says when they refill.
+    const refillBoxShown = computed(() => hearts.value < heartConfig.value.hearts_max);
 
     const buttonOptions = [{ name: "Buttons.Monthly" }, { name: "Buttons.Yearly" }];
 
@@ -624,6 +627,7 @@ export default {
     );
 
     return {
+      refillBoxShown,
       isDaily,
       showHearts,
       policyKnown,

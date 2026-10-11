@@ -25,9 +25,15 @@
                 : t("Body.HeartsEveryDay", { n: dailyHearts })
             }}
           </p>
+          <!--
+            The hint names the time of the free refill unless the page already does:
+            above the cards, in the box with the countdown.
+          -->
           <Tooltip
             v-if="!isDaily"
-            :heading="'Body.UnlimitedHeartsTooltip'"
+            :heading="
+              refillTimeStated ? 'Body.WrongAnswerCostsOneHeart' : 'Body.UnlimitedHeartsTooltip'
+            "
             :params="{ time: refillTime }"
           >
             <InformationCircleIcon class="h-6 w-6 text-accent" />
@@ -58,17 +64,8 @@
         <div class="mb-4 flex justify-center">
           <RocketLaunchIcon class="h-16 w-16 flex-none text-black" aria-hidden="true" />
         </div>
-        <h1 class="mb-2 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
-        <p class="mb-8 text-center text-black">
-          {{
-            isDaily
-              ? t("DailyLearning.PremiumIntro")
-              : t("Body.GetAllServices").replace(
-                  "%%%",
-                  props.yearly ? t("Body.Yearly") : t("Body.Monthly")
-                )
-          }}
-        </p>
+        <!-- No sentence under the name: the list below says what Premium brings, once. -->
+        <h1 class="mb-8 text-center text-3xl font-bold text-black">{{ t("Headings.Premium") }}</h1>
         <div class="mb-8">
           <p v-if="isDaily" class="mb-3 text-center text-black">
             {{ t("DailyLearning.CoinPayment") }}
@@ -96,7 +93,9 @@
 
           <!--
             Without enough Morphcoins the price is plain text, and the button
-            below leads straight to the order of the missing coins.
+            below leads straight to the order of the missing coins. The button
+            names an amount only when it orders another one than the price
+            above it, because the account already holds a part.
           -->
           <template v-else>
             <div
@@ -113,7 +112,7 @@
               class="mt-3 flex w-full flex-col items-center justify-center rounded-full border border-primary bg-primary px-6 py-3 text-center text-heading shadow-lg duration-200 hover:scale-105 hover:text-heading focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-95"
             >
               <span class="font-bold">{{ t("Headings.BuyMorphcoins") }}</span>
-              <Price :coins="missingCoins" class="justify-center text-sm" />
+              <Price v-if="orderDiffers" :coins="missingCoins" class="justify-center text-sm" />
             </NuxtLink>
           </template>
         </div>
@@ -126,12 +125,6 @@
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
           <p class="text-black">{{ t("Body.AccessToAllCourses") }}</p>
-        </div>
-        <div class="mt-4 flex items-center space-x-4">
-          <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
-          <p class="text-black">
-            {{ t(isDaily ? "DailyLearning.FreeReview" : "Body.LearnNewThings") }}
-          </p>
         </div>
       </div>
     </div>
@@ -146,6 +139,8 @@ const props = defineProps({
   monthlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.MONTHLY },
   yearlyPrice: { type: Number, default: PREMIUM_PRICE_FALLBACK.YEARLY },
   disabled: { type: Boolean, default: false },
+  /** The page around the card already states when the hearts refill. */
+  refillTimeStated: { type: Boolean, default: false },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";
@@ -178,6 +173,8 @@ const missingCoins = computed(() => Math.max(COIN_PURCHASE_MIN, planPrice.value 
 const coinOrder = computed(
   () => `/morphcoins/paypal?coins=${missingCoins.value}&next=subscription`
 );
+// The same amount is said once: the price of the plan stands above the button.
+const orderDiffers = computed(() => missingCoins.value !== planPrice.value);
 
 // Art. 246a § 1 Abs. 1 Nr. 8 EGBGB: the monthly cost of a yearly plan.
 const pricePerMonth = computed(() =>

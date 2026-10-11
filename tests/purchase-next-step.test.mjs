@@ -128,10 +128,10 @@ test("the coin shop opened for a heart refill shows the whole note, with every v
       .map((node) => ui.text(node).trim());
   }
   assert.deepEqual(await open({ for: "hearts" }, "de"), [
-    "Das Auffüllen kostet 80 Morphcoins. Der kleinste Kauf sind 500 Morphcoins für 2,50\u00a0€, und der Rest bleibt auf deinem Konto.",
+    "Das Auffüllen kostet 80 Morphcoins. Kaufen kannst du ab 500 Morphcoins, der Rest bleibt auf deinem Konto.",
   ]);
   assert.deepEqual(await open({ for: "hearts" }, "en-US"), [
-    "A refill costs 80 Morphcoins. The smallest purchase is 500 Morphcoins for €2.50, and the rest stays in your account.",
+    "A refill costs 80 Morphcoins. You can buy from 500 Morphcoins, and the rest stays in your account.",
   ]);
   // Opened for anything else, the shop says nothing about hearts.
   for (const query of [{}, { for: "premium" }, { for: ["hearts"] }])

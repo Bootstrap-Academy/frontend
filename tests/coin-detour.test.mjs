@@ -68,7 +68,7 @@ test("a heart refill without coins is explained in the coin shop, not by a snack
   assert.match(block, /navigateTo\(\{ path: "\/morphcoins\/buy", query: \{ for: "hearts" \} \}\)/);
   assert(!block.includes("Error.NeedCoinsForRefill"));
   const shop = await read("components/form/BuyCoins.vue");
-  assert.match(shop, /<p v-if="forHearts"[^>]*role="status">\s*\{\{ t\("Body\.NeedCoinsForRefill"/);
+  assert.match(shop, /<p v-if="forHearts"[^>]*role="status">\s*\{\{ t\("Body\.CoinsForRefill"/);
   assert.match(shop, /route\.query\.for === "hearts"/);
   for (const language of ["de", "en-US"]) {
     const locale = JSON.parse(await read(`locales/${language}.json`));
