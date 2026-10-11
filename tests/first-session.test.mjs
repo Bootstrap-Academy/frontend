@@ -244,3 +244,44 @@ test("the practice step of the guest exercise says its result where the figure s
     /if \(stage\.value === 3 && practiceCorrect\.value\)\s+actions\.value\?\.scrollIntoView\(\{ block: "nearest" \}\);/
   );
 });
+
+test("the log-in page starts with its form; the note for moved accounts unfolds below it", async () => {
+  const page = await elements("pages/auth/login.vue");
+  const form = page.find(({ node }) => node.tag === "FormLogin");
+  const note = page.find(
+    ({ node }) =>
+      node.loc.source.startsWith("<p") && node.loc.source.includes("Body.ChallengesNickname")
+  );
+  const fold = page.find(({ node }) => node.tag === "details").node;
+  // The note is inside the part that unfolds, and that part comes after the form.
+  assert(note.parents.includes(fold));
+  assert(fold.loc.start.offset > form.node.loc.end.offset);
+  const summary = page.find(({ node }) => node.tag === "summary");
+  assert(summary.parents.includes(fold));
+  assert.match(summary.node.loc.source, /t\("Body\.ChallengesNicknameQuestion"\)/);
+  // Nothing but the heading stands between the top of the page and the form.
+  const before = page.filter(
+    ({ node, parents }) =>
+      parents.includes(form.parents.at(-1)) && node.loc.end.offset <= form.node.loc.start.offset
+  );
+  assert.deepEqual(
+    before.map(({ node }) => node.tag),
+    ["h1"]
+  );
+  for (const language of ["de", "en-US"]) {
+    const { Body } = locales[language];
+    assert.match(Body.ChallengesNicknameQuestion, /the-morpheus\.cc\?$/, language);
+    assert.match(Body.ChallengesNickname, /the-morpheus\.cc/, language);
+  }
+});
+
+test("a refused log-in says in plain words what does not fit", () => {
+  assert.equal(
+    locales.de.Error.InvalidCredentials,
+    "E-Mail-Adresse, Nickname oder Passwort stimmen nicht."
+  );
+  assert.equal(
+    locales["en-US"].Error.InvalidCredentials,
+    "E-mail address, nickname or password isn’t right."
+  );
+});
