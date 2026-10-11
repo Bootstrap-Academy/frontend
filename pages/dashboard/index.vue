@@ -59,7 +59,14 @@
           <div class="section-heading">
             <div>
               <p class="eyebrow">{{ t("CharacterDashboard.NextStep") }}</p>
-              <h2 id="next-step-title">{{ t("CharacterDashboard.KeepLearning") }}</h2>
+              <!--
+                The card names what the button opens: the next unit, and below it the topic
+                it belongs to. Until that is known it keeps its general heading.
+              -->
+              <h2 id="next-step-title">
+                {{ nextStep ? nextStep.unit : t("CharacterDashboard.KeepLearning") }}
+              </h2>
+              <p v-if="nextStep?.topic" class="next-topic">{{ nextStep.topic }}</p>
             </div>
             <SparklesIcon class="section-symbol" aria-hidden="true" />
           </div>
@@ -251,6 +258,7 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
 import type { SessionIdentity } from "~/types/sessionIdentity";
+import type { LocalizedText } from "~/types/learningRooms";
 import { computed, onBeforeUnmount, reactive, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -301,6 +309,28 @@ const showAllSkills = ref(false);
 const practiceMessage = ref("");
 const practiceBusy = computed(() => view.value?.practiceStatus === "loading");
 const usesLearningRoom = computed(() => roomsAvailable.value && !focus.value);
+// The unit the learning room opens next, and its topic, as the room itself asks for them.
+const nextRoom = shallowRef<{ unit: LocalizedText; path: LocalizedText } | null>(null);
+const nextStep = computed(() => {
+  const room = usesLearningRoom.value ? nextRoom.value : null;
+  const language = locale.value.startsWith("de") ? "de" : "en";
+  const unit = room?.unit[language] || room?.unit.en;
+  return unit ? { unit, topic: room!.path[language] || room!.path.en || "" } : null;
+});
+async function loadNextRoom(current: () => boolean) {
+  try {
+    const rooms = (await GET("/skills/rooms?continuous=true")) as {
+      path?: { title?: LocalizedText };
+      next?: { unit?: { title?: LocalizedText } } | null;
+    };
+    if (!current()) return;
+    const unit = rooms?.next?.unit?.title;
+    const path = rooms?.path?.title;
+    nextRoom.value = unit && path ? { unit, path } : null;
+  } catch {
+    // Without an answer the card keeps its general heading.
+  }
+}
 const practiceLabel = computed(() =>
   practiceBusy.value
     ? "CharacterDashboard.FindingPractice"
@@ -336,6 +366,7 @@ watch(
     showAllSkills.value = false;
     practiceMessage.value = "";
     roomsAvailable.value = false;
+    nextRoom.value = null;
     // Clear private data immediately. setStates updates user/session before its
     // token cookie, so wait for that synchronous batch before making new reads.
     void data.select(null);
@@ -360,8 +391,17 @@ watch(
                 generation === ownerGeneration &&
                 owner.value === next &&
                 accessToken.value === token
-              )
+              ) {
                 roomsAvailable.value = capability?.enabled === true;
+                if (roomsAvailable.value)
+                  void loadNextRoom(
+                    () =>
+                      alive &&
+                      generation === ownerGeneration &&
+                      owner.value === next &&
+                      accessToken.value === token
+                  );
+              }
             })
             .catch(() => {});
         }
@@ -660,6 +700,12 @@ progress::-moz-progress-bar {
 .next-step h2 {
   margin-top: 7px;
   font-size: 1.85rem;
+  overflow-wrap: anywhere;
+}
+.next-topic {
+  margin-top: 6px;
+  color: #adbdce !important;
+  font-size: 0.9375rem;
 }
 .section-symbol {
   width: 34px;
