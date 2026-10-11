@@ -54,3 +54,134 @@ test("the pricing page shows a visitor without an account the plans, and reports
   for (const language of ["de", "en-US"])
     assert(locales[language].Links.CreateFreeAccount, language);
 });
+
+test("the sign-up form asks for one name and states the rules of its fields before an error", async () => {
+  const form = await elements("components/form/Signup.vue");
+  const inputs = form.filter(({ node }) => node.tag === "Input").map(({ node }) => node);
+  assert.deepEqual(
+    inputs.map((node) => attribute(node, "id")),
+    ["SignupUsername", "SignupEmail", "SignupPassword"]
+  );
+  const hints = Object.fromEntries(
+    inputs.map((node) => [attribute(node, "id"), attribute(node, "hint")])
+  );
+  assert.deepEqual(hints, {
+    SignupUsername: "Inputs.NicknameRule",
+    SignupEmail: undefined,
+    SignupPassword: "Inputs.PasswordRule",
+  });
+  // The rule a field checks is the sentence it shows, so the two cannot drift apart.
+  const source = await read("components/form/Signup.vue");
+  assert.match(source, /\/\^\[a-zA-Z\\d\]\{3,32\}\$\/\.test\(v\) \|\| "Inputs\.NicknameRule"/);
+  assert.match(source, /\.\{8,\}\)\?\$\/\.test\(v\) \|\| "Inputs\.PasswordRule"/);
+  for (const language of ["de", "en-US"]) {
+    const { Inputs } = locales[language];
+    assert.match(Inputs.NicknameRule, /3\D+32/, language);
+    assert.match(Inputs.PasswordRule, /8/, language);
+  }
+  // The account still gets a display name: the one name the form asks for.
+  assert.match(source, /obj\.display_name = form\.name\.value;/);
+  assert(!source.includes("Inputs.DisplayName"));
+  // Both consents stay.
+  const boxes = form.filter(({ node }) => node.tag === "InputCheckbox");
+  assert.deepEqual(
+    boxes.map(({ node }) => attribute(node, "id")),
+    ["TermsAndConditions", "MinimumAge"]
+  );
+});
+
+test("a field writes its rule once: a broken rule turns the hint red and is not repeated below", async () => {
+  const Vue = await import("vue");
+  const { evaluate, host, settle } = await import("./helpers/mounted-page.mjs");
+  const sentences = {
+    "Inputs.NicknameRule": "three to 32 letters and digits",
+    "Error.InputEmpty": "please enter: {placeholder}",
+  };
+  const t = (key, named = {}) =>
+    (sentences[key] ?? key).replace(/\{(\w+)\}/g, (whole, name) => named[name] ?? whole);
+  const Input = await evaluate("components/input/index.vue", {
+    require: (name) => ({ vue: Vue, "vue-i18n": { useI18n: () => ({ t }) } })[name],
+    computed: Vue.computed,
+    ref: Vue.ref,
+    onMounted: Vue.onMounted,
+  });
+  const rules = [
+    (v) => !!v || "Error.InputEmpty_Inputs.Nickname",
+    (v) => /^[a-zA-Z\d]{3,32}$/.test(v) || "Inputs.NicknameRule",
+  ];
+  async function field(value, hint = "Inputs.NicknameRule") {
+    const { root, renderer, all } = host();
+    renderer
+      .createApp({
+        render: () =>
+          Vue.h(Input, {
+            id: "f",
+            label: "Inputs.Nickname",
+            hint,
+            rules,
+            modelValue: value,
+            showError: true,
+          }),
+      })
+      .mount(root);
+    await settle();
+    const text = (node) => [node.text, ...node.children.map(text)].join("").trim();
+    const paragraph = (id) => all().find((node) => node.props.id === id);
+    return {
+      hint: paragraph("f-hint") && {
+        says: text(paragraph("f-hint")),
+        red: String(paragraph("f-hint").props.class).includes("text-error"),
+      },
+      below: text(paragraph("f-error")),
+      invalid: all().find((node) => node.type === "input").props["aria-invalid"] === "true",
+    };
+  }
+  // A name that fits: the rule stands there, in the colour of text.
+  assert.deepEqual(await field("Mara42"), {
+    hint: { says: sentences["Inputs.NicknameRule"], red: false },
+    below: "",
+    invalid: false,
+  });
+  // A name with a space: the same sentence turns red, and nothing repeats it below the field.
+  assert.deepEqual(await field("Mara Lernt"), {
+    hint: { says: sentences["Inputs.NicknameRule"], red: true },
+    below: "",
+    invalid: true,
+  });
+  // Another failure than the hint's rule is still said below the field.
+  assert.deepEqual(await field(""), {
+    hint: { says: sentences["Inputs.NicknameRule"], red: false },
+    below: "please enter: Inputs.Nickname",
+    invalid: true,
+  });
+  // A field without a hint says its broken rule below, as before.
+  assert.deepEqual(await field("Mara Lernt", ""), {
+    hint: undefined,
+    below: sentences["Inputs.NicknameRule"],
+    invalid: true,
+  });
+});
+
+test("the sign-up form offers the sign-in providers of the log-in form, with the same building block", async () => {
+  const login = await elements("components/form/Login.vue");
+  const signup = await elements("components/form/Signup.vue");
+  const block = (form) => form.filter(({ node }) => node.tag === "FormOAuthProviders");
+  assert.equal(block(login).length, 1);
+  assert.equal(block(signup).length, 1);
+  assert.equal(attribute(block(login)[0].node, "label"), "Body.OrLoginWith");
+  assert.equal(attribute(block(login)[0].node, "action"), "Buttons.LoginWithProvider");
+  assert.equal(attribute(block(signup)[0].node, "label"), "Body.OrSignupWith");
+  assert.equal(attribute(block(signup)[0].node, "action"), "Buttons.SignupWithProvider");
+  // An account that has just come back from its provider is not offered the providers again.
+  assert.equal(condition(block(signup)[0].node), "!register_token");
+  // The block loads the providers itself and starts the flow the log-in form started.
+  const source = await read("components/form/OAuthProviders.vue");
+  assert.match(source, /onMounted\(getOAuthProviders\);/);
+  assert.match(source, /await startOAuthFlow\(provider_id\)/);
+  assert(!(await read("components/form/Login.vue")).includes("startOAuthFlow"));
+  for (const language of ["de", "en-US"]) {
+    const { Body, Buttons } = locales[language];
+    assert(Body.OrSignupWith && Body.OrSignupWith !== Body.OrLoginWith, language);
+    assert(Buttons.SignupWithProvider.includes("{provider}"), language);
+  }
+});

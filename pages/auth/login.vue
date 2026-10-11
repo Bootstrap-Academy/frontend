@@ -33,8 +33,6 @@ export default {
     const { t } = useI18n();
     useHead(() => ({ title: `${t("Buttons.Login")} · Bootstrap Academy` }));
 
-    onMounted(async () => await getOAuthProviders());
-
     return { t };
   },
 };
