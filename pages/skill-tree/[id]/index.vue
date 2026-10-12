@@ -54,6 +54,14 @@
         body="EmptyStates.SkillTree.Body"
       />
     </article>
+
+    <Modal v-if="invitedSkill" :aria-label="invitedSkill.name" @backdrop="declineInvitation">
+      <SkillTreeGuestInvitation
+        :tree="subTreeId"
+        :skill="invitedSkill"
+        @close="declineInvitation"
+      />
+    </Modal>
   </main>
 </template>
 
@@ -69,18 +77,16 @@ export default {
       return <string>(route.params?.id ?? "");
     });
 
-    const subTreeName = computed(() => {
-      return subTreeId.value.replace(/_/g, " ");
-    });
+    const subTreeName = useSkillTreeName(() => subTreeId.value);
 
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
+          label: "Links.SkillTree",
           to: "/skill-tree",
         },
         {
-          label: subTreeName.value,
+          name: subTreeName.value,
         },
       ];
     });
@@ -134,6 +140,15 @@ export default {
     const router = useRouter();
     const route = useRoute();
 
+    // The skill a visitor without an account chose. Its page needs an account,
+    // so the visitor is invited to one and can go back to the tree instead.
+    const invitedSkill = ref<{ id: string; name: string; courses: string[] } | null>(null);
+
+    function declineInvitation() {
+      invitedSkill.value = null;
+      Object.assign(selectedNode, getInitialNode());
+    }
+
     function setSelectedNode(node: any) {
       if (node.id == "") {
         Object.assign(selectedNode, { ...node });
@@ -142,31 +157,7 @@ export default {
         Object.assign(selectedNode, { ...n });
 
         if (!!!getAccessToken()) {
-          openDialog(
-            "warning",
-            "Headings.NotLoggedIn",
-            "Body.NotLoggedIn",
-            false,
-            {
-              label: "Buttons.Okay",
-              onclick: () => {
-                router.push(`/auth/login?redirect=${route.path}/${selectedNode.id}`);
-              },
-            },
-            {
-              label: "Buttons.Cancel",
-              onclick: () => {
-                Object.assign(selectedNode, {
-                  id: "",
-                  name: "",
-                  dependencies: [],
-                  row: null,
-                  column: null,
-                  icon: "",
-                });
-              },
-            }
-          );
+          invitedSkill.value = { id: n.id, name: n.name, courses: n.courses ?? [] };
         } else if (selectedNode && selectedNode.id) {
           router.push(`${route.path}/${selectedNode.id}`);
         }
@@ -426,8 +417,11 @@ export default {
       scrollViaPathway,
 
       t,
+      subTreeId,
       subTreeName,
       breadcrumbs,
+      invitedSkill,
+      declineInvitation,
       svgRef,
       xp,
     };

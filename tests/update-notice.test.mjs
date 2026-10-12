@@ -16,7 +16,7 @@ const transpile = (source) =>
   ts.transpileModule(source, {
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
   }).outputText;
-for (const name of ["updateNotice", "publicLegalRoutes"]) {
+for (const name of ["updateNotice", "publicLegalRoutes", "emailVerification"]) {
   const source = await readFile(new URL(`../composables/${name}.ts`, import.meta.url), "utf8");
   await writeFile(new URL(output(name)), transpile(source));
 }
@@ -32,6 +32,7 @@ const {
   RETIRED_UPDATE_NOTICE_VERSIONS,
 } = await import(output("updateNotice"));
 const { isPublicLegalRoute } = await import(output("publicLegalRoutes"));
+const { clearExpiredVerificationMails } = await import(output("emailVerification"));
 const A = "10000000-0000-4000-8000-000000000001";
 const B = "10000000-0000-4000-8000-000000000002";
 // Earlier builds showed the notice without a session and stored its close under this subject.
@@ -907,21 +908,39 @@ test("the client storage plugin runs the cleanup and blocked storage cannot brea
     "return "
   );
   const retired = "bootstrap-academy:update-notice:2026-09-update-1:" + A;
-  const f = fixture(
+  // A note on a confirmation code: the one of A has run out, the one of B still works.
+  const HOUR = 60 * 60 * 1000;
+  const note = (id, age) => [
+    "verification-mail:" + id,
+    JSON.stringify({ id, at: Date.now() - age }),
+  ];
+  const stored = () =>
     new Map([
       [retired, "1"],
       [LEFT_BY_A_VISITOR, "1"],
       ["selectedButtonLeaderBoard", "x"],
       ["payment", "pending"],
-    ])
-  );
-  const run = (localStorage) =>
-    new Function("defineNuxtPlugin", "clearObsoleteUpdateNotices", "window", code)(
-      (setup) => setup(),
-      clearObsoleteUpdateNotices,
-      { localStorage }
-    );
+      note(A, 4 * HOUR),
+      note(B, HOUR),
+    ]);
+  const run = (localStorage, notices = clearObsoleteUpdateNotices) =>
+    new Function(
+      "defineNuxtPlugin",
+      "clearObsoleteUpdateNotices",
+      "clearExpiredVerificationMails",
+      "window",
+      code
+    )((setup) => setup(), notices, clearExpiredVerificationMails, { localStorage });
+  const f = fixture(stored());
   run(f.storage);
-  assert.deepEqual([...f.data.keys()], ["payment"]);
+  assert.deepEqual([...f.data.keys()], ["payment", "verification-mail:" + B]);
+  // The notes are cleared although the cleanup before them failed.
+  const second = fixture(stored());
+  run(second.storage, () => {
+    throw new Error("synthetic");
+  });
+  assert.ok(
+    !second.data.has("verification-mail:" + A) && second.data.has("verification-mail:" + B)
+  );
   assert.doesNotThrow(() => run(fixture(new Map([[retired, "1"]]), true).storage));
 });

@@ -2275,6 +2275,8 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
         }),
         getRegisterToken: () => null,
         useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
+        useRoute: () => ({ query: {} }),
+        internalPath: () => "",
         openSnackbar: (...args) => notices.push(args),
         signup: async (body) => {
           requests.push(structuredClone(body));

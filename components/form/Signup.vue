@@ -79,7 +79,10 @@
       {{ t("Buttons.CreateAccount") }}
     </InputBtn>
 
-    <NuxtLink to="/auth/login" class="self-center">
+    <NuxtLink
+      :to="{ path: '/auth/login', query: redirect ? { redirect } : {} }"
+      class="self-center"
+    >
       {{ t("Links.AlreadyHaveAccount") }}
       <span class="text-accent">{{ t("Links.GoToLogin") }}</span>
     </NuxtLink>
@@ -239,6 +242,11 @@ export default defineComponent({
     }
 
     const router = useRouter();
+    const route = useRoute();
+
+    // The page a visitor was invited from. Only a path of this site is carried
+    // on, to the confirmation of the address and to the login.
+    const redirect = computed(() => internalPath(route?.query?.redirect));
 
     function successHandler(res: any) {
       authorizeGuestHandoff(res?.user?.id);
@@ -254,7 +262,7 @@ export default defineComponent({
         {
           label: "Buttons.VerifyAccount",
           onclick: () => {
-            router.push("/auth/verify-account");
+            router.push(emailVerificationRoute(redirect.value));
           },
         },
         null
@@ -273,6 +281,7 @@ export default defineComponent({
       submitted,
       t,
       register_token,
+      redirect,
     };
   },
 });

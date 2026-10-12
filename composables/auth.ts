@@ -139,8 +139,9 @@ export async function requestEmailVerification() {
   let user_email = user?.value?.email ?? null;
   let isAccountVerified = user?.value?.email_verified ?? false;
 
-  if (isAccountVerified) return [true, null];
+  if (isAccountVerified) return [true, null, false];
 
+  let asked = false;
   try {
     if (!!!user_id) {
       throw { data: { detail: "Invalid User Id" } };
@@ -149,18 +150,22 @@ export async function requestEmailVerification() {
       throw { data: { detail: "User does not have email" } };
     }
 
+    // The request is noted before it is made, with its answer still open.
+    noteVerificationRequest(user_id);
+    asked = true;
     const response = await POST(`/auth/users/${user_id}/email`);
 
     // The confirmation page sends no second code while this one works.
     noteVerificationMail(user_id);
 
-    return [response, null];
+    return [response, null, false];
   } catch (error: any) {
     // Only an answer of the server says that no mail went out. A request that
-    // broke off, as it does when the page is reloaded meanwhile, may have been sent.
+    // broke off, as it does when the page is reloaded meanwhile, may have been
+    // sent: its note stays open, and the third value tells the caller so.
     if (error?.response) forgetVerificationMail(user_id);
 
-    return [null, error.data];
+    return [null, error.data, asked && !error?.response];
   }
 }
 

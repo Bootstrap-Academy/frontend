@@ -37,6 +37,26 @@ export async function getSubSkillTree(id: string) {
   }
 }
 
+/**
+ * The name of a tree as the data spell it. The answer for a single tree does
+ * not carry its name, so it comes from the list of all trees, which is asked
+ * for when it is not here yet. Until it arrives the id stands in, with spaces
+ * for its underscores.
+ */
+export function useSkillTreeName(id: () => string) {
+  const rootSkillTree = useRootSkillTree();
+
+  onMounted(() => {
+    if (!rootSkillTree.value?.skills?.length) getRootSkillTree();
+  });
+
+  return computed(
+    () =>
+      rootSkillTree.value?.skills?.find((skill) => skill.id === id())?.name ||
+      id().replace(/_/g, " ")
+  );
+}
+
 export function createPathwaysForTree(map: any, nodes: any[], nodeSize: any) {
   if (!!!map[0] || !!!map[0][0]) return [];
 

@@ -28,6 +28,7 @@
 import { defineComponent } from "vue";
 import { ArrowLeftIcon } from "@heroicons/vue/24/solid";
 import { useI18n } from "vue-i18n";
+import { guestReturnPath } from "~/utils/guest/handoff";
 
 export default defineComponent({
   components: { ArrowLeftIcon },
@@ -38,12 +39,16 @@ export default defineComponent({
     const route = useRoute();
     const user = <any>useUser();
 
+    const confirming = computed(() => route.name == "auth-verify-account" && !!user.value?.id);
+    // An account that came here from the guest exercise goes back to it.
+    const guestReturn = computed(() => (confirming.value ? guestReturnPath() : null));
+
     /**
      * From the confirmation of the e-mail address "back" leads a signed-in
      * account to the login, which sends it to the dashboard and from there to
      * the confirmation again. The page offers the logout itself.
      */
-    const noWayBack = computed(() => route.name == "auth-verify-account" && !!user.value?.id);
+    const noWayBack = computed(() => confirming.value && !guestReturn.value);
 
     function hasHistory() {
       return window.history.length > 2;
@@ -68,7 +73,7 @@ export default defineComponent({
         pathname = "/auth/login";
         label = "Links.Login";
       } else if (name == "auth-verify-account") {
-        pathname = "/auth/login";
+        pathname = guestReturn.value || "/auth/login";
         label = "Links.GoBack";
       } else if (name == "auth-reset-password") {
         pathname = "/auth/forgot-password";
