@@ -68,7 +68,10 @@ export default {
 
     const { locale, t } = useI18n();
     const route = useRoute();
-    useHead(() => ({ title: `${t("Headings.ConfirmEmail")} · Bootstrap Academy` }));
+    // The tab says what the page shows: the request first, the confirmed address afterwards.
+    useHead(() => ({
+      title: `${t(status.value == "success" ? "Headings.EmailConfirmed" : "Headings.ConfirmEmail")} · Bootstrap Academy`,
+    }));
 
     return {
       status,

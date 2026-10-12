@@ -19,6 +19,11 @@
         :rules="form.code.rules"
         :show-error="attempted"
       />
+      <!--
+        The line at the field is read out when the cursor enters the field. With the Enter
+        key the cursor is there already and nothing moves, so the line is said here.
+      -->
+      <p class="sr-only" role="alert">{{ spoken }}</p>
 
       <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
         {{ t("Buttons.ConfirmCode") }}
@@ -63,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, nextTick, onMounted, ref, watch } from "vue";
 import { useDocumentVisibility } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
@@ -119,10 +124,11 @@ export default defineComponent({
     /**
      * What the page knows about the mail: nothing (nobody is signed in here,
      * or the profile did not arrive), still asking the server, a request on
-     * its way, a code that was sent from this browser and still works, or a
-     * request the server refused.
+     * its way, a code that was sent from this browser and still works, a
+     * further code the visitor asked for, a request whose answer never
+     * arrived, or a request the server refused.
      */
-    const mail = ref<"" | "checking" | "sending" | "sent" | "failed">(
+    const mail = ref<"" | "checking" | "sending" | "sent" | "resent" | "open" | "failed">(
       user.value?.id ? "checking" : ""
     );
     const missingEmail = computed(
@@ -137,6 +143,8 @@ export default defineComponent({
       return {
         sending: "Body.VerifyAccountSending",
         sent: "Body.VerifyAccountSent",
+        resent: "Body.VerifyAccountResent",
+        open: "Body.VerifyAccountOpen",
         failed: "Body.VerifyAccountNotSent",
       }[mail.value];
     });
@@ -152,12 +160,13 @@ export default defineComponent({
 
     async function send() {
       mail.value = "sending";
-      const [success, error] = await requestEmailVerification();
+      const [success, error, open] = await requestEmailVerification();
 
       // Another tab or device has confirmed the address meanwhile.
       if (error?.detail == "Error.EmailAlreadyVerified") await getUser();
       if (user.value?.email_verified) return confirmed();
-      mail.value = success ? "sent" : "failed";
+      // Without an answer of the server nobody knows whether a mail went out.
+      mail.value = success ? "sent" : open ? "open" : "failed";
 
       return !!success;
     }
@@ -188,8 +197,11 @@ export default defineComponent({
           if (sending()) return;
 
           const waiting = needsEmailVerification(user.value, profileLoaded.value) && !!email.value;
-          if (waiting && verificationMailNoted(owner)) mail.value = "sent";
-          else if (waiting && mail.value !== "failed" && noteVerificationMail(owner)) await send();
+          // The note names a code that was sent or a request whose answer is still open.
+          const noted = waiting ? verificationMailNote(owner) : "";
+          if (noted) mail.value = noted;
+          else if (waiting && mail.value !== "failed" && noteVerificationRequest(owner))
+            await send();
           else if (mail.value === "checking") mail.value = "";
         });
       } finally {
@@ -208,9 +220,22 @@ export default defineComponent({
       )
     );
 
+    // The sentence of the page says what became of the request; nothing repeats it.
     async function resendAccountVerificationCode() {
       if (sending()) return;
-      if (await send()) openSnackbar("success", "Success.ResendAccountVerificationCode");
+      if (await send()) mail.value = "resent";
+    }
+
+    // ============================================================= The line at the field, read out
+    const spoken = ref("");
+
+    /** The same words as the line at the field: the first rule the code breaks. */
+    async function speakCodeError() {
+      const broken = form.code.rules.map((rule: any) => rule(form.code.value));
+      // A live region repeats a sentence only when its text changes.
+      spoken.value = "";
+      await nextTick();
+      spoken.value = t(broken.find((result: unknown) => result !== true) ?? "");
     }
 
     // ============================================================= functions
@@ -254,7 +279,10 @@ export default defineComponent({
       } else {
         // The line at the field says what is wrong; the field is where it is put right.
         attempted.value = true;
-        refForm.value?.querySelector("input")?.focus();
+        const field = refForm.value?.querySelector("input");
+        const cursorInField = !!field && document.activeElement === field;
+        field?.focus();
+        if (cursorInField) await speakCodeError();
       }
     }
 
@@ -292,6 +320,7 @@ export default defineComponent({
       mail,
       missingEmail,
       notice,
+      spoken,
     };
   },
 });

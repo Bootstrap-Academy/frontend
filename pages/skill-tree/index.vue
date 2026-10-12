@@ -55,7 +55,7 @@ export default {
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
+          label: "Links.SkillTree",
         },
       ];
     });

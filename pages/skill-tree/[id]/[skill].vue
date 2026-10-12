@@ -89,13 +89,11 @@ const loading = ref(true);
 const error = ref(false);
 const courseError = ref(false);
 const practiceOpened = ref(false);
+const treeName = useSkillTreeName(() => rootSkillID.value);
 const breadcrumbs = computed(() => [
-  { label: "Headings.RootSkillTree", to: "/skill-tree" },
-  {
-    label: rootSkillID.value.replaceAll("_", " "),
-    to: `/skill-tree/${encodeURIComponent(rootSkillID.value)}`,
-  },
-  { label: skill.value?.name || skillName.value },
+  { label: "Links.SkillTree", to: "/skill-tree" },
+  { name: treeName.value, to: `/skill-tree/${encodeURIComponent(rootSkillID.value)}` },
+  { name: skill.value?.name || skillName.value },
 ]);
 useHead(() => ({ title: skill.value?.name || skillName.value }));
 let generation = 0;

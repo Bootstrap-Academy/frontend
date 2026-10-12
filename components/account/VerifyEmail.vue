@@ -5,7 +5,7 @@
   >
     <CheckBadgeIcon class="mb-4 h-10 w-10 max-w-xl text-accent" />
 
-    <h2 class="text-heading-2">{{ t("Headings.VerifyAccount") }}</h2>
+    <h2 class="text-heading-2 text-center">{{ t("Headings.VerifyAccount") }}</h2>
 
     <p class="mb-8 mt-2 max-w-xl text-center">
       {{ t("Body.VerifyAccountCard") }}

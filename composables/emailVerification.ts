@@ -7,6 +7,8 @@
 
 type Account = { id?: string; email_verified?: boolean; admin?: boolean } | null | undefined;
 type MailStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+/** What the note says: the server has sent a code, or its answer to the request is still open. */
+type MailNote = "" | "sent" | "open";
 
 const VERIFY_PATH = "/auth/verify-account";
 const MAIL_KEY = "verification-mail";
@@ -87,49 +89,93 @@ function mailStorage(): MailStorage | null {
   }
 }
 
+/** A note counts for its own account and for as long as a code works. */
+function currentNote(note: any, userId: string, now: number): boolean {
+  return (
+    note?.id === userId &&
+    typeof note.at === "number" &&
+    note.at <= now &&
+    now - note.at < VERIFICATION_CODE_LIFETIME
+  );
+}
+
 /**
- * Whether this browser asked for a code for this account that still works.
- * The note is shared by all tabs, so the link in the mail, which opens a new
- * tab, does not send a second one. A note past its time is removed, and so is
- * the one note for all accounts that earlier builds kept under the bare key.
+ * What this browser noted about a code for this account that would still
+ * work: "sent" once the server has answered the request, "open" as long as
+ * that answer is missing, and nothing without a note. The note is shared by
+ * all tabs, so the link in the mail, which opens a new tab, does not send a
+ * second one. A note past its time is removed, and so is the one note for all
+ * accounts that earlier builds kept under the bare key.
  */
+export function verificationMailNote(
+  userId: string | undefined,
+  storage: MailStorage | null = mailStorage(),
+  now = Date.now()
+): MailNote {
+  try {
+    if (!userId || !storage) return "";
+    storage.removeItem(MAIL_KEY);
+
+    const note = JSON.parse(storage.getItem(mailKey(userId)) || "null");
+    const current = currentNote(note, userId, now);
+    if (note !== null && !current) storage.removeItem(mailKey(userId));
+
+    return !current ? "" : note.open === true ? "open" : "sent";
+  } catch {
+    return "";
+  }
+}
+
+/** Whether this browser asked for a code for this account that still works. */
 export function verificationMailNoted(
   userId: string | undefined,
   storage: MailStorage | null = mailStorage(),
   now = Date.now()
 ): boolean {
-  try {
-    if (!userId || !storage) return false;
-    storage.removeItem(MAIL_KEY);
-
-    const note = JSON.parse(storage.getItem(mailKey(userId)) || "null");
-    const current =
-      note?.id === userId &&
-      typeof note.at === "number" &&
-      note.at <= now &&
-      now - note.at < VERIFICATION_CODE_LIFETIME;
-    if (note !== null && !current) storage.removeItem(mailKey(userId));
-
-    return current;
-  } catch {
-    return false;
-  }
+  return verificationMailNote(userId, storage, now) !== "";
 }
 
-/** False when the note cannot be kept; nothing is then sent without being asked for. */
-export function noteVerificationMail(
+function writeNote(
   userId: string | undefined,
-  storage: MailStorage | null = mailStorage(),
-  now = Date.now()
+  storage: MailStorage | null,
+  now: number,
+  open: boolean
 ): boolean {
   try {
     if (!userId || !storage) return false;
-    storage.setItem(mailKey(userId), JSON.stringify({ id: userId, at: now }));
+    storage.setItem(
+      mailKey(userId),
+      JSON.stringify(open ? { id: userId, at: now, open } : { id: userId, at: now })
+    );
 
     return verificationMailNoted(userId, storage, now);
   } catch {
     return false;
   }
+}
+
+/**
+ * A request for a code is noted before it is made, with its answer still
+ * open. If no answer arrives, the note stays as it is: nobody knows then
+ * whether a mail went out, and the confirmation page says so instead of
+ * naming a code. False when the note cannot be kept; nothing is then sent
+ * without being asked for.
+ */
+export function noteVerificationRequest(
+  userId: string | undefined,
+  storage: MailStorage | null = mailStorage(),
+  now = Date.now()
+): boolean {
+  return writeNote(userId, storage, now, true);
+}
+
+/** The server has answered that the code is sent. */
+export function noteVerificationMail(
+  userId: string | undefined,
+  storage: MailStorage | null = mailStorage(),
+  now = Date.now()
+): boolean {
+  return writeNote(userId, storage, now, false);
 }
 
 /**
@@ -147,6 +193,31 @@ export function forgetVerificationMail(
   } catch {
     /* A note that cannot be removed runs out with its code. */
   }
+}
+
+/**
+ * Removes every note whose code has run out, whichever account it belongs to,
+ * and every note nobody can read. A note is left behind when a session ends
+ * without a logout or the address is confirmed elsewhere; the start of the
+ * app clears it away (`plugins/storage-cleanup.client.ts`).
+ */
+export function clearExpiredVerificationMails(
+  storage: MailStorage & Pick<Storage, "length" | "key">,
+  now = Date.now()
+) {
+  const prefix = mailKey("");
+  const keys = Array.from({ length: storage.length }, (_, index) => storage.key(index) ?? "");
+
+  for (const key of keys.filter((key) => key.startsWith(prefix))) {
+    let note = null;
+    try {
+      note = JSON.parse(storage.getItem(key) || "null");
+    } catch {
+      /* A note nobody can read is no note. */
+    }
+    if (!currentNote(note, key.slice(prefix.length), now)) storage.removeItem(key);
+  }
+  storage.removeItem(MAIL_KEY);
 }
 
 /**

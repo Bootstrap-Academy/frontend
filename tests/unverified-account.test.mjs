@@ -60,14 +60,23 @@ function browserLocks() {
 function browserStorage(blocked = false) {
   const data = new Map();
   const local = {
+    get length() {
+      return data.size;
+    },
+    key: (index) => [...data.keys()][index] ?? null,
     getItem: (key) => (data.has(key) ? data.get(key) : null),
     setItem: (key, value) => data.set(key, String(value)),
     removeItem: (key) => data.delete(key),
   };
   return {
     data,
+    local,
     locks: browserLocks(),
-    note: (id, at = Date.now()) => data.set(`${KEY}:${id}`, JSON.stringify({ id, at })),
+    // `open` is a request whose answer never arrived.
+    note: (id, at = Date.now(), open = false) =>
+      data.set(`${KEY}:${id}`, JSON.stringify(open ? { id, at, open } : { id, at })),
+    // What the note of an account holds.
+    read: (id) => JSON.parse(data.get(`${KEY}:${id}`) ?? "null"),
     // The accounts this browser holds a note for.
     noted: () => [...data.keys()].map((key) => key.replace(`${KEY}:`, "")).sort(),
     window: blocked
@@ -234,16 +243,37 @@ test("the middleware sends an unconfirmed account on and runs after the legal ad
 
 test("the note lasts as long as a code works and belongs to one account", async () => {
   const storage = browserStorage();
-  const { verificationMailNoted, noteVerificationMail, forgetVerificationMail, ...rest } =
-    await rules(storage);
+  const {
+    verificationMailNote,
+    verificationMailNoted,
+    noteVerificationRequest,
+    noteVerificationMail,
+    forgetVerificationMail,
+    ...rest
+  } = await rules(storage);
   assert.equal(rest.VERIFICATION_CODE_LIFETIME, 4 * HOUR);
   const now = Date.parse("2026-10-12T12:00:00Z");
 
   assert.equal(verificationMailNoted("learner", undefined, now), false);
+  assert.equal(verificationMailNote("learner", undefined, now), "");
+  // A request is noted with its answer still open. That is the one further field,
+  // and it is there only as long as the answer is missing.
+  assert.equal(noteVerificationRequest("learner", undefined, now), true);
+  assert.deepEqual(storage.read("learner"), { id: "learner", at: now, open: true });
+  assert.equal(verificationMailNote("learner", undefined, now + 4 * HOUR - 1), "open");
+  assert.equal(verificationMailNoted("learner", undefined, now + 4 * HOUR - 1), true);
+  // The answer of the server settles it.
   assert.equal(noteVerificationMail("learner", undefined, now), true);
+  assert.equal(verificationMailNote("learner", undefined, now + 4 * HOUR - 1), "sent");
   assert.equal(verificationMailNoted("learner", undefined, now + 4 * HOUR - 1), true);
   // The note holds the account and the time, and nothing else.
-  assert.deepEqual(JSON.parse(storage.data.get(`${KEY}:learner`)), { id: "learner", at: now });
+  assert.deepEqual(storage.read("learner"), { id: "learner", at: now });
+  // Only the plain value `true` leaves the answer open.
+  for (const open of [false, "true", 1, null, {}]) {
+    storage.data.set(`${KEY}:learner`, JSON.stringify({ id: "learner", at: now, open }));
+    assert.equal(verificationMailNote("learner", undefined, now), "sent", JSON.stringify(open));
+  }
+  assert.equal(noteVerificationMail("learner", undefined, now), true);
   // Another account on this browser has not been sent anything, and its look changes nothing.
   assert.equal(verificationMailNoted("other", undefined, now + 1), false);
   assert.equal(verificationMailNoted(undefined, undefined, now + 1), false);
@@ -259,8 +289,11 @@ test("the note lasts as long as a code works and belongs to one account", async 
   forgetVerificationMail("other");
   assert.deepEqual(storage.noted(), ["learner"]);
 
-  // Once the code has run out, the note is gone.
+  // Once the code has run out, the note is gone, and so is an open one.
   assert.equal(verificationMailNoted("learner", undefined, now + 4 * HOUR), false);
+  assert.equal(storage.data.size, 0);
+  assert.equal(noteVerificationRequest("learner", undefined, now), true);
+  assert.equal(verificationMailNote("learner", undefined, now + 4 * HOUR), "");
   assert.equal(storage.data.size, 0);
 
   // A note from the future (a changed clock), one nobody can read or one that names
@@ -279,6 +312,34 @@ test("the note lasts as long as a code works and belongs to one account", async 
   forgetVerificationMail("learner");
   assert.equal(storage.data.size, 0);
   assert.equal(noteVerificationMail(undefined, undefined, now), false);
+  assert.equal(noteVerificationRequest(undefined, undefined, now), false);
+});
+
+test("the start of the app removes every note whose code has run out", async () => {
+  const storage = browserStorage();
+  const { clearExpiredVerificationMails } = await rules(storage);
+  const now = Date.parse("2026-10-12T12:00:00Z");
+  storage.note("current", now - 4 * HOUR + 1);
+  storage.note("unanswered", now - HOUR, true);
+  // Accounts that never came back to this browser: nobody else looks at their notes.
+  storage.note("expired", now - 4 * HOUR);
+  storage.note("expired-unanswered", now - 30 * 24 * HOUR, true);
+  storage.note("from-the-future", now + 1);
+  storage.data.set(`${KEY}:unreadable`, "{");
+  storage.data.set(`${KEY}:another-account`, JSON.stringify({ id: "current", at: now }));
+  storage.data.set(KEY, JSON.stringify({ id: "current", at: now }));
+  storage.data.set("payment", "pending");
+  storage.data.set(`${KEY}s`, "not a note");
+
+  clearExpiredVerificationMails(storage.local, now);
+  assert.deepEqual([...storage.data.keys()].sort(), [
+    "payment",
+    `${KEY}:current`,
+    `${KEY}:unanswered`,
+    `${KEY}s`,
+  ]);
+  // What stays is left as it was.
+  assert.deepEqual(storage.read("unanswered"), { id: "unanswered", at: now - HOUR, open: true });
 });
 
 test("the one note for all accounts that earlier builds kept is removed", async () => {
@@ -428,6 +489,8 @@ async function open(
     profile: 0,
     mails: 0,
     locked: [],
+    // Whether the note said "answer open" at the moment the request went out.
+    open: [],
     codes: 0,
     renewed: 0,
     notices: [],
@@ -446,6 +509,7 @@ async function open(
           POST: async (path) => {
             assert.equal(path, `/auth/users/${user.value.id}/email`);
             calls.mails++;
+            calls.open.push(storage.read(user.value.id)?.open === true);
             // Whether this window held the lock from the request to its answer.
             const before = lock();
             await new Promise(setImmediate);
@@ -502,6 +566,12 @@ async function open(
   Object.assign(scope, { requestEmailVerification, verifyAccount });
 
   const ui = host();
+  // A template ref hands an element out wrapped, so the document names the cursor's place alike.
+  scope.document = {
+    get activeElement() {
+      return ui.focused() && Vue.reactive(ui.focused());
+    },
+  };
   const app = ui.renderer.createApp(await evaluate("components/form/VerifyAccount.vue", scope), {
     onStatus: (status) => calls.status.push(status),
   });
@@ -521,6 +591,11 @@ async function open(
     storage,
     visibility,
     says: (key) => ui.text().includes(key),
+    // The one sentence of the page on what became of the code.
+    sentence: () =>
+      ui.text(ui.all().find((n) => n.type === "p" && n.props.role === "status")).trim(),
+    // What a screen reader is told without the cursor moving.
+    spoken: () => ui.text(ui.all().find((n) => n.type === "p" && n.props.role === "alert")).trim(),
     button,
     links: () =>
       ui
@@ -540,6 +615,14 @@ async function open(
       await settle();
       await this.press("Buttons.ConfirmCode");
     },
+    // The Enter key in the field: the form is sent while the cursor stays where it is.
+    async pressEnter() {
+      this.field().focus();
+      ui.all()
+        .find((n) => n.type === "form")
+        .props.onSubmit({ preventDefault() {} });
+      await settle();
+    },
   };
 }
 
@@ -547,8 +630,11 @@ test("whoever arrives without a code gets one, and the page says where it went",
   const page = await open(t);
   assert.equal(page.calls.mails, 1);
   assert.deepEqual(page.calls.locked, [true], "no other window looks for the note meanwhile");
+  assert.deepEqual(page.calls.open, [true], "the request is noted before it is made");
   assert.deepEqual(page.storage.noted(), ["learner"]);
-  assert.ok(page.says("Body.VerifyAccountSent"));
+  // The answer has arrived: the note holds the account and the time again, and nothing else.
+  assert.deepEqual(Object.keys(page.storage.read("learner")), ["id", "at"]);
+  assert.equal(page.sentence(), "Body.VerifyAccountSent");
   assert.ok(!page.says("Body.VerifyAccountNotSent") && !page.says("Body.VerifyAccountNoEmail"));
   assert.deepEqual(page.links(), ["/profile/edit"]);
   assert.ok(page.button("Buttons.ResendAccountVerificationCode") && page.button("Buttons.Logout"));
@@ -643,39 +729,118 @@ test("a refused request is said in a sentence, is not repeated unasked and can b
   page.server.mail = "ok";
   await page.press("Buttons.ResendAccountVerificationCode");
   assert.equal(page.calls.mails, 3);
-  assert.ok(page.says("Body.VerifyAccountSent"));
-  assert.ok(!page.says("Body.VerifyAccountNotSent"));
-  assert.deepEqual(page.storage.noted(), ["learner"]);
-  assert.deepEqual(page.calls.notices, [["success", "Success.ResendAccountVerificationCode"]]);
+  // The sentence of the page says it, once: no second message next to it.
+  assert.equal(page.sentence(), "Body.VerifyAccountResent");
+  assert.deepEqual(page.calls.notices, []);
+  assert.deepEqual(page.storage.read("learner") && Object.keys(page.storage.read("learner")), [
+    "id",
+    "at",
+  ]);
+
+  // The next look finds the note of a code that was sent.
+  page.visibility.value = "hidden";
+  await settle();
+  page.visibility.value = "visible";
+  await settle();
+  assert.equal(page.calls.mails, 3);
+  assert.equal(page.sentence(), "Body.VerifyAccountSent");
 });
 
-test("a request without an answer keeps its note, so a reload sends no second code", async (t) => {
+test("a request without an answer: the page says that it does not know, here and in every other window", async (t) => {
   const storage = browserStorage();
   const page = await open(t, { storage, mail: "lost" });
   assert.equal(page.calls.mails, 1);
-  assert.ok(
-    page.says("Body.VerifyAccountNotSent"),
-    "this page does not claim a mail it cannot know of"
-  );
-  assert.deepEqual(storage.noted(), ["learner"]);
+  // Neither a code that was sent nor one that was not: nobody knows which.
+  assert.equal(page.sentence(), "Body.VerifyAccountOpen");
+  assert.ok(!page.says("Body.VerifyAccountSent") && !page.says("Body.VerifyAccountNotSent"));
+  assert.ok(page.button("Buttons.ResendAccountVerificationCode"));
+  assert.deepEqual(Object.keys(storage.read("learner")), ["id", "at", "open"]);
+  assert.equal(storage.read("learner").open, true);
 
+  // The next look at the open page.
+  page.visibility.value = "hidden";
+  await settle();
+  page.visibility.value = "visible";
+  await settle();
+  assert.equal(page.calls.mails, 1, "no second request by itself");
+  assert.equal(page.sentence(), "Body.VerifyAccountOpen");
+
+  // A reload and a second tab read the same note.
+  for (const again of [await open(t, { storage, mail: "lost" }), await open(t, { storage })]) {
+    assert.equal(again.calls.mails, 0);
+    assert.equal(again.sentence(), "Body.VerifyAccountOpen");
+    assert.ok(!again.says("Body.VerifyAccountSent") && !again.says("Body.VerifyAccountNotSent"));
+  }
+
+  // The visitor can still ask. Without an answer the page still does not know.
   const reloaded = await open(t, { storage, mail: "lost" });
-  assert.equal(reloaded.calls.mails, 0);
-  // The visitor can still ask, and an answer of the server then decides about the note.
-  reloaded.server.mail = "limit";
   await reloaded.press("Buttons.ResendAccountVerificationCode");
   assert.equal(reloaded.calls.mails, 1);
+  assert.equal(reloaded.sentence(), "Body.VerifyAccountOpen");
+  assert.equal(storage.read("learner").open, true);
+  // An answer of the server decides about the note: a refusal removes it.
+  reloaded.server.mail = "limit";
+  await reloaded.press("Buttons.ResendAccountVerificationCode");
+  assert.equal(reloaded.calls.mails, 2);
+  assert.equal(reloaded.sentence(), "Body.VerifyAccountNotSent");
   assert.deepEqual(storage.noted(), []);
+  // And a code that went out closes it.
+  reloaded.server.mail = "ok";
+  await reloaded.press("Buttons.ResendAccountVerificationCode");
+  assert.equal(reloaded.sentence(), "Body.VerifyAccountResent");
+  assert.deepEqual(Object.keys(storage.read("learner")), ["id", "at"]);
+});
+
+test("a request without an answer after a code that was sent leaves its answer open", async (t) => {
+  const storage = browserStorage();
+  const page = await open(t, { storage });
+  assert.equal(page.sentence(), "Body.VerifyAccountSent");
+  page.server.mail = "lost";
+  await page.press("Buttons.ResendAccountVerificationCode");
+  assert.equal(page.calls.mails, 2);
+  assert.equal(page.sentence(), "Body.VerifyAccountOpen");
+  assert.equal((await open(t, { storage })).sentence(), "Body.VerifyAccountOpen");
+});
+
+test("a browser that keeps no note still learns that the answer is missing", async (t) => {
+  const page = await open(t, { storage: browserStorage(true), mail: "lost" });
+  assert.equal(page.calls.mails, 0);
+  await page.press("Buttons.ResendAccountVerificationCode");
+  assert.equal(page.calls.mails, 1);
+  assert.equal(page.sentence(), "Body.VerifyAccountOpen");
+});
+
+test("the account changes while this window waits for another one: nothing is sent for either", async (t) => {
+  const storage = browserStorage();
+  const other = account({ id: "other", name: "other", email: "other@example.invalid" });
+  // Another window holds the lock of the first account.
+  let release;
+  const held = storage.locks.request(
+    `${KEY}:learner`,
+    () => new Promise((done) => (release = done))
+  );
+  const page = await open(t, { storage });
+  assert.equal(page.calls.profile, 1);
+  assert.equal(page.calls.mails, 0, "this window waits for its turn");
+
+  // A login in another tab arrives here through the shared session.
+  page.user.value = other;
+  await settle();
+  release();
+  await held;
+  await settle();
+  assert.equal(page.calls.mails, 0);
+  assert.deepEqual(storage.noted(), []);
+  assert.equal(page.sentence(), "Body.VerifyAccount");
 });
 
 test("without a place for the note nothing is sent unasked", async (t) => {
   const page = await open(t, { storage: browserStorage(true) });
   assert.equal(page.calls.mails, 0);
-  assert.ok(page.says("Body.VerifyAccount"));
-  assert.ok(!page.says("Body.VerifyAccountSent"));
+  assert.equal(page.sentence(), "Body.VerifyAccount");
   await page.press("Buttons.ResendAccountVerificationCode");
   assert.equal(page.calls.mails, 1);
-  assert.ok(page.says("Body.VerifyAccountSent"));
+  assert.equal(page.sentence(), "Body.VerifyAccountResent");
 });
 
 test("an account without an address is sent to the profile, not asked for a code", async (t) => {
@@ -793,6 +958,30 @@ test("a code that cannot be right is said once, in the line at the field", async
   assert.equal(page.calls.codes, 0, "the server is not asked about it");
 });
 
+test("with the Enter key the cursor does not move, so the line at the field is said aloud", async (t) => {
+  const page = await open(t);
+  assert.equal(page.spoken(), "");
+
+  // The button: the cursor moves into the field, and the field itself is read out with its line.
+  page.button("Buttons.ConfirmCode").focus();
+  await page.press("Buttons.ConfirmCode");
+  assert.ok(page.ui.focused() === page.field());
+  assert.equal(page.spoken(), "");
+
+  // The Enter key in the empty field.
+  await page.pressEnter();
+  assert.equal(page.spoken(), "Error.VerificationCodeMissing");
+  await page.pressEnter();
+  assert.equal(page.spoken(), "Error.VerificationCodeMissing");
+
+  page.field().props["onUpdate:modelValue"]("abc");
+  page.field().props.onValid(false);
+  await page.pressEnter();
+  assert.equal(page.spoken(), "Error.VerificationCodeFormat");
+  assert.deepEqual(page.calls.notices, []);
+  assert.equal(page.calls.codes, 0);
+});
+
 test("the logout is on the page", async (t) => {
   const page = await open(t);
   await page.press("Buttons.Logout");
@@ -844,7 +1033,7 @@ test("the logout removes the note of the account that leaves", async () => {
 });
 
 /** The bar above the pages of the inner layout, as `route` and the session make it. */
-async function header(t, name, user) {
+async function header(t, name, user, guestReturn = null) {
   const pushed = [];
   const ui = host();
   const app = ui.renderer.createApp(
@@ -854,6 +1043,7 @@ async function header(t, name, user) {
           vue: Vue,
           "@heroicons/vue/24/solid": { ArrowLeftIcon: {} },
           "vue-i18n": { useI18n: () => ({ t: (key) => key }) },
+          "~/utils/guest/handoff": { guestReturnPath: () => guestReturn },
         })[module],
       computed: Vue.computed,
       console: { log() {} },
@@ -880,17 +1070,25 @@ test("the bar above the confirmation offers no way back that leads back to it", 
     assert.ok(!bar.button());
     assert.ok(bar.logo(), "the bar keeps its logo");
   }
-  // Nobody signed in: the way back is the login.
-  for (const user of [null, undefined, { id: "" }]) {
-    const bar = await header(t, "auth-verify-account", user);
+  // An account that came from the guest exercise keeps its way back to it.
+  for (const user of [account(), cookie(account())]) {
+    const bar = await header(t, "auth-verify-account", user, "/start");
     assert.ok(bar.button());
-    assert.ok(bar.logo());
     bar.button().props.onClick();
-    assert.deepEqual(bar.pushed, ["/auth/login"]);
+    assert.deepEqual(bar.pushed, ["/start"]);
   }
-  // Every other page keeps its button, with or without a session.
+  // Nobody signed in: the way back is the login, also with an exercise that was begun.
+  for (const user of [null, undefined, { id: "" }])
+    for (const guestReturn of [null, "/start"]) {
+      const bar = await header(t, "auth-verify-account", user, guestReturn);
+      assert.ok(bar.button());
+      assert.ok(bar.logo());
+      bar.button().props.onClick();
+      assert.deepEqual(bar.pushed, ["/auth/login"]);
+    }
+  // Every other page keeps its button and its target, with or without a session.
   for (const user of [account(), null]) {
-    const bar = await header(t, "profile-edit", user);
+    const bar = await header(t, "profile-edit", user, "/start");
     assert.ok(bar.button());
     bar.button().props.onClick();
     assert.deepEqual(bar.pushed, ["/dashboard"]);
@@ -899,7 +1097,7 @@ test("the bar above the confirmation offers no way back that leads back to it", 
 
 /** The page around the form. `query` is what the address carries; the form is a stand-in. */
 async function confirmation(t, query = {}, guestReturn = "") {
-  const titles = [];
+  let head = () => ({});
   const scope = {
     require: (name) =>
       ({
@@ -913,7 +1111,7 @@ async function confirmation(t, query = {}, guestReturn = "") {
     computed: Vue.computed,
     definePageMeta() {},
     useRoute: () => ({ query }),
-    useHead: (head) => titles.push(head().title),
+    useHead: (made) => (head = made),
     isPublicLegalRoute,
     internalPath,
     window: browserStorage().window,
@@ -932,7 +1130,8 @@ async function confirmation(t, query = {}, guestReturn = "") {
   await settle();
   const one = (type) => ui.all().find((n) => n.type === type);
   return {
-    titles,
+    // What the tab says at this moment.
+    title: () => head().title,
     form: () => one("form"),
     heading: () => one("header")?.props.heading,
     link: () => one("a") && { to: one("a").props.to, label: ui.text(one("a")).trim() },
@@ -956,10 +1155,12 @@ test("the page names its purpose and leads a confirmed account only to a page of
   ]) {
     const page = await confirmation(t, { redirect });
     assert.equal(page.heading(), "Headings.ConfirmEmail");
-    assert.deepEqual(page.titles, ["Headings.ConfirmEmail · Bootstrap Academy"]);
+    assert.equal(page.title(), "Headings.ConfirmEmail · Bootstrap Academy");
     assert.ok(page.form() && !page.link(), "the form stands until the address is confirmed");
     await page.confirm();
     assert.ok(!page.form());
+    // The card says that the address is confirmed, and so does the tab.
+    assert.equal(page.title(), "Headings.EmailConfirmed · Bootstrap Academy");
     assert.deepEqual(page.link(), { to, label }, JSON.stringify(redirect));
   }
   // A guest who began an exercise goes back to it first.
@@ -987,16 +1188,34 @@ test("both languages name the address and hold every text the page uses", async 
     const { default: locale } = await import(`../locales/${language}.json`, {
       with: { type: "json" },
     });
-    for (const key of ["VerifyAccountSending", "VerifyAccountSent", "VerifyAccountNotSent"])
+    for (const key of [
+      "VerifyAccountSending",
+      "VerifyAccountSent",
+      "VerifyAccountResent",
+      "VerifyAccountOpen",
+      "VerifyAccountNotSent",
+    ])
       assert.match(locale.Body[key], /\{email\}/, `${language} ${key}`);
-    assert.ok(
-      locale.Body.VerifyAccountNotSent.includes(locale.Buttons.ResendAccountVerificationCode)
+    // The two sentences without a code that surely went out point at the way to a new one.
+    for (const key of ["VerifyAccountNotSent", "VerifyAccountOpen"])
+      assert.ok(locale.Body[key].includes(locale.Buttons.ResendAccountVerificationCode), key);
+    // The sentence for an answer that never came claims neither a sent code nor a failed one.
+    assert.doesNotMatch(
+      locale.Body.VerifyAccountOpen,
+      /geschickt|gesendet|konnten|we've sent|couldn't/i
     );
+    // The sentence of a visit in which nothing was sent does not take a mail for granted.
+    assert.match(locale.Body.VerifyAccount, /^(Wenn du|If you)/);
+    // Said once: the message that used to stand next to the sentence is gone.
+    assert.ok(!("ResendAccountVerificationCode" in locale.Success));
     const texts = [
       locale.Headings.ConfirmEmail,
+      locale.Headings.EmailConfirmed,
       locale.Body.VerifyAccount,
       locale.Body.VerifyAccountSending,
       locale.Body.VerifyAccountSent,
+      locale.Body.VerifyAccountResent,
+      locale.Body.VerifyAccountOpen,
       locale.Body.VerifyAccountNotSent,
       locale.Body.VerifyAccountNoEmail,
       locale.Inputs.VerificationCode,
@@ -1007,16 +1226,22 @@ test("both languages name the address and hold every text the page uses", async 
       locale.Buttons.AddEmail,
       locale.Buttons.Continue,
       locale.Success.VerifyAccount,
-      locale.Success.ResendAccountVerificationCode,
       locale.Error.VerificationCodeMissing,
       locale.Error.VerificationCodeFormat,
       locale.Error.InvalidVerificationCode,
       locale.Error.VerifyEmail,
+      // The ways to the page say what the page says: the dialogs after the registration and
+      // after a changed address, the card in the account and the note of the coin order.
+      locale.Buttons.VerifyAccount,
+      locale.Headings.VerifyAccount,
+      locale.Body.VerifyAccountCard,
+      locale.Error.AccountNotVerified,
     ];
     for (const text of texts) assert.ok(typeof text === "string" && text.length > 0, language);
     // One word for the thing the mail brings, on the whole page.
     assert.equal(locale.Inputs.VerificationCode, "Code");
+    // The English "verify" counts as well as "verified", "verification" and "verifizieren".
     for (const text of texts)
-      assert.doesNotMatch(text, /verifi|schlüssel|\bkey\b/i, `${language}: ${text}`);
+      assert.doesNotMatch(text, /verif[iy]|schlüssel|\bkey\b/i, `${language}: ${text}`);
   }
 });

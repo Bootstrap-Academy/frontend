@@ -62,7 +62,10 @@
       >{{ t("Moderation.RestrictedAccess") }}</NuxtLink
     >
 
-    <NuxtLink to="/auth/signup" class="self-center">
+    <NuxtLink
+      :to="{ path: '/auth/signup', query: redirect ? { redirect } : {} }"
+      class="self-center"
+    >
       {{ t("Links.DontHaveAccount") }}
       <span class="text-accent">{{ t("Links.CreateOne") }}</span>
     </NuxtLink>
@@ -227,6 +230,7 @@ export default defineComponent({
       needMFA,
       needRecoveryCode,
       restrictedAccess,
+      redirect,
     };
   },
 });

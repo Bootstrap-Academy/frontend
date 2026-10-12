@@ -265,6 +265,8 @@ export async function deleteUser() {
     const current = getSessionSnapshot();
     if (current.userId === user_id) setStates(null);
     clearLearningStorage(user_id);
+    // An account that is gone leaves no note on a code behind.
+    forgetVerificationMail(user_id);
     broadcastLearningLogout(expected, true);
 
     return [response, null];
