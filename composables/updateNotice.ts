@@ -27,10 +27,11 @@ export function updateNoticeSubject(id: unknown, token: unknown, loaded: boolean
 }
 
 /** The login and the registration start the session while their form is still on
- * screen. The notice waits for the page that follows them. */
+ * screen, and an account whose e-mail address is not confirmed goes on from there to
+ * the confirmation. The notice waits for the page that follows them. */
 export function isSessionEntryRoute(path: string) {
   const pathname = (path.split(/[?#]/, 1)[0] ?? "").toLowerCase().replace(/\/+$/, "");
-  return pathname === "/auth/login" || pathname === "/auth/signup";
+  return ["/auth/login", "/auth/signup", "/auth/verify-account"].includes(pathname);
 }
 
 export function updateNoticeKey(subject: string, version = UPDATE_NOTICE_VERSION): string {

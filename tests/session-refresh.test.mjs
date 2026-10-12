@@ -329,6 +329,7 @@ for (const result of ["success", "unauthorized", "offline"]) {
     const answer = deferred();
     const calls = [];
     const cleanup = {};
+    const forgotten = [];
     const bindings = {
       revokeSession: tab().revokeSession,
       withSessionRefreshLock: (run) => run(),
@@ -337,6 +338,8 @@ for (const result of ["success", "unauthorized", "offline"]) {
       useUser: () => ({ value: { id: "A" } }),
       prepareLearningLogout: async () => true,
       clearLearningStorage: () => {},
+      // The note on a code for the e-mail address belongs to the account that leaves.
+      forgetVerificationMail: (id) => forgotten.push(id),
       broadcastLearningLogout: (ended) => assert.deepEqual(ended, captured),
       setStates: (value) => {
         assert.equal(value, null);
@@ -365,6 +368,7 @@ for (const result of ["success", "unauthorized", "offline"]) {
     const pending = logout();
     await new Promise((resolve) => setImmediate(resolve));
     assert.equal(current.identity, null);
+    assert.deepEqual(forgotten, ["A"]);
     assert.equal(calls.length, 1);
     assert.equal(calls[0].url, "https://synthetic.invalid/auth/sessions/A/S");
     assert.equal(calls[0].options.retry, 0);

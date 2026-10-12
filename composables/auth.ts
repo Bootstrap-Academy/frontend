@@ -61,6 +61,8 @@ export async function logout() {
     // when its refresh token has already been revoked or the API is offline.
     setStates(null);
     try {
+      // The note on a code that was sent belongs to the session that ends here.
+      forgetVerificationMail(userId);
       clearLearningStorage(userId);
     } catch {
       // Browser cleanup must never prevent revoking this session on the server.
@@ -154,8 +156,9 @@ export async function requestEmailVerification() {
 
     return [response, null];
   } catch (error: any) {
-    // No mail went out, so the page must not say that one did.
-    forgetVerificationMail(user_id);
+    // Only an answer of the server says that no mail went out. A request that
+    // broke off, as it does when the page is reloaded meanwhile, may have been sent.
+    if (error?.response) forgetVerificationMail(user_id);
 
     return [null, error.data];
   }

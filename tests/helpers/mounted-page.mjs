@@ -96,6 +96,7 @@ export const tag =
 /** Element tree that keeps every element and text ever written to it, so a passing state cannot hide. */
 export function host() {
   const said = [];
+  let focused = null;
   const node = (type, text = "") => {
     if (type !== "comment") said.push(text);
     return {
@@ -110,6 +111,16 @@ export function host() {
       addEventListener() {},
       reportValidity: () => true,
       setCustomValidity() {},
+      // What a form reaches for to put the cursor into one of its fields.
+      querySelector(name) {
+        return all(this)
+          .slice(1)
+          .find((n) => n.type === name);
+      },
+      focus() {
+        // A template ref hands the element out wrapped; the tree holds it as it is.
+        focused = Vue.toRaw(this);
+      },
     };
   };
   const detach = (n) => {
@@ -153,7 +164,14 @@ export function host() {
   const all = (n = root) => [n, ...n.children.flatMap(all)];
   const text = (n = root) =>
     n.type === "comment" ? "" : [n.text, ...n.children.map(text)].join(" ");
-  return { root, renderer, all, text, ever: (what) => said.some((s) => s.includes(what)) };
+  return {
+    root,
+    renderer,
+    all,
+    text,
+    ever: (what) => said.some((s) => s.includes(what)),
+    focused: () => focused,
+  };
 }
 
 /** Lets pending answers, watchers and renders run. */

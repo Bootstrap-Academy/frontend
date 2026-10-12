@@ -2,6 +2,7 @@
   <form
     class="flex flex-col gap-box"
     :class="{ 'form-submitting': form.submitting }"
+    novalidate
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
@@ -16,10 +17,11 @@
         v-model="form.code.value"
         @valid="form.code.valid = $event"
         :rules="form.code.rules"
+        :show-error="attempted"
       />
 
       <InputBtn :loading="form.submitting" class="self-center" @click="onclickSubmitForm()" mt mb>
-        {{ t("Buttons.VerifyAccount") }}
+        {{ t("Buttons.ConfirmCode") }}
       </InputBtn>
 
       <button
@@ -73,6 +75,8 @@ export default defineComponent({
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
+    // The field names what is wrong with the code, also when it was never touched.
+    const attempted = ref(false);
 
     // ============================================================= reactive
     const form = reactive<IForm>({
@@ -80,8 +84,9 @@ export default defineComponent({
         valid: false,
         value: "",
         rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.VerificationCode",
-          (v: string) => /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) || "Error.InputCodeFormat",
+          (v: string) => !!v || "Error.VerificationCodeMissing",
+          (v: string) =>
+            /^([a-zA-Z\d]{4}-){3}[a-zA-Z\d]{4}$/.test(v) || "Error.VerificationCodeFormat",
         ],
       },
       submitting: false,
@@ -94,7 +99,6 @@ export default defineComponent({
           }
         }
 
-        if (refForm.value) refForm.value.reportValidity();
         return isValid;
       },
       body: () => {
@@ -125,7 +129,7 @@ export default defineComponent({
       () => needsEmailVerification(user.value, profileLoaded.value) && !email.value
     );
     const notice = computed(() => {
-      if (missingEmail.value) return "Body.MissingEmail";
+      if (missingEmail.value) return "Body.VerifyAccountNoEmail";
       if (mail.value === "checking") return "";
       // The other sentences name the address.
       if (mail.value === "" || !email.value) return "Body.VerifyAccount";
@@ -140,13 +144,19 @@ export default defineComponent({
     // A request the visitor started may be on its way while the page asks the server.
     const sending = () => mail.value === "sending";
 
+    // A confirmed address ends the page, and nothing is left to remember.
+    function confirmed() {
+      forgetVerificationMail(user.value?.id);
+      emit("status", "success");
+    }
+
     async function send() {
       mail.value = "sending";
       const [success, error] = await requestEmailVerification();
 
       // Another tab or device has confirmed the address meanwhile.
       if (error?.detail == "Error.EmailAlreadyVerified") await getUser();
-      if (user.value?.email_verified) return emit("status", "success");
+      if (user.value?.email_verified) return confirmed();
       mail.value = success ? "sent" : "failed";
 
       return !!success;
@@ -155,7 +165,8 @@ export default defineComponent({
     /**
      * Whoever arrives without a code that still works gets one, once: the
      * request is noted before it is made, so neither a reload nor a second tab
-     * sends another. Without a place for the note nothing is sent unasked.
+     * sends another, and one window at a time looks for the note and writes
+     * it. Without a place for the note nothing is sent unasked.
      */
     let arriving = false;
     async function arrive() {
@@ -169,13 +180,18 @@ export default defineComponent({
         // another tab or device may have confirmed the address since.
         await getUser();
         if (user.value?.id !== owner) return void (mail.value = "");
-        if (user.value?.email_verified) return emit("status", "success");
-        if (sending()) return;
+        if (user.value?.email_verified) return confirmed();
 
-        const waiting = needsEmailVerification(user.value, profileLoaded.value) && !!email.value;
-        if (waiting && verificationMailNoted(owner)) mail.value = "sent";
-        else if (waiting && mail.value !== "failed" && noteVerificationMail(owner)) await send();
-        else if (mail.value === "checking") mail.value = "";
+        await withVerificationMailLock(owner, async () => {
+          // The wait for the other window may have been long.
+          if (user.value?.id !== owner) return void (mail.value = "");
+          if (sending()) return;
+
+          const waiting = needsEmailVerification(user.value, profileLoaded.value) && !!email.value;
+          if (waiting && verificationMailNoted(owner)) mail.value = "sent";
+          else if (waiting && mail.value !== "failed" && noteVerificationMail(owner)) await send();
+          else if (mail.value === "checking") mail.value = "";
+        });
       } finally {
         arriving = false;
       }
@@ -236,7 +252,9 @@ export default defineComponent({
                   : "Error.VerifyEmail",
             });
       } else {
-        openSnackbar("error", "Error.InvalidForm");
+        // The line at the field says what is wrong; the field is where it is put right.
+        attempted.value = true;
+        refForm.value?.querySelector("input")?.focus();
       }
     }
 
@@ -263,6 +281,7 @@ export default defineComponent({
 
     return {
       form,
+      attempted,
       onclickSubmitForm,
       refForm,
       t,
