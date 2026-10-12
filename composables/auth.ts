@@ -149,8 +149,14 @@ export async function requestEmailVerification() {
 
     const response = await POST(`/auth/users/${user_id}/email`);
 
+    // The confirmation page sends no second code while this one works.
+    noteVerificationMail(user_id);
+
     return [response, null];
   } catch (error: any) {
+    // No mail went out, so the page must not say that one did.
+    forgetVerificationMail(user_id);
+
     return [null, error.data];
   }
 }

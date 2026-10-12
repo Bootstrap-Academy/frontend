@@ -37,19 +37,17 @@
           class="mb-7 mt-10 md:mb-10 md:mt-14"
         />
 
-        <NuxtLink :to="guestReturn || '/dashboard'">
-          <Btn>{{ guestReturn ? guestCopy.continue : $t("CharacterDashboard.Nav") }}</Btn>
+        <NuxtLink :to="guestReturn || destination">
+          <Btn>{{
+            guestReturn
+              ? guestCopy.continue
+              : $t(destination == "/dashboard" ? "CharacterDashboard.Nav" : "Buttons.Continue")
+          }}</Btn>
         </NuxtLink>
       </article>
 
       <section class="container-form" v-else>
-        <SectionTitle
-          center
-          heading="Headings.VerifyAccount"
-          body="Body.VerifyAccount"
-          size="sm"
-          class="mb-card"
-        />
+        <SectionTitle center heading="Headings.VerifyAccount" size="sm" class="mb-card" />
         <FormVerifyAccount @status="status = $event" />
       </section>
     </Transition>
@@ -72,8 +70,11 @@ export default {
     const status = ref("");
 
     const { locale } = useI18n();
+    const route = useRoute();
     return {
       status,
+      // Where the account was heading when it was sent here.
+      destination: computed(() => verifiedDestination(route.query.redirect)),
       guestReturn: guestReturnPath(),
       guestCopy: computed(() => guestCopy(locale.value)),
     };
