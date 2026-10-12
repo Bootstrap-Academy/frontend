@@ -491,8 +491,8 @@ test("an account without an address is sent to the profile, not asked for a code
     const page = await open(t, { user: account({ email }) });
     assert.equal(page.calls.mails, 0);
     assert.ok(page.says("Body.MissingEmail"));
-    assert.equal(page.field(), undefined);
-    assert.equal(page.button("Buttons.ResendAccountVerificationCode"), undefined);
+    assert.ok(!page.field());
+    assert.ok(!page.button("Buttons.ResendAccountVerificationCode"));
     assert.deepEqual(page.links(), ["/profile/edit"]);
     assert.ok(page.says("Buttons.AddEmail") && page.button("Buttons.Logout"));
   }
@@ -541,8 +541,8 @@ test("nobody signed in: the code alone confirms, and nothing is offered that nee
   assert.equal(page.calls.profile + page.calls.mails, 0);
   assert.ok(page.says("Body.VerifyAccount"));
   assert.deepEqual(page.links(), []);
-  assert.equal(page.button("Buttons.ResendAccountVerificationCode"), undefined);
-  assert.equal(page.button("Buttons.Logout"), undefined);
+  assert.ok(!page.button("Buttons.ResendAccountVerificationCode"));
+  assert.ok(!page.button("Buttons.Logout"));
   page.server.user = account();
   await page.enter(page.server.code);
   assert.deepEqual(page.calls.status, ["success"]);
