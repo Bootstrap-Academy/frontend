@@ -1,3 +1,5 @@
+import { decodeApiError } from "~/utils/apiError";
+
 export type PurchaseOffer = {
   id: string;
   hash: string;
@@ -166,7 +168,13 @@ export async function requestPurchaseOffer(path: string): Promise<PurchaseOffer 
         localStorage.removeItem(recoveryKey(owner, product));
     }
     return result.offer;
-  } catch {
+  } catch (error: any) {
+    // The server makes no offer before the e-mail address is confirmed. A page
+    // that did not know (an old tab) leads to the confirmation and back here.
+    if (decodeApiError(error).messageKey === "Error.AccountNotVerified") {
+      await navigateTo(emailVerificationRoute(useRouter().currentRoute.value.fullPath));
+      return null;
+    }
     const owner = useUser().value?.id;
     const product = pathScope(path);
     if (owner && product?.startsWith("events:")) {
