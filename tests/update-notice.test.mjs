@@ -620,7 +620,7 @@ test("actual app: opened signed out, the notice appears after the login and stay
     { data }
   );
 });
-test("the login and the registration are the pages where a session starts", () => {
+test("the login, the registration and the confirmation are the pages where a session starts", () => {
   for (const path of [
     "/auth/login",
     "/auth/login/",
@@ -628,12 +628,16 @@ test("the login and the registration are the pages where a session starts", () =
     "/auth/login?redirect=/dashboard",
     "/auth/signup",
     "/auth/signup/#form",
+    // An account whose address is not confirmed is led here from the two above.
+    "/auth/verify-account",
+    "/auth/verify-account/",
+    "/Auth/Verify-Account?redirect=/courses/python",
   ])
     assert.equal(isSessionEntryRoute(path), true, path);
   for (const path of [
     "/",
     "/auth",
-    "/auth/verify-account",
+    "/auth/verify-account/again",
     "/auth/forgot-password",
     "/auth/login-help",
     "/dashboard",
@@ -642,7 +646,7 @@ test("the login and the registration are the pages where a session starts", () =
   ])
     assert.equal(isSessionEntryRoute(path), false, path);
 });
-for (const entry of ["/auth/login", "/auth/signup"]) {
+for (const entry of ["/auth/login", "/auth/signup", "/auth/verify-account"]) {
   test(`actual app: on ${entry} the notice waits for the page that follows`, async () => {
     await mounted(
       "de",

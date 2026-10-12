@@ -47,7 +47,7 @@
       </article>
 
       <section class="container-form" v-else>
-        <SectionTitle center heading="Headings.VerifyAccount" size="sm" class="mb-card" />
+        <SectionTitle center heading="Headings.ConfirmEmail" size="sm" class="mb-card" />
         <FormVerifyAccount @status="status = $event" />
       </section>
     </Transition>
@@ -63,14 +63,13 @@ definePageMeta({
 });
 
 export default {
-  head: {
-    title: "Verify Account",
-  },
   setup() {
     const status = ref("");
 
-    const { locale } = useI18n();
+    const { locale, t } = useI18n();
     const route = useRoute();
+    useHead(() => ({ title: `${t("Headings.ConfirmEmail")} · Bootstrap Academy` }));
+
     return {
       status,
       // Where the account was heading when it was sent here.

@@ -2,7 +2,7 @@
   <section
     class="container-fluid flex items-center justify-between gap-4 bg-secondary print:hidden"
   >
-    <Btn tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
+    <Btn v-if="!noWayBack" tertiary :icon="ArrowLeftIcon" @click="onclickNavigate">
       <img
         src="/images/logo.png"
         class="h-auto w-6 object-contain"
@@ -11,6 +11,14 @@
 
       {{ t(backRoute.label) }}
     </Btn>
+    <!-- Without a way back the bar keeps its logo and the height of the button. -->
+    <div v-else class="flex min-h-[calc(2.75rem+2px)] items-center">
+      <img
+        src="/images/logo.png"
+        class="h-auto w-6 object-contain"
+        :alt="t('AltAttributes.BootstrapAcademyLogo')"
+      />
+    </div>
 
     <div id="navbar-back-end"></div>
   </section>
@@ -28,6 +36,14 @@ export default defineComponent({
 
     const router = useRouter();
     const route = useRoute();
+    const user = <any>useUser();
+
+    /**
+     * From the confirmation of the e-mail address "back" leads a signed-in
+     * account to the login, which sends it to the dashboard and from there to
+     * the confirmation again. The page offers the logout itself.
+     */
+    const noWayBack = computed(() => route.name == "auth-verify-account" && !!user.value?.id);
 
     function hasHistory() {
       return window.history.length > 2;
@@ -139,7 +155,7 @@ export default defineComponent({
       };
     });
 
-    return { ArrowLeftIcon, t, onclickNavigate, backRoute };
+    return { ArrowLeftIcon, t, onclickNavigate, backRoute, noWayBack };
   },
 });
 </script>

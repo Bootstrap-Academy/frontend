@@ -10,6 +10,8 @@ type MailStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
 const VERIFY_PATH = "/auth/verify-account";
 const MAIL_KEY = "verification-mail";
+/** Every account has its own note, so a second account on this browser leaves the first one's alone. */
+const mailKey = (userId: string) => `${MAIL_KEY}:${userId}`;
 
 /**
  * The API keeps a code for four hours (the default of its `verification_code_ttl`),
@@ -50,11 +52,16 @@ export function emailVerificationRoute(target: unknown = "") {
     : { path: VERIFY_PATH, query: { redirect } };
 }
 
-/** Where a confirmed account goes on: a page of this site that is not a login page. */
+/**
+ * Where a confirmed account goes on: a page of this site that is not a login
+ * page. The dashboard written with a slash at its end is the dashboard.
+ */
 export function verifiedDestination(target: unknown): string {
   const path = internalPath(target);
 
-  return path && !/^\/auth(\/|$|[?#])/i.test(path) ? path : "/dashboard";
+  return path && !/^\/auth(\/|$|[?#])/i.test(path) && !/^\/dashboard\/*$/i.test(path)
+    ? path
+    : "/dashboard";
 }
 
 /**
@@ -83,7 +90,8 @@ function mailStorage(): MailStorage | null {
 /**
  * Whether this browser asked for a code for this account that still works.
  * The note is shared by all tabs, so the link in the mail, which opens a new
- * tab, does not send a second one. A note past its time is removed.
+ * tab, does not send a second one. A note past its time is removed, and so is
+ * the one note for all accounts that earlier builds kept under the bare key.
  */
 export function verificationMailNoted(
   userId: string | undefined,
@@ -91,12 +99,18 @@ export function verificationMailNoted(
   now = Date.now()
 ): boolean {
   try {
-    const note = JSON.parse(storage?.getItem(MAIL_KEY) || "null");
-    const current =
-      typeof note?.at === "number" && note.at <= now && now - note.at < VERIFICATION_CODE_LIFETIME;
-    if (note !== null && !current) storage?.removeItem(MAIL_KEY);
+    if (!userId || !storage) return false;
+    storage.removeItem(MAIL_KEY);
 
-    return current && !!userId && note.id === userId;
+    const note = JSON.parse(storage.getItem(mailKey(userId)) || "null");
+    const current =
+      note?.id === userId &&
+      typeof note.at === "number" &&
+      note.at <= now &&
+      now - note.at < VERIFICATION_CODE_LIFETIME;
+    if (note !== null && !current) storage.removeItem(mailKey(userId));
+
+    return current;
   } catch {
     return false;
   }
@@ -110,7 +124,7 @@ export function noteVerificationMail(
 ): boolean {
   try {
     if (!userId || !storage) return false;
-    storage.setItem(MAIL_KEY, JSON.stringify({ id: userId, at: now }));
+    storage.setItem(mailKey(userId), JSON.stringify({ id: userId, at: now }));
 
     return verificationMailNoted(userId, storage, now);
   } catch {
@@ -118,15 +132,41 @@ export function noteVerificationMail(
   }
 }
 
-/** After a refused request and after the confirmation there is nothing left to remember. */
+/**
+ * After a request the server refused, after the confirmation and after the
+ * logout there is nothing left to remember about this account.
+ */
 export function forgetVerificationMail(
   userId: string | undefined,
   storage: MailStorage | null = mailStorage()
 ) {
   try {
-    if (JSON.parse(storage?.getItem(MAIL_KEY) || "null")?.id === userId)
-      storage?.removeItem(MAIL_KEY);
+    if (!userId || !storage) return;
+    storage.removeItem(mailKey(userId));
+    storage.removeItem(MAIL_KEY);
   } catch {
-    /* A note that cannot be read is replaced by the next one. */
+    /* A note that cannot be removed runs out with its code. */
   }
+}
+
+/**
+ * Runs `action` while no other window of this browser looks for the note of
+ * this account or writes it, so two windows that arrive at the same moment ask
+ * for one code. Where the browser has no such lock or refuses it, the action
+ * runs without one.
+ */
+export async function withVerificationMailLock(userId: string, action: () => Promise<void>) {
+  let started = false;
+  const run = () => {
+    started = true;
+    return action();
+  };
+
+  try {
+    if (navigator.locks) return await navigator.locks.request(mailKey(userId), run);
+  } catch (error) {
+    if (started) throw error;
+  }
+
+  return run();
 }

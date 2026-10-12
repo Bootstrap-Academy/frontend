@@ -343,7 +343,6 @@ try {
   await play(f, true);
   await f.page.getByRole("link", { name: "Create a free account", exact: true }).click();
   await f.page.getByLabel("Nickname", { exact: true }).fill("GuestTest");
-  await f.page.getByLabel("Your display name", { exact: true }).fill("Local test account");
   await f.page.getByLabel("E-mail Address", { exact: true }).fill("local@example.invalid");
   await f.page.getByLabel("Password", { exact: true }).fill("Synthetic12345");
   await f.page.locator('input[type="checkbox"]').nth(0).check();
@@ -359,10 +358,10 @@ try {
     false
   );
   await f.page.getByRole("link", { name: "Verify your email", exact: true }).click();
-  await f.page.getByLabel("Verification Code", { exact: true }).fill("1234-1234-1234-1234");
+  await f.page.getByLabel("Code", { exact: true }).fill("1234-1234-1234-1234");
   await f.page
     .locator("form")
-    .getByRole("button", { name: /Verify Account/i })
+    .getByRole("button", { name: /Confirm code/i })
     .click();
   f.mode("uncertain");
   await f.page.getByRole("link", { name: "Continue in the course", exact: true }).click();
