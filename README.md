@@ -27,3 +27,9 @@ If you would like to submit a bug report or feature request, or are looking for 
 ## Note on Account Creation
 
 You need to create separate accounts for test instances (localhost, [https://test.bootstrap.academy](https://test.bootstrap.academy), PullRequest-preview pages) and live instances ([https://bootstrap.academy](https://bootstrap.academy)). These are two separate database systems.
+
+## License
+
+Copyright (C) 2023–2026 Cedric Mössner
+
+This project is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See [`LICENSE`](LICENSE) for the full license text.
