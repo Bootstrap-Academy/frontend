@@ -3,7 +3,7 @@ import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 import { useMatchingsForLectures } from "./matching";
 import { MatchingForSections } from "~/types/matching";
-import { loadPracticeRows, practiceOwner } from "~/utils/coursePractice";
+import { loadPracticeRows, practiceCache, practiceOwner } from "~/utils/coursePractice";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourseInfo = () =>
@@ -136,6 +136,21 @@ export async function getPracticeExercises(
     () => {}
   );
   return rows;
+}
+
+/**
+ * A confirmed answer (`solved`) or an accepted rating or report (`rated`) of one exercise
+ * reaches the course's exercises for this learner, so the course page and the next visit of
+ * an exercise page show it without a new read.
+ */
+export function notePracticeChange(
+  field: "solved" | "rated",
+  endpoint: "multiple_choice" | "matchings",
+  exercise?: { id?: string; task_id?: string } | null
+) {
+  if (!exercise?.id || !exercise.task_id) return;
+  const learner = practiceOwner(useUser().value, useSession().value);
+  practiceCache[field](learner, endpoint, exercise.task_id, exercise.id);
 }
 
 export const assignQuizzesInCourse = async () => {

@@ -66,7 +66,8 @@ async function load() {
   items.value = [];
   try {
     // On the course's own pages a lecture change remounts this list; what the course has already
-    // read is not read again. Elsewhere, such as in a learning room, every visit reads anew.
+    // read is not read again. Elsewhere, such as under a lesson whose activities answer exercises
+    // in place, every visit reads anew.
     const result = await loadCoursePractice(
       GET,
       {

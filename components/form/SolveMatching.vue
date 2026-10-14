@@ -351,6 +351,14 @@ async function onclickSubmitForm() {
 
   if (props.data.solved == true || props.data?.creator == user.value?.id) return;
   formSubmitting.value = true;
+  // The list may be older than the server (another tab or device). A matching solved there is
+  // not sent again, because another attempt can cost a heart.
+  const [current] = await getMatching(props.data.id, props.data.task_id);
+  if (current?.solved === true) {
+    formSubmitting.value = false;
+    emits("solved", props.data.id);
+    return;
+  }
   const [success, error] = await solveMatching(props.data.task_id, props.data.id, {
     answer: answer,
   });

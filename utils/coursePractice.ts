@@ -22,16 +22,19 @@ export function practiceOwner(user: Identity, session: Identity) {
 /**
  * The exercises of one course or skill, read once while the learner works in it. A lecture
  * change, the quiz and matching pages and the way back to the course take them from here.
- * An answer updates its own row; nothing else is read again until the learner leaves.
+ * A confirmed answer, rating or report updates its own row; nothing else is read again until
+ * the learner leaves.
  */
 export function createPracticeCache() {
   let key = "";
+  let owner = "";
   let tasks: Promise<any[]> | undefined;
   let rows = new Map<string, { promise: Promise<any[]>; value?: any[] }>();
   // Rows whose state the server settles later (a coding verdict) are read on every visit.
   let live = new Set<string>();
   function forget() {
     key = "";
+    owner = "";
     tasks = undefined;
     rows = new Map();
     live = new Set();
@@ -41,7 +44,25 @@ export function createPracticeCache() {
     if (next !== key) {
       forget();
       key = next;
+      owner = source.owner;
     }
+  }
+  // Changes reported for another account or session never touch these rows.
+  const holds = (learner: string) => key !== "" && learner === owner;
+  function mark(
+    learner: string,
+    endpoint: PracticeEndpoint,
+    taskId: string,
+    id: string,
+    field: "solved" | "rated"
+  ) {
+    if (!holds(learner)) return;
+    const slot = rows.get(`${taskId}/${endpoint}`);
+    const set = (list: any[]) => {
+      for (const row of list) if (row?.id === id) row[field] = true;
+    };
+    if (slot?.value) set(slot.value);
+    else slot?.promise.then(set, () => {});
   }
   return {
     forget,
@@ -89,17 +110,17 @@ export function createPracticeCache() {
       });
       return slot.promise;
     },
-    /** The server confirmed this answer as solved. */
-    solved(endpoint: PracticeEndpoint, taskId: string, id: string) {
-      const slot = rows.get(`${taskId}/${endpoint}`);
-      const mark = (list: any[]) => {
-        for (const row of list) if (row?.id === id) row.solved = true;
-      };
-      if (slot?.value) mark(slot.value);
-      else slot?.promise.then(mark, () => {});
+    /** The server confirmed this learner's answer as solved. */
+    solved(learner: string, endpoint: PracticeEndpoint, taskId: string, id: string) {
+      mark(learner, endpoint, taskId, id, "solved");
+    },
+    /** The server accepted this learner's rating or report; it is not offered again. */
+    rated(learner: string, endpoint: PracticeEndpoint, taskId: string, id: string) {
+      mark(learner, endpoint, taskId, id, "rated");
     },
     /** This task's rows change after the answer; read them again whenever they are shown. */
-    refresh(endpoint: PracticeEndpoint, taskId: string) {
+    refresh(learner: string, endpoint: PracticeEndpoint, taskId: string) {
+      if (!holds(learner)) return;
       const name = `${taskId}/${endpoint}`;
       rows.delete(name);
       live.add(name);
@@ -110,10 +131,17 @@ export type PracticeCache = ReturnType<typeof createPracticeCache>;
 /** The app's exercises of the course the learner is in (see `plugins/course-practice.client.ts`). */
 export const practiceCache = createPracticeCache();
 
-/** Pages on which the learner works through the exercises of one course or skill. */
+/**
+ * Pages on which the learner works through the exercises of one course or skill. A course's
+ * lesson pages are not among them: their activities answer exercises without passing the
+ * quiz, matching or coding pages, so their lists read anew on every visit.
+ */
 export function isPracticeRoute(path: string) {
-  return /^\/(courses\/[^/]+(\/|$)|quizzes\/solve-|matchings\/solve-|challenges\/QuizCodingChallenge-|skill-tree\/[^/]+\/[^/]+\/?$)/.test(
-    path
+  return (
+    !/^\/courses\/[^/]+\/lessons(\/|$)/.test(path) &&
+    /^\/(courses\/[^/]+(\/|$)|quizzes\/solve-|matchings\/solve-|challenges\/QuizCodingChallenge-|skill-tree\/[^/]+\/[^/]+\/?$)/.test(
+      path
+    )
   );
 }
 

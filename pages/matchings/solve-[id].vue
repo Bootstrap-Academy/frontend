@@ -123,8 +123,12 @@
 </template>
 
 <script lang="ts" setup>
-import { getPracticeExercises, getSubTasksInQuiz, useQuizzes } from "~~/composables/quizzes";
-import { practiceCache } from "~/utils/coursePractice";
+import {
+  getPracticeExercises,
+  getSubTasksInQuiz,
+  notePracticeChange,
+  useQuizzes,
+} from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
 import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
 
@@ -170,14 +174,19 @@ const notFoundFor = computed(() => {
   }
 });
 
+// The matching the form showed, also when the answer comes before this page's list.
+function answered(id: any) {
+  return [selectedQuiz.value, ...arrayOfSubtasks.value].find((quiz: any) => quiz?.id == id);
+}
+
 function setSolvedLocally(id: any) {
   arrayOfSubtasks.value.forEach((element: any) => {
     if (element.id == id) {
       element.solved = true;
-      // The course page shows the answer without reading its exercises again.
-      practiceCache.solved("matchings", element.task_id, element.id);
     }
   });
+  // The course page shows the answer without reading its exercises again.
+  notePracticeChange("solved", "matchings", answered(id));
 }
 
 function setRatedLocally(id: any) {
@@ -186,6 +195,8 @@ function setRatedLocally(id: any) {
       element.rated = true;
     }
   });
+  // The next visit does not offer the rating again.
+  notePracticeChange("rated", "matchings", answered(id));
 }
 
 const breadcrumbs = computed<Array<{ label: string; to?: string }>>(() => {

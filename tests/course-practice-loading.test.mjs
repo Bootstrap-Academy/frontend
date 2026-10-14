@@ -2,7 +2,10 @@
 // stays in it, then only for what changed. The course list, the quiz page and the exercise list
 // run with their real code against a stand-in server that records every request.
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
+import { parse } from "@vue/compiler-sfc";
+import ts from "typescript";
 import * as Vue from "vue";
 import { component, evaluate, host, settle, tag } from "./helpers/mounted-page.mjs";
 
@@ -112,7 +115,7 @@ test("a confirmed answer shows as solved on the way back without any request", a
   await lecture("s1", "l1");
   api.take();
 
-  cache.solved("multiple_choice", "t1", "q1");
+  cache.solved("learner:session", "multiple_choice", "t1", "q1");
   const after = await lecture("s1", "l1");
   assert.deepEqual(api.take(), [], "one answer, no request");
   // What a full re-read shows once the server knows the answer: the solved item moves last.
@@ -150,7 +153,7 @@ test("a coding submission reads only that task's coding exercises, on every visi
   await lecture("s1", "l1");
   api.take();
 
-  cache.refresh("coding_challenges", "t2");
+  cache.refresh("learner:session", "coding_challenges", "t2");
   await lecture("s1", "l2");
   assert.deepEqual(api.take(), ["/challenges/tasks/t2/coding_challenges"]);
   // The verdict arrives later; the next visit asks again, for this one task only.
@@ -283,6 +286,8 @@ test("the exercises stay loaded on the pages of a course and are dropped anywher
     "/courses",
     "/courses/",
     "/learn",
+    "/courses/python/lessons",
+    "/courses/python/lessons/lesson-1",
     "/dashboard",
     "/skill-tree",
     "/skill-tree/start",
@@ -307,9 +312,11 @@ test("the exercises stay loaded on the pages of a course and are dropped anywher
     await lecture("s1", "l1");
   }
   assert.deepEqual(api.take(), [], "within the course");
-  afterEach({ path: "/learn" });
-  await lecture("s1", "l1");
-  assert.deepEqual(api.take(), [LIST, ...rowsOf("t1")], "after a visit elsewhere");
+  for (const path of ["/learn", "/courses/python/lessons/lesson-1"]) {
+    afterEach({ path });
+    await lecture("s1", "l1");
+    assert.deepEqual(api.take(), [LIST, ...rowsOf("t1")], `after a visit to ${path}`);
+  }
 });
 
 /** The real composable module of quizzes, reading through the stand-in server. */
@@ -332,17 +339,8 @@ async function quizzesModule(practice, api, state) {
   });
 }
 
-test("per answer on the quiz page: no request for the course's exercises, and the course list shows it solved", async () => {
-  const practice = await practiceModule();
-  const api = server();
-  const state = {};
-  const quizzes = await quizzesModule(practice, api, state);
-  const lecture = lectures(practice, api, practice.practiceCache);
-
-  await lecture("s1", "l1");
-  api.take();
-
-  // The quiz page opened from the course page's list, as a learner clicks a quiz.
+/** The quiz page opened from the course page's list, as a learner clicks a quiz. */
+async function quizPage(practice, api, quizzes, query) {
   const scope = { onMounted: null };
   const page = await evaluate("pages/quizzes/solve-[id].vue", {
     require: (name) =>
@@ -358,7 +356,7 @@ test("per answer on the quiz page: no request for the course's exercises, and th
     useRoute: () => ({
       path: "/quizzes/solve-python",
       params: { id: "python" },
-      query: { quizzesFrom: "course", querySubTaskId: "q1", taskId: "t1" },
+      query: { quizzesFrom: "course", ...query },
     }),
     useRouter: () => ({ replace: () => {} }),
     useUser: () => Vue.ref({ id: "learner" }),
@@ -368,13 +366,69 @@ test("per answer on the quiz page: no request for the course's exercises, and th
     ],
     setTimeout: () => {},
   });
-  const open = async () => {
-    const view = Vue.effectScope().run(() => page.setup({}, { emit() {} }));
-    await scope.onMounted();
-    return view;
-  };
+  const view = Vue.effectScope().run(() => page.setup({}, { emit() {} }));
+  return { view, mounted: scope.onMounted() };
+}
 
-  const view = await open();
+/** The matching page, rendered; the form and the cards are stand-ins that keep what they get. */
+async function matchingPage(practice, api, quizzes, query) {
+  const page = { form: null, cards: [] };
+  const Page = await component(
+    "pages/matchings/solve-[id].vue",
+    {
+      useRoute: () => ({
+        path: "/matchings/solve-python",
+        params: { id: "python" },
+        query: { quizzesFrom: "course", ...query },
+      }),
+      useRouter: () => ({ replace: () => {} }),
+      useUser: () => Vue.ref({ id: "learner" }),
+      getMatching: async (id, task) => [
+        await api.request(`/challenges/tasks/${task}/matchings/${id}`),
+        null,
+      ],
+      setTimeout: () => {},
+    },
+    {
+      "~~/composables/quizzes": quizzes,
+      "~/utils/coursePractice": practice,
+      "vue-i18n": { useI18n: () => ({ t: (key) => key }) },
+      "@heroicons/vue/24/outline": {
+        CheckCircleIcon: tag("svg"),
+        MagnifyingGlassCircleIcon: tag("svg"),
+      },
+    }
+  );
+  const ui = host();
+  const app = ui.renderer.createApp({ render: () => Vue.h(Page) });
+  for (const name of ["InputButtonToggle", "QuizCardSkeleton", "NuxtLink"])
+    app.component(name, tag("div"));
+  app.component("MatchingCard", (props) => {
+    page.cards.push(props.data);
+    return Vue.h("div");
+  });
+  app.component("FormSolveMatching", (props) => {
+    page.form = props;
+    return Vue.h("form");
+  });
+  app.mount(ui.root);
+  await settle();
+  page.unmount = () => app.unmount();
+  return page;
+}
+
+test("per answer on the quiz page: no request for the course's exercises, and the course list shows it solved", async () => {
+  const practice = await practiceModule();
+  const api = server();
+  const state = {};
+  const quizzes = await quizzesModule(practice, api, state);
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+  api.take();
+
+  const first = await quizPage(practice, api, quizzes, { querySubTaskId: "q1", taskId: "t1" });
+  await first.mounted;
+  const view = first.view;
   assert.deepEqual(
     api.take(),
     [
@@ -402,7 +456,9 @@ test("per answer on the quiz page: no request for the course's exercises, and th
   assert.deepEqual(api.take(), [], "back on the course page");
   assert.equal(back.find((item) => item.id === "q1").solved, true);
 
-  await open();
+  await (
+    await quizPage(practice, api, quizzes, { querySubTaskId: "q1", taskId: "t1" })
+  ).mounted;
   assert.deepEqual(
     api.take(),
     ["/challenges/tasks/t1/multiple_choice/q1"],
@@ -419,43 +475,7 @@ test("per answer on the matching page: no request for the course's exercises, an
   await lecture("s1", "l1");
   api.take();
 
-  let form;
-  const Page = await component(
-    "pages/matchings/solve-[id].vue",
-    {
-      useRoute: () => ({
-        path: "/matchings/solve-python",
-        params: { id: "python" },
-        query: { quizzesFrom: "course", querySubTaskId: "m1", taskId: "t1" },
-      }),
-      useRouter: () => ({ replace: () => {} }),
-      useUser: () => Vue.ref({ id: "learner" }),
-      getMatching: async (id, task) => [
-        await api.request(`/challenges/tasks/${task}/matchings/${id}`),
-        null,
-      ],
-      setTimeout: () => {},
-    },
-    {
-      "~~/composables/quizzes": quizzes,
-      "~/utils/coursePractice": practice,
-      "vue-i18n": { useI18n: () => ({ t: (key) => key }) },
-      "@heroicons/vue/24/outline": {
-        CheckCircleIcon: tag("svg"),
-        MagnifyingGlassCircleIcon: tag("svg"),
-      },
-    }
-  );
-  const ui = host();
-  const app = ui.renderer.createApp({ render: () => Vue.h(Page) });
-  for (const name of ["MatchingCard", "InputButtonToggle", "QuizCardSkeleton", "NuxtLink"])
-    app.component(name, tag("div"));
-  app.component("FormSolveMatching", (props) => {
-    form = props;
-    return Vue.h("form");
-  });
-  app.mount(ui.root);
-  await settle();
+  const page = await matchingPage(practice, api, quizzes, { querySubTaskId: "m1", taskId: "t1" });
   assert.deepEqual(
     api.take(),
     [
@@ -468,12 +488,181 @@ test("per answer on the matching page: no request for the course's exercises, an
     "the chosen matching, what the course has not read yet, and the quizzes for the skill tree"
   );
 
-  form.onSolved("m1");
+  page.form.onSolved("m1");
   await settle();
   assert.deepEqual(api.take(), [], "the answer itself reads nothing");
   const back = await lecture("s1", "l1");
   assert.deepEqual(api.take(), [], "back on the course page");
   assert.equal(back.find((item) => item.id === "m1").solved, true);
+  page.unmount();
+});
+
+test("rated on the quiz page, back, opened again: rated stays true", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  const api = server(data);
+  const quizzes = await quizzesModule(practice, api, {});
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+
+  const first = await quizPage(practice, api, quizzes, { querySubTaskId: "q1", taskId: "t1" });
+  await first.mounted;
+  first.view.setSolvedLocally("q1");
+  first.view.setRatedLocally("q1");
+  Object.assign(data.rows.t1.multiple_choice[0], { solved: true, rated: true });
+  await lecture("s1", "l1");
+  api.take();
+
+  // Back on the course page, then to another quiz; the rated one is chosen from the list.
+  const second = await quizPage(practice, api, quizzes, { querySubTaskId: "q2", taskId: "t2" });
+  await second.mounted;
+  assert.deepEqual(api.take(), ["/challenges/tasks/t2/multiple_choice/q2"]);
+  second.view.solveThis(second.view.arrayOfSubtasks.value.find((row) => row.id === "q1"));
+  const shown = second.view.selectedQuiz.value;
+  // components/input/QuizRating.vue offers rating and report while `!data.rated`.
+  assert.deepEqual([shown.solved, shown.rated], [true, true]);
+});
+
+test("rated on the matching page, back, opened again: rated stays true", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  const api = server(data);
+  const quizzes = await quizzesModule(practice, api, {});
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+
+  const first = await matchingPage(practice, api, quizzes, { querySubTaskId: "m1", taskId: "t1" });
+  first.form.onSolved("m1");
+  first.form.onRated("m1");
+  first.unmount();
+  Object.assign(data.rows.t1.matchings[0], { solved: true, rated: true });
+  await lecture("s1", "l1");
+  api.take();
+
+  // Opened again without a chosen matching: the card comes from the course's read.
+  const second = await matchingPage(practice, api, quizzes, {});
+  assert.deepEqual(api.take(), [], "nothing read again");
+  const card = second.cards.findLast((row) => row.id === "m1");
+  assert.deepEqual([card.solved, card.rated], [true, true]);
+  second.unmount();
+});
+
+test("an answer that comes before the quiz page's list still reaches the course page", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  let release;
+  const slow = new Promise((resolve) => (release = resolve));
+  const api = server(data, { "/challenges/tasks/t2/multiple_choice": slow });
+  const quizzes = await quizzesModule(practice, api, {});
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+  const page = await quizPage(practice, api, quizzes, { querySubTaskId: "q1", taskId: "t1" });
+  await settle();
+  // The form already shows the chosen quiz; the page's list is still loading.
+  assert.equal(page.view.loading.value, true);
+  assert.equal(page.view.selectedQuiz.value.id, "q1");
+  page.view.setSolvedLocally("q1");
+  release();
+  await page.mounted;
+  assert.equal(page.view.arrayOfSubtasks.value.find((row) => row.id === "q1").solved, true);
+  const back = await lecture("s1", "l1");
+  assert.equal(back.find((item) => item.id === "q1").solved, true);
+});
+
+test("a confirmed answer marks exactly the answered row", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  data.rows.t1.multiple_choice.push({ id: "q1b", task_id: "t1", question: "First b?" });
+  const api = server(data);
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+  practice.practiceCache.solved("learner:session", "multiple_choice", "t1", "q1");
+  practice.practiceCache.rated("learner:session", "multiple_choice", "t1", "q1");
+  const back = await lecture("s1", "l1");
+  assert.deepEqual(
+    back.filter((item) => item.kind === "multiple_choice").map((item) => [item.id, item.solved]),
+    [
+      ["q1b", false],
+      ["q1", true],
+    ]
+  );
+  const rows = await practice.loadPracticeRows(
+    api.request,
+    { source: "course", id: "python", owner: "learner:session" },
+    "multiple_choice",
+    practice.practiceCache
+  );
+  assert.deepEqual(
+    rows.filter((row) => row.task_id === "t1").map((row) => [row.id, !!row.rated]),
+    [
+      ["q1", true],
+      ["q1b", false],
+    ]
+  );
+});
+
+test("changes reported for another account or session touch nothing", async () => {
+  const practice = await practiceModule();
+  const api = server();
+  const cache = practice.createPracticeCache();
+  const lecture = lectures(practice, api, cache);
+  await lecture("s1", "l1");
+  await lecture("s1", "l2");
+  api.take();
+  for (const other of ["other:session", "learner:renewed", ":"]) {
+    cache.solved(other, "multiple_choice", "t1", "q1");
+    cache.rated(other, "multiple_choice", "t1", "q1");
+    cache.refresh(other, "coding_challenges", "t2");
+  }
+  assert.equal((await lecture("s1", "l1")).find((item) => item.id === "q1").solved, false);
+  await lecture("s1", "l2");
+  assert.deepEqual(api.take(), [], "no task marked for reading again");
+  const rows = await practice.loadPracticeRows(
+    api.request,
+    { source: "course", id: "python", owner: "learner:session" },
+    "multiple_choice",
+    cache
+  );
+  assert.equal(rows.find((row) => row.id === "q1").rated === true, false);
+});
+
+test("an account change in the same tab reads anew and shows nothing of the first account", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  data.rows.t1.multiple_choice[0].solved = true; // solved for account A
+  const api = server(data);
+  const user = Vue.ref({ id: "learner-a" });
+  const session = Vue.ref({ id: "session-a" });
+  const ui = host();
+  const Practice = await component(
+    "components/course/Practice.vue",
+    {
+      useCourseExperienceCopy: () => ({ copy: Vue.ref({ loading: "Loading" }) }),
+      useRoute: () => ({ path: "/courses/python/watch" }),
+      useUser: () => user,
+      useSession: () => session,
+      GET: api.request,
+    },
+    { "~/utils/coursePractice": practice }
+  );
+  const app = ui.renderer.createApp({
+    render: () =>
+      Vue.h(Practice, { source: "course", sourceId: "python", section: "s1", lecture: "l1" }),
+  });
+  app.component("NuxtLink", tag("a"));
+  app.mount(ui.root);
+  await settle();
+  assert.match(ui.text(), /✓\s+First\?/);
+  api.take();
+  data.rows.t1.multiple_choice[0].solved = false; // account B has not solved q1
+  user.value = { id: "learner-b" };
+  session.value = { id: "session-b" };
+  await settle();
+  // Account and session change one after the other; each change reads for its owner.
+  const sent = api.take();
+  assert.ok(sent.includes(LIST), "task list read again");
+  assert.deepEqual(sent.slice(-3), rowsOf("t1"));
+  assert.doesNotMatch(ui.text(), /✓\s+First\?/, "no tick of account A");
   app.unmount();
 });
 
@@ -552,7 +741,7 @@ test("the lecture list on the course page: what each lecture change sends, with 
   });
   assert.match(ui.text(), /First\?/);
 
-  practice.practiceCache.solved("multiple_choice", "t1", "q1");
+  practice.practiceCache.solved("learner:session", "multiple_choice", "t1", "q1");
   lecture.value = "l2";
   await settle();
   lecture.value = "l1";
@@ -562,12 +751,12 @@ test("the lecture list on the course page: what each lecture change sends, with 
   app.unmount();
 });
 
-test("in a learning room the lecture list reads anew on every visit, as before", async () => {
+test("under a lesson of a course the lecture list reads anew on every visit, as before", async () => {
   const practice = await practiceModule();
   const api = server();
   const ui = host();
   const lecture = Vue.ref("l1");
-  const Practice = await lectureList(practice, api, "/learn");
+  const Practice = await lectureList(practice, api, "/courses/python/lessons/lesson-1");
   const app = ui.renderer.createApp({
     render: () =>
       Vue.h(Practice, {
@@ -593,4 +782,63 @@ test("in a learning room the lecture list reads anew on every visit, as before",
     [LIST, ...rowsOf("t1")],
   ]);
   app.unmount();
+});
+
+/** One function of a `<script setup>` component, with its names bound to `bindings`. */
+async function setupFunction(path, name, bindings) {
+  const source = parse(await readFile(new URL(`../${path}`, import.meta.url), "utf8")).descriptor
+    .scriptSetup.content;
+  const tree = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true);
+  const node = tree.statements.find(
+    (statement) => ts.isFunctionDeclaration(statement) && statement.name?.text === name
+  );
+  const code = ts.transpileModule(node.getText(tree), {
+    compilerOptions: { target: ts.ScriptTarget.ES2023 },
+  }).outputText;
+  return new Function(...Object.keys(bindings), `${code}\nreturn ${name};`)(
+    ...Object.values(bindings)
+  );
+}
+
+test("the matching form does not send a matching the server already counts as solved", async () => {
+  const sent = [];
+  const emitted = [];
+  let current;
+  const submit = await setupFunction("components/form/SolveMatching.vue", "onclickSubmitForm", {
+    props: { data: { id: "m1", task_id: "t1", solved: false, creator: "author", left: ["a"] } },
+    user: Vue.ref({ id: "learner" }),
+    formSubmitting: Vue.ref(false),
+    setSolution: () => [0],
+    getMatching: async (id, task) => {
+      sent.push(`GET ${task}/${id}`);
+      return current();
+    },
+    solveMatching: async (task, id) => {
+      sent.push(`POST ${task}/${id}`);
+      return [true, null];
+    },
+    getHearts: async () => {},
+    successHandler: () => {},
+    errorHandler: () => {},
+    emits: (...args) => emitted.push(args),
+    console: { log: () => {} },
+  });
+  // Solved in another tab or on another device while this list was kept: no attempt, no heart.
+  current = () => [{ id: "m1", task_id: "t1", solved: true }, null];
+  await submit();
+  assert.deepEqual(sent.splice(0), ["GET t1/m1"]);
+  assert.deepEqual(
+    emitted.splice(0),
+    [["solved", "m1"]],
+    "the page and the course list learn of it"
+  );
+  // Still open: the answer goes out as before.
+  current = () => [{ id: "m1", task_id: "t1", solved: false }, null];
+  await submit();
+  assert.deepEqual(sent.splice(0), ["GET t1/m1", "POST t1/m1"]);
+  // The check cannot be read: the answer goes out as it did before the check existed.
+  current = () => [null, new Error("Unavailable")];
+  await submit();
+  assert.deepEqual(sent.splice(0), ["GET t1/m1", "POST t1/m1"]);
+  assert.deepEqual(emitted, []);
 });

@@ -292,6 +292,9 @@ test("an accepted submission makes the course page read this task's coding exerc
   const refreshed = [];
   const extra = {
     practiceCache: { refresh: (...args) => refreshed.push(args) },
+    practiceOwner: (user, session) => `${user?.id || ""}:${session?.id || ""}`,
+    useUser: () => ref({ id: "learner" }),
+    useSession: () => ref({ id: "session" }),
     getHearts: async () => {},
     getBalance: async () => {},
     getSubmissions: async () => {},
@@ -304,7 +307,7 @@ test("an accepted submission makes the course page read this task's coding exerc
     await flush();
     globalThis.__challengeEditorDependencies.createSubmission = async () => [{ id: "s-7" }, null];
     await f.vm.fnCreateSubmission();
-    assert.deepEqual(refreshed, [["coding_challenges", "task-7"]]);
+    assert.deepEqual(refreshed, [["learner:session", "coding_challenges", "task-7"]]);
     globalThis.__challengeEditorDependencies.createSubmission = async () => [false, "refused"];
     await f.vm.fnCreateSubmission();
     assert.equal(refreshed.length, 1, "a refused submission changes nothing");
