@@ -124,12 +124,8 @@
 </template>
 
 <script lang="ts">
-import {
-  getQuizzesInCourse,
-  getSubTasksInQuiz,
-  useQuizzes,
-  getQuizzesInSkill,
-} from "~~/composables/quizzes";
+import { getPracticeExercises, getSubTasksInQuiz, useQuizzes } from "~~/composables/quizzes";
+import { practiceCache } from "~/utils/coursePractice";
 import { useI18n } from "vue-i18n";
 import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
 
@@ -178,6 +174,8 @@ export default defineComponent({
       arrayOfSubtasks.value.forEach((element: any) => {
         if (element.id == id) {
           element.solved = true;
+          // The course page shows the answer without reading its exercises again.
+          practiceCache.solved("multiple_choice", element.task_id, element.id);
         }
       });
     }
@@ -282,10 +280,16 @@ export default defineComponent({
         if (success) selectedQuiz.value = success;
       }
 
-      if (quizzesFrom.value == "course") {
-        await getQuizzesInCourse(id.value);
-      } else if (quizzesFrom.value == "skill") {
-        await getQuizzesInSkill(id.value);
+      if (quizzesFrom.value == "course" || quizzesFrom.value == "skill") {
+        const rows = await getPracticeExercises(quizzesFrom.value, id.value, "multiple_choice");
+        arrayOfSubtasks.value = [];
+        rows.forEach((element: any) => {
+          arrayOfSubtasks.value.push(element);
+          quizzesToShow.value.push(element);
+        });
+        loading.value = false;
+        scroolToView();
+        return;
       } else if (quizzesFrom.value == "quiz") {
         await getSubTasksInQuiz(id.value);
       }

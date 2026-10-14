@@ -3,6 +3,7 @@ import { LecturesWithQuiz, Quiz } from "~/types/courseTypes";
 import { GET } from "./fetch";
 import { useMatchingsForLectures } from "./matching";
 import { MatchingForSections } from "~/types/matching";
+import { loadPracticeRows, practiceOwner } from "~/utils/coursePractice";
 
 export const useQuizzes = () => useState<any[]>("quizzes", () => []);
 export const useQuizzesInCourseInfo = () =>
@@ -106,6 +107,35 @@ export async function getQuizzesInCourse(courseId: string) {
         return [null, error];
       }
     });
+}
+
+/**
+ * Every quiz or every matching of a course or skill for its exercise page. The exercises are
+ * read once while the learner stays in the course (`utils/coursePractice.ts`). As before, the
+ * page also tells the skill tree's shortcut (`useQuizzesInCourse`) whether there are quizzes.
+ */
+export async function getPracticeExercises(
+  source: "course" | "skill",
+  id: string,
+  endpoint: "multiple_choice" | "matchings"
+) {
+  const from = { source, id, owner: practiceOwner(useUser().value, useSession().value) };
+  let rows: any[];
+  try {
+    rows = await loadPracticeRows(GET, from, endpoint);
+  } catch (error: any) {
+    if (error?.data?.error == "unverified") openSnackbar("error", "Error.VerifyToGetQuizzes");
+    return [];
+  }
+  const quizzes =
+    endpoint === "multiple_choice"
+      ? Promise.resolve(rows)
+      : loadPracticeRows(GET, from, "multiple_choice");
+  quizzes.then(
+    (list) => (useQuizzesInCourse().value = list),
+    () => {}
+  );
+  return rows;
 }
 
 export const assignQuizzesInCourse = async () => {

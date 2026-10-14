@@ -123,12 +123,8 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  getQuizzesInCourse,
-  getSubTasksInQuiz,
-  useQuizzes,
-  getQuizzesInSkill,
-} from "~~/composables/quizzes";
+import { getPracticeExercises, getSubTasksInQuiz, useQuizzes } from "~~/composables/quizzes";
+import { practiceCache } from "~/utils/coursePractice";
 import { useI18n } from "vue-i18n";
 import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
 
@@ -178,6 +174,8 @@ function setSolvedLocally(id: any) {
   arrayOfSubtasks.value.forEach((element: any) => {
     if (element.id == id) {
       element.solved = true;
+      // The course page shows the answer without reading its exercises again.
+      practiceCache.solved("matchings", element.task_id, element.id);
     }
   });
 }
@@ -274,10 +272,16 @@ async function manageAllDataForQuizzes() {
     if (success) selectedQuiz.value = success;
   }
 
-  if (quizzesFrom.value == "course") {
-    await getQuizzesInCourse(id.value);
-  } else if (quizzesFrom.value == "skill") {
-    await getQuizzesInSkill(id.value);
+  if (quizzesFrom.value == "course" || quizzesFrom.value == "skill") {
+    const rows = await getPracticeExercises(quizzesFrom.value, id.value, "matchings");
+    arrayOfSubtasks.value = [];
+    rows.forEach((element: any) => {
+      arrayOfSubtasks.value.push(element);
+      quizzesToShow.value.push(element);
+    });
+    loading.value = false;
+    scroolToView();
+    return;
   } else if (quizzesFrom.value == "quiz") {
     await getSubTasksInQuiz(id.value);
   }
