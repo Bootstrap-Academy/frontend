@@ -47,3 +47,9 @@ Once you are done solving the ticket and are sure that everything works as descr
 Everyone can also contribute by reviewing and testing other people's pull requests and by providing feedback or suggesting changes. Note that the focus here should be on pull requests that are marked as ready for review and are not in the draft state anymore. Draft pull requests are still being worked on and are not expected to be complete yet, but for larger tickets intermediate reviews can also be helpful.
 
 After your pull request has been approved, it is merged, the corresponding ticket is closed and you will receive the ticket bounty (if you included your Bootstrap Academy username in the pull request description).
+
+## License and Developer Certificate of Origin
+
+By contributing to this project, you agree that your contributions are licensed under the same license as the project: the GNU Affero General Public License, version 3 or (at your option) any later version.
+
+Every commit must carry a `Signed-off-by` line with your name and email address, which `git commit --signoff` adds for you. The sign-off certifies the [Developer Certificate of Origin 1.1](https://developercertificate.org), in short: you wrote the change, or you otherwise have the right to submit it under this license.
