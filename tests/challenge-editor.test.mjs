@@ -286,3 +286,33 @@ test("unmounting while Monaco loads never creates an editor", async () => {
     f.cleanup();
   }
 });
+
+test("an accepted submission makes the course page read this task's coding exercises again", async () => {
+  const f = fixture();
+  const refreshed = [];
+  const extra = {
+    practiceCache: { refresh: (...args) => refreshed.push(args) },
+    practiceOwner: (user, session) => `${user?.id || ""}:${session?.id || ""}`,
+    useUser: () => ref({ id: "learner" }),
+    useSession: () => ref({ id: "session" }),
+    getHearts: async () => {},
+    getBalance: async () => {},
+    getSubmissions: async () => {},
+  };
+  Object.assign(globalThis, extra);
+  try {
+    await flush();
+    f.props.challengeId = "task-7";
+    f.props.codingChallengeId = "coding-7";
+    await flush();
+    globalThis.__challengeEditorDependencies.createSubmission = async () => [{ id: "s-7" }, null];
+    await f.vm.fnCreateSubmission();
+    assert.deepEqual(refreshed, [["learner:session", "coding_challenges", "task-7"]]);
+    globalThis.__challengeEditorDependencies.createSubmission = async () => [false, "refused"];
+    await f.vm.fnCreateSubmission();
+    assert.equal(refreshed.length, 1, "a refused submission changes nothing");
+  } finally {
+    f.cleanup();
+    for (const key of Object.keys(extra)) delete globalThis[key];
+  }
+});

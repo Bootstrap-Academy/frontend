@@ -125,10 +125,10 @@
 
 <script lang="ts">
 import {
-  getQuizzesInCourse,
+  getPracticeExercises,
   getSubTasksInQuiz,
+  notePracticeChange,
   useQuizzes,
-  getQuizzesInSkill,
 } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
 import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
@@ -174,12 +174,19 @@ export default defineComponent({
       }
     });
 
+    // The exercise the form showed, also when the answer comes before this page's list.
+    function answered(id: any) {
+      return [selectedQuiz.value, ...arrayOfSubtasks.value].find((quiz: any) => quiz?.id == id);
+    }
+
     function setSolvedLocally(id: any) {
       arrayOfSubtasks.value.forEach((element: any) => {
         if (element.id == id) {
           element.solved = true;
         }
       });
+      // The course page shows the answer without reading its exercises again.
+      notePracticeChange("solved", "multiple_choice", answered(id));
     }
 
     function setRatedLocally(id: any) {
@@ -188,6 +195,8 @@ export default defineComponent({
           element.rated = true;
         }
       });
+      // The next visit does not offer the rating again.
+      notePracticeChange("rated", "multiple_choice", answered(id));
     }
 
     const breadcrumbs = computed<Array<{ label: string; to?: string }>>(() => {
@@ -282,10 +291,16 @@ export default defineComponent({
         if (success) selectedQuiz.value = success;
       }
 
-      if (quizzesFrom.value == "course") {
-        await getQuizzesInCourse(id.value);
-      } else if (quizzesFrom.value == "skill") {
-        await getQuizzesInSkill(id.value);
+      if (quizzesFrom.value == "course" || quizzesFrom.value == "skill") {
+        const rows = await getPracticeExercises(quizzesFrom.value, id.value, "multiple_choice");
+        arrayOfSubtasks.value = [];
+        rows.forEach((element: any) => {
+          arrayOfSubtasks.value.push(element);
+          quizzesToShow.value.push(element);
+        });
+        loading.value = false;
+        scroolToView();
+        return;
       } else if (quizzesFrom.value == "quiz") {
         await getSubTasksInQuiz(id.value);
       }

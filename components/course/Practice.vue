@@ -29,8 +29,11 @@
 import type { Ref } from "vue";
 import type { SessionIdentity } from "~/types/sessionIdentity";
 import {
+  isPracticeRoute,
   loadCoursePractice,
+  practiceCache,
   practiceLocation,
+  practiceOwner,
   type CoursePracticeItem,
 } from "~/utils/coursePractice";
 const props = defineProps<{
@@ -45,6 +48,7 @@ const props = defineProps<{
   heading?: string;
 }>();
 const { copy } = useCourseExperienceCopy();
+const route = useRoute();
 const user = useUser();
 const session: Ref<SessionIdentity | null> = useSession();
 const loading = ref(true);
@@ -54,15 +58,16 @@ let generation = 0;
 let alive = true;
 async function load() {
   const ticket = ++generation;
-  const owner = `${user.value?.id || ""}:${session.value?.id || ""}`;
+  const owner = practiceOwner(user.value, session.value);
   const current = () =>
-    alive &&
-    ticket === generation &&
-    owner === `${user.value?.id || ""}:${session.value?.id || ""}`;
+    alive && ticket === generation && owner === practiceOwner(user.value, session.value);
   loading.value = true;
   error.value = false;
   items.value = [];
   try {
+    // On the course's own pages a lecture change remounts this list; what the course has already
+    // read is not read again. Elsewhere, such as under a lesson whose activities answer exercises
+    // in place, every visit reads anew.
     const result = await loadCoursePractice(
       GET,
       {
@@ -71,8 +76,10 @@ async function load() {
         section: props.section,
         lecture: props.lecture,
         excludeLectureIds: props.excludeLectureIds,
+        owner,
       },
-      current
+      current,
+      isPracticeRoute(route.path) ? practiceCache : undefined
     );
     if (current()) items.value = result;
   } catch {

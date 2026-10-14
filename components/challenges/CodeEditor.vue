@@ -204,6 +204,12 @@ export default defineComponent({
           openSnackbar("error", decodeApiError(error).messageKey);
         return;
       }
+      // The verdict comes later; the course page reads this task's coding exercises again.
+      practiceCache.refresh(
+        practiceOwner(useUser().value, useSession().value),
+        "coding_challenges",
+        props.challengeId
+      );
       await getHearts();
       await getBalance();
 
