@@ -677,6 +677,31 @@ test("a matching opened from a link shows solved and rated in its form once the 
   page.unmount();
 });
 
+test("a quiz opened from a link shows solved and rated in its form once the server confirms", async () => {
+  const practice = await practiceModule();
+  const api = server();
+  const quizzes = await quizzesModule(practice, api, {});
+  await lectures(practice, api, practice.practiceCache)("s1", "l1");
+  const page = await quizPage(practice, api, quizzes, { querySubTaskId: "q1", taskId: "t1" });
+  await page.mounted;
+  const shown = page.view.selectedQuiz.value;
+  const row = page.view.arrayOfSubtasks.value.find((quiz) => quiz.id === "q1");
+  assert.notEqual(
+    Vue.toRaw(shown),
+    Vue.toRaw(row),
+    "the form shows the page's read, not a list row"
+  );
+  // components/form/QuizAnswer.vue offers the answer while `!data.solved` (another attempt can
+  // cost a heart) and components/input/QuizRating.vue the rating while `!data.rated`.
+  page.view.setSolvedLocally("q2");
+  page.view.setRatedLocally("q2");
+  assert.deepEqual([shown.solved, !!shown.rated], [false, false], "another quiz changes nothing");
+  page.view.setSolvedLocally("q1");
+  assert.deepEqual([shown.solved, row.solved], [true, true]);
+  page.view.setRatedLocally("q1");
+  assert.deepEqual([shown.rated, row.rated], [true, true]);
+});
+
 test("a quiz opened from a link is read once for the page and its form; one chosen from the list is read by the form", async () => {
   const practice = await practiceModule();
   const api = server();
