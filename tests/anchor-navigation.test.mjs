@@ -10,6 +10,8 @@ const transpile = (text) =>
     compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
   }).outputText;
 const middlewareSource = await source("../middleware/route.global.ts");
+// The middleware schedules the move to the top through this shared state.
+const pageTopSource = await source("../utils/pageTop.ts");
 const pluginSource = await source("../plugins/anchor.client.ts");
 const plain = (value) => JSON.parse(JSON.stringify(value));
 
@@ -23,10 +25,11 @@ function middleware(client = true) {
     navigateTo: (path) => ({ path }),
     defineNuxtRouteMiddleware: (handler) => handler,
     setTimeout: (handler, delay) => timers.push({ handler, delay }),
+    clearTimeout: () => {},
     window: { scrollTo: (options) => scrolls.push(plain(options)) },
   };
   runInNewContext(
-    transpile(middlewareSource)
+    (transpile(pageTopSource).replace(/^export /gm, "") + transpile(middlewareSource))
       .replace(/^import .*;\n/gm, "")
       // Nuxt replaces this compile-time flag before the middleware is executed.
       .replaceAll("import.meta.client", JSON.stringify(client))
