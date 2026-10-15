@@ -297,8 +297,10 @@ test("the exercises stay loaded on the pages of a course and are dropped anywher
     assert.equal(practice.isPracticeRoute(path), false, path);
 
   let afterEach;
+  const visits = await evaluate("utils/courseVisit.ts", {});
   const plugin = await evaluate("plugins/course-practice.client.ts", {
-    require: (name) => ({ "~/utils/coursePractice": practice })[name],
+    require: (name) =>
+      ({ "~/utils/coursePractice": practice, "~/utils/courseVisit": visits })[name],
     defineNuxtPlugin: (setup) => setup,
     useRouter: () => ({ afterEach: (hook) => (afterEach = hook) }),
   });
@@ -307,15 +309,20 @@ test("the exercises stay loaded on the pages of a course and are dropped anywher
   const lecture = lectures(practice, api, practice.practiceCache);
   await lecture("s1", "l1");
   api.take();
+  const opened = { id: "python", sections: [] };
+  visits.courseVisit.keep("learner:session", "python", opened);
   for (const path of ["/courses/python/watch", "/quizzes/solve-python", "/courses/python"]) {
     afterEach({ path });
     await lecture("s1", "l1");
   }
   assert.deepEqual(api.take(), [], "within the course");
+  assert.equal(visits.courseVisit.course("learner:session", "python"), opened, "the visit goes on");
   for (const path of ["/learn", "/courses/python/lessons/lesson-1"]) {
+    visits.courseVisit.keep("learner:session", "python", opened);
     afterEach({ path });
     await lecture("s1", "l1");
     assert.deepEqual(api.take(), [LIST, ...rowsOf("t1")], `after a visit to ${path}`);
+    assert.equal(visits.courseVisit.course("learner:session", "python"), null, `ended by ${path}`);
   }
 });
 
@@ -340,7 +347,7 @@ async function quizzesModule(practice, api, state) {
 }
 
 /** The quiz page opened from the course page's list, as a learner clicks a quiz. */
-async function quizPage(practice, api, quizzes, query) {
+async function quizPage(practice, api, quizzes, query, names = {}) {
   const scope = { onMounted: null };
   const page = await evaluate("pages/quizzes/solve-[id].vue", {
     require: (name) =>
@@ -365,9 +372,40 @@ async function quizPage(practice, api, quizzes, query) {
       null,
     ],
     setTimeout: () => {},
+    ...names,
   });
   const view = Vue.effectScope().run(() => page.setup({}, { emit() {} }));
   return { view, mounted: scope.onMounted() };
+}
+
+/** The quiz form with its real script, as the quiz page hands it the chosen quiz. */
+async function quizForm(quizzes) {
+  const form = await evaluate("components/form/QuizAnswer.vue", {
+    require: (name) =>
+      ({
+        vue: Vue,
+        "~/utils/apiError": { decodeApiError: () => ({}) },
+        "~~/composables/quizzes": quizzes,
+        "vue-i18n": { useI18n: () => ({ t: (key) => key }) },
+        "@heroicons/vue/24/outline": {},
+        "@heroicons/vue/24/solid": {},
+        "../svg/FullHeart.vue": {},
+      })[name],
+    ...Vue,
+    useUser: () => Vue.ref({ id: "learner" }),
+    useSubTaskInQuiz: quizzes.useSubTaskInQuiz,
+    getSubTaskInQuiz: quizzes.getSubTaskInQuiz,
+    usePremiumInfo: () => Vue.ref({ premium: false }),
+    useDailyLearning: () => ({ isDaily: Vue.ref(false) }),
+    useDailyAttemptLimit: () => ({ attemptLimit: Vue.ref(null), handleLimit: () => false }),
+    useHeartsEmpty: () => ({ heartsEmpty: Vue.ref(false), handleNoHearts: () => false }),
+  });
+  const props = Vue.reactive({ data: null, doubleColumnOptions: false, amountQuestionsLeft: 1 });
+  const emitted = [];
+  const view = Vue.effectScope().run(() =>
+    form.setup(props, { emit: (...args) => emitted.push(args) })
+  );
+  return { props, view, emitted };
 }
 
 /** The matching page, rendered; the form and the cards are stand-ins that keep what they get. */
@@ -567,6 +605,116 @@ test("an answer that comes before the quiz page's list still reaches the course 
   assert.equal(page.view.arrayOfSubtasks.value.find((row) => row.id === "q1").solved, true);
   const back = await lecture("s1", "l1");
   assert.equal(back.find((item) => item.id === "q1").solved, true);
+});
+
+test("an answer that comes before the matching page's list still reaches the course page", async () => {
+  const practice = await practiceModule();
+  const data = structuredClone(course);
+  let release;
+  const slow = new Promise((resolve) => (release = resolve));
+  const api = server(data, { "/challenges/tasks/t2/matchings": slow });
+  const quizzes = await quizzesModule(practice, api, {});
+  const lecture = lectures(practice, api, practice.practiceCache);
+  await lecture("s1", "l1");
+  const page = await matchingPage(practice, api, quizzes, { querySubTaskId: "m1", taskId: "t1" });
+  // The form already shows the chosen matching; the page's list is still loading.
+  assert.equal(page.form?.data?.id, "m1");
+  assert.equal(page.cards.length, 0);
+  page.form.onSolved("m1");
+  data.rows.t1.matchings[0].solved = true;
+  release();
+  await settle();
+  const back = await lecture("s1", "l1");
+  assert.equal(back.find((item) => item.id === "m1").solved, true);
+  page.unmount();
+});
+
+test("a mark made while the task's exercises are still being read is kept", async () => {
+  const practice = await practiceModule();
+  let release;
+  const slow = new Promise((resolve) => (release = resolve));
+  const api = server(structuredClone(course), { "/challenges/tasks/t1/multiple_choice": slow });
+  const lecture = lectures(practice, api, practice.practiceCache);
+  const reading = lecture("s1", "l1");
+  await settle();
+  practice.practiceCache.solved("learner:session", "multiple_choice", "t1", "q1");
+  practice.practiceCache.rated("learner:session", "multiple_choice", "t1", "q1");
+  release();
+  await reading;
+  const back = await lecture("s1", "l1");
+  assert.equal(back.find((item) => item.id === "q1").solved, true);
+  const rows = await practice.loadPracticeRows(
+    api.request,
+    { source: "course", id: "python", owner: "learner:session" },
+    "multiple_choice",
+    practice.practiceCache
+  );
+  assert.equal(rows.find((row) => row.id === "q1").rated, true);
+});
+
+test("a matching opened from a link shows solved and rated in its form once the server confirms", async () => {
+  const practice = await practiceModule();
+  const api = server();
+  const quizzes = await quizzesModule(practice, api, {});
+  await lectures(practice, api, practice.practiceCache)("s1", "l1");
+  const page = await matchingPage(practice, api, quizzes, { querySubTaskId: "m1", taskId: "t1" });
+  const shown = page.form.data;
+  const row = page.cards.findLast((card) => card.id === "m1");
+  assert.notEqual(Vue.toRaw(shown), Vue.toRaw(row), "the form shows its own read, not a list row");
+  // components/form/SolveMatching.vue offers the answer while `!data.solved` and
+  // components/input/QuizRating.vue the rating while `!data.rated`.
+  page.form.onSolved("other");
+  page.form.onRated("other");
+  assert.deepEqual(
+    [shown.solved, !!shown.rated],
+    [false, false],
+    "another matching changes nothing"
+  );
+  page.form.onSolved("m1");
+  assert.deepEqual([shown.solved, row.solved], [true, true]);
+  page.form.onRated("m1");
+  assert.deepEqual([shown.rated, row.rated], [true, true]);
+  page.unmount();
+});
+
+test("a quiz opened from a link is read once for the page and its form; one chosen from the list is read by the form", async () => {
+  const practice = await practiceModule();
+  const api = server();
+  const quizzes = await quizzesModule(practice, api, {});
+  await lectures(practice, api, practice.practiceCache)("s1", "l1");
+  api.take();
+  const page = await quizPage(
+    practice,
+    api,
+    quizzes,
+    { querySubTaskId: "q1", taskId: "t1" },
+    { getSubTaskInQuiz: quizzes.getSubTaskInQuiz }
+  );
+  await page.mounted;
+  assert.equal(api.take()[0], "/challenges/tasks/t1/multiple_choice/q1");
+  // The page hands the form `selectedQuiz ?? quizzesToShow[0]`, first nothing, then its read.
+  const form = await quizForm(quizzes);
+  await settle();
+  form.props.data = page.view.selectedQuiz.value;
+  await settle();
+  assert.deepEqual(api.take(), [], "the form does not read the same quiz again");
+  assert.equal(form.view.loading.value, false);
+  assert.deepEqual(
+    [form.view.subtask.value.id, form.view.subtask.value.question],
+    ["q1", "First?"]
+  );
+  assert.deepEqual(form.view.arrayOfAnswers.value, [false, false]);
+  assert.notEqual(
+    Vue.toRaw(form.view.subtask.value),
+    Vue.toRaw(page.view.selectedQuiz.value),
+    "the form keeps its own copy, as after its own read"
+  );
+  assert.deepEqual(form.emitted, [["updateQuestion", form.view.subtask.value]]);
+
+  form.props.data = page.view.arrayOfSubtasks.value.find((row) => row.id === "q2");
+  await settle();
+  assert.deepEqual(api.take(), ["/challenges/tasks/t2/multiple_choice/q2"], "chosen from the list");
+  assert.equal(form.view.subtask.value.id, "q2");
 });
 
 test("a confirmed answer marks exactly the answered row", async () => {
