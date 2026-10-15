@@ -185,6 +185,8 @@ export default defineComponent({
           element.solved = true;
         }
       });
+      // A quiz opened from a link is its own object, not a row of the list; the form shows it.
+      if (selectedQuiz.value?.id == id) selectedQuiz.value.solved = true;
       // The course page shows the answer without reading its exercises again.
       notePracticeChange("solved", "multiple_choice", answered(id));
     }
@@ -195,6 +197,7 @@ export default defineComponent({
           element.rated = true;
         }
       });
+      if (selectedQuiz.value?.id == id) selectedQuiz.value.rated = true;
       // The next visit does not offer the rating again.
       notePracticeChange("rated", "multiple_choice", answered(id));
     }

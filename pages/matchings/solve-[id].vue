@@ -185,6 +185,8 @@ function setSolvedLocally(id: any) {
       element.solved = true;
     }
   });
+  // A matching opened from a link is its own object, not a row of the list; the form shows it.
+  if (selectedQuiz.value?.id == id) selectedQuiz.value.solved = true;
   // The course page shows the answer without reading its exercises again.
   notePracticeChange("solved", "matchings", answered(id));
 }
@@ -195,6 +197,8 @@ function setRatedLocally(id: any) {
       element.rated = true;
     }
   });
+  // Solved, a matching opened from a link offers its rating; once given, the form hides it.
+  if (selectedQuiz.value?.id == id) selectedQuiz.value.rated = true;
   // The next visit does not offer the rating again.
   notePracticeChange("rated", "matchings", answered(id));
 }

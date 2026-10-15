@@ -347,3 +347,103 @@ test("an unavailable policy never promises a free quiz, matching or coding retry
     assert.equal(actual.value, true, `${file}: existing Premium stays heart-free`);
   }
 });
+
+test("a view inside another view of the same lesson takes the outer view's answer instead of asking again", async (t) => {
+  const { host } = await import("./helpers/mounted-page.mjs");
+  const reads = [];
+  let failNext = 0;
+  const shared = {
+    mode: Vue.ref("daily"),
+    refresh: async () => {},
+    observe: () => {},
+    forLesson: (_c, _l, value) => value,
+  };
+  const { useLessonStart } = await evaluate(
+    "composables/useLessonStart.ts",
+    {
+      ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
+      ...helpers,
+      useUser: () => Vue.ref({ id: "a" }),
+      useSession: () => Vue.ref({ id: "s" }),
+      useDailyLearning: () => shared,
+      GET: async (path) => {
+        reads.push(path);
+        if (failNext && failNext--) throw new Error("offline");
+        return { daily: status({ used: reads.length }) };
+      },
+      POST: async () => status({ started: true }),
+    },
+    "useLessonStart"
+  );
+  const course = Vue.ref("python");
+  const lesson = Vue.ref("l1");
+  const innerLesson = Vue.ref("l1");
+  const shown = Vue.ref(false);
+  let outer, inner;
+  // The course page reads the lesson; its video mounts later, after the visit was reported.
+  const Video = {
+    setup() {
+      inner = useLessonStart(course, innerLesson);
+      return () => Vue.h("video");
+    },
+  };
+  const Page = {
+    setup() {
+      outer = useLessonStart(course, lesson);
+      return () => (shown.value ? Vue.h(Video) : Vue.h("p"));
+    },
+  };
+  const mount = () => {
+    const ui = host();
+    const app = ui.renderer.createApp(Page);
+    app.mount(ui.root);
+    t.after(() => app.unmount());
+  };
+  const settle = async () => {
+    for (let turn = 0; turn < 4; turn++) {
+      await tick();
+      await Vue.nextTick();
+    }
+  };
+  mount();
+  await settle();
+  assert.deepEqual(reads, ["/skills/courses/python/lessons/l1"]);
+  shown.value = true;
+  await settle();
+  assert.deepEqual(reads, ["/skills/courses/python/lessons/l1"], "the video asks nothing");
+  assert.equal(inner.daily.value.used, 1, "it has the outer view's answer");
+
+  // Another lesson inside asks for itself; back on the outer view's lesson it shares again.
+  innerLesson.value = "l2";
+  await settle();
+  innerLesson.value = "l1";
+  await settle();
+  assert.deepEqual(reads.slice(1), ["/skills/courses/python/lessons/l2"]);
+
+  // Once the outer view has started the lesson, a newly shown video asks for itself.
+  assert.equal(await outer.start(), true);
+  shown.value = false;
+  await settle();
+  shown.value = true;
+  await settle();
+  assert.deepEqual(reads.slice(2), ["/skills/courses/python/lessons/l1"]);
+
+  // A lesson change on the page: the page reads once, the video shares it.
+  lesson.value = innerLesson.value = "l3";
+  await settle();
+  assert.deepEqual(reads.slice(3), ["/skills/courses/python/lessons/l3"]);
+
+  // The outer read failed: the video asks for itself, as before.
+  failNext = 1;
+  shown.value = false;
+  lesson.value = innerLesson.value = "l4";
+  await settle();
+  shown.value = true;
+  await settle();
+  assert.deepEqual(reads.slice(4), [
+    "/skills/courses/python/lessons/l4",
+    "/skills/courses/python/lessons/l4",
+  ]);
+  assert.equal(outer.daily.value, null);
+  assert.equal(inner.daily.value.used, 6);
+});
