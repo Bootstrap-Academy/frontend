@@ -20,6 +20,7 @@ export interface VerifiedPackage {
   validateState(state: unknown): void;
 }
 const hex = /^[a-f0-9]{64}$/;
+const operationId = /^[A-Za-z0-9_-]{1,100}$/;
 /** Parse sources, rather than accepting restrictive-looking substrings in a permissive policy. */
 export function validateLessonCsp(policy: string, appOrigin: string) {
   const directives = new Map<string, string[]>();
@@ -88,7 +89,10 @@ export function packageLocation(
   if (
     descriptor.api_version !== 2 ||
     !hex.test(descriptor.manifest_hash) ||
-    !hex.test(descriptor.package_hash)
+    !hex.test(descriptor.package_hash) ||
+    // A revision becomes the grant's revisionId, an operation id of the protocol.
+    (descriptor.revision_id !== undefined &&
+      (typeof descriptor.revision_id !== "string" || !operationId.test(descriptor.revision_id)))
   )
     throw new ProtocolError("invalid_message", "Missing package binding.");
   const base = `${origin.origin}/packages/${descriptor.package_hash}/`;

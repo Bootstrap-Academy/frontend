@@ -44,10 +44,12 @@ export function roomActivity(room: RoomEnvelope): LearningActivity {
     progress: room.progress,
     completed: ["completed", "skipped"].includes(room.progress.status),
     presentation: {
+      // A lesson of the engine is completed by its booked passes only; skills refuses a skip.
       allow_skip:
-        unit.skip_allowed ??
-        unit.presentation?.allow_skip ??
-        (unit.room !== "exercise" && !legacyRequiredUnits.has(unit.id)),
+        unit.completion_kind !== "engine" &&
+        (unit.skip_allowed ??
+          unit.presentation?.allow_skip ??
+          (unit.room !== "exercise" && !legacyRequiredUnits.has(unit.id))),
     },
   };
 }

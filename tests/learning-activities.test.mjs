@@ -66,6 +66,16 @@ test("the room adapter preserves one native identity, draft and proof without an
   assert.equal(adapters.roomLesson(declared).activities[0].presentation.allow_skip, true);
 });
 
+test("a lesson of the engine offers no skip, whatever its unit declares", () => {
+  const engine = room("engine-unit", "custom");
+  assert.equal(adapters.roomLesson(engine).activities[0].presentation.allow_skip, true);
+  engine.unit.completion_kind = "engine";
+  assert.equal(adapters.roomLesson(engine).activities[0].presentation.allow_skip, false);
+  engine.unit.skip_allowed = true;
+  engine.unit.presentation = { allow_skip: true };
+  assert.equal(adapters.roomLesson(engine).activities[0].presentation.allow_skip, false);
+});
+
 test("legacy lesson keeps its optional video separate from native practice and completion", () => {
   const course = { id: "old-course", sections: [] };
   const section = { id: "section-a" };
