@@ -310,10 +310,7 @@ async function start() {
         unitId: props.activityId,
         revisionId,
         packageHash: verified.descriptor.package_hash,
-        // A start refused for good ends the session; the retry here loads again.
-        stale: () => {
-          if (current()) host?.fail();
-        },
+        stale: () => endSession(ticket),
       });
     frame = createLessonFrame(surface.value, verified, () => {
       if (current()) host?.fail();
@@ -371,6 +368,36 @@ async function start() {
     }
   }
 }
+/** Ä32b: a start refused for good and no newer package. The session ends, the retry here loads again. */
+function endSession(ticket: number) {
+  if (alive && ticket === generation) host?.fail();
+}
+/**
+ * Ä40 d: the same bytes under a new revision. What the frame has not saved yet is saved before the
+ * host for the old revision goes; when that is not confirmed, the error block keeps the frame and
+ * its retry asks before anything is discarded.
+ */
+async function restartForRevision(running: LessonHost) {
+  const ticket = generation;
+  const saved = await running.prepareNavigation();
+  if (!alive || ticket !== generation || host !== running) return;
+  if (saved) void start();
+  else running.fail();
+}
+/**
+ * Package, account or room changed (the watch below; its first value is the revision). Only a
+ * running frame can hold unsaved work, and the error block keeps a failed one until its retry.
+ */
+function descriptorChanged(next: unknown[], previous: unknown[]) {
+  const revisionOnly = next.slice(1).every((value, index) => value === previous[index + 1]);
+  if (revisionOnly && host && ["running", "paused", "recoverable-error"].includes(host.phase)) {
+    void restartForRevision(host);
+    return;
+  }
+  generation++;
+  dispose();
+  if (alive && surface.value) void start();
+}
 async function retry() {
   if (retrying.value) return;
   if (frame && !window.confirm(copy.value.discard)) return;
@@ -384,21 +411,17 @@ async function retry() {
 }
 watch(
   [
+    // The same bytes under a new revision are evaluated by another server side.
+    () => props.module.revision_id,
     () => props.module.entry_url,
     () => props.module.manifest_hash,
     () => props.module.package_hash,
-    // The same bytes under a new revision are evaluated by another server side.
-    () => props.module.revision_id,
     () => props.userId,
     () => session.value?.id,
     () => props.activityId,
     () => props.reviewId,
   ],
-  () => {
-    generation++;
-    dispose();
-    if (alive && surface.value) void start();
-  },
+  descriptorChanged,
   { flush: "sync" }
 );
 watch([() => props.locale, () => props.disabled], () =>
