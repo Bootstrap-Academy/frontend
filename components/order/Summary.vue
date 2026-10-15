@@ -7,32 +7,36 @@
 
   The `consent` slot is the place for the terms and the declarations under
   § 356 Abs. 6 BGB; it sits directly above the order button on every purchase
-  surface.
+  surface. The full offer text inside it starts closed (`OrderContract`), so
+  that the characteristics, the price, the declarations and the button fit on
+  one screen, also on a phone.
 -->
 <template>
   <section class="grid min-w-0 grid-cols-1 gap-card">
     <h2 class="text-heading-2 m-0 text-heading">{{ t(heading) }}</h2>
 
-    <div class="grid gap-box">
+    <div class="grid gap-box" data-order-characteristics>
       <slot name="characteristics" />
     </div>
 
+    <!-- Label and amount share a line on every screen; a long amount wraps on its side. -->
     <dl
-      class="grid grid-cols-1 items-baseline gap-y-1 gap-x-card sm:grid-cols-[minmax(0,1fr)_auto]"
+      data-order-total
+      class="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-y-1 gap-x-card sm:grid-cols-[minmax(0,1fr)_auto]"
     >
       <template v-if="breakdown">
         <dt class="text-body-1 m-0 text-body">{{ t("Headings.NetAmount") }}</dt>
-        <dd class="text-body-1 m-0 text-heading sm:text-end">{{ formatEuros(net, locale) }}</dd>
+        <dd class="text-body-1 m-0 text-end text-heading">{{ formatEuros(net, locale) }}</dd>
 
         <dt class="text-body-1 m-0 text-body">
           {{ t("Headings.VatAmount", { vat: vatPercent }) }}
         </dt>
-        <dd class="text-body-1 m-0 text-heading sm:text-end">{{ formatEuros(vat, locale) }}</dd>
+        <dd class="text-body-1 m-0 text-end text-heading">{{ formatEuros(vat, locale) }}</dd>
       </template>
 
       <dt class="text-heading-4 m-0 text-heading">{{ t("Headings.TotalPrice") }}</dt>
-      <dd class="text-heading-4 m-0 text-heading sm:text-end">
-        <Price :coins="coins" />
+      <dd class="text-heading-4 m-0 text-end text-heading">
+        <Price :coins="coins" class="justify-end" />
       </dd>
     </dl>
 

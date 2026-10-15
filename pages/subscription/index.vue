@@ -465,7 +465,12 @@ export default {
       }
 
       orderOpener = document.activeElement as HTMLElement | null;
-      const offer = await requestPurchaseOffer("/shop/purchases/offers/hearts");
+      // A quote from an earlier opening is shown again while it fits the hearts.
+      await getHearts();
+      const offer = await requestPurchaseOffer(
+        "/shop/purchases/offers/hearts",
+        (quote) => quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
+      );
       if (!offer) return;
       withdrawalConsent.value = false;
       order.value = {
