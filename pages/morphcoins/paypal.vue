@@ -8,6 +8,7 @@
     of the stylesheet, so the colours are given to Firefox alone.
   -->
   <main
+    ref="page"
     class="h-screen-inner container w-full overflow-scroll pt-container pb-container supports-[-moz-appearance:none]:[scrollbar-color:var(--color-tertiary)_var(--color-primary)]"
   >
     <PaypalCheckoutStatus v-if="showRecovery" />
@@ -222,7 +223,7 @@
         PayPal is only the payment method and its SDK is loaded after the
         order has been placed.
       -->
-        <article class="max-w-2xl bg-secondary p-6 style-card mb-card">
+        <article ref="summaryCard" class="max-w-2xl bg-secondary p-4 style-card mb-card sm:p-6">
           <OrderSummary
             exact-offer
             :coins="coinsToBuy"
@@ -437,6 +438,14 @@ export default {
       }
     }
     onMounted(refreshOffer);
+    // Once the offer stands, the order summary is brought into the first screen (phone).
+    const page = ref(null);
+    const summaryCard = ref(null);
+    watch(offer, async (value) => {
+      if (!value) return;
+      await nextTick();
+      showOrderSummary(page.value, summaryCard.value);
+    });
     watch(
       () =>
         JSON.stringify([
@@ -598,6 +607,8 @@ export default {
       countryRules,
       saveCountry,
       paypal,
+      page,
+      summaryCard,
       ordered,
       busy,
       placing,

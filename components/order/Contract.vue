@@ -1,27 +1,49 @@
+<!--
+  The agreed offer and the two declarations of one order.
+
+  The full offer text, the recipient of the confirmation and the two documents
+  stand in a disclosure that starts closed, so that the price and the essential
+  characteristics above (§ 312j Abs. 2 BGB) stay directly in front of the two
+  boxes and the order button, on a phone as well. The wording is the offer's
+  own and is shown unchanged; opening the disclosure is one tap, and the boxes
+  below name what they accept.
+-->
 <template>
   <div
-    class="grid min-w-0 grid-cols-1 gap-4 [overflow-wrap:anywhere]"
+    class="grid min-w-0 grid-cols-1 gap-3 [overflow-wrap:anywhere]"
     lang="de"
     data-purchase-contract
   >
-    <p class="m-0 whitespace-pre-wrap break-words">{{ offer.text }}</p>
-    <p class="m-0 break-words">Bestätigung an: {{ offer.recipient }}</p>
-    <div class="flex flex-wrap gap-4">
-      <button
-        type="button"
-        class="min-w-0 text-left text-accent underline"
-        @click="downloadPurchaseDocument(offer.id, 'terms')"
+    <details class="group min-w-0" data-purchase-wording>
+      <summary
+        class="flex min-h-11 cursor-pointer list-none items-center gap-2 text-accent underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent [&::-webkit-details-marker]:hidden"
       >
-        AGB dieses Angebots herunterladen (PDF)
-      </button>
-      <button
-        type="button"
-        class="min-w-0 text-left text-accent underline"
-        @click="downloadPurchaseDocument(offer.id, 'withdrawal')"
-      >
-        Widerrufsinformationen dieses Angebots herunterladen (PDF)
-      </button>
-    </div>
+        <span aria-hidden="true" class="inline-block transition-transform group-open:rotate-90"
+          >▸</span
+        >
+        Angebot im Wortlaut, AGB und Widerrufsinformationen
+      </summary>
+      <div class="mt-3 grid min-w-0 grid-cols-1 gap-4">
+        <p class="m-0 whitespace-pre-wrap break-words">{{ offer.text }}</p>
+        <p class="m-0 break-words">Bestätigung an: {{ offer.recipient }}</p>
+        <div class="flex flex-wrap gap-4">
+          <button
+            type="button"
+            class="min-w-0 text-left text-accent underline"
+            @click="downloadPurchaseDocument(offer.id, 'terms')"
+          >
+            AGB dieses Angebots herunterladen (PDF)
+          </button>
+          <button
+            type="button"
+            class="min-w-0 text-left text-accent underline"
+            @click="downloadPurchaseDocument(offer.id, 'withdrawal')"
+          >
+            Widerrufsinformationen dieses Angebots herunterladen (PDF)
+          </button>
+        </div>
+      </div>
+    </details>
     <label class="flex items-start gap-3 text-body"
       ><input
         v-model="accepted"

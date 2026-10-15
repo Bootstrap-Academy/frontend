@@ -107,15 +107,21 @@ export default {
 
       opening.value = true;
       try {
-        // The balance decides between the order and the coin shop, so it is read now.
-        await getBalance();
+        // The balance decides between the order and the coin shop, and the hearts decide
+        // whether a quote from an earlier opening still fits, so both are read now.
+        await Promise.all([getBalance(), getHearts()]);
         if (coins.value < refillPrice.value) {
           // The coin shop says what the coins are needed for.
           return await navigateTo({ path: "/morphcoins/buy", query: { for: "hearts" } });
         }
 
         // The dialog is rebuilt every time it opens, so the boxes start unticked.
-        offer.value = await requestPurchaseOffer("/shop/purchases/offers/hearts");
+        // Opening the dialog again shows the same quote while it fits the hearts.
+        offer.value = await requestPurchaseOffer(
+          "/shop/purchases/offers/hearts",
+          (quote) =>
+            quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
+        );
         if (!offer.value) return;
         withdrawalConsent.value = false;
         ordering.value = true;
