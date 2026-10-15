@@ -310,6 +310,10 @@ async function start() {
         unitId: props.activityId,
         revisionId,
         packageHash: verified.descriptor.package_hash,
+        // A start refused for good ends the session; the retry here loads again.
+        stale: () => {
+          if (current()) host?.fail();
+        },
       });
     frame = createLessonFrame(surface.value, verified, () => {
       if (current()) host?.fail();
@@ -383,6 +387,8 @@ watch(
     () => props.module.entry_url,
     () => props.module.manifest_hash,
     () => props.module.package_hash,
+    // The same bytes under a new revision are evaluated by another server side.
+    () => props.module.revision_id,
     () => props.userId,
     () => session.value?.id,
     () => props.activityId,

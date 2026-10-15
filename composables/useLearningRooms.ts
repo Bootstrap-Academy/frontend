@@ -1,3 +1,5 @@
+import { bindEngineAssessment } from "~/lesson-protocol/engine";
+import type { AssessmentBinding } from "~/lesson-protocol/rooms";
 import { dailyError } from "~/utils/dailyLearning";
 import type { DailyLearning } from "~/types/dailyLearning";
 import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
@@ -396,6 +398,9 @@ export function useLearningRooms(
         options.protocolNext || (!options.selection && options.syncLocation !== false)
           ? advanceProtocol
           : undefined,
+      // Only a lesson of the engine gets adapters, over the same authenticated transport.
+      assessment: (binding: AssessmentBinding) =>
+        bindEngineAssessment({ request: transport, room: data, owner: () => owner.value, binding }),
     },
     view,
     data,

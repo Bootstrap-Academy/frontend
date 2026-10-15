@@ -121,10 +121,14 @@ export function createLearningTransport(options: {
       if (!current(expected)) throw sessionError();
       // Never replay a challenge attempt. Room mutations have a server-enforced
       // request id; their retry keeps the exact original id, revision and body.
+      // A start or submission of the engine answers the same request id the same way.
       const idempotentRoomWrite =
-        path.startsWith("/skills/rooms/") &&
-        (method === "PUT" || method === "POST") &&
-        typeof (body as any)?.request_id === "string";
+        (path.startsWith("/skills/rooms/") &&
+          (method === "PUT" || method === "POST") &&
+          typeof (body as any)?.request_id === "string") ||
+        (path.startsWith("/skills/engine/units/") &&
+          method === "POST" &&
+          typeof (body as any)?.requestId === "string");
       if (method !== "GET" && !idempotentRoomWrite) throw error;
       const response = await options.raw(path, method, body, options.snapshot().accessToken);
       if (!current(expected)) throw sessionError();

@@ -15,6 +15,17 @@ export interface RoomController {
     operationId?: string
   ): Promise<boolean>;
 }
+/** What the player knows about the package it loaded when it asks for assessment adapters. */
+export interface AssessmentBinding {
+  unitId: string;
+  revisionId: string;
+  packageHash: string;
+  /**
+   * The server refused a start for good and no newer package of the unit arrived:
+   * the player ends this session instead of letting the frame retry the refusal.
+   */
+  stale(): void;
+}
 export interface RoomProtocolSource {
   data: RoomController;
   owner(): string | null;
@@ -26,11 +37,7 @@ export interface RoomProtocolSource {
    * for the package revision whose bytes were loaded. Without them the host
    * grants no host.assessment.
    */
-  assessment?: (binding: {
-    unitId: string;
-    revisionId: string;
-    packageHash: string;
-  }) => HostAssessment | undefined;
+  assessment?: (binding: AssessmentBinding) => HostAssessment | undefined;
 }
 export interface RoomProtocolBinding {
   bind(options: {
@@ -54,6 +61,8 @@ export function createRoomProtocolBinding(
       const identity = owner();
       const review = initial?.progress.review_id || null;
       const course = initial?.course_id || null;
+      // The server completes a lesson of the engine when it books the last required pass.
+      const engine = initial?.unit.completion_kind === "engine";
       const current = () => {
         const room = data.protocolSnapshot().room;
         return (
@@ -139,6 +148,8 @@ export function createRoomProtocolBinding(
           return save(cloneJson(options.initialState), revision, key);
         },
         async complete(_goals, revision, key) {
+          if (engine)
+            throw new ProtocolError("invalid_receipt", "The server completes this lesson.");
           checkRevision(revision);
           const state = data.protocolSnapshot().room!.progress.state;
           if (
@@ -159,6 +170,8 @@ export function createRoomProtocolBinding(
         },
         async navigate(direction) {
           assertCurrent();
+          // Nothing of the engine can be skipped (the service refuses it as well).
+          if (direction === "skip" && engine) return false;
           if (!(await data.save())) throw failure();
           assertCurrent();
           if (direction === "skip" && !(await data.complete("skip"))) throw failure();
