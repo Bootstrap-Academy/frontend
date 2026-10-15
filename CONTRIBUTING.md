@@ -52,4 +52,4 @@ After your pull request has been approved, it is merged, the corresponding ticke
 
 By contributing to this project, you agree that your contributions are licensed under the same license as the project: the GNU Affero General Public License, version 3 or (at your option) any later version.
 
-Every commit must carry a `Signed-off-by` line with your name and email address, which `git commit --signoff` adds for you. The sign-off certifies the [Developer Certificate of Origin 1.1](https://developercertificate.org), in short: you wrote the change, or you otherwise have the right to submit it under this license.
+Every commit in a pull request from a contributor must carry a `Signed-off-by` line with your name and email address, which `git commit --signoff` adds for you. The sign-off certifies the [Developer Certificate of Origin 1.1](https://developercertificate.org). In short: you have the right to submit the change under this license, whether you wrote it yourself or took it from a source under a compatible license, and you agree that the contribution and your sign-off, including your name and email address, are kept publicly in the project history.
