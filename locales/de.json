@@ -540,6 +540,7 @@
     "OrderCoinsCharacteristics": "Deine Morphcoins werden nach Zahlung und Vertragsbestätigung innerhalb der angegebenen Frist gutgeschrieben.",
     "OrderCoinsNote": "MorphCoins nutzt du nur auf unserer Plattform. Nicht verbrauchte gekaufte MorphCoins erstatten wir dir jederzeit auf Anfrage an hallo{'@'}bootstrap.academy zum Erwerbskurs.",
     "OrderHeartsCharacteristics": "Einmalig auf bis zu {max} Herzen auffüllen. Die genaue Menge und die Frist stehen in deinem Angebot.",
+    "OrderHeartsQuantity": "Du bekommst {n} Herz dazu. | Du bekommst {n} Herzen dazu.",
     "OrderCourseCharacteristics": "Dauerhafter Zugriff auf alle Lektionen dieses Kurses.",
     "PremiumIncludesThisCourse": "Mit Premium ist dieser Kurs enthalten – ohne ihn einzeln freizuschalten.",
     "AutomaticRenewalOn": "Monatliche automatische Verlängerung zum gesondert vereinbarten Coin-Preis; jederzeit zum Ende des bezahlten Zeitraums kündbar.",

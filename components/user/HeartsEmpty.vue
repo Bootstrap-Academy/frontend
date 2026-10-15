@@ -46,6 +46,10 @@
           <p class="text-body-1 m-0 text-body">
             {{ t("Body.OrderHeartsCharacteristics", { max: maxHearts }) }}
           </p>
+          <!-- The exact quantity of this quote, in view next to the characteristic. -->
+          <p v-if="quantity" class="text-body-1 m-0 text-heading" data-order-quantity>
+            {{ t("Body.OrderHeartsQuantity", { n: quantity.n }, quantity.plural) }}
+          </p>
         </template>
 
         <template #consent>
@@ -88,6 +92,7 @@ export default {
       () => offer.value?.product.coins ?? heartConfig.value.hearts_refill_price
     );
     const maxHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
+    const quantity = computed(() => refillQuantity(offer.value, locale.value));
     const refillTime = computed(() => heartRefillTime(locale.value));
 
     // The page may stay open until the free refill; the new balance brings the
@@ -157,6 +162,7 @@ export default {
       refillPrice,
       refillTime,
       maxHearts,
+      quantity,
     };
   },
 };

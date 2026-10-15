@@ -127,6 +127,20 @@ export function formatHearts(hearts: number, locale: string): string {
 }
 
 /**
+ * The hearts a refill quote adds, for "Body.OrderHeartsQuantity": the figure in the
+ * displayed unit and the plural choice (one whole heart or more). The quote fixes the
+ * quantity in `facts.refill_units` (half hearts); without it the line is left out.
+ */
+export function refillQuantity(
+  offer: { product?: { facts?: Record<string, unknown> } } | null | undefined,
+  locale: string
+): { n: string; plural: number } | null {
+  const units = Number(offer?.product?.facts?.refill_units);
+  if (!Number.isFinite(units) || units <= 0) return null;
+  return { n: formatHearts(units, locale), plural: units === 2 ? 1 : 2 };
+}
+
+/**
  * Timestamp of the next automatic refill. The backend refills lazily whenever
  * the last refill is older than the most recent `auto_refill_time`, which is
  * 00:00 **UTC** — not the local midnight of the visitor.
