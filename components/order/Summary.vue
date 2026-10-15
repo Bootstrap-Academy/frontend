@@ -91,7 +91,12 @@
       {{ t("Error.WithdrawalConsentMissing") }}
     </p>
 
-    <div v-if="!hideActions" ref="actions" class="flex scroll-mb-4 flex-wrap justify-end gap-card">
+    <div
+      v-if="!hideActions"
+      ref="actions"
+      data-order-actions
+      class="flex scroll-mb-4 flex-wrap justify-end gap-card"
+    >
       <slot name="actions" />
       <InputBtn
         :loading="loading"

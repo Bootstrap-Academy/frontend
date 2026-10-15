@@ -249,30 +249,97 @@ test("the heart dialogs reuse a quote only while it fits the current hearts", as
   assert.equal(quoteFits({ product: { facts: { refill_units: 6 } } }), false);
 });
 
-test("the coin order page brings the summary up once, and only when its end is out of view", async () => {
-  const code = ts.transpileModule((await read("utils/orderView.ts")).replace(/^export /gm, ""), {
-    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
-  }).outputText;
+test("the coin order page brings the summary into the window once, across both scroll levels", async () => {
+  const code = ts.transpileModule(
+    (await read("utils/orderView.ts")).replace(/^export /gm, "").replace(/^type .*;$/gm, ""),
+    { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None } }
+  ).outputText;
   const showOrderSummary = new Function(code + "\nreturn showOrderSummary;")();
-  const area = (scrollTop) => {
+  // The page scrolls inside its `main`; with the notice about privacy above it the window
+  // scrolls as well. What counts is where the order button ends against the window.
+  const main = (scrollTop = 0) => ({ scrollTop });
+  const window = (innerHeight, scrollY = 0) => ({ innerHeight, scrollY });
+  const summary = (buttonBottom) => {
     const moves = [];
     return {
-      scrollTop,
       moves,
-      getBoundingClientRect: () => ({ top: 100, bottom: 844 }),
-      scrollTo: (options) => moves.push(options),
+      querySelector: (selector) =>
+        selector === "[data-order-actions]"
+          ? { getBoundingClientRect: () => ({ bottom: buttonBottom }) }
+          : null,
+      scrollIntoView: (options) => moves.push(options),
     };
   };
-  const card = (top, bottom) => ({ getBoundingClientRect: () => ({ top, bottom }) });
-  const below = area(0);
-  assert.equal(showOrderSummary(below, card(400, 1100)), true);
-  assert.deepEqual(below.moves, [{ top: 300, behavior: "instant" }]);
-  for (const [what, a, c] of [
-    ["the whole summary is in view", area(0), card(300, 800)],
-    ["the buyer has scrolled", area(40), card(400, 1100)],
-    ["no summary yet", area(0), null],
+  // Measured on test (review of #828): with the notice the button ends at 1,039 of 900 px
+  // and 1,151 of 844 px; without it at 944 of 844 px. All three are brought up, once.
+  for (const [what, bottom, height] of [
+    ["notice, 1280 x 900", 1039, 900],
+    ["notice, 390 x 844", 1151, 844],
+    ["no notice, 390 x 844", 944, 844],
   ]) {
-    assert.equal(showOrderSummary(a, c), false, what);
-    assert.equal(a.moves.length > 0, false, what);
+    const card = summary(bottom);
+    assert.equal(showOrderSummary(main(), card, window(height)), true, what);
+    assert.deepEqual(card.moves, [{ block: "start", behavior: "instant" }], what);
+  }
+  // A large window shows the button anyway and keeps its heading (898 of 900 px).
+  for (const [what, area, card, view] of [
+    ["button in view at 1280 x 900", main(), summary(898), window(900)],
+    ["the buyer scrolled the page", main(40), summary(1151), window(844)],
+    ["the buyer scrolled the window", main(), summary(1151), window(844, 120)],
+    ["no summary yet", main(), null, window(844)],
+  ]) {
+    assert.equal(showOrderSummary(area, card, view), false, what);
+    assert.equal((card?.moves.length ?? 0) > 0, false, what);
+  }
+  // The button block the page measures is the one of the order summary.
+  const actions = elements(await template("components/order/Summary.vue")).filter(({ node }) =>
+    hasAttribute(node, "data-order-actions")
+  );
+  assert.equal(actions.length, 1);
+  assert.equal(actions[0].node.loc.source.includes("{{ t(submitLabel) }}"), true);
+});
+
+test("a heart refill states the exact quantity of its quote next to the characteristic", async () => {
+  const shop = ts.transpileModule(
+    (await read("composables/shop.ts")).replace(/^import .*;\n/gm, "").replace(/^export /gm, ""),
+    { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None } }
+  ).outputText;
+  const refillQuantity = new Function(shop + "\nreturn refillQuantity;")();
+  const quoteOf = (units) => ({ product: { facts: { refill_units: units } } });
+  assert.deepEqual(refillQuantity(quoteOf(2), "de"), { n: "1", plural: 1 });
+  assert.deepEqual(refillQuantity(quoteOf(6), "de"), { n: "3", plural: 2 });
+  assert.deepEqual(refillQuantity(quoteOf(3), "de"), { n: "1,5", plural: 2 });
+  assert.deepEqual(refillQuantity(quoteOf(3), "en"), { n: "1.5", plural: 2 });
+  for (const quote of [null, {}, { product: {} }, quoteOf(0), quoteOf("x")])
+    assert.equal(refillQuantity(quote, "de"), null);
+  // Both heart dialogs show the line in the characteristics, right above the total.
+  for (const [path, quantity] of [
+    ["components/user/HeartsEmpty.vue", "quantity"],
+    ["pages/subscription/index.vue", "order.quantity"],
+  ]) {
+    const lines = elements(await template(path)).filter(({ node }) =>
+      hasAttribute(node, "data-order-quantity")
+    );
+    assert.equal(lines.length, 1, path);
+    const line = lines[0];
+    assert.equal(
+      line.parents.some(
+        (p) => p.tag === "template" && p.loc.source.startsWith("<template #characteristics")
+      ),
+      true,
+      path
+    );
+    assert.equal(line.node.loc.source.includes(`v-if="${quantity}"`), true, path);
+    assert.equal(line.node.loc.source.includes('t("Body.OrderHeartsQuantity"'), true, path);
+  }
+  for (const [language, one, many] of [
+    ["de", "Du bekommst 1 Herz dazu.", "Du bekommst 3 Herzen dazu."],
+    ["en-US", "You get 1 more heart.", "You get 3 more hearts."],
+  ]) {
+    const [singular, plural] = JSON.parse(
+      await read(`locales/${language}.json`)
+    ).Body.OrderHeartsQuantity.split(" | ");
+    assert.equal(singular.replace("{n}", "1"), one, language);
+    assert.equal(plural.replace("{n}", "3"), many, language);
   }
 });

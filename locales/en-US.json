@@ -541,6 +541,7 @@
     "OrderCoinsCharacteristics": "Your Morphcoins are credited after payment and contract confirmation, within the stated deadline.",
     "OrderCoinsNote": "MorphCoins are for use on our platform. We refund unused purchased MorphCoins at any time on request to hallo{'@'}bootstrap.academy at the rate you bought them.",
     "OrderHeartsCharacteristics": "Refill once, up to {max} hearts. Your offer shows the exact amount and deadline.",
+    "OrderHeartsQuantity": "You get {n} more heart. | You get {n} more hearts.",
     "OrderCourseCharacteristics": "Permanent access to all lectures of this course.",
     "PremiumIncludesThisCourse": "Premium includes this course, without unlocking it separately.",
     "AutomaticRenewalOn": "Automatic monthly renewal at the separately agreed coin price; cancellable at any time effective at the end of the paid period.",

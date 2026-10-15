@@ -223,6 +223,10 @@
         >
           <template #characteristics>
             <p class="text-body-1 m-0 text-body">{{ t(order.characteristics, order.params) }}</p>
+            <!-- A heart refill states the exact quantity of its quote next to the characteristic. -->
+            <p v-if="order.quantity" class="text-body-1 m-0 text-heading" data-order-quantity>
+              {{ t("Body.OrderHeartsQuantity", { n: order.quantity.n }, order.quantity.plural) }}
+            </p>
 
             <dl
               v-if="order.details.length"
@@ -481,6 +485,7 @@ export default {
         consentKind: "digital",
         characteristics: "Body.OrderHeartsCharacteristics",
         params: { max: formatHearts(heartConfig.value.hearts_max, locale.value) },
+        quantity: refillQuantity(offer, locale.value),
         details: [],
         submit: async () => {
           return acceptPurchase(offer);
