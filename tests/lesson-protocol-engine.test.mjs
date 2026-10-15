@@ -10,7 +10,10 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { after, test } from "node:test";
 import { pathToFileURL } from "node:url";
+import { compileScript, parse } from "@vue/compiler-sfc";
 import ts from "typescript";
+import * as Vue from "vue";
+import { renderToString } from "vue/server-renderer";
 import { loadLessonProtocol } from "./helpers/lesson-protocol-loader.mjs";
 
 const compiled = await loadLessonProtocol();
@@ -49,6 +52,9 @@ const NEWER = "0b9d6f3e-5a51-4f0c-9d55-3c1f4a1c0002";
 const PACKAGE = "c".repeat(64);
 const HASH = "a".repeat(64);
 const SEED = "000000000000000000000000000000a1";
+// Submission ids as skills issues them (the pattern of its route).
+const FIRST = "5b0c1d2e-0000-4000-8000-000000000001";
+const SECOND = "5b0c1d2e-0000-4000-8000-000000000002";
 const clone = (value) => structuredClone(value);
 const flush = async () => {
   for (let i = 0; i < 8; i++) await new Promise((resolve) => setImmediate(resolve));
@@ -140,11 +146,12 @@ const refusal = (statusCode, data) => ({ statusCode, ...(data ? { data } : {}) }
  */
 function skills(engine = {}) {
   const calls = [];
-  const state = { row: engineRoom(), owner: "alpha" };
+  const state = { row: engineRoom(), owner: "alpha", gone: false };
   const routes = {
     start: (goalId) => ({ start: publicStart(goalId), assessments: [] }),
-    submit: () => pending("submission-1"),
+    submit: () => pending(FIRST),
     status: (id) => pending(id),
+    save: () => {},
     ...engine,
   };
   async function request(requestPath, method = "GET", body) {
@@ -159,11 +166,15 @@ function skills(engine = {}) {
       return clone(await routes.submit(match[2], body));
     if ((match = route.match(/^\/skills\/engine\/submissions\/([^/]+)$/)))
       return clone(await routes.status(decodeURIComponent(match[1])));
+    // The unit was withdrawn: skills no longer finds it (engine switched off, no active revision).
+    if (method === "GET" && state.gone && route !== "/skills/rooms")
+      throw refusal(404, { detail: "Learning unit not found" });
     if (method === "GET")
       return route === "/skills/rooms"
         ? { paths: [path], path, next: clone(state.row) }
         : clone(state.row);
     if (method === "PUT") {
+      await routes.save(body);
       if (body.expected_revision !== state.row.progress.revision) throw refusal(409);
       state.row.progress.state = clone(body.state);
       state.row.progress.status = "in_progress";
@@ -196,7 +207,8 @@ async function fixture(t, engine = {}) {
   const { controller, view } = await opened(t, service);
   const owner = () => service.state.owner;
   const stale = [];
-  const actions = createRoomProtocolBinding(controller, owner).bind({
+  const time = { now: 0 };
+  const actions = createRoomProtocolBinding(controller, owner, () => time.now).bind({
     unitId: UNIT,
     schemaVersion: 1,
     initialState: {},
@@ -215,6 +227,7 @@ async function fixture(t, engine = {}) {
       packageHash: PACKAGE,
       stale: () => stale.push(true),
     },
+    now: () => time.now,
   });
   assert.equal(actions.assessment !== undefined, true);
   const pair = createTestTransportPair();
@@ -250,7 +263,21 @@ async function fixture(t, engine = {}) {
   assert.equal(host.phase, "running");
   const engineCalls = () => service.calls.filter(({ path }) => path.startsWith("/skills/engine/"));
   const completions = () => service.calls.filter(({ path }) => path.includes("/complete"));
-  return { service, controller, view, host, sdk, clock, events, stale, engineCalls, completions };
+  const writes = () => service.calls.filter(({ method }) => method === "PUT");
+  return {
+    service,
+    controller,
+    view,
+    host,
+    sdk,
+    clock,
+    time,
+    events,
+    stale,
+    engineCalls,
+    completions,
+    writes,
+  };
 }
 
 test("only a lesson of the engine whose room names the loaded revision gets adapters", async (t) => {
@@ -311,7 +338,7 @@ test("start, submission and status take the service's paths; the frame's operati
     activeGoalId: "reach",
     plans: { reach: answer.input },
   });
-  assert.deepEqual(await f.sdk.submitAssessment("reach", answer), pending("submission-1"));
+  assert.deepEqual(await f.sdk.submitAssessment("reach", answer), pending(FIRST));
   const submitted = f.engineCalls()[2];
   assert.equal(submitted.path, `/skills/engine/units/${UNIT}/tasks/reach/submissions`);
   assert.deepEqual(
@@ -324,8 +351,8 @@ test("start, submission and status take the service's paths; the frame's operati
   f.clock.advanceTo(1000);
   await flush();
   const read = f.engineCalls()[3];
-  assert.deepEqual([read.path, read.method], ["/skills/engine/submissions/submission-1", "GET"]);
-  assert.deepEqual(f.events, [["assessment.result", final("submission-1", "reach", "not_passed")]]);
+  assert.deepEqual([read.path, read.method], [`/skills/engine/submissions/${FIRST}`, "GET"]);
+  assert.deepEqual(f.events, [["assessment.result", final(FIRST, "reach", "not_passed")]]);
 });
 
 test("host task 1: a 409 is a final refusal with the service's code; no answer, 408, 5xx and 429 may be retried", () => {
@@ -361,11 +388,65 @@ test("host task 1: a 409 is a final refusal with the service's code; no answer, 
   }
 });
 
+test("refusals of the shared helpers of skills carry no retryable and are read by their status", () => {
+  // The bodies as skills sends them from the account guard, path access, daily limit and validation.
+  const cases = [
+    [refusal(401, { detail: "This account is no longer available" }), "no_access", false],
+    [
+      refusal(403, { detail: "Open the course to get access to these lessons" }),
+      "no_access",
+      false,
+    ],
+    [refusal(404, { detail: "This lesson is not part of that course" }), "not_found", false],
+    [
+      refusal(409, { detail: "Diese Anfrage gehört …", code: "request_id_conflict", daily: null }),
+      "request_id_conflict",
+      false,
+    ],
+    [
+      refusal(422, { detail: [{ type: "string_pattern_mismatch", loc: ["body"], msg: "x" }] }),
+      "invalid_message",
+      false,
+    ],
+    [
+      refusal(429, { detail: "Für heute …", code: "daily_limit_reached", daily: {} }),
+      "daily_limit_reached",
+      true,
+    ],
+    [
+      refusal(429, { detail: "Too many saves; the next one is taken in a moment" }),
+      "rate_limited",
+      true,
+    ],
+    [
+      refusal(503, { detail: "…", code: "learning_access_unavailable", daily: null }),
+      "learning_access_unavailable",
+      true,
+    ],
+  ];
+  for (const [error, code, retryable] of cases) {
+    const mapped = engineRefusal(error);
+    assert.deepEqual([mapped.code, mapped.retryable], [code, retryable], JSON.stringify(error));
+  }
+  // A 429 names its wait: Retry-After where the browser may read it, `retry_after`, else 30 s.
+  const headers = (value) => ({ response: { status: 429, headers: new Headers(value) } });
+  const waits = [
+    [{ statusCode: 429, ...headers({ "retry-after": "7" }) }, 7],
+    [refusal(429, { retry_after: 12 }), 12],
+    [refusal(429), 30],
+    [{ statusCode: 429, ...headers({ "retry-after": "Wed, 21 Oct 2026 07:28:00 GMT" }) }, 30],
+    [{ statusCode: 429, ...headers({ "retry-after": "0" }) }, 30],
+  ];
+  for (const [error, seconds] of waits)
+    assert.equal(engineRefusal(error).details.retryAfterSeconds, seconds, JSON.stringify(error));
+  assert.equal("retryAfterSeconds" in engineRefusal(refusal(503)).details, false);
+});
+
 test("a refused submission reaches the frame as a final refusal; an outage as a retry of the same operation", async (t) => {
   const answers = [
     refusal(409, { code: "conflict", retryable: true }),
     refusal(503),
-    pending("submission-2"),
+    pending(SECOND),
   ];
   const f = await fixture(t, {
     submit: () => {
@@ -385,7 +466,7 @@ test("a refused submission reaches the frame as a final refusal; an outage as a 
     (await failure(f.sdk.submitAssessment("reach", answer, { id: "third" }))).code,
     "locked"
   );
-  assert.deepEqual(await f.sdk.retry("second"), pending("submission-2"));
+  assert.deepEqual(await f.sdk.retry("second"), pending(SECOND));
   const [, second, third] = f.engineCalls();
   assert.equal(third.body.requestId, second.body.requestId);
   assert.equal(f.completions().length, 0);
@@ -490,6 +571,155 @@ test("Ä32b: a start refused for another revision loads the newer package, or en
   assert.equal(busy.stale.length, 0);
 });
 
+test("Ä40 a: a start refused because the unit or its task is gone ends the session", async (t) => {
+  // The engine was switched off: the route answers 404 without a code, the room is gone as well.
+  const withdrawn = await fixture(t, {
+    start: () => {
+      withdrawn.service.state.gone = true;
+      throw refusal(404, { detail: "The lesson engine is unavailable" });
+    },
+  });
+  const refused = await failure(withdrawn.sdk.startTask("reach"));
+  assert.deepEqual([refused.code, refused.retryable], ["not_found", false]);
+  assert.equal(withdrawn.stale.length, 1);
+  assert.equal(
+    withdrawn.service.calls.some(({ path }) => path.startsWith(`/skills/rooms/${UNIT}?`)),
+    true
+  );
+
+  // The task is missing in the active revision, the room still names the loaded one.
+  const missing = await fixture(t, {
+    start: () => {
+      throw refusal(404, { code: "not_found", retryable: false });
+    },
+  });
+  assert.equal((await failure(missing.sdk.startTask("reach"))).code, "not_found");
+  assert.equal(missing.stale.length, 1);
+});
+
+test("Ä40 b: the status read takes the submission ids of the route only", async (t) => {
+  const f = await fixture(t, { status: (id) => final(id, "reach", "not_passed") });
+  for (const id of ["..", "../units", "submission-1", "A".repeat(36), "%2e%2e"])
+    assert.equal((await failure(f.sdk.assessmentStatus(id))).code, "invalid_message", id);
+  assert.equal(f.engineCalls().length, 0);
+  const id = SECOND;
+  assert.equal((await f.sdk.assessmentStatus(id)).assessmentId, id);
+  assert.deepEqual(
+    f.engineCalls().map(({ path }) => path),
+    [`/skills/engine/submissions/${id}`]
+  );
+});
+
+test("Ä41 b: after a 429 a start goes out again only once its Retry-After has passed", async (t) => {
+  let limited = true;
+  const f = await fixture(t, {
+    start: (goalId) => {
+      if (limited) {
+        limited = false;
+        throw {
+          statusCode: 429,
+          data: { detail: "Too many requests" },
+          response: { status: 429, headers: new Headers({ "retry-after": "7" }) },
+        };
+      }
+      return { start: publicStart(goalId), assessments: [] };
+    },
+  });
+  const first = await failure(f.sdk.startTask("reach", "op"));
+  assert.deepEqual(
+    [first.code, first.retryable, first.details.retryAfterSeconds],
+    ["rate_limited", true, 7]
+  );
+  f.time.now = 6000;
+  const early = await failure(f.sdk.retry("op"));
+  assert.deepEqual(
+    [early.code, early.retryable, early.details.retryAfterSeconds],
+    ["rate_limited", true, 1]
+  );
+  assert.equal(f.engineCalls().length, 1);
+  f.time.now = 7000;
+  assert.deepEqual(await f.sdk.retry("op"), { start: publicStart(), assessments: [] });
+  const [sent, again] = f.engineCalls();
+  assert.equal(again.body.requestId, sent.body.requestId);
+});
+
+test("Ä41 b: a save refused with 429 waits its Retry-After, 30 s when the browser cannot read it", async (t) => {
+  let limited = true;
+  const f = await fixture(t, {
+    save: () => {
+      if (limited) {
+        limited = false;
+        throw refusal(429, { detail: "Too many saves; the next one is taken in a moment" });
+      }
+    },
+  });
+  const work = { formatVersion: 1, activeGoalId: "reach", plans: {} };
+  const first = await failure(f.sdk.saveState(work, { id: "save-op" }));
+  assert.deepEqual(
+    [first.code, first.retryable, first.details.retryAfterSeconds],
+    ["rate_limited", true, 30]
+  );
+  f.time.now = 29_999;
+  assert.equal((await failure(f.sdk.retry("save-op"))).code, "rate_limited");
+  // Only the same operation may go again, and it waits as well.
+  assert.equal((await failure(f.sdk.saveState(work, { id: "other" }))).code, "locked");
+  assert.equal(f.writes().length, 1);
+  f.time.now = 30_000;
+  assert.equal((await f.sdk.retry("save-op")).revision, 1);
+  const [sent, again] = f.writes();
+  assert.deepEqual(again.body, sent.body);
+  assert.deepEqual(f.service.state.row.progress.state, work);
+});
+
+test("Ä40 c: the course overview names a passed lesson of the engine like a solved one", async () => {
+  const file = "components/course/LearningUnit.vue";
+  const { descriptor } = parse(await readFile(new URL(`../${file}`, import.meta.url), "utf8"));
+  let code = ts.transpileModule(
+    compileScript(descriptor, { id: "unit", inlineTemplate: true }).content,
+    {
+      compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.ESNext },
+    }
+  ).outputText;
+  const stub = (source) => `data:text/javascript,${encodeURIComponent(source)}`;
+  code = code
+    .replace(/from ["']vue["']/g, `from ${JSON.stringify(import.meta.resolve("vue"))}`)
+    .replace(
+      /from ["']#components["']/,
+      `from ${JSON.stringify(stub("export const NuxtLink = 'a';"))}`
+    )
+    .replace(
+      /from ["']~\/utils\/courseJourney["']/,
+      `from ${JSON.stringify(stub("export const courseRoomLocation = () => '/learn';"))}`
+    );
+  const target = join(compiled.directory, "learning-unit.mjs");
+  await writeFile(target, code);
+  globalThis.useCourseExperienceCopy = () => ({
+    copy: Vue.ref({ solved: "Solved by you", introduction: "Introduced", inProgress: "Begun" }),
+    localized: (value) => value.en,
+  });
+  const LearningUnit = (await import(pathToFileURL(target))).default;
+  const label = async (kind) => {
+    const unit = {
+      id: UNIT,
+      title: { de: "E1", en: "E1" },
+      room: "custom",
+      status: "completed",
+      result: { kind },
+      available: true,
+    };
+    const html = await renderToString(
+      Vue.createSSRApp({
+        render: () => Vue.h(LearningUnit, { unit, courseId: COURSE, pathId: path.id }),
+      })
+    );
+    return html.match(/<small>([^<]*)<\/small>/)[1];
+  };
+  assert.equal(await label("passed"), "Solved by you");
+  assert.equal(await label("solved"), "Solved by you");
+  assert.equal(await label("introduced"), "Introduced");
+  delete globalThis.useCourseExperienceCopy;
+});
+
 test("an answer that arrives after the account changed is cancelled", async (t) => {
   const service = skills();
   const { controller } = await opened(t, service);
@@ -509,7 +739,7 @@ test("an answer that arrives after the account changed is cancelled", async (t) 
   gate.resolve();
   assert.equal((await failure(late)).code, "cancelled");
   // Nothing goes out for the new account under the old binding.
-  assert.equal((await failure(adapters.status("submission-1"))).code, "cancelled");
+  assert.equal((await failure(adapters.status(FIRST))).code, "cancelled");
   assert.equal(service.calls.filter(({ owner }) => owner === "beta").length, 0);
 });
 

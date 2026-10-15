@@ -171,6 +171,115 @@ test("discard consent does not bypass a failed native save or restart a changed 
   }
 });
 
+const protocolRestart = protocolAst.statements
+  .filter(
+    (node) =>
+      ts.isFunctionDeclaration(node) &&
+      ["endSession", "restartForRevision", "descriptorChanged"].includes(node.name?.text)
+  )
+  .map((node) => node.getText(protocolAst))
+  .join("\n");
+/** The page side of Ä32b and Ä40 d, with the actual functions of ProtocolActivity. */
+function restartingFrame(phase = "running") {
+  const log = [];
+  let flushed;
+  const host = {
+    phase,
+    prepareNavigation: () => {
+      log.push("flush");
+      return new Promise((resolve) => (flushed = resolve));
+    },
+    fail: () => log.push("fail"),
+  };
+  const api = evaluate(
+    `${protocolRestart}\nfunction changeOwner() { generation++; }\nfunction unmount() { alive = false; }`,
+    {
+      host,
+      generation: 1,
+      alive: true,
+      surface: { value: {} },
+      dispose: () => log.push("dispose"),
+      start: async () => log.push("start"),
+    },
+    ["endSession", "descriptorChanged", "changeOwner", "unmount"]
+  );
+  const values = (revision, entry = "entry-1") => [revision, entry, "m", "p", "u", "s", "a", "r"];
+  return { ...api, host, log, values, flush: (saved) => flushed(saved) };
+}
+
+test("the revision is the first value the player watches", () => {
+  const watched = protocolAst.statements
+    .map((node) => node.expression)
+    .find(
+      (call) =>
+        call &&
+        ts.isCallExpression(call) &&
+        call.expression.getText(protocolAst) === "watch" &&
+        call.arguments[1]?.getText(protocolAst) === "descriptorChanged"
+    );
+  assert.equal(
+    watched.arguments[0].elements[0].getText(protocolAst),
+    "() => props.module.revision_id"
+  );
+});
+
+test("a new revision under the same bytes saves the frame before the player restarts", async () => {
+  const f = restartingFrame();
+  f.descriptorChanged(f.values("rev-2"), f.values("rev-1"));
+  assert.deepEqual(f.log, ["flush"]);
+  f.flush(true);
+  await settle();
+  assert.deepEqual(f.log, ["flush", "start"]);
+
+  // Unconfirmed: the error block keeps the frame, and its retry asks before discarding anything.
+  const unsaved = restartingFrame();
+  unsaved.descriptorChanged(unsaved.values("rev-2"), unsaved.values("rev-1"));
+  unsaved.flush(false);
+  await settle();
+  assert.deepEqual(unsaved.log, ["flush", "fail"]);
+
+  // A failed frame stays as it is until its retry loads the new revision.
+  const failed = restartingFrame("recoverable-error");
+  failed.descriptorChanged(failed.values("rev-2"), failed.values("rev-1"));
+  failed.flush(false);
+  await settle();
+  assert.deepEqual(failed.log, ["flush", "fail"]);
+
+  // Another change while the frame saves wins; the late flush starts nothing.
+  for (const change of ["changeOwner", "unmount"]) {
+    const late = restartingFrame();
+    late.descriptorChanged(late.values("rev-2"), late.values("rev-1"));
+    late[change]();
+    late.flush(true);
+    await settle();
+    assert.deepEqual(late.log, ["flush"], change);
+  }
+});
+
+test("new bytes, or a frame that holds no work yet, restart the player at once", async () => {
+  const bytes = restartingFrame();
+  bytes.descriptorChanged(bytes.values("rev-2", "entry-2"), bytes.values("rev-1"));
+  assert.deepEqual(bytes.log, ["dispose", "start"]);
+  for (const phase of ["loading", "negotiating"]) {
+    const loading = restartingFrame(phase);
+    loading.descriptorChanged(loading.values("rev-2"), loading.values("rev-1"));
+    assert.deepEqual(loading.log, ["dispose", "start"], phase);
+  }
+});
+
+test("a start refused for good ends only the session it belongs to", () => {
+  const f = restartingFrame();
+  f.endSession(1);
+  assert.deepEqual(f.log, ["fail"]);
+  f.changeOwner();
+  f.endSession(1);
+  assert.deepEqual(f.log, ["fail"]);
+  const gone = restartingFrame();
+  gone.unmount();
+  gone.endSession(1);
+  assert.deepEqual(gone.log, []);
+});
+
 test("parallel expired reads share refresh, while an unsafe challenge POST is never replayed", async () => {
   let snapshot = {
     identity: "A:S",

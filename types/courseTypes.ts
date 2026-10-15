@@ -104,7 +104,8 @@ export interface CourseLearningPlan {
     title: { de: string; en: string };
     room: string;
     status: "new" | "in_progress" | "completed" | "skipped";
-    result: { kind: "introduced" | "solved" } | null;
+    /** "passed": a lesson of the engine whose required tasks the server booked. */
+    result: { kind: "introduced" | "solved" | "passed" } | null;
     available: boolean;
     selectable?: boolean;
   }[];

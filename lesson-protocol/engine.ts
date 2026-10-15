@@ -1,6 +1,11 @@
 import type { RoomEnvelope } from "../types/learningRooms";
 import type { HostAssessment } from "./host";
-import type { AssessmentBinding, RoomController } from "./rooms";
+import {
+  RETRY_AFTER_SECONDS,
+  createHoldOff,
+  type AssessmentBinding,
+  type RoomController,
+} from "./rooms";
 import { ProtocolError, type JsonObject } from "./types";
 
 /**
@@ -11,6 +16,7 @@ import { ProtocolError, type JsonObject } from "./types";
  * - POST `/skills/engine/units/{unit}/tasks/{goal}/submissions`
  *   `{requestId, stateRevision, answer: {startId, input}, courseId?}` answers a view, 202 while pending.
  * - GET `/skills/engine/submissions/{assessmentId}` answers a view and books a result that is ready.
+ *   The route takes a submission id only, so nothing else from the frame reaches the path.
  *
  * `requestId` is the host's key of the frame's operation, so the same operation reaches the
  * service with the same id. The client never completes a lesson of the engine: the service
@@ -23,6 +29,8 @@ export type EngineRequest = (
 ) => Promise<unknown>;
 
 const CODE = /^[a-z][a-z0-9_]{0,63}$/;
+// The pattern of the submission route in skills.
+const SUBMISSION = /^[0-9a-f-]{36}$/;
 const record = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -34,6 +42,30 @@ function statusOf(error: unknown): number | null {
   return typeof value === "number" && Number.isInteger(value) && value >= 400 && value <= 599
     ? value
     : null;
+}
+
+/**
+ * Seconds a 429 asks to wait: Retry-After where the browser may read it, `retry_after` in the body,
+ * otherwise the save window of skills.
+ */
+function retryAfterSeconds(error: unknown): number {
+  const source = record(error);
+  const response = record(source.response);
+  const headers = (source.headers ?? response.headers) as
+    | { get?: (name: string) => string | null }
+    | undefined;
+  const body = record(source.data ?? response._data);
+  const value =
+    (typeof headers?.get === "function" ? headers.get("retry-after") : null) ??
+    body.retry_after ??
+    body.retryAfter;
+  const seconds =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && /^\d+$/.test(value.trim())
+        ? Number(value)
+        : NaN;
+  return Number.isSafeInteger(seconds) && seconds > 0 ? seconds : RETRY_AFTER_SECONDS;
 }
 
 function fallbackCode(status: number) {
@@ -49,8 +81,9 @@ function fallbackCode(status: number) {
  * The error a frame receives for a failed call. A refusal of the service stays a refusal with the
  * service's code (409 `conflict`, `start_required`, `revision_changed`); no answer, a timeout, a
  * 5xx and a 429 may still turn out differently and are retryable. The HTTP status decides, never
- * the body: a proxy's 502 has no body, and the runtime chooses by `retryable` and `code` alone.
- * The service's prose stays out of the frame.
+ * the body: a proxy's 502 has no body, refusals of the shared helpers of skills (account, path
+ * access, daily limit, validation) carry no `retryable`, and the runtime chooses by `retryable` and
+ * `code` alone. A 429 names how long to wait. The service's prose stays out of the frame.
  */
 export function engineRefusal(error: unknown): ProtocolError {
   if (error instanceof ProtocolError) return error;
@@ -69,7 +102,8 @@ export function engineRefusal(error: unknown): ProtocolError {
     return new ProtocolError(
       code ?? "rate_limited",
       "Too many requests just now. Retry keeps the same operation.",
-      true
+      true,
+      { retryAfterSeconds: retryAfterSeconds(error) }
     );
   return new ProtocolError(code ?? fallbackCode(status), "The service refused this request.");
 }
@@ -83,6 +117,7 @@ export function bindEngineAssessment(options: {
   room: Pick<RoomController, "protocolSnapshot" | "protocolRead">;
   owner: () => string | null;
   binding: AssessmentBinding;
+  now?: () => number;
 }): HostAssessment | undefined {
   const { request, room, owner, binding } = options;
   const initial = room.protocolSnapshot().room;
@@ -105,14 +140,20 @@ export function bindEngineAssessment(options: {
   const assertCurrent = () => {
     if (owner() !== identity) throw new ProtocolError("cancelled", "Learning room changed.");
   };
+  // Ä41 b: after a 429 nothing goes out before its wait has passed.
+  const holdOff = createHoldOff(options.now ?? Date.now);
   const call = async (path: string, method: "GET" | "POST", body?: JsonObject) => {
     assertCurrent();
+    holdOff.check();
     let answer: unknown;
     try {
       answer = await request(path, method, body);
     } catch (error) {
       assertCurrent();
-      throw engineRefusal(error);
+      const refusal = engineRefusal(error);
+      const wait = refusal.details.retryAfterSeconds;
+      if (typeof wait === "number") holdOff.hold(wait);
+      throw refusal;
     }
     assertCurrent();
     return answer as JsonObject;
@@ -127,9 +168,9 @@ export function bindEngineAssessment(options: {
     }
   };
   /**
-   * Ä32b: a start refused for another revision reads the room again. A newer package there reloads
-   * the player through its descriptor; without one the session ends, so the frame does not offer to
-   * repeat a refusal.
+   * Ä32b, Ä40 a: a start refused for another revision, or for a unit or task that is gone, reads
+   * the room again. A newer package there reloads the player through its descriptor; without one
+   * the session ends, so the frame does not offer to repeat a refusal.
    */
   const renew = async () => {
     try {
@@ -157,7 +198,11 @@ export function bindEngineAssessment(options: {
           ...course,
         });
       } catch (error) {
-        if (error instanceof ProtocolError && error.code === "revision_changed") await renew();
+        if (
+          error instanceof ProtocolError &&
+          (error.code === "revision_changed" || error.code === "not_found")
+        )
+          await renew();
         throw error;
       }
       // Host task 3: a start that reports the unit completed elsewhere brings the page up to date;
@@ -178,8 +223,12 @@ export function bindEngineAssessment(options: {
         answer,
         ...course,
       }),
-    status: (assessmentId) =>
-      call(`/skills/engine/submissions/${encodeURIComponent(assessmentId)}`, "GET"),
+    async status(assessmentId) {
+      // Ä40 b: an id the route would not take never becomes a path.
+      if (!SUBMISSION.test(assessmentId))
+        throw new ProtocolError("invalid_message", "Unknown submission.");
+      return call(`/skills/engine/submissions/${assessmentId}`, "GET");
+    },
     async complete() {
       // The pass of the unit is booked with the last required pass; the room shows it.
       const current = await read();
