@@ -251,10 +251,16 @@ test("the heart dialogs reuse a quote only while it fits the current hearts", as
 
 test("the coin order page brings the summary into the window once, across both scroll levels", async () => {
   const code = ts.transpileModule(
-    (await read("utils/orderView.ts")).replace(/^export /gm, "").replace(/^type .*;$/gm, ""),
+    (await read("utils/orderView.ts"))
+      .replace(/^import .*;\n/gm, "")
+      .replace(/^export /gm, "")
+      .replace(/^type .*;$/gm, ""),
     { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None } }
   ).outputText;
-  const showOrderSummary = new Function(code + "\nreturn showOrderSummary;")();
+  const show = new Function(code + "\nreturn showOrderSummary;")();
+  // No change of page under way: no move to the top is pending.
+  const settled = { pending: () => false, cancel: () => false };
+  const showOrderSummary = (area, card, view) => show(area, card, view, settled);
   // The page scrolls inside its `main`; with the notice about privacy above it the window
   // scrolls as well. What counts is where the order button ends against the window.
   const main = (scrollTop = 0) => ({ scrollTop });
@@ -297,6 +303,102 @@ test("the coin order page brings the summary into the window once, across both s
   );
   assert.equal(actions.length, 1);
   assert.equal(actions[0].node.loc.source.includes("{{ t(submitLabel) }}"), true);
+});
+
+test("a change of page leaves the coin summary where the page brought it", async () => {
+  const compile = async (path) =>
+    ts.transpileModule(
+      (await read(path))
+        .replace(/^import .*;\n/gm, "")
+        .replace(/^export /gm, "")
+        .replace(/^type .*;$/gm, ""),
+      { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None } }
+    ).outputText;
+  // The shared state of the move to the top, with a clock and a window of its own.
+  const timers = new Map();
+  const scrolls = [];
+  let next = 0;
+  const pageTop = new Function(
+    "setTimeout",
+    "clearTimeout",
+    "window",
+    (await compile("utils/pageTop.ts")) +
+      "\nreturn { schedulePageTop, pageTopPending, cancelPageTop };"
+  )(
+    (handler, delay) => {
+      timers.set(++next, { handler, delay });
+      return next;
+    },
+    (id) => timers.delete(id),
+    { scrollTo: (options) => scrolls.push(options) }
+  );
+  const fire = () => {
+    for (const [id, { handler }] of [...timers]) {
+      timers.delete(id);
+      handler();
+    }
+  };
+  // Without a page of its own the window goes to the top 450 ms after a change of page.
+  pageTop.schedulePageTop();
+  assert.equal(pageTop.pageTopPending(), true);
+  assert.deepEqual(
+    [...timers.values()].map((t) => t.delay),
+    [450]
+  );
+  fire();
+  assert.deepEqual(scrolls, [{ top: 0, left: 0, behavior: "smooth" }]);
+  assert.equal(pageTop.pageTopPending(), false);
+  assert.equal(pageTop.cancelPageTop(), false);
+
+  const show = new Function((await compile("utils/orderView.ts")) + "\nreturn showOrderSummary;")();
+  const main = { scrollTop: 0 };
+  const summary = (buttonBottom) => {
+    const moves = [];
+    return {
+      moves,
+      querySelector: () => ({ getBoundingClientRect: () => ({ bottom: buttonBottom }) }),
+      scrollIntoView: (options) => moves.push(options),
+    };
+  };
+  const shared = { pending: pageTop.pageTopPending, cancel: pageTop.cancelPageTop };
+  // Coming from the coin shop with the notice (review of #829): the offer arrives about
+  // 200 ms after the change of page, the summary is brought up, and the move to the top,
+  // which would undo it 250 ms later, is cancelled.
+  for (const [what, bottom, height, scrollY] of [
+    ["notice, 1280 x 900", 1039, 900, 0],
+    ["notice, 390 x 844", 1151, 844, 0],
+    // From the premium card the window still stands where the premium page left it.
+    ["from a scrolled page, 390 x 844", 851, 844, 300],
+  ]) {
+    scrolls.length = 0;
+    pageTop.schedulePageTop();
+    const card = summary(bottom);
+    assert.equal(show(main, card, { innerHeight: height, scrollY }, shared), true, what);
+    assert.deepEqual(card.moves, [{ block: "start", behavior: "instant" }], what);
+    assert.equal(pageTop.pageTopPending(), false, what);
+    fire();
+    assert.equal(scrolls.length > 0, false, `${what}: nothing moves the window back up`);
+  }
+  // A page whose button stands in view once at the top keeps the move to the top.
+  scrolls.length = 0;
+  pageTop.schedulePageTop();
+  const fits = summary(598);
+  assert.equal(show(main, fits, { innerHeight: 900, scrollY: 300 }, shared), false);
+  assert.equal(fits.moves.length > 0, false);
+  assert.equal(pageTop.pageTopPending(), true);
+  fire();
+  assert.equal(scrolls.length, 1);
+  // Without a change of page a scrolled window is the buyer's: nothing moves, nothing is cancelled.
+  let cancelled = false;
+  const still = summary(1151);
+  const settled = { pending: () => false, cancel: () => (cancelled = true) };
+  assert.equal(show(main, still, { innerHeight: 844, scrollY: 120 }, settled), false);
+  assert.equal(still.moves.length > 0, false);
+  assert.equal(cancelled, false);
+  // The global middleware schedules the move through the shared state and nowhere else.
+  const middleware = await read("middleware/route.global.ts");
+  assert.match(middleware, /schedulePageTop\(\)/);
+  assert.equal(/setTimeout|scrollTo/.test(middleware), false);
 });
 
 test("a heart refill states the exact quantity of its quote next to the characteristic", async () => {

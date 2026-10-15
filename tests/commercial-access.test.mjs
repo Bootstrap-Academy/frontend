@@ -21,6 +21,10 @@ async function moduleFrom(relative, replacements = {}) {
     'from "~/utils/guest/handoff"',
     `from ${JSON.stringify(new URL("../utils/guest/handoff.ts", import.meta.url).href)}`
   );
+  code = code.replaceAll(
+    'from "~/utils/pageTop"',
+    `from ${JSON.stringify(new URL("../utils/pageTop.ts", import.meta.url).href)}`
+  );
   const path = join(dir, relative.replaceAll(/[^a-z0-9]/gi, "_") + ".mjs");
   await writeFile(path, code);
   return import(pathToFileURL(path));
