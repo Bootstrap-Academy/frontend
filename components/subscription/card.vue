@@ -54,12 +54,10 @@
             <InformationCircleIcon class="h-6 w-6 text-accent" />
           </Tooltip>
         </div>
+        <!-- Every course is open to every account, so the courses stand with the free plan only. -->
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
-          <p>{{ t(isDaily ? "DailyLearning.AllCourses" : "Body.LimitedAccessToCourses") }}</p>
-          <Tooltip v-if="!isDaily" :heading="'Body.LimitedAccessToCoursesTooltip'">
-            <InformationCircleIcon class="h-6 w-6 text-accent" />
-          </Tooltip>
+          <p>{{ t("DailyLearning.AllCourses") }}</p>
         </div>
         <div class="mt-4 flex items-center space-x-4">
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
@@ -157,10 +155,6 @@
           <p class="text-black">
             {{ t(isDaily ? "DailyLearning.PremiumPace" : "Body.UnlimitedHearts") }}
           </p>
-        </div>
-        <div class="mt-4 flex items-center space-x-4">
-          <CheckIcon class="h-6 w-5 flex-none text-black" aria-hidden="true" />
-          <p class="text-black">{{ t("Body.AccessToAllCourses") }}</p>
         </div>
       </div>
     </div>

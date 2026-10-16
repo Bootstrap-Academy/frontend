@@ -206,6 +206,47 @@ test("a guest with a stored Premium state sees both plans and the way to an acco
   }
 });
 
+const COURSE = { de: /kurs/i, "en-US": /course/i };
+
+test("the Premium card promises no course, and the free plan says that every course is open, in every state", async () => {
+  let states = 0;
+  for (const language of ["de", "en-US"])
+    for (const yearly of [false, true])
+      for (const balance of [0, 20000])
+        for (const premium of [false, true])
+          for (const daily of [false, true])
+            for (const guest of [false, true]) {
+              const state = { language, yearly, balance, premium, daily, guest };
+              const where = JSON.stringify(state);
+              const { lines, all, text, html } = await card(state);
+              assert.deepEqual(
+                lines.filter((line) => COURSE[language].test(line)),
+                [],
+                where
+              );
+              // An account with Premium sees no card of the free plan.
+              const shown = !premium || guest;
+              assert.equal(all.includes(locales[language].Headings.Free), shown, where);
+              const free = text(html.slice(0, html.indexOf('id="premium"')));
+              assert.deepEqual(
+                free.filter((line) => COURSE[language].test(line)),
+                shown ? [locales[language].DailyLearning.AllCourses] : [],
+                where
+              );
+              // No hint about courses that cost coins or need Premium.
+              assert(!html.includes("LimitedAccessToCourses"), where);
+              states++;
+            }
+  assert.equal(states, 64);
+  for (const language of ["de", "en-US"])
+    for (const key of [
+      "AccessToAllCourses",
+      "LimitedAccessToCourses",
+      "LimitedAccessToCoursesTooltip",
+    ])
+      assert.equal(locales[language].Body[key], undefined, `${language} ${key}`);
+});
+
 test("the period reads as one purchase, not as a subscription", () => {
   assert.equal(locales.de.Body.PremiumForOneMonth, "Für einen Monat");
   assert.equal(locales.de.Body.PremiumForOneYear, "Für ein Jahr");
