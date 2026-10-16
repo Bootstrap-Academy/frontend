@@ -6,12 +6,6 @@
         {{ price > 0 ? abbreviateNumber(price) + " MorphCoins" : copy.free }}
       </h2>
       <Price v-if="price > 0" :coins="price" euro-only class="text-body-2 text-body" />
-      <p v-if="price > 0 && !isPremium" class="text-body-2 mt-3 text-body">
-        {{ t("Body.PremiumIncludesThisCourse") }}
-        <NuxtLink to="/subscription#premium" class="text-accent hover:underline">{{
-          t("Links.MorePremium")
-        }}</NuxtLink>
-      </p>
     </article>
     <div v-else-if="progress.total" class="mb-5">
       <p class="mb-2 text-sm text-subheading">{{ copy.progress }}</p>
@@ -198,9 +192,6 @@ async function onclickOrder() {
 const price = computed(() => {
   return props.data?.price ?? 0;
 });
-
-const premiumInfo: any = usePremiumInfo();
-const isPremium = computed(() => !!premiumInfo.value?.premium);
 
 const canOrder = computed(() => !!purchaseOffer.value && withdrawalConsent.value);
 </script>

@@ -145,10 +145,9 @@ test("the Premium card says what Premium brings once, in its list", async () => 
   const says = (node) => node.loc.source;
   assert(!says(premium).includes("GetAllServices"));
   assert(!says(premium).includes("PremiumIntro"));
-  const benefits = paragraphs.filter((node) =>
-    /UnlimitedHearts|PremiumPace|AccessToAllCourses/.test(says(node))
-  );
-  assert.equal(benefits.length, 2);
+  // Every course is free, so the hearts (or the pace) are what Premium adds.
+  const benefits = paragraphs.filter((node) => /UnlimitedHearts|PremiumPace/.test(says(node)));
+  assert.equal(benefits.length, 1);
   for (const language of ["de", "en-US"]) {
     const texts = JSON.parse(await read(`locales/${language}.json`));
     assert.equal(texts.Body.GetAllServices, undefined);

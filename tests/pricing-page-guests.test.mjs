@@ -170,14 +170,9 @@ test("a guest reads the header without the sentence about a renewal only an acco
   }
 });
 
-test("the Premium link of a course page lands on the Premium card", async () => {
-  const links = (await elements("components/course/Overview.vue")).filter(
-    ({ node }) => node.tag === "NuxtLink" && node.loc.source.includes("Links.MorePremium")
-  );
-  assert.equal(links.length, 1);
-  assert.equal(attribute(links[0].node, "to"), "/subscription#premium");
-  const anchors = (await elements("components/subscription/card.vue")).filter(
-    ({ node }) => attribute(node, "id") === "premium"
-  );
-  assert.equal(anchors.length, 1);
+test("a course page does not offer Premium as the way into the course", async () => {
+  // Every course is free; Premium does not open a course that would otherwise stay closed.
+  const overview = (await elements("components/course/Overview.vue")).map(({ node }) => node);
+  assert(!overview.some((node) => /Premium/.test(node.loc.source)));
+  assert(!overview.some((node) => attribute(node, "to")?.startsWith("/subscription")));
 });
