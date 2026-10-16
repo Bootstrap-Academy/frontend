@@ -89,3 +89,37 @@ test("on the pricing page a guest has no plan, whatever an account that logged o
   token.value = "a token";
   assert.equal(isPremium.value, false);
 });
+
+test("a guest reads the header without the sentence about a renewal only an account can order", async () => {
+  // The expression of the header, run for each kind of visitor.
+  const header = (await elements("pages/subscription/index.vue")).find(
+    ({ node }) => node.tag === "p" && node.loc.source.includes("Body.PremiumCardMain")
+  ).node;
+  const says = header.children.find((child) => child.type === 5).content.content;
+  const key = (isDaily, guest) =>
+    new Function("isDaily", "guest", "t", `return ${says}`)(isDaily, guest, (k) => k);
+  assert.equal(key(false, true), "Body.PremiumCardMainGuest");
+  assert.equal(key(false, false), "Body.PremiumCardMain");
+  assert.equal(key(true, false), "DailyLearning.PremiumBenefit");
+  for (const [language, renewal] of [
+    ["de", /verlängerung/i],
+    ["en-US", /renewal/i],
+  ]) {
+    const { PremiumCardMain, PremiumCardMainGuest } = locales[language].Body;
+    // The guest reads the first sentence of what an account reads, and nothing about a renewal.
+    assert(PremiumCardMain.startsWith(PremiumCardMainGuest + " "), language);
+    assert(renewal.test(PremiumCardMain) && !renewal.test(PremiumCardMainGuest), language);
+  }
+});
+
+test("the Premium link of a course page lands on the Premium card", async () => {
+  const links = (await elements("components/course/Overview.vue")).filter(
+    ({ node }) => node.tag === "NuxtLink" && node.loc.source.includes("Links.MorePremium")
+  );
+  assert.equal(links.length, 1);
+  assert.equal(attribute(links[0].node, "to"), "/subscription#premium");
+  const anchors = (await elements("components/subscription/card.vue")).filter(
+    ({ node }) => attribute(node, "id") === "premium"
+  );
+  assert.equal(anchors.length, 1);
+});

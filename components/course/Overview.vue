@@ -8,7 +8,7 @@
       <Price v-if="price > 0" :coins="price" euro-only class="text-body-2 text-body" />
       <p v-if="price > 0 && !isPremium" class="text-body-2 mt-3 text-body">
         {{ t("Body.PremiumIncludesThisCourse") }}
-        <NuxtLink to="/subscription" class="text-accent hover:underline">{{
+        <NuxtLink to="/subscription#premium" class="text-accent hover:underline">{{
           t("Links.MorePremium")
         }}</NuxtLink>
       </p>

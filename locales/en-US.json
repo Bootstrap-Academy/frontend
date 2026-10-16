@@ -427,6 +427,7 @@
     "BuyMonthlySubscription": "1,000 morphcoins will be deducted from your account for Monthly subscription",
     "BuyYearlySubscription": "10,000 morphcoins will be deducted from your account for Yearly subscription",
     "PremiumCardMain": "Buy Premium for one month or one year. You can then order automatic monthly renewal separately.",
+    "PremiumCardMainGuest": "Buy Premium for one month or one year.",
     "MonthlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "YearlyPremiumCardBody": "Learn Code Practice Test and Manymore.",
     "ChangeEnvironment": "Do you want to update your solution code to the default example?",

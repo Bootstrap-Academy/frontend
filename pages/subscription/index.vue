@@ -67,8 +67,20 @@
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
           {{ t(isDaily ? "Headings.Premium" : "Headings.NoTrickPricing") }}
         </h2>
+        <!--
+          A guest cannot order the separate monthly renewal before having an account and
+          Premium, so the sentence about it is left out and the cards come up sooner.
+        -->
         <p class="text-gray mt-2 text-lg leading-8">
-          {{ t(isDaily ? "DailyLearning.PremiumBenefit" : "Body.PremiumCardMain") }}
+          {{
+            t(
+              isDaily
+                ? "DailyLearning.PremiumBenefit"
+                : guest
+                  ? "Body.PremiumCardMainGuest"
+                  : "Body.PremiumCardMain"
+            )
+          }}
         </p>
       </div>
 

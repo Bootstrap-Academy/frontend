@@ -427,6 +427,7 @@
     "BuyMonthlySubscription": "Für das Monatsabonnement werden 1,000 Morphcoins von deinem Konto abgebucht",
     "BuyYearlySubscription": "Für das Jahresabonnement werden 10,000 Morphcoins von deinem Konto abgebucht",
     "PremiumCardMain": "Buche Premium für einen Monat oder ein Jahr. Eine automatische monatliche Verlängerung kannst du anschließend gesondert bestellen.",
+    "PremiumCardMainGuest": "Buche Premium für einen Monat oder ein Jahr.",
     "MonthlyPremiumCardBody": "Übungen und vieles mehr.",
     "YearlyPremiumCardBody": "Übungen und vieles mehr.",
     "ChangeEnvironment": "Möchtest du den Lösungscode auf das Standardbeispiel setzen?",
