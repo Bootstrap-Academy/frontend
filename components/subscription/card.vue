@@ -198,9 +198,8 @@ const dailyHearts = computed(() => formatHearts(heartConfig.value.hearts_max, lo
 // The same time of day as the block at the heart limit names.
 const refillTime = computed(() => heartRefillTime(locale.value));
 
-const isPremium = computed(() => {
-  return premiumInfo.value?.premium;
-});
+// A guest has no plan, whatever an account that logged out left in memory.
+const isPremium = computed(() => !props.guest && premiumInfo.value?.premium);
 
 const coins = useCoins();
 const planPrice = computed(() => (props.yearly ? props.yearlyPrice : props.monthlyPrice));

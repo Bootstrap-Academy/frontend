@@ -176,6 +176,36 @@ test("a visitor without an account sees both plans, the price of Premium, and th
   }
 });
 
+test("a guest with a stored Premium state sees both plans and the way to an account", async () => {
+  // A Premium account that logged out (in another tab, or before "Back") leaves its state in
+  // memory. The visitor in front of the page has no plan, so the cards are those of a guest.
+  for (const language of ["de", "en-US"])
+    for (const yearly of [false, true])
+      for (const daily of [false, true]) {
+        const state = { language, yearly, balance: 0, premium: true, daily, guest: true };
+        const where = JSON.stringify(state);
+        const { markup, lines, text, all, html } = await card(state);
+        const { Body, Headings, Links } = locales[language];
+        assert(all.includes(Headings.Free) && lines.includes(Headings.Premium), where);
+        assert(lines.includes(`[price of ${yearly ? PRICES.YEARLY : PRICES.MONTHLY}]`), where);
+        const links = html.match(/<a[^>]*>.*?<\/a>/gs) ?? [];
+        assert.equal(links.length, 1, where);
+        assert.match(links[0], /^<a[^>]* to="\/auth\/signup"/, where);
+        assert.deepEqual(text(links[0]), [Links.CreateAccount], where);
+        assert(html.indexOf(links[0]) < html.indexOf('id="premium"'), where);
+        assert.equal((markup.match(/<button/g) ?? []).length, 0, where);
+        assert(!all.includes(Body.CurrentPlan), where);
+        // The two cards stand side by side on wide screens, as for every visitor without Premium.
+        assert.match(html, /id="premium"[^>]*class="[^"]*md:w-1\/2/, where);
+      }
+  // An account with Premium keeps its view: no card of the free plan, no way to the sign-up.
+  for (const language of ["de", "en-US"]) {
+    const { html, all } = await card({ language, yearly: false, balance: 0, premium: true });
+    assert(!all.includes(locales[language].Headings.Free), language);
+    assert(!html.includes('to="/auth/signup"'), language);
+  }
+});
+
 test("the period reads as one purchase, not as a subscription", () => {
   assert.equal(locales.de.Body.PremiumForOneMonth, "Für einen Monat");
   assert.equal(locales.de.Body.PremiumForOneYear, "Für ein Jahr");

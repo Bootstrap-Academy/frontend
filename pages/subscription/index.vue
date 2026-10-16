@@ -342,9 +342,9 @@ export default {
       heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
     );
 
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
-    });
+    // A guest has no plan. A Premium state still in memory belongs to an account that logged
+    // out (in another tab, or before "Back") and is not the visitor's.
+    const isPremium = computed(() => !guest.value && premiumInfo.value?.premium);
 
     const premiumUntil = computed(() => {
       const until = Number(premiumInfo.value?.until);

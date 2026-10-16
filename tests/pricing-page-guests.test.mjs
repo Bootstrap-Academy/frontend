@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFile } from "node:fs/promises";
 import { parse } from "@vue/compiler-sfc";
+import * as Vue from "vue";
+import { pieces } from "./helpers/component-pieces.mjs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const locales = Object.fromEntries(
@@ -66,4 +68,24 @@ test("a visitor who logs in while the pricing page is open gets the Premium stat
   const refresh = source.slice(source.indexOf("async function refreshPremiumStatus()"));
   const body = refresh.slice(0, refresh.indexOf("await getPremiumStatus()"));
   assert.match(body, /premiumBusy\.value = true;/);
+});
+
+test("on the pricing page a guest has no plan, whatever an account that logged out left in memory", async () => {
+  // The session ends in another tab, or before "Back": the token is gone, the Premium state of
+  // the account is still in memory. The page shows the visitor the plans of a guest.
+  const token = Vue.ref("a token");
+  const stored = Vue.ref({ premium: true });
+  const { guest, isPremium } = await pieces(
+    "pages/subscription/index.vue",
+    ["premiumInfo", "accessToken", "guest", "isPremium"],
+    { computed: Vue.computed, useAccessToken: () => token, usePremiumInfo: () => stored }
+  );
+  assert.equal(guest.value, false);
+  assert.equal(isPremium.value, true);
+  token.value = "";
+  assert.equal(guest.value, true);
+  assert.equal(isPremium.value, false);
+  stored.value = { premium: false };
+  token.value = "a token";
+  assert.equal(isPremium.value, false);
 });
