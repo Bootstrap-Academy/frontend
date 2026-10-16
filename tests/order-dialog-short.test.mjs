@@ -7,6 +7,7 @@ import { readFile } from "node:fs/promises";
 import { parse } from "@vue/compiler-sfc";
 import * as Vue from "vue";
 import { component, evaluate, host, settle, tag } from "./helpers/mounted-page.mjs";
+import { pieces } from "./helpers/component-pieces.mjs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const locales = Object.fromEntries(
@@ -269,8 +270,199 @@ test("a Premium order leaves a running renewal to the term line of the offer", a
   for (const language of ["de", "en-US"])
     for (const key of ["OrderRenewalContinues", "OrderRenewalPending"])
       assert.equal(locales[language].Body[key], undefined, `${language} ${key}`);
-  // A renewal changed before the order still leads to a new confirmation (long layout, old offers).
-  assert.match(page, /if \(renewalKey\(status\) !== order\.value\.renewalKey\)/);
+});
+
+// A Premium offer as the backend issues it: the term line names a separately ordered monthly
+// renewal, which the offer binds in `facts.renewal`.
+function premium(renewal, id = "60000000-0000-4000-8000-000000000001") {
+  const term = renewal
+    ? `Laufzeit: 1 Monat. Danach läuft deine monatliche Verlängerung weiter (${renewal} Morphcoins je Monat).`
+    : "Laufzeit: 1 Monat, ohne automatische Verlängerung.";
+  const lines = [
+    { role: "product", text: "Premium für einen Monat" },
+    { role: "detail", text: "Unbegrenzte Herzen." },
+    { role: "term", text: term },
+    {
+      role: "price",
+      text: "Gesamtpreis: 1.000 Morphcoins (10,00 € inkl. 19 % MwSt.), keine weiteren Kosten.",
+    },
+    { role: "payment", text: "Du zahlst aus deinem Guthaben." },
+  ];
+  return offer({
+    id,
+    text: lines.map((line) => line.text).join("\n"),
+    product: {
+      kind: "premium_monthly",
+      reference: "premium_monthly",
+      coins: 1000,
+      title: "Premium für einen Monat",
+      facts: { months: 1, renewal: renewal ? { monthly_price: renewal } : null },
+    },
+    summary: {
+      de: { lines, declaration: de.declaration },
+      en: { lines, declaration: en.declaration },
+    },
+  });
+}
+const running = (monthly_price, confirmation_sent = true) => ({
+  premium: true,
+  autopay: "MONTHLY",
+  renewal: { id: "r-1", monthly_price, confirmation_sent },
+});
+const none = { premium: true, autopay: null, renewal: null };
+
+test("a Premium offer highlights its term line with product and price", async () => {
+  const { ui, app } = await contract(premium(1000), "de");
+  const roles = ui
+    .all()
+    .filter((node) => node.props["data-line"])
+    .map((node) => [node.props["data-line"], node.props.class.includes("text-heading-4")]);
+  assert.deepEqual(roles, [
+    ["product", true],
+    ["detail", false],
+    ["term", true],
+    ["price", true],
+    ["payment", false],
+  ]);
+  app.unmount();
+});
+
+/** The Premium part of the subscription page, with the account's renewal in `state.status`. */
+async function premiumPage(state) {
+  const calls = { offers: [], snackbars: [], accepted: [] };
+  const scope = {
+    premiumBusy: Vue.ref(false),
+    order: Vue.ref(null),
+    renewalOrder: Vue.ref(null),
+    ordering: Vue.ref(false),
+    withdrawalConsent: Vue.ref(false),
+    coins: Vue.ref(50000),
+    locale: Vue.ref("de"),
+    offerWording: purchases.offerWording,
+    refreshPremiumStatus: async () => state.status,
+    requestPurchaseOffer: async (path, fits) => {
+      calls.offers.push(path);
+      // An open quote is taken up again only if it fits; otherwise a new one comes.
+      if (state.open && fits(state.open)) return state.open;
+      return state.fresh();
+    },
+    openSnackbar: (kind, key) => calls.snackbars.push([kind, key]),
+    acceptPurchase: async (accepted) => {
+      calls.accepted.push(accepted.id);
+      return true;
+    },
+  };
+  const page = await pieces(
+    "pages/subscription/index.vue",
+    [
+      "renewalKey",
+      "renewalDescription",
+      "offerRenewal",
+      "accountRenewal",
+      "premiumOffer",
+      "premiumOrder",
+      "subscribe",
+      "confirmOrder",
+    ],
+    scope
+  );
+  return { ...page, scope, calls };
+}
+
+test("a Premium order takes up an open offer only while its term line fits the renewal", async () => {
+  for (const [status, open, reused] of [
+    [running(1000), premium(1000), true],
+    [running(1000), premium(null), false],
+    [running(750), premium(1000), false],
+    [none, premium(null), true],
+    [none, premium(1000), false],
+  ]) {
+    const fresh = premium(
+      status.renewal?.monthly_price ?? null,
+      "60000000-0000-4000-8000-000000000009"
+    );
+    const page = await premiumPage({ status, open, fresh: () => fresh });
+    await page.subscribe(false);
+    assert.deepEqual(page.calls.offers, ["/shop/purchases/offers/premium_monthly"]);
+    assert.equal(
+      page.scope.order.value.offer.id,
+      reused ? open.id : fresh.id,
+      JSON.stringify(status)
+    );
+    assert.equal(
+      page.scope.order.value.offer.product.facts.renewal?.monthly_price ?? null,
+      status.renewal?.monthly_price ?? null
+    );
+  }
+});
+
+test("a renewal that changes while the dialog is open brings a new offer, not a patched line", async () => {
+  let n = 0;
+  const state = {
+    status: running(1000),
+    fresh: () =>
+      premium(
+        state.status.renewal?.monthly_price ?? null,
+        `60000000-0000-4000-8000-00000000001${n++}`
+      ),
+  };
+  const page = await premiumPage(state);
+  await page.subscribe(false);
+  const first = page.scope.order.value.offer;
+  assert.match(
+    first.text,
+    /Danach läuft deine monatliche Verlängerung weiter \(1000 Morphcoins je Monat\)/
+  );
+  page.scope.withdrawalConsent.value = true;
+  // The renewal ends in another tab before the order.
+  state.status = none;
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, [], "the stale offer is not sent");
+  const second = page.scope.order.value.offer;
+  assert.notEqual(second.id, first.id);
+  assert.match(second.text, /Laufzeit: 1 Monat, ohne automatische Verlängerung\./);
+  assert.equal(page.scope.withdrawalConsent.value, false, "the boxes start empty again");
+  assert.deepEqual(page.calls.snackbars, [["info", "Body.OfferRenewed"]]);
+  assert.equal(page.scope.ordering.value, false);
+  // Confirmed again with the renewal unchanged, the new offer is ordered.
+  page.scope.withdrawalConsent.value = true;
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, [second.id]);
+  assert.equal(page.scope.order.value, null);
+});
+
+test("a renewal confirmed in the meantime keeps the offer, its term line is still true", async () => {
+  const state = { status: running(1000, false), fresh: () => premium(1000) };
+  const page = await premiumPage(state);
+  await page.subscribe(false);
+  page.scope.withdrawalConsent.value = true;
+  state.status = running(1000, true);
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, [premium(1000).id]);
+  assert.deepEqual(page.calls.snackbars, []);
+});
+
+test("an offer without its own summary still shows a changed renewal in the line of the page", async () => {
+  const old = offer({
+    summary: undefined,
+    product: {
+      kind: "premium_monthly",
+      reference: "premium_monthly",
+      coins: 1000,
+      title: "Premium",
+      facts: { months: 1, automatic_renewal: false },
+    },
+  });
+  const state = { status: running(1000), fresh: () => old };
+  const page = await premiumPage(state);
+  await page.subscribe(false);
+  page.scope.withdrawalConsent.value = true;
+  state.status = none;
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, []);
+  assert.equal(page.scope.order.value.offer.id, old.id);
+  assert.equal(page.scope.order.value.details[1].value, "Body.AutomaticRenewalOff");
+  assert.deepEqual(page.calls.snackbars, [["info", "Error.PremiumRenewalChanged"]]);
 });
 
 /** composables/purchases.ts with the globals it reaches stubbed. */
@@ -325,6 +517,51 @@ test("a coin quote the server refuses as stale is dropped only while nothing was
     );
     assert.equal(store.has(key), true);
   }
+});
+
+test("the 409 of a refused PayPal order reaches the page through createPaypalOrder and create()", async () => {
+  // What `$fetch` (ofetch) throws for an HTTP error: status, statusCode and the parsed body.
+  const refusal = Object.assign(new Error("[POST] /shop/coins/paypal/orders: 409 Conflict"), {
+    status: 409,
+    statusCode: 409,
+    data: { detail: "Exact offer required; retrieve the original order" },
+  });
+  const coins = await evaluate("composables/coins.ts", {
+    require: () => ({}),
+    POST: async () => {
+      throw refusal;
+    },
+  });
+  assert.deepEqual(await coins.createPaypalOrder({}), [
+    null,
+    { detail: "Exact offer required; retrieve the original order", status: 409 },
+  ]);
+  const owner = { value: { id: "10000000-0000-4000-8000-000000000001" } };
+  const states = new Map();
+  const store = new Map();
+  const { usePaypalCheckout } = await evaluate("composables/paypalCheckout.ts", {
+    require: () => ({ useEventListener() {} }),
+    useUser: () => owner,
+    useCoins: () => Vue.ref(0),
+    useState: (key, init) => {
+      if (!states.has(key)) states.set(key, Vue.ref(init()));
+      return states.get(key);
+    },
+    computed: Vue.computed,
+    watch() {},
+    window: {},
+    localStorage: {
+      getItem: (key) => store.get(key) ?? null,
+      setItem: (key, value) => store.set(key, value),
+      removeItem: (key) => store.delete(key),
+    },
+    navigator: { locks: { request: (_name, action) => action() } },
+    createPaypalOrder: coins.createPaypalOrder,
+  });
+  const checkout = usePaypalCheckout();
+  await assert.rejects(checkout.create(1000, "{}"), (error) => error.status === 409);
+  // Nothing was handed to PayPal, so nothing is kept for recovery.
+  assert.equal([...store.keys()].length, 0);
 });
 
 test("a refused PayPal order brings a new quote instead of a payment error", async () => {

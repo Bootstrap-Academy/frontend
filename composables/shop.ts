@@ -77,19 +77,6 @@ export function coinsToEuros(coins: number, config: CoinConfig): number {
   return (Number(coins) || 0) / rate;
 }
 
-/**
- * What the note about a heart refill without enough Morphcoins names: the
- * price of the refill, and the smallest purchase the coin shop takes with its
- * price in Euro.
- */
-export function heartRefillNotice(hearts: HeartConfig, coins: CoinConfig, locale: string) {
-  return {
-    coins: hearts.hearts_refill_price,
-    min: COIN_PURCHASE_MIN,
-    price: formatEuros(coinsToEuros(COIN_PURCHASE_MIN, coins), locale),
-  };
-}
-
 type Translate = (key: string, named?: Record<string, unknown>, plural?: number) => string;
 
 /**
@@ -112,6 +99,20 @@ export function coinPriceParts(coins: number, config: CoinConfig, locale: string
 export function coinPriceText(coins: number, config: CoinConfig, locale: string, t: Translate) {
   const { coins: figure, euros } = coinPriceParts(coins, config, locale, t);
   return `${figure} (${euros})`;
+}
+
+/**
+ * What the coin shop names when it is opened for a heart refill: the price of the refill,
+ * with its Euro amount and VAT like every price. Amount and price of the purchase are left
+ * to the total of the shop.
+ */
+export function heartRefillNotice(
+  hearts: HeartConfig,
+  coins: CoinConfig,
+  locale: string,
+  t: Translate
+) {
+  return { coins: coinPriceText(hearts.hearts_refill_price, coins, locale, t) };
 }
 
 /** Format an amount of Euro for the given interface language. */

@@ -433,23 +433,22 @@ export default {
       }
     }
 
-    async function subscribe(isYearly: boolean) {
-      if (premiumBusy.value || order.value || renewalOrder.value) return;
-      orderOpener = document.activeElement as HTMLElement | null;
-
-      const status = await refreshPremiumStatus();
-      if (!status) return;
-
-      const offer = await requestPurchaseOffer(
-        `/shop/purchases/offers/${isYearly ? "premium_yearly" : "premium_monthly"}`
+    /**
+     * The monthly renewal a Premium offer names in its term line and binds in its facts
+     * (`facts.renewal`), and the one the account has now: its agreed price, or `null`.
+     */
+    const offerRenewal = (offer: any) => offer?.product?.facts?.renewal?.monthly_price ?? null;
+    const accountRenewal = (status: any) =>
+      status.autopay && status.renewal ? status.renewal.monthly_price : null;
+    /** A Premium quote whose term line fits the account's renewal; an open one only if it fits. */
+    const premiumOffer = (kind: string, status: any) =>
+      requestPurchaseOffer(
+        `/shop/purchases/offers/${kind}`,
+        (quote) => offerRenewal(quote) === accountRenewal(status)
       );
-      if (!offer) return;
-      if (coins.value < offer.product.coins) {
-        openSnackbar("error", "Error.NotEnoughCoins");
-        return;
-      }
-      withdrawalConsent.value = false;
-      order.value = {
+
+    function premiumOrder(offer: any, status: any) {
+      return {
         offer,
         coins: offer.product.coins,
         kind: "premium",
@@ -478,6 +477,23 @@ export default {
       };
     }
 
+    async function subscribe(isYearly: boolean) {
+      if (premiumBusy.value || order.value || renewalOrder.value) return;
+      orderOpener = document.activeElement as HTMLElement | null;
+
+      const status = await refreshPremiumStatus();
+      if (!status) return;
+
+      const offer = await premiumOffer(isYearly ? "premium_yearly" : "premium_monthly", status);
+      if (!offer) return;
+      if (coins.value < offer.product.coins) {
+        openSnackbar("error", "Error.NotEnoughCoins");
+        return;
+      }
+      withdrawalConsent.value = false;
+      order.value = premiumOrder(offer, status);
+    }
+
     async function confirmOrder() {
       if (!order.value || ordering.value) return;
       if (!withdrawalConsent.value) {
@@ -491,8 +507,26 @@ export default {
           const status = await refreshPremiumStatus();
           if (!status) return;
           // Another tab or the public cancellation flow may have changed renewal.
-          // Show the new state and require a fresh confirmation before purchase.
-          if (renewalKey(status) !== order.value.renewalKey) {
+          // An offer with its own summary names the renewal in its term line, and the
+          // backend refuses it once the renewal differs: the order gets a new offer,
+          // shown with empty boxes.
+          if (
+            offerWording(order.value.offer, locale.value) &&
+            offerRenewal(order.value.offer) !== accountRenewal(status)
+          ) {
+            withdrawalConsent.value = false;
+            const offer = await premiumOffer(order.value.offer.product.kind, status);
+            // Without a new offer the dialog closes; the page reports why.
+            order.value = offer ? premiumOrder(offer, status) : null;
+            if (offer) openSnackbar("info", "Body.OfferRenewed");
+            return;
+          }
+          // An offer without one shows the renewal in a line of the page: show the new
+          // state and require a fresh confirmation before purchase.
+          if (
+            !offerWording(order.value.offer, locale.value) &&
+            renewalKey(status) !== order.value.renewalKey
+          ) {
             order.value.autopay = status.autopay;
             order.value.renewalKey = renewalKey(status);
             Object.assign(order.value.details[1], renewalDescription(status));

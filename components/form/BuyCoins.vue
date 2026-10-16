@@ -16,8 +16,9 @@
     />
 
     <!--
-      Sent here by "Refill hearts" without enough coins: what the coins are needed for. How
-      many coins are bought and at what price is not said here; the total below states both.
+      Sent here by "Refill hearts" without enough coins: what the coins are needed for, with
+      the price of the refill in Euro and VAT like every price. How many coins are bought and
+      at what price is not said here; the total below states both.
     -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
       {{ t("Body.CoinsForRefill", refillNotice) }}
@@ -103,7 +104,7 @@ export default defineComponent({
     const route = useRoute();
     const forHearts = computed(() => route.query.for === "hearts");
     const refillNotice = computed(() =>
-      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
+      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value, t)
     );
 
     onMounted(loadCoinConfig);

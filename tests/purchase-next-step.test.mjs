@@ -40,29 +40,51 @@ test("Back on the coin order leads to the page the order began on", async () => 
   }
 });
 
+/** vue-i18n's message format: named values in braces, plural forms split by " | ". */
+const translate =
+  (language) =>
+  (key, named = {}, plural) => {
+    const message = key.split(".").reduce((part, name) => part?.[name], locales[language]);
+    if (typeof message !== "string") return key;
+    const forms = message.split(" | ");
+    const chosen =
+      plural === undefined || forms.length === 1
+        ? message
+        : forms.length === 3
+          ? forms[Math.min(Math.abs(plural), 2)]
+          : forms[plural === 1 ? 0 : 1];
+    return chosen.replace(/\{(\w+)\}/g, (whole, name) => (name in named ? named[name] : whole));
+  };
+// Intl writes a no-break space before € and %; the sentences compare with plain spaces.
+const plain = (text) => text.replace(/ /g, " ");
+
 test("the note on a heart refill names its price and the smallest coin purchase from what the shop knows", async () => {
   for (const [hearts, coins, language, expected] of [
-    [{ hearts_max: 6, hearts_refill_price: 50 }, { coins_per_euro: 100, vat_percent: 19 }, "de", 5],
+    [
+      { hearts_max: 6, hearts_refill_price: 50 },
+      { coins_per_euro: 100, vat_percent: 19 },
+      "de",
+      "50 Morphcoins (0,50 € inkl. 19 % MwSt.)",
+    ],
     [
       { hearts_max: 6, hearts_refill_price: 80 },
       { coins_per_euro: 200, vat_percent: 19 },
-      "en",
-      2.5,
+      "en-US",
+      "80 Morphcoins (€0.40 incl. 19% VAT)",
     ],
   ]) {
-    const notice = shop.heartRefillNotice(hearts, coins, language);
-    assert.deepEqual(notice, {
-      coins: hearts.hearts_refill_price,
-      min: shop.COIN_PURCHASE_MIN,
-      price: shop.formatEuros(expected, language),
-    });
-    // The coin shop and the Premium page hand exactly this to the sentence.
+    // The price of the refill with its Euro amount and VAT, from what the shop published.
+    const notice = shop.heartRefillNotice(hearts, coins, language, translate(language));
+    assert.deepEqual(Object.keys(notice), ["coins"]);
+    assert.equal(plain(notice.coins), expected);
+    // The coin shop hands exactly this to the sentence.
     const { refillNotice } = await pieces("components/form/BuyCoins.vue", ["refillNotice"], {
       computed: Vue.computed,
       heartRefillNotice: shop.heartRefillNotice,
       heartConfig: Vue.ref(hearts),
       coinConfig: Vue.ref(coins),
       locale: Vue.ref(language),
+      t: translate(language),
     });
     assert.deepEqual(refillNotice.value, notice);
   }
@@ -92,11 +114,7 @@ test("the note on a heart refill names its price and the smallest coin purchase 
 test("the coin shop opened for a heart refill shows the whole note, with every value filled in", async (t) => {
   // The form is mounted with its real script and template; the sentences come from the locales.
   async function open(query, language) {
-    const sentence = (key, named = {}) =>
-      key
-        .split(".")
-        .reduce((part, name) => part?.[name], locales[language])
-        ?.replace(/\{(\w+)\}/g, (whole, name) => (name in named ? named[name] : whole)) ?? key;
+    const sentence = translate(language);
     const scope = {
       ...shop,
       require: (name) =>
@@ -129,13 +147,14 @@ test("the coin shop opened for a heart refill shows the whole note, with every v
     return ui
       .all()
       .filter((node) => node.type === "p" && node.props.role === "status")
-      .map((node) => ui.text(node).trim());
+      .map((node) => plain(ui.text(node).trim()));
   }
+  // The price of the refill comes with its Euro amount and VAT, like the box on the Premium page.
   assert.deepEqual(await open({ for: "hearts" }, "de"), [
-    "Das Auffüllen kostet 80 Morphcoins. Der Rest deines Kaufs bleibt auf deinem Konto.",
+    "Das Auffüllen kostet 80 Morphcoins (0,40 € inkl. 19 % MwSt.). Der Rest deines Kaufs bleibt auf deinem Konto.",
   ]);
   assert.deepEqual(await open({ for: "hearts" }, "en-US"), [
-    "A refill costs 80 Morphcoins. The rest of your purchase stays in your account.",
+    "A refill costs 80 Morphcoins (€0.40 incl. 19% VAT). The rest of your purchase stays in your account.",
   ]);
   // Opened for anything else, the shop says nothing about hearts.
   for (const query of [{}, { for: "premium" }, { for: ["hearts"] }])

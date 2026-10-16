@@ -416,7 +416,7 @@
     "AutoPay": "Opt for stress-free ease with our auto-pay option",
     "HeartsAreFilled": "First consume your hearts to refill them later.",
     "NeedCoinsForRefill": "A refill costs {coins}. The smallest purchase is {min}, and the rest stays in your account.",
-    "CoinsForRefill": "A refill costs {coins} Morphcoins. The rest of your purchase stays in your account.",
+    "CoinsForRefill": "A refill costs {coins}. The rest of your purchase stays in your account.",
     "AutomaticRefillAt": "Your hearts are refilled for free every day at {time}.",
     "WaitMinutes": "{n} minute | {n} minutes",
     "WaitSeconds": "{n} second | {n} seconds",

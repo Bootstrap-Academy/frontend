@@ -195,10 +195,11 @@
             </div>
 
             <!--
-              The address stands once on the page. With an offer the order summary names it
-              as the place the confirmation goes to. Until then it stands here: while the
-              page asks for the country, when no offer came, and when the address is missing.
-              While the offer is on its way nothing is shown that would vanish a moment later.
+              The address stands at most once on the page. It stands here while the page asks
+              for the country, when no offer came, and when the address is missing. With an
+              offer it goes: an offer with its own summary does not name it (the confirmation
+              mail goes to it), an older offer names it in its full text. While the offer is
+              on its way nothing is shown that would vanish a moment later.
             -->
             <div v-if="!user?.email || (!offer && !offerPending)" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">
