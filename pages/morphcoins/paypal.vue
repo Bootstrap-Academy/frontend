@@ -441,16 +441,17 @@ export default {
     }
     onMounted(refreshOffer);
     // Once the offer stands, the order summary is brought into the first screen (phone).
-    // A web font that is still loading wraps the lines differently, so the decision waits
-    // for the fonts; otherwise a short summary can seem to fit and grow below the screen.
+    // A web font that is still loading wraps the lines differently: a short summary can
+    // seem to fit and then grow below the screen. So where it seemed to fit, it is looked
+    // at once more when the fonts have loaded.
     const page = ref(null);
     const summaryCard = ref(null);
     watch(offer, async (value) => {
       if (!value) return;
       await nextTick();
+      if (showOrderSummary(page.value, summaryCard.value)) return;
       await document.fonts?.ready;
-      if (offer.value !== value) return;
-      showOrderSummary(page.value, summaryCard.value);
+      if (offer.value === value) showOrderSummary(page.value, summaryCard.value);
     });
     watch(
       () =>

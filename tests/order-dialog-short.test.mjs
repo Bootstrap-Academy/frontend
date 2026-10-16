@@ -328,15 +328,15 @@ test("the acceptance sentence links both documents in both languages", () => {
   }
 });
 
-test("the coin order page decides about scrolling once the fonts have loaded", async () => {
+test("the coin order page looks again once the fonts have loaded where the summary seemed to fit", async () => {
   const page = await read("pages/morphcoins/paypal.vue");
   const watcher = page.match(/watch\(offer, async \(value\) => \{[\s\S]*?\n {4}\}\);/)?.[0];
   assert.ok(watcher);
   const steps = [
     "await nextTick();",
+    "if (showOrderSummary(page.value, summaryCard.value)) return;",
     "await document.fonts?.ready;",
-    "if (offer.value !== value) return;",
-    "showOrderSummary(page.value, summaryCard.value);",
+    "if (offer.value === value) showOrderSummary(page.value, summaryCard.value);",
   ];
   let at = -1;
   for (const step of steps) {
