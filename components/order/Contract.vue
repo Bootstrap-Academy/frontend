@@ -1,15 +1,85 @@
 <!--
   The agreed offer and the two declarations of one order.
 
-  The full offer text, the recipient of the confirmation and the two documents
-  stand in a disclosure that starts closed, so that the price and the essential
-  characteristics above (§ 312j Abs. 2 BGB) stay directly in front of the two
-  boxes and the order button, on a phone as well. The wording is the offer's
-  own and is shown unchanged; opening the disclosure is one tap, and the boxes
-  below name what they accept.
+  An offer with an order summary (`offer.summary`) is short: what is bought, further
+  characteristics, the term of Premium, when it is provided, the total price with VAT and
+  how it is paid, each stated once and taken from the offer itself. The product, the term
+  and the price are highlighted (§ 312j Abs. 2 BGB). The English interface shows the
+  English wording and says that the German one is binding (AGB 1.4). The acceptance links
+  the terms and the withdrawal policy of this very offer.
+
+  Older offers and those of other services carry a long text. It stands in a disclosure
+  that starts closed, together with the recipient of the confirmation and the two
+  documents, so that the price and the essential characteristics above stay directly in
+  front of the two boxes and the order button, on a phone as well.
 -->
 <template>
   <div
+    v-if="wording"
+    class="grid min-w-0 grid-cols-1 gap-3 [overflow-wrap:anywhere] sm:gap-card"
+    :lang="wording.lang"
+    data-purchase-contract
+    data-purchase-summary
+  >
+    <div class="grid min-w-0 grid-cols-1 gap-1 sm:gap-2" data-purchase-lines>
+      <p
+        v-for="(line, index) of wording.lines"
+        :key="index"
+        class="m-0"
+        :class="
+          highlighted(line.role)
+            ? 'text-heading-4 leading-snug text-heading'
+            : 'text-body-1 leading-snug text-body'
+        "
+        :data-line="line.role"
+      >
+        {{ line.text }}
+      </p>
+      <p v-if="wording.lang === 'en'" class="text-body-2 m-0 leading-snug text-body">
+        {{ t("Body.OfferGermanBinding") }}
+      </p>
+    </div>
+    <div class="grid min-w-0 grid-cols-1 gap-3">
+      <div class="flex items-start gap-3 text-body">
+        <input
+          :id="acceptanceId"
+          v-model="accepted"
+          data-purchase-acceptance
+          type="checkbox"
+          class="mt-1 h-5 w-5 shrink-0"
+        />
+        <!-- The two links download the documents this offer is bound to. -->
+        <label :for="acceptanceId" class="min-w-0 flex-1">
+          <i18n-t keypath="Body.OfferAcceptance" scope="global">
+            <template #terms>
+              <a
+                href="#"
+                class="text-accent underline underline-offset-2"
+                data-purchase-document="terms"
+                @click.prevent="downloadPurchaseDocument(offer.id, 'terms')"
+                >{{ t("Links.TermsAndConditions") }}</a
+              >
+            </template>
+            <template #withdrawal>
+              <a
+                href="#"
+                class="text-accent underline underline-offset-2"
+                data-purchase-document="withdrawal"
+                @click.prevent="downloadPurchaseDocument(offer.id, 'withdrawal')"
+                >{{ t("Links.RightOfWithdrawalLinkText") }}</a
+              >
+            </template>
+          </i18n-t>
+        </label>
+      </div>
+      <label class="flex items-start gap-3 text-body"
+        ><input v-model="early" data-purchase-early type="checkbox" class="mt-1 h-5 w-5 shrink-0" />
+        <span class="min-w-0 flex-1">{{ wording.declaration }}</span></label
+      >
+    </div>
+  </div>
+  <div
+    v-else
     class="grid min-w-0 grid-cols-1 gap-3 [overflow-wrap:anywhere]"
     lang="de"
     data-purchase-contract
@@ -63,9 +133,16 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useId } from "vue";
+import { useI18n } from "vue-i18n";
 import type { PurchaseOffer } from "~/composables/purchases";
 const props = defineProps<{ offer: PurchaseOffer; modelValue: boolean }>();
 const emit = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
+const { t, locale } = useI18n();
+const wording = computed(() => offerWording(props.offer, locale.value));
+const acceptanceId = useId();
+// What § 312j Abs. 2 BGB wants highlighted right above the order button.
+const highlighted = (role: string) => ["product", "term", "price"].includes(role);
 const accepted = ref(false);
 const early = ref(false);
 watch([accepted, early], ([a, b]) => emit("update:modelValue", a && b));

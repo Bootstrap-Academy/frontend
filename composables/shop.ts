@@ -77,23 +77,42 @@ export function coinsToEuros(coins: number, config: CoinConfig): number {
   return (Number(coins) || 0) / rate;
 }
 
+type Translate = (key: string, named?: Record<string, unknown>, plural?: number) => string;
+
 /**
- * What the note about a heart refill without enough Morphcoins names: the
- * price of the refill, and the smallest purchase the coin shop takes with its
- * price in Euro.
+ * A coin price as `Price` writes it: the coin figure and its Euro total including VAT,
+ * e.g. "1.000 Morphcoins" and "10,00 € inkl. 19 % MwSt.".
  */
-export function heartRefillNotice(hearts: HeartConfig, coins: CoinConfig, locale: string) {
+export function coinPriceParts(coins: number, config: CoinConfig, locale: string, t: Translate) {
+  const number = (value: number, options: Intl.NumberFormatOptions = {}) =>
+    new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", options).format(value);
   return {
-    coins: hearts.hearts_refill_price,
-    min: COIN_PURCHASE_MIN,
-    price: formatEuros(coinsToEuros(COIN_PURCHASE_MIN, coins), locale),
+    coins: t("Headings.Morphcoins", { n: number(coins) }, coins),
+    euros: t("Body.PriceInclVat", {
+      amount: formatEuros(coinsToEuros(coins, config), locale),
+      vat: number(config.vat_percent, { maximumFractionDigits: 2 }),
+    }),
   };
 }
 
-/** Share of the gross price that is VAT. */
-export function vatShare(gross: number, config: CoinConfig): number {
-  const vat = config.vat_percent;
-  return (gross * vat) / (100 + vat);
+/** A coin price in running text, e.g. "500 Morphcoins (5,00 € inkl. 19 % MwSt.)". */
+export function coinPriceText(coins: number, config: CoinConfig, locale: string, t: Translate) {
+  const { coins: figure, euros } = coinPriceParts(coins, config, locale, t);
+  return `${figure} (${euros})`;
+}
+
+/**
+ * What the coin shop names when it is opened for a heart refill: the price of the refill,
+ * with its Euro amount and VAT like every price. Amount and price of the purchase are left
+ * to the total of the shop.
+ */
+export function heartRefillNotice(
+  hearts: HeartConfig,
+  coins: CoinConfig,
+  locale: string,
+  t: Translate
+) {
+  return { coins: coinPriceText(hearts.hearts_refill_price, coins, locale, t) };
 }
 
 /** Format an amount of Euro for the given interface language. */

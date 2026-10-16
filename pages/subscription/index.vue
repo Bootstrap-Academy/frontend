@@ -25,9 +25,12 @@
             {{ t("Headings.RefillHeartsNow") }}
           </h2>
 
-          <!-- Without enough Morphcoins the box says what a refill takes and leads to the coin shop. -->
+          <!--
+            Without enough Morphcoins the box says what a refill takes and leads to the coin
+            shop. Both prices come with their Euro amount and the VAT, worded like `Price`.
+          -->
           <div v-if="coins < refillPrice" class="mt-4 flex flex-col items-center gap-4">
-            <p class="max-w-sm text-xl">
+            <p class="max-w-sm text-xl" data-refill-notice>
               {{ t("Body.NeedCoinsForRefill", refillNotice) }}
             </p>
             <NuxtLink
@@ -241,8 +244,10 @@
           :kind="order.kind"
           :loading="ordering"
           :disabled="!withdrawalConsent"
+          :worded="orderWorded"
           @order="confirmOrder"
         >
+          <!-- Shown for an offer without its own summary, which states all of this itself. -->
           <template #characteristics>
             <p class="text-body-1 m-0 text-body">{{ t(order.characteristics, order.params) }}</p>
             <!-- A heart refill states the exact quantity of its quote next to the characteristic. -->
@@ -264,6 +269,7 @@
           </template>
 
           <template #consent>
+            <!-- An offer with its own summary names a monthly renewal in its term line. -->
             <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent" />
           </template>
 
@@ -344,9 +350,10 @@ export default {
     const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
     const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
     const coinConfig = useCoinConfig();
-    const refillNotice = computed(() =>
-      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
-    );
+    const refillNotice = computed(() => ({
+      coins: coinPriceText(refillPrice.value, coinConfig.value, locale.value, t),
+      min: coinPriceText(COIN_PURCHASE_MIN, coinConfig.value, locale.value, t),
+    }));
 
     // A guest has no plan. A Premium state still in memory belongs to an account that logged
     // out (in another tab, or before "Back") and is not the visitor's.
@@ -380,6 +387,8 @@ export default {
 
     // The pending order shown in the order summary, or `null`.
     const order = ref<any>(null);
+    // The offer states product, term and price itself (see `OrderContract`).
+    const orderWorded = computed(() => !!offerWording(order.value?.offer, locale.value));
     const ordering = ref(false);
     let orderOpener: HTMLElement | null = null;
     watch(order, async (value, previous) => {
@@ -424,23 +433,22 @@ export default {
       }
     }
 
-    async function subscribe(isYearly: boolean) {
-      if (premiumBusy.value || order.value || renewalOrder.value) return;
-      orderOpener = document.activeElement as HTMLElement | null;
-
-      const status = await refreshPremiumStatus();
-      if (!status) return;
-
-      const offer = await requestPurchaseOffer(
-        `/shop/purchases/offers/${isYearly ? "premium_yearly" : "premium_monthly"}`
+    /**
+     * The monthly renewal a Premium offer names in its term line and binds in its facts
+     * (`facts.renewal`), and the one the account has now: its agreed price, or `null`.
+     */
+    const offerRenewal = (offer: any) => offer?.product?.facts?.renewal?.monthly_price ?? null;
+    const accountRenewal = (status: any) =>
+      status.autopay && status.renewal ? status.renewal.monthly_price : null;
+    /** A Premium quote whose term line fits the account's renewal; an open one only if it fits. */
+    const premiumOffer = (kind: string, status: any) =>
+      requestPurchaseOffer(
+        `/shop/purchases/offers/${kind}`,
+        (quote) => offerRenewal(quote) === accountRenewal(status)
       );
-      if (!offer) return;
-      if (coins.value < offer.product.coins) {
-        openSnackbar("error", "Error.NotEnoughCoins");
-        return;
-      }
-      withdrawalConsent.value = false;
-      order.value = {
+
+    function premiumOrder(offer: any, status: any) {
+      return {
         offer,
         coins: offer.product.coins,
         kind: "premium",
@@ -469,6 +477,23 @@ export default {
       };
     }
 
+    async function subscribe(isYearly: boolean) {
+      if (premiumBusy.value || order.value || renewalOrder.value) return;
+      orderOpener = document.activeElement as HTMLElement | null;
+
+      const status = await refreshPremiumStatus();
+      if (!status) return;
+
+      const offer = await premiumOffer(isYearly ? "premium_yearly" : "premium_monthly", status);
+      if (!offer) return;
+      if (coins.value < offer.product.coins) {
+        openSnackbar("error", "Error.NotEnoughCoins");
+        return;
+      }
+      withdrawalConsent.value = false;
+      order.value = premiumOrder(offer, status);
+    }
+
     async function confirmOrder() {
       if (!order.value || ordering.value) return;
       if (!withdrawalConsent.value) {
@@ -482,8 +507,26 @@ export default {
           const status = await refreshPremiumStatus();
           if (!status) return;
           // Another tab or the public cancellation flow may have changed renewal.
-          // Show the new state and require a fresh confirmation before purchase.
-          if (renewalKey(status) !== order.value.renewalKey) {
+          // An offer with its own summary names the renewal in its term line, and the
+          // backend refuses it once the renewal differs: the order gets a new offer,
+          // shown with empty boxes.
+          if (
+            offerWording(order.value.offer, locale.value) &&
+            offerRenewal(order.value.offer) !== accountRenewal(status)
+          ) {
+            withdrawalConsent.value = false;
+            const offer = await premiumOffer(order.value.offer.product.kind, status);
+            // Without a new offer the dialog closes; the page reports why.
+            order.value = offer ? premiumOrder(offer, status) : null;
+            if (offer) openSnackbar("info", "Body.OfferRenewed");
+            return;
+          }
+          // An offer without one shows the renewal in a line of the page: show the new
+          // state and require a fresh confirmation before purchase.
+          if (
+            !offerWording(order.value.offer, locale.value) &&
+            renewalKey(status) !== order.value.renewalKey
+          ) {
             order.value.autopay = status.autopay;
             order.value.renewalKey = renewalKey(status);
             Object.assign(order.value.details[1], renewalDescription(status));
@@ -697,6 +740,7 @@ export default {
       subscribe,
       heartConfig,
       order,
+      orderWorded,
       ordering,
       withdrawalConsent,
       confirmOrder,

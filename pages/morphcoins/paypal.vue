@@ -195,10 +195,11 @@
             </div>
 
             <!--
-              The address stands once on the page. With an offer the order summary names it
-              as the place the confirmation goes to. Until then it stands here: while the
-              page asks for the country, when no offer came, and when the address is missing.
-              While the offer is on its way nothing is shown that would vanish a moment later.
+              The address stands at most once on the page. It stands here while the page asks
+              for the country, when no offer came, and when the address is missing. With an
+              offer it goes: an offer with its own summary does not name it (the confirmation
+              mail goes to it), an older offer names it in its full text. While the offer is
+              on its way nothing is shown that would vanish a moment later.
             -->
             <div v-if="!user?.email || (!offer && !offerPending)" class="flex gap-box">
               <h3 class="text-body-1 m-0 text-body">
@@ -228,12 +229,13 @@
             exact-offer
             :coins="coinsToBuy"
             kind="coins"
-            breakdown
             :disabled="!canBuy || !offer || !withdrawalConsent"
             :hide-actions="ordered || !profileLoaded || countryAsked"
             :loading="busy || placing"
+            :worded="worded"
             @order="onclickOrder"
           >
+            <!-- Shown for an offer without its own summary, which states amount and price itself. -->
             <template #characteristics>
               <p class="text-body-1 m-0 text-body">
                 {{ t("Body.OrderCoinsCharacteristics") }}
@@ -305,6 +307,7 @@ export default {
     const { checkout, busy, error, create, capture, dismiss } = usePaypalCheckout();
     const sdkError = ref(false);
     const offer = ref(null);
+    const worded = computed(() => !!offerWording(offer.value, locale.value));
     // The offer has been asked for and the answer is still on its way.
     const offerPending = ref(false);
     const placing = ref(false);
@@ -439,12 +442,17 @@ export default {
     }
     onMounted(refreshOffer);
     // Once the offer stands, the order summary is brought into the first screen (phone).
+    // A web font that is still loading wraps the lines differently: a short summary can
+    // seem to fit and then grow below the screen. So where it seemed to fit, it is looked
+    // at once more when the fonts have loaded.
     const page = ref(null);
     const summaryCard = ref(null);
     watch(offer, async (value) => {
       if (!value) return;
       await nextTick();
-      showOrderSummary(page.value, summaryCard.value);
+      if (showOrderSummary(page.value, summaryCard.value)) return;
+      await document.fonts?.ready;
+      if (offer.value === value) showOrderSummary(page.value, summaryCard.value);
     });
     watch(
       () =>
@@ -538,11 +546,18 @@ export default {
         await nextTick();
         if (!current()) return;
         await renderPaypalButtons(orderId, owner, current);
-      } catch {
-        if (current()) {
-          sdkError.value = true;
-          ordered.value = false;
+      } catch (failure) {
+        if (!current()) return;
+        ordered.value = false;
+        // A quote the server no longer takes (409, e.g. issued before a change of the offer
+        // texts) is replaced by a new one; no payment was requested for it.
+        if (failure?.status === 409 && (await discardStaleOffer(acceptedOffer))) {
+          if (!active) return;
+          openSnackbar("info", "Body.OfferRenewed");
+          await refreshOffer();
+          return;
         }
+        sdkError.value = true;
       } finally {
         if (generation === actionGeneration) {
           placing.value = false;
@@ -615,6 +630,7 @@ export default {
       withdrawalConsent,
       offer,
       offerPending,
+      worded,
       onclickOrder,
     };
   },

@@ -103,7 +103,10 @@ export function usePaypalCheckout() {
       localStorage.setItem(`${storageKey(owner)}:probe`, "1");
       localStorage.removeItem(`${storageKey(owner)}:probe`);
       const [orderId, failure] = await createPaypalOrder(body);
-      if (typeof orderId !== "string") throw new Error(failure?.detail ?? "Unable to create order");
+      if (typeof orderId !== "string")
+        throw Object.assign(new Error(failure?.detail ?? "Unable to create order"), {
+          status: failure?.status,
+        });
       try {
         save({ owner, orderId, coins, phase: "approval" });
       } catch {

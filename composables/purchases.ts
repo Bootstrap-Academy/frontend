@@ -1,5 +1,10 @@
 import { decodeApiError } from "~/utils/apiError";
 
+/** One line of an offer's order summary. The dialog highlights `product`, `term` and `price`. */
+export type OfferLine = { role: string; text: string };
+/** The lines of an order summary in one language and the request for an early start. */
+export type OfferWording = { lines: OfferLine[]; declaration: string };
+
 export type PurchaseOffer = {
   id: string;
   hash: string;
@@ -16,7 +21,41 @@ export type PurchaseOffer = {
     title: string;
     facts?: Record<string, unknown>;
   };
+  /**
+   * The order summary line by line, in the agreed German wording and in English. Offers
+   * of Morphcoins, Premium and hearts have it; older offers and those of other services
+   * do not, and their dialog shows the full offer text instead.
+   */
+  summary?: { de: OfferWording; en: OfferWording };
 };
+
+const wordingValid = (wording: any): wording is OfferWording =>
+  typeof wording?.declaration === "string" &&
+  Array.isArray(wording.lines) &&
+  wording.lines.length > 0 &&
+  wording.lines.every(
+    (line: any) => typeof line?.role === "string" && typeof line?.text === "string"
+  );
+
+/**
+ * The order summary of an offer in the language of the interface: English where the
+ * interface is English, otherwise the German wording, which is the agreed one. Only a
+ * summary whose German lines are exactly the offer text and whose German declaration is
+ * the offer's own is used, so the dialog never shows a wording other than the one agreed;
+ * anything else returns `null` and the dialog shows the offer text itself.
+ */
+export function offerWording(
+  offer: PurchaseOffer | null | undefined,
+  locale: string
+): (OfferWording & { lang: "de" | "en" }) | null {
+  const summary = offer?.summary;
+  if (!summary || !wordingValid(summary.de)) return null;
+  if (summary.de.lines.map((line) => line.text).join("\n") !== offer.text) return null;
+  if (summary.de.declaration !== offer.declaration) return null;
+  if (locale.startsWith("en") && wordingValid(summary.en))
+    return { lang: "en", lines: summary.en.lines, declaration: summary.en.declaration };
+  return { lang: "de", lines: summary.de.lines, declaration: summary.de.declaration };
+}
 type SavedPurchase = { owner: string; orderId: string };
 const scope = (offer: PurchaseOffer) =>
   offer.source === "paypal"
@@ -44,9 +83,11 @@ const OFFER_REUSE_MIN_REMAINING_MS = 10 * 60 * 1000;
 const reusableKind = (path: string) =>
   path.match(/^\/shop\/purchases\/offers\/(hearts|premium_monthly|premium_yearly)$/)?.[1] ?? null;
 /** The newest quote of this owner for this product that nobody has accepted yet and that
- * still has enough time left, from the order list the backend keeps. `fits` lets the
- * caller refuse a quote whose agreed quantity no longer matches the account. Any failure
- * of the lookup leads to a new quote. */
+ * still has enough time left, from the order list the backend keeps. Only a quote with its
+ * own summary is taken up again: one issued before the short order summary would be
+ * shown long and then refused on acceptance. `fits` lets the caller refuse a quote whose
+ * agreed quantity no longer matches the account. Any failure of the lookup leads to a new
+ * quote. */
 async function openOffer(
   owner: string,
   path: string,
@@ -70,6 +111,7 @@ async function openOffer(
         status.offer.source === "backend" &&
         status.offer.product?.kind === kind &&
         Date.parse(status.offer.expires_at) - now >= OFFER_REUSE_MIN_REMAINING_MS &&
+        offerWording(status.offer, "de") !== null &&
         (!fits || fits(status.offer))
     )
     .map((status: any) => status.offer as PurchaseOffer)
@@ -172,6 +214,33 @@ export function handoffPurchaseRecovery(offer: PurchaseOffer) {
   if (owner !== offer.user_id || offer.source !== "paypal") return;
   if (readRecovery(owner, scope(offer))?.orderId === offer.id)
     localStorage.removeItem(recoveryKey(owner, scope(offer)));
+}
+/**
+ * The server refused to take `offer` as the basis of a payment (409): the quote is stale,
+ * for instance issued before a change of the catalog. If the server still has it unaccepted
+ * or failed, nothing was ordered, and its recovery identity is dropped so that the next
+ * request brings a new quote. Any other state keeps the identity and its way to the orders.
+ * Returns whether the quote was dropped.
+ */
+export async function discardStaleOffer(offer: PurchaseOffer): Promise<boolean> {
+  const owner = useUser().value?.id;
+  if (!owner || offer.user_id !== owner) return false;
+  let status: any;
+  try {
+    status = await GET(`/shop/purchases/${offer.id}`);
+  } catch {
+    return false;
+  }
+  if (useUser().value?.id !== owner || status?.offer?.id !== offer.id) return false;
+  if (!["offered", "failed"].includes(status.state)) return false;
+  const product = scope(offer);
+  try {
+    if (readRecovery(owner, product)?.orderId === offer.id)
+      localStorage.removeItem(recoveryKey(owner, product));
+  } catch {
+    return false;
+  }
+  return true;
 }
 export function purchaseAcceptance(offer: PurchaseOffer) {
   return {

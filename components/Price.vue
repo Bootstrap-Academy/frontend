@@ -32,26 +32,10 @@ const config = useCoinConfig();
 
 onMounted(loadCoinConfig);
 
-const coinText = computed(() =>
-  t("Headings.Morphcoins", { n: formatCoins(props.coins) }, props.coins)
+// The same wording as a price in running text (`coinPriceText`).
+const parts = computed(() => coinPriceParts(props.coins, config.value, locale.value, t));
+const coinText = computed(() => parts.value.coins);
+const euroText = computed(() =>
+  props.vat ? parts.value.euros : formatEuros(coinsToEuros(props.coins, config.value), locale.value)
 );
-
-const euros = computed(() => coinsToEuros(props.coins, config.value));
-
-const euroText = computed(() => {
-  const amount = formatEuros(euros.value, locale.value);
-  return props.vat
-    ? t("Body.PriceInclVat", { amount, vat: formatVatPercent(config.value.vat_percent) })
-    : amount;
-});
-
-function formatCoins(coins: number) {
-  return new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US").format(coins);
-}
-
-function formatVatPercent(vat: number) {
-  return new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US", {
-    maximumFractionDigits: 2,
-  }).format(vat);
-}
 </script>

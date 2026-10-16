@@ -163,10 +163,21 @@ const euros = (amount, language) =>
     style: "currency",
     currency: "EUR",
   }).format(amount);
-const refillNote = (language) =>
-  locales[language].Body.NeedCoinsForRefill.replace("{coins}", REFILL_PRICE)
-    .replace("{min}", SMALLEST_PURCHASE)
-    .replace("{price}", euros(SMALLEST_PURCHASE / COINS_PER_EURO, language));
+// A coin price as the page writes it: the coins and their Euro amount with VAT.
+const coinPrice = (coins, language) =>
+  `${coins} Morphcoins (${locales[language].Body.PriceInclVat.replace(
+    "{amount}",
+    euros(coins / COINS_PER_EURO, language)
+  ).replace("{vat}", "19")})`;
+// The coin shop names the price of the refill; the total of the shop states the purchase.
+const shopNote = (language) =>
+  locales[language].Body.CoinsForRefill.replace("{coins}", coinPrice(REFILL_PRICE, language));
+// The box on the Premium page names the refill and the smallest purchase.
+const boxNote = (language) =>
+  locales[language].Body.NeedCoinsForRefill.replace(
+    "{coins}",
+    coinPrice(REFILL_PRICE, language)
+  ).replace("{min}", coinPrice(SMALLEST_PURCHASE, language));
 const back = (page) => page.locator("section.container-fluid button", { hasText: de.Links.GoBack });
 const loginPage = (target) => (url) =>
   url.pathname === "/auth/login" && url.searchParams.get("redirect") === target;
@@ -197,7 +208,7 @@ const cases = {
       await assert.doesNotReject(
         f.page.waitForFunction(
           ([selector, text]) => document.querySelector(selector)?.textContent.trim() === text,
-          ["form p[role=status]", refillNote(language)],
+          ["form p[role=status]", shopNote(language)],
           { timeout: 5000 }
         ),
         language
@@ -211,10 +222,10 @@ const cases = {
     const f = await fixture(account("0a"));
     await f.page.goto(app + "/subscription");
     const box = f.page.locator("div.rounded-xl", { hasText: de.Headings.RefillHeartsNow });
-    await box.locator("p", { hasText: refillNote("de") }).waitFor({ timeout: 5000 });
-    await box.getByRole("link", { name: de.Headings.BuyMorphcoins }).click();
+    await box.locator("p", { hasText: boxNote("de") }).waitFor({ timeout: 5000 });
+    await box.getByRole("link", { name: de.Links.BuyMorphcoinsForHearts }).click();
     await f.page.waitForURL(app + "/morphcoins/buy?for=hearts", { timeout: 5000 });
-    await f.page.locator("form p[role=status]", { hasText: refillNote("de") }).waitFor();
+    await f.page.locator("form p[role=status]", { hasText: shopNote("de") }).waitFor();
     return f;
   },
   // The profile form in English.

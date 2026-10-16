@@ -3,7 +3,8 @@
     <!--
       The rate is what `GET /shop/coins/config` publishes, the same value every
       price on the page is calculated with, so the headline cannot drift away
-      from what is actually charged.
+      from what is actually charged. The same line names the payment method at the
+      start of the order (§ 312j Abs. 1 BGB).
     -->
     <SectionTitle
       subheading="Subheadings.WebShop"
@@ -15,8 +16,9 @@
     />
 
     <!--
-      Sent here by "Refill hearts" without enough coins: what the coins are needed for. How
-      many coins are bought and at what price is not said here; the total below states both.
+      Sent here by "Refill hearts" without enough coins: what the coins are needed for, with
+      the price of the refill in Euro and VAT like every price. How many coins are bought and
+      at what price is not said here; the total below states both.
     -->
     <p v-if="forHearts" class="text-center text-heading mb-card" role="status">
       {{ t("Body.CoinsForRefill", refillNotice) }}
@@ -72,19 +74,10 @@
       <Price :coins="coinsToBuy" class="text-heading-3 text-heading" />
     </article>
 
-    <InputCheckbox
-      class="mb-card"
-      label="Links.IAgreeTo"
-      id="TermsAndConditions"
-      :link="{
-        to: '/docs/terms-and-conditions',
-        label: 'Links.TermsAndConditions',
-      }"
-      target="_blank"
-      v-model="form.termsAndConditions.value"
-      @valid="form.termsAndConditions.valid = $event"
-    />
-
+    <!--
+      No box for the terms here: the order summary on the next page names the terms and
+      the withdrawal policy of the concrete offer, and the order is accepted there.
+    -->
     <Btn
       full
       @click="onclickSubmitForm"
@@ -111,7 +104,7 @@ export default defineComponent({
     const route = useRoute();
     const forHearts = computed(() => route.query.for === "hearts");
     const refillNotice = computed(() =>
-      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
+      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value, t)
     );
 
     onMounted(loadCoinConfig);
@@ -127,10 +120,6 @@ export default defineComponent({
       morphCoins: {
         valid: true,
         value: 500,
-      },
-      termsAndConditions: {
-        value: false,
-        valid: false,
       },
       submitting: false,
       validate: () => {
@@ -173,7 +162,7 @@ export default defineComponent({
       if (form.validate()) {
         router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
       } else {
-        openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
+        openSnackbar("error", form.euros.valid ? "Error.MinMorphcoins" : "Error.MinEuros");
       }
     }
 

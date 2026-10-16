@@ -238,8 +238,8 @@ test("the coin shop explains a refill without the amount and price that its tota
       !/\{min\}|\{price\}|€|\d/.test(Body.CoinsForRefill),
       `${language}: ${Body.CoinsForRefill}`
     );
-    // The box on the Premium page has no total next to it and keeps the price.
-    assert(Body.NeedCoinsForRefill.includes("{price}"), language);
+    // The box on the Premium page has no total next to it and names the smallest purchase.
+    assert(Body.NeedCoinsForRefill.includes("{min}"), language);
   }
 });
 

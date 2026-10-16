@@ -10,30 +10,28 @@
   surface. The full offer text inside it starts closed (`OrderContract`), so
   that the characteristics, the price, the declarations and the button fit on
   one screen, also on a phone.
+
+  An offer with its own order summary (`worded`) states what is bought and its
+  total price itself, in the `consent` slot. The summary then shows neither
+  characteristics nor a price of its own, so that every fact stands once.
 -->
 <template>
   <section class="grid min-w-0 grid-cols-1 gap-card">
     <h2 class="text-heading-2 m-0 text-heading">{{ t(heading) }}</h2>
 
-    <div class="grid gap-box" data-order-characteristics>
+    <div v-if="!worded" class="grid gap-box" data-order-characteristics>
       <slot name="characteristics" />
     </div>
 
-    <!-- Label and amount share a line on every screen; a long amount wraps on its side. -->
+    <!--
+      Label and amount share a line on every screen; a long amount wraps on its side. The
+      total with its VAT note is the price; how it splits into net and VAT is on the invoice.
+    -->
     <dl
+      v-if="!worded"
       data-order-total
       class="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-y-1 gap-x-card sm:grid-cols-[minmax(0,1fr)_auto]"
     >
-      <template v-if="breakdown">
-        <dt class="text-body-1 m-0 text-body">{{ t("Headings.NetAmount") }}</dt>
-        <dd class="text-body-1 m-0 text-end text-heading">{{ formatEuros(net, locale) }}</dd>
-
-        <dt class="text-body-1 m-0 text-body">
-          {{ t("Headings.VatAmount", { vat: vatPercent }) }}
-        </dt>
-        <dd class="text-body-1 m-0 text-end text-heading">{{ formatEuros(vat, locale) }}</dd>
-      </template>
-
       <dt class="text-heading-4 m-0 text-heading">{{ t("Headings.TotalPrice") }}</dt>
       <dd class="text-heading-4 m-0 text-end text-heading">
         <Price :coins="coins" class="justify-end" />
@@ -119,8 +117,6 @@ const props = defineProps({
   exactOffer: { type: Boolean, default: false },
   /** Locale key of the summary heading. */
   heading: { type: String, default: "Headings.OrderSummary" },
-  /** Show the net amount and the VAT amount above the total. */
-  breakdown: { type: Boolean, default: false },
   /**
    * What is being bought, where the terms and conditions say something about
    * the purchase that outlives the order itself: `coins` or `premium`. Empty
@@ -131,6 +127,11 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
   /** Keep the information visible but drop the order button. */
   hideActions: { type: Boolean, default: false },
+  /**
+   * The offer in the `consent` slot states the product and the total price in its own
+   * lines; the summary leaves out its characteristics and its price line.
+   */
+  worded: { type: Boolean, default: false },
   /**
    * Locale key of the order button. Only override this where nothing has to
    * be paid; a paid order must use the statutory wording.
@@ -173,19 +174,7 @@ async function showMissing() {
   open.focus({ preventScroll: true });
 }
 
-const { t, locale } = useI18n();
-const config = useCoinConfig();
-
-onMounted(loadCoinConfig);
-
-const gross = computed(() => coinsToEuros(props.coins, config.value));
-const vat = computed(() => vatShare(gross.value, config.value));
-const net = computed(() => gross.value - vat.value);
-const vatPercent = computed(() =>
-  new Intl.NumberFormat(locale.value === "de" ? "de-DE" : "en-US", {
-    maximumFractionDigits: 2,
-  }).format(config.value.vat_percent)
-);
+const { t } = useI18n();
 </script>
 
 <style scoped>
