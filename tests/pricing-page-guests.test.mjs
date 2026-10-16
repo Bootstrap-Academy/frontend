@@ -56,18 +56,76 @@ test("the pricing page shows a visitor without an account the plans, and reports
   for (const language of ["de", "en-US"]) assert(locales[language].Links.CreateAccount, language);
 });
 
-test("a visitor who logs in while the pricing page is open gets the Premium state of the account", async () => {
+/** The page's own session handling, run against a token and a stand-in for the API. */
+async function sessionHandling(token, premiumStatus) {
+  const page = await pieces(
+    "pages/subscription/index.vue",
+    [
+      "premiumBusy",
+      "accessToken",
+      "guest",
+      "renewalOrder",
+      "order",
+      "refreshPremiumStatus",
+      "sessionChanged",
+    ],
+    {
+      ref: Vue.ref,
+      computed: Vue.computed,
+      useAccessToken: () => token,
+      getPremiumStatus: premiumStatus,
+      openSnackbar() {},
+    }
+  );
+  // The page hands its watcher exactly this function.
   const source = await read("pages/subscription/index.vue");
+  assert.equal(source.match(/watch\(guest, sessionChanged\);/g)?.length, 1);
+  Vue.watch(page.guest, page.sessionChanged);
+  return page;
+}
+
+test("a visitor who logs in while the pricing page is open gets the Premium state of the account", async () => {
   // The page decides at arrival whether to load the state; a later login in another tab turns
   // the visitor into an account, and the page then loads what it skipped.
-  const watchers = [...source.matchAll(/watch\(guest, \(isGuest\) => \{([^}]*)\}\);/g)];
-  assert.equal(watchers.length, 1);
-  assert.equal(watchers[0][1].trim(), "if (!isGuest) void refreshPremiumStatus();");
-  // Loading the state marks the page as busy before it asks, so the message about a missing
-  // state stays away while the answer is on its way.
-  const refresh = source.slice(source.indexOf("async function refreshPremiumStatus()"));
-  const body = refresh.slice(0, refresh.indexOf("await getPremiumStatus()"));
-  assert.match(body, /premiumBusy\.value = true;/);
+  const token = Vue.ref("");
+  let asked = 0;
+  let answer;
+  const page = await sessionHandling(token, () => {
+    asked++;
+    return new Promise((resolve) => (answer = resolve));
+  });
+  assert.equal(page.guest.value, true);
+  token.value = "a token";
+  await Vue.nextTick();
+  assert.equal(asked, 1);
+  // While the answer is on its way the page is busy, so the message about a missing state
+  // (shown for `!guest && !premiumStatusKnown && !premiumBusy`) stays away.
+  assert.equal(page.premiumBusy.value, true);
+  answer([{ premium: false, autopay: null }, null]);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(page.premiumBusy.value, false);
+});
+
+test("an order or a renewal offer of an account closes when the account logs out while the page is open", async () => {
+  // The logout happens in another tab; the open page learns of it through the token only.
+  const token = Vue.ref("a token");
+  let asked = 0;
+  const page = await sessionHandling(token, async () => {
+    asked++;
+    return [{ premium: true, autopay: null }, null];
+  });
+  page.order.value = { kind: "premium", coins: 1000 };
+  page.renewalOrder.value = { id: "offer", monthly_price: 1000 };
+  token.value = "";
+  await Vue.nextTick();
+  assert.equal(page.order.value, null);
+  assert.equal(page.renewalOrder.value, null);
+  assert.equal(asked, 0);
+  // A visitor who stays an account keeps an open order.
+  const stays = await sessionHandling(Vue.ref("a token"), async () => [{ premium: true }, null]);
+  stays.order.value = { kind: "premium", coins: 1000 };
+  await Vue.nextTick();
+  assert.deepEqual(stays.order.value, { kind: "premium", coins: 1000 });
 });
 
 test("on the pricing page a guest has no plan, whatever an account that logged out left in memory", async () => {

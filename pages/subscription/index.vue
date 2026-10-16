@@ -333,12 +333,6 @@ export default {
         ...(guest.value ? [] : [refreshPremiumStatus()]),
       ]);
     });
-    // A visitor who logs in while the page is open (in another tab) has an account from now
-    // on: the page loads its Premium state as on arrival, so the state is never reported as
-    // missing while nobody has asked for it.
-    watch(guest, (isGuest) => {
-      if (!isGuest) void refreshPremiumStatus();
-    });
 
     const planPricesKnown = computed(() =>
       ["MONTHLY", "YEARLY"].every(
@@ -397,6 +391,23 @@ export default {
     });
     // The declarations of § 356 Abs. 5/6 BGB for the pending order.
     const withdrawalConsent = ref(false);
+
+    /**
+     * The session changed while the page is open, in another tab. A visitor who logged in has
+     * an account from now on: the page loads its Premium state as on arrival, so the state is
+     * never reported as missing while nobody has asked for it. An account that logged out
+     * leaves a guest: an order or a renewal offer of that account could only fail without it,
+     * so both close.
+     */
+    function sessionChanged(isGuest: boolean) {
+      if (!isGuest) {
+        void refreshPremiumStatus();
+        return;
+      }
+      order.value = null;
+      renewalOrder.value = null;
+    }
+    watch(guest, sessionChanged);
 
     async function refreshPremiumStatus() {
       if (premiumBusy.value) return null;
