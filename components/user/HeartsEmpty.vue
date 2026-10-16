@@ -40,8 +40,10 @@
         :coins="refillPrice"
         :loading="loading"
         :disabled="!withdrawalConsent"
+        :worded="worded"
         @order="confirmOrder"
       >
+        <!-- Shown for an offer without its own summary, which states quantity and price itself. -->
         <template #characteristics>
           <p class="text-body-1 m-0 text-body">
             {{ t("Body.OrderHeartsCharacteristics", { max: maxHearts }) }}
@@ -93,6 +95,7 @@ export default {
     );
     const maxHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
     const quantity = computed(() => refillQuantity(offer.value, locale.value));
+    const worded = computed(() => !!offerWording(offer.value, locale.value));
     const refillTime = computed(() => heartRefillTime(locale.value));
 
     // The page may stay open until the free refill; the new balance brings the
@@ -163,6 +166,7 @@ export default {
       refillTime,
       maxHearts,
       quantity,
+      worded,
     };
   },
 };

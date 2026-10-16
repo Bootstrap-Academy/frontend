@@ -90,10 +90,28 @@ export function heartRefillNotice(hearts: HeartConfig, coins: CoinConfig, locale
   };
 }
 
-/** Share of the gross price that is VAT. */
-export function vatShare(gross: number, config: CoinConfig): number {
-  const vat = config.vat_percent;
-  return (gross * vat) / (100 + vat);
+type Translate = (key: string, named?: Record<string, unknown>, plural?: number) => string;
+
+/**
+ * A coin price as `Price` writes it: the coin figure and its Euro total including VAT,
+ * e.g. "1.000 Morphcoins" and "10,00 € inkl. 19 % MwSt.".
+ */
+export function coinPriceParts(coins: number, config: CoinConfig, locale: string, t: Translate) {
+  const number = (value: number, options: Intl.NumberFormatOptions = {}) =>
+    new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", options).format(value);
+  return {
+    coins: t("Headings.Morphcoins", { n: number(coins) }, coins),
+    euros: t("Body.PriceInclVat", {
+      amount: formatEuros(coinsToEuros(coins, config), locale),
+      vat: number(config.vat_percent, { maximumFractionDigits: 2 }),
+    }),
+  };
+}
+
+/** A coin price in running text, e.g. "500 Morphcoins (5,00 € inkl. 19 % MwSt.)". */
+export function coinPriceText(coins: number, config: CoinConfig, locale: string, t: Translate) {
+  const { coins: figure, euros } = coinPriceParts(coins, config, locale, t);
+  return `${figure} (${euros})`;
 }
 
 /** Format an amount of Euro for the given interface language. */

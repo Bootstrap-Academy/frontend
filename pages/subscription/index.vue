@@ -25,9 +25,12 @@
             {{ t("Headings.RefillHeartsNow") }}
           </h2>
 
-          <!-- Without enough Morphcoins the box says what a refill takes and leads to the coin shop. -->
+          <!--
+            Without enough Morphcoins the box says what a refill takes and leads to the coin
+            shop. Both prices come with their Euro amount and the VAT, worded like `Price`.
+          -->
           <div v-if="coins < refillPrice" class="mt-4 flex flex-col items-center gap-4">
-            <p class="max-w-sm text-xl">
+            <p class="max-w-sm text-xl" data-refill-notice>
               {{ t("Body.NeedCoinsForRefill", refillNotice) }}
             </p>
             <NuxtLink
@@ -219,8 +222,10 @@
           :kind="order.kind"
           :loading="ordering"
           :disabled="!withdrawalConsent"
+          :worded="orderWorded"
           @order="confirmOrder"
         >
+          <!-- Shown for an offer without its own summary, which states all of this itself. -->
           <template #characteristics>
             <p class="text-body-1 m-0 text-body">{{ t(order.characteristics, order.params) }}</p>
             <!-- A heart refill states the exact quantity of its quote next to the characteristic. -->
@@ -242,7 +247,24 @@
           </template>
 
           <template #consent>
-            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent" />
+            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent">
+              <!--
+                The offer says that the period it buys does not renew. A monthly renewal the
+                account ordered separately goes on after it (AGB 8.4, 11.1); its price and
+                terms stand on this page and in its own confirmation.
+              -->
+              <template v-if="order.autopay && order.renewal" #note>
+                <p class="text-body-1 m-0 leading-snug text-heading" data-order-renewal>
+                  {{
+                    t(
+                      order.renewal.confirmation_sent
+                        ? "Body.OrderRenewalContinues"
+                        : "Body.OrderRenewalPending"
+                    )
+                  }}
+                </p>
+              </template>
+            </OrderContract>
           </template>
 
           <template #actions>
@@ -318,9 +340,10 @@ export default {
     const yearlyPrice = computed(() => premiumPlanPrice(premiumPlans.value, "YEARLY"));
     const refillPrice = computed(() => heartConfig.value.hearts_refill_price);
     const coinConfig = useCoinConfig();
-    const refillNotice = computed(() =>
-      heartRefillNotice(heartConfig.value, coinConfig.value, locale.value)
-    );
+    const refillNotice = computed(() => ({
+      coins: coinPriceText(refillPrice.value, coinConfig.value, locale.value, t),
+      min: coinPriceText(COIN_PURCHASE_MIN, coinConfig.value, locale.value, t),
+    }));
 
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
@@ -354,6 +377,8 @@ export default {
 
     // The pending order shown in the order summary, or `null`.
     const order = ref<any>(null);
+    // The offer states product, term and price itself (see `OrderContract`).
+    const orderWorded = computed(() => !!offerWording(order.value?.offer, locale.value));
     const ordering = ref(false);
     let orderOpener: HTMLElement | null = null;
     watch(order, async (value, previous) => {
@@ -402,6 +427,7 @@ export default {
         coins: offer.product.coins,
         kind: "premium",
         autopay: status.autopay,
+        renewal: status.renewal ?? null,
         renewalKey: renewalKey(status),
         // Premium is a service (part A of the withdrawal instruction).
         consentKind: "service",
@@ -442,6 +468,7 @@ export default {
           // Show the new state and require a fresh confirmation before purchase.
           if (renewalKey(status) !== order.value.renewalKey) {
             order.value.autopay = status.autopay;
+            order.value.renewal = status.renewal ?? null;
             order.value.renewalKey = renewalKey(status);
             Object.assign(order.value.details[1], renewalDescription(status));
             withdrawalConsent.value = false;
@@ -653,6 +680,7 @@ export default {
       subscribe,
       heartConfig,
       order,
+      orderWorded,
       ordering,
       withdrawalConsent,
       confirmOrder,

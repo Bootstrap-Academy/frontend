@@ -436,7 +436,8 @@ try {
     // The coin shop does not hold back a buyer whose profile has not arrived.
     const f = await fixture([privateWithCountry()], (n) => (n < 2 ? { status: 500 } : null));
     await f.page.goto(app + "/morphcoins/buy");
-    await f.page.locator("#TermsAndConditions").check({ force: true });
+    // No box to tick before the order summary.
+    assert.equal(await f.page.locator("input[type=checkbox]").count(), 0);
     await f.page.getByRole("button", { name: de.Buttons.ContinueToOrderSummary }).click();
     await f.page.waitForURL(app + order, { timeout: 5000 });
     await userType(f.page).waitFor();

@@ -1,5 +1,10 @@
 import { decodeApiError } from "~/utils/apiError";
 
+/** One line of an offer's order summary. The dialog highlights `product`, `term` and `price`. */
+export type OfferLine = { role: string; text: string };
+/** The lines of an order summary in one language and the request for an early start. */
+export type OfferWording = { lines: OfferLine[]; declaration: string };
+
 export type PurchaseOffer = {
   id: string;
   hash: string;
@@ -16,7 +21,41 @@ export type PurchaseOffer = {
     title: string;
     facts?: Record<string, unknown>;
   };
+  /**
+   * The order summary line by line, in the agreed German wording and in English. Offers
+   * of Morphcoins, Premium and hearts have it; older offers and those of other services
+   * do not, and their dialog shows the full offer text instead.
+   */
+  summary?: { de: OfferWording; en: OfferWording };
 };
+
+const wordingValid = (wording: any): wording is OfferWording =>
+  typeof wording?.declaration === "string" &&
+  Array.isArray(wording.lines) &&
+  wording.lines.length > 0 &&
+  wording.lines.every(
+    (line: any) => typeof line?.role === "string" && typeof line?.text === "string"
+  );
+
+/**
+ * The order summary of an offer in the language of the interface: English where the
+ * interface is English, otherwise the German wording, which is the agreed one. Only a
+ * summary whose German lines are exactly the offer text and whose German declaration is
+ * the offer's own is used, so the dialog never shows a wording other than the one agreed;
+ * anything else returns `null` and the dialog shows the offer text itself.
+ */
+export function offerWording(
+  offer: PurchaseOffer | null | undefined,
+  locale: string
+): (OfferWording & { lang: "de" | "en" }) | null {
+  const summary = offer?.summary;
+  if (!summary || !wordingValid(summary.de)) return null;
+  if (summary.de.lines.map((line) => line.text).join("\n") !== offer.text) return null;
+  if (summary.de.declaration !== offer.declaration) return null;
+  if (locale.startsWith("en") && wordingValid(summary.en))
+    return { lang: "en", lines: summary.en.lines, declaration: summary.en.declaration };
+  return { lang: "de", lines: summary.de.lines, declaration: summary.de.declaration };
+}
 type SavedPurchase = { owner: string; orderId: string };
 const scope = (offer: PurchaseOffer) =>
   offer.source === "paypal"

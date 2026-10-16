@@ -228,12 +228,13 @@
             exact-offer
             :coins="coinsToBuy"
             kind="coins"
-            breakdown
             :disabled="!canBuy || !offer || !withdrawalConsent"
             :hide-actions="ordered || !profileLoaded || countryAsked"
             :loading="busy || placing"
+            :worded="worded"
             @order="onclickOrder"
           >
+            <!-- Shown for an offer without its own summary, which states amount and price itself. -->
             <template #characteristics>
               <p class="text-body-1 m-0 text-body">
                 {{ t("Body.OrderCoinsCharacteristics") }}
@@ -305,6 +306,7 @@ export default {
     const { checkout, busy, error, create, capture, dismiss } = usePaypalCheckout();
     const sdkError = ref(false);
     const offer = ref(null);
+    const worded = computed(() => !!offerWording(offer.value, locale.value));
     // The offer has been asked for and the answer is still on its way.
     const offerPending = ref(false);
     const placing = ref(false);
@@ -439,11 +441,15 @@ export default {
     }
     onMounted(refreshOffer);
     // Once the offer stands, the order summary is brought into the first screen (phone).
+    // A web font that is still loading wraps the lines differently, so the decision waits
+    // for the fonts; otherwise a short summary can seem to fit and grow below the screen.
     const page = ref(null);
     const summaryCard = ref(null);
     watch(offer, async (value) => {
       if (!value) return;
       await nextTick();
+      await document.fonts?.ready;
+      if (offer.value !== value) return;
       showOrderSummary(page.value, summaryCard.value);
     });
     watch(
@@ -615,6 +621,7 @@ export default {
       withdrawalConsent,
       offer,
       offerPending,
+      worded,
       onclickOrder,
     };
   },

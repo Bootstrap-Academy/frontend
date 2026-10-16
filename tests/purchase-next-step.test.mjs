@@ -68,15 +68,19 @@ test("the note on a heart refill names its price and the smallest coin purchase 
   }
   for (const language of ["de", "en-US"]) {
     const sentence = locales[language].Body.NeedCoinsForRefill;
-    for (const value of ["{coins}", "{min}", "{price}"])
-      assert.ok(sentence.includes(value), language);
+    for (const value of ["{coins}", "{min}"]) assert.ok(sentence.includes(value), language);
     assert.doesNotMatch(sentence, /\d/, "no figure is written into the sentence");
   }
+  // The Premium page writes both prices like `Price`, Euro amount and VAT included.
   const premium = await read("pages/subscription/index.vue");
   assert.match(premium, /t\("Body\.NeedCoinsForRefill", refillNotice\)/);
   assert.match(
     premium,
-    /heartRefillNotice\(heartConfig\.value, coinConfig\.value, locale\.value\)/
+    /coins: coinPriceText\(refillPrice\.value, coinConfig\.value, locale\.value, t\)/
+  );
+  assert.match(
+    premium,
+    /min: coinPriceText\(COIN_PURCHASE_MIN, coinConfig\.value, locale\.value, t\)/
   );
   // The box on the Premium page leads into the same way as the button next to a task.
   assert.match(

@@ -3,7 +3,8 @@
     <!--
       The rate is what `GET /shop/coins/config` publishes, the same value every
       price on the page is calculated with, so the headline cannot drift away
-      from what is actually charged.
+      from what is actually charged. The same line names the payment method at the
+      start of the order (§ 312j Abs. 1 BGB).
     -->
     <SectionTitle
       subheading="Subheadings.WebShop"
@@ -72,19 +73,10 @@
       <Price :coins="coinsToBuy" class="text-heading-3 text-heading" />
     </article>
 
-    <InputCheckbox
-      class="mb-card"
-      label="Links.IAgreeTo"
-      id="TermsAndConditions"
-      :link="{
-        to: '/docs/terms-and-conditions',
-        label: 'Links.TermsAndConditions',
-      }"
-      target="_blank"
-      v-model="form.termsAndConditions.value"
-      @valid="form.termsAndConditions.valid = $event"
-    />
-
+    <!--
+      No box for the terms here: the order summary on the next page names the terms and
+      the withdrawal policy of the concrete offer, and the order is accepted there.
+    -->
     <Btn
       full
       @click="onclickSubmitForm"
@@ -128,10 +120,6 @@ export default defineComponent({
         valid: true,
         value: 500,
       },
-      termsAndConditions: {
-        value: false,
-        valid: false,
-      },
       submitting: false,
       validate: () => {
         let isValid = true;
@@ -173,7 +161,7 @@ export default defineComponent({
       if (form.validate()) {
         router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
       } else {
-        openSnackbar("error", "Error.MustAgreeToBothPointsInOrderToMoveForward");
+        openSnackbar("error", form.euros.valid ? "Error.MinMorphcoins" : "Error.MinEuros");
       }
     }
 

@@ -237,7 +237,16 @@ test("a Morphcoin order is not created without the declarations", async () => {
 
 test("the declaration labels use the colour of the surrounding order text", async () => {
   const template = parse(await read("components/order/Contract.vue")).descriptor.template.content;
-  const labels = template.match(/<label class="[^"]*"/g);
-  assert.equal(labels.length, 2);
-  for (const label of labels) assert.match(label, /\btext-body\b/);
+  // Two declarations in each layout: the short offer and the long one.
+  const labels = template.match(/<label\b[^>]*>/g);
+  assert.equal(labels.length, 4);
+  for (const label of labels) {
+    if (/class="[^"]*\btext-body\b/.test(label)) continue;
+    // The acceptance of a short offer is labelled by `for`; its row carries the colour.
+    assert.match(label, /:for="acceptanceId"/);
+    assert.match(
+      template,
+      /<div class="flex items-start gap-3 text-body">\s*<input\s+:id="acceptanceId"/
+    );
+  }
 });

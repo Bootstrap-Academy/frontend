@@ -24,7 +24,12 @@ const hasAttribute = (node, name) => node.props.some((p) => p.type === 6 && p.na
 const textOf = (node) => node.loc.source.replace(/\s+/g, " ");
 
 test("the offer text, the recipient and the documents stand in a closed disclosure above the two declarations", async () => {
-  const all = elements(await template("components/order/Contract.vue"));
+  // The long layout, for offers without their own summary (see order-dialog-short.test.mjs).
+  const roots = (await template("components/order/Contract.vue")).children.filter(
+    (c) => c.type === 1
+  );
+  const long = roots.find((node) => !hasAttribute(node, "data-purchase-summary"));
+  const all = elements(long);
   const disclosures = all.filter(({ node }) => node.tag === "details");
   assert.equal(disclosures.length, 1);
   const details = disclosures[0].node;
