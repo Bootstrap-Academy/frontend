@@ -321,6 +321,12 @@ export default {
         ...(guest.value ? [] : [refreshPremiumStatus()]),
       ]);
     });
+    // A visitor who logs in while the page is open (in another tab) has an account from now
+    // on: the page loads its Premium state as on arrival, so the state is never reported as
+    // missing while nobody has asked for it.
+    watch(guest, (isGuest) => {
+      if (!isGuest) void refreshPremiumStatus();
+    });
 
     const planPricesKnown = computed(() =>
       ["MONTHLY", "YEARLY"].every(

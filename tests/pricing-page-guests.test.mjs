@@ -53,3 +53,17 @@ test("the pricing page shows a visitor without an account the plans, and reports
   assert.match(loads, /getPremiumPlans\(\)/);
   for (const language of ["de", "en-US"]) assert(locales[language].Links.CreateAccount, language);
 });
+
+test("a visitor who logs in while the pricing page is open gets the Premium state of the account", async () => {
+  const source = await read("pages/subscription/index.vue");
+  // The page decides at arrival whether to load the state; a later login in another tab turns
+  // the visitor into an account, and the page then loads what it skipped.
+  const watchers = [...source.matchAll(/watch\(guest, \(isGuest\) => \{([^}]*)\}\);/g)];
+  assert.equal(watchers.length, 1);
+  assert.equal(watchers[0][1].trim(), "if (!isGuest) void refreshPremiumStatus();");
+  // Loading the state marks the page as busy before it asks, so the message about a missing
+  // state stays away while the answer is on its way.
+  const refresh = source.slice(source.indexOf("async function refreshPremiumStatus()"));
+  const body = refresh.slice(0, refresh.indexOf("await getPremiumStatus()"));
+  assert.match(body, /premiumBusy\.value = true;/);
+});
