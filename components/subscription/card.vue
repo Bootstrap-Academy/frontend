@@ -12,7 +12,9 @@
         <p class="mb-8 text-center">{{ t("Body.LearnNewSkillsForFree") }}</p>
         <!--
           A visitor without an account has no plan yet. Where an account sees its plan marked,
-          the visitor finds the way to a free account, in the colours of the Premium card.
+          the visitor finds the way to a free account, in the colours of the Premium card. The
+          heading of the card already says that this plan costs nothing, so the link does not
+          say it again.
         -->
         <NuxtLink
           v-if="guest"
@@ -20,7 +22,7 @@
           data-guest-signup
           class="mb-8 flex items-center justify-center rounded-full bg-accent px-6 py-3 text-center text-lg font-bold text-black shadow-lg duration-200 hover:scale-105 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95"
         >
-          {{ t("Links.CreateFreeAccount") }}
+          {{ t("Links.CreateAccount") }}
         </NuxtLink>
         <div
           v-else

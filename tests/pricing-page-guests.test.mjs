@@ -51,6 +51,5 @@ test("the pricing page shows a visitor without an account the plans, and reports
   assert.match(loads, /\.\.\.\(guest\.value \? \[\] : \[refreshPremiumStatus\(\)\]\)/);
   assert.equal(loads.match(/refreshPremiumStatus\(\)/g).length, 1);
   assert.match(loads, /getPremiumPlans\(\)/);
-  for (const language of ["de", "en-US"])
-    assert(locales[language].Links.CreateFreeAccount, language);
+  for (const language of ["de", "en-US"]) assert(locales[language].Links.CreateAccount, language);
 });

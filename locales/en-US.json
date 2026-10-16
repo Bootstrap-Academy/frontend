@@ -1048,7 +1048,7 @@
     "RightOfWithdrawalLinkText": "withdrawal policy",
     "CancelContractsHere": "Cancel contracts here",
     "WithdrawFromContract": "Withdraw from contract",
-    "CreateFreeAccount": "Create a free account"
+    "CreateAccount": "Create an account"
   },
   "Success": {
     "RotateCalendarLink": "New subscription link created. Enter it in your calendar app.",

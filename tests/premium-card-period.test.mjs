@@ -151,16 +151,18 @@ test("a visitor without an account sees both plans, the price of Premium, and th
         // The Premium card offers a visitor nothing to press: no button to buy, no link.
         assert.equal((markup.match(/<button/g) ?? []).length, 0, where);
         assert.equal((markup.match(/<a[ >]/g) ?? []).length, 0, where);
-        assert(!lines.includes(Links.CreateFreeAccount), where);
+        assert(!lines.includes(Links.CreateAccount), where);
         // The way to an account stands once, in the card of the free plan, where an account
         // sees its plan marked.
         const links = html.match(/<a[^>]*>.*?<\/a>/gs) ?? [];
         assert.equal(links.length, 1, where);
         assert.match(links[0], /^<a[^>]* to="\/auth\/signup"/, where);
-        assert.deepEqual(text(links[0]), [Links.CreateFreeAccount], where);
+        assert.deepEqual(text(links[0]), [Links.CreateAccount], where);
         assert(html.indexOf(links[0]) < html.indexOf('id="premium"'), where);
         const free = text(html.slice(0, html.indexOf('id="premium"')));
-        assert.equal(free[free.indexOf(Links.CreateFreeAccount) - 2], Headings.Free, where);
+        assert.equal(free[free.indexOf(Links.CreateAccount) - 2], Headings.Free, where);
+        // The heading of the card says that the plan costs nothing; the link does not say it again.
+        assert(!Links.CreateAccount.toLowerCase().includes(Headings.Free.toLowerCase()), where);
         // Nothing speaks of a coin balance, and no plan is marked as the visitor's.
         assert(!all.includes(Body.NotEnoughMorphcoins) && !all.includes(Headings.BuyMorphcoins));
         assert(!all.includes(Body.CurrentPlan), where);
@@ -169,7 +171,7 @@ test("a visitor without an account sees both plans, the price of Premium, and th
   for (const language of ["de", "en-US"]) {
     const { html, all } = await card({ language, yearly: false, balance: 0, daily: false });
     assert(all.includes(locales[language].Body.CurrentPlan), language);
-    assert(!all.includes(locales[language].Links.CreateFreeAccount), language);
+    assert(!all.includes(locales[language].Links.CreateAccount), language);
     assert(!html.includes('to="/auth/signup"'), language);
   }
 });
