@@ -41,7 +41,9 @@ export async function createPaypalOrder(body: any) {
 
     return [response, null];
   } catch (error: any) {
-    return [null, error?.data ?? { detail: "Request failed", status: error?.status }];
+    // The status tells a stale quote (409) apart from a failed payment request.
+    const status = error?.status ?? error?.statusCode;
+    return [null, { detail: "Request failed", ...(error?.data ?? {}), status }];
   }
 }
 

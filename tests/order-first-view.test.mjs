@@ -113,6 +113,11 @@ const quote = (id, kind, left, extra = {}) => ({
   user_id: owner,
   source: "backend",
   product: { kind, reference: kind, coins: 50, title: kind, facts: { refill_units: 2 } },
+  // A quote of the short order dialog: its German lines are its text.
+  summary: {
+    de: { lines: [{ role: "product", text: "Angebot" }], declaration: "Erklärung" },
+    en: { lines: [{ role: "product", text: "Offer" }], declaration: "Declaration" },
+  },
   ...extra,
 });
 function shop({ list = [], listFails = false } = {}) {
@@ -187,6 +192,10 @@ test("a quote is new when the open one is short of time, taken, foreign, for ano
     ["another product", { state: "offered", offer: quote("o", "premium_yearly", 15) }],
     ["another source", { state: "offered", offer: quote("o", "hearts", 15, { source: "skills" }) }],
     ["the hearts changed", { state: "offered", offer: quote("o", "hearts", 15) }, () => false],
+    [
+      "issued before the short summary",
+      { state: "offered", offer: quote("o", "hearts", 15, { summary: undefined }) },
+    ],
   ]) {
     const { api, calls } = shop({ list: [entry] });
     const offer = await api.requestPurchaseOffer("/shop/purchases/offers/hearts", fits);

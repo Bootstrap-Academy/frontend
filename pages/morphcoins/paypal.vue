@@ -545,11 +545,18 @@ export default {
         await nextTick();
         if (!current()) return;
         await renderPaypalButtons(orderId, owner, current);
-      } catch {
-        if (current()) {
-          sdkError.value = true;
-          ordered.value = false;
+      } catch (failure) {
+        if (!current()) return;
+        ordered.value = false;
+        // A quote the server no longer takes (409, e.g. issued before a change of the offer
+        // texts) is replaced by a new one; no payment was requested for it.
+        if (failure?.status === 409 && (await discardStaleOffer(acceptedOffer))) {
+          if (!active) return;
+          openSnackbar("info", "Body.OfferRenewed");
+          await refreshOffer();
+          return;
         }
+        sdkError.value = true;
       } finally {
         if (generation === actionGeneration) {
           placing.value = false;

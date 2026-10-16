@@ -107,9 +107,7 @@ async function contract(subject, language) {
     { "vue-i18n": { useI18n: () => ({ t: t(language), locale: Vue.ref(language) }) } }
   );
   const ui = host();
-  const app = ui.renderer.createApp(() =>
-    Vue.h(Contract, { offer: subject, modelValue: false }, { note: () => Vue.h("p", "NOTE") })
-  );
+  const app = ui.renderer.createApp(() => Vue.h(Contract, { offer: subject, modelValue: false }));
   app.component("i18n-t", translation(language));
   // The template reaches the auto-imported helper through the component instance.
   app.config.globalProperties.downloadPurchaseDocument = (...a) => downloads.push(a);
@@ -150,8 +148,8 @@ test("a short offer shows its lines once, highlights product, term and price, an
     ui.all().some((node) => node.type === "details"),
     false
   );
-  // The page's own note follows the lines; the German interface needs no language note.
-  assert.ok(all.includes(`Du zahlst aus deinem Guthaben. NOTE`));
+  // Nothing of the page's own stands between the lines and the boxes; German needs no language note.
+  assert.ok(all.includes(`Du zahlst aus deinem Guthaben. Ich nehme dieses Angebot`));
   assert.equal(all.includes(locales.de.Body.OfferGermanBinding), false);
   // The acceptance names and links the two documents of this offer; the declaration is the agreed one.
   assert.ok(
@@ -204,7 +202,6 @@ test("an offer without its own summary keeps the long layout with the full text"
   const all = text(ui.root);
   assert.ok(all.includes("Langer Text"));
   assert.ok(all.includes("Bestätigung an: Synthetic"));
-  assert.equal(all.includes("NOTE"), false);
   app.unmount();
 });
 
@@ -261,19 +258,101 @@ test("every dialog tells the summary whether the offer is worded", async () => {
   }
 });
 
-test("a Premium order names a separately ordered renewal only where the account has one", async () => {
+test("a Premium order leaves a running renewal to the term line of the offer", async () => {
+  // The backend names a separately ordered renewal in the term line of the agreed text, so the
+  // page adds no line of its own: one fact, one place.
   const page = await read("pages/subscription/index.vue");
-  assert.match(page, /<template v-if="order\.autopay && order\.renewal" #note>/);
-  assert.match(
-    page,
-    /order\.renewal\.confirmation_sent\s*\?\s*"Body\.OrderRenewalContinues"\s*:\s*"Body\.OrderRenewalPending"/
-  );
-  // The order keeps the renewal it showed and takes a changed one before a new confirmation.
-  assert.match(page, /renewal: status\.renewal \?\? null,/);
-  assert.match(page, /order\.value\.renewal = status\.renewal \?\? null;/);
+  const contract = await read("components/order/Contract.vue");
+  assert.equal(page.includes("data-order-renewal"), false);
+  assert.equal(page.includes("OrderRenewal"), false);
+  assert.equal(contract.includes("<slot"), false);
   for (const language of ["de", "en-US"])
     for (const key of ["OrderRenewalContinues", "OrderRenewalPending"])
-      assert.doesNotMatch(locales[language].Body[key], /\d/, `${language} ${key}`);
+      assert.equal(locales[language].Body[key], undefined, `${language} ${key}`);
+  // A renewal changed before the order still leads to a new confirmation (long layout, old offers).
+  assert.match(page, /if \(renewalKey\(status\) !== order\.value\.renewalKey\)/);
+});
+
+/** composables/purchases.ts with the globals it reaches stubbed. */
+async function purchasesWith({ status, saved }) {
+  const store = new Map(saved ? [[saved.key, JSON.stringify(saved.value)]] : []);
+  const requested = [];
+  const module = await evaluate("composables/purchases.ts", {
+    require: () => ({}),
+    useUser: () => ({ value: { id: offer().user_id } }),
+    localStorage: {
+      getItem: (key) => store.get(key) ?? null,
+      setItem: (key, value) => store.set(key, value),
+      removeItem: (key) => store.delete(key),
+    },
+    GET: async (path) => {
+      requested.push(path);
+      if (status instanceof Error) throw status;
+      return status;
+    },
+  });
+  return { ...module, store, requested };
+}
+
+test("a coin quote the server refuses as stale is dropped only while nothing was ordered", async () => {
+  const quote = offer({
+    source: "paypal",
+    product: { kind: "coins", reference: "1000", coins: 1000, title: "1.000 Morphcoins" },
+  });
+  const key = `purchase-checkout:${quote.user_id}:paypal:coins`;
+  const saved = { key, value: { owner: quote.user_id, orderId: quote.id } };
+  for (const state of ["offered", "failed"]) {
+    const { discardStaleOffer, store, requested } = await purchasesWith({
+      status: { state, offer: quote },
+      saved,
+    });
+    assert.equal(await discardStaleOffer(quote), true, state);
+    assert.equal(store.has(key), false, state);
+    assert.deepEqual(requested, [`/shop/purchases/${quote.id}`]);
+  }
+  // Accepted, waiting for payment or unreadable: the identity stays and leads to the orders.
+  for (const status of [
+    { state: "awaiting_payment", offer: quote },
+    { state: "paid", offer: quote },
+    { state: "offered", offer: { ...quote, id: "another" } },
+    new Error("offline"),
+  ]) {
+    const { discardStaleOffer, store } = await purchasesWith({ status, saved });
+    assert.equal(
+      await discardStaleOffer(quote),
+      false,
+      JSON.stringify(status.state ?? status.message)
+    );
+    assert.equal(store.has(key), true);
+  }
+});
+
+test("a refused PayPal order brings a new quote instead of a payment error", async () => {
+  const page = await read("pages/morphcoins/paypal.vue");
+  const handler = page.match(/\} catch \(failure\) \{[\s\S]*?\n {6}\} finally \{/)?.[0];
+  assert.ok(handler);
+  const steps = [
+    "if (!current()) return;",
+    "if (failure?.status === 409 && (await discardStaleOffer(acceptedOffer))) {",
+    'openSnackbar("info", "Body.OfferRenewed");',
+    "await refreshOffer();",
+    "sdkError.value = true;",
+  ];
+  let at = -1;
+  for (const step of steps) {
+    const next = handler.indexOf(step);
+    assert.ok(next > at, step);
+    at = next;
+  }
+  // The status of the failed request reaches the page.
+  const coins = await read("composables/coins.ts");
+  assert.match(
+    coins,
+    /return \[null, \{ detail: "Request failed", \.\.\.\(error\?\.data \?\? \{\}\), status \}\];/
+  );
+  const checkout = await read("composables/paypalCheckout.ts");
+  assert.match(checkout, /status: failure\?\.status,/);
+  for (const language of ["de", "en-US"]) assert.ok(locales[language].Body.OfferRenewed, language);
 });
 
 test("the refill box on the Premium page states both prices with their Euro amount and the VAT", async () => {

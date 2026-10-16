@@ -83,9 +83,11 @@ const OFFER_REUSE_MIN_REMAINING_MS = 10 * 60 * 1000;
 const reusableKind = (path: string) =>
   path.match(/^\/shop\/purchases\/offers\/(hearts|premium_monthly|premium_yearly)$/)?.[1] ?? null;
 /** The newest quote of this owner for this product that nobody has accepted yet and that
- * still has enough time left, from the order list the backend keeps. `fits` lets the
- * caller refuse a quote whose agreed quantity no longer matches the account. Any failure
- * of the lookup leads to a new quote. */
+ * still has enough time left, from the order list the backend keeps. Only a quote with its
+ * own summary is taken up again: one issued before the short order summary would be
+ * shown long and then refused on acceptance. `fits` lets the caller refuse a quote whose
+ * agreed quantity no longer matches the account. Any failure of the lookup leads to a new
+ * quote. */
 async function openOffer(
   owner: string,
   path: string,
@@ -109,6 +111,7 @@ async function openOffer(
         status.offer.source === "backend" &&
         status.offer.product?.kind === kind &&
         Date.parse(status.offer.expires_at) - now >= OFFER_REUSE_MIN_REMAINING_MS &&
+        offerWording(status.offer, "de") !== null &&
         (!fits || fits(status.offer))
     )
     .map((status: any) => status.offer as PurchaseOffer)
@@ -211,6 +214,33 @@ export function handoffPurchaseRecovery(offer: PurchaseOffer) {
   if (owner !== offer.user_id || offer.source !== "paypal") return;
   if (readRecovery(owner, scope(offer))?.orderId === offer.id)
     localStorage.removeItem(recoveryKey(owner, scope(offer)));
+}
+/**
+ * The server refused to take `offer` as the basis of a payment (409): the quote is stale,
+ * for instance issued before a change of the catalog. If the server still has it unaccepted
+ * or failed, nothing was ordered, and its recovery identity is dropped so that the next
+ * request brings a new quote. Any other state keeps the identity and its way to the orders.
+ * Returns whether the quote was dropped.
+ */
+export async function discardStaleOffer(offer: PurchaseOffer): Promise<boolean> {
+  const owner = useUser().value?.id;
+  if (!owner || offer.user_id !== owner) return false;
+  let status: any;
+  try {
+    status = await GET(`/shop/purchases/${offer.id}`);
+  } catch {
+    return false;
+  }
+  if (useUser().value?.id !== owner || status?.offer?.id !== offer.id) return false;
+  if (!["offered", "failed"].includes(status.state)) return false;
+  const product = scope(offer);
+  try {
+    if (readRecovery(owner, product)?.orderId === offer.id)
+      localStorage.removeItem(recoveryKey(owner, product));
+  } catch {
+    return false;
+  }
+  return true;
 }
 export function purchaseAcceptance(offer: PurchaseOffer) {
   return {

@@ -269,24 +269,8 @@
           </template>
 
           <template #consent>
-            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent">
-              <!--
-                The offer says that the period it buys does not renew. A monthly renewal the
-                account ordered separately goes on after it (AGB 8.4, 11.1); its price and
-                terms stand on this page and in its own confirmation.
-              -->
-              <template v-if="order.autopay && order.renewal" #note>
-                <p class="text-body-1 m-0 leading-snug text-heading" data-order-renewal>
-                  {{
-                    t(
-                      order.renewal.confirmation_sent
-                        ? "Body.OrderRenewalContinues"
-                        : "Body.OrderRenewalPending"
-                    )
-                  }}
-                </p>
-              </template>
-            </OrderContract>
+            <!-- An offer with its own summary names a monthly renewal in its term line. -->
+            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent" />
           </template>
 
           <template #actions>
@@ -470,7 +454,6 @@ export default {
         coins: offer.product.coins,
         kind: "premium",
         autopay: status.autopay,
-        renewal: status.renewal ?? null,
         renewalKey: renewalKey(status),
         // Premium is a service (part A of the withdrawal instruction).
         consentKind: "service",
@@ -511,7 +494,6 @@ export default {
           // Show the new state and require a fresh confirmation before purchase.
           if (renewalKey(status) !== order.value.renewalKey) {
             order.value.autopay = status.autopay;
-            order.value.renewal = status.renewal ?? null;
             order.value.renewalKey = renewalKey(status);
             Object.assign(order.value.details[1], renewalDescription(status));
             withdrawalConsent.value = false;

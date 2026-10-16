@@ -35,8 +35,6 @@
       >
         {{ line.text }}
       </p>
-      <!-- What the page knows beyond the offer, e.g. a monthly renewal that goes on. -->
-      <slot name="note" />
       <p v-if="wording.lang === 'en'" class="text-body-2 m-0 leading-snug text-body">
         {{ t("Body.OfferGermanBinding") }}
       </p>
