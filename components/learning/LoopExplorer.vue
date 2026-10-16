@@ -49,7 +49,19 @@
             <span class="tile">{{ cell }}</span>
           </div>
         </div>
-        <p class="experiment-result" role="status" aria-live="polite">{{ positionText }}</p>
+        <!--
+          Where the figure stands. At the target of the practice this line is the result:
+          it says that the answer fits, right where the figure is and where a phone shows it
+          without scrolling.
+        -->
+        <p
+          class="experiment-result"
+          :class="{ reached: stage === 3 && practiceCorrect }"
+          role="status"
+          aria-live="polite"
+        >
+          {{ positionText }}
+        </p>
         <button
           v-if="stage === 0"
           type="button"
@@ -75,6 +87,7 @@
           :disabled="disabled"
           :aria-describedby="stage === 3 ? `${id}-goal` : undefined"
           @input="setRepetitions"
+          @change="showWayOn"
         />
         <div class="range-ends" aria-hidden="true">
           <span>{{ range.min }}</span
@@ -131,9 +144,6 @@
           {{ hintOpen ? ui.hideHint : ui.hint }}
         </button>
         <p v-if="hintOpen" class="hint">{{ lesson.practice.hint }}</p>
-        <p v-if="practiceCorrect" class="feedback correct" role="status">
-          {{ lesson.practice.correct }}
-        </p>
       </div>
     </template>
 
@@ -156,7 +166,7 @@
       <p class="next-connection">{{ lesson.code.next }}</p>
     </div>
 
-    <nav class="step-actions" :aria-label="ui.navigation">
+    <nav ref="actions" class="step-actions" :aria-label="ui.navigation">
       <button
         v-if="stage > 0"
         type="button"
@@ -240,6 +250,7 @@ const emit = defineEmits<{
 }>();
 const id = useId();
 const heading = ref<HTMLElement | null>(null);
+const actions = ref<HTMLElement | null>(null);
 const lesson = computed(() => props.content as unknown as LoopContent);
 const ui = computed(() =>
   props.locale.startsWith("en")
@@ -345,9 +356,11 @@ const positionText = computed(() =>
     ? singleDone.value
       ? lesson.value.single.result
       : lesson.value.single.start
-    : (stage.value === 3 ? lesson.value.practice.position : lesson.value.repeat.result)
-        .replaceAll("{count}", String(repetitions.value))
-        .replaceAll("{position}", String(position.value))
+    : stage.value === 3 && practiceCorrect.value
+      ? lesson.value.practice.correct
+      : (stage.value === 3 ? lesson.value.practice.position : lesson.value.repeat.result)
+          .replaceAll("{count}", String(repetitions.value))
+          .replaceAll("{position}", String(position.value))
 );
 const canContinue = computed(() =>
   stage.value === 0
@@ -367,6 +380,13 @@ function setRepetitions(event: Event) {
       (event.target as HTMLInputElement).value
     ),
   });
+}
+// On a phone the button that leads on lies below the slider. Once the target is reached and
+// the slider is let go, the button comes into view; the result above it stays in view.
+async function showWayOn() {
+  await nextTick();
+  if (stage.value === 3 && practiceCorrect.value)
+    actions.value?.scrollIntoView({ block: "nearest" });
 }
 async function goTo(next: number) {
   update({ stage: next });
@@ -504,6 +524,9 @@ li {
   color: #c6d5e2;
   font-size: 0.9rem;
 }
+.experiment-result.reached {
+  color: #b5efdf;
+}
 .experiment > button {
   margin-top: 18px;
 }
@@ -617,6 +640,8 @@ input:disabled {
   border-top: 1px solid #294256;
   margin-top: 30px;
   padding-top: 22px;
+  /* Brought into view, the buttons keep a little room below them. */
+  scroll-margin-bottom: 24px;
 }
 .next-action {
   margin-left: auto;

@@ -1,5 +1,7 @@
 import { canonicalJson, cloneJson, jsonBytes } from "./schema";
 import {
+  HOST_ASSESSMENT,
+  PROTOCOL_MINOR,
   hasCapability,
   operations,
   recognizedResult,
@@ -48,6 +50,8 @@ export interface SDKOptions {
 }
 const opposite = (direction: "next" | "previous") => (direction === "next" ? "forward" : "back");
 const MUTATIONS: Record<string, string> = {
+  // A start and a submission of the same room never overtake each other.
+  "task.start": "assessment",
   "state.save": "state",
   "state.reset": "state",
   "project.save": "project",
@@ -84,7 +88,13 @@ export class LessonSDK {
 
   constructor(private readonly options: SDKOptions) {
     this.manifest = cloneJson(validateManifest(options.manifest));
-    this.version = cloneJson(options.protocol ?? { major: 2, minor: 0 });
+    // A package speaks the minor version its manifest names, up to the newest this SDK knows.
+    this.version = cloneJson(
+      options.protocol ?? {
+        major: 2,
+        minor: Math.min(this.manifest.protocol.minor, PROTOCOL_MINOR),
+      }
+    );
     if (
       this.version.major !== 2 ||
       !Number.isSafeInteger(this.version.minor) ||
@@ -227,6 +237,35 @@ export class LessonSDK {
       },
       { id }
     );
+  }
+  /** Protocol 2.1: asks the server for the public start of a task. Needs host.assessment. */
+  startTask(goalId: string, id?: string): Promise<JsonObject> {
+    const granted = this.capability(HOST_ASSESSMENT.id, HOST_ASSESSMENT.major);
+    return this.request("task.start", { goalId, revisionId: granted?.revisionId ?? "" }, { id });
+  }
+  /** Submits the answer for the start it belongs to. The state must be saved at `stateRevision`. */
+  submitAssessment(
+    goalId: string,
+    answer: JsonObject,
+    options: { id?: string; stateRevision?: number } = {}
+  ): Promise<JsonObject> {
+    const previous = options.id ? this.requests.get(options.id) : undefined;
+    return this.request(
+      "assessment.submit",
+      {
+        goalId,
+        stateRevision:
+          options.stateRevision ??
+          (previous?.type === "assessment.submit"
+            ? (previous.payload.stateRevision as number)
+            : (this.initValue?.state.revision ?? 0)),
+        answer,
+      },
+      { id: options.id }
+    );
+  }
+  assessmentStatus(assessmentId: string, id?: string): Promise<JsonObject> {
+    return this.request("assessment.status", { assessmentId }, { id });
   }
   navigation(swipe: { forward: boolean; back: boolean }, id?: string): Promise<JsonObject> {
     return this.request("navigation.policy", { swipe }, { id });
@@ -412,6 +451,7 @@ export class LessonSDK {
     if (
       ![
         "goals.progress",
+        "task.start",
         "assessment.submit",
         "assessment.fallback",
         "assessment.result",
@@ -495,7 +535,7 @@ export class LessonSDK {
       this.send("lesson.hello", "event", {
         lessonId: this.manifest.id,
         manifestHash: this.options.manifestHash,
-        sdk: { major: 1, minor: 0 },
+        sdk: { major: 1, minor: this.version.minor },
       });
       return;
     }

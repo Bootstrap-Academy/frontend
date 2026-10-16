@@ -1,10 +1,16 @@
 import type { RoomEnvelope } from "../types/learningRooms";
 import { canonicalJson, cloneJson } from "./schema";
 import { ProtocolError, type JsonObject, type StateSnapshot } from "./types";
-import type { HostActions } from "./host";
+import type { HostActions, HostAssessment } from "./host";
 
 export interface RoomController {
-  protocolSnapshot(): { room: RoomEnvelope | null; error: string; conflict: boolean };
+  protocolSnapshot(): {
+    room: RoomEnvelope | null;
+    error: string;
+    conflict: boolean;
+    /** Seconds the last refused write asked to wait, when the response says so. */
+    retryAfter?: number | null;
+  };
   protocolRead(): Promise<RoomEnvelope>;
   edit(state: Record<string, unknown>): void;
   save(operationId?: string): Promise<boolean>;
@@ -15,12 +21,54 @@ export interface RoomController {
     operationId?: string
   ): Promise<boolean>;
 }
+/** What the player knows about the package it loaded when it asks for assessment adapters. */
+export interface AssessmentBinding {
+  unitId: string;
+  revisionId: string;
+  packageHash: string;
+  /**
+   * The server refused a start for good and no newer package of the unit arrived:
+   * the player ends this session instead of letting the frame retry the refusal.
+   */
+  stale(): void;
+}
 export interface RoomProtocolSource {
   data: RoomController;
   owner(): string | null;
   previous?: () => Promise<boolean>;
   /** Parent-owned continuation survives a successful completion removing the frame. */
   advance?: () => Promise<boolean>;
+  /**
+   * Protocol 2.1: the parent's adapters to the server assessment of this unit,
+   * for the package revision whose bytes were loaded. Without them the host
+   * grants no host.assessment.
+   */
+  assessment?: (binding: AssessmentBinding) => HostAssessment | undefined;
+}
+/**
+ * A 429 waits this long when the browser cannot read its Retry-After (the API answers from
+ * another origin and does not expose the header): the save window of skills (K5).
+ */
+export const RETRY_AFTER_SECONDS = 30;
+const rateLimited = (seconds: number) =>
+  new ProtocolError(
+    "rate_limited",
+    "Too many requests just now. Retry keeps the same operation.",
+    true,
+    { retryAfterSeconds: seconds }
+  );
+/** After a 429 nothing goes out until its wait has passed; the frame may retry the same operation. */
+export function createHoldOff(now: () => number) {
+  let until = 0;
+  return {
+    hold(seconds: number) {
+      until = Math.max(until, now() + seconds * 1000);
+    },
+    check() {
+      const remaining = until - now();
+      if (remaining > 0) throw rateLimited(Math.ceil(remaining / 1000));
+    },
+  };
 }
 export interface RoomProtocolBinding {
   bind(options: {
@@ -36,7 +84,8 @@ export interface RoomProtocolBinding {
 }
 export function createRoomProtocolBinding(
   data: RoomController,
-  owner: () => string | null
+  owner: () => string | null,
+  now: () => number = Date.now
 ): RoomProtocolBinding {
   return {
     bind(options) {
@@ -44,6 +93,8 @@ export function createRoomProtocolBinding(
       const identity = owner();
       const review = initial?.progress.review_id || null;
       const course = initial?.course_id || null;
+      // The server completes a lesson of the engine when it books the last required pass.
+      const engine = initial?.unit.completion_kind === "engine";
       const current = () => {
         const room = data.protocolSnapshot().room;
         return (
@@ -64,8 +115,15 @@ export function createRoomProtocolBinding(
         schemaVersion: 1,
         value: cloneJson(room.progress.state) as JsonObject,
       });
+      // Ä41 b: skills answers a flood of saves of a lesson of the engine with 429.
+      const holdOff = createHoldOff(now);
       const failure = () => {
         const view = data.protocolSnapshot();
+        if (view.error === "Wait") {
+          const seconds = view.retryAfter ?? RETRY_AFTER_SECONDS;
+          holdOff.hold(seconds);
+          return rateLimited(seconds);
+        }
         return new ProtocolError(
           view.conflict
             ? "conflict"
@@ -98,6 +156,7 @@ export function createRoomProtocolBinding(
           saves.set(key, signature);
           data.edit(cloneJson(state));
         }
+        holdOff.check();
         const success = await data.save(key);
         assertCurrent();
         if (!success) throw failure();
@@ -129,6 +188,8 @@ export function createRoomProtocolBinding(
           return save(cloneJson(options.initialState), revision, key);
         },
         async complete(_goals, revision, key) {
+          if (engine)
+            throw new ProtocolError("invalid_receipt", "The server completes this lesson.");
           checkRevision(revision);
           const state = data.protocolSnapshot().room!.progress.state;
           if (
@@ -139,6 +200,7 @@ export function createRoomProtocolBinding(
           )
             throw new ProtocolError("invalid_receipt", "Introduction is not ready.");
           const answer = cloneJson(options.introduction.answer);
+          holdOff.check();
           const success = await data.complete("complete", answer, undefined, key);
           assertCurrent();
           if (!success) throw failure();
@@ -149,6 +211,9 @@ export function createRoomProtocolBinding(
         },
         async navigate(direction) {
           assertCurrent();
+          // Nothing of the engine can be skipped (the service refuses it as well).
+          if (direction === "skip" && engine) return false;
+          holdOff.check();
           if (!(await data.save())) throw failure();
           assertCurrent();
           if (direction === "skip" && !(await data.complete("skip"))) throw failure();

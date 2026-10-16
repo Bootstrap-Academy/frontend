@@ -15,10 +15,39 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { guestCopy } from "~/utils/guest/copy";
+import { SITE_NAME, canonicalUrl, siteHead } from "~/utils/siteHead";
 definePageMeta({ layout: false, middleware: ["redirect-authenticated"] });
 const { locale } = useI18n();
 const copy = computed(() => guestCopy(locale.value));
-useHead({ title: "Bootstrap Academy" });
+const head = computed(() => siteHead[locale.value.startsWith("en") ? "en" : "de"].home);
+useSeoMeta({
+  title: () => head.value.title,
+  ogTitle: () => head.value.title,
+  description: () => head.value.description,
+  ogDescription: () => head.value.description,
+});
+// Who runs this site, for search engines: the name, the address and the public profiles
+// that the footer links to.
+const web = String(useRuntimeConfig().public.BASE_WEB_URL || "");
+useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: canonicalUrl(web, "/"),
+        sameAs: [
+          "https://twitter.com/TheMorpheusTuts",
+          "https://www.instagram.com/TheMorpheusTuts/",
+          "https://www.youtube.com/user/themorpheus407",
+          "https://github.com/Bootstrap-Academy",
+        ],
+      }),
+    },
+  ],
+});
 </script>
 <style scoped>
 .guest-landing {

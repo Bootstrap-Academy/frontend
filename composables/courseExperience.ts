@@ -54,6 +54,10 @@ const messages = {
     errorTitle: "Das hat gerade nicht geklappt",
     saved: "Gespeichert",
     inProgress: "Angefangen",
+    accountNeeded: "Zum Lernen brauchst du ein Konto.",
+    paidCourse: "Dieser Kurs ist kostenpflichtig.",
+    courseLabel: "Kurs",
+    pathLabel: "Lernweg",
   },
   en: {
     back: "Back to overview",
@@ -106,6 +110,10 @@ const messages = {
     errorTitle: "Something went wrong",
     saved: "Saved",
     inProgress: "In progress",
+    accountNeeded: "You need an account to learn.",
+    paidCourse: "This is a paid course.",
+    courseLabel: "Course",
+    pathLabel: "Learning path",
   },
 };
 

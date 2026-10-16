@@ -102,6 +102,7 @@ function fixture({
       current = { identity: null, userId: "", sessionId: "", generation: "logout" };
     },
     clearLearningStorage: (user) => calls.push(`clear:${user}`),
+    forgetVerificationMail: (user) => calls.push(`forget:${user}`),
     broadcastLearningLogout: (expected, deleted) => {
       assert.deepEqual(expected, ended);
       assert.equal(deleted, true);
@@ -124,7 +125,8 @@ for (const [name, changeTo, reset] of [
   test(`a real HTTP200 account DELETE completes cleanup after ${name}`, async () => {
     const f = fixture({ changeTo });
     assert.deepEqual(await f.api.deleteUser(), [true, null]);
-    assert.deepEqual(f.calls, [...(reset ? ["reset"] : []), "clear:A", "broadcast:A"]);
+    // The copy of the work and the note on a confirmation code of the account that is gone.
+    assert.deepEqual(f.calls, [...(reset ? ["reset"] : []), "clear:A", "forget:A", "broadcast:A"]);
     assert.deepEqual(f.sent, [`Bearer ${ended.accessToken}`]);
     if (!reset && changeTo) assert.deepEqual(f.current(), changeTo);
   });
@@ -165,7 +167,7 @@ test("a confirmed deletion after a captured-session auth retry still cleans only
   assert.deepEqual(await f.api.deleteUser(), [true, null]);
   assert.equal(f.refreshes(), 1);
   assert.deepEqual(f.sent, [`Bearer ${ended.accessToken}`, `Bearer ${token("A-refreshed")}`]);
-  assert.deepEqual(f.calls, ["clear:A", "broadcast:A"]);
+  assert.deepEqual(f.calls, ["clear:A", "forget:A", "broadcast:A"]);
   assert.deepEqual(f.current(), other);
 });
 

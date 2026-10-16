@@ -22,6 +22,7 @@
 <script setup lang="ts">
 import type { NuxtError } from "#app";
 import { useI18n } from "vue-i18n";
+import { pageTitle } from "~/utils/siteHead";
 
 const props = defineProps({
   error: Object as () => NuxtError,
@@ -37,6 +38,13 @@ const { t } = useI18n();
 const messageKey = computed(() =>
   props.error?.statusCode == 404 ? "Body.PageNotFound" : "Body.UnexpectedError"
 );
+
+// An address without a page must not end up in a search index. The host answers every
+// address with the app and the status 200, so the page itself has to say so.
+useHead(() => ({
+  title: pageTitle(t(messageKey.value)),
+  meta: [{ name: "robots", content: "noindex" }],
+}));
 </script>
 
 <style scoped>

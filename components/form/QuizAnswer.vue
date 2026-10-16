@@ -109,7 +109,7 @@
 
 <script lang="ts">
 import { decodeApiError } from "~/utils/apiError";
-import { defineComponent } from "vue";
+import { defineComponent, toRaw } from "vue";
 import type { PropType } from "vue";
 import { attempQuiz, rateQuiz } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
@@ -247,10 +247,15 @@ export default defineComponent({
 
       loading.value = true;
 
-      const [success, error] = await getSubTaskInQuiz(
-        props?.data?.task_id ?? "",
-        props?.data?.id ?? ""
-      );
+      // Opened from a link, the quiz page has just read this very quiz for the form
+      // (`getSubTaskInQuiz` keeps it as the form's subtask); reading it again repeats the answer.
+      // The form keeps its own copy, as after its own read. A quiz chosen from the list is still
+      // read here, so the form shows the server's state.
+      const fresh = toRaw(props.data) === toRaw(subtask.value);
+      if (fresh) subtask.value = structuredClone(toRaw(subtask.value));
+      const [success] = fresh
+        ? [subtask.value]
+        : await getSubTaskInQuiz(props?.data?.task_id ?? "", props?.data?.id ?? "");
 
       if (success) {
         emit("updateQuestion", success);

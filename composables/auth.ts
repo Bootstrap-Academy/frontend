@@ -61,6 +61,8 @@ export async function logout() {
     // when its refresh token has already been revoked or the API is offline.
     setStates(null);
     try {
+      // The note on a code that was sent belongs to the session that ends here.
+      forgetVerificationMail(userId);
       clearLearningStorage(userId);
     } catch {
       // Browser cleanup must never prevent revoking this session on the server.
@@ -137,8 +139,9 @@ export async function requestEmailVerification() {
   let user_email = user?.value?.email ?? null;
   let isAccountVerified = user?.value?.email_verified ?? false;
 
-  if (isAccountVerified) return [true, null];
+  if (isAccountVerified) return [true, null, false];
 
+  let asked = false;
   try {
     if (!!!user_id) {
       throw { data: { detail: "Invalid User Id" } };
@@ -147,11 +150,22 @@ export async function requestEmailVerification() {
       throw { data: { detail: "User does not have email" } };
     }
 
+    // The request is noted before it is made, with its answer still open.
+    noteVerificationRequest(user_id);
+    asked = true;
     const response = await POST(`/auth/users/${user_id}/email`);
 
-    return [response, null];
+    // The confirmation page sends no second code while this one works.
+    noteVerificationMail(user_id);
+
+    return [response, null, false];
   } catch (error: any) {
-    return [null, error.data];
+    // Only an answer of the server says that no mail went out. A request that
+    // broke off, as it does when the page is reloaded meanwhile, may have been
+    // sent: its note stays open, and the third value tells the caller so.
+    if (error?.response) forgetVerificationMail(user_id);
+
+    return [null, error.data, asked && !error?.response];
   }
 }
 

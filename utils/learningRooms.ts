@@ -66,6 +66,8 @@ export function createLearningRooms(options: {
   let pendingComplete: any = null;
   let pendingReviewStart: any = null;
   let completionRequested = false;
+  // Seconds the last refused save or completion asked to wait (429 with Retry-After).
+  let retryAfter: number | null = null;
   let lastSelection: {
     path?: string;
     after?: string;
@@ -120,6 +122,7 @@ export function createLearningRooms(options: {
           // Only a completion checks the answer. A refused save (e.g. an oversized
           // state) is a technical failure and must stay a retryable save error.
           const key = errorKey(error);
+          retryAfter = decodeApiError(error).retryAfter;
           view.error = key === "CheckIntroduction" ? "SaveError" : key;
           view.conflict = view.error === "Conflict";
         }
@@ -410,7 +413,8 @@ export function createLearningRooms(options: {
       publish();
     },
     // V2 uses the same authenticated routes, CAS, retry records and owner recovery.
-    protocolSnapshot: () => copy({ room: view.room, error: view.error, conflict: view.conflict }),
+    protocolSnapshot: () =>
+      copy({ room: view.room, error: view.error, conflict: view.conflict, retryAfter }),
     async openConfirmed(unitId: string, pathId: string, courseId: string | null = null) {
       if (
         !alive ||
@@ -540,6 +544,7 @@ export function createLearningRooms(options: {
       } catch (error) {
         if (current(ticket)) {
           view.error = errorKey(error);
+          retryAfter = decodeApiError(error).retryAfter;
           view.conflict = view.error === "Conflict";
           const status =
             (error as any)?.statusCode ||

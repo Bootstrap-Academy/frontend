@@ -111,6 +111,7 @@ import {
   lectureHasVideo,
   type CourseStep,
 } from "~/utils/courseJourney";
+import { courseVisit } from "~/utils/courseVisit";
 
 definePageMeta({ middleware: ["auth"] });
 const route = useRoute();
@@ -176,6 +177,14 @@ async function load() {
   error.value = false;
   course.value = null;
   try {
+    // Back from the course's own exercise pages the visit goes on: the course shows as the
+    // learner left it, and the server already knows about the visit.
+    const kept = courseVisit.course(owner, id.value);
+    if (kept) {
+      course.value = kept;
+      if (active.value) await go(active.value);
+      return;
+    }
     const result = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
     if (!current()) return;
     course.value = result;
@@ -183,6 +192,7 @@ async function load() {
     if (!current()) return;
     // This visit starts an existing entitled course; it does not buy or re-enrol it.
     await POST(`/skills/courses/${encodeURIComponent(id.value)}/watch`);
+    if (current()) courseVisit.keep(owner, id.value, result);
   } catch {
     if (current()) error.value = true;
   } finally {
@@ -233,6 +243,7 @@ async function finishLecture() {
       if (!current()) return;
       const recorded = courseSteps(refreshed).find((item) => item.id === step.id)?.completed;
       course.value = refreshed;
+      courseVisit.keep(owner, id.value, refreshed);
       saveError.value = !recorded;
     } catch {
       if (current()) saveError.value = true;

@@ -57,6 +57,8 @@ const legacyMessages: [string, string][] = [
   ["too many failed login attempts", "TooManyFailedLoginAttempts"],
   ["too many requests", "TooManyRequests"],
   ["email not verified", "AccountNotVerified"],
+  // The shop's refusal of an offer for an account without a confirmed address.
+  ["verified delivery address is required", "AccountNotVerified"],
 ];
 const codeMessages: Record<string, string> = {
   forbidden: "NotAllowed",

@@ -16,6 +16,7 @@ export { canonicalJson, jsonBytes, validateSchema, assertSchema } from "./schema
 export { playReplay, canonicalHash, readPointer, ReplayError, type ReplayDriver } from "./replay";
 export {
   ProtocolError,
+  type AssessmentView,
   type Capability,
   type CapabilityRequirement,
   type Clock,
@@ -25,8 +26,10 @@ export {
   type JsonValue,
   type Manifest,
   type Phase,
+  type PublicStart,
   type Sender,
   type StateSnapshot,
+  type TaskStart,
   type Transport,
   type Version,
 } from "./types";

@@ -1,9 +1,18 @@
+/**
+ * The address of a bookmark: a main skill alone, or one of its skills. Without a second id
+ * the path ends with the main skill; a slash at its end is another address to the API.
+ */
+function bookmarkPath(rootSkillId: string, subSkillId: string | null) {
+  const root = `/skills/bookmark/${encodeURIComponent(rootSkillId)}`;
+  return subSkillId ? `${root}/${encodeURIComponent(subSkillId)}` : root;
+}
+
 export async function createBookmark(
   rootSkillId: string,
   subSkillId: string | null = null
 ): Promise<void> {
   try {
-    var urlPath = `/skills/bookmark/${rootSkillId}/${subSkillId != null ? subSkillId : ""}`;
+    const urlPath = bookmarkPath(rootSkillId, subSkillId);
 
     const response = await POST(urlPath);
 
@@ -21,7 +30,7 @@ export async function deleteBookmark(
   subSkillId: string | null = null
 ): Promise<void> {
   try {
-    var urlPath = `/skills/bookmark/${rootSkillId}/${subSkillId != null ? subSkillId : ""}`;
+    const urlPath = bookmarkPath(rootSkillId, subSkillId);
 
     const response = await DELETE(urlPath);
 

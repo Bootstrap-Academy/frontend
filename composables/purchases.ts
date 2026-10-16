@@ -1,3 +1,5 @@
+import { decodeApiError } from "~/utils/apiError";
+
 export type PurchaseOffer = {
   id: string;
   hash: string;
@@ -7,7 +9,13 @@ export type PurchaseOffer = {
   expires_at: string;
   user_id: string;
   source: string;
-  product: { kind: string; reference: string; coins: number; title: string };
+  product: {
+    kind: string;
+    reference: string;
+    coins: number;
+    title: string;
+    facts?: Record<string, unknown>;
+  };
 };
 type SavedPurchase = { owner: string; orderId: string };
 const scope = (offer: PurchaseOffer) =>
@@ -26,6 +34,48 @@ const settledExpired = (offer: PurchaseOffer | undefined) => {
   const expires = Date.parse(offer?.expires_at ?? "");
   return Number.isFinite(expires) && expires + ACCEPTANCE_SETTLE_MS <= Date.now();
 };
+/** A quote is valid for 20 minutes. A dialog opened again within its first half shows
+ * the same quote instead of asking for another one; with less time left a new quote
+ * leaves the buyer the full time to read and accept it. The margin also absorbs clock
+ * skew between this browser and the server. */
+const OFFER_REUSE_MIN_REMAINING_MS = 10 * 60 * 1000;
+/** Quotes the backend issues for its own products. Only these are reused: accepting one
+ * compares it with the current catalog and rejects a changed quote without a charge. */
+const reusableKind = (path: string) =>
+  path.match(/^\/shop\/purchases\/offers\/(hearts|premium_monthly|premium_yearly)$/)?.[1] ?? null;
+/** The newest quote of this owner for this product that nobody has accepted yet and that
+ * still has enough time left, from the order list the backend keeps. `fits` lets the
+ * caller refuse a quote whose agreed quantity no longer matches the account. Any failure
+ * of the lookup leads to a new quote. */
+async function openOffer(
+  owner: string,
+  path: string,
+  fits?: (offer: PurchaseOffer) => boolean
+): Promise<PurchaseOffer | null> {
+  const kind = reusableKind(path);
+  if (!kind) return null;
+  let list: unknown;
+  try {
+    list = await GET("/shop/purchases");
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(list)) return null;
+  const now = Date.now();
+  const open = list
+    .filter(
+      (status: any) =>
+        status?.state === "offered" &&
+        status.offer?.user_id === owner &&
+        status.offer.source === "backend" &&
+        status.offer.product?.kind === kind &&
+        Date.parse(status.offer.expires_at) - now >= OFFER_REUSE_MIN_REMAINING_MS &&
+        (!fits || fits(status.offer))
+    )
+    .map((status: any) => status.offer as PurchaseOffer)
+    .sort((a, b) => Date.parse(b.expires_at) - Date.parse(a.expires_at));
+  return open[0] ?? null;
+}
 function pathScope(path: string): string | null {
   if (/^\/shop\/coins\/paypal\/offers\/\d+$/.test(path)) return "paypal:coins";
   if (/^\/shop\/purchases\/offers\/premium_(monthly|yearly)$/.test(path)) return "backend:premium";
@@ -131,7 +181,12 @@ export function purchaseAcceptance(offer: PurchaseOffer) {
     early_performance_requested: true,
   };
 }
-export async function requestPurchaseOffer(path: string): Promise<PurchaseOffer | null> {
+/** The quote for one product: an accepted original first, then a still open quote of
+ * the backend (see `openOffer`), otherwise a new one. */
+export async function requestPurchaseOffer(
+  path: string,
+  fits?: (offer: PurchaseOffer) => boolean
+): Promise<PurchaseOffer | null> {
   try {
     const owner = useUser().value?.id;
     const product = pathScope(path);
@@ -154,6 +209,10 @@ export async function requestPurchaseOffer(path: string): Promise<PurchaseOffer 
         return null;
       }
     }
+    if (owner) {
+      const open = await openOffer(owner, path, fits);
+      if (open) return useUser().value?.id === owner ? open : null;
+    }
     const result = await POST(path);
     if (owner && useUser().value?.id !== owner) return null;
     if (!result?.offer?.id || result.state !== "offered") {
@@ -166,7 +225,13 @@ export async function requestPurchaseOffer(path: string): Promise<PurchaseOffer 
         localStorage.removeItem(recoveryKey(owner, product));
     }
     return result.offer;
-  } catch {
+  } catch (error: any) {
+    // The server makes no offer before the e-mail address is confirmed. A page
+    // that did not know (an old tab) leads to the confirmation and back here.
+    if (decodeApiError(error).messageKey === "Error.AccountNotVerified") {
+      await navigateTo(emailVerificationRoute(useRouter().currentRoute.value.fullPath));
+      return null;
+    }
     const owner = useUser().value?.id;
     const product = pathScope(path);
     if (owner && product?.startsWith("events:")) {

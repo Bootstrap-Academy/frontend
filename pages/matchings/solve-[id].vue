@@ -124,10 +124,10 @@
 
 <script lang="ts" setup>
 import {
-  getQuizzesInCourse,
+  getPracticeExercises,
   getSubTasksInQuiz,
+  notePracticeChange,
   useQuizzes,
-  getQuizzesInSkill,
 } from "~~/composables/quizzes";
 import { useI18n } from "vue-i18n";
 import { CheckCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/vue/24/outline";
@@ -174,12 +174,21 @@ const notFoundFor = computed(() => {
   }
 });
 
+// The matching the form showed, also when the answer comes before this page's list.
+function answered(id: any) {
+  return [selectedQuiz.value, ...arrayOfSubtasks.value].find((quiz: any) => quiz?.id == id);
+}
+
 function setSolvedLocally(id: any) {
   arrayOfSubtasks.value.forEach((element: any) => {
     if (element.id == id) {
       element.solved = true;
     }
   });
+  // A matching opened from a link is its own object, not a row of the list; the form shows it.
+  if (selectedQuiz.value?.id == id) selectedQuiz.value.solved = true;
+  // The course page shows the answer without reading its exercises again.
+  notePracticeChange("solved", "matchings", answered(id));
 }
 
 function setRatedLocally(id: any) {
@@ -188,6 +197,10 @@ function setRatedLocally(id: any) {
       element.rated = true;
     }
   });
+  // Solved, a matching opened from a link offers its rating; once given, the form hides it.
+  if (selectedQuiz.value?.id == id) selectedQuiz.value.rated = true;
+  // The next visit does not offer the rating again.
+  notePracticeChange("rated", "matchings", answered(id));
 }
 
 const breadcrumbs = computed<Array<{ label: string; to?: string }>>(() => {
@@ -274,10 +287,16 @@ async function manageAllDataForQuizzes() {
     if (success) selectedQuiz.value = success;
   }
 
-  if (quizzesFrom.value == "course") {
-    await getQuizzesInCourse(id.value);
-  } else if (quizzesFrom.value == "skill") {
-    await getQuizzesInSkill(id.value);
+  if (quizzesFrom.value == "course" || quizzesFrom.value == "skill") {
+    const rows = await getPracticeExercises(quizzesFrom.value, id.value, "matchings");
+    arrayOfSubtasks.value = [];
+    rows.forEach((element: any) => {
+      arrayOfSubtasks.value.push(element);
+      quizzesToShow.value.push(element);
+    });
+    loading.value = false;
+    scroolToView();
+    return;
   } else if (quizzesFrom.value == "quiz") {
     await getSubTasksInQuiz(id.value);
   }

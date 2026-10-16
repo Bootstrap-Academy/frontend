@@ -9,7 +9,7 @@ The WebHost is loaded only for a server-selected v2 descriptor when
 The JSON Schemas use Draft 2020-12:
 
 - [Manifest](schemas/manifest.schema.json): package metadata and requirements.
-- [Messages](schemas/message.schema.json): envelope, all 36 payloads and RPC
+- [Messages](schemas/message.schema.json): envelope, all 37 payloads and RPC
   result shapes. `x-operations` supplies direction, kind and capability metadata;
   `$defs` and `allOf` enforce the payloads with ordinary JSON Schema validators.
 - [Replay](schemas/replay.schema.json): private recorded test format, version 1.
@@ -108,6 +108,48 @@ manifest's assessment reference, matches the saved state and sends the fixed
 answer to the real introduction validator. This is not assessment or an XP
 authority. Optional services, including live LLM and project/assessment
 capabilities, receive no grants and fail honestly.
+
+## Protocol 2.1: server assessment
+
+Protocol 2.1 is 2.0 plus one capability and one request. A package states its
+minor version in `manifest.protocol.minor`; the session speaks that version, so
+a 2.0 package is loaded, negotiated and served exactly as before. Loader, SDK
+and host refuse a minor version above `PROTOCOL_MINOR`.
+
+- Capability `host.assessment` 1.0. A 2.1 package names it under `requires` or
+  `optional`. The host grants it only when the player has bound
+  `HostActions.assessment` for the package revision whose bytes it loaded
+  (`revision_id` of the descriptor). The grant carries that `revisionId`; its
+  `sha256` is the package hash. Without adapters a package that requires the
+  capability does not start.
+- Request `task.start` with `{goalId, revisionId}` returns
+  `{start, assessments}`: the public start of a deterministic goal (case,
+  config, initial state, seed) and the submissions the server already holds
+  for it. It carries no difficulty choice. A start for another revision is a
+  `conflict`: the frame runs old bytes and has to be reopened.
+
+With the grant the host serves the 2.0 messages `assessment.submit` and
+`assessment.status` from the same adapters. A submission names the start it
+belongs to (`answer.startId`) and needs the confirmed state revision. A pending
+submission is read again by the host: at once for those listed by a start,
+then after 1, 2, 3, 4 and every 5 seconds. When it turns final the host sends
+`assessment.result`, and `reward.committed` if the verdict carries booked XP.
+A verdict listed as final by a start was shown before and announces nothing.
+
+Every view is validated against the schema before it reaches the lesson. A
+counted pass gets a `receiptHandle` that the host creates and that is valid in
+this session only. `completion.request` for deterministic goals takes such
+handles, and the host answers with what the server says about the pass of the
+unit. A technical failure leaves a submission pending; it is never a verdict.
+
+```ts
+const sdk = new LessonSDK({ manifest, manifestHash, transport });
+await sdk.start();
+const { start, assessments } = await sdk.startTask("reach");
+await sdk.saveState(work);
+const view = await sdk.submitAssessment("reach", { startId: start.startId, input: plan });
+sdk.on("assessment.result", (final) => show(final.feedback));
+```
 
 ## Surface, input and display
 

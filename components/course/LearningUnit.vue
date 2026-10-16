@@ -12,7 +12,7 @@
     <span class="unit-copy">
       <span>{{ localized(unit.title) }}</span>
       <small v-if="unit.result">{{
-        unit.result.kind === "solved" ? copy.solved : copy.introduction
+        ["solved", "passed"].includes(unit.result.kind) ? copy.solved : copy.introduction
       }}</small>
       <small v-else-if="unit.status === 'in_progress'">{{ copy.inProgress }}</small>
     </span>

@@ -50,19 +50,17 @@ import type { Ref } from "vue";
 import Panzoom, { type PanzoomObject } from "@panzoom/panzoom";
 
 export default {
-  head: {
-    title: "Root Skill Tree",
-  },
   components: { PlusCircleIcon, ArrowUpTrayIcon },
   setup() {
     const breadcrumbs = computed(() => {
       return [
         {
-          label: "Headings.RootSkillTree",
+          label: "Links.SkillTree",
         },
       ];
     });
     const { t } = useI18n();
+    useHead(() => ({ title: pageTitle(t("Links.SkillTree")) }));
     const user = useUser();
     const xp = useXP();
 

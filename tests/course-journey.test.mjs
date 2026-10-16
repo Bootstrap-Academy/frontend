@@ -13,6 +13,7 @@ async function moduleAt(file) {
 }
 const journey = await moduleAt("utils/courseJourney.ts");
 const practice = await moduleAt("utils/coursePractice.ts");
+const visits = await moduleAt("utils/courseVisit.ts");
 const course = {
   sections: [
     {
@@ -165,7 +166,11 @@ for (const file of [
   });
 }
 
-async function pageFixture(file, request, { reactiveWatches = false } = {}) {
+async function pageFixture(
+  file,
+  request,
+  { reactiveWatches = false, visit = visits.createCourseVisit() } = {}
+) {
   const Vue = await import("vue");
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
   const script = parse(source).descriptor.scriptSetup.content;
@@ -187,10 +192,15 @@ async function pageFixture(file, request, { reactiveWatches = false } = {}) {
       start: async () => true,
     }),
     ...journey,
+    courseVisit: visit,
     ref: Vue.ref,
     computed: Vue.computed,
     useUser: () => user,
     useSession: () => session,
+    // These pages are opened with an account; the course page without one is in
+    // public-courses.test.mjs.
+    useAccessToken: () => Vue.ref("token-a"),
+    useSeoMeta: () => {},
     useI18n: () => ({ locale: Vue.ref("de") }),
     useRoute: () => route,
     useRouter: () => ({
@@ -352,6 +362,104 @@ test("legacy watch releases an old owner's pending save without clearing the new
   await currentSave;
   assert.equal(f.saving.value, false);
   assert.equal(f.active.value.id, "solution");
+});
+
+test("back from the course's exercise pages the course page reads nothing and reports the visit once", async (t) => {
+  const calls = [];
+  let completed = new Set();
+  const request = async (path, method) => {
+    calls.push(`${method} ${path}`);
+    if (method === "PUT") completed.add(path.split("/").at(-2));
+    if (method !== "GET") return true;
+    const read = { id: path.split("/").at(-1), ...structuredClone(course) };
+    for (const lecture of read.sections.flatMap((section) => section.lectures))
+      lecture.completed ||= completed.has(lecture.id);
+    return read;
+  };
+  const visit = visits.createCourseVisit();
+  const open = async (id = "python") => {
+    const page = await pageFixture("pages/courses/[id]/watch.vue", request, { visit });
+    t.after(page.dispose);
+    page.route.params.id = id;
+    await page.load();
+    return page;
+  };
+  const first = await open();
+  assert.deepEqual(calls.splice(0), [
+    "GET /skills/courses/python",
+    "POST /skills/courses/python/watch",
+  ]);
+  await first.finishLecture();
+  assert.deepEqual(calls.splice(0), ["PUT /skills/courses/python/lectures/variables/complete"]);
+
+  // To a quiz of the course and back: the page mounts anew.
+  const back = await open();
+  assert.deepEqual(calls.splice(0), [], "no read, no second report");
+  assert.equal(back.course.value.sections[0].lectures[1].completed, true, "as the learner left it");
+  assert.equal(back.active.value.id, "solution");
+  assert.equal(back.error.value, false);
+
+  // Another course is its own visit; coming back to the first one is a new visit.
+  await open("rust");
+  await open();
+  assert.deepEqual(calls.splice(0), [
+    "GET /skills/courses/rust",
+    "POST /skills/courses/rust/watch",
+    "GET /skills/courses/python",
+    "POST /skills/courses/python/watch",
+  ]);
+  // Another account or session in this tab never sees the kept course.
+  const other = await pageFixture("pages/courses/[id]/watch.vue", request, { visit });
+  t.after(other.dispose);
+  other.session.value = { id: "session-b" };
+  await other.load();
+  assert.deepEqual(calls.splice(0), [
+    "GET /skills/courses/python",
+    "POST /skills/courses/python/watch",
+  ]);
+  // Leaving the course's pages ends the visit (plugins/course-practice.client.ts).
+  visit.forget();
+  completed = new Set();
+  const later = await open();
+  assert.deepEqual(calls.splice(0), [
+    "GET /skills/courses/python",
+    "POST /skills/courses/python/watch",
+  ]);
+  assert.equal(later.course.value.sections[0].lectures[1].completed, false, "read anew");
+});
+
+test("a visit whose report failed is read and reported again; a reconciled completion is kept", async (t) => {
+  const calls = [];
+  let reportFails = true;
+  const snapshot = { id: "python", ...structuredClone(course) };
+  const request = async (path, method) => {
+    calls.push(method);
+    if (method === "GET") return structuredClone(snapshot);
+    if (method === "POST" && reportFails) throw new Error("Unavailable");
+    if (method === "PUT") {
+      snapshot.sections[0].lectures[1].completed = true;
+      throw new Error("Response lost");
+    }
+    return true;
+  };
+  const visit = visits.createCourseVisit();
+  const open = async () => {
+    const page = await pageFixture("pages/courses/[id]/watch.vue", request, { visit });
+    t.after(page.dispose);
+    await page.load();
+    return page;
+  };
+  const failed = await open();
+  assert.equal(failed.error.value, true);
+  reportFails = false;
+  const retried = await open();
+  assert.deepEqual(calls.splice(0), ["GET", "POST", "GET", "POST"]);
+  assert.equal(retried.error.value, false);
+  await retried.finishLecture();
+  assert.deepEqual(calls.splice(0), ["PUT", "GET"], "the lost completion is reconciled by a read");
+  const back = await open();
+  assert.deepEqual(calls.splice(0), []);
+  assert.equal(back.course.value.sections[0].lectures[1].completed, true);
 });
 
 test("unattached historical course exercises stay accessible without duplicating lecture exercises", async () => {

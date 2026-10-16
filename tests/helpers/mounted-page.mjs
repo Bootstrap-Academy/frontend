@@ -2,7 +2,7 @@
 // every name they reach resolves to `scope`, then to the runtime, then to a no-op.
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { compileTemplate, parse } from "@vue/compiler-sfc";
+import { compileScript, compileTemplate, parse } from "@vue/compiler-sfc";
 import ts from "typescript";
 import * as Vue from "vue";
 
@@ -50,6 +50,43 @@ export async function evaluate(path, scope) {
   return path.endsWith(".vue") ? { ...exports.default, render: exports.render } : exports;
 }
 
+/**
+ * A component written with `<script setup>`, with its real script and template. Imports
+ * resolve to `modules`; every other name resolves to `scope`, then to Vue, then to a no-op.
+ */
+export async function component(path, scope, modules = {}) {
+  const { descriptor } = parse(await readFile(new URL(`../../${path}`, import.meta.url), "utf8"));
+  const code = ts.transpileModule(
+    compileScript(descriptor, { id: path, inlineTemplate: true }).content,
+    { compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.CommonJS } }
+  ).outputText;
+  const exports = {};
+  const require = (name) => {
+    if (name === "vue") return Vue;
+    assert(name in modules, `${path} imports ${name}`);
+    return modules[name];
+  };
+  const environment = new Proxy(scope, {
+    has: () => true,
+    get: (target, key) =>
+      key === Symbol.unscopables
+        ? undefined
+        : key === "exports"
+          ? exports
+          : key === "require"
+            ? require
+            : key in target
+              ? target[key]
+              : key in Vue
+                ? Vue[key]
+                : key in globalThis
+                  ? globalThis[key]
+                  : () => {},
+  });
+  new Function("environment", `with (environment) { ${code} }`)(environment);
+  return exports.default;
+}
+
 /** A stand-in child that renders one element with everything it was given. */
 export const tag =
   (name) =>
@@ -59,6 +96,7 @@ export const tag =
 /** Element tree that keeps every element and text ever written to it, so a passing state cannot hide. */
 export function host() {
   const said = [];
+  let focused = null;
   const node = (type, text = "") => {
     if (type !== "comment") said.push(text);
     return {
@@ -72,6 +110,17 @@ export function host() {
       selectedIndex: -1,
       addEventListener() {},
       reportValidity: () => true,
+      setCustomValidity() {},
+      // What a form reaches for to put the cursor into one of its fields.
+      querySelector(name) {
+        return all(this)
+          .slice(1)
+          .find((n) => n.type === name);
+      },
+      focus() {
+        // A template ref hands the element out wrapped; the tree holds it as it is.
+        focused = Vue.toRaw(this);
+      },
     };
   };
   const detach = (n) => {
@@ -115,7 +164,14 @@ export function host() {
   const all = (n = root) => [n, ...n.children.flatMap(all)];
   const text = (n = root) =>
     n.type === "comment" ? "" : [n.text, ...n.children.map(text)].join(" ");
-  return { root, renderer, all, text, ever: (what) => said.some((s) => s.includes(what)) };
+  return {
+    root,
+    renderer,
+    all,
+    text,
+    ever: (what) => said.some((s) => s.includes(what)),
+    focused: () => focused,
+  };
 }
 
 /** Lets pending answers, watchers and renders run. */

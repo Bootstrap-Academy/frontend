@@ -17,12 +17,14 @@
       <h3 class="clamp tight line-2 text-heading-3">{{ title }}</h3>
       <p class="clamp line-2 text-body-2 mt-2">{{ description }}</p>
     </div>
-    <hr />
+    <hr v-if="footer" />
     <div
+      v-if="footer"
       class="card-sm flex h-fit justify-between"
-      :class="{ 'card-sm items-center lg:pt-box lg:pb-box': price.value <= 0 }"
+      :class="{ 'card-sm items-center lg:pt-box lg:pb-box': !plain && price.value <= 0 }"
     >
-      <IconText v-if="price.value > 0" :highlightIcon="false" sm :icon="price.icon">
+      <template v-if="plain" />
+      <IconText v-else-if="price.value > 0" :highlightIcon="false" sm :icon="price.icon">
         <Price :coins="price.value" />
       </IconText>
       <Chip v-else-if="completed" xs color="bg-success">
@@ -31,7 +33,7 @@
       <Chip v-else xs color="bg-info">{{ t("Headings.Free") }}</Chip>
 
       <span v-if="data?.learning_path_id" class="text-body-2 text-subheading">{{
-        copy.course
+        plain ? copy.pathLabel : copy.course
       }}</span>
       <IconText v-else-if="lectures.value > 0" :highlightIcon="false" sm :icon="lectures.icon">
         {{ lectures.value }} {{ copy.lessons }}
@@ -53,6 +55,8 @@ export default defineComponent({
   props: {
     data: { type: Object as PropType<any>, default: null },
     eagerImage: { type: Boolean, default: false },
+    // The card of the public course list: what the course is, without price and progress.
+    plain: { type: Boolean, default: false },
   },
   setup(props) {
     const { t } = useI18n();
@@ -110,6 +114,11 @@ export default defineComponent({
       return props.data?.completed ?? false;
     });
 
+    // Without price and progress the lower row may have nothing left to show.
+    const footer = computed(
+      () => !props.plain || !!props.data?.learning_path_id || lectures.value.value > 0
+    );
+
     return {
       image,
       imageFailed,
@@ -119,6 +128,7 @@ export default defineComponent({
       price,
       lectures,
       completed,
+      footer,
       t,
       copy,
     };

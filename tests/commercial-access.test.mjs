@@ -21,6 +21,10 @@ async function moduleFrom(relative, replacements = {}) {
     'from "~/utils/guest/handoff"',
     `from ${JSON.stringify(new URL("../utils/guest/handoff.ts", import.meta.url).href)}`
   );
+  code = code.replaceAll(
+    'from "~/utils/pageTop"',
+    `from ${JSON.stringify(new URL("../utils/pageTop.ts", import.meta.url).href)}`
+  );
   const path = join(dir, relative.replaceAll(/[^a-z0-9]/gi, "_") + ".mjs");
   await writeFile(path, code);
   return import(pathToFileURL(path));
@@ -2275,6 +2279,8 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
         }),
         getRegisterToken: () => null,
         useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
+        useRoute: () => ({ query: {} }),
+        internalPath: () => "",
         openSnackbar: (...args) => notices.push(args),
         signup: async (body) => {
           requests.push(structuredClone(body));
@@ -2285,7 +2291,7 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
         const ui = host(),
           app = ui.renderer.createApp(Signup);
         app.use(createI18n({ legacy: false, locale: "en-US", messages }));
-        for (const name of ["Input", "InputCheckbox", "InputBtn", "NuxtLink"])
+        for (const name of ["Input", "InputCheckbox", "InputBtn", "NuxtLink", "FormOAuthProviders"])
           app.component(name, {
             setup:
               (_props, { slots }) =>
@@ -2298,7 +2304,6 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
           ui.all().find((node) => node.type === "form").querySelector = () => null;
           for (const [name, value] of Object.entries({
             name: "synthetic",
-            display_name: "Synthetic",
             email: "synthetic@example.invalid",
             password: "Synthetic123",
           })) {
@@ -2322,6 +2327,9 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
           );
           assert.equal(requests[0].age_confirmed, true);
           assert.equal(requests[0].email, "synthetic@example.invalid");
+          // The form asks for one name; the account gets it as its display name too.
+          assert.equal(requests[0].name, "synthetic");
+          assert.equal(requests[0].display_name, "synthetic");
           assert(!Object.hasOwn(requests[0], "termsAndConditions"));
           assert.equal(vm.form.submitting, false);
         } finally {

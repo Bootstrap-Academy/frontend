@@ -1,7 +1,10 @@
 import { canonicalJson, cloneJson, jsonBytes } from "./schema";
 import {
+  HOST_ASSESSMENT,
+  PROTOCOL_MINOR,
   hasCapability,
   operations,
+  validateDefinition,
   validateInit,
   validateManifest,
   validateMessage,
@@ -9,14 +12,39 @@ import {
 import {
   ProtocolError,
   systemClock,
+  type Capability,
   type Clock,
   type Envelope,
   type Init,
   type JsonObject,
+  type Manifest,
   type Phase,
   type StateSnapshot,
   type Transport,
+  type Version,
 } from "./types";
+
+/**
+ * Protocol 2.1: the server assessment of deterministic goals. The player binds
+ * these adapters to the unit, the course and the package revision whose bytes
+ * it loaded. Every answer is a server answer; the host adds nothing to it but
+ * the session handle of a counted pass.
+ */
+export interface HostAssessment {
+  revisionId: string;
+  packageHash: string;
+  /** The public start of a task and the submissions the server already holds for it. */
+  start(goalId: string, operationId: string): Promise<JsonObject>;
+  submit(
+    goalId: string,
+    stateRevision: number,
+    answer: JsonObject,
+    operationId: string
+  ): Promise<JsonObject>;
+  status(assessmentId: string): Promise<JsonObject>;
+  /** Completed only when the server has booked the pass of the whole unit. */
+  complete(goalIds: string[], stateRevision: number, operationId: string): Promise<JsonObject>;
+}
 
 /** Bound by the player to one owner, room, review and server-issued package. */
 export interface HostActions {
@@ -29,7 +57,17 @@ export interface HostActions {
   busy(value: boolean): void;
   current(): boolean;
   display?(requested: boolean): Promise<JsonObject>;
+  /** Without these adapters the host grants no host.assessment. */
+  assessment?: HostAssessment;
 }
+const MUTATIONS = [
+  "state.save",
+  "state.reset",
+  "completion.request",
+  "navigation.request",
+  "navigation.gesture",
+];
+const ASSESSMENT_MUTATIONS = ["task.start", "assessment.submit"];
 
 /** No frame-supplied URL, RPC, receipt or XP is an authority. */
 export class LessonHost {
@@ -60,6 +98,14 @@ export class LessonHost {
     { signature: string; key: string; promise?: Promise<JsonObject>; result?: JsonObject }
   >();
   private clock: Clock;
+  private version: Version;
+  /** Set when host.assessment was granted in this session. */
+  private assessment?: HostAssessment;
+  private views = new Map<string, { goalId: string; pending: boolean; handle?: string }>();
+  private handles = new Map<string, string>();
+  private polls = new Map<string, unknown>();
+  private awards = new Set<string>();
+  private rewards: JsonObject[] = [];
   readonly sessionId: string;
   constructor(
     private options: {
@@ -74,7 +120,11 @@ export class LessonHost {
       id?: () => string;
     }
   ) {
-    validateManifest(options.manifest);
+    const manifest = validateManifest(options.manifest);
+    if (manifest.protocol.minor > PROTOCOL_MINOR)
+      throw new ProtocolError("unsupported", "Unsupported protocol.");
+    // The session speaks the minor version of its package: 2.0 packages keep 2.0.
+    this.version = { major: 2, minor: manifest.protocol.minor };
     this.clock = options.clock ?? systemClock;
     this.sessionId = (options.id ?? (() => crypto.randomUUID()))();
   }
@@ -195,7 +245,7 @@ export class LessonHost {
   private send(type: string, kind: Envelope["kind"], payload: JsonObject, replyTo?: string) {
     if (!this.current()) return;
     const message: Envelope = {
-      protocol: { major: 2, minor: 0 },
+      protocol: this.version,
       sessionId: this.sessionId,
       seq: ++this.sentSeq,
       id: `host-${this.sentSeq}`,
@@ -219,7 +269,7 @@ export class LessonHost {
     }
     const message = cloneJson(validateMessage(value, { sender: "lesson" }));
     if (message.sessionId !== this.sessionId || message.seq <= this.receivedSeq) return;
-    if (message.protocol.major !== 2 || message.protocol.minor !== 0)
+    if (message.protocol.major !== 2 || message.protocol.minor !== this.version.minor)
       throw new ProtocolError("unsupported", "Unsupported protocol.");
     this.receivedSeq = message.seq;
     const manifest = validateManifest(this.options.manifest);
@@ -234,7 +284,8 @@ export class LessonHost {
       )
         throw new ProtocolError("invalid_message", "Hello binding mismatch.");
       this.helloReceived = true;
-      if (manifest.requires.length)
+      const capabilities = this.grants(manifest);
+      if (!manifest.requires.every((requirement) => hasCapability(capabilities, requirement)))
         throw new ProtocolError("missing_capability", "Required capability unavailable.");
       const state = await this.options.actions.read();
       if (!this.current()) return;
@@ -244,9 +295,10 @@ export class LessonHost {
         manifestHash: this.options.manifestHash,
         ...cloneJson(this.options.context),
         state,
-        capabilities: [],
+        capabilities,
         limits: { messageBytes: 262144, stateBytes: Math.min(65536, manifest.state.maxBytes) },
       });
+      if (capabilities.length) this.assessment = this.options.actions.assessment;
       this.send("host.init", "event", this.init as unknown as JsonObject);
       return;
     }
@@ -356,15 +408,12 @@ export class LessonHost {
         };
         const run = async () => {
           if (!this.current()) throw new ProtocolError("cancelled", "Connection closed.");
-          if (operation?.capability && !hasCapability([], operation.capability))
+          if (
+            operation?.capability &&
+            !hasCapability(this.init?.capabilities ?? [], operation.capability)
+          )
             throw new ProtocolError("missing_capability", "Capability unavailable.");
-          const mutating = [
-            "state.save",
-            "state.reset",
-            "completion.request",
-            "navigation.request",
-            "navigation.gesture",
-          ].includes(message.type);
+          const mutating = this.mutations().includes(message.type);
           if (mutating && this.uncertain && this.uncertain !== message.id)
             throw new ProtocolError("locked", "Retry the unconfirmed operation first.");
           let result: JsonObject;
@@ -392,6 +441,7 @@ export class LessonHost {
       const promise = record.promise!;
       try {
         this.send("rpc.result", "response", { ok: true, data: await promise }, message.id);
+        this.announceRewards();
       } finally {
         if (record.promise === promise) record.promise = undefined;
       }
@@ -428,13 +478,7 @@ export class LessonHost {
     };
     if (type === "state.read") return adopt(await this.options.actions.read());
     if (
-      [
-        "state.save",
-        "state.reset",
-        "completion.request",
-        "navigation.request",
-        "navigation.gesture",
-      ].includes(type) &&
+      this.mutations().includes(type) &&
       this.options.context.disabled &&
       !(type === "navigation.request" && p.direction === "close")
     )
@@ -465,6 +509,65 @@ export class LessonHost {
       }
       const saved = await this.options.actions.reset(p.expectedRevision as number, operationId);
       return saved ? { cancelled: false, ...adopt(saved) } : { cancelled: true };
+    }
+    const assessment = this.assessment;
+    if (assessment && type === "task.start") {
+      const goalId = p.goalId as string;
+      this.deterministic(manifest, [goalId]);
+      // The frame runs the bytes of one revision; a start for another one belongs to a reload.
+      if (p.revisionId !== assessment.revisionId)
+        throw new ProtocolError("conflict", "The package revision changed.");
+      const result = await assessment.start(goalId, operationId);
+      validateDefinition("task.start.result", result);
+      const start = result.start as JsonObject;
+      if (start.goalId !== goalId || start.revisionId !== assessment.revisionId)
+        throw new ProtocolError("invalid_receipt", "The start belongs to another task.");
+      const assessments = (result.assessments as JsonObject[]).map((view) =>
+        this.track(view, "start")
+      );
+      return { ...result, start, assessments };
+    }
+    if (assessment && type === "assessment.submit") {
+      const goalId = p.goalId as string;
+      this.deterministic(manifest, [goalId]);
+      revision();
+      const view = await assessment.submit(
+        goalId,
+        p.stateRevision as number,
+        cloneJson(p.answer as JsonObject),
+        operationId
+      );
+      validateDefinition("assessmentView", view);
+      if (view.goalId !== goalId)
+        throw new ProtocolError("invalid_receipt", "The verdict belongs to another task.");
+      return this.track(view, "request");
+    }
+    if (assessment && type === "assessment.status") {
+      const view = await assessment.status(p.assessmentId as string);
+      validateDefinition("assessmentView", view);
+      if (view.assessmentId !== p.assessmentId)
+        throw new ProtocolError("invalid_receipt", "The verdict belongs to another submission.");
+      return this.track(view, "request");
+    }
+    if (assessment && type === "completion.request" && (p.receiptHandles as string[]).length) {
+      revision();
+      const goals = p.goalIds as string[];
+      const handles = p.receiptHandles as string[];
+      this.deterministic(manifest, goals);
+      // A handle is this session's reference to a counted pass the server reported.
+      const passed = handles.map(
+        (handle) => this.views.get(this.handles.get(handle) ?? "")?.goalId
+      );
+      if (
+        new Set(goals).size !== goals.length ||
+        new Set(handles).size !== handles.length ||
+        passed.includes(undefined) ||
+        goals.some((goal) => !passed.includes(goal))
+      )
+        throw new ProtocolError("invalid_receipt", "No verified assessment receipt.");
+      const result = await assessment.complete(goals, p.stateRevision as number, operationId);
+      validateDefinition("completion.request.result", result);
+      return result;
     }
     if (type === "completion.request") {
       revision();
@@ -525,6 +628,114 @@ export class LessonHost {
       "This action is unavailable."
     );
   }
+  private mutations() {
+    return this.assessment ? [...MUTATIONS, ...ASSESSMENT_MUTATIONS] : MUTATIONS;
+  }
+  /** A 2.1 package that asks for host.assessment gets it once the player has bound the adapters. */
+  private grants(manifest: Manifest): Capability[] {
+    const assessment = this.options.actions.assessment;
+    const asked = [...manifest.requires, ...manifest.optional].some(
+      (requirement) =>
+        requirement.id === HOST_ASSESSMENT.id &&
+        requirement.major === HOST_ASSESSMENT.major &&
+        requirement.minMinor <= HOST_ASSESSMENT.minor
+    );
+    if (!assessment || !asked || manifest.protocol.minor < 1) return [];
+    return [
+      {
+        ...HOST_ASSESSMENT,
+        implementation: "academy-server",
+        sha256: assessment.packageHash,
+        revisionId: assessment.revisionId,
+      },
+    ];
+  }
+  private deterministic(manifest: Manifest, goalIds: string[]) {
+    if (
+      !goalIds.length ||
+      goalIds.some(
+        (id) =>
+          !manifest.goals.some((goal) => goal.id === id && goal.assessment.kind === "deterministic")
+      )
+    )
+      throw new ProtocolError("invalid_message", "Unknown goal.");
+  }
+  /**
+   * Keeps what the server said about a submission. A counted pass gets a
+   * handle that is valid in this session only; a pending one is read again
+   * until it is final. A verdict from a start answer was shown before, so only
+   * a verdict that arrives in this session announces its XP.
+   */
+  private track(view: JsonObject, source: "start" | "request" | "poll"): JsonObject {
+    const id = view.assessmentId as string;
+    const goalId = view.goalId as string;
+    const known = this.views.get(id);
+    const result = cloneJson(view);
+    delete result.receiptHandle;
+    if (view.status !== "final") {
+      this.views.set(id, { goalId, pending: true });
+      this.follow(id, source === "start" ? 0 : source === "request" ? 1 : undefined);
+      return result;
+    }
+    this.clock.clearTimeout(this.polls.get(id));
+    this.polls.delete(id);
+    const counted = view.outcome === "passed" && view.counts === true;
+    const handle = counted ? (known?.handle ?? crypto.randomUUID()) : undefined;
+    if (handle) {
+      this.handles.set(handle, id);
+      result.receiptHandle = handle;
+    }
+    this.views.set(id, { goalId, pending: false, handle });
+    const award = view.xp as JsonObject | undefined;
+    if (award && counted && (source !== "start" || known?.pending)) {
+      const awardId = award.awardId as string;
+      if (!this.awards.has(awardId)) {
+        this.awards.add(awardId);
+        this.rewards.push({
+          awardId,
+          goalId,
+          xp: award.xp as number,
+          result: "passed",
+          persisted: true,
+        });
+      }
+    }
+    return result;
+  }
+  private announceRewards() {
+    for (const reward of this.rewards.splice(0)) this.send("reward.committed", "event", reward);
+  }
+  /** Reads a pending submission again: at once after opening, then after 1, 2, 3, 4 and every 5 seconds. */
+  private follow(id: string, attempt?: number) {
+    if (attempt === undefined || this.polls.has(id) || !this.current()) return;
+    const timer = this.clock.setTimeout(
+      () => {
+        this.polls.delete(id);
+        void this.reread(id, attempt);
+      },
+      Math.min(attempt, 5) * 1000
+    );
+    this.polls.set(id, timer);
+  }
+  private async reread(id: string, attempt: number) {
+    const assessment = this.assessment;
+    if (!assessment || !this.current()) return;
+    let view: JsonObject | undefined;
+    try {
+      view = await assessment.status(id);
+      validateDefinition("assessmentView", view);
+      if (view.assessmentId !== id) view = undefined;
+    } catch {
+      // A technical failure leaves the submission pending; the next reading asks again.
+      view = undefined;
+    }
+    if (!this.current()) return;
+    if (view?.status === "final") {
+      if (!this.views.get(id)?.pending) return;
+      this.send("assessment.result", "event", this.track(view, "poll"));
+      this.announceRewards();
+    } else if (attempt < 120) this.follow(id, attempt + 1);
+  }
   private policyEpoch = 0;
   private swipe = { forward: false, back: false };
   private pointers = new Map<number, { owner: string; epoch: number; solo: boolean }>();
@@ -561,6 +772,8 @@ export class LessonHost {
   private close() {
     this.pointers.clear();
     this.gestureEpoch = undefined;
+    for (const timer of this.polls.values()) this.clock.clearTimeout(timer);
+    this.polls.clear();
     this.markOpened(false);
     this.clock.clearTimeout(this.timer);
     this.unsubscribe?.();

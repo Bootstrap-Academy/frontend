@@ -15,6 +15,8 @@ export interface ExerciseDraft {
   submission_id?: string;
   submission_unknown?: boolean;
   attempt_id?: string;
+  /** The answer `attempt_id` checked, saved with it: one entry per row or per choice. */
+  checked_answer?: (number | boolean)[];
   hint_level?: number;
 }
 
@@ -29,6 +31,8 @@ export interface ExerciseData {
   left?: string[];
   right?: string[];
   solved?: boolean;
+  /** The XP the first solution of this exercise brings. */
+  xp?: number;
   enabled?: boolean;
   retired?: boolean;
   creator?: string;
@@ -94,6 +98,11 @@ export interface LearningUnit {
   module?: import("./learningModule").LearningModuleDescriptor;
   presentation?: { allow_skip?: boolean };
   skip_allowed?: boolean;
+  /**
+   * How skills checks a completion. "engine": the server completes the unit when it books the
+   * last required pass; the client never completes or skips it.
+   */
+  completion_kind?: "introduced" | "llm-verdict" | "engine" | null;
 }
 export interface RoomEnvelope {
   daily?: DailyLearning;
@@ -106,7 +115,8 @@ export interface RoomEnvelope {
     review_id?: string | null;
     state: Record<string, any>;
     status: "new" | "in_progress" | "completed" | "skipped";
-    result: null | { kind: "introduced" | "solved" };
+    /** "passed": a lesson of the engine whose required tasks the server booked. */
+    result: null | { kind: "introduced" | "solved" | "passed" };
   };
 }
 export interface LearningRoomsView {

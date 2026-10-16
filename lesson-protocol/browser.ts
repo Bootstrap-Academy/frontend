@@ -1,5 +1,5 @@
 import { canonicalJson, cloneJson, validateSchema, type Schema } from "./schema";
-import { validateManifest, validateMessage } from "./validation";
+import { PROTOCOL_MINOR, validateManifest, validateMessage } from "./validation";
 import { ProtocolError, type Envelope, type Manifest, type Transport } from "./types";
 
 export interface PackageDescriptor {
@@ -9,6 +9,8 @@ export interface PackageDescriptor {
   manifest_url: string;
   manifest_hash: string;
   package_hash: string;
+  /** Protocol 2.1: the server's revision of these bytes. Without it no assessment is offered. */
+  revision_id?: string;
 }
 export interface VerifiedPackage {
   descriptor: PackageDescriptor;
@@ -18,6 +20,7 @@ export interface VerifiedPackage {
   validateState(state: unknown): void;
 }
 const hex = /^[a-f0-9]{64}$/;
+const operationId = /^[A-Za-z0-9_-]{1,100}$/;
 /** Parse sources, rather than accepting restrictive-looking substrings in a permissive policy. */
 export function validateLessonCsp(policy: string, appOrigin: string) {
   const directives = new Map<string, string[]>();
@@ -86,7 +89,10 @@ export function packageLocation(
   if (
     descriptor.api_version !== 2 ||
     !hex.test(descriptor.manifest_hash) ||
-    !hex.test(descriptor.package_hash)
+    !hex.test(descriptor.package_hash) ||
+    // A revision becomes the grant's revisionId, an operation id of the protocol.
+    (descriptor.revision_id !== undefined &&
+      (typeof descriptor.revision_id !== "string" || !operationId.test(descriptor.revision_id)))
   )
     throw new ProtocolError("invalid_message", "Missing package binding.");
   const base = `${origin.origin}/packages/${descriptor.package_hash}/`;
@@ -150,7 +156,7 @@ export async function verifyLessonPackage(
   if (
     manifest.id !== descriptor.id ||
     descriptor.entry_url !== base + manifest.entry.replace(/(?:index)?\.html$/, "") ||
-    manifest.protocol.minor !== 0
+    manifest.protocol.minor > PROTOCOL_MINOR
   )
     throw new ProtocolError("unsupported", "Package binding mismatch.");
   // The package digest covers the complete ordered resource inventory, independently of the manifest digest.

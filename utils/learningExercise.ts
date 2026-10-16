@@ -419,6 +419,9 @@ export function createLearningExercise(options: {
             await poll(ticket);
             return;
           }
+          // The service says how many parts of a wrong answer are right. The room shows it.
+          if (!response.solved && Number.isInteger(response.correct))
+            view.result = { solved: false, correct: response.correct };
           view.phase = response.solved ? "correct" : "incorrect";
           publish();
         }

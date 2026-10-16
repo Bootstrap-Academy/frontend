@@ -5,24 +5,19 @@
     @submit.prevent="onclickSubmitForm()"
     ref="refForm"
   >
+    <!--
+      Each field says its rule next to its label before anything is typed. A rule that is
+      broken turns red there; it is not written a second time under the field.
+    -->
     <Input
       :label="t('Inputs.Nickname')"
+      hint="Inputs.NicknameRule"
       autocomplete="username"
       id="SignupUsername"
       :show-error="submitted"
       v-model="form.name.value"
       @valid="form.name.valid = $event"
       :rules="form.name.rules"
-    />
-
-    <Input
-      :label="t('Inputs.DisplayName')"
-      autocomplete="nickname"
-      id="SignupDisplayName"
-      :show-error="submitted"
-      v-model="form.display_name.value"
-      @valid="form.display_name.valid = $event"
-      :rules="form.display_name.rules"
     />
 
     <Input
@@ -39,6 +34,7 @@
     <Input
       v-if="!register_token"
       :label="t('Inputs.Password')"
+      hint="Inputs.PasswordRule"
       type="password"
       autocomplete="new-password"
       id="SignupPassword"
@@ -83,10 +79,20 @@
       {{ t("Buttons.CreateAccount") }}
     </InputBtn>
 
-    <NuxtLink to="/auth/login" class="self-center">
+    <NuxtLink
+      :to="{ path: '/auth/login', query: redirect ? { redirect } : {} }"
+      class="self-center"
+    >
       {{ t("Links.AlreadyHaveAccount") }}
       <span class="text-accent">{{ t("Links.GoToLogin") }}</span>
     </NuxtLink>
+
+    <!-- Not for an account that has just come back from its provider. -->
+    <FormOAuthProviders
+      v-if="!register_token"
+      label="Body.OrSignupWith"
+      action="Buttons.SignupWithProvider"
+    />
   </form>
 </template>
 
@@ -115,18 +121,8 @@ export default defineComponent({
         valid: false,
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Nickname",
-          (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 32 || "Error.InputMaxLength_32",
-          (v: string) => /^[a-zA-Z\d]{3,32}$/.test(v) || "Error.InputNicknameError",
-        ],
-      },
-      display_name: {
-        value: "",
-        valid: false,
-        rules: [
-          (v: string) => !!v || "Error.InputEmpty_Inputs.DisplayName",
-          (v: string) => v.length >= 3 || "Error.InputMinLength_3",
-          (v: string) => v.length <= 64 || "Error.InputMaxLength_64",
+          // The sentence of the hint: the field shows it once and turns it red.
+          (v: string) => /^[a-zA-Z\d]{3,32}$/.test(v) || "Inputs.NicknameRule",
         ],
       },
       email: {
@@ -143,7 +139,7 @@ export default defineComponent({
         rules: [
           (v: string) => !!v || "Error.InputEmpty_Inputs.Password",
           (v: string) =>
-            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || "Error.InputPasswordError",
+            /^((?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,})?$/.test(v) || "Inputs.PasswordRule",
         ],
       },
       termsAndConditions: {
@@ -183,6 +179,8 @@ export default defineComponent({
             obj[key] = form[key].value;
         }
 
+        // The form asks for one name. It is the display name too until the profile changes it.
+        obj.display_name = form.name.value;
         obj.terms_version = signupTerms.version;
         obj.age_confirmed = form.ageConfirmed.value;
 
@@ -244,6 +242,11 @@ export default defineComponent({
     }
 
     const router = useRouter();
+    const route = useRoute();
+
+    // The page a visitor was invited from. Only a path of this site is carried
+    // on, to the confirmation of the address and to the login.
+    const redirect = computed(() => internalPath(route?.query?.redirect));
 
     function successHandler(res: any) {
       authorizeGuestHandoff(res?.user?.id);
@@ -259,7 +262,7 @@ export default defineComponent({
         {
           label: "Buttons.VerifyAccount",
           onclick: () => {
-            router.push("/auth/verify-account");
+            router.push(emailVerificationRoute(redirect.value));
           },
         },
         null
@@ -278,6 +281,7 @@ export default defineComponent({
       submitted,
       t,
       register_token,
+      redirect,
     };
   },
 });

@@ -1,10 +1,11 @@
 import { decodeApiError } from "../utils/apiError.ts";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { test } from "node:test";
+import { after, test } from "node:test";
 import * as vue from "vue";
 import { Mutex } from "async-mutex";
 import ts from "typescript";
+import { loadLessonProtocol } from "./helpers/lesson-protocol-loader.mjs";
 
 function evaluate(source, bindings, names) {
   bindings = { decodeApiError, ...bindings };
@@ -63,6 +64,9 @@ function createLearningTransport(options) {
   });
 }
 const { createLearningRooms } = evaluate(roomsSource, {}, ["createLearningRooms"]);
+const lessonProtocol = await loadLessonProtocol();
+after(lessonProtocol.cleanup);
+const { bindEngineAssessment } = await lessonProtocol.importModule("engine");
 const token = (expires) =>
   `header.${Buffer.from(JSON.stringify({ exp: expires })).toString("base64url")}.signature`;
 const fresh = () => token(Math.floor(Date.now() / 1000) + 3600);
@@ -167,6 +171,115 @@ test("discard consent does not bypass a failed native save or restart a changed 
   }
 });
 
+const protocolRestart = protocolAst.statements
+  .filter(
+    (node) =>
+      ts.isFunctionDeclaration(node) &&
+      ["endSession", "restartForRevision", "descriptorChanged"].includes(node.name?.text)
+  )
+  .map((node) => node.getText(protocolAst))
+  .join("\n");
+/** The page side of Ä32b and Ä40 d, with the actual functions of ProtocolActivity. */
+function restartingFrame(phase = "running") {
+  const log = [];
+  let flushed;
+  const host = {
+    phase,
+    prepareNavigation: () => {
+      log.push("flush");
+      return new Promise((resolve) => (flushed = resolve));
+    },
+    fail: () => log.push("fail"),
+  };
+  const api = evaluate(
+    `${protocolRestart}\nfunction changeOwner() { generation++; }\nfunction unmount() { alive = false; }`,
+    {
+      host,
+      generation: 1,
+      alive: true,
+      surface: { value: {} },
+      dispose: () => log.push("dispose"),
+      start: async () => log.push("start"),
+    },
+    ["endSession", "descriptorChanged", "changeOwner", "unmount"]
+  );
+  const values = (revision, entry = "entry-1") => [revision, entry, "m", "p", "u", "s", "a", "r"];
+  return { ...api, host, log, values, flush: (saved) => flushed(saved) };
+}
+
+test("the revision is the first value the player watches", () => {
+  const watched = protocolAst.statements
+    .map((node) => node.expression)
+    .find(
+      (call) =>
+        call &&
+        ts.isCallExpression(call) &&
+        call.expression.getText(protocolAst) === "watch" &&
+        call.arguments[1]?.getText(protocolAst) === "descriptorChanged"
+    );
+  assert.equal(
+    watched.arguments[0].elements[0].getText(protocolAst),
+    "() => props.module.revision_id"
+  );
+});
+
+test("a new revision under the same bytes saves the frame before the player restarts", async () => {
+  const f = restartingFrame();
+  f.descriptorChanged(f.values("rev-2"), f.values("rev-1"));
+  assert.deepEqual(f.log, ["flush"]);
+  f.flush(true);
+  await settle();
+  assert.deepEqual(f.log, ["flush", "start"]);
+
+  // Unconfirmed: the error block keeps the frame, and its retry asks before discarding anything.
+  const unsaved = restartingFrame();
+  unsaved.descriptorChanged(unsaved.values("rev-2"), unsaved.values("rev-1"));
+  unsaved.flush(false);
+  await settle();
+  assert.deepEqual(unsaved.log, ["flush", "fail"]);
+
+  // A failed frame stays as it is until its retry loads the new revision.
+  const failed = restartingFrame("recoverable-error");
+  failed.descriptorChanged(failed.values("rev-2"), failed.values("rev-1"));
+  failed.flush(false);
+  await settle();
+  assert.deepEqual(failed.log, ["flush", "fail"]);
+
+  // Another change while the frame saves wins; the late flush starts nothing.
+  for (const change of ["changeOwner", "unmount"]) {
+    const late = restartingFrame();
+    late.descriptorChanged(late.values("rev-2"), late.values("rev-1"));
+    late[change]();
+    late.flush(true);
+    await settle();
+    assert.deepEqual(late.log, ["flush"], change);
+  }
+});
+
+test("new bytes, or a frame that holds no work yet, restart the player at once", async () => {
+  const bytes = restartingFrame();
+  bytes.descriptorChanged(bytes.values("rev-2", "entry-2"), bytes.values("rev-1"));
+  assert.deepEqual(bytes.log, ["dispose", "start"]);
+  for (const phase of ["loading", "negotiating"]) {
+    const loading = restartingFrame(phase);
+    loading.descriptorChanged(loading.values("rev-2"), loading.values("rev-1"));
+    assert.deepEqual(loading.log, ["dispose", "start"], phase);
+  }
+});
+
+test("a start refused for good ends only the session it belongs to", () => {
+  const f = restartingFrame();
+  f.endSession(1);
+  assert.deepEqual(f.log, ["fail"]);
+  f.changeOwner();
+  f.endSession(1);
+  assert.deepEqual(f.log, ["fail"]);
+  const gone = restartingFrame();
+  gone.unmount();
+  gone.endSession(1);
+  assert.deepEqual(gone.log, []);
+});
+
 test("parallel expired reads share refresh, while an unsafe challenge POST is never replayed", async () => {
   let snapshot = {
     identity: "A:S",
@@ -247,6 +360,53 @@ test("an idempotent room write retries its exact request only after a confirmed 
   assert.deepEqual(bodies, [body, body]);
 });
 
+test("a start or submission of the engine is repeated with its request id after a confirmed 401 only", async () => {
+  let snapshot = {
+    identity: "A:S",
+    epoch: 1,
+    generation: "first",
+    userId: "A",
+    sessionId: "S",
+    accessToken: fresh(),
+    refreshToken: "refresh-A",
+  };
+  const sent = [];
+  const request = createLearningTransport({
+    snapshot: () => snapshot,
+    lock: async () => () => {},
+    expired: () => {},
+    apply: (r) => {
+      snapshot = { ...snapshot, accessToken: r.access_token, refreshToken: r.refresh_token };
+    },
+    raw: async (path, method, body) => {
+      if (path === "/auth/session")
+        return {
+          user: { id: "A" },
+          session: { id: "S" },
+          access_token: fresh(),
+          refresh_token: "renewed",
+        };
+      sent.push({ path, body: structuredClone(body) });
+      if (sent.filter((row) => row.path === path).length === 1) throw { statusCode: 401 };
+      return { ok: true };
+    },
+  });
+  const start = { requestId: "op-1", revisionId: "rev", courseId: "course" };
+  await request("/skills/engine/units/unit/tasks/reach/start", "POST", start);
+  const submit = { requestId: "op-2", stateRevision: 3, answer: { startId: "s", input: {} } };
+  await request("/skills/engine/units/unit/tasks/reach/submissions", "POST", submit);
+  assert.deepEqual(
+    sent.map(({ body }) => body),
+    [start, start, submit, submit]
+  );
+  // Without its request id a write of the engine is not repeated.
+  await assert.rejects(
+    request("/skills/engine/units/unit/tasks/turn/start", "POST", { revisionId: "rev" }),
+    { statusCode: 401 }
+  );
+  assert.equal(sent.filter((row) => row.path.endsWith("/turn/start")).length, 1);
+});
+
 test("a delayed refresh cannot restore a session after an account-switch ABA", async () => {
   let snapshot = {
     identity: "A:S",
@@ -313,9 +473,10 @@ function fixture(t, options = {}) {
     unit: {
       id: options.unitId || "unit",
       path_id: "python-loops",
-      room: "exercise",
+      room: options.engine ? "custom" : "exercise",
       title: { de: "Code", en: "Code" },
       content: {},
+      ...(options.engine ? { completion_kind: "engine", module: options.engine } : {}),
     },
     progress: { revision, state, status: "in_progress", result: null },
   });
@@ -341,6 +502,7 @@ function fixture(t, options = {}) {
     createLearningTransport,
     createLearningRecovery,
     createLearningRooms,
+    bindEngineAssessment,
     mutex: new Mutex(),
     useRuntimeConfig: () => ({
       public: { learningRoomsEnabled: true, BASE_API_URL: "https://fixture.invalid" },
@@ -418,6 +580,7 @@ function fixture(t, options = {}) {
         };
       }
       if (path.endsWith("/capabilities")) return { enabled: true };
+      if (path.startsWith("/skills/engine/")) return { answered: path };
       if (init.method === "PUT") {
         remote = envelope(init.body.expected_revision + 1, init.body.state);
         return remote;
@@ -553,6 +716,41 @@ test("the actual composable preserves drafts and its editor request binding thro
   assert.equal(f.api.request.value, request);
   assert.equal(f.calls.filter(({ path }) => path === "/skills/rooms?continuous=true").length, 1);
   assert.equal(f.calls.filter(({ path }) => path === "/auth/session").length, 1);
+});
+
+test("the actual composable binds adapters to a lesson of the engine only, over its own transport", async (t) => {
+  const module = {
+    id: "engine-lesson",
+    api_version: 2,
+    entry_url: `https://content.pages.dev/packages/${"c".repeat(64)}/`,
+    manifest_url: `https://content.pages.dev/packages/${"c".repeat(64)}/manifest.json`,
+    manifest_hash: "a".repeat(64),
+    package_hash: "c".repeat(64),
+    revision_id: "0b9d6f3e-5a51-4f0c-9d55-3c1f4a1c0001",
+  };
+  const binding = {
+    unitId: "unit",
+    revisionId: module.revision_id,
+    packageHash: module.package_hash,
+    stale: () => {},
+  };
+  const exercise = fixture(t);
+  await settle();
+  assert.equal(exercise.api.protocol.assessment(binding) === undefined, true);
+
+  const f = fixture(t, { engine: module });
+  await settle();
+  const adapters = f.api.protocol.assessment(binding);
+  assert.equal(adapters === undefined, false);
+  assert.deepEqual(await adapters.start("reach", "op-1"), {
+    answered: "/skills/engine/units/unit/tasks/reach/start",
+  });
+  const [call] = f.calls.filter(({ path }) => path.startsWith("/skills/engine/"));
+  assert.equal(call.method, "POST");
+  assert.equal(call.baseURL, "https://fixture.invalid");
+  assert.match(call.headers.Authorization, /^Bearer header\./);
+  // The room names no course here, so the start names none either.
+  assert.deepEqual(call.body, { requestId: "op-1", revisionId: module.revision_id });
 });
 
 test("composed activities keep pending A through a direct visit to B without touching legacy recovery", async (t) => {

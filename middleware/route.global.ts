@@ -1,16 +1,10 @@
 import { guestReturnPath } from "~/utils/guest/handoff";
+import { schedulePageTop } from "~/utils/pageTop";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   // A target with an anchor is left to the router, which moves to the named section.
-  if (to.path !== from.path && !to.hash && import.meta.client) {
-    setTimeout(() => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    }, 450);
-  }
+  // A page that brings its own content into view cancels this (`utils/pageTop.ts`).
+  if (to.path !== from.path && !to.hash && import.meta.client) schedulePageTop();
 
   if (
     (!to.path.includes("/docs/privacy") && to.path.includes("/privacy")) ||

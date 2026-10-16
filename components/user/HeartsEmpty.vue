@@ -46,6 +46,10 @@
           <p class="text-body-1 m-0 text-body">
             {{ t("Body.OrderHeartsCharacteristics", { max: maxHearts }) }}
           </p>
+          <!-- The exact quantity of this quote, in view next to the characteristic. -->
+          <p v-if="quantity" class="text-body-1 m-0 text-heading" data-order-quantity>
+            {{ t("Body.OrderHeartsQuantity", { n: quantity.n }, quantity.plural) }}
+          </p>
         </template>
 
         <template #consent>
@@ -88,6 +92,7 @@ export default {
       () => offer.value?.product.coins ?? heartConfig.value.hearts_refill_price
     );
     const maxHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
+    const quantity = computed(() => refillQuantity(offer.value, locale.value));
     const refillTime = computed(() => heartRefillTime(locale.value));
 
     // The page may stay open until the free refill; the new balance brings the
@@ -107,15 +112,21 @@ export default {
 
       opening.value = true;
       try {
-        // The balance decides between the order and the coin shop, so it is read now.
-        await getBalance();
+        // The balance decides between the order and the coin shop, and the hearts decide
+        // whether a quote from an earlier opening still fits, so both are read now.
+        await Promise.all([getBalance(), getHearts()]);
         if (coins.value < refillPrice.value) {
           // The coin shop says what the coins are needed for.
           return await navigateTo({ path: "/morphcoins/buy", query: { for: "hearts" } });
         }
 
         // The dialog is rebuilt every time it opens, so the boxes start unticked.
-        offer.value = await requestPurchaseOffer("/shop/purchases/offers/hearts");
+        // Opening the dialog again shows the same quote while it fits the hearts.
+        offer.value = await requestPurchaseOffer(
+          "/shop/purchases/offers/hearts",
+          (quote) =>
+            quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
+        );
         if (!offer.value) return;
         withdrawalConsent.value = false;
         ordering.value = true;
@@ -151,6 +162,7 @@ export default {
       refillPrice,
       refillTime,
       maxHearts,
+      quantity,
     };
   },
 };

@@ -85,6 +85,10 @@ export default defineComponent({
         pathname: "/",
       },
       {
+        label: "Headings.Courses",
+        pathname: "/courses",
+      },
+      {
         label: "Links.SkillTree",
         pathname: "/skill-tree",
       },
