@@ -10,7 +10,22 @@
         </div>
         <h1 class="mb-2 text-center text-3xl font-bold">{{ t("Headings.Free") }}</h1>
         <p class="mb-8 text-center">{{ t("Body.LearnNewSkillsForFree") }}</p>
+        <!--
+          A visitor without an account has no plan yet. Where an account sees its plan marked,
+          the visitor finds the way to a free account, in the colours of the Premium card. The
+          heading of the card already says that this plan costs nothing, so the link does not
+          say it again.
+        -->
+        <NuxtLink
+          v-if="guest"
+          to="/auth/signup"
+          data-guest-signup
+          class="mb-8 flex items-center justify-center rounded-full bg-accent px-6 py-3 text-center text-lg font-bold text-black shadow-lg duration-200 hover:scale-105 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-95"
+        >
+          {{ t("Links.CreateAccount") }}
+        </NuxtLink>
         <div
+          v-else
           class="mb-8 flex items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3"
         >
           <CheckIcon class="h-6 w-5 flex-none text-body" aria-hidden="true" />
@@ -84,7 +99,20 @@
             labelled in the colour of headings. The interface has no white
             surfaces.
           -->
-          <template v-if="hasEnoughCoins">
+          <!--
+            A visitor without an account sees the price and nothing to press: there
+            is no coin balance to speak of and nothing to buy yet. The way to an
+            account stands in the card of the free plan.
+          -->
+          <template v-if="guest">
+            <div
+              class="flex w-full items-center justify-center space-x-4 rounded-full border border-tertiary px-6 py-3 text-center"
+            >
+              <img src="/images/coin.png" alt="" class="h-8 w-8 flex-none object-contain" />
+              <Price :coins="planPrice" class="justify-center font-bold text-black" />
+            </div>
+          </template>
+          <template v-else-if="hasEnoughCoins">
             <button
               type="button"
               :disabled="disabled"
@@ -149,6 +177,8 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   /** The page around the card already states when the hearts refill. */
   refillTimeStated: { type: Boolean, default: false },
+  /** The visitor has no account: the cards show the plans, their prices and the way to a free account. */
+  guest: { type: Boolean, default: false },
 });
 
 import { CheckIcon } from "@heroicons/vue/20/solid";
@@ -168,9 +198,8 @@ const dailyHearts = computed(() => formatHearts(heartConfig.value.hearts_max, lo
 // The same time of day as the block at the heart limit names.
 const refillTime = computed(() => heartRefillTime(locale.value));
 
-const isPremium = computed(() => {
-  return premiumInfo.value?.premium;
-});
+// A guest has no plan, whatever an account that logged out left in memory.
+const isPremium = computed(() => !props.guest && premiumInfo.value?.premium);
 
 const coins = useCoins();
 const planPrice = computed(() => (props.yearly ? props.yearlyPrice : props.monthlyPrice));

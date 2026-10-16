@@ -70,8 +70,20 @@
         <h2 class="text-3xl font-bold tracking-tight text-accent sm:text-4xl">
           {{ t(isDaily ? "Headings.Premium" : "Headings.NoTrickPricing") }}
         </h2>
+        <!--
+          A guest cannot order the separate monthly renewal before having an account and
+          Premium, so the sentence about it is left out and the cards come up sooner.
+        -->
         <p class="text-gray mt-2 text-lg leading-8">
-          {{ t(isDaily ? "DailyLearning.PremiumBenefit" : "Body.PremiumCardMain") }}
+          {{
+            t(
+              isDaily
+                ? "DailyLearning.PremiumBenefit"
+                : guest
+                  ? "Body.PremiumCardMainGuest"
+                  : "Body.PremiumCardMain"
+            )
+          }}
         </p>
       </div>
 
@@ -92,8 +104,14 @@
       <p v-if="isDaily && !planPricesKnown" role="status" class="mx-auto max-w-md text-center">
         {{ t("Error.PremiumStatusUnavailable") }}
       </p>
+      <!--
+        A visitor without an account sees both plans with their prices. What only an
+        account has (its Premium state, its hearts, its coins) is neither loaded nor
+        reported as missing.
+      -->
       <SubscriptionCard
-        v-else-if="policyKnown"
+        v-else-if="policyKnown || guest"
+        :guest="guest"
         :subscribeMonthly="() => subscribe(false)"
         :subscribeYearly="() => subscribe(true)"
         :yearly="selectedButton === 1"
@@ -197,7 +215,11 @@
         </OrderSummary>
       </section>
 
-      <div v-if="!premiumStatusKnown && !premiumBusy" class="mt-4 text-center" role="alert">
+      <div
+        v-if="!guest && !premiumStatusKnown && !premiumBusy"
+        class="mt-4 text-center"
+        role="alert"
+      >
         <p class="text-error">{{ t("Error.PremiumStatusUnavailable") }}</p>
         <Btn secondary class="mx-auto mt-3" @click="refreshPremiumStatus">
           {{ t("Buttons.TryAgain") }}
@@ -300,6 +322,9 @@ export default {
     const premiumBusy = ref(false);
     const user = useUser();
     const session = useSession();
+    // Without a session the page is a price list: the layout tells guests the same way.
+    const accessToken = useAccessToken();
+    const guest = computed(() => !accessToken.value);
     const renewalOrder = ref<any>(null);
     const renewalAccepted = ref(false);
     const renewalWithdrawalConsent = ref(false);
@@ -326,7 +351,8 @@ export default {
         loadCoinConfig(),
         loadHeartConfig(),
         getPremiumPlans(),
-        refreshPremiumStatus(),
+        // The Premium state belongs to an account; a guest has none to load.
+        ...(guest.value ? [] : [refreshPremiumStatus()]),
       ]);
     });
 
@@ -345,9 +371,9 @@ export default {
       min: coinPriceText(COIN_PURCHASE_MIN, coinConfig.value, locale.value, t),
     }));
 
-    const isPremium = computed(() => {
-      return premiumInfo.value?.premium;
-    });
+    // A guest has no plan. A Premium state still in memory belongs to an account that logged
+    // out (in another tab, or before "Back") and is not the visitor's.
+    const isPremium = computed(() => !guest.value && premiumInfo.value?.premium);
 
     const premiumUntil = computed(() => {
       const until = Number(premiumInfo.value?.until);
@@ -390,6 +416,23 @@ export default {
     });
     // The declarations of § 356 Abs. 5/6 BGB for the pending order.
     const withdrawalConsent = ref(false);
+
+    /**
+     * The session changed while the page is open, in another tab. A visitor who logged in has
+     * an account from now on: the page loads its Premium state as on arrival, so the state is
+     * never reported as missing while nobody has asked for it. An account that logged out
+     * leaves a guest: an order or a renewal offer of that account could only fail without it,
+     * so both close.
+     */
+    function sessionChanged(isGuest: boolean) {
+      if (!isGuest) {
+        void refreshPremiumStatus();
+        return;
+      }
+      order.value = null;
+      renewalOrder.value = null;
+    }
+    watch(guest, sessionChanged);
 
     async function refreshPremiumStatus() {
       if (premiumBusy.value) return null;
@@ -664,6 +707,7 @@ export default {
     );
 
     return {
+      guest,
       refillBoxShown,
       isDaily,
       showHearts,
