@@ -124,18 +124,21 @@ export default {
         }
 
         // The dialog is rebuilt every time it opens, so the boxes start unticked.
-        // Opening the dialog again shows the same quote while it fits the hearts.
-        offer.value = await requestPurchaseOffer(
-          "/shop/purchases/offers/hearts",
-          (quote) =>
-            quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
-        );
+        offer.value = await heartsOffer();
         if (!offer.value) return;
         withdrawalConsent.value = false;
         ordering.value = true;
       } finally {
         opening.value = false;
       }
+    }
+
+    /** Opening the dialog again shows the same quote while it fits the hearts. */
+    function heartsOffer() {
+      return requestPurchaseOffer(
+        "/shop/purchases/offers/hearts",
+        (quote) => quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
+      );
     }
 
     async function confirmOrder() {
@@ -145,9 +148,21 @@ export default {
       }
 
       loading.value = true;
-      const success = await acceptPurchase(offer.value);
-      loading.value = false;
-      if (success) ordering.value = false;
+      try {
+        const result = await acceptPurchase(offer.value);
+        if (result === "renew") {
+          // The server refused the quote as changed, without a charge: a new one takes its
+          // place, with empty boxes. Without one the dialog closes; the page said why.
+          withdrawalConsent.value = false;
+          const next = await heartsOffer();
+          if (next) {
+            offer.value = next;
+            openSnackbar("info", "Body.OfferRenewed");
+          } else ordering.value = false;
+        } else if (result) ordering.value = false;
+      } finally {
+        loading.value = false;
+      }
     }
 
     return {

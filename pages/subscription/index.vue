@@ -474,6 +474,13 @@ export default {
         submit: async () => {
           return acceptPurchase(offer);
         },
+        /** The same order with a new quote, for the account as it is now; `null` without one. */
+        renew: async () => {
+          const fresh = await refreshPremiumStatus();
+          if (!fresh) return null;
+          const next = await premiumOffer(offer.product.kind, fresh);
+          return next ? premiumOrder(next, fresh) : null;
+        },
       };
     }
 
@@ -535,7 +542,15 @@ export default {
             return;
           }
         }
-        if (await order.value.submit()) {
+        const result = await order.value.submit();
+        if (result === "renew") {
+          // The server refused the quote as changed, without a charge: a new one takes its
+          // place, shown with empty boxes. Without one the dialog closes; the page said why.
+          withdrawalConsent.value = false;
+          const next = await order.value.renew();
+          order.value = next;
+          if (next) openSnackbar("info", "Body.OfferRenewed");
+        } else if (result) {
           order.value = null;
           withdrawalConsent.value = false;
         }
@@ -555,15 +570,23 @@ export default {
       }
 
       orderOpener = document.activeElement as HTMLElement | null;
-      // A quote from an earlier opening is shown again while it fits the hearts.
+      const offer = await heartsOffer();
+      if (!offer) return;
+      withdrawalConsent.value = false;
+      order.value = heartsOrder(offer);
+    }
+
+    /** A heart refill quote; one from an earlier opening is shown again while it fits the hearts. */
+    async function heartsOffer() {
       await getHearts();
-      const offer = await requestPurchaseOffer(
+      return requestPurchaseOffer(
         "/shop/purchases/offers/hearts",
         (quote) => quote.product.facts?.refill_units === heartConfig.value.hearts_max - hearts.value
       );
-      if (!offer) return;
-      withdrawalConsent.value = false;
-      order.value = {
+    }
+
+    function heartsOrder(offer: any): any {
+      return {
         offer,
         coins: offer.product.coins,
         kind: "",
@@ -575,6 +598,10 @@ export default {
         details: [],
         submit: async () => {
           return acceptPurchase(offer);
+        },
+        renew: async () => {
+          const next = await heartsOffer();
+          return next ? heartsOrder(next) : null;
         },
       };
     }

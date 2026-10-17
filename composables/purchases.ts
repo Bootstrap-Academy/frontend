@@ -321,7 +321,16 @@ export async function requestPurchaseOffer(
     return null;
   }
 }
-export async function acceptPurchase(offer: PurchaseOffer) {
+/** `PurchaseStatus.refusal` of an order the server refused without a charge because its quote
+ * expired or no longer matches the product or the account; a new quote can be asked for. */
+const OFFER_CHANGED = "offer_changed";
+/**
+ * Accepts `offer`. Returns `true` when the order has an outcome (the dialog closes), `false`
+ * when the outcome is unknown (the dialog and the recovery entry stay), and `"renew"` when the
+ * server refused the quote as changed: nothing was ordered or charged, and the caller shows a
+ * new quote in its place.
+ */
+export async function acceptPurchase(offer: PurchaseOffer): Promise<boolean | "renew"> {
   try {
     const result = await withPurchaseRecovery(offer, () =>
       (POST as (url: string, body: unknown) => Promise<any>)(
@@ -331,6 +340,7 @@ export async function acceptPurchase(offer: PurchaseOffer) {
     );
     finishPurchaseRecovery(offer, result);
     await Promise.all([getBalance(), getHearts(), getPremiumStatus()]);
+    if (result.state === "failed" && result.refusal === OFFER_CHANGED) return "renew";
     openSnackbar(
       result.state === "fulfilled" ? "success" : "info",
       result.state === "fulfilled"
