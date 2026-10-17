@@ -263,6 +263,15 @@ async function until(expression, label = expression) {
   }
 }
 
+/** Like `until`, for a condition on this side, such as the requests counted so far. */
+async function untilHere(condition, label) {
+  const deadline = Date.now() + 20000;
+  while (!condition()) {
+    assert(Date.now() < deadline, `Timed out: ${label}`);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+}
+
 const renewalButtons =
   '[...document.querySelectorAll("[aria-labelledby=premium-renewal-label] button")]';
 const purchaseButton =
@@ -565,7 +574,12 @@ try {
     const beforeWrites = writes().length;
     await evaluate(`${renewalButtons}[1].click()`);
     await until(`${renewalButtons}.every(b => b.disabled) && ${purchaseButton}.disabled`);
+    // The held request reaches the count here only once the browser has sent it; under load
+    // that can come after the buttons are disabled.
+    await untilHere(() => puts().length === beforePuts + 1, "the first change is sent");
     await evaluate(`${renewalButtons}[0].click(); ${purchaseButton}.click()`);
+    // Give a second request, should one go out, the time to be counted.
+    await new Promise((resolve) => setTimeout(resolve, 300));
     assert.equal(puts().length, beforePuts + 1);
     assert.equal(writes().length, beforeWrites);
     assert.equal(await evaluate(`!!${modalText}`), false);
