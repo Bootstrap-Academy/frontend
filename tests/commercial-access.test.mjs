@@ -7,6 +7,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
+import { decodeApiError } from "../utils/apiError.ts";
 
 const dir = await mkdtemp(join(tmpdir(), "l3-commercial-access-"));
 after(() => rm(dir, { recursive: true, force: true }));
@@ -2343,11 +2344,15 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
     );
   });
 
-test("a signup form opened before terms 2026-10 took effect asks again for the new version", async () => {
+/**
+ * The signup form against a server that refuses every version but `accepted`. The refusal
+ * reaches the form as the fetch layer hands it over: its `detail` replaced by the key of
+ * `decodeApiError` (`composables/fetch.js`, `onResponseError`).
+ */
+async function signupAgainst(config, accepted, run) {
   await components();
   const terms = await moduleFrom("../composables/terms.ts"),
     Signup = await compileComponent("../components/form/Signup.vue"),
-    config = { TERMS_2026_10_FROM: "2099-12-09T00:00:00+01:00" },
     requests = [],
     notices = [];
   await globals(
@@ -2355,15 +2360,20 @@ test("a signup form opened before terms 2026-10 took effect asks again for the n
       ...Vue,
       TERMS_VERSION: terms.TERMS_VERSION,
       registrationTerms: terms.registrationTerms,
+      registrationTermsAfterRefusal: terms.registrationTermsAfterRefusal,
       useRuntimeConfig: () => ({ public: config }),
       getRegisterToken: () => null,
-      useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
+      useRouter: () => ({ push: () => {} }),
       useRoute: () => ({ query: {} }),
       internalPath: () => "",
       openSnackbar: (...args) => notices.push(args),
       signup: async (body) => {
         requests.push(structuredClone(body));
-        return [null, { detail: "Not the current version of the terms and conditions" }];
+        // What follows a request with the version the server takes is not part of these tests.
+        if (body.terms_version === accepted()) return [null, { detail: "Error.TryAgainLater" }];
+        const payload = { detail: "Not the current version of the terms and conditions" };
+        payload.detail = decodeApiError({ status: 422, _data: payload }).messageKey;
+        return [null, payload];
       },
     },
     async () => {
@@ -2390,24 +2400,87 @@ test("a signup form opened before terms 2026-10 took effect asks again for the n
           vm.form[name].value = value;
           vm.form[name].valid = true;
         }
-        assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions");
-        // The form stays open while the start passes; the server has switched.
-        config.TERMS_2026_10_FROM = "2026-10-01T00:00:00+02:00";
-        await vm.onclickSubmitForm();
-        assert.equal(requests[0].terms_version, "2026-09-r4", "the version the form showed");
-        assert.deepEqual(notices.at(-1), ["error", "Error.TermsChanged"]);
-        assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-10");
-        assert.equal(vm.form.termsAndConditions.value, false, "the box has to be ticked again");
-        assert(messages["de"].Error.TermsChanged && messages["en-US"].Error.TermsChanged);
-        await vm.onclickSubmitForm();
-        assert.equal(requests.length, 1, "nothing is sent before the box is ticked again");
-        vm.form.termsAndConditions.value = true;
-        vm.form.termsAndConditions.valid = true;
-        await vm.onclickSubmitForm();
-        assert.equal(requests[1].terms_version, "2026-10");
+        const tick = async () => {
+          vm.form.termsAndConditions.value = true;
+          vm.form.termsAndConditions.valid = true;
+        };
+        await run({ vm, requests, notices, tick });
       } finally {
         app.unmount();
       }
+    }
+  );
+}
+
+test("the refusal of an outdated version reaches signup decoded as Error.TermsChanged", () => {
+  for (const body of [
+    { detail: "Not the current version of the terms and conditions" },
+    { detail: "not the current version of the terms and conditions" },
+  ])
+    assert.equal(decodeApiError({ status: 422, _data: body }).messageKey, "Error.TermsChanged");
+  assert(messages["de"].Error.TermsChanged && messages["en-US"].Error.TermsChanged);
+});
+
+test("a signup form opened before terms 2026-10 took effect asks again for the new version", async () => {
+  const config = { TERMS_2026_10_FROM: "2099-12-09T00:00:00+01:00" };
+  await signupAgainst(
+    config,
+    () => "2026-10",
+    async ({ vm, requests, notices, tick }) => {
+      assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions");
+      // The form stays open while the start passes; the server has switched.
+      config.TERMS_2026_10_FROM = "2026-10-01T00:00:00+02:00";
+      await vm.onclickSubmitForm();
+      assert.equal(requests[0].terms_version, "2026-09-r4", "the version the form showed");
+      assert.deepEqual(notices.at(-1), ["error", "Error.TermsChanged"]);
+      assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-10");
+      assert.equal(vm.form.termsAndConditions.value, false, "the box has to be ticked again");
+      await vm.onclickSubmitForm();
+      assert.equal(requests.length, 1, "nothing is sent before the box is ticked again");
+      await tick();
+      await vm.onclickSubmitForm();
+      assert.equal(requests[1].terms_version, "2026-10");
+      assert.equal(requests.length, 2);
+    }
+  );
+});
+
+test("after a refusal signup offers the other version, whatever the browser's clock says", async () => {
+  // The browser's clock is behind: it still shows r4 while the server already takes 2026-10.
+  await signupAgainst(
+    { TERMS_2026_10_FROM: "2099-12-09T00:00:00+01:00" },
+    () => "2026-10",
+    async ({ vm, requests, notices, tick }) => {
+      await vm.onclickSubmitForm();
+      assert.equal(requests[0].terms_version, "2026-09-r4");
+      assert.deepEqual(notices.at(-1), ["error", "Error.TermsChanged"]);
+      assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-10");
+      await tick();
+      await vm.onclickSubmitForm();
+      assert.deepEqual(
+        requests.map((r) => r.terms_version),
+        ["2026-09-r4", "2026-10"]
+      );
+    }
+  );
+  // The browser's clock is ahead: it shows 2026-10 while the server still takes r4. The box
+  // then links r4 under its own address, because the main page already shows 2026-10.
+  await signupAgainst(
+    { TERMS_2026_10_FROM: "2026-10-01T00:00:00+02:00" },
+    () => "2026-09-r4",
+    async ({ vm, requests, notices, tick }) => {
+      assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-10");
+      await vm.onclickSubmitForm();
+      assert.equal(requests[0].terms_version, "2026-10");
+      assert.deepEqual(notices.at(-1), ["error", "Error.TermsChanged"]);
+      assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-09-r4");
+      assert.equal(vm.form.termsAndConditions.value, false);
+      await tick();
+      await vm.onclickSubmitForm();
+      assert.deepEqual(
+        requests.map((r) => r.terms_version),
+        ["2026-10", "2026-09-r4"]
+      );
     }
   );
 });

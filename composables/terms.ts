@@ -49,6 +49,18 @@ export function registrationTerms() {
 }
 
 /**
+ * The version signup offers after the server refused `refused`: the other side of the start
+ * of terms 2026-10. The server decides by its own clock, so the browser's clock is not asked
+ * again; a clock that is off around the start would otherwise send the refused version again.
+ */
+export function registrationTermsAfterRefusal(refused: string) {
+  if (!terms202610().published) return registrationTerms();
+  return refused === TERMS_2026_10
+    ? { version: TERMS_VERSION, url: termsDocumentUrl(TERMS_VERSION) }
+    : { version: TERMS_2026_10, url: `/docs/terms-and-conditions-${TERMS_2026_10}` };
+}
+
+/**
  * Routes on which the re-acceptance gate stays hidden: the documents the gate
  * links to, the account page the user needs in order to delete the account
  * instead of accepting, and the two declaration pages. § 312k Abs. 2 BGB and
@@ -86,6 +98,9 @@ export function needsTermsAcceptance(path: string) {
   if (!!!useProfileLoaded().value) return false;
   if (useTermsGateDismissed().value) return false;
   if (isTermsGateExemptRoute(path)) return false;
+  // Once terms 2026-10 apply, the gate would offer r4, a version no new contract gets any more.
+  // Accounts below r4 keep their version (AGB 20.3); every order binds its own version anyway.
+  if (terms202610().inForce) return false;
 
   // A registration-only version does not ask valid existing accounts to migrate,
   // and a new account must never be prompted to accept an older legacy version.
