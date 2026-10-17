@@ -59,6 +59,8 @@ const legacyMessages: [string, string][] = [
   ["email not verified", "AccountNotVerified"],
   // The shop's refusal of an offer for an account without a confirmed address.
   ["verified delivery address is required", "AccountNotVerified"],
+  // Signup or the terms gate named a version of the terms that the server no longer takes.
+  ["not the current version of the terms and conditions", "TermsChanged"],
 ];
 const codeMessages: Record<string, string> = {
   forbidden: "NotAllowed",

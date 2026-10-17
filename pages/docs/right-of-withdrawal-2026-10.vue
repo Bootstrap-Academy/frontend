@@ -9,7 +9,7 @@
     <aside v-if="!terms.inForce" class="mt-main container" aria-label="Angekündigte Fassung">
       <h1 class="text-heading-1">Widerrufsbelehrung – Fassung 2026-10</h1>
       <p class="mt-card">
-        Diese Fassung haben wir angekündigt, sie gilt noch nicht. Bis zu ihrem Stichtag gilt die
+        Diese Fassung haben wir angekündigt, sie gilt ab dem {{ terms.date }}. Bis dahin gilt die
         <a class="underline" href="/docs/right-of-withdrawal">aktuelle Widerrufsbelehrung</a>.
       </p>
       <p class="mt-card">

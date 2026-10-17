@@ -163,8 +163,15 @@ test("signup offers 2026-10 from its start, and nobody with an account is asked 
         assert.equal(terms.needsTermsAcceptance("/learn"), false, `r4 account, ${from}`);
         user.value.terms_version = "2026-10";
         assert.equal(terms.needsTermsAcceptance("/learn"), !from, `2026-10 account, ${from}`);
-        user.value.terms_version = "2026-09-r3";
-        assert.equal(terms.needsTermsAcceptance("/learn"), true, `r3 account, ${from}`);
+        // Until the start the gate asks accounts below r4 for r4; from the start it ends.
+        for (const below of ["2026-09-r3", "2026-09-r1", null]) {
+          user.value.terms_version = below;
+          assert.equal(
+            terms.needsTermsAcceptance("/learn"),
+            from !== PASSED,
+            `${below} account, ${from}`
+          );
+        }
         await terms.acceptTerms();
         assert.equal(requests.at(-1).body.terms_version, "2026-09-r4", from);
       },
@@ -215,26 +222,30 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
   assert(withdrawal.includes("Stand: Fassung 2026-10, gültig ab dem 1. Oktober 2026"));
   assert(withdrawal.includes("Version 2026-10, valid from 1 October 2026"));
 
-  for (const [file, imports, title, other] of [
+  for (const [file, imports, title, other, notYet] of [
     [
       "pages/docs/terms-and-conditions-2026-10.vue",
       TERMS,
       "AGB – Fassung 2026-10",
       'href="/docs/right-of-withdrawal-2026-10"',
+      "Diese Fassung haben wir angekündigt, sie gilt noch nicht.",
     ],
     [
       "pages/docs/right-of-withdrawal-2026-10.vue",
       WITHDRAWAL,
       "Widerrufsbelehrung – Fassung 2026-10",
       'href="/docs/terms-and-conditions-2026-10"',
+      // The withdrawal instructions name their start only at the end, so the box names it.
+      "Diese Fassung haben wir angekündigt, sie gilt ab dem 9. Dezember 2099. Bis dahin gilt die",
     ],
   ]) {
     // Without a start the page does not exist.
     await assert.rejects(rendered(file, "", imports), { statusCode: 404, fatal: true });
     // Announced: it says that it does not apply yet and leads to the version in force.
     const announced = await rendered(file, AHEAD, imports);
+    const box = announced.slice(0, announced.indexOf("</aside>")).replace(/\s+/g, " ");
     assert(announced.includes(title), file);
-    assert(announced.includes("Diese Fassung haben wir angekündigt, sie gilt noch nicht."), file);
+    assert(box.includes(notYet), `${file}: ${box}`);
     assert(announced.includes(other), file);
     assert(announced.includes("ab dem 9. Dezember 2099"), file);
     // In force: the text alone.

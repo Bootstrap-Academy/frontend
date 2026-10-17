@@ -103,8 +103,9 @@ import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
 
 // The refusal of the backend (`OutdatedTermsVersionError`) when the request names a version
-// of the terms that is not the one signup records.
-const OUTDATED_TERMS = "not the current version of the terms and conditions";
+// of the terms that is not the one signup records. The fetch layer hands it over decoded
+// (`utils/apiError.ts`).
+const OUTDATED_TERMS = "Error.TermsChanged";
 
 export default defineComponent({
   setup() {
@@ -276,10 +277,10 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
-      // The terms changed while the form was open: the box now links the new version and has
-      // to be ticked again, because agreeing to the old text is no agreement to the new one.
-      if (String(res?.detail ?? "").toLowerCase() === OUTDATED_TERMS) {
-        signupTerms.value = registrationTerms();
+      // The terms changed while the form was open: the box now links the other version and has
+      // to be ticked again, because agreeing to one text is no agreement to the other.
+      if (res?.detail === OUTDATED_TERMS) {
+        signupTerms.value = registrationTermsAfterRefusal(signupTerms.value.version);
         form.termsAndConditions.value = false;
         form.termsAndConditions.valid = false;
         openSnackbar("error", "Error.TermsChanged");
