@@ -165,6 +165,15 @@ test("planned navigation flushes local SDK state before the host can leave", asy
   await f.sdk.saveState({ note: "work after cancelled navigation" });
   assert.equal(f.state().value.note, "work after cancelled navigation");
 });
+test("a preparation waits for a resume still in flight instead of refusing the navigation", async (t) => {
+  // The lesson page checks before it leaves, resumes the frame, and its route guard checks again (F2).
+  const f = await fixture(t);
+  assert.equal(await f.host.prepareNavigation(), true);
+  const resumed = f.host.visibility(false);
+  assert.equal(await f.host.prepareNavigation(), true);
+  await resumed;
+  assert.equal(f.host.phase, "paused");
+});
 test("failed preparation retains the live scene and retries the same pending save", async (t) => {
   let sdk,
     pending = false,
