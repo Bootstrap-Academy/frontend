@@ -39,6 +39,72 @@ let loseWriteResponse = false;
 let failPurchase = false;
 let cancelDuringPurchase = false;
 let holdWrite = null;
+// Premium is bought through an offer and its acceptance, as the backend issues them: the
+// offer names the monthly renewal the account has, and an acceptance whose renewal no longer
+// matches fails without a charge (`refusal: "offer_changed"`).
+let offers = [];
+const states = new Map();
+
+const declaration =
+  "Ich verlange ausdrücklich, dass mit der bestellten Leistung vor Ablauf der Widerrufsfrist begonnen wird. Meine gesetzlichen Widerrufs- und Mängelrechte bleiben unberührt.";
+const monthlyRenewal = () => (autopay === "MONTHLY" ? 1000 : null);
+function premiumOffer(kind) {
+  const yearly = kind === "premium_yearly";
+  const renewal = monthlyRenewal();
+  const unit = yearly ? "Jahr" : "Monat";
+  const lines = [
+    { role: "product", text: "Premium" },
+    { role: "detail", text: "Unbegrenzte Herzen." },
+    {
+      role: "term",
+      text: renewal
+        ? `Laufzeit: 1 ${unit}. Danach läuft deine monatliche Verlängerung weiter (1.000 Morphcoins je Monat).`
+        : `Laufzeit: 1 ${unit}, ohne automatische Verlängerung.`,
+    },
+    {
+      role: "detail",
+      text: "Premium startet direkt nach der Bestätigungsmail, spätestens in 24 Stunden. Läuft schon Premium, schließt die neue Zeit daran an.",
+    },
+    {
+      role: "price",
+      text: yearly
+        ? "Gesamtpreis: 10.000 Morphcoins (100,00 € inkl. 19 % MwSt.; 8,33 € je Monat), keine weiteren Kosten."
+        : "Gesamtpreis: 1.000 Morphcoins (10,00 € inkl. 19 % MwSt.), keine weiteren Kosten.",
+    },
+    { role: "payment", text: "Du zahlst aus deinem Guthaben." },
+  ];
+  const offer = {
+    id: `96000000-0000-4000-8000-${String(offers.length + 1).padStart(12, "0")}`,
+    hash: `renewal-test-hash-${offers.length + 1}`,
+    text: lines.map((line) => line.text).join("\n"),
+    declaration,
+    recipient: `${profile.display_name} <${profile.email}>`,
+    created_at: new Date().toISOString(),
+    expires_at: new Date(Date.now() + 20 * 60 * 1000).toISOString(),
+    user_id: profile.id,
+    source: "backend",
+    document_hash: "renewal-test-documents",
+    provision_window_seconds: 86400,
+    product: {
+      kind,
+      reference: kind,
+      title: yearly ? "Premium für ein Jahr" : "Premium für einen Monat",
+      description: "Unbegrenzte Herzen.",
+      coins: yearly ? 10000 : 1000,
+      facts: {
+        months: yearly ? 12 : 1,
+        automatic_renewal: false,
+        renewal: renewal ? { monthly_price: renewal } : null,
+      },
+      revision: "renewal-test",
+      service_starts_at: null,
+    },
+    summary: { de: { lines, declaration }, en: { lines, declaration } },
+  };
+  offers.push(offer);
+  states.set(offer.id, "offered");
+  return offer;
+}
 
 function cmd(method, params = {}) {
   return new Promise((resolve, reject) => {
@@ -102,14 +168,39 @@ async function mockRequest(params) {
     data = { ok: true };
     trace.after = autopay;
     if (failWrite || loseWriteResponse) status = 400;
-  } else if (url.pathname === "/shop/premium" && request.method === "POST") {
+  } else if (
+    /^\/shop\/purchases\/offers\/premium_(monthly|yearly)$/.test(url.pathname) &&
+    request.method === "POST"
+  ) {
+    data = { state: "offered", offer: premiumOffer(url.pathname.split("/").pop()) };
+  } else if (url.pathname === "/shop/purchases" && request.method === "GET") {
+    data = offers.map((offer) => ({ state: states.get(offer.id), offer }));
+  } else if (/^\/shop\/purchases\/[0-9a-f-]{36}$/.test(url.pathname)) {
+    const offer = offers.find((candidate) => candidate.id === url.pathname.split("/").pop());
+    data = offer ? { state: states.get(offer.id), offer } : { detail: "Not found" };
+    if (!offer) status = 404;
+  } else if (url.pathname === "/shop/purchases/accept" && request.method === "POST") {
+    const offer = offers.find((candidate) => candidate.id === body.order_id);
     trace.before = autopay;
+    trace.kind = offer?.product.kind;
     if (cancelDuringPurchase) autopay = null;
-    // Matches PremiumFeatureServiceImpl::purchase: false preserves renewal.
-    if (!failPurchase && body.autopay) autopay = body.plan;
-    data = premiumStatus();
-    trace.after = autopay;
     if (failPurchase) status = 400;
+    else if (!offer || states.get(offer.id) !== "offered") status = 409;
+    else if ((offer.product.facts.renewal?.monthly_price ?? null) !== monthlyRenewal()) {
+      // The renewal the offer names is no longer the account's: refused, nothing charged.
+      states.set(offer.id, "failed");
+      data = {
+        state: "failed",
+        offer,
+        review_reason: "Offer expired or changed; no charge",
+        refusal: "offer_changed",
+      };
+    } else {
+      // Buying Premium never changes the separately ordered renewal.
+      states.set(offer.id, "fulfilled");
+      data = { state: "fulfilled", offer };
+    }
+    trace.after = autopay;
   } else if (url.pathname.includes("unrated")) data = [];
   if (status !== 200) data = { detail: "Test request failed", error: "test_failure" };
   trace.status = status;
@@ -181,7 +272,13 @@ const orderButton =
 const modalText = 'document.querySelector(".modal-content")?.innerText';
 const selected = `${renewalButtons}.find(b => b.getAttribute("aria-pressed") === "true")?.innerText`;
 const writes = () =>
-  requests.filter((request) => request.method === "POST" && request.path === "/shop/premium");
+  requests.filter(
+    (request) => request.method === "POST" && request.path === "/shop/purchases/accept"
+  );
+const offerRequests = () =>
+  requests.filter(
+    (request) => request.method === "POST" && request.path.startsWith("/shop/purchases/offers/")
+  );
 const puts = () => requests.filter((request) => request.method === "PUT");
 
 async function fresh(initial) {
@@ -190,7 +287,12 @@ async function fresh(initial) {
   offerId = "test-current-offer";
   failRead = failWrite = loseWriteResponse = failPurchase = cancelDuringPurchase = false;
   holdWrite = null;
+  offers = [];
+  states.clear();
   await cmd("Page.navigate", { url: `${appUrl}/subscription` });
+  // Recovery entries of an earlier scenario belong to offers this one does not know.
+  await until("document.readyState === 'complete'");
+  await evaluate("localStorage.clear(), true");
   await until(`${renewalButtons}.length === 2 && ${renewalButtons}.every(b => !b.disabled)`);
   await expectSelected(initial);
 }
@@ -232,8 +334,9 @@ async function toggle(plan) {
 
 async function prepare(yearly = false) {
   if (yearly) {
+    // The plan toggle is a group of buttons; the renewal switch has no "Jährlich".
     await evaluate(
-      '[...document.querySelectorAll("p")].find(p => p.innerText === "Jährlich").click()'
+      '[...document.querySelectorAll("[role=group] button")].find(b => b.textContent.trim() === "Jährlich").click()'
     );
     await until(`${purchaseButton}?.innerText.includes("10.000")`);
   }
@@ -241,13 +344,12 @@ async function prepare(yearly = false) {
   await until(`${modalText}`);
 }
 
+/** The term line of the offer in the dialog names the monthly renewal, or that there is none. */
 async function expectSummary(enabled) {
-  const prefix = enabled
-    ? autopay === "YEARLY"
-      ? "bisherige Einstellung"
-      : "Monatliche Verlängerung:"
-    : "Aus –";
-  await until(`${modalText}?.includes(${JSON.stringify(prefix)})`, `summary ${prefix}`);
+  const term = enabled
+    ? "Danach läuft deine monatliche Verlängerung weiter (1.000 Morphcoins je Monat)."
+    : "ohne automatische Verlängerung.";
+  await until(`${modalText}?.includes(${JSON.stringify(term)})`, `term line ${term}`);
 }
 
 async function consent() {
@@ -261,18 +363,25 @@ async function confirm() {
   await evaluate(`${orderButton}.click()`);
 }
 
+/** Accepts the offer in the dialog: one acceptance of the shown offer, the renewal unchanged. */
 async function purchase(expectedPlan, expectedRenewal) {
   const before = writes().length;
   await consent();
   await confirm();
   await until(`!${modalText}`);
   assert.equal(writes().length, before + 1);
+  const offer = offers.at(-1);
   assert.deepEqual(writes().at(-1).body, {
-    plan: expectedPlan,
-    autopay: false,
-    withdrawal_consent: true,
-    withdrawal_text_version: "2026-09",
+    order_id: offer.id,
+    offer_hash: offer.hash,
+    accepted: true,
+    early_performance_requested: true,
   });
+  assert.equal(
+    writes().at(-1).kind,
+    expectedPlan === "YEARLY" ? "premium_yearly" : "premium_monthly"
+  );
+  assert.equal(states.get(offer.id), "fulfilled");
   assert.equal(autopay, expectedRenewal);
   await expectSelected(expectedRenewal);
 }
@@ -301,10 +410,13 @@ try {
   });
   await cmd("Network.clearBrowserCookies");
   const token = `eyJhbGciOiJub25lIn0.${Buffer.from(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 100000 })).toString("base64url")}.x`;
+  // A sign-in writes the session with the tokens; the learning policy is read for its owner.
   for (const [name, value] of Object.entries({
     user: JSON.stringify(profile),
+    session: JSON.stringify({ id: "renewal-test-session" }),
     accessToken: token,
     refreshToken: "test-refresh",
+    authGeneration: "renewal-test-generation",
     locale: "de",
   })) {
     await cmd("Network.setCookie", {
@@ -337,10 +449,12 @@ try {
       await purchase("YEARLY", "MONTHLY");
     }
   );
-  await scenario("yearly renewal -> monthly extension preserves yearly setting", async () => {
+  // A yearly setting has no monthly renewal agreement, so the offer names none; buying
+  // Premium leaves the setting as it is.
+  await scenario("yearly setting -> monthly extension keeps the yearly setting", async () => {
     await fresh("YEARLY");
     await prepare();
-    await expectSummary(true);
+    await expectSummary(false);
     await purchase("MONTHLY", "YEARLY");
   });
   await scenario("rejected toggle restores confirmed selection and reports failure", async () => {
@@ -380,10 +494,12 @@ try {
       );
       await until('document.querySelector("[role=alert]")?.innerText.includes("Premium-")');
       const before = writes().length;
+      const quoted = offerRequests().length;
       await evaluate(`${purchaseButton}.click()`);
       await until(`${purchaseButton} && !${purchaseButton}.disabled`);
       assert.equal(await evaluate(`!!${modalText}`), false);
       assert.equal(writes().length, before);
+      assert.equal(offerRequests().length, quoted, "no offer without a known renewal");
       failRead = false;
       await evaluate('document.querySelector("[role=alert] button").click()');
       await expectSelected(null);
@@ -406,9 +522,12 @@ try {
         autopay = changed;
         const before = writes().length;
         await confirm();
+        // A new offer with the new term line and the notice above the empty boxes.
         await expectSummary(!!changed);
+        await until(`${modalText}?.includes("Das Angebot war nicht mehr aktuell.")`);
         await until(`${orderButton}?.getAttribute("aria-disabled") === "true"`);
         assert.equal(writes().length, before);
+        assert.equal(offers.length, 2);
         assert.equal(
           await evaluate(
             '[...document.querySelectorAll(".modal-content input[type=checkbox]")].every(b => !b.checked)'
@@ -454,13 +573,24 @@ try {
     holdWrite = null;
     await expectSelected(null);
   });
+  // The renewal ends after the confirmation read, while the acceptance is on its way: the
+  // server refuses the offer that still names it, nothing is charged, and the dialog shows a
+  // new offer without a renewal. The purchase never brings the renewal back.
   await scenario(
     "cancellation after the confirmation read is never undone by purchase",
     async () => {
       await fresh("MONTHLY");
       await prepare();
       await expectSummary(true);
+      await consent();
       cancelDuringPurchase = true;
+      const before = writes().length;
+      await confirm();
+      await until(`${modalText}?.includes("Das Angebot war nicht mehr aktuell.")`);
+      await expectSummary(false);
+      assert.equal(writes().length, before + 1);
+      assert.equal(states.get(offers[0].id), "failed");
+      cancelDuringPurchase = false;
       await purchase("MONTHLY", null);
     }
   );
@@ -472,31 +602,29 @@ try {
     const before = writes().length;
     await confirm();
     await until(
-      'document.body.innerText.includes("Die Premium-Bestellung konnte nicht bestätigt werden")'
+      'document.body.innerText.includes("Wir konnten den Abschluss noch nicht bestätigen.")'
     );
     assert.equal(writes().length, before + 1);
     assert.equal(autopay, null);
     assert(await evaluate(`!!${modalText}`));
   });
+  // Another confirmation of the same monthly renewal (same price) leaves the term line true,
+  // so the offer stays and its acceptance goes through.
   await scenario(
-    "agreement identity change with same monthly plan requires fresh checkout consent",
+    "agreement identity change with the same monthly price keeps the offer",
     async () => {
       await fresh("MONTHLY");
       await prepare();
-      await consent();
       renewalId = "22222222-2222-4222-8222-222222222222";
-      const before = writes().length;
-      await confirm();
-      await until(`${orderButton}?.getAttribute("aria-disabled") === "true"`);
-      assert.equal(writes().length, before);
       await purchase("MONTHLY", "MONTHLY");
+      assert.equal(offers.length, 1);
     }
   );
   await scenario("pending confirmation is shown without promising enabled charges", async () => {
     await fresh(null);
     confirmed = false;
     await toggle("MONTHLY");
-    await until('document.body.innerText.includes("noch im Versand")');
+    await until('document.body.innerText.includes("ist noch nicht bestätigt")');
     await toggle(null);
     assert.equal(autopay, null);
   });

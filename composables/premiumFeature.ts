@@ -53,23 +53,6 @@ export async function getPremiumStatus() {
   }
 }
 
-export async function buyPremium(body: any) {
-  const premiumInfo = usePremiumInfo();
-  const known = usePremiumStatusKnown();
-  const revision = usePremiumStatusRevision();
-  try {
-    const res = await POST(`/shop/premium`, body);
-    // The purchase response already contains the committed premium status.
-    ++revision.value;
-    premiumInfo.value = res;
-    known.value = true;
-    await getBalance();
-    return [res, null];
-  } catch (error: any) {
-    return [null, error];
-  }
-}
-
 export async function updatePremiumAutoPay(body: any) {
   const known = usePremiumStatusKnown();
   const revision = usePremiumStatusRevision();

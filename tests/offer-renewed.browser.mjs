@@ -350,6 +350,7 @@ const dialog = (page, [label, notice]) =>
         buttonInView: !!rect && rect.top >= 0 && rect.bottom <= innerHeight,
         buttonBottom: rect ? Math.round(rect.bottom) : null,
         notice: shown?.textContent.trim() ?? null,
+        noticeHeight: shown ? Math.round(shown.getBoundingClientRect().height) : null,
         noticeAboveBoxes:
           !!shown &&
           !!box &&
@@ -416,6 +417,20 @@ const ways = {
       language === "de" ? "ohne automatische Verlängerung" : "no automatic renewal",
     sent: 0,
   },
+  // The renewal starts while the dialog is open: the new quote names it in its term line, the
+  // tallest dialog after a renewal.
+  renewalStart: {
+    page: "/subscription",
+    shop: () => shop({ hearts: 6, premium: withoutRenewal() }),
+    refuse: () => false,
+    before: (S) => (S.premium = withRenewal(1000)),
+    open: (page) => premiumButton(page),
+    renewed: (language) =>
+      language === "de"
+        ? "Danach läuft deine monatliche Verlängerung weiter"
+        : "After that, your monthly renewal continues",
+    sent: 0,
+  },
 };
 
 async function openDialog(way, f, language) {
@@ -459,6 +474,8 @@ async function renew(way, f, S, language, retick) {
   assert.equal(renewed.notice, labels[1]);
   assert.equal(renewed.noticeAboveBoxes, true, "the notice stands above the boxes");
   assert.equal(renewed.noticeOnPage, 1, "the notice stands once on the page");
+  // The notice is small enough that the order button stays fully in the first view.
+  assert.equal(renewed.buttonInView, true, `order button ends at ${renewed.buttonBottom} px`);
   if (way.renewed)
     assert.ok(
       renewed.lines.some((text) => text.includes(way.renewed(language))),

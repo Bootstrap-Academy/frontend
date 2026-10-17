@@ -246,9 +246,9 @@ test("the heart dialog at the limit replaces a changed offer and stays open", as
       },
       openSnackbar: (kind, key) => snackbars.push([kind, key]),
     };
-    const { confirmOrder } = await pieces(
+    const { confirmOrder, fnRefillHearts } = await pieces(
       "components/user/HeartsEmpty.vue",
-      ["heartsOffer", "confirmOrder"],
+      ["fnRefillHearts", "heartsOffer", "confirmOrder"],
       scope
     );
     await confirmOrder();
@@ -260,5 +260,20 @@ test("the heart dialog at the limit replaces a changed offer and stays open", as
     assert.equal(scope.offerRenewed.value, true);
     assert.deepEqual(snackbars, []);
     if (open) assert.equal(scope.offer.value.id, next.id);
+    // Cancelled and opened again, the dialog shows its quote without the notice.
+    Object.assign(scope, {
+      ordering: Vue.ref(false),
+      opening: Vue.ref(false),
+      isDaily: Vue.ref(false),
+      coins: Vue.ref(1000),
+      refillPrice: Vue.ref(50),
+      getBalance: async () => {},
+      getHearts: async () => {},
+      requestPurchaseOffer: async () => quote(ids(3), "hearts", { refill_units: 6 }),
+    });
+    await fnRefillHearts();
+    assert.equal(scope.ordering.value, true);
+    assert.equal(scope.offer.value.id, ids(3));
+    assert.equal(scope.offerRenewed.value, false, "a dialog opened again has no notice");
   }
 });
