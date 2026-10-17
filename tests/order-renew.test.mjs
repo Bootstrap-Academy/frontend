@@ -22,11 +22,15 @@ const quote = (id, kind, facts = {}) => ({
 const ids = (n) => `70000000-0000-4000-8000-00000000000${n}`;
 const changed = "Offer expired or changed; no charge";
 
-/** composables/purchases.ts with the server answering the acceptance with `answer`. */
-async function accepting(answer) {
+/** composables/purchases.ts with the server answering the acceptance with `answer`; the
+ * account holds `hearts` of 6 half hearts when they are read again. */
+async function accepting(answer, hearts = 0) {
   const calls = { snackbars: [], navigated: [], refreshed: 0 };
   const store = new Map();
+  const heartInfo = Vue.ref(null);
   const { acceptPurchase } = await evaluate("composables/purchases.ts", {
+    useHeartInfo: () => heartInfo,
+    useHeartConfig: () => Vue.ref({ hearts_max: 6, hearts_refill_price: 50 }),
     require: () => ({}),
     useUser: () => ({ value: { id: owner } }),
     navigator: {},
@@ -40,7 +44,11 @@ async function accepting(answer) {
       return answer;
     },
     getBalance: async () => calls.refreshed++,
-    getHearts: async () => calls.refreshed++,
+    getHearts: async () => {
+      calls.refreshed++;
+      heartInfo.value = { hearts };
+      return [{ hearts }, null];
+    },
     getPremiumStatus: async () => calls.refreshed++,
     openSnackbar: (kind, key) => calls.snackbars.push([kind, key]),
     navigateTo: async (to) => calls.navigated.push(to),
@@ -75,15 +83,38 @@ test("an acceptance refused as a changed offer asks for a new quote and leaves t
   assert.deepEqual(done.calls.navigated, []);
 });
 
+test("a refill refused because the hearts filled up meanwhile closes the dialog and stays on the page", async () => {
+  const offer = quote(ids(1), "hearts", { refill_units: 6 });
+  const full = { state: "failed", offer, review_reason: "No refill necessary; no charge" };
+  // The free refill came in between: nothing left to buy, the learner stays in the quiz.
+  const filled = await accepting(full, 6);
+  assert.equal(await filled.acceptPurchase(offer), true);
+  assert.deepEqual(filled.calls.snackbars, [["info", "Error.AlreadyHaveHearts"]]);
+  assert.deepEqual(filled.calls.navigated, []);
+  // With hearts still missing, a refusal keeps its way to the orders, and so does one of
+  // another product while the hearts are full.
+  for (const [answer, hearts] of [
+    [full, 4],
+    [{ state: "failed", offer: quote(ids(2), "premium_monthly"), review_reason: "x" }, 6],
+  ]) {
+    const { acceptPurchase, calls } = await accepting(answer, hearts);
+    assert.equal(await acceptPurchase(answer.offer), true);
+    assert.deepEqual(calls.snackbars, [["info", "Body.PurchaseRejected"]]);
+    assert.deepEqual(calls.navigated, ["/orders"]);
+  }
+});
+
 /** The order dialog of the subscription page; `answers` are what the acceptances return. */
 async function subscriptionPage(answers, offers) {
-  const calls = { accepted: [], requested: [], snackbars: [] };
+  // `sequence` keeps the reads and requests in their order.
+  const calls = { accepted: [], requested: [], snackbars: [], sequence: [] };
   const scope = {
     premiumBusy: Vue.ref(false),
     order: Vue.ref(null),
     renewalOrder: Vue.ref(null),
     ordering: Vue.ref(false),
     withdrawalConsent: Vue.ref(false),
+    offerRenewed: Vue.ref(false),
     coins: Vue.ref(50000),
     locale: Vue.ref("de"),
     isDaily: Vue.ref(false),
@@ -91,10 +122,14 @@ async function subscriptionPage(answers, offers) {
     refillPrice: Vue.ref(50),
     heartConfig: Vue.ref({ hearts_max: 6, hearts_refill_price: 50 }),
     offerWording: () => null,
-    refreshPremiumStatus: async () => ({ premium: false, autopay: null, renewal: null }),
-    getHearts: async () => {},
+    refreshPremiumStatus: async () => {
+      calls.sequence.push("premium status");
+      return { premium: false, autopay: null, renewal: null };
+    },
+    getHearts: async () => calls.sequence.push("hearts"),
     requestPurchaseOffer: async (path, fits) => {
       calls.requested.push(path);
+      calls.sequence.push("quote");
       const next = offers.shift() ?? null;
       if (next) assert.equal(fits(next), true, "a new quote fits the account");
       return next;
@@ -125,29 +160,55 @@ async function subscriptionPage(answers, offers) {
   return { ...page, scope, calls };
 }
 
-for (const [name, open, kind, facts] of [
-  ["Premium", (page) => page.subscribe(false), "premium_monthly", { renewal: null }],
-  ["a heart refill", (page) => page.filHearts(), "hearts", { refill_units: 4 }],
+// What the confirmation reads and requests, in order: Premium reads its status before the
+// order and again for the new quote; a heart refill reads the hearts for the new quote.
+for (const [name, open, kind, facts, steps] of [
+  [
+    "Premium",
+    (page) => page.subscribe(false),
+    "premium_monthly",
+    { renewal: null },
+    ["premium status", "premium status", "quote"],
+  ],
+  [
+    "a heart refill",
+    (page) => page.filHearts(),
+    "hearts",
+    { refill_units: 4 },
+    ["hearts", "quote"],
+  ],
 ]) {
   test(`${name} on the subscription page: a changed offer is replaced in the open dialog`, async () => {
     const first = quote(ids(1), kind, facts);
     const second = quote(ids(2), kind, facts);
-    const page = await subscriptionPage(["renew", true], [first, second]);
+    const offers = [first, second];
+    const page = await subscriptionPage(["renew", true], offers);
     await open(page);
     assert.equal(page.scope.order.value.offer.id, first.id);
+    assert.equal(page.scope.offerRenewed.value, false);
     page.scope.withdrawalConsent.value = true;
+    const before = page.calls.sequence.length;
     await page.confirmOrder();
-    // The dialog stays with the new quote, empty boxes and the notice; nothing was ordered.
+    // The dialog stays with the new quote, empty boxes and the notice above them; nothing
+    // was ordered, and no notice covers the order button.
     assert.equal(page.scope.order.value?.offer.id, second.id);
     assert.equal(page.scope.withdrawalConsent.value, false);
-    assert.deepEqual(page.calls.snackbars, [["info", "Body.OfferRenewed"]]);
+    assert.equal(page.scope.offerRenewed.value, true);
+    assert.deepEqual(page.calls.snackbars, []);
     assert.equal(page.scope.ordering.value, false);
     assert.equal(page.calls.requested.length, 2);
+    // The new quote is asked for the account as it is now: read again right before it.
+    assert.deepEqual(page.calls.sequence.slice(before), steps);
     // Confirmed again, the new quote is ordered and the dialog closes.
     page.scope.withdrawalConsent.value = true;
     await page.confirmOrder();
     assert.deepEqual(page.calls.accepted, [first.id, second.id]);
     assert.equal(page.scope.order.value, null);
+    // Opened again later, the dialog starts without the notice.
+    offers.push(quote(ids(3), kind, facts));
+    await open(page);
+    assert.equal(page.scope.order.value?.offer.id, ids(3));
+    assert.equal(page.scope.offerRenewed.value, false);
   });
 }
 
@@ -173,6 +234,7 @@ test("the heart dialog at the limit replaces a changed offer and stays open", as
       ordering: Vue.ref(true),
       loading: Vue.ref(false),
       withdrawalConsent: Vue.ref(true),
+      offerRenewed: Vue.ref(false),
       hearts: Vue.ref(0),
       heartConfig: Vue.ref({ hearts_max: 6, hearts_refill_price: 50 }),
       acceptPurchase: async () => "renew",
@@ -194,9 +256,9 @@ test("the heart dialog at the limit replaces a changed offer and stays open", as
     assert.equal(scope.ordering.value, open);
     assert.equal(scope.withdrawalConsent.value, false);
     assert.equal(scope.loading.value, false);
-    if (open) {
-      assert.equal(scope.offer.value.id, next.id);
-      assert.deepEqual(snackbars, [["info", "Body.OfferRenewed"]]);
-    } else assert.deepEqual(snackbars, []);
+    // The notice stands in the dialog above the boxes, never over the order button.
+    assert.equal(scope.offerRenewed.value, true);
+    assert.deepEqual(snackbars, []);
+    if (open) assert.equal(scope.offer.value.id, next.id);
   }
 });

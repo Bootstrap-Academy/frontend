@@ -270,7 +270,12 @@
 
           <template #consent>
             <!-- An offer with its own summary names a monthly renewal in its term line. -->
-            <OrderContract :key="order.offer.id" :offer="order.offer" v-model="withdrawalConsent" />
+            <OrderContract
+              :key="order.offer.id"
+              :offer="order.offer"
+              v-model="withdrawalConsent"
+              :renewed="offerRenewed"
+            />
           </template>
 
           <template #actions>
@@ -400,6 +405,8 @@ export default {
     });
     // The declarations of § 356 Abs. 5/6 BGB for the pending order.
     const withdrawalConsent = ref(false);
+    // The offer of the open dialog replaces one the server no longer took; the dialog says so.
+    const offerRenewed = ref(false);
 
     /**
      * The session changed while the page is open, in another tab. A visitor who logged in has
@@ -498,6 +505,7 @@ export default {
         return;
       }
       withdrawalConsent.value = false;
+      offerRenewed.value = false;
       order.value = premiumOrder(offer, status);
     }
 
@@ -516,16 +524,16 @@ export default {
           // Another tab or the public cancellation flow may have changed renewal.
           // An offer with its own summary names the renewal in its term line, and the
           // backend refuses it once the renewal differs: the order gets a new offer,
-          // shown with empty boxes.
+          // shown with empty boxes and the notice above them, which stands at once.
           if (
             offerWording(order.value.offer, locale.value) &&
             offerRenewal(order.value.offer) !== accountRenewal(status)
           ) {
             withdrawalConsent.value = false;
+            offerRenewed.value = true;
             const offer = await premiumOffer(order.value.offer.product.kind, status);
             // Without a new offer the dialog closes; the page reports why.
             order.value = offer ? premiumOrder(offer, status) : null;
-            if (offer) openSnackbar("info", "Body.OfferRenewed");
             return;
           }
           // An offer without one shows the renewal in a line of the page: show the new
@@ -545,11 +553,11 @@ export default {
         const result = await order.value.submit();
         if (result === "renew") {
           // The server refused the quote as changed, without a charge: a new one takes its
-          // place, shown with empty boxes. Without one the dialog closes; the page said why.
+          // place, shown with empty boxes and the notice above them, which stands at once.
+          // Without one the dialog closes; the page said why.
           withdrawalConsent.value = false;
-          const next = await order.value.renew();
-          order.value = next;
-          if (next) openSnackbar("info", "Body.OfferRenewed");
+          offerRenewed.value = true;
+          order.value = await order.value.renew();
         } else if (result) {
           order.value = null;
           withdrawalConsent.value = false;
@@ -573,6 +581,7 @@ export default {
       const offer = await heartsOffer();
       if (!offer) return;
       withdrawalConsent.value = false;
+      offerRenewed.value = false;
       order.value = heartsOrder(offer);
     }
 
@@ -770,6 +779,7 @@ export default {
       orderWorded,
       ordering,
       withdrawalConsent,
+      offerRenewed,
       confirmOrder,
       monthlyPrice,
       yearlyPrice,

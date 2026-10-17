@@ -1,11 +1,15 @@
 /**
  * Mounted Nuxt UI, synthetic API only. Every unrelated network origin is blocked.
  *
- * An order the server refuses as changed, without a charge (`refusal: "offer_changed"`), gets
- * a new quote in the dialog, which stays open with empty boxes and says Body.OfferRenewed; the
- * next confirmation orders the new quote. On the Premium page, for Premium and for a heart
- * refill whose hearts were lost in another tab, in German and English, on a phone and on a
- * laptop.
+ * An order whose offer the server no longer takes gets a new quote in the dialog, which stays
+ * open. "Dieses Angebot war nicht mehr aktuell …" stands inside the dialog above the boxes from
+ * the moment the refusal is known, once on the page, and the boxes start empty; the next
+ * confirmation orders the new quote. Boxes ticked at the old quote while the new one loads do
+ * not count for it: a click without ticks sends nothing. Four ways in: Premium and a heart
+ * refill on the Premium page, the heart dialog in a quiz, and a renewal that ends while the
+ * Premium dialog is open. Also: switching the language inside the dialog keeps the boxes, and
+ * a refill refused because the hearts filled up meanwhile closes the dialog in the quiz. In
+ * German and English, on a phone and on a laptop.
  *
  * Serve this checkout on RENEW_TEST_APP with NUXT_PUBLIC_BASE_API_URL set to RENEW_TEST_API,
  * as a generated build or with `nuxt dev`, then run
@@ -50,6 +54,40 @@ const session = {
   refreshToken: "synthetic-refresh-renew",
   authGeneration: "generation-renew",
 };
+const seconds = () => Math.floor(Date.now() / 1000);
+const noPremium = () => ({
+  premium: false,
+  autopay: null,
+  renewal: null,
+  since: null,
+  until: null,
+});
+const withRenewal = (price) => ({
+  premium: true,
+  autopay: "MONTHLY",
+  renewal: {
+    id: "11111111-1111-4111-8111-111111111114",
+    monthly_price: price,
+    confirmation_sent: true,
+  },
+  since: seconds() - 86400,
+  until: seconds() + 86400 * 20,
+});
+const withoutRenewal = () => ({ ...withRenewal(1000), autopay: null, renewal: null });
+const quiz = {
+  id: "mc-1",
+  task_id: "quiz-task",
+  question: "Synthetische Quizfrage?",
+  answers: ["Erste Antwort", "Zweite Antwort"],
+  single_choice: true,
+  creator: "someone-else",
+  solved: false,
+  rated: false,
+  xp: 10,
+  coins: 0,
+  enabled: true,
+  retired: false,
+};
 
 // The wording the backend issues (short order summary, both languages).
 const declaration = {
@@ -59,7 +97,7 @@ const declaration = {
 const line = (role, text) => ({ role, text });
 const half = (units, separator) =>
   units % 2 ? `${Math.floor(units / 2)}${separator}5` : String(units / 2);
-function wording(kind, units) {
+function wording(kind, units, renewal) {
   if (kind === "hearts")
     return {
       de: [
@@ -84,11 +122,20 @@ function wording(kind, units) {
         line("payment", "You pay from your balance."),
       ],
     };
+  const [termDe, termEn] = renewal
+    ? [
+        `Laufzeit: 1 Monat. Danach läuft deine monatliche Verlängerung weiter (${renewal.toLocaleString("de-DE")} Morphcoins je Monat).`,
+        `Term: 1 month. After that, your monthly renewal continues (${renewal.toLocaleString("en-US")} Morphcoins per month).`,
+      ]
+    : [
+        "Laufzeit: 1 Monat, ohne automatische Verlängerung.",
+        "Term: 1 month, no automatic renewal.",
+      ];
   return {
     de: [
       line("product", "Premium"),
       line("detail", "Unbegrenzte Herzen."),
-      line("term", "Laufzeit: 1 Monat, ohne automatische Verlängerung."),
+      line("term", termDe),
       line(
         "detail",
         "Premium startet direkt nach der Bestätigungsmail, spätestens in 24 Stunden. Läuft schon Premium, schließt die neue Zeit daran an."
@@ -102,7 +149,7 @@ function wording(kind, units) {
     en: [
       line("product", "Premium"),
       line("detail", "Unlimited hearts."),
-      line("term", "Term: 1 month, no automatic renewal."),
+      line("term", termEn),
       line(
         "detail",
         "Premium starts right after the confirmation email, within 24 hours at the latest. If Premium is already running, the new period follows it."
@@ -112,13 +159,16 @@ function wording(kind, units) {
     ],
   };
 }
+const renewalOf = (status) =>
+  status.autopay && status.renewal ? status.renewal.monthly_price : null;
 
 /** The synthetic shop: quotes, acceptances and the account's hearts, coins and Premium. */
-function shop({ hearts }) {
-  const S = { hearts, coins: 50000, premium: false, offers: [], states: {}, accepted: [] };
+function shop({ hearts, premium = noPremium() }) {
+  const S = { hearts, coins: 50000, premium, offers: [], states: {}, accepted: [], delay: 0 };
   S.quote = (kind) => {
     const units = 6 - S.hearts;
-    const { de, en } = wording(kind, units);
+    const renewal = renewalOf(S.premium);
+    const { de, en } = wording(kind, units, renewal);
     const offer = {
       id: `97000000-0000-4000-8000-${String(S.offers.length + 1).padStart(12, "0")}`,
       hash: `synthetic-hash-${S.offers.length + 1}`,
@@ -140,7 +190,11 @@ function shop({ hearts }) {
         facts:
           kind === "hearts"
             ? { maximum: 6, unit: "half_heart", refill_units: units }
-            : { months: 1, automatic_renewal: false, renewal: null },
+            : {
+                months: 1,
+                automatic_renewal: false,
+                renewal: renewal ? { monthly_price: renewal } : null,
+              },
         revision: "synthetic",
         service_starts_at: null,
       },
@@ -165,8 +219,9 @@ const results = [],
   errors = [];
 
 /**
- * A signed in browser on the Premium page. `refuse(offer, S)` decides whether the server
- * refuses an acceptance as changed.
+ * A signed in browser. `refuse(offer, S)` decides an acceptance: `"changed"` refuses it as a
+ * changed offer (with the code), `"full"` as a refill no longer needed (without one), anything
+ * else accepts it. A quote after the first takes `S.delay` milliseconds.
  */
 async function fixture(S, language, [width, height], refuse) {
   const context = await browser.newContext({
@@ -218,12 +273,17 @@ async function fixture(S, language, [width, height], refuse) {
       return answer({ MONTHLY: { price: 1000, months: 1 }, YEARLY: { price: 10000, months: 12 } });
     if (path === `/shop/coins/${user.id}`) return answer({ coins: S.coins });
     if (path === `/shop/hearts/${user.id}`) return answer({ hearts: S.hearts });
-    if (path === `/shop/premium/${user.id}`)
-      return answer({ premium: S.premium, autopay: null, renewal: null });
+    if (path === `/shop/premium/${user.id}`) return answer(S.premium);
+    if (path === "/challenges/tasks/quiz-task/multiple_choice") return answer([quiz]);
+    if (path === "/challenges/tasks/quiz-task/multiple_choice/mc-1") return answer(quiz);
+    if (path.includes("unrated") || path.includes("notifications")) return answer([]);
     if (path === "/shop/purchases" && method === "GET")
       return answer(S.offers.map((offer) => ({ state: S.states[offer.id], offer })));
     const kind = path.match(/^\/shop\/purchases\/offers\/(hearts|premium_monthly)$/)?.[1];
-    if (kind && method === "POST") return answer({ state: "offered", offer: S.quote(kind) });
+    if (kind && method === "POST") {
+      if (S.offers.length && S.delay) await new Promise((done) => setTimeout(done, S.delay));
+      return answer({ state: "offered", offer: S.quote(kind) });
+    }
     const one = path.match(/^\/shop\/purchases\/([0-9a-f-]{36})$/)?.[1];
     if (one && method === "GET") {
       const offer = S.offers.find((o) => o.id === one);
@@ -233,18 +293,23 @@ async function fixture(S, language, [width, height], refuse) {
       const offer = S.offers.find((o) => o.id === req.postDataJSON()?.order_id);
       S.accepted.push(offer?.id);
       if (!offer || S.states[offer.id] !== "offered") return answer({ detail: "x" }, 409);
-      if (refuse(offer, S)) {
+      const refusal = refuse(offer, S);
+      if (refusal) {
         S.states[offer.id] = "failed";
-        return answer({
-          state: "failed",
-          offer,
-          review_reason: "Offer expired or changed; no charge",
-          refusal: "offer_changed",
-        });
+        return answer(
+          refusal === "changed"
+            ? {
+                state: "failed",
+                offer,
+                review_reason: "Offer expired or changed; no charge",
+                refusal: "offer_changed",
+              }
+            : { state: "failed", offer, review_reason: "No refill necessary; no charge" }
+        );
       }
       S.states[offer.id] = "fulfilled";
       if (offer.product.kind === "hearts") S.hearts = 6;
-      else S.premium = true;
+      else S.premium = { ...S.premium, premium: true };
       S.coins -= offer.product.coins;
       return answer({ state: "fulfilled", offer });
     }
@@ -265,112 +330,229 @@ async function settle(page, ms = 400) {
     .catch(() => {});
 }
 
-/** The open dialog: its offer lines, the boxes, and whether the order button is in view. */
-const dialog = (page, label) =>
-  page.evaluate((label) => {
-    const modal = document.querySelector(".modal-content");
-    const contract = modal?.querySelector("[data-purchase-contract]");
-    if (!contract) return null;
-    const button = [...modal.querySelectorAll("[data-order-actions] button")].find(
-      (candidate) => candidate.textContent.trim() === label
-    );
-    const rect = button?.getBoundingClientRect();
-    return {
-      lines: [...contract.querySelectorAll("[data-line]")].map((node) => node.textContent.trim()),
-      boxes: [...modal.querySelectorAll("input[type=checkbox]")].map((box) => box.checked),
-      buttonInView: !!rect && rect.top >= 0 && rect.bottom <= innerHeight,
-    };
-  }, label);
+/** The open dialog: its offer lines, the boxes, the notice, and the order button. */
+const dialog = (page, [label, notice]) =>
+  page.evaluate(
+    ([label, notice]) => {
+      const modal = document.querySelector(".modal-content");
+      const contract = modal?.querySelector("[data-purchase-contract]");
+      if (!contract) return null;
+      const button = [...modal.querySelectorAll("[data-order-actions] button")].find(
+        (candidate) => candidate.textContent.trim() === label
+      );
+      const rect = button?.getBoundingClientRect();
+      const shown = modal.querySelector("[data-offer-renewed]");
+      const box = modal.querySelector("[data-purchase-acceptance]");
+      const text = document.body.innerText;
+      return {
+        lines: [...contract.querySelectorAll("[data-line]")].map((node) => node.textContent.trim()),
+        boxes: [...modal.querySelectorAll("input[type=checkbox]")].map((input) => input.checked),
+        buttonInView: !!rect && rect.top >= 0 && rect.bottom <= innerHeight,
+        buttonBottom: rect ? Math.round(rect.bottom) : null,
+        notice: shown?.textContent.trim() ?? null,
+        noticeAboveBoxes:
+          !!shown &&
+          !!box &&
+          shown.getBoundingClientRect().bottom <= box.getBoundingClientRect().top,
+        noticeOnPage: text.split(notice).length - 1,
+      };
+    },
+    [label, notice]
+  );
 
-async function order(page, language) {
+const tick = async (page) => {
   await page.locator(".modal-content [data-purchase-acceptance]").check({ force: true });
   await page.locator(".modal-content [data-purchase-early]").check({ force: true });
-  await page
-    .locator(".modal-content [data-order-actions] button", {
-      hasText: tr(language, "Buttons.OrderWithObligationToPay"),
-    })
-    .click();
-}
+};
+const orderButton = (page, language) =>
+  page.locator(".modal-content [data-order-actions] button", {
+    hasText: tr(language, "Buttons.OrderWithObligationToPay"),
+  });
+const contract = (page) => page.locator(".modal-content [data-purchase-contract]");
+const premiumButton = (page) =>
+  page
+    .locator("button:has(img[src*='coin'])")
+    .filter({ hasText: /Morphcoins/i })
+    .first();
 
-const cases = {
+const quizPage = "/quizzes/solve-quiz-task?quizzesFrom=quiz";
+const ways = {
   // The server refuses the first Premium quote as changed (a new revision of the texts).
   premium: {
-    hearts: 6,
-    refuse: (offer, S) => offer.id === S.offers[0].id,
-    open: (page) =>
-      page
-        .locator("button:has(img[src*='coin'])")
-        .filter({ hasText: /Morphcoins/i })
-        .first(),
-    renewed: (language) => (language === "de" ? "Premium" : "Premium"),
+    page: "/subscription",
+    shop: () => shop({ hearts: 6 }),
+    refuse: (offer, S) => offer.id === S.offers[0].id && "changed",
+    open: (page) => premiumButton(page),
   },
   // The account loses its last hearts in another tab while the dialog is open: the quote no
   // longer ends at 3 of 3, so the server refuses it as changed.
   hearts: {
-    hearts: 2,
-    refuse: (offer, S) => S.hearts + offer.product.facts.refill_units !== 6,
+    page: "/subscription",
+    shop: () => shop({ hearts: 2 }),
+    refuse: (offer, S) => S.hearts + offer.product.facts.refill_units !== 6 && "changed",
     before: (S) => (S.hearts = 0),
     open: (page, language) =>
       page.locator("button", { hasText: tr(language, "Buttons.Refill") }).first(),
     renewed: (language) =>
       language === "de" ? "Du bekommst 3 Herzen dazu" : "You get 3 more hearts",
   },
+  // The heart dialog at the limit, inside a quiz; the learner stays in the quiz.
+  quiz: {
+    page: quizPage,
+    shop: () => shop({ hearts: 0 }),
+    refuse: (offer, S) => offer.id === S.offers[0].id && "changed",
+    open: (page, language) =>
+      page.locator("button", { hasText: tr(language, "Headings.RefillHearts") }).first(),
+  },
+  // The renewal ends in another tab while the Premium dialog is open (#832): the page brings
+  // a new quote before anything is sent.
+  renewal: {
+    page: "/subscription",
+    shop: () => shop({ hearts: 6, premium: withRenewal(1000) }),
+    refuse: () => false,
+    before: (S) => (S.premium = withoutRenewal()),
+    open: (page) => premiumButton(page),
+    renewed: (language) =>
+      language === "de" ? "ohne automatische Verlängerung" : "no automatic renewal",
+    sent: 0,
+  },
 };
 
+async function openDialog(way, f, language) {
+  await f.page.goto(app + way.page);
+  const opener = way.open(f.page, language);
+  await opener.waitFor({ state: "visible" });
+  await opener.click();
+  await contract(f.page).waitFor();
+  await settle(f.page);
+}
+
+/** Refused (or renewed) and replaced; with `retick`, the old boxes are ticked while the new
+ * quote loads, and a click without ticks then sends nothing. */
+async function renew(way, f, S, language, retick) {
+  const labels = [
+    tr(language, "Buttons.OrderWithObligationToPay"),
+    tr(language, "Body.OfferRenewed"),
+  ];
+  const sent = way.sent ?? 1;
+  await openDialog(way, f, language);
+  await tick(f.page);
+  way.before?.(S);
+  if (retick) S.delay = 2500;
+  await orderButton(f.page, language).click();
+  // The notice stands as soon as the refusal is known, while the new quote is on its way.
+  await f.page.locator(".modal-content [data-offer-renewed]").waitFor();
+  if (retick) {
+    assert.equal(S.offers.length, 1, "the new quote is still loading");
+    await tick(f.page);
+  }
+  for (let i = 0; S.offers.length < 2 && i < 100; i++) await f.page.waitForTimeout(100);
+  await settle(f.page, 800);
+  const renewed = await dialog(f.page, labels);
+  if (evidence)
+    await f.page.screenshot({
+      path: join(evidence, `${retick ? "retick-" : ""}${f.label}.png`),
+    });
+  assert.ok(renewed, "the dialog stays open");
+  assert.equal(S.offers.length, 2, "one new quote");
+  assert.deepEqual(renewed.boxes, [false, false], "the boxes start empty");
+  assert.equal(renewed.notice, labels[1]);
+  assert.equal(renewed.noticeAboveBoxes, true, "the notice stands above the boxes");
+  assert.equal(renewed.noticeOnPage, 1, "the notice stands once on the page");
+  if (way.renewed)
+    assert.ok(
+      renewed.lines.some((text) => text.includes(way.renewed(language))),
+      renewed.lines.join(" | ")
+    );
+  assert.equal(new URL(f.page.url()).pathname, new URL(app + way.page).pathname);
+  assert.equal(S.accepted.length, sent);
+  if (retick) {
+    // Ticked at the old quote only: the order button of the new one is blocked, and a click
+    // on it anyway sends nothing.
+    renewed.blocked = await orderButton(f.page, language).getAttribute("aria-disabled");
+    assert.equal(renewed.blocked, "true");
+    await orderButton(f.page, language).click({ force: true });
+    await f.page.waitForTimeout(1000);
+    assert.equal(S.accepted.length, sent, "a click without ticks sends nothing");
+    assert.ok(await contract(f.page).count(), "the dialog stays");
+    assert.deepEqual((await dialog(f.page, labels)).boxes, [false, false]);
+  }
+  // Confirmed again, the new quote is ordered and the dialog closes.
+  await tick(f.page);
+  await orderButton(f.page, language).click();
+  await contract(f.page).waitFor({ state: "detached" });
+  assert.deepEqual(S.accepted.at(-1), S.offers[1].id);
+  assert.equal(new URL(f.page.url()).pathname, new URL(app + way.page).pathname);
+  return renewed;
+}
+
+const cases = [];
+for (const [name, way] of Object.entries(ways))
+  for (const retick of [false, true])
+    cases.push({
+      name: `${retick ? "retick-" : ""}${name}`,
+      way,
+      run: (f, S, language) => renew(way, f, S, language, retick),
+    });
+// Switching the language inside the dialog keeps the ticked boxes, and the order goes out.
+cases.push({
+  name: "language-switch",
+  languages: ["en-US"],
+  way: { ...ways.quiz, refuse: () => false },
+  async run(f, S, language) {
+    await openDialog(this.way, f, language);
+    await tick(f.page);
+    await f.page
+      .locator("[role=dialog] button", { hasText: /^\s*Deutsch\s*$/ })
+      .first()
+      .click();
+    await settle(f.page, 800);
+    const after = await dialog(f.page, [tr("de", "Buttons.OrderWithObligationToPay"), "-"]);
+    assert.deepEqual(after.boxes, [true, true], "the boxes stay ticked");
+    assert.equal(after.lines[0], "Herzen auffüllen");
+    await orderButton(f.page, "de").click();
+    await contract(f.page).waitFor({ state: "detached" });
+    assert.deepEqual(S.accepted, [S.offers[0].id]);
+    return after;
+  },
+});
+// The free refill came in while the dialog was open: nothing left to buy, the learner stays.
+cases.push({
+  name: "hearts-filled-meanwhile",
+  way: { ...ways.quiz, refuse: () => "full", before: (S) => (S.hearts = 6) },
+  async run(f, S, language) {
+    await openDialog(this.way, f, language);
+    await tick(f.page);
+    this.way.before(S);
+    await orderButton(f.page, language).click();
+    await contract(f.page).waitFor({ state: "detached" });
+    await f.page.waitForFunction(
+      (text) => document.body.innerText.includes(text),
+      tr(language, "Error.AlreadyHaveHearts")
+    );
+    const text = await f.page.evaluate(() => document.body.innerText);
+    assert.equal(text.includes(tr(language, "Body.PurchaseRejected")), false);
+    assert.equal(new URL(f.page.url()).pathname, "/quizzes/solve-quiz-task");
+    assert.equal(S.offers.length, 1, "no new quote");
+    return { url: new URL(f.page.url()).pathname };
+  },
+});
+
 try {
-  for (const [name, run] of Object.entries(cases))
-    for (const language of ["de", "en-US"])
+  for (const entry of cases)
+    for (const language of entry.languages ?? ["de", "en-US"])
       for (const size of [
         [390, 844],
         [1280, 800],
       ]) {
-        const label = `${name}-${language}-${size.join("x")}`;
-        const S = shop({ hearts: run.hearts });
-        const f = await fixture(S, language, size, run.refuse);
+        const label = `${entry.name}-${language}-${size.join("x")}`;
+        const S = entry.way.shop();
+        const f = await fixture(S, language, size, entry.way.refuse);
+        f.label = label;
         try {
-          const buttonLabel = tr(language, "Buttons.OrderWithObligationToPay");
-          await f.page.goto(app + "/subscription");
-          const opener = run.open(f.page, language);
-          await opener.waitFor({ state: "visible" });
-          await opener.click();
-          await f.page.locator(".modal-content [data-purchase-contract]").waitFor();
-          await settle(f.page);
-          const first = await dialog(f.page, buttonLabel);
-          run.before?.(S);
-          await order(f.page, language);
-          await f.page.waitForFunction(
-            (notice) => document.body.innerText.includes(notice),
-            tr(language, "Body.OfferRenewed")
-          );
-          await settle(f.page);
-          const renewed = await dialog(f.page, buttonLabel);
-          if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`) });
-          // The dialog stays with the new quote and empty boxes, the page stays.
-          assert.ok(renewed, "the dialog stays open");
-          assert.deepEqual(renewed.boxes, [false, false], "the boxes start empty");
-          assert.ok(
-            renewed.lines.some((text) => text.includes(run.renewed(language))),
-            renewed.lines.join(" | ")
-          );
-          assert.equal(renewed.buttonInView, true, "order button in view");
-          assert.equal(new URL(f.page.url()).pathname, "/subscription");
-          assert.equal(S.offers.length, 2, "one new quote");
-          assert.deepEqual(S.accepted, [S.offers[0].id]);
-          assert.equal(
-            (await f.page.evaluate(() => document.body.innerText)).includes(
-              tr(language, "Body.PurchaseRejected")
-            ),
-            false
-          );
-          // Confirmed again, the new quote is ordered and the dialog closes.
-          await order(f.page, language);
-          await f.page.locator(".modal-content [data-purchase-contract]").waitFor({
-            state: "detached",
-          });
-          assert.deepEqual(S.accepted, [S.offers[0].id, S.offers[1].id]);
-          assert.equal(new URL(f.page.url()).pathname, "/subscription");
+          const seen = await entry.run(f, S, language);
           assert.equal(f.foreign(), 0, "no request to another origin");
-          results.push({ name: label, passed: true, first: first?.lines[0], renewed });
+          results.push({ name: label, passed: true, seen });
         } catch (error) {
           results.push({
             name: label,

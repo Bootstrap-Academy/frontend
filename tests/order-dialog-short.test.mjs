@@ -100,7 +100,7 @@ const translation =
 const t = (language) => (key) =>
   key.split(".").reduce((part, name) => part?.[name], locales[language]) ?? key;
 
-async function contract(subject, language) {
+async function contract(subject, language, props = {}) {
   const downloads = [];
   const Contract = await component(
     "components/order/Contract.vue",
@@ -108,7 +108,9 @@ async function contract(subject, language) {
     { "vue-i18n": { useI18n: () => ({ t: t(language), locale: Vue.ref(language) }) } }
   );
   const ui = host();
-  const app = ui.renderer.createApp(() => Vue.h(Contract, { offer: subject, modelValue: false }));
+  const app = ui.renderer.createApp(() =>
+    Vue.h(Contract, { offer: subject, modelValue: false, ...props })
+  );
   app.component("i18n-t", translation(language));
   // The template reaches the auto-imported helper through the component instance.
   app.config.globalProperties.downloadPurchaseDocument = (...a) => downloads.push(a);
@@ -123,6 +125,40 @@ async function contract(subject, language) {
       .trim();
   return { ui, text, downloads, app };
 }
+
+test("a contract built while the page still holds a consent reports its empty boxes at once", async () => {
+  // Ticked at the offer before, while this one was loading: the new offer shows two empty
+  // boxes, and the page must not keep the old consent for it.
+  for (const subject of [offer(), offer({ summary: undefined })]) {
+    const emitted = [];
+    const { app } = await contract(subject, "de", {
+      modelValue: true,
+      "onUpdate:modelValue": (value) => emitted.push(value),
+    });
+    assert.equal(emitted[0], false, subject.summary ? "short" : "long");
+    app.unmount();
+  }
+});
+
+test("a renewed offer says so right above its boxes, in either layout", async () => {
+  for (const subject of [offer(), offer({ summary: undefined })])
+    for (const language of ["de", "en-US"]) {
+      const { ui, text, app } = await contract(subject, language, { renewed: true });
+      const nodes = ui.all();
+      const notice = nodes.findIndex((node) => node.props["data-offer-renewed"] !== undefined);
+      const box = nodes.findIndex((node) => node.props["data-purchase-acceptance"] !== undefined);
+      assert.ok(notice >= 0 && notice < box, `${language} ${subject.summary ? "short" : "long"}`);
+      assert.equal(nodes[notice].props.role, "status");
+      assert.equal(text(nodes[notice]), locales[language].Body.OfferRenewed);
+      app.unmount();
+      const plain = await contract(subject, language);
+      assert.equal(
+        plain.ui.all().some((node) => node.props["data-offer-renewed"] !== undefined),
+        false
+      );
+      plain.app.unmount();
+    }
+});
 
 test("a short offer shows its lines once, highlights product, term and price, and links its documents", async () => {
   const { ui, text, downloads, app } = await contract(offer(), "de");
@@ -337,6 +373,7 @@ async function premiumPage(state, request) {
     renewalOrder: Vue.ref(null),
     ordering: Vue.ref(false),
     withdrawalConsent: Vue.ref(false),
+    offerRenewed: Vue.ref(false),
     coins: Vue.ref(50000),
     locale: Vue.ref("de"),
     offerWording: purchases.offerWording,
@@ -425,7 +462,9 @@ test("a renewal that changes while the dialog is open brings a new offer, not a 
   assert.notEqual(second.id, first.id);
   assert.match(second.text, /Laufzeit: 1 Monat, ohne automatische Verlängerung\./);
   assert.equal(page.scope.withdrawalConsent.value, false, "the boxes start empty again");
-  assert.deepEqual(page.calls.snackbars, [["info", "Body.OfferRenewed"]]);
+  // The dialog says it above the boxes; no notice covers the order button.
+  assert.equal(page.scope.offerRenewed.value, true);
+  assert.deepEqual(page.calls.snackbars, []);
   assert.equal(page.scope.ordering.value, false);
   // Confirmed again with the renewal unchanged, the new offer is ordered.
   page.scope.withdrawalConsent.value = true;
@@ -524,7 +563,8 @@ test("after an acceptance without an answer, a changed renewal brings a new offe
   const renewed = page.scope.order.value.offer;
   assert.notEqual(renewed.id, saved.id, "the saved quote is not shown as new");
   assert.match(renewed.text, /\nLaufzeit: 1 Monat, ohne automatische Verlängerung\.\n/);
-  assert.deepEqual(page.calls.snackbars, [["info", "Body.OfferRenewed"]]);
+  assert.equal(page.scope.offerRenewed.value, true);
+  assert.deepEqual(page.calls.snackbars, []);
   assert.equal(store.has(key), false, "the recovery entry of the saved quote is dropped");
   assert.deepEqual(requests.slice(1), [
     `GET /shop/purchases/${saved.id}`,

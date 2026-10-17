@@ -55,7 +55,13 @@
         </template>
 
         <template #consent>
-          <OrderContract v-if="offer" :key="offer.id" :offer="offer" v-model="withdrawalConsent" />
+          <OrderContract
+            v-if="offer"
+            :key="offer.id"
+            :offer="offer"
+            v-model="withdrawalConsent"
+            :renewed="offerRenewed"
+          />
         </template>
 
         <template #actions>
@@ -86,6 +92,8 @@ export default {
     // Hearts are digital content, so the declarations of § 356 Abs. 6 Nr. 2
     // BGB are required before the refill is ordered.
     const withdrawalConsent = ref(false);
+    // The offer of the open dialog replaces one the server no longer took; the dialog says so.
+    const offerRenewed = ref(false);
 
     const hearts = computed(() => {
       return heartInfo.value?.hearts ?? 0;
@@ -127,6 +135,7 @@ export default {
         offer.value = await heartsOffer();
         if (!offer.value) return;
         withdrawalConsent.value = false;
+        offerRenewed.value = false;
         ordering.value = true;
       } finally {
         opening.value = false;
@@ -152,13 +161,13 @@ export default {
         const result = await acceptPurchase(offer.value);
         if (result === "renew") {
           // The server refused the quote as changed, without a charge: a new one takes its
-          // place, with empty boxes. Without one the dialog closes; the page said why.
+          // place, with empty boxes and the notice above them, which stands at once. Without
+          // one the dialog closes; the page said why.
           withdrawalConsent.value = false;
+          offerRenewed.value = true;
           const next = await heartsOffer();
-          if (next) {
-            offer.value = next;
-            openSnackbar("info", "Body.OfferRenewed");
-          } else ordering.value = false;
+          if (next) offer.value = next;
+          else ordering.value = false;
         } else if (result) ordering.value = false;
       } finally {
         loading.value = false;
@@ -177,6 +186,7 @@ export default {
       ordering,
       loading,
       withdrawalConsent,
+      offerRenewed,
       refillPrice,
       refillTime,
       maxHearts,

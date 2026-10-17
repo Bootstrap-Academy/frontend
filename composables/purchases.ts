@@ -341,6 +341,17 @@ export async function acceptPurchase(offer: PurchaseOffer): Promise<boolean | "r
     finishPurchaseRecovery(offer, result);
     await Promise.all([getBalance(), getHearts(), getPremiumStatus()]);
     if (result.state === "failed" && result.refusal === OFFER_CHANGED) return "renew";
+    // A refill refused because the hearts filled up in the meantime (the free refill, another
+    // tab): there is nothing left to buy, so the dialog closes and the learner stays. The
+    // hearts were just read again.
+    if (
+      result.state === "failed" &&
+      offer.product.kind === "hearts" &&
+      Number((useHeartInfo().value as any)?.hearts) >= useHeartConfig().value.hearts_max
+    ) {
+      openSnackbar("info", "Error.AlreadyHaveHearts");
+      return true;
+    }
     openSnackbar(
       result.state === "fulfilled" ? "success" : "info",
       result.state === "fulfilled"

@@ -40,6 +40,14 @@
       </p>
     </div>
     <div class="grid min-w-0 grid-cols-1 gap-3">
+      <p
+        v-if="renewed"
+        role="status"
+        class="text-body-1 m-0 font-bold text-heading"
+        data-offer-renewed
+      >
+        {{ t("Body.OfferRenewed") }}
+      </p>
       <div class="flex items-start gap-3 text-body">
         <input
           :id="acceptanceId"
@@ -114,6 +122,14 @@
         </div>
       </div>
     </details>
+    <p
+      v-if="renewed"
+      role="status"
+      class="text-body-1 m-0 font-bold text-heading"
+      data-offer-renewed
+    >
+      {{ t("Body.OfferRenewed") }}
+    </p>
     <label class="flex items-start gap-3 text-body"
       ><input
         v-model="accepted"
@@ -136,7 +152,11 @@
 import { useId } from "vue";
 import { useI18n } from "vue-i18n";
 import type { PurchaseOffer } from "~/composables/purchases";
-const props = defineProps<{ offer: PurchaseOffer; modelValue: boolean }>();
+/**
+ * `renewed`: this offer replaced one the server no longer took. The notice stands right above
+ * the boxes, which start empty again, from the moment the refusal is known.
+ */
+const props = defineProps<{ offer: PurchaseOffer; modelValue: boolean; renewed?: boolean }>();
 const emit = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
 const { t, locale } = useI18n();
 const wording = computed(() => offerWording(props.offer, locale.value));
@@ -145,7 +165,9 @@ const acceptanceId = useId();
 const highlighted = (role: string) => ["product", "term", "price"].includes(role);
 const accepted = ref(false);
 const early = ref(false);
-watch([accepted, early], ([a, b]) => emit("update:modelValue", a && b));
+// A new offer starts with empty boxes and says so at once, so that the order only goes out
+// with declarations given for the offer that is shown.
+watch([accepted, early], ([a, b]) => emit("update:modelValue", a && b), { immediate: true });
 watch(
   () => props.modelValue,
   (v) => {
