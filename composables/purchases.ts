@@ -27,7 +27,22 @@ export type PurchaseOffer = {
    * do not, and their dialog shows the full offer text instead.
    */
   summary?: { de: OfferWording; en: OfferWording };
+  /**
+   * `"button"`: an offer of stage 2 (terms 2026-10). The order button accepts it with its
+   * terms and withdrawal policy; a box remains only for its `declaration`, which only a
+   * Premium period beginning within the withdrawal period carries. Older offers have none
+   * and keep their acceptance box and declaration box.
+   */
+  acceptance?: "button";
 };
+
+/** Whether the order button alone accepts `offer` (stage 2). */
+export const buttonAccepts = (offer: PurchaseOffer | null | undefined) =>
+  offer?.acceptance === "button";
+
+/** What the page says when the order button is pressed before the boxes are ticked. */
+export const consentMissingKey = (offer: PurchaseOffer | null | undefined) =>
+  buttonAccepts(offer) ? "Error.EarlyStartMissing" : "Error.WithdrawalConsentMissing";
 
 const wordingValid = (wording: any): wording is OfferWording =>
   typeof wording?.declaration === "string" &&
@@ -242,12 +257,17 @@ export async function discardStaleOffer(offer: PurchaseOffer): Promise<boolean> 
   }
   return true;
 }
+/**
+ * The acceptance of `offer` as the dialog gives it. The order button only works once the
+ * boxes are ticked, so it states the early start whenever the offer asks for it: every
+ * paid offer of stage 1, and of stage 2 only one with a declaration.
+ */
 export function purchaseAcceptance(offer: PurchaseOffer) {
   return {
     order_id: offer.id,
     offer_hash: offer.hash,
     accepted: true,
-    early_performance_requested: true,
+    early_performance_requested: !buttonAccepts(offer) || offer.declaration !== "",
   };
 }
 /** The quote for one product: an accepted original first, then a still open quote of

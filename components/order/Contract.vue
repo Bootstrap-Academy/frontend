@@ -21,7 +21,12 @@
     data-purchase-contract
     data-purchase-summary
   >
-    <div class="grid min-w-0 grid-cols-1 gap-1 sm:gap-2" data-purchase-lines>
+    <!-- In stage 2 the whole statement above the button is one highlighted block. -->
+    <div
+      class="grid min-w-0 grid-cols-1 gap-1 sm:gap-2"
+      :class="stage2 ? 'border-l-4 border-accent pl-3' : ''"
+      :data-purchase-lines="stage2 ? 'highlighted' : ''"
+    >
       <p
         v-for="(line, index) of wording.lines"
         :key="index"
@@ -29,7 +34,9 @@
         :class="
           highlighted(line.role)
             ? 'text-heading-4 leading-snug text-heading'
-            : 'text-body-1 leading-snug text-body'
+            : stage2
+              ? 'text-body-1 leading-snug text-heading'
+              : 'text-body-1 leading-snug text-body'
         "
         :data-line="line.role"
       >
@@ -39,7 +46,49 @@
         {{ t("Body.OfferGermanBinding") }}
       </p>
     </div>
-    <div class="grid min-w-0 grid-cols-1 gap-3">
+    <!--
+      Stage 2: the order button accepts the offer with its terms and withdrawal policy, so
+      the sentence takes the place of the acceptance box. A box remains only for the early
+      start of a Premium period that begins within the withdrawal period.
+    -->
+    <div v-if="stage2" class="grid min-w-0 grid-cols-1 gap-3">
+      <p
+        v-if="renewed"
+        role="status"
+        class="text-body-2 m-0 -mb-2 leading-snug text-heading"
+        data-offer-renewed
+      >
+        {{ t("Body.OfferRenewed") }}
+      </p>
+      <p class="text-body-1 m-0 leading-snug text-body" data-purchase-accepted-by-button>
+        <i18n-t keypath="Body.OfferAcceptanceByButton" scope="global">
+          <template #button>{{ t("Buttons.OrderWithObligationToPay") }}</template>
+          <template #terms>
+            <a
+              href="#"
+              class="text-accent underline underline-offset-2"
+              data-purchase-document="terms"
+              @click.prevent="downloadPurchaseDocument(offer.id, 'terms')"
+              >{{ t("Links.TermsAndConditions") }}</a
+            >
+          </template>
+          <template #withdrawal>
+            <a
+              href="#"
+              class="text-accent underline underline-offset-2"
+              data-purchase-document="withdrawal"
+              @click.prevent="downloadPurchaseDocument(offer.id, 'withdrawal')"
+              >{{ t("Links.RightOfWithdrawalLinkText") }}</a
+            >
+          </template>
+        </i18n-t>
+      </p>
+      <label v-if="wording.declaration" class="flex items-start gap-3 text-body"
+        ><input v-model="early" data-purchase-early type="checkbox" class="mt-1 h-5 w-5 shrink-0" />
+        <span class="min-w-0 flex-1">{{ wording.declaration }}</span></label
+      >
+    </div>
+    <div v-else class="grid min-w-0 grid-cols-1 gap-3">
       <p
         v-if="renewed"
         role="status"
@@ -167,15 +216,23 @@ const acceptanceId = useId();
 const highlighted = (role: string) => ["product", "term", "price"].includes(role);
 const accepted = ref(false);
 const early = ref(false);
+// Stage 2: the order button accepts, and only a declaration of the offer needs its box.
+const stage2 = computed(() => buttonAccepts(props.offer));
+const given = computed(() =>
+  stage2.value ? !wording.value?.declaration || early.value : accepted.value && early.value
+);
 // A new offer starts with empty boxes and says so at once, so that the order only goes out
-// with declarations given for the offer that is shown.
-watch([accepted, early], ([a, b]) => emit("update:modelValue", a && b), { immediate: true });
+// with declarations given for the offer that is shown. An offer without boxes is ready to
+// be ordered from the start.
+watch(given, (value) => emit("update:modelValue", value), { immediate: true });
 watch(
   () => props.modelValue,
   (v) => {
     if (!v) {
       accepted.value = false;
       early.value = false;
+      // Emptied by the page: an offer without boxes stays ready.
+      if (given.value) emit("update:modelValue", true);
     }
   }
 );

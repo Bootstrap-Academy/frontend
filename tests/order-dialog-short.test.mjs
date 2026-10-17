@@ -104,7 +104,7 @@ async function contract(subject, language, props = {}) {
   const downloads = [];
   const Contract = await component(
     "components/order/Contract.vue",
-    { offerWording: purchases.offerWording },
+    { offerWording: purchases.offerWording, buttonAccepts: purchases.buttonAccepts },
     { "vue-i18n": { useI18n: () => ({ t: t(language), locale: Vue.ref(language) }) } }
   );
   const ui = host();
@@ -138,6 +138,144 @@ test("a contract built while the page still holds a consent reports its empty bo
     assert.equal(emitted[0], false, subject.summary ? "short" : "long");
     app.unmount();
   }
+});
+
+// Stage 2 (terms 2026-10): the order button accepts. The only declaration left is the early
+// start of a Premium period that begins within the withdrawal period.
+const PREMIUM_EARLY = {
+  de: "Ich verlange ausdrücklich, dass das bestellte Premium schon vor Ablauf der Widerrufsfrist von 14 Tagen startet. Widerrufe ich, zahle ich nur den Anteil des Preises für die Tage, an denen dieses Premium bis zu meinem Widerruf schon lief.",
+  en: "I expressly request that the Premium I ordered starts before the 14-day withdrawal period ends. If I withdraw, I only pay the share of the price for the days on which this Premium had already run until my withdrawal.",
+};
+const stage2 = (declaration = { de: "", en: "" }) =>
+  offer({
+    acceptance: "button",
+    declaration: declaration.de,
+    summary: {
+      de: { ...de, declaration: declaration.de },
+      en: { ...en, declaration: declaration.en },
+    },
+  });
+/** The acceptance sentence of stage 2 as the page writes it, with its slots filled in. */
+const byButton = (language) =>
+  locales[language].Body.OfferAcceptanceByButton.replace(
+    "{button}",
+    locales[language].Buttons.OrderWithObligationToPay
+  )
+    .replace("{terms}", locales[language].Links.TermsAndConditions)
+    .replace("{withdrawal}", locales[language].Links.RightOfWithdrawalLinkText);
+
+test("an offer of stage 2 is accepted with the order button: no acceptance box, its documents in the sentence", async () => {
+  for (const language of ["de", "en-US"]) {
+    const emitted = [];
+    const { ui, text, app } = await contract(stage2(), language, {
+      "onUpdate:modelValue": (value) => emitted.push(value),
+    });
+    const nodes = ui.all();
+    const has = (name) => nodes.some((node) => node.props[name] !== undefined);
+    assert.equal(has("data-purchase-acceptance"), false, language);
+    assert.equal(has("data-purchase-early"), false, "a heart refill needs no declaration");
+    const sentence = nodes.find(
+      (node) => node.props["data-purchase-accepted-by-button"] !== undefined
+    );
+    // The element tree joins its text nodes with a space; the quotes close up again.
+    const quoted = (value) =>
+      language === "de"
+        ? value.replace(/„ /g, "„").replace(/ “/g, "“")
+        : value.replace(/“ /g, "“").replace(/ ”/g, "”");
+    assert.equal(quoted(text(sentence)), byButton(language));
+    assert.deepEqual(
+      nodes
+        .filter((node) => node.props["data-purchase-document"])
+        .map((n) => n.props["data-purchase-document"]),
+      ["terms", "withdrawal"]
+    );
+    // The whole statement above the button is one highlighted block.
+    const block = nodes.find((node) => node.props["data-purchase-lines"] !== undefined);
+    assert.equal(block.props["data-purchase-lines"], "highlighted");
+    for (const line of nodes.filter((node) => node.props["data-line"]))
+      assert.ok(line.props.class.includes("text-heading"), line.props["data-line"]);
+    // Without a box the offer can be ordered at once.
+    assert.equal(emitted[0], true);
+    app.unmount();
+  }
+  // Stage 1 keeps its two boxes and starts with them empty.
+  const emitted = [];
+  const { ui, app } = await contract(offer(), "de", {
+    "onUpdate:modelValue": (value) => emitted.push(value),
+  });
+  assert.ok(ui.all().some((node) => node.props["data-purchase-acceptance"] !== undefined));
+  assert.equal(emitted[0], false);
+  app.unmount();
+});
+
+test("a Premium offer of stage 2 that starts within the withdrawal period keeps one box: the early start", async () => {
+  for (const [language, wording] of [
+    ["de", PREMIUM_EARLY.de],
+    ["en-US", PREMIUM_EARLY.en],
+  ]) {
+    const emitted = [];
+    const { ui, text, app } = await contract(stage2(PREMIUM_EARLY), language, {
+      "onUpdate:modelValue": (value) => emitted.push(value),
+    });
+    const nodes = ui.all();
+    assert.equal(
+      nodes.some((node) => node.props["data-purchase-acceptance"] !== undefined),
+      false
+    );
+    const box = nodes.findIndex((node) => node.props["data-purchase-early"] !== undefined);
+    assert.ok(box >= 0, language);
+    // The box is labelled with the declaration of the offer.
+    const label = nodes.slice(box).find((node) => node.type === "span");
+    assert.equal(text(label), wording);
+    // Not ready before the box is ticked.
+    assert.equal(emitted[0], false);
+    app.unmount();
+  }
+});
+
+test("emptied by the page, an offer of stage 2 without boxes stays ready to be ordered", async () => {
+  const Contract = await component(
+    "components/order/Contract.vue",
+    { offerWording: purchases.offerWording, buttonAccepts: purchases.buttonAccepts },
+    { "vue-i18n": { useI18n: () => ({ t: t("de"), locale: Vue.ref("de") }) } }
+  );
+  const model = Vue.ref(false);
+  const ui = host();
+  const app = ui.renderer.createApp(() =>
+    Vue.h(Contract, {
+      offer: stage2(),
+      modelValue: model.value,
+      "onUpdate:modelValue": (value) => (model.value = value),
+    })
+  );
+  app.component("i18n-t", translation("de"));
+  app.config.globalProperties.downloadPurchaseDocument = () => {};
+  app.mount(ui.root);
+  await settle();
+  assert.equal(model.value, true);
+  // The page empties the consent, e.g. before a new offer arrives: nothing to tick here.
+  model.value = false;
+  await settle();
+  assert.equal(model.value, true);
+  app.unmount();
+});
+
+test("the acceptance and the note on a missing box follow the stage of the offer", () => {
+  const { purchaseAcceptance, consentMissingKey } = purchases;
+  for (const [subject, early, key] of [
+    [offer(), true, "Error.WithdrawalConsentMissing"],
+    [stage2(), false, "Error.EarlyStartMissing"],
+    [stage2(PREMIUM_EARLY), true, "Error.EarlyStartMissing"],
+  ]) {
+    assert.deepEqual(purchaseAcceptance(subject), {
+      order_id: subject.id,
+      offer_hash: subject.hash,
+      accepted: true,
+      early_performance_requested: early,
+    });
+    assert.equal(consentMissingKey(subject), key);
+  }
+  for (const language of ["de", "en-US"]) assert.ok(locales[language].Error.EarlyStartMissing);
 });
 
 test("a renewed offer says so right above its boxes, in either layout", async () => {
@@ -225,7 +363,9 @@ test("the English interface shows the English wording and says that the German o
   assert.ok(all.includes(en.declaration));
   assert.ok(all.includes(locales["en-US"].Body.OfferGermanBinding));
   assert.ok(
-    all.includes("I accept this offer with its Terms & Conditions and its withdrawal policy.")
+    all.includes(
+      "I accept this offer with its Terms & Conditions and its instructions on withdrawal."
+    )
   );
   for (const line of de.lines) assert.equal(all.includes(line.text), false, line.text);
   app.unmount();

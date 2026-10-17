@@ -233,6 +233,7 @@
             :hide-actions="ordered || !profileLoaded || countryAsked"
             :loading="busy || placing"
             :worded="worded"
+            :missing-key="missingKey"
             @order="onclickOrder"
           >
             <!-- Shown for an offer without its own summary, which states amount and price itself. -->
@@ -262,6 +263,20 @@
               <p v-else-if="profileLoaded" role="status">
                 {{ t("Body.PurchaseOfferUnavailable") }}
               </p>
+            </template>
+
+            <!--
+              Until the order button is pressed the buyer can go back to the amount or stop
+              (AGB 11.1). On a phone both come after the order button, which stays in the
+              first view.
+            -->
+            <template #actions>
+              <Btn secondary class="order-last sm:order-none" @click="backToAmount">
+                {{ t("Buttons.Back") }}
+              </Btn>
+              <Btn secondary class="order-last sm:order-none" @click="cancelOrder">
+                {{ t("Buttons.Cancel") }}
+              </Btn>
             </template>
           </OrderSummary>
         </article>
@@ -308,6 +323,7 @@ export default {
     const sdkError = ref(false);
     const offer = ref(null);
     const worded = computed(() => !!offerWording(offer.value, locale.value));
+    const missingKey = computed(() => consentMissingKey(offer.value));
     // The offer has been asked for and the answer is still on its way.
     const offerPending = ref(false);
     const placing = ref(false);
@@ -485,6 +501,15 @@ export default {
 
     // Placing the order is what starts the purchase, so the PayPal SDK is
     // requested only from here (§ 25 Abs. 2 Nr. 2 TDDDG).
+    /** Back to the amount page, which shows the amount of this order again. */
+    function backToAmount() {
+      return navigateTo({ path: "/morphcoins/buy", query: { coins: String(coinsToBuy.value) } });
+    }
+    /** Stops the order without one: back to where it began, the Premium page or the coins. */
+    function cancelOrder() {
+      return navigateTo(route.query.next === "subscription" ? "/subscription" : "/morphcoins");
+    }
+
     async function onclickOrder() {
       if (
         !active ||
@@ -500,7 +525,7 @@ export default {
         return;
       sdkError.value = false;
       if (!withdrawalConsent.value) {
-        openSnackbar("error", "Error.WithdrawalConsentMissing");
+        openSnackbar("error", consentMissingKey(offer.value));
         return;
       }
 
@@ -635,7 +660,10 @@ export default {
       offer,
       offerPending,
       worded,
+      missingKey,
       onclickOrder,
+      backToAmount,
+      cancelOrder,
     };
   },
 };

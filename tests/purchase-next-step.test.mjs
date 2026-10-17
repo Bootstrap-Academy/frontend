@@ -40,6 +40,32 @@ test("Back on the coin order leads to the page the order began on", async () => 
   }
 });
 
+test("the coin order page goes back to its amount, and cancelling leaves without an order", async () => {
+  for (const [next, cancelled] of [
+    [undefined, "/morphcoins"],
+    ["subscription", "/subscription"],
+    ["https://example.invalid", "/morphcoins"],
+  ]) {
+    const visited = [];
+    const { backToAmount, cancelOrder } = await pieces(
+      "pages/morphcoins/paypal.vue",
+      ["backToAmount", "cancelOrder"],
+      {
+        coinsToBuy: Vue.ref(1500),
+        route: { query: { coins: "1500", next } },
+        navigateTo: async (to) => visited.push(to),
+      }
+    );
+    await backToAmount();
+    await cancelOrder();
+    assert.deepEqual(
+      visited,
+      [{ path: "/morphcoins/buy", query: { coins: "1500" } }, cancelled],
+      JSON.stringify(next)
+    );
+  }
+});
+
 /** vue-i18n's message format: named values in braces, plural forms split by " | ". */
 const translate =
   (language) =>

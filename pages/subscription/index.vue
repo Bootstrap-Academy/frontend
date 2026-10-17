@@ -245,6 +245,7 @@
           :loading="ordering"
           :disabled="!withdrawalConsent"
           :worded="orderWorded"
+          :missing-key="orderMissingKey"
           @order="confirmOrder"
         >
           <!-- Shown for an offer without its own summary, which states all of this itself. -->
@@ -279,9 +280,14 @@
           </template>
 
           <template #actions>
-            <Btn secondary :disabled="ordering" @click="order = null">{{
-              t("Buttons.Cancel")
-            }}</Btn>
+            <!-- On a phone the order button keeps the first row; cancelling follows it. -->
+            <Btn
+              secondary
+              class="order-last sm:order-none"
+              :disabled="ordering"
+              @click="order = null"
+              >{{ t("Buttons.Cancel") }}</Btn
+            >
           </template>
         </OrderSummary>
       </div>
@@ -394,6 +400,7 @@ export default {
     const order = ref<any>(null);
     // The offer states product, term and price itself (see `OrderContract`).
     const orderWorded = computed(() => !!offerWording(order.value?.offer, locale.value));
+    const orderMissingKey = computed(() => consentMissingKey(order.value?.offer));
     const ordering = ref(false);
     let orderOpener: HTMLElement | null = null;
     watch(order, async (value, previous) => {
@@ -512,7 +519,7 @@ export default {
     async function confirmOrder() {
       if (!order.value || ordering.value) return;
       if (!withdrawalConsent.value) {
-        openSnackbar("error", "Error.WithdrawalConsentMissing");
+        openSnackbar("error", consentMissingKey(order.value.offer));
         return;
       }
 
@@ -777,6 +784,7 @@ export default {
       heartConfig,
       order,
       orderWorded,
+      orderMissingKey,
       ordering,
       withdrawalConsent,
       offerRenewed,

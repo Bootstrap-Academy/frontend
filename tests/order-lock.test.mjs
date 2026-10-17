@@ -7,8 +7,11 @@ import { readFile } from "node:fs/promises";
 import { parse } from "@vue/compiler-sfc";
 import * as Vue from "vue";
 import { pieces } from "./helpers/component-pieces.mjs";
+import { evaluate } from "./helpers/mounted-page.mjs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+// What the pages say when a box is still open, for the offer they show.
+const { consentMissingKey } = await evaluate("composables/purchases.ts", { require: () => ({}) });
 
 function spy(result) {
   const calls = [];
@@ -107,6 +110,7 @@ test("the heart refill is not accepted without the declarations", async () => {
       offer: Vue.ref(offer),
       acceptPurchase,
       openSnackbar,
+      consentMissingKey,
     });
     await confirmOrder();
     assert.equal(acceptPurchase.calls.length, consented ? 1 : 0);
@@ -126,6 +130,7 @@ test("Premium and hearts on the Premium page are not ordered without the declara
       ordering: Vue.ref(false),
       withdrawalConsent: Vue.ref(consented),
       openSnackbar,
+      consentMissingKey,
     });
     await confirmOrder();
     assert.equal(submit.calls.length, consented ? 1 : 0);
@@ -224,6 +229,7 @@ test("a Morphcoin order is not created without the declarations", async () => {
       getPaypalClientID,
       openSnackbar,
       create,
+      consentMissingKey,
     });
     await onclickOrder();
     assert.equal(getPaypalClientID.calls.length, consented ? 1 : 0);
@@ -237,9 +243,10 @@ test("a Morphcoin order is not created without the declarations", async () => {
 
 test("the declaration labels use the colour of the surrounding order text", async () => {
   const template = parse(await read("components/order/Contract.vue")).descriptor.template.content;
-  // Two declarations in each layout: the short offer and the long one.
+  // Two declarations in each layout of stage 1, the short offer and the long one, and the
+  // one box of stage 2 (the early start of Premium).
   const labels = template.match(/<label\b[^>]*>/g);
-  assert.equal(labels.length, 4);
+  assert.equal(labels.length, 5);
   for (const label of labels) {
     if (/class="[^"]*\btext-body\b/.test(label)) continue;
     // The acceptance of a short offer is labelled by `for`; its row carries the colour.
