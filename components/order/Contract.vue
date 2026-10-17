@@ -43,7 +43,7 @@
       <p
         v-if="renewed"
         role="status"
-        class="text-body-1 m-0 font-bold text-heading"
+        class="text-body-2 m-0 -mb-2 leading-snug text-heading"
         data-offer-renewed
       >
         {{ t("Body.OfferRenewed") }}
@@ -125,7 +125,7 @@
     <p
       v-if="renewed"
       role="status"
-      class="text-body-1 m-0 font-bold text-heading"
+      class="text-body-2 m-0 -mb-2 leading-snug text-heading"
       data-offer-renewed
     >
       {{ t("Body.OfferRenewed") }}
@@ -154,7 +154,9 @@ import { useI18n } from "vue-i18n";
 import type { PurchaseOffer } from "~/composables/purchases";
 /**
  * `renewed`: this offer replaced one the server no longer took. The notice stands right above
- * the boxes, which start empty again, from the moment the refusal is known.
+ * the boxes, which start empty again, from the moment the refusal is known. It is small and
+ * sits close to the first box, so that the order button of the tallest offer (Premium naming a
+ * renewal) stays in the first view on a phone.
  */
 const props = defineProps<{ offer: PurchaseOffer; modelValue: boolean; renewed?: boolean }>();
 const emit = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();

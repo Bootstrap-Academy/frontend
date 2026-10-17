@@ -539,7 +539,7 @@
     "OrderHeartsQuantity": "Du bekommst {n} Herz dazu. | Du bekommst {n} Herzen dazu.",
     "OfferAcceptance": "Ich nehme dieses Angebot mit seinen {terms} und seiner {withdrawal} an.",
     "OfferGermanBinding": "Verbindlich ist der deutsche Wortlaut dieses Angebots.",
-    "OfferRenewed": "Dieses Angebot war nicht mehr aktuell. Hier ist ein neues, bestätige es bitte noch einmal.",
+    "OfferRenewed": "Das Angebot war nicht mehr aktuell. Bestätige bitte das neue.",
     "OrderCourseCharacteristics": "Dauerhafter Zugriff auf alle Lektionen dieses Kurses.",
     "AutomaticRenewalOn": "Monatliche automatische Verlängerung zum gesondert vereinbarten Coin-Preis; jederzeit zum Ende des bezahlten Zeitraums kündbar.",
     "AutomaticRenewalOff": "Aus – Premium endet nach deinem bezahlten Zeitraum.",
