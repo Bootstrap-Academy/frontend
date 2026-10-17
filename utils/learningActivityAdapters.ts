@@ -20,6 +20,19 @@ const legacyRequiredUnits = new Set([
   "itf-project-publish",
 ]);
 
+/**
+ * Whether the page shows a room's finished card instead of the activity. A lesson of the engine
+ * keeps its frame: a passed task is played again there, booked without XP, and the completion
+ * stays (Ä43).
+ */
+export function roomFinished(room: RoomEnvelope | null | undefined) {
+  return (
+    !!room &&
+    ["completed", "skipped"].includes(room.progress.status) &&
+    room.unit.completion_kind !== "engine"
+  );
+}
+
 export function roomActivity(room: RoomEnvelope): LearningActivity {
   const unit = room.unit;
   const exerciseKind = { multiple_choice: "quiz", matching: "matching", coding: "coding" } as const;

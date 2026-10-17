@@ -3,6 +3,10 @@ import type { LearningRequest, LearningRoomsView, RoomEnvelope } from "../types/
 import { decodeApiError } from "./apiError";
 
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+// A finished room takes no more work. A lesson of the engine stays open: a passed task is played
+// again there, booked without XP, and the completion stays (Ä43; the page: `roomFinished`).
+const closed = (room: RoomEnvelope) =>
+  ["completed", "skipped"].includes(room.progress.status) && room.unit.completion_kind !== "engine";
 function envelope(value: any): RoomEnvelope {
   if (
     !value?.unit?.id ||
@@ -316,7 +320,7 @@ export function createLearningRooms(options: {
           return await startReview();
         }
         const sameReview = (recovery.reviewId || null) === (response.progress.review_id || null);
-        if (!sameReview || !["completed", "skipped"].includes(response.progress.status)) {
+        if (!sameReview || !closed(response)) {
           view.room = {
             ...response,
             progress: {
@@ -404,7 +408,7 @@ export function createLearningRooms(options: {
         view.completing ||
         pendingComplete ||
         pendingReviewStart ||
-        ["completed", "skipped"].includes(view.room.progress.status)
+        closed(view.room)
       )
         return;
       view.draft = copy(state);
@@ -581,11 +585,7 @@ export function createLearningRooms(options: {
         pendingReviewStart = null;
         view.reviewPending = false;
         view.completionPending = false;
-        if (
-          !keepDraft ||
-          !sameReview ||
-          ["completed", "skipped"].includes(response.progress.status)
-        ) {
+        if (!keepDraft || !sameReview || closed(response)) {
           view.draft = copy(response.progress.state);
           view.dirty = false;
         } else view.dirty = true;

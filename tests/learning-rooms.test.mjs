@@ -210,6 +210,69 @@ test("revision conflict preserves local draft until an explicit reconciliation",
   assert.equal(f.view.room.progress.revision, 6);
 });
 
+test("a completed lesson of the engine takes the work of a task played again; another finished room takes none", async () => {
+  const engine = (revision, state) => {
+    const value = room(revision, state, "completed", "custom");
+    value.unit.completion_kind = "engine";
+    value.progress.result = { kind: "passed" };
+    return value;
+  };
+  const finished = fixture((path) =>
+    path.endsWith("capabilities") ? { enabled: true } : selection(room(3, {}, "completed"))
+  );
+  await finished.controller.start(true);
+  finished.controller.edit({ value: 1 });
+  assert.equal(finished.view.dirty, false);
+
+  // Ä43: edits are saved; "keep my work" after a conflict keeps them, and the completion stays.
+  let conflicted = false;
+  const f = fixture((path, method, body) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "PUT") {
+      if (!conflicted) {
+        conflicted = true;
+        throw { statusCode: 409 };
+      }
+      return engine(body.expected_revision + 1, body.state);
+    }
+    if (path.includes("loops-intro")) return engine(5, { plans: { reach: "other tab" } });
+    return selection(engine(3, {}));
+  });
+  await f.controller.start(true);
+  f.controller.edit({ plans: { reach: "mine" } });
+  assert.equal(f.view.dirty, true);
+  assert.equal(await f.controller.save(), false);
+  assert.equal(f.view.conflict, true);
+  await f.controller.resolveConflict(true);
+  assert.equal(f.view.conflict, false);
+  assert.deepEqual(
+    [f.view.room.progress.revision, f.view.room.progress.status, f.view.room.progress.state],
+    [6, "completed", { plans: { reach: "mine" } }]
+  );
+
+  // Reentry replays a lost save of it.
+  const body = { request_id: "original", expected_revision: 1, state: { value: 2 } };
+  const r = fixture((path, method, sent) => {
+    if (path.endsWith("capabilities")) return { enabled: true };
+    if (method === "PUT") return engine(sent.expected_revision + 1, sent.state);
+    return path.includes("loops-intro") ? engine(1, { value: 1 }) : selection(engine(1, { value: 1 }));
+  });
+  await r.controller.start(true, undefined, true);
+  await r.controller.restore({
+    unitId: "loops-intro",
+    revision: 1,
+    draft: { value: 2 },
+    dirty: true,
+    editVersion: 1,
+    pendingSave: { body, version: 1 },
+  });
+  assert.deepEqual(
+    r.calls.filter((c) => c.method === "PUT").map((c) => c.body),
+    [body]
+  );
+  assert.deepEqual(r.view.room.progress.state, { value: 2 });
+});
+
 test("ABA session reset discards delayed data and prevents completion following an old save", async () => {
   const waiting = deferred();
   const f = fixture((path, method) => {

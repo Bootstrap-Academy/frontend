@@ -172,7 +172,7 @@
 import { useI18n } from "vue-i18n";
 import type { LocalizedText } from "~/types/learningRooms";
 import type { LearningActivityCompletion } from "~/types/learningActivities";
-import { roomLesson } from "~/utils/learningActivityAdapters";
+import { roomFinished, roomLesson } from "~/utils/learningActivityAdapters";
 
 definePageMeta({ middleware: ["auth"] });
 const { t, locale } = useI18n();
@@ -227,9 +227,7 @@ const lesson = computed(() =>
 const activeChapter = computed(() =>
   view.value?.path?.chapters?.find((chapter) => chapter.id === view.value?.room?.unit.chapter_id)
 );
-const finished = computed(() =>
-  ["completed", "skipped"].includes(view.value?.room?.progress.status || "")
-);
+const finished = computed(() => roomFinished(view.value?.room));
 const locked = computed(
   () => !!(view.value?.completing || view.value?.conflict || view.value?.completionPending)
 );
