@@ -112,14 +112,23 @@ export default defineComponent({
 
     const formRef = ref<HTMLFormElement | null>(null);
 
+    // Back from the order page ("Zurück"), the form shows the amount of that order again.
+    const requested = Number(route.query.coins);
+    const coins =
+      Number.isInteger(requested) &&
+      requested >= COIN_PURCHASE_MIN &&
+      requested <= COIN_PURCHASE_MAX
+        ? requested
+        : 500;
+
     const form = reactive<IForm>({
       euros: {
         valid: true,
-        value: 5,
+        value: coinsToEuros(coins, coinConfig.value),
       },
       morphCoins: {
         valid: true,
-        value: 500,
+        value: coins,
       },
       submitting: false,
       validate: () => {
@@ -160,7 +169,9 @@ export default defineComponent({
       }
 
       if (form.validate()) {
-        router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
+        // A purchase that began at Premium goes back there after the payment.
+        const next = route.query.next === "subscription" ? "&next=subscription" : "";
+        router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}${next}`);
       } else {
         openSnackbar("error", form.euros.valid ? "Error.MinMorphcoins" : "Error.MinEuros");
       }

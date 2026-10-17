@@ -40,6 +40,56 @@ test("Back on the coin order leads to the page the order began on", async () => 
   }
 });
 
+test("the coin order page goes back to its amount, and cancelling leaves the purchase", async () => {
+  for (const [next, back, cancelled] of [
+    [undefined, { coins: "1500" }, "/dashboard"],
+    ["subscription", { coins: "1500", next: "subscription" }, "/subscription"],
+    ["https://example.invalid", { coins: "1500" }, "/dashboard"],
+  ]) {
+    const visited = [];
+    const { backToAmount, cancelOrder } = await pieces(
+      "pages/morphcoins/paypal.vue",
+      ["backToAmount", "cancelOrder"],
+      {
+        coinsToBuy: Vue.ref(1500),
+        route: { query: { coins: "1500", next } },
+        navigateTo: async (to) => visited.push(to),
+      }
+    );
+    await backToAmount();
+    await cancelOrder();
+    assert.deepEqual(
+      visited,
+      [{ path: "/morphcoins/buy", query: back }, cancelled],
+      JSON.stringify(next)
+    );
+  }
+});
+
+test("the amount page passes the way back to Premium on to the order page", async () => {
+  for (const [next, pushed] of [
+    [undefined, "/morphcoins/paypal?coins=700"],
+    ["subscription", "/morphcoins/paypal?coins=700&next=subscription"],
+    ["https://example.invalid", "/morphcoins/paypal?coins=700"],
+  ]) {
+    const visited = [];
+    const { onclickSubmitForm } = await pieces(
+      "components/form/BuyCoins.vue",
+      ["onclickSubmitForm"],
+      {
+        user: Vue.ref({ email_verified: true }),
+        profileLoaded: Vue.ref(true),
+        form: { validate: () => true, morphCoins: { value: 700 } },
+        route: { query: { coins: "700", next } },
+        router: { push: (path) => visited.push(path) },
+        openSnackbar: () => assert.fail("no notice"),
+      }
+    );
+    await onclickSubmitForm();
+    assert.deepEqual(visited, [pushed], JSON.stringify(next));
+  }
+});
+
 /** vue-i18n's message format: named values in braces, plural forms split by " | ". */
 const translate =
   (language) =>

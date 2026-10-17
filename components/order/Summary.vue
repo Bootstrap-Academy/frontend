@@ -86,7 +86,7 @@
       class="text-body-1 m-0 border-l-4 border-error pl-3 text-heading"
       role="alert"
     >
-      {{ t("Error.WithdrawalConsentMissing") }}
+      {{ t(missingKey) }}
     </p>
 
     <div
@@ -132,6 +132,11 @@ const props = defineProps({
    * lines; the summary leaves out its characteristics and its price line.
    */
   worded: { type: Boolean, default: false },
+  /**
+   * Locale key of what the summary says when the order button is pressed before the boxes
+   * are ticked (`consentMissingKey`): stage 2 only has the box of the early start.
+   */
+  missingKey: { type: String, default: "Error.WithdrawalConsentMissing" },
   /**
    * Locale key of the order button. Only override this where nothing has to
    * be paid; a paid order must use the statutory wording.

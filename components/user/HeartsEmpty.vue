@@ -41,6 +41,7 @@
         :loading="loading"
         :disabled="!withdrawalConsent"
         :worded="worded"
+        :missing-key="missingKey"
         @order="confirmOrder"
       >
         <!-- Shown for an offer without its own summary, which states quantity and price itself. -->
@@ -65,7 +66,10 @@
         </template>
 
         <template #actions>
-          <Btn secondary @click="ordering = false">{{ t("Buttons.Cancel") }}</Btn>
+          <!-- On a phone the order button keeps the first row; cancelling follows it. -->
+          <Btn secondary class="order-last sm:order-none" @click="ordering = false">{{
+            t("Buttons.Cancel")
+          }}</Btn>
         </template>
       </OrderSummary>
     </div>
@@ -104,6 +108,7 @@ export default {
     const maxHearts = computed(() => formatHearts(heartConfig.value.hearts_max, locale.value));
     const quantity = computed(() => refillQuantity(offer.value, locale.value));
     const worded = computed(() => !!offerWording(offer.value, locale.value));
+    const missingKey = computed(() => consentMissingKey(offer.value));
     const refillTime = computed(() => heartRefillTime(locale.value));
 
     // The page may stay open until the free refill; the new balance brings the
@@ -153,7 +158,7 @@ export default {
     async function confirmOrder() {
       if (loading.value) return;
       if (!withdrawalConsent.value) {
-        return openSnackbar("error", "Error.WithdrawalConsentMissing");
+        return openSnackbar("error", consentMissingKey(offer.value));
       }
 
       loading.value = true;
@@ -192,6 +197,7 @@ export default {
       maxHearts,
       quantity,
       worded,
+      missingKey,
     };
   },
 };
