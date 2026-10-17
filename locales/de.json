@@ -14,6 +14,12 @@
     "Link": "Mehr dazu",
     "Dismiss": "Schließen"
   },
+  "TermsNotice": {
+    "Label": "Neue AGB",
+    "Body": "Ab dem {date} gelten für neue Konten und neue Bestellungen neue AGB und eine neue {withdrawal}: Alle Kurse werden kostenlos, und du bestellst mit weniger Häkchen. Deine bestehenden Verträge ändern sich nicht. {changes}",
+    "Withdrawal": "Widerrufsbelehrung",
+    "Changes": "Was sich ändert"
+  },
   "English": "English",
   "German": "Deutsch",
   "Subheadings": {

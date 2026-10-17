@@ -892,6 +892,7 @@ test("actual app keeps public rights access and ordinary authentication without 
       for (const name of [
         "NuxtLoadingIndicator",
         "UpdateNotice",
+        "TermsNotice",
         "Confetti",
         "ContractTermination",
         "Snackbar",

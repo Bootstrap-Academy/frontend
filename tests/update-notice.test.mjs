@@ -251,6 +251,8 @@ async function mounted(
     "Dialog",
     "Snackbar",
     "FormWebinarRating",
+    // Its own test: `terms-notice.test.mjs`.
+    "TermsNotice",
   ])
     app.component(name, { setup: () => () => Vue.h("span", { "data-component": name }) });
   app.component("NuxtPage", { setup: () => () => Vue.h("main", "Page remains usable") });
