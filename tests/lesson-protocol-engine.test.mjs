@@ -612,6 +612,65 @@ test("Ä32b: a start refused for another revision loads the newer package, or en
   assert.equal(busy.stale.length, 0);
 });
 
+test("Ä44 (F3): a start held back by a submission still being checked reads it, and starts once it is booked", async (t) => {
+  // skills after a sandbox outage with a newer revision in between: the start is refused while the
+  // submission is pending, and only reading the submission lets skills check it again and book it.
+  const service = { sandbox: false, booked: false };
+  const booked = final(FIRST, "reach", "passed", {
+    xp: { awardId: "a-reach", xp: 1, persisted: true },
+  });
+  const f = await fixture(t, {
+    start: (goalId) => {
+      if (!service.booked)
+        throw refusal(409, {
+          code: "pending",
+          retryable: false,
+          assessments: [
+            pending(FIRST),
+            // Only pending submissions in the pattern of the route are read.
+            final(SECOND, "turn", "passed"),
+            pending("../units", "turn"),
+          ],
+        });
+      return { start: publicStart(goalId), assessments: [booked] };
+    },
+    status: (id) => {
+      if (!service.sandbox) return pending(id);
+      service.booked = true;
+      return booked;
+    },
+  });
+  const paths = () => f.engineCalls().map(({ path }) => path);
+  const start = `/skills/engine/units/${UNIT}/tasks/reach/start`;
+  const read = `/skills/engine/submissions/${FIRST}`;
+
+  // Still out: one read, then the refusal reaches the frame, which offers its retry.
+  const refused = await failure(f.sdk.startTask("reach", "op-start"));
+  assert.deepEqual([refused.code, refused.retryable], ["pending", false]);
+  assert.deepEqual(paths(), [start, read]);
+
+  // Back: the retry reads the submission again, skills books it, and the same operation starts.
+  service.sandbox = true;
+  const answer = await f.sdk.retry("op-start");
+  assert.deepEqual(paths(), [start, read, start, read, start]);
+  const starts = f.engineCalls().filter(({ path }) => path === start);
+  assert.equal(new Set(starts.map(({ body }) => body.requestId)).size, 1);
+  assert.deepEqual(answer.start, publicStart());
+  const { receiptHandle, ...shown } = answer.assessments[0];
+  assert.deepEqual(shown, booked);
+  assert.match(receiptHandle, /^[a-f0-9-]{36}$/);
+  assert.equal(f.completions().length, 0);
+
+  // A refusal that names nothing is passed on without reads.
+  const bare = await fixture(t, {
+    start: () => {
+      throw refusal(409, { code: "pending", retryable: false });
+    },
+  });
+  assert.equal((await failure(bare.sdk.startTask("reach"))).code, "pending");
+  assert.equal(bare.engineCalls().length, 1);
+});
+
 test("Ä40 a: a start refused because the unit or its task is gone ends the session", async (t) => {
   // The engine was switched off: the route answers 404 without a code, the room is gone as well.
   const withdrawn = await fixture(t, {
