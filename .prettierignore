@@ -8,3 +8,5 @@ package-lock.json
 public
 coverage
 *.log
+# Byte-exact copies of the reviewed legal drafts that the legal pages are checked against.
+tests/fixtures/legal-2026-10

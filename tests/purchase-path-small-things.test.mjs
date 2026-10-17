@@ -270,10 +270,13 @@ test("a long e-mail address wraps in the profile block of the coin order page", 
 });
 
 test("links of the legal pages are underlined along their text, on every line they run over", async () => {
+  // The texts of the terms and the withdrawal instruction live in their versioned components.
   for (const path of [
     "pages/docs/privacy.vue",
-    "pages/docs/terms-and-conditions.vue",
-    "pages/docs/right-of-withdrawal.vue",
+    "components/legal/TermsAndConditionsR4.vue",
+    "components/legal/TermsAndConditions202610.vue",
+    "components/legal/RightOfWithdrawal202609.vue",
+    "components/legal/RightOfWithdrawal202610.vue",
   ]) {
     const style = parse(await read(path))
       .descriptor.styles.map((s) => s.content)

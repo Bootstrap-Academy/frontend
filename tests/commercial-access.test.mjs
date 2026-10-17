@@ -25,6 +25,10 @@ async function moduleFrom(relative, replacements = {}) {
     'from "~/utils/pageTop"',
     `from ${JSON.stringify(new URL("../utils/pageTop.ts", import.meta.url).href)}`
   );
+  code = code.replaceAll(
+    'from "~/utils/legalEffectiveDate"',
+    `from ${JSON.stringify(new URL("../utils/legalEffectiveDate.ts", import.meta.url).href)}`
+  );
   const path = join(dir, relative.replaceAll(/[^a-z0-9]/gi, "_") + ".mjs");
   await writeFile(path, code);
   return import(pathToFileURL(path));
@@ -2338,6 +2342,75 @@ for (const signupVersion of ["2026-09-r4", "2026-09-r5"])
       }
     );
   });
+
+test("a signup form opened before terms 2026-10 took effect asks again for the new version", async () => {
+  await components();
+  const terms = await moduleFrom("../composables/terms.ts"),
+    Signup = await compileComponent("../components/form/Signup.vue"),
+    config = { TERMS_2026_10_FROM: "2099-12-09T00:00:00+01:00" },
+    requests = [],
+    notices = [];
+  await globals(
+    {
+      ...Vue,
+      TERMS_VERSION: terms.TERMS_VERSION,
+      registrationTerms: terms.registrationTerms,
+      useRuntimeConfig: () => ({ public: config }),
+      getRegisterToken: () => null,
+      useRouter: () => ({ push: () => assert.fail("no successful signup navigation") }),
+      useRoute: () => ({ query: {} }),
+      internalPath: () => "",
+      openSnackbar: (...args) => notices.push(args),
+      signup: async (body) => {
+        requests.push(structuredClone(body));
+        return [null, { detail: "Not the current version of the terms and conditions" }];
+      },
+    },
+    async () => {
+      const ui = host(),
+        app = ui.renderer.createApp(Signup);
+      app.use(createI18n({ legacy: false, locale: "en-US", messages }));
+      for (const name of ["Input", "InputCheckbox", "InputBtn", "NuxtLink", "FormOAuthProviders"])
+        app.component(name, {
+          setup:
+            (_props, { slots }) =>
+            () =>
+              h("span", slots.default?.()),
+        });
+      const vm = app.mount(ui.root);
+      try {
+        ui.all().find((node) => node.type === "form").querySelector = () => null;
+        for (const [name, value] of Object.entries({
+          name: "synthetic",
+          email: "synthetic@example.invalid",
+          password: "Synthetic123",
+          termsAndConditions: true,
+          ageConfirmed: true,
+        })) {
+          vm.form[name].value = value;
+          vm.form[name].valid = true;
+        }
+        assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions");
+        // The form stays open while the start passes; the server has switched.
+        config.TERMS_2026_10_FROM = "2026-10-01T00:00:00+02:00";
+        await vm.onclickSubmitForm();
+        assert.equal(requests[0].terms_version, "2026-09-r4", "the version the form showed");
+        assert.deepEqual(notices.at(-1), ["error", "Error.TermsChanged"]);
+        assert.equal(vm.signupTerms.url, "/docs/terms-and-conditions-2026-10");
+        assert.equal(vm.form.termsAndConditions.value, false, "the box has to be ticked again");
+        assert(messages["de"].Error.TermsChanged && messages["en-US"].Error.TermsChanged);
+        await vm.onclickSubmitForm();
+        assert.equal(requests.length, 1, "nothing is sent before the box is ticked again");
+        vm.form.termsAndConditions.value = true;
+        vm.form.termsAndConditions.valid = true;
+        await vm.onclickSubmitForm();
+        assert.equal(requests[1].terms_version, "2026-10");
+      } finally {
+        app.unmount();
+      }
+    }
+  );
+});
 
 test("registration-only terms never migrate an existing account or downgrade a new account", async () => {
   const terms = await moduleFrom("../composables/terms.ts");

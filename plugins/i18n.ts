@@ -30,7 +30,7 @@ export default defineNuxtPlugin(({ vueApp }) => {
     [/^\/docs\/privacy\/?$/, "Links.Privacy"],
     [/^\/docs\/imprint\/?$/, "Links.Imprint"],
     [/^\/docs\/terms-and-conditions(-[\w-]+)?\/?$/, "Links.TermsAndConditions"],
-    [/^\/docs\/right-of-withdrawal\/?$/, "Links.RightOfWithdrawal"],
+    [/^\/docs\/right-of-withdrawal(-[\w-]+)?\/?$/, "Links.RightOfWithdrawal"],
   ];
   useHead(() => {
     const key = legal.find(([pattern]) => pattern.test(route.path))?.[1];

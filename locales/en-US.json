@@ -1198,6 +1198,7 @@
     "MessageNotSubmitted": "Message not submitted",
     "TryAgainLater": "There seems to be an error, please try again later.",
     "InvalidForm": "Please fill in form correctly.",
+    "TermsChanged": "Our terms have just changed. Please read the new version and tick the box again.",
     "MissingUserEmail": "Your email is invalid. Please login again.",
     "MinEuros": "Minimum 5 euros is required",
     "MinMorphcoins": "Minimum 500 morphcoins is required.",

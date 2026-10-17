@@ -125,9 +125,15 @@ test("the r2 contractual original is byte-preserved while the current terms reta
     "6e959b7ccb304285f6abb1ac59389e2eadb1310998ea430daed77e3e18fb71a7"
   );
   assert(archive.includes("Fassung: 2026-09-r2"));
-  const current = await read("pages/docs/terms-and-conditions.vue");
-  assert(current.includes("Fassung: 2026-09-r4"));
-  assert.match(current, /Nur bei einer falschen Lösung[\s\S]*Richtige\s+Lösungen sind kostenlos/);
-  assert(!current.includes("unabhängig davon, ob die Lösung richtig ist"));
+  // r4 until terms 2026-10 take effect, and 2026-10 keeps the rule word for word.
+  for (const file of [
+    "components/legal/TermsAndConditionsR4.vue",
+    "components/legal/TermsAndConditions202610.vue",
+  ]) {
+    const current = await read(file);
+    assert.match(current, /Nur bei einer falschen Lösung[\s\S]*Richtige\s+Lösungen sind kostenlos/);
+    assert(!current.includes("unabhängig davon, ob die Lösung richtig ist"), file);
+  }
+  assert((await read("components/legal/TermsAndConditionsR4.vue")).includes("Fassung: 2026-09-r4"));
   assert((await read("composables/terms.ts")).includes('TERMS_VERSION = "2026-09-r4"'));
 });

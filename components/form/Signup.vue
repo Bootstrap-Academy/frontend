@@ -102,10 +102,16 @@ import { guestReturnPath, authorizeGuestHandoff } from "~/utils/guest/handoff";
 import { useI18n } from "vue-i18n";
 import type { IForm } from "~/types/form";
 
+// The refusal of the backend (`OutdatedTermsVersionError`) when the request names a version
+// of the terms that is not the one signup records.
+const OUTDATED_TERMS = "not the current version of the terms and conditions";
+
 export default defineComponent({
   setup() {
     const { t } = useI18n();
-    const signupTerms = registrationTerms();
+    // The version the box links to is the version the request names. It is kept until the
+    // server refuses it, which happens when the form was opened before new terms took effect.
+    const signupTerms = ref(registrationTerms());
 
     // ============================================================= refs
     const refForm = ref<HTMLFormElement | null>(null);
@@ -181,7 +187,7 @@ export default defineComponent({
 
         // The form asks for one name. It is the display name too until the profile changes it.
         obj.display_name = form.name.value;
-        obj.terms_version = signupTerms.version;
+        obj.terms_version = signupTerms.value.version;
         obj.age_confirmed = form.ageConfirmed.value;
 
         return obj;
@@ -270,6 +276,15 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
+      // The terms changed while the form was open: the box now links the new version and has
+      // to be ticked again, because agreeing to the old text is no agreement to the new one.
+      if (String(res?.detail ?? "").toLowerCase() === OUTDATED_TERMS) {
+        signupTerms.value = registrationTerms();
+        form.termsAndConditions.value = false;
+        form.termsAndConditions.valid = false;
+        openSnackbar("error", "Error.TermsChanged");
+        return;
+      }
       openSnackbar("error", res?.detail ?? "");
     }
 
