@@ -39,6 +39,11 @@ export interface RoomProtocolSource {
   /** Parent-owned continuation survives a successful completion removing the frame. */
   advance?: () => Promise<boolean>;
   /**
+   * The room is completed or skipped, the only state in which the continuation acts. Read while
+   * rendering, it follows the room.
+   */
+  readonly completed?: boolean;
+  /**
    * Protocol 2.1: the parent's adapters to the server assessment of this unit,
    * for the package revision whose bytes were loaded. Without them the host
    * grants no host.assessment.
