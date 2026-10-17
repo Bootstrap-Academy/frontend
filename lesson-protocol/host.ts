@@ -193,6 +193,8 @@ export class LessonHost {
       this.navigating = false;
     }
   }
+  /** Settles when the lifecycle change in flight has its answer, its timeout or the close. */
+  private lifecycleSettled: Promise<unknown> = Promise.resolve();
   private transition(phase: "running" | "paused", reason: string): Promise<boolean> {
     if (!this.current() || this.lifecycle)
       return Promise.reject(new ProtocolError("locked", "Lifecycle already changing."));
@@ -200,7 +202,7 @@ export class LessonHost {
       this.pointers.clear();
       this.gestureEpoch = undefined;
     }
-    return new Promise((resolve, reject) => {
+    const changed = new Promise<boolean>((resolve, reject) => {
       const id = this.send("host.lifecycle", "request", { phase, reason })!;
       const timer = this.clock.setTimeout(() => {
         if (this.lifecycle?.id !== id) return;
@@ -210,6 +212,8 @@ export class LessonHost {
       }, 10000);
       this.lifecycle = { id, phase, timer, resolve, reject };
     });
+    this.lifecycleSettled = changed.catch(() => {});
+    return changed;
   }
   /** Flush frame-local edits before a planned route, path or activity switch. */
   prepareNavigation(): Promise<boolean> {
@@ -218,6 +222,8 @@ export class LessonHost {
       try {
         if (["loading", "negotiating", "ready"].includes(this.phase) && !(await this.opened))
           return false;
+        // A page checks, resumes the frame and has its route guard check again; that resume ends first.
+        while (this.lifecycle) await this.lifecycleSettled;
         if (!["running", "paused"].includes(this.phase)) return false;
         if (this.phase === "paused") await this.transition("running", "retained");
         const clean = await this.transition("paused", "navigation");

@@ -17,6 +17,8 @@ import { ProtocolError, type JsonObject } from "./types";
  *   `{requestId, stateRevision, answer: {startId, input}, courseId?}` answers a view, 202 while pending.
  * - GET `/skills/engine/submissions/{assessmentId}` answers a view and books a result that is ready.
  *   The route takes a submission id only, so nothing else from the frame reaches the path.
+ * - A start refused with 409 `pending` names the submissions still being checked; the adapter reads
+ *   them once and, when none is pending any more, starts again as the same operation (Ä44).
  *
  * `requestId` is the host's key of the frame's operation, so the same operation reaches the
  * service with the same id. The client never completes a lesson of the engine: the service
@@ -68,6 +70,22 @@ function retryAfterSeconds(error: unknown): number {
   return Number.isSafeInteger(seconds) && seconds > 0 ? seconds : RETRY_AFTER_SECONDS;
 }
 
+/**
+ * Ä40 H2, Ä44: a start refused with 409 `pending` names the submissions still being checked. Their
+ * ids stay with the adapter (they never reach the frame), at most a handful, each in the pattern of
+ * the status route.
+ */
+const held = new WeakMap<ProtocolError, string[]>();
+function pendingSubmissions(body: Record<string, unknown>): string[] {
+  const listed = Array.isArray(body.assessments) ? body.assessments : [];
+  const ids = listed
+    .map(record)
+    .filter((view) => view.status === "pending" && typeof view.assessmentId === "string")
+    .map((view) => view.assessmentId as string)
+    .filter((id) => SUBMISSION.test(id));
+  return [...new Set(ids)].slice(0, 8);
+}
+
 function fallbackCode(status: number) {
   if (status === 401 || status === 403) return "no_access";
   if (status === 404) return "not_found";
@@ -105,7 +123,12 @@ export function engineRefusal(error: unknown): ProtocolError {
       true,
       { retryAfterSeconds: retryAfterSeconds(error) }
     );
-  return new ProtocolError(code ?? fallbackCode(status), "The service refused this request.");
+  const refusal = new ProtocolError(
+    code ?? fallbackCode(status),
+    "The service refused this request."
+  );
+  if (status === 409 && code === "pending") held.set(refusal, pendingSubmissions(body));
+  return refusal;
 }
 
 /**
@@ -186,24 +209,47 @@ export function bindEngineAssessment(options: {
       shown.revision_id !== binding.revisionId;
     if (!newer) binding.stale();
   };
+  /**
+   * Ä44 (F3): a start held back by submissions still being checked reads each of them once. The
+   * read is what lets skills check a submission again after an outage and book its verdict; it is
+   * the only way to them once a newer revision refuses every start. Whether none is pending now.
+   */
+  const settled = async (ids: string[]) => {
+    let open = false;
+    for (const id of ids) {
+      try {
+        const view = await call(`/skills/engine/submissions/${id}`, "GET");
+        if (record(view).status !== "final") open = true;
+      } catch (error) {
+        if (error instanceof ProtocolError && error.code === "cancelled") throw error;
+        open = true;
+      }
+    }
+    return !open;
+  };
   return {
     revisionId: binding.revisionId,
     packageHash: binding.packageHash,
     async start(goalId, operationId) {
-      let answer: JsonObject;
-      try {
-        answer = await call(`${task(goalId)}/start`, "POST", {
+      const send = () =>
+        call(`${task(goalId)}/start`, "POST", {
           requestId: operationId,
           revisionId: binding.revisionId,
           ...course,
         });
+      let answer: JsonObject;
+      try {
+        answer = await send();
       } catch (error) {
         if (
           error instanceof ProtocolError &&
           (error.code === "revision_changed" || error.code === "not_found")
         )
           await renew();
-        throw error;
+        const ids = error instanceof ProtocolError ? held.get(error) : undefined;
+        // Checked now: the same operation starts once more and its answer names the verdict.
+        if (!ids?.length || !(await settled(ids))) throw error;
+        answer = await send();
       }
       // Host task 3: a start that reports the unit completed elsewhere brings the page up to date;
       // the runtime then sends no completion of its own.

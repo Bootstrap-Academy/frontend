@@ -7,16 +7,18 @@
   >
     <div class="protocol-world">
       <p v-if="phase === 'loading' || phase === 'negotiating'" role="status">{{ copy.loading }}</p>
+      <!-- F4: the page says a failure once. The frame behind it is closed, so it is kept but not shown;
+           "Schließen" below leaves as well. -->
       <div v-if="phase === 'recoverable-error'" class="protocol-error" role="alert">
         <p>{{ copy.error }}</p>
         <button type="button" :disabled="retrying || disabled" @click="retry">
           {{ copy.retry }}
         </button>
-        <button type="button" @click="close">{{ copy.back }}</button>
       </div>
       <div
         ref="surface"
         class="protocol-surface"
+        :class="{ closed: phase === 'recoverable-error' }"
         :aria-busy="phase === 'loading' || phase === 'negotiating'"
       />
     </div>
@@ -24,10 +26,12 @@
       <p class="protocol-title">{{ copy.scene }}</p>
       <progress :value="fraction" max="1" :aria-label="copy.progress" />
       <p v-if="landscapeStage && portraitViewport" class="rotation-hint">{{ copy.rotate }}</p>
+      <!-- F5: only controls that can act here, so that on a phone they take one row below the frame. -->
       <div class="protocol-buttons">
         <button
+          v-if="protocol?.previous"
           type="button"
-          :disabled="disabled || navigating || !protocol?.previous"
+          :disabled="disabled || navigating"
           @click="navigate('previous')"
         >
           {{ copy.previous }}
@@ -36,8 +40,9 @@
           {{ copy.next }}
         </button>
         <button
+          v-if="allowSkip"
           type="button"
-          :disabled="disabled || navigating || !allowSkip"
+          :disabled="disabled || navigating"
           @click="navigate('skip')"
         >
           {{ copy.skip }}
@@ -119,7 +124,6 @@ const copy = computed(() =>
         loading: "Wird geladen …",
         error: "Das hat gerade nicht geklappt. Dein bestätigter Stand bleibt erhalten.",
         retry: "Nochmal versuchen",
-        back: "Zurück",
         progress: "Fortschritt in der Szene",
         scene: "Lernszene",
         navigation: "Lektion steuern",
@@ -141,7 +145,6 @@ const copy = computed(() =>
         loading: "Loading …",
         error: "This didn't work just now. Your confirmed work is kept.",
         retry: "Try again",
-        back: "Back",
         progress: "Scene progress",
         scene: "Lesson scene",
         navigation: "Lesson controls",
@@ -471,16 +474,21 @@ defineExpose({
 </script>
 
 <style scoped>
+/*
+ * F5: the lesson takes the window up to a narrow margin, and its controls stand beside it in a
+ * narrow column. The page's header keeps its line at the top; at the sides and the bottom the
+ * margin is that of the page's floating feedback button, which the lesson then covers whole.
+ */
 .protocol-activity {
   position: fixed;
   z-index: 50;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1056px, calc(100% - 48px));
+  width: calc(100% - 32px);
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 260px;
-  height: min(720px, calc(var(--lesson-viewport-height, 100dvh) - 48px));
+  grid-template-columns: minmax(0, 1fr) 200px;
+  height: calc(var(--lesson-viewport-height, 100dvh) - 40px);
   min-height: 0;
   min-width: 0;
   background: #111827;
@@ -496,6 +504,9 @@ defineExpose({
 .protocol-surface {
   position: absolute;
   inset: 0;
+}
+.protocol-surface.closed {
+  visibility: hidden;
 }
 .protocol-world > [role="status"],
 .protocol-error {
@@ -569,9 +580,13 @@ button:focus-visible {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
       env(safe-area-inset-left);
   }
+  /* F5: one row below the frame, the progress as a line above it, so the frame keeps the height. */
   .protocol-controls {
-    gap: 6px;
-    padding: 8px 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    padding: 6px 12px;
     border-left: 0;
     border-top: 1px solid #334155;
     max-height: 40vh;
@@ -579,8 +594,13 @@ button:focus-visible {
   .protocol-title {
     display: none;
   }
-  .protocol-controls > button {
-    align-self: flex-start;
+  .protocol-controls > progress,
+  .protocol-controls > p {
+    flex-basis: 100%;
+    margin: 0;
+  }
+  .protocol-controls > progress {
+    height: 4px;
   }
 }
 </style>
