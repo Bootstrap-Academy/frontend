@@ -609,6 +609,29 @@ test("a rejected completion answer is shown as not yet right, keeps the work edi
   }
 });
 
+test("a reopened completed lesson of the engine keeps its frame; another finished room shows its card", async () => {
+  const engine = room("engine-unit", "custom");
+  engine.unit.completion_kind = "engine";
+  const finished = (value, result) => ({
+    ...value,
+    progress: { ...value.progress, review_id: null, status: "completed", result: { kind: result } },
+  });
+  // Ä43: a passed task is played again in the frame (browser run on Test, F1).
+  for (const [value, framed] of [
+    [finished(engine, "passed"), true],
+    [finished(room(), "introduced"), false],
+    [{ ...finished(room(), "introduced"), progress: { ...room().progress, status: "skipped" } }, false],
+  ]) {
+    const html = await renderLessonActivity(readyRoom({ room: value }), "de");
+    assert.equal(html.includes("data-state="), framed);
+    assert.equal(html.includes("<p>Abgeschlossen</p>"), !framed);
+    // The same rule decides on /learn.
+    assert.equal(adapters.roomFinished(value), !framed);
+  }
+  assert.equal(adapters.roomFinished(engine), false);
+  assert.equal(adapters.roomFinished(null), false);
+});
+
 test("technical save and completion errors in the lesson player keep the retryable save error", async () => {
   for (const view of [
     readyRoom({ error: "SaveError", completionPending: true }),

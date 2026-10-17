@@ -99,7 +99,7 @@ import type {
   LearningActivityCompletion,
   LearningActivityHandle,
 } from "~/types/learningActivities";
-import { roomActivity } from "~/utils/learningActivityAdapters";
+import { roomActivity, roomFinished } from "~/utils/learningActivityAdapters";
 import ActivityHost from "./ActivityHost.vue";
 import { registerLearningLogout } from "~/utils/learningStorage";
 
@@ -201,11 +201,7 @@ const locked = computed(
 // The server rejects a completed answer that does not match with 422. That is
 // feedback on the answer, not a failed save: the work is kept and can be changed.
 const answerRejected = computed(() => view.value?.error === "CheckIntroduction");
-const finished = computed(() =>
-  roomSource
-    ? ["completed", "skipped"].includes(view.value?.room?.progress.status || "")
-    : completed.value
-);
+const finished = computed(() => (roomSource ? roomFinished(view.value?.room) : completed.value));
 const renderActivity = computed(() =>
   roomSource ? (view.value?.room ? roomActivity(view.value.room) : null) : props.activity
 );

@@ -144,9 +144,9 @@ const refusal = (statusCode, data) => ({ statusCode, ...(data ? { data } : {}) }
  * skills as a stand-in: rooms with CAS, the three learner routes of the engine,
  * and the client completion that #430 refuses for a lesson of the engine.
  */
-function skills(engine = {}) {
+function skills(engine = {}, row = engineRoom()) {
   const calls = [];
-  const state = { row: engineRoom(), owner: "alpha", gone: false };
+  const state = { row, owner: "alpha", gone: false };
   const routes = {
     start: (goalId) => ({ start: publicStart(goalId), assessments: [] }),
     submit: () => pending(FIRST),
@@ -177,7 +177,8 @@ function skills(engine = {}) {
       await routes.save(body);
       if (body.expected_revision !== state.row.progress.revision) throw refusal(409);
       state.row.progress.state = clone(body.state);
-      state.row.progress.status = "in_progress";
+      // Like skills: a save starts a new room and keeps a completed one completed.
+      if (state.row.progress.status === "new") state.row.progress.status = "in_progress";
       state.row.progress.revision++;
       return clone(state.row);
     }
@@ -202,8 +203,8 @@ async function opened(t, service) {
 }
 
 /** The whole host side of one opened lesson, and a frame that speaks to it through the SDK. */
-async function fixture(t, engine = {}) {
-  const service = skills(engine);
+async function fixture(t, engine = {}, row = engineRoom()) {
+  const service = skills(engine, row);
   const { controller, view } = await opened(t, service);
   const owner = () => service.state.owner;
   const stale = [];
@@ -535,6 +536,46 @@ test("host task 3: a start that reports the unit completed elsewhere brings the 
   assert.equal(f.view().room.progress.status, "new");
   await f.sdk.startTask("reach");
   await flush();
+  assert.equal(f.view().room.progress.status, "completed");
+  assert.equal(f.completions().length, 0);
+});
+
+test("Ä43: a reopened completed lesson of the engine saves and books a task played again", async (t) => {
+  const completed = engineRoom();
+  completed.progress = {
+    revision: 4,
+    state: { formatVersion: 1, activeGoalId: "reach", plans: {} },
+    status: "completed",
+    result: { kind: "passed" },
+    review_id: null,
+  };
+  const earlier = final(FIRST, "reach", "passed", { completed: true });
+  const f = await fixture(
+    t,
+    {
+      start: (goalId) => ({ start: publicStart(goalId, "reach-again"), assessments: [earlier] }),
+      submit: (goalId) => final(SECOND, goalId, "passed", { completed: true }),
+    },
+    completed
+  );
+  // skills offers no practice round for it (F1 of the browser run), and the page asks for none.
+  assert.equal(
+    f.service.calls.some(({ path }) => path.includes("/review")),
+    false
+  );
+  assert.equal((await f.sdk.startTask("reach")).start.startId, "reach-again");
+  const work = {
+    formatVersion: 1,
+    activeGoalId: "reach",
+    plans: { reach: { kind: "program", source: "move();" } },
+  };
+  assert.equal((await f.sdk.saveState(work, { id: "replay-save" })).revision, 5);
+  const again = await f.sdk.submitAssessment("reach", {
+    startId: "reach-again",
+    input: work.plans.reach,
+  });
+  assert.deepEqual([again.outcome, again.counts, "xp" in again], ["passed", true, false]);
+  assert.deepEqual(f.service.state.row.progress.state, work);
   assert.equal(f.view().room.progress.status, "completed");
   assert.equal(f.completions().length, 0);
 });

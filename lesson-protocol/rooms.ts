@@ -145,7 +145,11 @@ export function createRoomProtocolBinding(
       };
       const save = async (state: JsonObject, revision: number, key: string) => {
         checkRevision(revision);
-        if (["completed", "skipped"].includes(data.protocolSnapshot().room!.progress.status))
+        // A completed lesson of the engine still saves: a passed task is played again there (Ä43).
+        if (
+          !engine &&
+          ["completed", "skipped"].includes(data.protocolSnapshot().room!.progress.status)
+        )
           throw new ProtocolError("locked", "Room completed.");
         // Replaying an uncertain PUT must retain the original edit version/body.
         const signature = canonicalJson({ state, revision });
