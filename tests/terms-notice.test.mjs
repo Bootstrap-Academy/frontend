@@ -45,7 +45,7 @@ for (const [folder, name] of [
 }
 const { parseAnnouncement } = await import(output("termsAnnouncement"));
 const { parseEffectiveStart } = await import(output("legalEffectiveDate"));
-const { termsNotice, isOrderRoute, TERMS_NOTICE_VERSION } = await import(output("termsNotice"));
+const { termsNotice, isGoalRoute, TERMS_NOTICE_VERSION } = await import(output("termsNotice"));
 const { updateNoticeKey, UPDATE_NOTICE_WINDOW } = await import(output("updateNotice"));
 
 const A = "10000000-0000-4000-8000-000000000001";
@@ -311,16 +311,40 @@ test("the window runs from the announcement to the start and names the date of t
   });
 });
 
-test("the pages with an order form in the page are known", () => {
-  for (const path of [
-    "/morphcoins/paypal",
-    "/morphcoins/paypal?coins=1500",
-    "/subscription/",
-    "/Subscription",
-  ])
-    assert.equal(isOrderRoute(path), true, path);
-  for (const path of ["/morphcoins/buy", "/dashboard", "/courses/python", "/subscriptions"])
-    assert.equal(isOrderRoute(path), false, path);
+// Pages someone comes to with a goal, buying or learning, and pages that carry the notice.
+const GOAL_PAGES = [
+  "/morphcoins/buy",
+  "/morphcoins/buy?for=hearts",
+  "/morphcoins/paypal",
+  "/morphcoins/paypal?coins=1500",
+  "/subscription/",
+  "/Subscription",
+  "/quizzes/solve-quiz-task?quizzesFrom=quiz",
+  "/quizzes/skill-python",
+  "/matchings/solve-42",
+  "/challenges/QuizCodingChallenge-7",
+  "/challenges/python/loops",
+  "/courses/python/lessons/intro",
+  "/courses/python/watch",
+  "/learn",
+  "/start",
+];
+const NOTICE_PAGES = [
+  "/dashboard",
+  "/courses",
+  "/courses/python",
+  "/challenges",
+  "/challenges/all",
+  "/challenges/python/create",
+  "/skill-tree",
+  "/profile/courses",
+  "/morphcoins",
+  "/subscriptions",
+];
+
+test("the pages where someone buys or learns are known", () => {
+  for (const path of GOAL_PAGES) assert.equal(isGoalRoute(path), true, path);
+  for (const path of NOTICE_PAGES) assert.equal(isGoalRoute(path), false, path);
 });
 
 for (const [language, withdrawal] of [
@@ -333,10 +357,12 @@ for (const [language, withdrawal] of [
         const notice = f.terms();
         assert(notice, "the notice is shown");
         assert.equal(f.notices().length, 1);
+        // Closed with a small "×" in the corner that says what it does.
         const button = f.ui.all(notice).find((n) => n.type === "button");
-        const words = f.ui.text(button);
-        assert.equal(f.ui.text(notice), `${BODY[language]} ${words}`);
-        assert.equal(words, messages[language].UpdateNotice.Dismiss);
+        assert.equal(f.ui.text(button), "×");
+        assert.equal(button.props["aria-label"], messages[language].UpdateNotice.Dismiss);
+        assert.equal(button.props.type, "button");
+        assert.equal(f.ui.text(notice), `${BODY[language]} ×`);
         const date = language === "de" ? "9. Dezember 2026" : "9 December 2026";
         assert.equal(f.ui.text(notice).split(date).length, 2, "the date appears once");
         const links = f.ui.all(notice).filter((n) => n.type === "a");
@@ -456,7 +482,7 @@ test("one notice at a time: the terms notice follows the update notice once that
   );
 });
 
-test("the notice stays off legal pages, the pages where a session starts and order pages", async () => {
+test("the notice stays off legal pages, the pages where a session starts and where someone buys or learns", async () => {
   await mounted(async (f) => {
     for (const path of [
       "/docs/terms-and-conditions-2026-10",
@@ -464,16 +490,17 @@ test("the notice stays off legal pages, the pages where a session starts and ord
       "/docs/terms-and-conditions",
       "/auth/login",
       "/auth/signup",
-      "/morphcoins/paypal",
-      "/subscription",
+      ...GOAL_PAGES,
     ]) {
       f.route.path = path;
       await f.tick();
       assert.equal(Boolean(f.terms()), false, path);
     }
-    f.route.path = "/morphcoins/buy";
-    await f.tick();
-    assert(f.terms());
+    for (const path of NOTICE_PAGES) {
+      f.route.path = path;
+      await f.tick();
+      assert(f.terms(), path);
+    }
     assert.deepEqual(f.store.writes, []);
   });
 });

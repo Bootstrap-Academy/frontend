@@ -33,8 +33,23 @@ export function termsNotice(config: {
   };
 }
 
-/** The pages that hold an order form in the page itself. The notice stays off them. */
-export function isOrderRoute(path: string) {
+/**
+ * The pages someone comes to with a goal: buying (the amount page and the two pages with an
+ * order form in the page itself) and learning (quiz, matching, challenge, lesson, the learning
+ * room and the guest lesson). The notice stays off them; overview and course pages carry it.
+ */
+const PURCHASE_PAGES = ["/morphcoins/buy", "/morphcoins/paypal", "/subscription"];
+const LEARNING_PAGES = [
+  /^\/quizzes\/(solve|skill)-[^/]+$/,
+  /^\/matchings\/solve-[^/]+$/,
+  /^\/challenges\/quizcodingchallenge-[^/]+$/,
+  /^\/challenges\/[^/]+\/(?!create$)[^/]+$/,
+  /^\/courses\/[^/]+\/(lessons\/[^/]+|watch)$/,
+  /^\/(learn|start)$/,
+];
+export function isGoalRoute(path: string) {
   const pathname = (path.split(/[?#]/, 1)[0] ?? "").toLowerCase().replace(/\/+$/, "");
-  return pathname === "/morphcoins/paypal" || pathname === "/subscription";
+  return (
+    PURCHASE_PAGES.includes(pathname) || LEARNING_PAGES.some((pattern) => pattern.test(pathname))
+  );
 }

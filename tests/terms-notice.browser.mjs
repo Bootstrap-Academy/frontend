@@ -3,10 +3,11 @@
  *
  * The notice of terms 2026-10 (part 2 of the announcement) in a real browser whose clock is set
  * before, inside and after its window. Inside, it says part 2 with the date once and links both
- * documents; it can be closed and stays closed for the account. It takes nothing from an order:
- * the order button and every box of the heart dialog in a quiz, the Premium dialog and the coin
- * order page stand exactly where they stand with the notice closed. In German and English, on a
- * phone (390 × 844) and on a laptop (1280 × 800).
+ * documents in a small card that takes at most a quarter of the screen; a "×" closes it for the
+ * account. It is not on the amount page or on learning pages, and it takes nothing from an
+ * order: the order button and every box of the heart dialog in a quiz, the Premium dialog and
+ * the coin order page stand exactly where they stand with the notice closed. In German and
+ * English, on a phone (390 × 844) and on a laptop (1280 × 800).
  *
  * Build this checkout with NUXT_PUBLIC_BASE_API_URL=NOTICE_TEST_API,
  * NUXT_PUBLIC_TERMS_2026_10_FROM=2026-12-09T00:00:00+01:00 and
@@ -321,8 +322,17 @@ const noticeOn = (page) =>
         a.getAttribute("href"),
         a.textContent.trim(),
       ]),
-      button: notice.querySelector("button").textContent.trim(),
+      button: (() => {
+        const button = notice.querySelector("button");
+        const box = button.getBoundingClientRect();
+        return {
+          text: button.textContent.trim(),
+          label: button.getAttribute("aria-label"),
+          size: [Math.round(box.width), Math.round(box.height)],
+        };
+      })(),
       label: notice.getAttribute("aria-label"),
+      viewport: innerHeight,
       position: getComputedStyle(notice).position,
       top: Math.round(rect.top),
       height: Math.round(rect.height),
@@ -330,6 +340,9 @@ const noticeOn = (page) =>
     };
   });
 const count = (text, part) => text.split(part).length - 1;
+// An ordinary page that carries the notice, and the share of the screen the card may take.
+const NOTICE_PAGE = "/dashboard";
+const NOTICE_SHARE = 0.25;
 
 /** Where the order button and every box of an order form stand, and whether a notice is there. */
 const orderForm = (page, [root, label]) =>
@@ -365,8 +378,8 @@ const surfaces = {
     open: (page, language) =>
       page.locator("button", { hasText: tr(language, "Headings.RefillHearts") }).first(),
     root: ".modal-content",
-    // A dialog lies over the page, so the notice may stay beneath it.
-    notice: true,
+    // A learning page carries no notice.
+    notice: false,
   },
   "premium-dialog": {
     path: "/subscription",
@@ -405,7 +418,7 @@ const cases = {
   "inside-the-window": async (language, size, label) => {
     const f = await fixture(language, size, at.during);
     try {
-      await f.page.goto(app + "/morphcoins/buy");
+      await f.page.goto(app + NOTICE_PAGE);
       await f.page.locator("[data-terms-notice]").waitFor();
       await settle(f.page);
       const seen = await noticeOn(f.page);
@@ -416,9 +429,28 @@ const cases = {
         [withdrawalLink[language], tr(language, "TermsNotice.Withdrawal")],
         ["/docs/terms-and-conditions-2026-10", tr(language, "TermsNotice.Changes")],
       ]);
-      assert.equal(seen.button, tr(language, "UpdateNotice.Dismiss"));
+      // Closed with a "×" in the corner, named for screen readers, large enough to tap.
+      assert.equal(seen.button.text, "×");
+      assert.equal(seen.button.label, tr(language, "UpdateNotice.Dismiss"));
+      assert(
+        seen.button.size.every((side) => side >= 44),
+        JSON.stringify(seen.button.size)
+      );
       assert.equal(seen.label, tr(language, "TermsNotice.Label"));
       assert.equal(seen.position, "static", "it lies in the page and covers nothing");
+      assert(
+        seen.height <= seen.viewport * NOTICE_SHARE,
+        `the card takes ${seen.height} of ${seen.viewport} px`
+      );
+      // Where someone came to buy or to learn, there is none.
+      for (const path of ["/morphcoins/buy", "/quizzes/solve-quiz-task?quizzesFrom=quiz"]) {
+        await f.page.goto(app + path);
+        await f.page.locator("main").first().waitFor();
+        await settle(f.page, 1500);
+        assert.equal(await noticeOn(f.page), null, path);
+      }
+      await f.page.goto(app + NOTICE_PAGE);
+      await f.page.locator("[data-terms-notice]").waitFor();
       // The document it leads to shows without the notice.
       await f.page
         .locator("[data-terms-notice] a", { hasText: tr(language, "TermsNotice.Changes") })
@@ -432,7 +464,7 @@ const cases = {
         "the announced version of the terms is reachable"
       );
       // Closed, it stays closed for this account.
-      await f.page.goto(app + "/morphcoins/buy");
+      await f.page.goto(app + NOTICE_PAGE);
       await f.page.locator("[data-terms-notice]").waitFor();
       await f.page.locator("[data-terms-notice] button").click();
       await f.page.locator("[data-terms-notice]").waitFor({ state: "detached" });
@@ -456,7 +488,7 @@ const cases = {
     ]) {
       const f = await fixture(language, size, time);
       try {
-        await f.page.goto(app + "/morphcoins/buy");
+        await f.page.goto(app + NOTICE_PAGE);
         await f.page.locator("main").first().waitFor();
         if (shown) await f.page.locator("[data-terms-notice]").waitFor();
         else await settle(f.page, 1500);

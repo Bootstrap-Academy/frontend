@@ -2,29 +2,36 @@
   <aside
     v-if="view.visible && !waiting && announcement"
     :key="view.revision"
-    class="container my-4 print:hidden"
+    class="container my-2 print:hidden"
     :aria-label="t('TermsNotice.Label')"
     data-terms-notice
   >
-    <div class="border-accent/30 rounded-lg border bg-secondary p-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <i18n-t keypath="TermsNotice.Body" tag="p" class="min-w-0 flex-1 basis-64" scope="global">
-          <template #date>{{ german ? announcement.date : announcement.dateEn }}</template>
-          <template #withdrawal>
-            <NuxtLink
-              class="underline"
-              :to="german ? TERMS_NOTICE_WITHDRAWAL : TERMS_NOTICE_WITHDRAWAL_EN"
-              >{{ t("TermsNotice.Withdrawal") }}</NuxtLink
-            >
-          </template>
-          <template #changes>
-            <NuxtLink class="underline" :to="TERMS_NOTICE_TERMS">{{
-              t("TermsNotice.Changes")
-            }}</NuxtLink>
-          </template>
-        </i18n-t>
-        <Btn secondary v-on="{ click: view.dismiss }">{{ t("UpdateNotice.Dismiss") }}</Btn>
-      </div>
+    <!-- Small on purpose: the mail explains the change, this only points to it. -->
+    <div class="border-accent/30 relative rounded-lg border bg-secondary p-3 pr-12">
+      <i18n-t keypath="TermsNotice.Body" tag="p" class="text-body-2 m-0" scope="global">
+        <template #date>{{ german ? announcement.date : announcement.dateEn }}</template>
+        <template #withdrawal>
+          <NuxtLink
+            class="underline"
+            :to="german ? TERMS_NOTICE_WITHDRAWAL : TERMS_NOTICE_WITHDRAWAL_EN"
+            >{{ t("TermsNotice.Withdrawal") }}</NuxtLink
+          >
+        </template>
+        <template #changes>
+          <NuxtLink class="underline" :to="TERMS_NOTICE_TERMS">{{
+            t("TermsNotice.Changes")
+          }}</NuxtLink>
+        </template>
+      </i18n-t>
+      <button
+        type="button"
+        class="absolute right-0.5 top-0.5 inline-flex h-11 w-11 items-center justify-center rounded-lg text-xl leading-none text-heading hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        :aria-label="t('UpdateNotice.Dismiss')"
+        data-terms-notice-close
+        @click="view.dismiss()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
     </div>
   </aside>
 </template>
@@ -34,7 +41,7 @@ import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from "vu
 import { useI18n } from "vue-i18n";
 import { isPublicLegalRoute } from "../composables/publicLegalRoutes";
 import {
-  isOrderRoute,
+  isGoalRoute,
   termsNotice,
   TERMS_NOTICE_TERMS,
   TERMS_NOTICE_WITHDRAWAL,
@@ -74,7 +81,7 @@ if (notice)
       ready.value &&
       !isPublicLegalRoute(route.path) &&
       !isSessionEntryRoute(route.path) &&
-      !isOrderRoute(route.path)
+      !isGoalRoute(route.path)
         ? updateNoticeSubject(user.value?.id, accessToken.value, loaded.value)
         : null,
     (subject) => notice.select(subject),
