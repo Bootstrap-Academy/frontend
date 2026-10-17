@@ -16,7 +16,7 @@
 <template>
   <div
     v-if="wording"
-    class="grid min-w-0 grid-cols-1 gap-3 [overflow-wrap:anywhere] sm:gap-card"
+    class="grid min-w-0 grid-cols-1 gap-2 [overflow-wrap:anywhere] sm:gap-card"
     :lang="wording.lang"
     data-purchase-contract
     data-purchase-summary
@@ -51,7 +51,8 @@
       the sentence takes the place of the acceptance box. A box remains only for the early
       start of a Premium period that begins within the withdrawal period.
     -->
-    <div v-if="stage2" class="grid min-w-0 grid-cols-1 gap-3">
+    <!-- Phone gaps of 8 px keep the order button of the tallest dialog in the first view. -->
+    <div v-if="stage2" class="grid min-w-0 grid-cols-1 gap-2 sm:gap-3">
       <p
         v-if="renewed"
         role="status"
