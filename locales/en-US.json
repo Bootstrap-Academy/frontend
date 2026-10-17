@@ -16,7 +16,7 @@
   },
   "TermsNotice": {
     "Label": "New terms and conditions",
-    "Body": "From {date}, new terms and conditions and new {withdrawal} apply to new accounts and new orders: all courses become free, and you order with fewer checkboxes. Your existing contracts do not change. {changes}",
+    "Body": "From {date}, new terms and conditions and new {withdrawal} apply to new accounts and new orders: all courses stay free, and you order with fewer checkboxes. Your existing contracts do not change. {changes}",
     "Withdrawal": "instructions on withdrawal",
     "Changes": "What changes"
   },
