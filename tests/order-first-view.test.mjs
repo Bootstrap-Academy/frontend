@@ -235,27 +235,31 @@ test("the heart dialogs reuse a quote only while it fits the current hearts", as
   const calls = [];
   let quoteFits;
   const hearts = { value: 0 };
-  const { fnRefillHearts } = await pieces("components/user/HeartsEmpty.vue", ["fnRefillHearts"], {
-    isDaily: { value: false },
-    opening: { value: false },
-    ordering: { value: false },
-    withdrawalConsent: { value: true },
-    offer: { value: null },
-    hearts,
-    heartConfig: { value: { hearts_max: 6, hearts_refill_price: 50 } },
-    coins: { value: 1000 },
-    refillPrice: { value: 50 },
-    getBalance: async () => calls.push("balance"),
-    getHearts: async () => {
-      calls.push("hearts");
-      hearts.value = 2;
-    },
-    requestPurchaseOffer: async (path, fits) => {
-      calls.push(path);
-      quoteFits = fits;
-      return quote("open-offer", "hearts", 15);
-    },
-  });
+  const { fnRefillHearts } = await pieces(
+    "components/user/HeartsEmpty.vue",
+    ["fnRefillHearts", "heartsOffer"],
+    {
+      isDaily: { value: false },
+      opening: { value: false },
+      ordering: { value: false },
+      withdrawalConsent: { value: true },
+      offer: { value: null },
+      hearts,
+      heartConfig: { value: { hearts_max: 6, hearts_refill_price: 50 } },
+      coins: { value: 1000 },
+      refillPrice: { value: 50 },
+      getBalance: async () => calls.push("balance"),
+      getHearts: async () => {
+        calls.push("hearts");
+        hearts.value = 2;
+      },
+      requestPurchaseOffer: async (path, fits) => {
+        calls.push(path);
+        quoteFits = fits;
+        return quote("open-offer", "hearts", 15);
+      },
+    }
+  );
   await fnRefillHearts();
   assert.deepEqual(calls.slice(0, 2).sort(), ["balance", "hearts"]);
   assert.equal(calls[2], "/shop/purchases/offers/hearts");
