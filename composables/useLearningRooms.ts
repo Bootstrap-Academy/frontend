@@ -370,17 +370,19 @@ export function useLearningRooms(
       if (goingBack === operation) goingBack = undefined;
     }
   }
+  /** skills has completed or skipped the open room; only then does the continuation act. */
+  function roomDone() {
+    const value = view.value;
+    return (
+      value?.status === "ready" &&
+      !!value.room &&
+      ["completed", "skipped"].includes(value.room.progress.status)
+    );
+  }
   async function advanceProtocol() {
     const identity = owner.value;
     const value = view.value;
-    if (
-      !alive ||
-      !identity ||
-      value?.status !== "ready" ||
-      !value.room ||
-      !["completed", "skipped"].includes(value.room.progress.status)
-    )
-      return false;
+    if (!alive || !identity || !roomDone() || !value?.room) return false;
     if (options.protocolNext) return await options.protocolNext();
     const opened = await data.next(value.path?.id, value.room.unit.id);
     if (!opened || !alive || identity !== owner.value) return false;
@@ -398,6 +400,9 @@ export function useLearningRooms(
         options.protocolNext || (!options.selection && options.syncLocation !== false)
           ? advanceProtocol
           : undefined,
+      get completed() {
+        return roomDone();
+      },
       // Only a lesson of the engine gets adapters, over the same authenticated transport.
       assessment: (binding: AssessmentBinding) =>
         bindEngineAssessment({ request: transport, room: data, owner: () => owner.value, binding }),

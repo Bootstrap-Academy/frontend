@@ -622,6 +622,13 @@ function fixture(t, options = {}) {
     auth,
     dispose,
     logoutGuard,
+    /** What skills reports for the room from now on, as after the last booked pass. */
+    finish: () => {
+      remote = {
+        ...remote,
+        progress: { ...remote.progress, status: "completed", result: { kind: "passed" } },
+      };
+    },
   };
 }
 
@@ -751,6 +758,42 @@ test("the actual composable binds adapters to a lesson of the engine only, over 
   assert.match(call.headers.Authorization, /^Bearer header\./);
   // The room names no course here, so the start names none either.
   assert.deepEqual(call.body, { requestId: "op-1", revisionId: module.revision_id });
+});
+
+test("the player offers its continuation once the room it reads is completed, and only then", async (t) => {
+  const module = {
+    id: "engine-lesson",
+    api_version: 2,
+    entry_url: `https://content.pages.dev/packages/${"c".repeat(64)}/`,
+    manifest_url: `https://content.pages.dev/packages/${"c".repeat(64)}/manifest.json`,
+    manifest_hash: "a".repeat(64),
+    package_hash: "c".repeat(64),
+    revision_id: "0b9d6f3e-5a51-4f0c-9d55-3c1f4a1c0001",
+  };
+  let continued = 0;
+  const f = fixture(t, {
+    engine: module,
+    roomOptions: {
+      protocolNext: () => {
+        continued++;
+        return true;
+      },
+    },
+  });
+  await settle();
+  // What a page renders from: it follows the room without being asked again.
+  const offered = vue.computed(() => f.api.protocol.completed);
+  assert.equal(offered.value, false);
+  assert.equal(await f.api.protocol.advance(), false);
+  assert.equal(continued, 0);
+
+  // The frame's completion request makes the adapter of the engine read the room, which skills
+  // now reports completed.
+  f.finish();
+  await f.api.data.protocolRead();
+  assert.equal(offered.value, true);
+  assert.equal(await f.api.protocol.advance(), true);
+  assert.equal(continued, 1);
 });
 
 test("composed activities keep pending A through a direct visit to B without touching legacy recovery", async (t) => {

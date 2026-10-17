@@ -26,7 +26,9 @@
       <p class="protocol-title">{{ copy.scene }}</p>
       <progress :value="fraction" max="1" :aria-label="copy.progress" />
       <p v-if="landscapeStage && portraitViewport" class="rotation-hint">{{ copy.rotate }}</p>
-      <!-- F5: only controls that can act here, so that on a phone they take one row below the frame. -->
+      <!-- F5: only controls that can act here, so that on a phone they take one row below the frame.
+           "Weiter" leaves the lesson, which works once the unit is completed; until then a "Weiter"
+           in the frame is the only one on the page. -->
       <div class="protocol-buttons">
         <button
           v-if="protocol?.previous"
@@ -36,7 +38,12 @@
         >
           {{ copy.previous }}
         </button>
-        <button type="button" :disabled="disabled || navigating" @click="navigate('next')">
+        <button
+          v-if="completed"
+          type="button"
+          :disabled="disabled || navigating"
+          @click="navigate('next')"
+        >
           {{ copy.next }}
         </button>
         <button
@@ -108,6 +115,9 @@ const navigationMessage = ref("");
 const landscapeStage = ref(false);
 const portraitViewport = ref(false);
 const allowSkip = computed(() => !!props.protocol?.data.protocolSnapshot().room?.unit.skip_allowed);
+// The room as the page holds it: completed once the frame's completion request reached skills
+// and the room was read again.
+const completed = computed(() => props.protocol?.completed === true);
 let display: LessonDisplay | undefined;
 let stopSurface: (() => void) | undefined;
 const phase = ref<Phase>("loading");
@@ -206,7 +216,7 @@ function navigationKey(event: KeyboardEvent) {
     return;
   }
   if (!(event.target instanceof HTMLButtonElement)) return;
-  if (["ArrowRight", "ArrowDown"].includes(event.key)) {
+  if (["ArrowRight", "ArrowDown"].includes(event.key) && completed.value) {
     event.preventDefault();
     void navigate("next");
   }

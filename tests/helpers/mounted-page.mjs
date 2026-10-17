@@ -109,6 +109,8 @@ export function host() {
       options: [],
       selectedIndex: -1,
       addEventListener() {},
+      // What a component writing its own CSS variables reaches.
+      style: { setProperty() {}, removeProperty() {} },
       reportValidity: () => true,
       setCustomValidity() {},
       // What a form reaches for to put the cursor into one of its fields.
