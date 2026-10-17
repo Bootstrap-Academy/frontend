@@ -501,13 +501,19 @@ export default {
 
     // Placing the order is what starts the purchase, so the PayPal SDK is
     // requested only from here (§ 25 Abs. 2 Nr. 2 TDDDG).
-    /** Back to the amount page, which shows the amount of this order again. */
+    /**
+     * Back to the amount page, which shows the amount of this order again. The way back to
+     * Premium (`next`) goes along, so that "Weiter" there leads to Premium after the payment.
+     */
     function backToAmount() {
-      return navigateTo({ path: "/morphcoins/buy", query: { coins: String(coinsToBuy.value) } });
+      const coins = String(coinsToBuy.value);
+      const query =
+        route.query.next === "subscription" ? { coins, next: "subscription" } : { coins };
+      return navigateTo({ path: "/morphcoins/buy", query });
     }
-    /** Stops the order without one: back to where it began, the Premium page or the coins. */
+    /** Stops the order and leaves the purchase: back to Premium, where it began, or home. */
     function cancelOrder() {
-      return navigateTo(route.query.next === "subscription" ? "/subscription" : "/morphcoins");
+      return navigateTo(route.query.next === "subscription" ? "/subscription" : "/dashboard");
     }
 
     async function onclickOrder() {

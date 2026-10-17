@@ -169,7 +169,9 @@ export default defineComponent({
       }
 
       if (form.validate()) {
-        router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}`);
+        // A purchase that began at Premium goes back there after the payment.
+        const next = route.query.next === "subscription" ? "&next=subscription" : "";
+        router.push(`/morphcoins/paypal?coins=${form.morphCoins.value}${next}`);
       } else {
         openSnackbar("error", form.euros.valid ? "Error.MinMorphcoins" : "Error.MinEuros");
       }

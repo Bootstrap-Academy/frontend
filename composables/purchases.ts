@@ -36,9 +36,13 @@ export type PurchaseOffer = {
   acceptance?: "button";
 };
 
-/** Whether the order button alone accepts `offer` (stage 2). */
+/**
+ * Whether the order button alone accepts `offer` (stage 2). Only an offer whose summary the
+ * dialog can show is one: without it the dialog shows the offer text with both boxes, and then
+ * both are needed, whatever the offer says.
+ */
 export const buttonAccepts = (offer: PurchaseOffer | null | undefined) =>
-  offer?.acceptance === "button";
+  offer?.acceptance === "button" && offerWording(offer, "de") !== null;
 
 /** What the page says when the order button is pressed before the boxes are ticked. */
 export const consentMissingKey = (offer: PurchaseOffer | null | undefined) =>

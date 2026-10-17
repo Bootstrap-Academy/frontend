@@ -373,6 +373,7 @@ test("the coin shop leaves the decision to the order page while the profile is m
         user: Vue.ref(user),
         profileLoaded: Vue.ref(loaded),
         form: { validate: () => true, morphCoins: { value: 500 } },
+        route: { query: {} },
         router: { push: (path) => pushed.push(path) },
         openSnackbar: (...args) => notices.push(args),
       }

@@ -4,9 +4,10 @@
  * Stage 2 of the order dialog (terms 2026-10): offers with `acceptance: "button"` are accepted
  * with the order button. Heart refills and coins have no box at all; Premium has one box, the
  * early start, only when its period begins within the withdrawal period. The order goes out
- * with the early start only where the box was ticked. The coin order page offers "Zurück" to
- * the amount, which it keeps, and "Abbrechen". In German and English, on a phone and on a
- * laptop; the order button stands in the first view.
+ * with the early start only where the box was ticked. The statement above the button is one
+ * block with the accent border. The coin order page offers "Zurück" to the amount, which it
+ * keeps together with the way back to Premium, and "Abbrechen", which leaves the purchase. In
+ * German and English, on a phone and on a laptop; the order button stands in the first view.
  *
  * Serve this checkout on STAGE2_TEST_APP with NUXT_PUBLIC_BASE_API_URL set to STAGE2_TEST_API,
  * as a generated build or with `nuxt dev`, then run
@@ -70,7 +71,7 @@ const quiz = {
 // The wording of stage 2 as the backend issues it.
 const EARLY = {
   de: "Ich verlange ausdrücklich, dass das bestellte Premium schon vor Ablauf der Widerrufsfrist von 14 Tagen startet. Widerrufe ich, zahle ich nur den Anteil des Preises für die Tage, an denen dieses Premium bis zu meinem Widerruf schon lief.",
-  en: "I expressly request that the Premium I ordered starts before the 14-day withdrawal period ends. If I withdraw, I only pay the share of the price for the days on which this Premium had already run until my withdrawal.",
+  en: "I expressly request that the Premium I have ordered starts before the 14-day withdrawal period ends. If I withdraw, I pay only the share of the price for the days on which this Premium had already been running up to my withdrawal.",
 };
 const line = (role, text) => ({ role, text });
 function wording(kind, coins) {
@@ -325,7 +326,20 @@ const summary = (page, [root, label]) =>
       const rect = button?.getBoundingClientRect();
       const area =
         root === "main" ? scope.getBoundingClientRect() : { top: 0, bottom: innerHeight };
+      // The border of the highlighted block as the browser draws it, against the accent colour.
+      const lines = contract.querySelector("[data-purchase-lines]");
+      const style = lines ? getComputedStyle(lines) : null;
+      const probe = document.createElement("span");
+      probe.className = "text-accent";
+      document.body.append(probe);
+      const accent = getComputedStyle(probe).color;
+      probe.remove();
       return {
+        border: style && {
+          width: style.borderLeftWidth,
+          style: style.borderLeftStyle,
+          accent: style.borderLeftColor === accent,
+        },
         acceptanceBox: !!contract.querySelector("[data-purchase-acceptance]"),
         earlyBox: !!contract.querySelector("[data-purchase-early]"),
         sentence:
@@ -377,9 +391,11 @@ async function open(f, language, path, opener, label) {
   assert.equal(seen.acceptanceBox, false, "no acceptance box");
   assert.equal(seen.sentence, byButton(language));
   assert.equal(seen.highlighted, "highlighted");
+  assert.deepEqual(seen.border, HIGHLIGHT, "the block carries the accent border");
   assert.equal(seen.inView, true, `order button ends at ${seen.buttonBottom} px`);
   return seen;
 }
+const HIGHLIGHT = { width: "4px", style: "solid", accent: true };
 
 const cases = {
   "hearts-in-a-quiz": async (f, S, language, label) => {
@@ -471,26 +487,43 @@ const cases = {
     assert.equal(seen.acceptanceBox, false);
     assert.equal(seen.earlyBox, false, "a coin purchase has no box");
     assert.equal(seen.sentence, byButton(language));
+    assert.deepEqual(seen.border, HIGHLIGHT, "the block carries the accent border");
     assert.equal(seen.inView, true, `order button ends at ${seen.buttonBottom} px`);
-    // "Zurück" leads to the amount, which the amount page shows again.
-    await f.page
-      .locator("main [data-order-actions] button", { hasText: tr(language, "Buttons.Back") })
-      .click();
+    const actionButton = (key) =>
+      f.page.locator("main [data-order-actions] button", { hasText: tr(language, key) });
+    // From Premium, "Zurück" leads to the amount, which the amount page shows again, and the
+    // way back to Premium stays with it through "Weiter".
+    await f.page.goto(app + "/morphcoins/paypal?coins=1500&next=subscription");
+    await f.page.locator("main [data-purchase-contract]").waitFor();
+    await actionButton("Buttons.Back").click();
     await f.page.waitForURL(
-      (url) => url.pathname === "/morphcoins/buy" && url.searchParams.get("coins") === "1500"
+      (url) =>
+        url.pathname === "/morphcoins/buy" &&
+        url.searchParams.get("coins") === "1500" &&
+        url.searchParams.get("next") === "subscription"
     );
     await f.page.waitForFunction(() =>
       [...document.querySelectorAll("main input")].some(
         (input) => input.value.replace(/\D/g, "") === "1500"
       )
     );
-    // "Abbrechen" stops the order without one.
-    await f.page.goto(app + "/morphcoins/paypal?coins=1500&next=subscription");
-    await f.page.locator("main [data-purchase-contract]").waitFor();
     await f.page
-      .locator("main [data-order-actions] button", { hasText: tr(language, "Buttons.Cancel") })
+      .locator("main button", { hasText: tr(language, "Buttons.ContinueToOrderSummary") })
       .click();
+    await f.page.waitForURL(
+      (url) =>
+        url.pathname === "/morphcoins/paypal" &&
+        url.searchParams.get("coins") === "1500" &&
+        url.searchParams.get("next") === "subscription"
+    );
+    // "Abbrechen" stops the order and leaves the purchase: back to Premium, or home.
+    await f.page.locator("main [data-purchase-contract]").waitFor();
+    await actionButton("Buttons.Cancel").click();
     await f.page.waitForURL((url) => url.pathname === "/subscription");
+    await f.page.goto(app + "/morphcoins/paypal?coins=1500");
+    await f.page.locator("main [data-purchase-contract]").waitFor();
+    await actionButton("Buttons.Cancel").click();
+    await f.page.waitForURL((url) => url.pathname === "/dashboard");
     // The order goes out without an early start.
     await f.page.goto(app + "/morphcoins/paypal?coins=1500");
     await f.page.locator("main [data-purchase-contract]").waitFor();

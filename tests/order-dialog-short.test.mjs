@@ -141,10 +141,11 @@ test("a contract built while the page still holds a consent reports its empty bo
 });
 
 // Stage 2 (terms 2026-10): the order button accepts. The only declaration left is the early
-// start of a Premium period that begins within the withdrawal period.
+// start of a Premium period that begins within the withdrawal period. Both sentences as the
+// withdrawal instructions 2026-10 and their approved translation word them.
 const PREMIUM_EARLY = {
   de: "Ich verlange ausdrücklich, dass das bestellte Premium schon vor Ablauf der Widerrufsfrist von 14 Tagen startet. Widerrufe ich, zahle ich nur den Anteil des Preises für die Tage, an denen dieses Premium bis zu meinem Widerruf schon lief.",
-  en: "I expressly request that the Premium I ordered starts before the 14-day withdrawal period ends. If I withdraw, I only pay the share of the price for the days on which this Premium had already run until my withdrawal.",
+  en: "I expressly request that the Premium I have ordered starts before the 14-day withdrawal period ends. If I withdraw, I pay only the share of the price for the days on which this Premium had already been running up to my withdrawal.",
 };
 const stage2 = (declaration = { de: "", en: "" }) =>
   offer({
@@ -260,12 +261,40 @@ test("emptied by the page, an offer of stage 2 without boxes stays ready to be o
   app.unmount();
 });
 
+/** An offer of stage 2 whose text does not match its summary, so the dialog shows the text. */
+const unmatched = (declaration) => {
+  const subject = stage2(declaration);
+  return { ...subject, text: subject.text + "\nEine Zeile, die die Zusammenfassung nicht kennt." };
+};
+
+test("an offer of stage 2 without a matching summary needs both boxes it shows", async () => {
+  for (const declaration of [PREMIUM_EARLY, undefined])
+    for (const language of ["de", "en-US"]) {
+      const emitted = [];
+      const { ui, app } = await contract(unmatched(declaration), language, {
+        "onUpdate:modelValue": (value) => emitted.push(value),
+      });
+      const nodes = ui.all();
+      const has = (name) => nodes.some((node) => node.props[name] !== undefined);
+      assert.equal(has("data-purchase-wording"), true, "the offer text is shown");
+      assert.equal(has("data-purchase-acceptance"), true, language);
+      assert.equal(has("data-purchase-early"), true, language);
+      assert.equal(has("data-purchase-accepted-by-button"), false, language);
+      // Nothing is given before both boxes are ticked.
+      assert.equal(emitted[0], false, language);
+      app.unmount();
+    }
+});
+
 test("the acceptance and the note on a missing box follow the stage of the offer", () => {
   const { purchaseAcceptance, consentMissingKey } = purchases;
   for (const [subject, early, key] of [
     [offer(), true, "Error.WithdrawalConsentMissing"],
     [stage2(), false, "Error.EarlyStartMissing"],
     [stage2(PREMIUM_EARLY), true, "Error.EarlyStartMissing"],
+    // Without a summary the dialog asks for both boxes, and both go out.
+    [unmatched(PREMIUM_EARLY), true, "Error.WithdrawalConsentMissing"],
+    [unmatched(), true, "Error.WithdrawalConsentMissing"],
   ]) {
     assert.deepEqual(purchaseAcceptance(subject), {
       order_id: subject.id,
