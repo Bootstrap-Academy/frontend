@@ -1,5 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 import { execFileSync } from "node:child_process";
+import { parseEffectiveStart } from "./utils/legalEffectiveDate";
 
 function feedbackBuild() {
   try {
@@ -24,6 +25,12 @@ if (!!registrationVersion !== !!registrationUrl)
   throw new Error("Registration terms require both a version and its document URL");
 if (registrationVersion && registrationUrl !== `/docs/terms-and-conditions-${registrationVersion}`)
   throw new Error("Registration terms must link to their exact versioned document");
+
+// Terms 2026-10 take effect at this moment (`composables/terms.ts`). A value that is not the
+// start of a day in Berlin stops the build.
+const terms202610From = process.env.NUXT_PUBLIC_TERMS_2026_10_FROM || "";
+if (parseEffectiveStart(terms202610From) && registrationVersion)
+  throw new Error("Terms 2026-10 replace the registration-only terms; set only one of them");
 
 export default defineNuxtConfig({
   ssr: false,
@@ -69,6 +76,8 @@ export default defineNuxtConfig({
       // Disabled until the reviewed registration cohort and documents are published.
       registrationTermsVersion: "",
       registrationTermsUrl: "",
+      // Start of terms 2026-10 as an ISO timestamp, 00:00 Europe/Berlin; empty: not published.
+      TERMS_2026_10_FROM: terms202610From,
     },
   },
 

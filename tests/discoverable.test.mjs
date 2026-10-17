@@ -328,7 +328,10 @@ test("each page names one address for itself, and pages are called by what they 
     ["/docs/imprint/", "Imprint"],
     ["/docs/terms-and-conditions", "TermsAndConditions"],
     ["/docs/terms-and-conditions-2026-09-r2", "TermsAndConditions"],
+    ["/docs/terms-and-conditions-2026-10", "TermsAndConditions"],
     ["/docs/right-of-withdrawal", "RightOfWithdrawal"],
+    ["/docs/right-of-withdrawal-2026-09", "RightOfWithdrawal"],
+    ["/docs/right-of-withdrawal-2026-10/", "RightOfWithdrawal"],
   ]) {
     assert.equal(
       (await appHead({ path: address })).title,

@@ -1196,6 +1196,7 @@
     "MessageNotSubmitted": "Nachricht nicht übermittelt",
     "TryAgainLater": "Es scheint ein Fehler aufgetreten zu sein, bitte versuche es später erneut.",
     "InvalidForm": "Bitte füll das Formular korrekt aus.",
+    "TermsChanged": "Unsere AGB haben sich gerade geändert. Lies bitte die neue Fassung und setz das Häkchen noch einmal.",
     "MissingUserEmail": "Deine E-Mail-Adresse ist ungültig. Bitte melde dich erneut an.",
     "MinEuros": "Mindestens 5 Euro sind erforderlich",
     "MinMorphcoins": "Mindestens 500 Morphcoins sind erforderlich.",

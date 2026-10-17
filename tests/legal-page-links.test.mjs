@@ -9,10 +9,14 @@ import postcss from "postcss";
 import { parse } from "@vue/compiler-sfc";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+// The terms and the withdrawal instruction live in their versioned components; the pages
+// only choose the version in force.
 const PAGES = [
   "pages/docs/privacy.vue",
-  "pages/docs/terms-and-conditions.vue",
-  "pages/docs/right-of-withdrawal.vue",
+  "components/legal/TermsAndConditionsR4.vue",
+  "components/legal/TermsAndConditions202610.vue",
+  "components/legal/RightOfWithdrawal202609.vue",
+  "components/legal/RightOfWithdrawal202610.vue",
 ];
 const SHARED = "assets/css/tailwind.css";
 
@@ -307,6 +311,8 @@ test("the tables of contents of the legal pages carry no line", async () => {
   // The privacy page and the terms each have a table of contents; the right of
   // withdrawal has none.
   assert(sizes["pages/docs/privacy.vue"] > 20, JSON.stringify(sizes));
-  assert(sizes["pages/docs/terms-and-conditions.vue"] > 20, JSON.stringify(sizes));
-  assert.equal(sizes["pages/docs/right-of-withdrawal.vue"], 0);
+  assert(sizes["components/legal/TermsAndConditionsR4.vue"] > 20, JSON.stringify(sizes));
+  assert(sizes["components/legal/TermsAndConditions202610.vue"] > 20, JSON.stringify(sizes));
+  assert.equal(sizes["components/legal/RightOfWithdrawal202609.vue"], 0);
+  assert.equal(sizes["components/legal/RightOfWithdrawal202610.vue"], 0);
 });

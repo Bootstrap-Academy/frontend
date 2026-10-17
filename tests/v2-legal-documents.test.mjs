@@ -10,7 +10,8 @@ const text = (html) =>
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const current = await read("pages/docs/terms-and-conditions.vue");
+// r4 is in force until terms 2026-10 take effect (tests/terms-2026-10.test.mjs).
+const current = await read("components/legal/TermsAndConditionsR4.vue");
 const original = await read("components/legal/TermsAndConditionsR3.vue");
 const privacy = await read("pages/docs/privacy.vue");
 const clause = (source, number) => {
@@ -66,7 +67,11 @@ test("r4 preserves current prices, refund rights, course access and the whole-he
 
 test("current document templates compile and every local contents link resolves once", async () => {
   for (const [file, source] of [
-    ["pages/docs/terms-and-conditions.vue", current],
+    ["components/legal/TermsAndConditionsR4.vue", current],
+    [
+      "components/legal/TermsAndConditions202610.vue",
+      await read("components/legal/TermsAndConditions202610.vue"),
+    ],
     ["pages/docs/privacy.vue", privacy],
     [
       "pages/docs/terms-and-conditions-2026-09-r3.vue",

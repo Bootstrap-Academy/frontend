@@ -33,11 +33,9 @@
 
       <p class="text-body-1 text-body font-body mt-box">
         {{ bodyParts[0]
-        }}<NuxtLink
-          to="/docs/terms-and-conditions"
-          target="_blank"
-          class="text-accent hover:underline"
-          >{{ t("Links.TermsAndConditions") }}</NuxtLink
+        }}<NuxtLink :to="termsUrl" target="_blank" class="text-accent hover:underline">{{
+          t("Links.TermsAndConditions")
+        }}</NuxtLink
         >{{ bodyParts[1] }}
       </p>
 
@@ -46,7 +44,7 @@
           label="Links.IAgreeTo"
           id="TermsGateTermsAndConditions"
           :link="{
-            to: '/docs/terms-and-conditions',
+            to: termsUrl,
             label: 'Links.TermsAndConditions',
           }"
           target="_blank"
@@ -105,6 +103,10 @@ export default defineComponent({
 
     const show = computed(() => needsTermsAcceptance(route.path));
 
+    // The gate records `TERMS_VERSION`, so it shows exactly that text. Once terms 2026-10 are
+    // in force the main page shows those, and the gate links the page of its own version.
+    const termsUrl = computed(() => termsDocumentUrl(TERMS_VERSION));
+
     const valid = computed(() => termsAndConditions.value && ageConfirmed.value);
 
     // The link to the terms replaces the `%%%` placeholder in the sentence.
@@ -158,6 +160,7 @@ export default defineComponent({
     return {
       t,
       show,
+      termsUrl,
       bodyParts,
       submitting,
       declining,
