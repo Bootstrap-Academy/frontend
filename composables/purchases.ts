@@ -251,7 +251,11 @@ export function purchaseAcceptance(offer: PurchaseOffer) {
   };
 }
 /** The quote for one product: an accepted original first, then a still open quote of
- * the backend (see `openOffer`), otherwise a new one. */
+ * the backend (see `openOffer`), otherwise a new one. `fits` applies to an open original
+ * too: one left by an acceptance without an answer that no longer fits the account (its
+ * renewal or quantity changed since) would state something untrue. The server still has it
+ * open, so nothing was ordered on it; its recovery entry is dropped and a new quote takes
+ * its place. */
 export async function requestPurchaseOffer(
   path: string,
   fits?: (offer: PurchaseOffer) => boolean
@@ -265,7 +269,8 @@ export async function requestPurchaseOffer(
     if (owner && product && !sourceReservation) {
       const original = await recover(owner, product);
       if (original?.state === "offered") {
-        if (Date.parse(original.offer.expires_at) > Date.now()) return original.offer;
+        if (Date.parse(original.offer.expires_at) > Date.now() && (!fits || fits(original.offer)))
+          return original.offer;
         localStorage.removeItem(recoveryKey(owner, product));
       }
       if (product === "paypal:coins" && original?.state === "awaiting_payment")

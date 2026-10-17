@@ -554,6 +554,10 @@ export default {
         if (failure?.status === 409 && (await discardStaleOffer(acceptedOffer))) {
           if (!active) return;
           openSnackbar("info", "Body.OfferRenewed");
+          // The new quote comes into view as on a first load. Emptying the page moves its
+          // own scroll area back to the top, while the window stays where the page scrolled
+          // it for the old quote; the order summary only moves a window nobody scrolled.
+          window.scrollTo({ top: 0, behavior: "instant" });
           await refreshOffer();
           return;
         }
