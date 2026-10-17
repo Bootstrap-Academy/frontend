@@ -279,7 +279,7 @@ function premium(renewal, id = "60000000-0000-4000-8000-000000000001") {
     ? `Laufzeit: 1 Monat. Danach läuft deine monatliche Verlängerung weiter (${renewal} Morphcoins je Monat).`
     : "Laufzeit: 1 Monat, ohne automatische Verlängerung.";
   const lines = [
-    { role: "product", text: "Premium für einen Monat" },
+    { role: "product", text: "Premium" },
     { role: "detail", text: "Unbegrenzte Herzen." },
     { role: "term", text: term },
     {
@@ -327,8 +327,9 @@ test("a Premium offer highlights its term line with product and price", async ()
   app.unmount();
 });
 
-/** The Premium part of the subscription page, with the account's renewal in `state.status`. */
-async function premiumPage(state) {
+/** The Premium part of the subscription page, with the account's renewal in `state.status`.
+ * `request` replaces the stand-in for `requestPurchaseOffer`, e.g. with the real one. */
+async function premiumPage(state, request) {
   const calls = { offers: [], snackbars: [], accepted: [] };
   const scope = {
     premiumBusy: Vue.ref(false),
@@ -340,12 +341,14 @@ async function premiumPage(state) {
     locale: Vue.ref("de"),
     offerWording: purchases.offerWording,
     refreshPremiumStatus: async () => state.status,
-    requestPurchaseOffer: async (path, fits) => {
-      calls.offers.push(path);
-      // An open quote is taken up again only if it fits; otherwise a new one comes.
-      if (state.open && fits(state.open)) return state.open;
-      return state.fresh();
-    },
+    requestPurchaseOffer:
+      request ??
+      (async (path, fits) => {
+        calls.offers.push(path);
+        // An open quote is taken up again only if it fits; otherwise a new one comes.
+        if (state.open && fits(state.open)) return state.open;
+        return state.fresh();
+      }),
     openSnackbar: (kind, key) => calls.snackbars.push([kind, key]),
     acceptPurchase: async (accepted) => {
       calls.accepted.push(accepted.id);
@@ -463,6 +466,82 @@ test("an offer without its own summary still shows a changed renewal in the line
   assert.equal(page.scope.order.value.offer.id, old.id);
   assert.equal(page.scope.order.value.details[1].value, "Body.AutomaticRenewalOff");
   assert.deepEqual(page.calls.snackbars, [["info", "Error.PremiumRenewalChanged"]]);
+});
+
+/** The subscription page with the real `requestPurchaseOffer`. The server still has `saved`
+ * open, and the browser keeps its recovery entry: the acceptance sent for it got no answer.
+ * A new quote binds the renewal the account has when it is asked for. */
+async function afterUncertainAcceptance(status) {
+  const saved = premium(1000);
+  const key = `purchase-checkout:${saved.user_id}:backend:premium`;
+  const store = new Map([[key, JSON.stringify({ owner: saved.user_id, orderId: saved.id })]]);
+  const state = { status };
+  const requests = [];
+  const { requestPurchaseOffer } = await evaluate("composables/purchases.ts", {
+    require: () => ({}),
+    useUser: () => ({ value: { id: saved.user_id } }),
+    localStorage: {
+      getItem: (name) => store.get(name) ?? null,
+      setItem: (name, value) => store.set(name, value),
+      removeItem: (name) => store.delete(name),
+    },
+    GET: async (path) => {
+      requests.push(`GET ${path}`);
+      if (path === `/shop/purchases/${saved.id}`) return { state: "offered", offer: saved };
+      if (path === "/shop/purchases") return [{ state: "offered", offer: saved }];
+      throw new Error(path);
+    },
+    POST: async (path) => {
+      requests.push(`POST ${path}`);
+      const renewal = state.status.renewal?.monthly_price ?? null;
+      return { state: "offered", offer: premium(renewal, "60000000-0000-4000-8000-000000000031") };
+    },
+    navigateTo: async (to) => requests.push(`navigate ${to}`),
+    openSnackbar: () => {},
+    decodeApiError: () => ({}),
+  });
+  const page = await premiumPage(state, requestPurchaseOffer);
+  return { page, state, saved, key, store, requests };
+}
+
+test("after an acceptance without an answer, a changed renewal brings a new offer, not the saved one", async () => {
+  // While the renewal is unchanged, the saved quote comes back as it is.
+  const kept = await afterUncertainAcceptance(running(1000));
+  await kept.page.subscribe(false);
+  assert.equal(kept.page.scope.order.value.offer.id, kept.saved.id);
+  assert.deepEqual(kept.requests, [`GET /shop/purchases/${kept.saved.id}`]);
+  assert.equal(kept.store.has(kept.key), true);
+
+  // The renewal ends while the dialog shows the saved quote.
+  const { page, state, saved, key, store, requests } = await afterUncertainAcceptance(
+    running(1000)
+  );
+  await page.subscribe(false);
+  page.scope.withdrawalConsent.value = true;
+  state.status = none;
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, [], "nothing is sent on this click");
+  const renewed = page.scope.order.value.offer;
+  assert.notEqual(renewed.id, saved.id, "the saved quote is not shown as new");
+  assert.match(renewed.text, /\nLaufzeit: 1 Monat, ohne automatische Verlängerung\.\n/);
+  assert.deepEqual(page.calls.snackbars, [["info", "Body.OfferRenewed"]]);
+  assert.equal(store.has(key), false, "the recovery entry of the saved quote is dropped");
+  assert.deepEqual(requests.slice(1), [
+    `GET /shop/purchases/${saved.id}`,
+    "GET /shop/purchases",
+    "POST /shop/purchases/offers/premium_monthly",
+  ]);
+  page.scope.withdrawalConsent.value = true;
+  await page.confirmOrder();
+  assert.deepEqual(page.calls.accepted, [renewed.id]);
+
+  // Opened again after the renewal ended (a reload), the dialog shows a new quote at once.
+  const later = await afterUncertainAcceptance(none);
+  await later.page.subscribe(false);
+  assert.notEqual(later.page.scope.order.value.offer.id, later.saved.id);
+  assert.equal(later.page.scope.order.value.offer.product.facts.renewal, null);
+  assert.equal(later.store.has(later.key), false);
+  assert.deepEqual(later.page.calls.snackbars, []);
 });
 
 /** composables/purchases.ts with the globals it reaches stubbed. */

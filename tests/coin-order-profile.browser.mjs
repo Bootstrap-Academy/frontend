@@ -70,6 +70,52 @@ const gate = () => {
   return { passed, open };
 };
 
+// A coin quote as the backend issues it today (short order summary) and one of the texts
+// before (full text only), which the server refuses as stale (409) before any payment.
+const declaration =
+  "Ich verlange ausdrücklich, dass mit der bestellten Leistung vor Ablauf der Widerrufsfrist begonnen wird. Meine gesetzlichen Widerrufs- und Mängelrechte bleiben unberührt.";
+function coinQuote(owner, coins, id) {
+  const lines = [
+    { role: "product", text: `${coins} Morphcoins` },
+    {
+      role: "detail",
+      text: "Guthaben für Angebote auf Bootstrap Academy, einmaliger Kauf. Die Morphcoins sind nach der Zahlung und der Bestätigungsmail auf deinem Konto, spätestens in 24 Stunden.",
+    },
+    {
+      role: "price",
+      text: `Gesamtpreis: ${coins / 100},00 € inkl. 19 % MwSt., keine weiteren Kosten.`,
+    },
+    { role: "payment", text: "Du zahlst mit PayPal." },
+  ];
+  return {
+    id,
+    hash: `synthetic-hash-${id}`,
+    text: lines.map((line) => line.text).join("\n"),
+    declaration,
+    recipient: owner.email,
+    expires_at: new Date(Date.now() + 3600_000).toISOString(),
+    user_id: owner.id,
+    source: "paypal",
+    product: { kind: "coins", reference: String(coins), coins, title: `${coins} Morphcoins` },
+    summary: { de: { lines, declaration }, en: { lines, declaration } },
+  };
+}
+function staleCoinQuote(owner, coins) {
+  const { summary, ...quote } = coinQuote(owner, coins, "44000000-0000-4000-8000-0000000000f1");
+  return {
+    ...quote,
+    text: [
+      "Anbieter: bootstrap academy GmbH.",
+      `Dein Kauf: ${coins} Morphcoins`,
+      "Guthaben für Angebote auf Bootstrap Academy, einmaliger Kauf.",
+      `Preis: ${coins / 100},00 EUR einschließlich Umsatzsteuer. Es gibt keine weiteren Bestellkosten.`,
+      "Sprache: Deutsch. Die beigefügten AGB und Widerrufsinformationen gelten für diese Bestellung.",
+      "Widerruf: https://bootstrap.academy/vertrag-widerrufen. Kündigung: https://bootstrap.academy/vertrag-kuendigen.",
+      "Du erhältst die Vertragsbestätigung und deine Leistung innerhalb von 24 Stunden nach Eingang deiner Bestellung.",
+    ].join("\n"),
+  };
+}
+
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM || "/run/current-system/sw/bin/chromium",
   headless: true,
@@ -80,15 +126,29 @@ const results = [],
 
 /**
  * A signed in browser at phone width. `profile(n)` decides the n-th profile request:
- * it may wait before the answer and may return a failing status.
+ * it may wait before the answer and may return a failing status. With `stale`, the browser
+ * keeps the recovery entry of a quote of the earlier texts, which the server still has open
+ * and refuses as the basis of a PayPal order (409); new quotes carry the order summary.
  */
-async function fixture(accounts, profile = () => {}, { offers = true } = {}) {
+async function fixture(accounts, profile = () => {}, { offers = true, stale = null } = {}) {
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 },
     locale: "de-DE",
     reducedMotion: "reduce",
   });
   await context.addCookies(cookies(accounts[0]));
+  if (stale)
+    await context.addInitScript(
+      ([key, entry]) => {
+        if (sessionStorage.getItem("synthetic-seeded")) return;
+        sessionStorage.setItem("synthetic-seeded", "1");
+        localStorage.setItem(key, entry);
+      },
+      [
+        `purchase-checkout:${stale.user_id}:paypal:coins`,
+        JSON.stringify({ owner: stale.user_id, orderId: stale.id }),
+      ]
+    );
   // Everything the page ever said about the buyer, however briefly.
   await context.addInitScript(
     ([privateBuyer, unavailable]) => {
@@ -138,6 +198,20 @@ async function fixture(accounts, profile = () => {}, { offers = true } = {}) {
     }
     if (path === `/auth/users/${owner.id}` && method === "PATCH")
       return answer(Object.assign(owner, call.body));
+    if (stale) {
+      if (path === `/shop/purchases/${stale.id}` && method === "GET")
+        return answer({ state: "offered", offer: stale });
+      if (path === "/shop/coins/paypal" && method === "GET") return answer("synthetic-client-id");
+      if (path === "/shop/coins/paypal/orders" && method === "POST")
+        return answer({ detail: "Offer expired or changed" }, 409);
+      if (path.startsWith("/shop/coins/paypal/offers/") && method === "POST") {
+        const coins = Number(path.split("/").pop());
+        return answer({
+          state: "offered",
+          offer: coinQuote(owner, coins, "44000000-0000-4000-8000-0000000000f2"),
+        });
+      }
+    }
     if (path.startsWith("/shop/coins/paypal/offers/") && method === "POST") {
       if (!offers) return answer({ detail: "Service Unavailable" }, 503);
       const coins = Number(path.split("/").pop());
@@ -272,6 +346,22 @@ const asking = {
 };
 const loadingNotice = (page) =>
   page.locator("main [role=status]", { hasText: de.Moderation.Loading });
+/** Where the order button stands: whole inside the visible part of `main` and the window. */
+const orderButton = (page) =>
+  page.evaluate((label) => {
+    const area = document.querySelector("main").getBoundingClientRect();
+    const button = [...document.querySelectorAll("main [data-order-actions] button")].find(
+      (candidate) => candidate.textContent.trim() === label
+    );
+    if (!button) return null;
+    const { top, bottom } = button.getBoundingClientRect();
+    return {
+      top: Math.round(top),
+      bottom: Math.round(bottom),
+      visibleUntil: Math.round(Math.min(innerHeight, area.bottom)),
+      inView: top >= Math.max(0, area.top) && bottom <= Math.min(innerHeight, area.bottom),
+    };
+  }, de.Buttons.OrderWithObligationToPay);
 const userType = (page) => page.locator("main h3", { hasText: de.Headings.UserType });
 const done = async (name, f, more = {}) => {
   results.push({
@@ -537,6 +627,43 @@ try {
     assert.deepEqual(f.saved(), [], name);
     await f.picture(`coin-order-${name}-390.png`);
     await done(name, f);
+  }
+  {
+    // A quote of the earlier texts, taken up again from its recovery entry, is refused by the
+    // server (409). The new quote comes into view as on a first load: on a phone the page has
+    // scrolled the window for the first quote, and the order button of the new one still
+    // stands in the first screen.
+    const user = privateWithCountry();
+    const stale = staleCoinQuote(user, 500);
+    const f = await fixture([user], () => {}, { stale });
+    await f.page.goto(app + order);
+    await f.page.locator("main [data-purchase-contract]").waitFor();
+    await f.settled();
+    const before = await orderButton(f.page);
+    assert.equal(before?.inView, true, `first quote ${JSON.stringify(before)}`);
+    const scrolled = await f.page.evaluate(() => window.scrollY);
+    await f.page.locator("main [data-purchase-acceptance]").check({ force: true });
+    await f.page.locator("main [data-purchase-early]").check({ force: true });
+    await f.page
+      .locator("main [data-order-actions] button", { hasText: de.Buttons.OrderWithObligationToPay })
+      .click();
+    await f.page.locator("main [data-line=product]").waitFor();
+    await f.settled();
+    const after = await orderButton(f.page);
+    const state = await f.page.evaluate(
+      ([key, notice]) => ({
+        entry: localStorage.getItem(key),
+        notice: document.body.innerText.includes(notice),
+        boxes: [...document.querySelectorAll("main input[type=checkbox]")].map((box) => box.checked),
+      }),
+      [`purchase-checkout:${user.id}:paypal:coins`, de.Body.OfferRenewed]
+    );
+    await f.picture("coin-order-stale-quote-replaced-390.png");
+    assert.equal(after?.inView, true, `new quote ${JSON.stringify(after)}`);
+    assert.deepEqual(state, { entry: null, notice: true, boxes: [false, false] });
+    assert.equal(f.calls.filter((c) => c.path === "/shop/coins/paypal/orders").length, 1);
+    assert.equal(f.offers(), 1, "one new quote");
+    await done("stale-quote-replaced-in-view", f, { scrolled, before, after });
   }
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ passed: true, app, syntheticAPI: api, results }));
