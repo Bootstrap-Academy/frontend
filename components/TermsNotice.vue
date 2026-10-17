@@ -10,17 +10,20 @@
     <div class="border-accent/30 relative rounded-lg border bg-secondary p-3 pr-12">
       <i18n-t keypath="TermsNotice.Body" tag="p" class="text-body-2 m-0" scope="global">
         <template #date>{{ german ? announcement.date : announcement.dateEn }}</template>
+        <!-- The links take the size and font of the sentence; links elsewhere are larger. -->
         <template #withdrawal>
           <NuxtLink
-            class="underline"
+            class="text-accent underline underline-offset-2 [font:inherit]"
             :to="german ? TERMS_NOTICE_WITHDRAWAL : TERMS_NOTICE_WITHDRAWAL_EN"
             >{{ t("TermsNotice.Withdrawal") }}</NuxtLink
           >
         </template>
         <template #changes>
-          <NuxtLink class="underline" :to="TERMS_NOTICE_TERMS">{{
-            t("TermsNotice.Changes")
-          }}</NuxtLink>
+          <NuxtLink
+            class="text-accent underline underline-offset-2 [font:inherit]"
+            :to="TERMS_NOTICE_TERMS"
+            >{{ t("TermsNotice.Changes") }}</NuxtLink
+          >
         </template>
       </i18n-t>
       <button

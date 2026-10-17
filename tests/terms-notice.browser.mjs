@@ -322,6 +322,11 @@ const noticeOn = (page) =>
         a.getAttribute("href"),
         a.textContent.trim(),
       ]),
+      // Whether every link has the size and font of its sentence.
+      linksInLine: [...notice.querySelectorAll("a")].every((a) => {
+        const [link, sentence] = [a, notice.querySelector("p")].map((n) => getComputedStyle(n));
+        return link.fontSize === sentence.fontSize && link.fontFamily === sentence.fontFamily;
+      }),
       button: (() => {
         const button = notice.querySelector("button");
         const box = button.getBoundingClientRect();
@@ -429,6 +434,7 @@ const cases = {
         [withdrawalLink[language], tr(language, "TermsNotice.Withdrawal")],
         ["/docs/terms-and-conditions-2026-10", tr(language, "TermsNotice.Changes")],
       ]);
+      assert.equal(seen.linksInLine, true, "the links have the size and font of the sentence");
       // Closed with a "×" in the corner, named for screen readers, large enough to tap.
       assert.equal(seen.button.text, "×");
       assert.equal(seen.button.label, tr(language, "UpdateNotice.Dismiss"));
