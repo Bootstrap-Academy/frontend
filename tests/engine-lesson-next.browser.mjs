@@ -54,12 +54,18 @@ const element = (id: string) => document.getElementById(id) as HTMLButtonElement
 const goals = ${JSON.stringify(GOALS)};
 const handles: string[] = [];
 let index = 0;
+let checking = false;
 let sdk: LessonSDK;
+// A task starts only while the host runs the lesson, which it says after "ready".
+function controls() {
+  element("check").disabled = checking || sdk.phase !== "running";
+}
 function show() {
   element("task").textContent = "Welle " + (index + 1) + " von " + goals.length;
   element("verdict").textContent = "";
   element("next").hidden = true;
-  element("check").disabled = false;
+  checking = false;
+  controls();
 }
 void transport.connection.then(async (connection) => {
   sdk = new LessonSDK({
@@ -68,11 +74,13 @@ void transport.connection.then(async (connection) => {
     transport,
   });
   await sdk.start();
+  sdk.on("host.lifecycle", controls);
   sdk.ready("main");
   show();
 });
 element("check").addEventListener("click", () => {
-  element("check").disabled = true;
+  checking = true;
+  controls();
   void (async () => {
     const goal = goals[index]!;
     const started = await sdk.startTask(goal);
@@ -346,6 +354,7 @@ async function fixture(subject, [width, height]) {
         title: subject.title.de,
         description: "",
         learning_path_id: subject.pathId,
+        has_explicit_curriculum: true,
         sections: [],
       });
     if (path === `${base}/lessons/${subject.lessonId}`)
@@ -445,18 +454,13 @@ async function fixture(subject, [width, height]) {
   const page = await context.newPage();
   page.setDefaultTimeout(15000);
   page.on("pageerror", (error) => errors.push(error.message));
-  // Kept for the record: blocked foreign requests also report here.
+  // Vue reports an error in a render here, and a blocked request would too.
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(message.text());
   });
   return { context, page, calls, errors, consoleErrors, room, foreign };
 }
-const record = (label, f) => ({
-  case: label,
-  passed: true,
-  foreign: [...new Set(f.foreign)],
-  consoleErrors: f.consoleErrors,
-});
+const record = (label, f) => ({ case: label, passed: true, requests: f.calls.length });
 
 async function picture(page, name) {
   if (evidence) await page.screenshot({ path: join(evidence, `${name}.png`) });
@@ -466,6 +470,28 @@ const barLabels = async (page) =>
   (await bar(page).getByRole("button").allInnerTexts()).map((label) => label.trim());
 const pageNext = (page) => page.getByRole("button", { name: "Weiter", exact: true });
 const pathname = (page) => new URL(page.url()).pathname.replace(/\/$/, "");
+/**
+ * Buttons in the frame are pressed from the keyboard once they can act: a mouse click right after
+ * the frame (another site, its own process) is laid out can miss its document in headless Chromium.
+ */
+async function press(frame, name) {
+  const button = frame.getByRole("button", { name }).and(frame.locator(":enabled"));
+  await button.waitFor();
+  await button.press("Enter");
+}
+/** The course page has opened and shows its course. */
+async function coursePage(page, subject) {
+  await page.waitForURL(
+    (url) => url.pathname.replace(/\/$/, "") === `/courses/${subject.courseId}`
+  );
+  await page.getByRole("heading", { level: 1, name: subject.title.de }).waitFor();
+}
+/** Nothing went wrong in the page, and nothing left for another origin. */
+function clean(f, label) {
+  assert.deepEqual(f.errors, [], `${label}: page errors`);
+  assert.deepEqual(f.consoleErrors, [], `${label}: console errors`);
+  assert.deepEqual(f.foreign, [], `${label}: foreign requests`);
+}
 
 async function engineLesson(size) {
   const label = `engine ${size.join("x")}`;
@@ -481,7 +507,7 @@ async function engineLesson(size) {
     await picture(page, `${size.join("x")}-engine-1-start`);
 
     // The first task passes: the frame offers its own "Weiter" to the next one, alone on the page.
-    await frame.getByRole("button", { name: "Prüfen" }).click();
+    await press(frame, "Prüfen");
     await frame.getByRole("button", { name: "Weiter" }).waitFor();
     assert.equal(await frame.getByText("Bestanden.").count(), 1, label);
     assert.deepEqual(await barLabels(page), ["Schließen", "Vollbild"], `${label}: after a pass`);
@@ -497,9 +523,9 @@ async function engineLesson(size) {
     assert.equal(await page.getByText("Du bleibst hier.", { exact: false }).count(), 0, label);
 
     // The frame's "Weiter" opens the next task; it passes, and the frame asks for completion.
-    await frame.getByRole("button", { name: "Weiter" }).click();
+    await press(frame, "Weiter");
     await frame.getByText("Welle 2 von 2").waitFor();
-    await frame.getByRole("button", { name: "Prüfen" }).click();
+    await press(frame, "Prüfen");
     await frame.getByText("Diese Einheit ist abgeschlossen.", { exact: false }).waitFor();
     await pageNext(page).waitFor();
     assert.deepEqual(
@@ -521,9 +547,7 @@ async function engineLesson(size) {
 
     // The page's "Weiter" leads to the course page, as before.
     await pageNext(page).click();
-    await page.waitForURL(
-      (url) => url.pathname.replace(/\/$/, "") === `/courses/${subject.courseId}`
-    );
+    await coursePage(page, subject);
     await picture(page, `${size.join("x")}-engine-4-course-page`);
     // The frame's operations reached skills on the service's paths, for this course and revision.
     const engine = f.calls.filter(({ path }) => path.startsWith("/skills/engine/"));
@@ -535,8 +559,21 @@ async function engineLesson(size) {
     for (const { body } of engine) assert.equal(body.courseId, subject.courseId, label);
     for (const { body } of engine.filter(({ path }) => path.endsWith("/start")))
       assert.equal(body.revisionId, REVISION, label);
-    assert.deepEqual(f.errors, [], `${label}: page errors`);
+    clean(f, label);
     results.push(record(label, f));
+  } catch (error) {
+    // What the frame said last, for a failure inside it.
+    const said = await page
+      .frameLocator(".protocol-surface iframe")
+      .locator("#verdict")
+      .textContent({ timeout: 1000 })
+      .catch(() => null);
+    const shown = await page
+      .locator(".protocol-activity")
+      .innerText({ timeout: 1000 })
+      .catch(() => null);
+    error.message += ` (frame: ${JSON.stringify(said)}; player: ${JSON.stringify(shown)}; calls: ${JSON.stringify(f.calls.map(({ method, path }) => `${method} ${path}`))}; console: ${JSON.stringify(f.consoleErrors)})`;
+    throw error;
   } finally {
     await f.context.close();
   }
@@ -557,9 +594,7 @@ async function api1Room(size) {
     await picture(page, `${size.join("x")}-api1-1-open`);
     // Its completion continues to the course page.
     await page.getByRole("button", { name: "Prüfen" }).click();
-    await page.waitForURL(
-      (url) => url.pathname.replace(/\/$/, "") === `/courses/${subject.courseId}`
-    );
+    await coursePage(page, subject);
     assert.equal(f.room.progress.status, "completed", label);
     assert.equal(
       f.calls.filter(({ path, method }) => method === "POST" && path.includes("/complete")).length,
@@ -567,7 +602,7 @@ async function api1Room(size) {
       label
     );
     await picture(page, `${size.join("x")}-api1-2-course-page`);
-    assert.deepEqual(f.errors, [], `${label}: page errors`);
+    clean(f, label);
     results.push(record(label, f));
   } finally {
     await f.context.close();
