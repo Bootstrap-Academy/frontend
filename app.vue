@@ -4,7 +4,8 @@
     <LazyClientOnly>
       <Confetti v-if="showConfetti" />
       <Loading v-if="!publicLegalPage" />
-      <UpdateNotice :dismissed="updateNoticeDismissals" />
+      <UpdateNotice :dismissed="updateNoticeDismissals" @visible="updateNoticeVisible = $event" />
+      <TermsNotice :dismissed="updateNoticeDismissals" :waiting="updateNoticeVisible" />
     </LazyClientOnly>
     <NuxtPage :lang="publicLegalPage ? 'de' : undefined" />
 
@@ -27,6 +28,8 @@ export default {
   setup() {
     // Layout slots can remount; the fallback must last for this App instance.
     const updateNoticeDismissals = new Set<string>();
+    // One notice at a time: the notice of terms 2026-10 waits while the update notice shows.
+    const updateNoticeVisible = ref(false);
     const dialog = useDialog();
     const showConfetti = useShowConfetti();
     function handleDialogOnBackdrop() {
@@ -44,6 +47,7 @@ export default {
 
     return {
       updateNoticeDismissals,
+      updateNoticeVisible,
       dialog,
       handleDialogOnBackdrop,
       showConfetti,

@@ -31,6 +31,8 @@ import {
 } from "../composables/updateNotice";
 
 const props = defineProps<{ dismissed: Set<string> }>();
+// Whether the notice is on screen, so that a later notice waits for it (`TermsNotice.vue`).
+const emit = defineEmits<{ visible: [visible: boolean] }>();
 const { t } = useI18n();
 const user = useUser();
 const accessToken = useAccessToken();
@@ -42,7 +44,10 @@ const view = shallowRef<UpdateNoticeView>({ visible: false, revision: 0, dismiss
 const notice = createUpdateNotice({
   dismissed: props.dismissed,
   storage: () => window.localStorage,
-  changed: (value) => (view.value = value),
+  changed: (value) => {
+    view.value = value;
+    emit("visible", value.visible);
+  },
 });
 
 watch(
@@ -71,5 +76,6 @@ onBeforeUnmount(() => {
   clearInterval(expiryCheck);
   notice.dispose();
   window.removeEventListener("storage", storageChanged);
+  emit("visible", false);
 });
 </script>
