@@ -28,8 +28,10 @@ if (registrationVersion && registrationUrl !== `/docs/terms-and-conditions-${reg
   throw new Error("Registration terms must link to their exact versioned document");
 
 // Terms 2026-10 take effect at this moment (`composables/terms.ts`). A value that is not the
-// start of a day in Berlin stops the build.
-const terms202610From = process.env.NUXT_PUBLIC_TERMS_2026_10_FROM || "";
+// start of a day in Berlin stops the build. Test is built from develop with the defaults here,
+// so the default is the provisional start of the Test acceptance, the same moment as the
+// backend of Test and its rendered PDFs; the Prod derivation of this file sets it to "".
+const terms202610From = process.env.NUXT_PUBLIC_TERMS_2026_10_FROM || "2026-10-19T00:00:00+02:00";
 if (parseEffectiveStart(terms202610From) && registrationVersion)
   throw new Error("Terms 2026-10 replace the registration-only terms; set only one of them");
 
