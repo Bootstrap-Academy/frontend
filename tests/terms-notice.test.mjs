@@ -5,6 +5,7 @@
  * form. The actual App, both notices and the actual button are mounted.
  */
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { after, mock, test } from "node:test";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -64,10 +65,32 @@ const at = {
   after: Date.parse("2027-01-15T12:00:00Z"),
 };
 const termsKey = (subject) => updateNoticeKey(subject, TERMS_NOTICE_VERSION);
+// The wording of the notice comes from part 2 of the reviewed announcement (draft v3,
+// `ankuendigung.md`). The fixture is that part byte for byte; the mail and the working notes
+// of the draft are not published. Next to it the SHA-256 of the draft it was taken from, so
+// that a changed draft is noticed and the fixture renewed.
+const NOTICE_DRAFT = {
+  fixture: "ada74e65a502f7ef4f12438549a68c58fc0ac825d2c86f62b11ac87226ef8a0b",
+  draft: "9d62733d47e810c7cf534c67161a24aef09970bb00b7ffdfe021a837a97618b3",
+};
+const noticeDraft = await readFile(
+  new URL("./fixtures/legal-2026-10/ankuendigung-hinweis.md", import.meta.url),
+  "utf8"
+);
+assert.equal(
+  createHash("sha256").update(noticeDraft).digest("hex"),
+  NOTICE_DRAFT.fixture,
+  "the notice fixture is the recorded copy of its draft"
+);
+// The heading, the German line and the line of the English interface.
+const [, germanLine, englishLine] = noticeDraft.split(/\n\s*\n/).map((part) => part.trim());
+const ENGLISH = "In der englischen Oberfläche: ";
+assert(englishLine.startsWith(ENGLISH), englishLine);
+const DRAFT_LINES = { de: germanLine, "en-US": englishLine.slice(ENGLISH.length) };
+const LINK = /\[([^\]]+)\]\(Link\)/g;
 const BODY = {
-  de: "Ab dem 9. Dezember 2026 gelten für neue Konten und neue Bestellungen neue AGB und eine neue Widerrufsbelehrung: Alle Kurse bleiben kostenlos, und bei Einzelbestellungen brauchst du weniger Häkchen. Deine bestehenden Verträge ändern sich nicht. Die neue Fassung",
-  "en-US":
-    "From 9 December 2026, new terms and conditions and new instructions on withdrawal apply to new accounts and new orders: all courses stay free, and for single orders you need fewer checkboxes. Your existing contracts do not change. The new version",
+  de: DRAFT_LINES.de.replace("[Datum]", "9. Dezember 2026").replace(LINK, "$1"),
+  "en-US": DRAFT_LINES["en-US"].replace("[date]", "9 December 2026").replace(LINK, "$1"),
 };
 
 async function compile(relative, name) {
@@ -372,6 +395,11 @@ for (const [language, withdrawal] of [
             [withdrawal, messages[language].TermsNotice.Withdrawal],
             ["/docs/terms-and-conditions-2026-10", messages[language].TermsNotice.Changes],
           ]
+        );
+        // The link to the terms carries the words the draft links.
+        assert.deepEqual(
+          [...DRAFT_LINES[language].matchAll(LINK)].map(([, label]) => label),
+          [messages[language].TermsNotice.Changes]
         );
         assert.equal(notice.props["aria-label"], messages[language].TermsNotice.Label);
         assert(

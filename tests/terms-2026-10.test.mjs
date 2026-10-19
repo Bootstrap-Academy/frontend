@@ -38,12 +38,16 @@ const terms = await load("composables/terms.ts");
 // The reviewed drafts the pages are built from, each without its comments: the working notes
 // stay with the drafts of the company and are not published. Next to each fixture the SHA-256
 // of the draft it was taken from, so that a changed draft is noticed and the fixture renewed.
-// The terms come from draft v3 (19 October 2026); the withdrawal instructions are unchanged
-// since draft v2.
+// The terms and the boxes over the 2026-10 pages come from draft v3 (19 October 2026); the
+// withdrawal instructions are unchanged since draft v2.
 const DRAFTS = {
+  "seitenkaesten.md": {
+    fixture: "48697723ac174cbb540817913f31e1f63c9f0c958a671036a5ae3700e5f0578c",
+    draft: "eec6610e96ebc348212af4faf90e52bca74fd342e160663bfcfd8c4511bf30bf",
+  },
   "agb-2026-10.md": {
-    fixture: "f7bd34de58107e573fac16e06eb7e88ea4ae019a645126a72cb97f62c1fdc3dd",
-    draft: "bff86b9a79425a586716af11e2575962765fda1ceea75473b0a00f12cc0f9db7",
+    fixture: "ed0c26f22954a3a238dd2e993bd3a9c67c8b9956c93b7c0d37911a7e96cfae52",
+    draft: "3a8b586b79ef7dc7f337d3acd7d1c17a447afa465ccc926116024e2dcf387633",
   },
   "widerrufsbelehrung-2026-10.md": {
     fixture: "b99f539e738234b918526aada586eba2a142c4fa958a08a167882611f9250687",
@@ -54,8 +58,13 @@ const DRAFTS = {
     draft: "99803313fa63f23c5400e9a0412bfe3db3f87955694587335838dd7c829887cf",
   },
 };
-const draft = (name) => read(`tests/fixtures/legal-2026-10/${name}`);
 const sha = (text) => createHash("sha256").update(text).digest("hex");
+/** A fixture, refused when it is not the copy of the draft recorded above. */
+async function draft(name) {
+  const text = await read(`tests/fixtures/legal-2026-10/${name}`);
+  assert.equal(sha(text), DRAFTS[name].fixture, `${name} is the recorded copy of its draft`);
+  return text;
+}
 
 /** Runs `fn` with the names the app gets from Nuxt, for the given start of terms 2026-10. */
 async function withConfig(from, fn, extra = {}) {
@@ -224,32 +233,35 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
   assert(withdrawal.includes("Stand: Fassung 2026-10, gültig ab dem 1. Oktober 2026"));
   assert(withdrawal.includes("Version 2026-10, valid from 1 October 2026"));
 
-  for (const [file, imports, title, other, notYet] of [
-    [
-      "pages/docs/terms-and-conditions-2026-10.vue",
-      TERMS,
-      "AGB – Fassung 2026-10",
-      'href="/docs/right-of-withdrawal-2026-10"',
-      "Diese Fassung haben wir angekündigt, sie gilt noch nicht.",
-    ],
+  // The boxes until the start, word for word as in draft v3 (`seitenkaesten.md`) with the date
+  // filled in. The notice on the platform links the box of the terms, so that box names what
+  // clause 20.1 asks the notice to name: the start, who it applies to, the changed clauses and
+  // the rights for existing contracts. The draft has one section per address, and the heading
+  // of each box is its title.
+  const [, ...sections] = (await draft("seitenkaesten.md"))
+    .replaceAll("[Datum]", "9. Dezember 2099")
+    .split(/^## \d+\. Kasten über (\S+)$/m);
+  const boxes = {};
+  for (let i = 0; i < sections.length; i += 2)
+    boxes[sections[i]] = markdownBlocks(sections[i + 1], -2);
+  for (const [file, imports, title] of [
+    ["pages/docs/terms-and-conditions-2026-10.vue", TERMS, "AGB – Fassung 2026-10"],
     [
       "pages/docs/right-of-withdrawal-2026-10.vue",
       WITHDRAWAL,
       "Widerrufsbelehrung – Fassung 2026-10",
-      'href="/docs/terms-and-conditions-2026-10"',
-      // The withdrawal instructions name their start only at the end, so the box names it.
-      "Diese Fassung haben wir angekündigt, sie gilt ab dem 9. Dezember 2099. Bis dahin gilt die",
     ],
   ]) {
     // Without a start the page does not exist.
     await assert.rejects(rendered(file, "", imports), { statusCode: 404, fatal: true });
-    // Announced: it says that it does not apply yet and leads to the version in force.
+    // Announced: it says from when and for whom it applies and leads to the version in force.
     const announced = await rendered(file, AHEAD, imports);
-    const box = announced.slice(0, announced.indexOf("</aside>")).replace(/\s+/g, " ");
-    assert(announced.includes(title), file);
-    assert(box.includes(notYet), `${file}: ${box}`);
-    assert(announced.includes(other), file);
-    assert(announced.includes("ab dem 9. Dezember 2099"), file);
+    const box = htmlBlocks(announced.slice(0, announced.indexOf("</aside>")));
+    const reviewed = boxes[file.replace(/^pages/, "").replace(/\.vue$/, "")];
+    assert(reviewed, `${file} has its box in the draft`);
+    assert.deepEqual(box.blocks[0], ["h1", title], file);
+    assert.deepEqual(box.blocks, reviewed.blocks, file);
+    assert.deepEqual(box.links, reviewed.links, file);
     // In force: the text alone.
     const current = await rendered(file, PASSED, imports);
     assert(!current.includes("angekündigt") && !current.includes(title), file);

@@ -465,10 +465,14 @@ const cases = {
       await f.page.locator("main, body").first().waitFor();
       await settle(f.page);
       assert.equal(await noticeOn(f.page), null, "no notice on the document");
-      assert(
-        (await f.page.innerText("body")).includes("Diese Fassung haben wir angekündigt"),
-        "the announced version of the terms is reachable"
-      );
+      // Its box names the start, who the version applies to and the changed clauses (20.1).
+      const documentText = (await f.page.innerText("body")).replace(/\s+/g, " ");
+      for (const part of [
+        "Diese Fassung haben wir angekündigt. Sie gilt ab dem 9. Dezember 2026 für neue Konten und neue Bestellungen",
+        "Geändert sind der Kopf mit Beginn und Geltungsbereich und diese Ziffern:",
+        "(Ziffer 12.2)",
+      ])
+        assert(documentText.includes(part), `the announced terms name: ${part}`);
       // Closed, it stays closed for this account.
       await f.page.goto(app + NOTICE_PAGE);
       await f.page.locator("[data-terms-notice]").waitFor();

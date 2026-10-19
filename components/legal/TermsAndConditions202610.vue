@@ -505,29 +505,29 @@
         11.1 Ablauf einer Einzelbestellung: Du wählst die Leistung aus (MorphCoins, Premium,
         Auffüllen der Herzen); für die gesonderte Bestellung der monatlichen Verlängerung gilt
         Ziffer 8.4. Beim Kauf von MorphCoins nennen wir dir schon auf der ersten Seite, dass du mit
-        PayPal bezahlst. In der Bestellübersicht zeigen wir dir unmittelbar über der
-        Bestellschaltfläche in einem hervorgehobenen Block die wesentlichen Eigenschaften der
-        Leistung mit Menge oder Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf
-        von MorphCoins ihre Menge und den Euro-Betrag, bei Premium und Herzen den Preis in
-        MorphCoins und seinen Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne
-        automatische Verlängerung endet oder dass eine schon vereinbarte monatliche Verlängerung
-        danach zu ihrem Preis weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu
-        zahlenden Gesamtpreis den rechnerischen Betrag je Monat. Dazu nennen wir die
-        Bereitstellungsfrist und die Zahlungsart und verlinken diese AGB und die Widerrufsbelehrung
-        in der Fassung, die für dieses Angebot gilt. Bis zum Klick auf die Bestellschaltfläche
-        kannst du die Bestellübersicht mit „Abbrechen“ verlassen, ohne etwas zu bestellen, und neu
-        wählen. Beim Kauf von MorphCoins kommst du außerdem mit „Zurück“ zur ersten Seite und kannst
-        dort den Betrag ändern. Mit dem Klick auf „Zahlungspflichtig bestellen“ nimmst du das
-        konkrete Angebot mit diesen AGB und der Widerrufsbelehrung verbindlich an; ein
-        Kontrollkästchen für die Annahme gibt es bei diesen Einzelbestellungen nicht. Beim Kauf von
-        MorphCoins bezahlst du danach bei PayPal; diese Schritte dienen nur der Zahlung. Beginnt ein
-        bestelltes Premium vor Ablauf der Widerrufsfrist, gibst du vorher über ein Kontrollkästchen
-        die Erklärung ab, dass es so früh starten soll; ohne diese Erklärung ist eine solche
-        Premium-Bestellung nicht möglich. Beginnt es erst nach Ablauf der Widerrufsfrist, weil noch
-        ein bezahlter Premium-Zeitraum läuft, entfällt das Kontrollkästchen. Wortlaut und Folge der
-        Erklärung stehen in der Widerrufsbelehrung. Bei MorphCoins und beim Auffüllen der Herzen
-        gibst du keine Erklärung zum Widerrufsrecht ab. Eine Bestätigung, dass du vom vorzeitigen
-        Verlust deines Widerrufsrechts weißt, verlangen wir bei diesen Einzelbestellungen nicht.
+        PayPal bezahlst. In der Bestellübersicht zeigen wir dir oberhalb der Bestellschaltfläche in
+        einem hervorgehobenen Block die wesentlichen Eigenschaften der Leistung mit Menge oder
+        Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf von MorphCoins ihre
+        Menge und den Euro-Betrag, bei Premium und Herzen den Preis in MorphCoins und seinen
+        Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne automatische Verlängerung
+        endet oder dass eine schon vereinbarte monatliche Verlängerung danach zu ihrem Preis
+        weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu zahlenden Gesamtpreis den
+        rechnerischen Betrag je Monat. Dazu nennen wir die Bereitstellungsfrist und die Zahlungsart
+        und verlinken diese AGB und die Widerrufsbelehrung in der Fassung, die für dieses Angebot
+        gilt. Bis zum Klick auf die Bestellschaltfläche kannst du die Bestellübersicht mit
+        „Abbrechen“ verlassen, ohne etwas zu bestellen, und neu wählen. Beim Kauf von MorphCoins
+        kommst du außerdem mit „Zurück“ zur ersten Seite und kannst dort den Betrag ändern. Mit dem
+        Klick auf „Zahlungspflichtig bestellen“ nimmst du das konkrete Angebot mit diesen AGB und
+        der Widerrufsbelehrung verbindlich an; ein Kontrollkästchen für die Annahme gibt es bei
+        diesen Einzelbestellungen nicht. Beim Kauf von MorphCoins bezahlst du danach bei PayPal;
+        diese Schritte dienen nur der Zahlung. Beginnt ein bestelltes Premium vor Ablauf der
+        Widerrufsfrist, gibst du vorher über ein Kontrollkästchen die Erklärung ab, dass es so früh
+        starten soll; ohne diese Erklärung ist eine solche Premium-Bestellung nicht möglich. Beginnt
+        es erst nach Ablauf der Widerrufsfrist, weil noch ein bezahlter Premium-Zeitraum läuft,
+        entfällt das Kontrollkästchen. Wortlaut und Folge der Erklärung stehen in der
+        Widerrufsbelehrung. Bei MorphCoins und beim Auffüllen der Herzen gibst du keine Erklärung
+        zum Widerrufsrecht ab. Eine Bestätigung, dass du vom vorzeitigen Verlust deines
+        Widerrufsrechts weißt, verlangen wir bei diesen Einzelbestellungen nicht.
       </p>
       <p>
         11.2 Vertragsschluss und Bereitstellung: Der Vertrag kommt mit Eingang deiner Annahme des
