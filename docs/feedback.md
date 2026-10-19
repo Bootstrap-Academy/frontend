@@ -28,3 +28,11 @@ node tests/feedback.browser.mjs
 ```
 
 The mounted-browser checks cover text-only submission, consent withdrawal, exact explicit pending retry, local image selection/attachment, crop and opaque exported pixels, close/reopen preservation, 320px layout, the launcher in the page flow at 390px with no revealed content under it, Escape focus return and account-boundary cleanup. Capture checks use synthetic browser media tracks to cover cancellation, wrong-source rejection, stop-on-completion and late-result cleanup. They do not automate the OS permission UI or replace an integration check against the actual Rust router.
+
+`tests/feedback-dialog.test.mjs` runs Tailwind with the repo's config over the dialog's templates and requires a rule for every Tailwind class in them; the theme's colours are CSS variables, so an opacity modifier such as `bg-black/40` would yield no CSS. It also checks that a reopened dialog starts at the top of its form. `tests/feedback-dialog.browser.mjs` checks, in headless Chromium against a built app at 390 × 844 and 1280 × 800, that the backdrop darkens the page with the site's navy, that a reopened dialog shows its focused title field, and that with a send whose outcome stays open the reopened dialog shows its alert and "Status prüfen".
+
+```sh
+node --test tests/feedback-dialog.test.mjs
+# nuxt build, serve with NUXT_PUBLIC_BASE_API_URL=FEEDBACK_DIALOG_API on FEEDBACK_DIALOG_APP, then:
+PLAYWRIGHT_MODULE=<playwright/index.mjs> node tests/feedback-dialog.browser.mjs
+```

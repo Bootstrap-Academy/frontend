@@ -45,11 +45,18 @@ const titleField = ref<HTMLInputElement | null>(null);
 const resultHeading = ref<HTMLElement | null>(null);
 const formBody = ref<HTMLElement | null>(null);
 // The dialog stays mounted while closed, and the browser keeps the scroll position of a hidden
-// element. Opened again, the form starts at the top, where the focus lands.
+// element. Opened again, the form starts at the top, where the focus lands. With an alert (a send
+// whose outcome is open, which locks the form, or an error), the alert and the action below it
+// come into view instead, 16 px (the form's padding) below the top.
 watch(
   opened,
   (value) => {
-    if (value && formBody.value) formBody.value.scrollTop = 0;
+    const body = formBody.value;
+    if (!value || !body) return;
+    const alert = error.value ? body.querySelector('[role="alert"]') : null;
+    body.scrollTop = alert
+      ? body.scrollTop + alert.getBoundingClientRect().top - body.getBoundingClientRect().top - 16
+      : 0;
   },
   { flush: "post" }
 );
@@ -255,10 +262,11 @@ const errorText = computed(() => {
     >
       <!--
         The theme's colours are CSS variables, for which Tailwind generates no opacity modifier
-        (`bg-black/40` yields no CSS); the translucent colours are mixed here instead.
+        (`bg-black/40` yields no CSS); the translucent colours are mixed here instead. The
+        backdrop darkens the page with the site's navy, as the app's modal does.
       -->
       <div
-        class="fixed inset-0 bg-[color:color-mix(in_srgb,var(--color-black)_40%,transparent)]"
+        class="fixed inset-0 bg-[color:color-mix(in_srgb,var(--color-primary)_60%,transparent)]"
         aria-hidden="true"
       />
       <div class="fixed inset-0 flex items-end justify-end p-0 sm:p-4">
