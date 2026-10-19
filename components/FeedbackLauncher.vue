@@ -43,6 +43,16 @@ const error = ref("");
 const issueUrl = ref("");
 const titleField = ref<HTMLInputElement | null>(null);
 const resultHeading = ref<HTMLElement | null>(null);
+const formBody = ref<HTMLElement | null>(null);
+// The dialog stays mounted while closed, and the browser keeps the scroll position of a hidden
+// element. Opened again, the form starts at the top, where the focus lands.
+watch(
+  opened,
+  (value) => {
+    if (value && formBody.value) formBody.value.scrollTop = 0;
+  },
+  { flush: "post" }
+);
 let owner = 0;
 const locked = computed(() => sending.value || pending.value !== null);
 const fullDescription = computed(() => {
@@ -243,13 +253,20 @@ const errorText = computed(() => {
       }"
       @close="opened = false"
     >
-      <div class="bg-black/40 fixed inset-0" aria-hidden="true" />
+      <!--
+        The theme's colours are CSS variables, for which Tailwind generates no opacity modifier
+        (`bg-black/40` yields no CSS); the translucent colours are mixed here instead.
+      -->
+      <div
+        class="fixed inset-0 bg-[color:color-mix(in_srgb,var(--color-black)_40%,transparent)]"
+        aria-hidden="true"
+      />
       <div class="fixed inset-0 flex items-end justify-end p-0 sm:p-4">
         <DialogPanel
-          class="feedback-panel border-accent/50 flex max-h-[100dvh] w-full flex-col overflow-hidden border bg-primary text-heading shadow-xl sm:max-h-[min(90dvh,850px)] sm:max-w-[560px] sm:rounded-xl"
+          class="feedback-panel flex max-h-[100dvh] w-full flex-col overflow-hidden border border-[color:color-mix(in_srgb,var(--color-accent)_50%,transparent)] bg-primary text-heading shadow-xl sm:max-h-[min(90dvh,850px)] sm:max-w-[560px] sm:rounded-xl"
         >
           <div
-            class="border-accent/30 flex shrink-0 items-start justify-between gap-3 border-b px-4 py-3"
+            class="flex shrink-0 items-start justify-between gap-3 border-b border-[color:color-mix(in_srgb,var(--color-accent)_30%,transparent)] px-4 py-3"
           >
             <DialogTitle class="text-lg font-semibold">{{
               text("Feedback zur Bootstrap Academy", "Bootstrap Academy feedback")
@@ -266,6 +283,7 @@ const errorText = computed(() => {
             </button>
           </div>
           <div
+            ref="formBody"
             class="min-h-0 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
           >
             <section v-if="issueUrl" class="space-y-4">
@@ -386,11 +404,13 @@ const errorText = computed(() => {
                     />
                   </label>
                 </template>
-                <p class="text-sm" :class="{ 'text-red-300': fullDescription.length > 4096 }">
+                <p class="text-sm" :class="{ 'text-error': fullDescription.length > 4096 }">
                   {{ fullDescription.length }} / 4096
                   {{ text("Zeichen insgesamt", "characters in total") }}
                 </p>
-                <div class="border-accent/40 space-y-3 rounded-lg border p-3">
+                <div
+                  class="space-y-3 rounded-lg border border-[color:color-mix(in_srgb,var(--color-accent)_40%,transparent)] p-3"
+                >
                   <label class="flex cursor-pointer items-start gap-3"
                     ><input
                       v-model="consent"
@@ -450,7 +470,9 @@ const errorText = computed(() => {
                 @update="screenshot = $event"
                 @capture="capturing = $event"
               />
-              <p class="border-accent/50 rounded-lg border bg-secondary p-3 text-sm">
+              <p
+                class="rounded-lg border border-[color:color-mix(in_srgb,var(--color-accent)_50%,transparent)] bg-secondary p-3 text-sm"
+              >
                 {{
                   text(
                     "Deine Meldung ist öffentlich auf GitHub zu sehen. Lass persönliche Daten und Zugangsdaten bitte weg. Wir nutzen dein Feedback für die Entwicklung, antworten hier aber nicht persönlich.",
@@ -465,7 +487,7 @@ const errorText = computed(() => {
                   {{ text("Datenschutzhinweise", "Privacy information") }}
                 </NuxtLink>
               </p>
-              <p v-if="error" role="alert" class="border-amber-400/60 rounded border p-3 text-sm">
+              <p v-if="error" role="alert" class="rounded border border-warning p-3 text-sm">
                 {{ errorText }}
               </p>
               <div class="flex flex-wrap gap-2">
