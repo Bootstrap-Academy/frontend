@@ -25,7 +25,7 @@ const changed = "Offer expired or changed; no charge";
 /** composables/purchases.ts with the server answering the acceptance with `answer`; the
  * account holds `hearts` of 6 half hearts when they are read again. */
 async function accepting(answer, hearts = 0) {
-  const calls = { snackbars: [], navigated: [], refreshed: 0 };
+  const calls = { snackbars: [], navigated: [], refreshed: 0, sent: [] };
   const store = new Map();
   const heartInfo = Vue.ref(null);
   const { acceptPurchase } = await evaluate("composables/purchases.ts", {
@@ -39,8 +39,9 @@ async function accepting(answer, hearts = 0) {
       setItem: (key, value) => store.set(key, value),
       removeItem: (key) => store.delete(key),
     },
-    POST: async (path) => {
+    POST: async (path, body) => {
       assert.equal(path, "/shop/purchases/accept");
+      calls.sent.push(body);
       return answer;
     },
     getBalance: async () => calls.refreshed++,
@@ -81,6 +82,33 @@ test("an acceptance refused as a changed offer asks for a new quote and leaves t
   assert.equal(await done.acceptPurchase(offer), true);
   assert.deepEqual(done.calls.snackbars, [["success", "Body.PurchaseProvided"]]);
   assert.deepEqual(done.calls.navigated, []);
+});
+
+test("the acceptance names the language its declaration was shown in on the page's interface", async () => {
+  // A Premium offer of stage 2 whose period begins within the withdrawal period.
+  const lines = [{ role: "product", text: "Premium" }];
+  const offer = {
+    ...quote(ids(1), "premium_monthly"),
+    acceptance: "button",
+    text: "Premium",
+    summary: {
+      de: { lines, declaration: "Erklärung" },
+      en: { lines: [{ role: "product", text: "Premium" }], declaration: "Declaration" },
+    },
+  };
+  for (const [locale, language] of [
+    [undefined, "de"],
+    ["de", "de"],
+    ["en-US", "en"],
+  ]) {
+    const { acceptPurchase, calls } = await accepting({ state: "fulfilled", offer });
+    assert.equal(await acceptPurchase(offer, locale), true);
+    assert.deepEqual(
+      [calls.sent[0].early_performance_requested, calls.sent[0].declaration_language],
+      [true, language],
+      locale
+    );
+  }
 });
 
 test("a refill refused because the hearts filled up meanwhile closes the dialog and stays on the page", async () => {

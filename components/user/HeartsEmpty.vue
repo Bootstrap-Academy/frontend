@@ -163,7 +163,7 @@ export default {
 
       loading.value = true;
       try {
-        const result = await acceptPurchase(offer.value);
+        const result = await acceptPurchase(offer.value, locale.value);
         if (result === "renew") {
           // The server refused the quote as changed, without a charge: a new one takes its
           // place, with empty boxes and the notice above them, which stands at once. Without

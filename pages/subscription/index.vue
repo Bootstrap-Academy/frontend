@@ -175,7 +175,16 @@
           @order="confirmRenewal"
         >
           <template #characteristics>
-            <p class="whitespace-pre-line">{{ renewalOrder.text }}</p>
+            <!--
+              The English interface shows the English wording, if the offer has one, and says
+              that the German one is binding. The boxes below speak the language of the text.
+            -->
+            <div :lang="renewalWording.lang" class="grid gap-2" data-renewal-wording>
+              <p class="m-0 whitespace-pre-line">{{ renewalWording.text }}</p>
+              <p v-if="renewalWording.lang === 'en'" class="text-body-2 m-0 text-body">
+                {{ t("Body.OfferGermanBinding") }}
+              </p>
+            </div>
             <div class="flex flex-wrap gap-4">
               <button
                 v-for="kind in ['terms', 'withdrawal']"
@@ -196,14 +205,19 @@
             </div>
           </template>
           <template #consent>
+            <!-- A consent belongs to one offer in one language; a new one starts empty. -->
             <InputCheckbox
               id="RenewalAgreementAccepted"
               label="Body.RenewalAgreementAccepted"
+              :key="renewalConsentKey"
+              :lang="renewalWording.lang"
+              :locale="renewalLocale"
               v-model="renewalAccepted"
             />
             <OrderWithdrawalConsent
-              :key="renewalOrder.id"
+              :key="renewalConsentKey"
               kind="service"
+              :language="renewalWording.lang"
               v-model="renewalWithdrawalConsent"
             />
           </template>
@@ -323,6 +337,32 @@ export default {
     const renewalOrder = ref<any>(null);
     const renewalAccepted = ref(false);
     const renewalWithdrawalConsent = ref(false);
+    /**
+     * The renewal offer in the language of the interface: its English wording where the
+     * interface is English and the offer has one, otherwise the agreed German one (AGB 1.4).
+     * The consent names the language, so that the confirmation repeats what was ticked.
+     */
+    const renewalWording = computed((): { lang: "de" | "en"; text: string } => {
+      const offer = renewalOrder.value;
+      if (locale.value.startsWith("en") && typeof offer?.text_en === "string" && offer.text_en)
+        return { lang: "en", text: offer.text_en };
+      return { lang: "de", text: offer?.text ?? "" };
+    });
+    /** The locale the boxes of the renewal are written in: that of its wording. */
+    const renewalLocale = computed(() => offerLocale(renewalWording.value.lang));
+    /**
+     * A consent belongs to one offer in one language. When either changes, for instance when
+     * the interface language is switched with the dialog open, the boxes start empty again, so
+     * the consent names the language the declarations were ticked in.
+     */
+    const renewalConsentKey = computed(
+      () => `${renewalOrder.value?.id ?? ""}:${renewalWording.value.lang}`
+    );
+    function renewalConsentChanged() {
+      renewalAccepted.value = false;
+      renewalWithdrawalConsent.value = false;
+    }
+    watch(renewalConsentKey, renewalConsentChanged);
 
     function renewalKey(status: any) {
       return JSON.stringify([
@@ -486,7 +526,7 @@ export default {
           },
         ],
         submit: async () => {
-          return acceptPurchase(offer);
+          return acceptPurchase(offer, locale.value);
         },
         /** The same order with a new quote, for the account as it is now; `null` without one. */
         renew: async () => {
@@ -613,7 +653,7 @@ export default {
         quantity: refillQuantity(offer, locale.value),
         details: [],
         submit: async () => {
-          return acceptPurchase(offer);
+          return acceptPurchase(offer, locale.value);
         },
         renew: async () => {
           const next = await heartsOffer();
@@ -738,6 +778,7 @@ export default {
             offer_id: renewalOrder.value.id,
             accepted: renewalAccepted.value,
             withdrawal_consent: renewalWithdrawalConsent.value,
+            language: renewalWording.value.lang,
           },
         });
         if (error || !status || status.renewal?.id !== renewalOrder.value.request_id) {
@@ -776,6 +817,9 @@ export default {
       premiumInfo,
       premiumUntil,
       renewalOrder,
+      renewalWording,
+      renewalLocale,
+      renewalConsentKey,
       renewalAccepted,
       renewalWithdrawalConsent,
       confirmRenewal,

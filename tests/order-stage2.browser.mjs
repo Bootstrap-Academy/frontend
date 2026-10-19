@@ -4,7 +4,10 @@
  * Stage 2 of the order dialog (terms 2026-10): offers with `acceptance: "button"` are accepted
  * with the order button. Heart refills and coins have no box at all; Premium has one box, the
  * early start, only when its period begins within the withdrawal period. The order goes out
- * with the early start only where the box was ticked. The statement above the button is one
+ * with the early start only where the box was ticked, and then with the language the
+ * declaration was shown in. The monthly renewal shows its offer and boxes in the language of
+ * its wording (English only where the offer has an English one), its consent names that
+ * language, and a language switch empties the boxes. The statement above the button is one
  * block with the accent border. The coin order page offers "Zurück" to the amount, which it
  * keeps together with the way back to Premium, and "Abbrechen", which leaves the purchase. In
  * German and English, on a phone and on a laptop; the order button stands in the first view.
@@ -72,6 +75,21 @@ const quiz = {
 const EARLY = {
   de: "Ich verlange ausdrücklich, dass das bestellte Premium schon vor Ablauf der Widerrufsfrist von 14 Tagen startet. Widerrufe ich, zahle ich nur den Anteil des Preises für die Tage, an denen dieses Premium bis zu meinem Widerruf schon lief.",
   en: "I expressly request that the Premium I have ordered starts before the 14-day withdrawal period ends. If I withdraw, I pay only the share of the price for the days on which this Premium had already been running up to my withdrawal.",
+};
+// The monthly renewal offer as the backend issues it, shortened: its German wording and the
+// English one for the English interface, each ending with the two declarations of the boxes.
+const RENEWAL = {
+  id: "stage2-renewal-offer",
+  monthly_price: 1000,
+  terms_version: "2026-10",
+  text: "Premium: Unbegrenzte Herzen.\n\nMonatliche automatische Verlängerung für 1000 MorphCoins (10.00 EUR einschließlich Umsatzsteuer) je Kalendermonat.\n\nIch stimme dieser monatlichen kostenpflichtigen Verlängerung und den AGB 2026-10 für diese Vereinbarung ausdrücklich zu.\n\nIch verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.\nMir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.\n\nVertrags- und Erklärungssprache: Deutsch. Erklärungsversion: premium-renewal-2026-10-v4.",
+  text_en:
+    "Premium: Unlimited hearts.\n\nMonthly automatic renewal for 1000 MorphCoins (10.00 EUR including VAT) per calendar month.\n\nI expressly agree to this monthly paid renewal and to the terms and conditions 2026-10 for this agreement.\n\nI expressly request and agree that you begin providing the service before the withdrawal period ends.\nI am aware that my right of withdrawal expires once the service has been provided in full.\n\nContract and declaration language: German. Declaration version: premium-renewal-2026-10-v4.",
+};
+// The declaration of stage 1, which every paid offer before the effective date carries.
+const STAGE1_EARLY = {
+  de: "Ich verlange ausdrücklich, dass mit der bestellten Leistung vor Ablauf der Widerrufsfrist begonnen wird. Meine gesetzlichen Widerrufs- und Mängelrechte bleiben unberührt.",
+  en: "I expressly request that the ordered service begins before the withdrawal period ends. My statutory withdrawal and warranty rights remain unaffected.",
 };
 const line = (role, text) => ({ role, text });
 function wording(kind, coins) {
@@ -149,10 +167,47 @@ function wording(kind, coins) {
   };
 }
 
-/** The synthetic shop of stage 2; `early` says whether a Premium offer carries the box. */
-function shop({ hearts, paidUntil = null, early = true, renewal = null }) {
-  const S = { hearts, accepted: [], paypalOrders: [], offers: [], paidUntil, early, renewal };
+/**
+ * The synthetic shop of stage 2; `early` says whether a Premium offer carries the box. With
+ * `issuedBefore`, the first quote is one of stage 1, issued before the effective date, which
+ * the backend refuses as changed when it is accepted. Without `renewalEnglish` the renewal
+ * offer comes from a backend before its English wording.
+ */
+function shop({
+  hearts,
+  paidUntil = null,
+  early = true,
+  renewal = null,
+  issuedBefore = false,
+  renewalEnglish = true,
+}) {
+  const { text_en, ...german } = RENEWAL;
+  const S = {
+    hearts,
+    accepted: [],
+    paypalOrders: [],
+    autopay: [],
+    offers: [],
+    states: new Map(),
+    paidUntil,
+    early,
+    renewal,
+    renewalId: "11111111-1111-4111-8111-111111111115",
+    renewalOffer: renewalEnglish ? { ...german, text_en } : german,
+  };
   S.quote = (kind, coins = 0) => {
+    if (issuedBefore && !S.offers.length) {
+      const offer = S.stage2Quote(kind, coins);
+      delete offer.acceptance;
+      offer.declaration = STAGE1_EARLY.de;
+      offer.summary.de.declaration = STAGE1_EARLY.de;
+      offer.summary.en.declaration = STAGE1_EARLY.en;
+      delete offer.product.facts.early_start;
+      return offer;
+    }
+    return S.stage2Quote(kind, coins);
+  };
+  S.stage2Quote = (kind, coins = 0) => {
     const { de, en } = wording(kind, coins);
     // A running monthly renewal stands in the term line with its Euro amount.
     if (renewal && kind.startsWith("premium_")) {
@@ -197,6 +252,7 @@ function shop({ hearts, paidUntil = null, early = true, renewal = null }) {
       },
     };
     S.offers.push(offer);
+    S.states.set(offer.id, "offered");
     return offer;
   };
   return S;
@@ -266,7 +322,7 @@ async function fixture(S, language, [width, height]) {
         autopay: S.renewal ? "MONTHLY" : null,
         renewal: S.renewal
           ? {
-              id: "11111111-1111-4111-8111-111111111115",
+              id: S.renewalId,
               monthly_price: S.renewal,
               confirmation_sent: true,
             }
@@ -283,6 +339,17 @@ async function fixture(S, language, [width, height]) {
     const coins = path.match(/^\/shop\/coins\/paypal\/offers\/(\d+)$/)?.[1];
     if (coins && method === "POST")
       return answer({ state: "offered", offer: S.quote("coins", Number(coins)) });
+    if (path === "/shop/premium/renewal-offer/me" && method === "GET")
+      return answer(S.renewalOffer);
+    if (path === "/shop/premium/autopay" && method === "PUT") {
+      const body = req.postDataJSON();
+      S.autopay.push(body);
+      if (body.plan === "MONTHLY") {
+        S.renewal = S.renewalOffer.monthly_price;
+        S.renewalId = body.consent.request_id;
+      }
+      return answer({ ok: true });
+    }
     if (path === "/shop/coins/paypal" && method === "GET") return answer("synthetic-client-id");
     if (path === "/shop/coins/paypal/orders" && method === "POST") {
       S.paypalOrders.push(req.postDataJSON());
@@ -293,8 +360,24 @@ async function fixture(S, language, [width, height]) {
       const body = req.postDataJSON();
       S.accepted.push(body);
       const offer = S.offers.find((o) => o.id === body.order_id);
+      // Terms 2026-10 are in force: an offer of stage 1 is refused as changed, nothing charged.
+      if (offer && offer.acceptance !== "button") {
+        S.states.set(offer.id, "failed");
+        return answer({
+          state: "failed",
+          offer,
+          review_reason: "Offer expired or changed; no charge",
+          refusal: "offer_changed",
+        });
+      }
       if (offer?.product.kind === "hearts") S.hearts = 6;
+      if (offer) S.states.set(offer.id, "fulfilled");
       return answer({ state: "fulfilled", offer });
+    }
+    const order = path.match(/^\/shop\/purchases\/([0-9a-f-]{36})$/)?.[1];
+    if (order && method === "GET") {
+      const offer = S.offers.find((o) => o.id === order);
+      return offer ? answer({ state: S.states.get(order), offer }) : answer({ detail: "x" }, 404);
     }
     return answer({});
   });
@@ -370,6 +453,93 @@ const premiumButton = (page) =>
     .locator("button:has(img[src*='coin'])")
     .filter({ hasText: /Morphcoins/i })
     .first();
+/** The language the dialog shows an offer in on the interface of `language`. */
+const shownIn = (language) => (language === "de" ? "de" : "en");
+const RENEWAL_BOXES = [
+  "RenewalAgreementAccepted",
+  "WithdrawalConsentPerformance",
+  "WithdrawalConsentLoss",
+];
+
+/** Opens the dialog of the monthly renewal on the Premium page. */
+async function openRenewal(f, language) {
+  await f.page.goto(app + "/subscription");
+  const monthly = f.page.locator('[aria-labelledby="premium-renewal-label"] button', {
+    hasText: tr(language, "Buttons.Monthly"),
+  });
+  await monthly.waitFor({ state: "visible" });
+  await monthly.click();
+  const section = f.page.locator("#premium-renewal-order");
+  await section.waitFor();
+  await settle(f.page);
+  return section;
+}
+/** What the renewal dialog shows: its wording, every box with its language, the order button. */
+const renewalSeen = (section) =>
+  section.evaluate((root, boxes) => {
+    const wording = root.querySelector("[data-renewal-wording]");
+    const button = root.querySelector("[data-order-actions] button:last-child");
+    return {
+      lang: wording?.getAttribute("lang"),
+      text: wording?.querySelector("p")?.textContent,
+      labels: boxes.map((id) =>
+        root.querySelector(`label[for="${id}"]`)?.textContent.replace(/\s+/g, " ").trim()
+      ),
+      boxLanguages: boxes.map((id) =>
+        root.querySelector(`#${id}`)?.closest("[lang]")?.getAttribute("lang")
+      ),
+      ticked: boxes.map((id) => root.querySelector(`#${id}`)?.checked),
+      blocked: button?.getAttribute("aria-disabled"),
+      all: root.textContent.replace(/\s+/g, " "),
+    };
+  }, RENEWAL_BOXES);
+async function tickRenewal(section) {
+  for (const id of RENEWAL_BOXES) await section.locator(`#${id}`).check({ force: true });
+}
+const renewalOrderButton = (section, language) =>
+  section.locator("[data-order-actions] button", {
+    hasText: tr(language, "Buttons.OrderWithObligationToPay"),
+  });
+/**
+ * The renewal dialog on the interface of `language`, for an offer with an English wording or
+ * without one: text and boxes in one language, the binding note only under the English wording.
+ */
+async function renewalDialog(f, S, language, label, withEnglish) {
+  const section = await openRenewal(f, language);
+  if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`), fullPage: true });
+  const seen = await renewalSeen(section);
+  const shown = withEnglish ? shownIn(language) : "de";
+  const wordingLocale = shown === "en" ? "en-US" : "de";
+  const text = shown === "en" ? RENEWAL.text_en : RENEWAL.text;
+  assert.equal(seen.lang, shown);
+  assert.equal(seen.text, text);
+  // The note on the binding German wording stands once, and only under the English wording.
+  const notes = ["de", "en-US"].map(
+    (locale) => seen.all.split(tr(locale, "Body.OfferGermanBinding")).length - 1
+  );
+  assert.deepEqual(notes, shown === "en" ? [0, 1] : [0, 0], "the binding note");
+  // Every box speaks the language of the wording; the two declarations are its sentences.
+  assert.deepEqual(seen.boxLanguages, [shown, shown, shown]);
+  assert.equal(seen.labels[0], tr(wordingLocale, "Body.RenewalAgreementAccepted"));
+  for (const [index, key] of [
+    [1, "WithdrawalConsentServicePerformance"],
+    [2, "WithdrawalConsentServiceLoss"],
+  ]) {
+    const sentence = tr(wordingLocale, `Body.${key}`);
+    assert.ok(text.includes(sentence), key);
+    assert.equal(seen.labels[index], sentence, key);
+  }
+  await tickRenewal(section);
+  await renewalOrderButton(section, language).click();
+  for (let i = 0; !S.autopay.length && i < 50; i++) await f.page.waitForTimeout(100);
+  assert.equal(S.autopay.length, 1);
+  const { consent } = S.autopay[0];
+  assert.deepEqual(
+    [consent.offer_id, consent.accepted, consent.withdrawal_consent, consent.language],
+    [RENEWAL.id, true, true, shown]
+  );
+  return seen;
+}
 const orderButton = (page, root, language) =>
   page.locator(`${root} [data-order-actions] button`, {
     hasText: tr(language, "Buttons.OrderWithObligationToPay"),
@@ -411,8 +581,12 @@ const cases = {
     await orderButton(f.page, ".modal-content", language).click();
     await f.page.locator(".modal-content [data-purchase-contract]").waitFor({ state: "detached" });
     assert.deepEqual(
-      S.accepted.map((a) => [a.accepted, a.early_performance_requested]),
-      [[true, false]]
+      S.accepted.map((a) => [
+        a.accepted,
+        a.early_performance_requested,
+        "declaration_language" in a,
+      ]),
+      [[true, false, false]]
     );
     assert.equal(new URL(f.page.url()).pathname, "/quizzes/solve-quiz-task");
     return seen;
@@ -448,9 +622,10 @@ const cases = {
     await f.page.locator(".modal-content [data-purchase-early]").check({ force: true });
     await orderButton(f.page, ".modal-content", language).click();
     await f.page.locator(".modal-content [data-purchase-contract]").waitFor({ state: "detached" });
+    // The declaration goes out with the language it was shown and ticked in.
     assert.deepEqual(
-      S.accepted.map((a) => a.early_performance_requested),
-      [true]
+      S.accepted.map((a) => [a.early_performance_requested, a.declaration_language]),
+      [[true, shownIn(language)]]
     );
     return seen;
   },
@@ -461,8 +636,8 @@ const cases = {
     await orderButton(f.page, ".modal-content", language).click();
     await f.page.locator(".modal-content [data-purchase-contract]").waitFor({ state: "detached" });
     assert.deepEqual(
-      S.accepted.map((a) => a.early_performance_requested),
-      [true]
+      S.accepted.map((a) => [a.early_performance_requested, a.declaration_language]),
+      [[true, shownIn(language)]]
     );
     return seen;
   },
@@ -472,9 +647,82 @@ const cases = {
     assert.equal(seen.blocked, "false");
     await orderButton(f.page, ".modal-content", language).click();
     await f.page.locator(".modal-content [data-purchase-contract]").waitFor({ state: "detached" });
+    // No declaration, so no language of one.
     assert.deepEqual(
-      S.accepted.map((a) => a.early_performance_requested),
-      [false]
+      S.accepted.map((a) => [a.early_performance_requested, "declaration_language" in a]),
+      [[false, false]]
+    );
+    return seen;
+  },
+  "premium-offer-from-before-the-date": async (f, S, language, label) => {
+    // A dialog opened before midnight shows an offer of stage 1; ordered after it, the backend
+    // refuses it as changed and the dialog replaces it with one of stage 2 (#838).
+    await f.page.goto(app + "/subscription");
+    const button = premiumButton(f.page);
+    await button.waitFor({ state: "visible" });
+    await button.click();
+    const contract = f.page.locator(".modal-content [data-purchase-contract]");
+    await contract.waitFor();
+    await f.page.locator(".modal-content [data-purchase-acceptance]").check({ force: true });
+    await f.page.locator(".modal-content [data-purchase-early]").check({ force: true });
+    await orderButton(f.page, ".modal-content", language).click();
+    await f.page.locator(".modal-content [data-offer-renewed]").waitFor();
+    await settle(f.page);
+    const seen = await summary(f.page, [
+      ".modal-content",
+      tr(language, "Buttons.OrderWithObligationToPay"),
+    ]);
+    if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`) });
+    assert.equal(S.offers.length, 2, "a new offer took the place of the refused one");
+    assert.equal(seen.acceptanceBox, false, "the new offer is one of stage 2");
+    assert.equal(seen.sentence, byButton(language));
+    assert.equal(seen.earlyBox, true);
+    assert.equal(seen.blocked, "true", "the boxes start empty again");
+    assert.equal(seen.inView, true, `order button ends at ${seen.buttonBottom} px`);
+    await f.page.locator(".modal-content [data-purchase-early]").check({ force: true });
+    await orderButton(f.page, ".modal-content", language).click();
+    await contract.waitFor({ state: "detached" });
+    assert.deepEqual(
+      S.accepted.map((a) => [a.order_id, a.early_performance_requested, a.declaration_language]),
+      [
+        // The declaration of stage 1 was shown from the summary as well.
+        [S.offers[0].id, true, shownIn(language)],
+        [S.offers[1].id, true, shownIn(language)],
+      ]
+    );
+    return seen;
+  },
+  // A backend with the English wording of the renewal offer.
+  "renewal-dialog": async (f, S, language, label) => renewalDialog(f, S, language, label, true),
+  // A backend before it: the offer has no `text_en`, so text and boxes stay German on the
+  // English interface too, and no note on the binding wording is needed.
+  "renewal-dialog-old-backend": async (f, S, language, label) =>
+    renewalDialog(f, S, language, label, false),
+  // The interface language is switched with the dialog open and the boxes ticked: the boxes
+  // follow the new wording and start empty, so the consent names the language it was ticked in.
+  "renewal-language-switch": async (f, S, language, label) => {
+    const section = await openRenewal(f, language);
+    await tickRenewal(section);
+    const other = language === "de" ? "en-US" : "de";
+    await f.page
+      .getByRole("button", { name: other === "de" ? "Deutsch" : "English", exact: true })
+      .click();
+    await f.page.waitForFunction(
+      (lang) => document.querySelector("[data-renewal-wording]")?.getAttribute("lang") === lang,
+      shownIn(other)
+    );
+    await settle(f.page);
+    if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`), fullPage: true });
+    const seen = await renewalSeen(section);
+    assert.deepEqual(seen.ticked, [false, false, false], "every box starts empty again");
+    assert.equal(seen.blocked, "true");
+    assert.ok(seen.labels.includes(tr(other, "Body.RenewalAgreementAccepted")));
+    await tickRenewal(section);
+    await renewalOrderButton(section, other).click();
+    for (let i = 0; !S.autopay.length && i < 50; i++) await f.page.waitForTimeout(100);
+    assert.deepEqual(
+      S.autopay.map((write) => write.consent.language),
+      [shownIn(other)]
     );
     return seen;
   },
@@ -533,6 +781,7 @@ const cases = {
     assert.equal(S.paypalOrders.length, 1);
     assert.equal(S.paypalOrders[0].early_performance_requested, false);
     assert.equal(S.paypalOrders[0].accepted, true);
+    assert.equal("declaration_language" in S.paypalOrders[0], false);
     return seen;
   },
 };
@@ -546,6 +795,12 @@ const shops = {
   "premium-with-renewal-starting-early": () =>
     shop({ hearts: 6, paidUntil: seconds() + 86400 * 5, early: true, renewal: 1000 }),
   "coin-order-page": () => shop({ hearts: 6 }),
+  "premium-offer-from-before-the-date": () => shop({ hearts: 6, issuedBefore: true }),
+  "renewal-dialog": () => shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false }),
+  "renewal-dialog-old-backend": () =>
+    shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false, renewalEnglish: false }),
+  "renewal-language-switch": () =>
+    shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false }),
 };
 
 try {
