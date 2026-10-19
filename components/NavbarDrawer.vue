@@ -18,7 +18,12 @@
       class="fixed inset-0 z-[10000]"
       @close="closeMenu"
     >
-      <div class="bg-primary/60 fixed inset-0" aria-hidden="true" />
+      <!-- The site's navy darkens the page; Tailwind has no opacity modifier for the theme's
+           CSS variables, so the colour is mixed. -->
+      <div
+        class="fixed inset-0 bg-[color:color-mix(in_srgb,var(--color-primary)_60%,transparent)]"
+        aria-hidden="true"
+      />
       <div class="fixed inset-0 flex">
         <DialogPanel
           class="h-full w-72 max-w-full overflow-y-auto bg-tertiary p-[5vw] shadow-2xl sm:p-9"

@@ -6,7 +6,9 @@
     :aria-label="t('Links.Privacy')"
     data-update-notice
   >
-    <div class="border-accent/30 rounded-lg border bg-secondary p-4">
+    <div
+      class="rounded-lg border border-[color:color-mix(in_srgb,var(--color-accent)_30%,transparent)] bg-secondary p-4"
+    >
       <div class="flex flex-wrap items-center gap-3">
         <p class="min-w-0 flex-1 basis-64">{{ t("UpdateNotice.Body") }}</p>
         <NuxtLink class="inline-flex min-h-11 items-center underline" :to="UPDATE_NOTICE_LINK">

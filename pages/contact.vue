@@ -9,7 +9,9 @@ useHead({ title: computed(() => (de.value ? "Feedback und Kontakt" : "Feedback a
 <template>
   <main class="my-container space-y-card container-fluid mx-auto max-w-3xl">
     <h1 class="text-heading-1">{{ de ? "Feedback und Kontakt" : "Feedback and contact" }}</h1>
-    <section class="border-accent/40 p-card space-y-3 rounded-lg border bg-secondary">
+    <section
+      class="p-card space-y-3 rounded-lg border border-[color:color-mix(in_srgb,var(--color-accent)_40%,transparent)] bg-secondary"
+    >
       <h2 class="text-heading-3">
         {{ de ? "Fehler melden oder Idee vorschlagen" : "Report a bug or suggest an idea" }}
       </h2>

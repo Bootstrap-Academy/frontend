@@ -62,7 +62,7 @@
       >
         <template v-for="({ label, pathname }, i) of usefulLinks" :key="i">
           <span class="text-accent" v-if="i > 0">|</span>
-          <NuxtLink :to="pathname" class="text-hover">
+          <NuxtLink :to="pathname">
             {{ t(label) }}
           </NuxtLink>
         </template>

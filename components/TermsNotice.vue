@@ -7,7 +7,9 @@
     data-terms-notice
   >
     <!-- Small on purpose: the mail explains the change, this only points to it. -->
-    <div class="border-accent/30 relative rounded-lg border bg-secondary p-3 pr-12">
+    <div
+      class="relative rounded-lg border border-[color:color-mix(in_srgb,var(--color-accent)_30%,transparent)] bg-secondary p-3 pr-12"
+    >
       <i18n-t keypath="TermsNotice.Body" tag="p" class="text-body-2 m-0" scope="global">
         <template #date>{{ german ? announcement.date : announcement.dateEn }}</template>
         <!-- The links take the size and font of the sentence; links elsewhere are larger. -->

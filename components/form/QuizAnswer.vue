@@ -12,7 +12,7 @@
       <h4 class="text-heading-3 text-accent">
         Q). <Markdown as="span" :source="subtask?.question ?? ''"></Markdown>
       </h4>
-      <p class="text-heading2 text-sm" v-if="!subtask?.solved && user?.id != subtask?.creator">
+      <p class="text-sm" v-if="!subtask?.solved && user?.id != subtask?.creator">
         {{
           subtask?.single_choice
             ? t("Headings.ChooseSingleCorrectOption")

@@ -133,7 +133,7 @@ async function importRecovery() {
 
 <template>
   <section
-    class="border-slate-400 grid gap-3 rounded border p-4 text-body"
+    class="grid gap-3 rounded border border-body p-4 text-body"
     aria-labelledby="learning-access-title"
   >
     <h3 id="learning-access-title">{{ t("LearningAccess.Title") }}</h3>

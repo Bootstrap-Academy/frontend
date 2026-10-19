@@ -8,7 +8,7 @@
         <h2 class="mb-2 text-xl font-semibold sm:text-2xl">
           {{ t("Headings.DragAndDropToMatchMatchings") }}
         </h2>
-        <p class="text-gray-400 text-sm">{{ t("Headings.MatchingInstructions") }}</p>
+        <p class="text-sm text-subheading">{{ t("Headings.MatchingInstructions") }}</p>
       </div>
 
       <!-- Centered matching container with max width -->

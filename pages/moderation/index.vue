@@ -350,7 +350,7 @@ onMounted(async () => {
       </div>
       <form
         v-if="current.decision_id"
-        class="border-slate-600 grid gap-3 border-t pt-5 print:hidden"
+        class="grid gap-3 border-t border-[color:color-mix(in_srgb,var(--color-body)_50%,transparent)] pt-5 print:hidden"
         @submit.prevent="complain"
       >
         <h2>{{ t("Moderation.ReviewHeading") }}</h2>

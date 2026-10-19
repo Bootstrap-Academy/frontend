@@ -360,7 +360,7 @@ function attach() {
     </div>
     <div
       tabindex="0"
-      class="border-accent/60 rounded border border-dashed p-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+      class="rounded border border-dashed border-[color:color-mix(in_srgb,var(--color-accent)_60%,transparent)] p-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
     >
       {{
         text(
@@ -388,7 +388,9 @@ function attach() {
           )
         }}
       </p>
-      <div class="border-accent/50 bg-black/30 flex justify-center overflow-hidden rounded border">
+      <div
+        class="flex justify-center overflow-hidden rounded border border-[color:color-mix(in_srgb,var(--color-accent)_50%,transparent)] bg-[color:color-mix(in_srgb,var(--color-black)_30%,transparent)]"
+      >
         <canvas
           v-show="!attached"
           ref="canvas"
@@ -501,7 +503,11 @@ function attach() {
         }}
       </p>
     </div>
-    <p v-if="message" role="status" class="border-accent/50 rounded border p-2 text-sm">
+    <p
+      v-if="message"
+      role="status"
+      class="rounded border border-[color:color-mix(in_srgb,var(--color-accent)_50%,transparent)] p-2 text-sm"
+    >
       {{ message }}
     </p>
   </section>

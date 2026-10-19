@@ -34,7 +34,7 @@ function close() {
         <div class="fixed inset-0 backdrop-blur-sm transition-opacity" />
       </TransitionChild>
 
-      <div class="bg-lightGray fixed inset-0 z-10 overflow-y-auto">
+      <div class="fixed inset-0 z-10 overflow-y-auto">
         <div class="flex min-h-full items-center justify-center text-center sm:p-0">
           <TransitionChild
             as="template"

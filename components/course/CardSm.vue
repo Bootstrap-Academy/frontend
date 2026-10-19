@@ -9,7 +9,7 @@
       class="absolute left-0 top-0 h-full w-full object-cover"
     />
     <div
-      class="bg-primary/10 relative h-fit w-full overflow-hidden rounded-lg px-4 py-3 backdrop-blur-xl"
+      class="relative h-fit w-full overflow-hidden rounded-lg bg-[color:color-mix(in_srgb,var(--color-primary)_10%,transparent)] px-4 py-3 backdrop-blur-xl"
     >
       <h3 class="clamp tight line-3 text-heading-2 font-semibold">
         {{ title }}
