@@ -69,6 +69,22 @@
       <button v-if="mode === 'browser-fullscreen'" type="button" @click="display?.request(false)">
         {{ copy.exitFullscreen }}
       </button>
+      <!-- The lesson covers the page's feedback button; this one opens the same dialog. -->
+      <button type="button" class="protocol-feedback" aria-haspopup="dialog" @click="openFeedback">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 3v-3H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"
+          />
+          <path d="M7 9h10M7 13h7" />
+        </svg>
+        <span class="protocol-feedback-label">{{ copy.feedback }}</span>
+      </button>
       <p v-if="navigationMessage" role="status">{{ navigationMessage }}</p>
     </nav>
   </section>
@@ -104,6 +120,8 @@ useHead({
 });
 const router = useRouter();
 const session = useSession();
+const feedbackOpen = useFeedbackOpen();
+const feedbackCovered = useFeedbackCovered();
 const surface = ref<HTMLElement | null>(null);
 const container = ref<HTMLElement | null>(null);
 const closeButton = ref<HTMLButtonElement | null>(null);
@@ -143,6 +161,7 @@ const copy = computed(() =>
         close: "Schließen",
         fullscreen: "Vollbild",
         exitFullscreen: "Vollbild verlassen",
+        feedback: "Feedback",
         fullscreenDenied: "Vollbild ging nicht auf. Du kannst hier weitermachen.",
         rotate: "Wenn du magst, dreh dein Handy für mehr Platz.",
         retained:
@@ -164,6 +183,7 @@ const copy = computed(() =>
         close: "Close",
         fullscreen: "Fullscreen",
         exitFullscreen: "Exit fullscreen",
+        feedback: "Feedback",
         fullscreenDenied: "Fullscreen didn't open. You can keep going here.",
         rotate: "If you like, turn your phone for more space.",
         retained: "You're staying here. Save your work and finish the scene before continuing.",
@@ -202,6 +222,11 @@ async function navigate(direction: "next" | "previous" | "skip" | "close") {
   } finally {
     navigating.value = false;
   }
+}
+async function openFeedback() {
+  // The dialog opens over the page, which browser fullscreen would keep behind the lesson.
+  if (mode.value === "browser-fullscreen") await display?.request(false);
+  feedbackOpen.value = true;
 }
 function enterFullscreen() {
   // Keep the request in the host's actual button activation.
@@ -456,6 +481,7 @@ function viewport() {
   );
 }
 onMounted(() => {
+  feedbackCovered.value++;
   viewport();
   window.visualViewport?.addEventListener("resize", viewport);
   window.visualViewport?.addEventListener("scroll", viewport);
@@ -467,6 +493,7 @@ function visibility() {
 }
 onMounted(() => document.addEventListener("visibilitychange", visibility));
 onBeforeUnmount(() => {
+  feedbackCovered.value = Math.max(0, feedbackCovered.value - 1);
   document.removeEventListener("visibilitychange", visibility);
   window.visualViewport?.removeEventListener("resize", viewport);
   window.visualViewport?.removeEventListener("scroll", viewport);
@@ -487,7 +514,8 @@ defineExpose({
 /*
  * F5: the lesson takes the window up to a narrow margin, and its controls stand beside it in a
  * narrow column. The page's header keeps its line at the top; at the sides and the bottom the
- * margin is that of the page's floating feedback button, which the lesson then covers whole.
+ * margin is that of the page's floating feedback button, which the lesson then covers whole. The
+ * column carries a button for the same dialog at its foot instead.
  */
 .protocol-activity {
   position: fixed;
@@ -564,6 +592,20 @@ button:focus-visible {
 .fullscreen-requested {
   border-color: #67e8f9;
 }
+/* Below the lesson's controls and their messages, at the foot of the column. */
+.protocol-feedback {
+  order: 1;
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.protocol-feedback svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
 .protocol-activity:fullscreen {
   top: 0;
   left: 0;
@@ -611,6 +653,23 @@ button:focus-visible {
   }
   .protocol-controls > progress {
     height: 4px;
+  }
+  /* At the end of the row, before a message, which takes a row of its own. */
+  .protocol-feedback {
+    order: 0;
+    margin-top: 0;
+    margin-left: auto;
+  }
+}
+/* On a phone the row keeps to one line: the symbol of the page's button shows, the word is read. */
+@media (max-width: 599px) {
+  .protocol-feedback-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 </style>

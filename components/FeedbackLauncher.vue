@@ -20,8 +20,10 @@ const config = useRuntimeConfig();
 const user = useUser();
 const accessToken = useAccessToken();
 const stack = useDialogStack();
-const opened = ref(false);
-const dialogMounted = ref(false);
+// Shared, so that a lesson frame covering this button can open the same dialog and draft.
+const opened = useFeedbackOpen();
+const covered = useFeedbackCovered();
+const dialogMounted = ref(opened.value);
 watch(opened, (value) => {
   if (value) dialogMounted.value = true;
 });
@@ -202,6 +204,7 @@ const errorText = computed(() => {
   <!--
     Below 768 px the content column is the whole screen, so a floating button would cover
     text. There the launcher sits in the page flow above the footer, as on the guest page.
+    A lesson frame covers this button; while one is open, its bar offers the button instead.
   -->
   <div
     v-if="ready"
@@ -209,7 +212,7 @@ const errorText = computed(() => {
     :class="props.inline ? '' : 'md:pb-0'"
   >
     <button
-      v-show="!opened && stack.length === 0"
+      v-show="!opened && stack.length === 0 && covered === 0"
       type="button"
       class="feedback-open inline-flex min-h-12 items-center gap-2 rounded-full border border-accent bg-primary px-4 py-3 font-semibold text-heading"
       :class="props.inline ? 'relative' : 'md:fixed md:right-4 md:z-40 md:shadow-lg'"

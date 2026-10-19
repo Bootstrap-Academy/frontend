@@ -8,7 +8,10 @@
  * The frame then passes its last task and asks for completion; skills reports the unit completed,
  * "Weiter" appears in the bar, once on the page, and leads to the course page. A room of API 1
  * keeps its page as before: its module, no such bar, and its completion leads to the course page.
- * At 390 × 640 and 1280 × 800.
+ * The frame covers the page's feedback button, so the bar ends with "Feedback": the only one on
+ * the page, in one row below the frame on a phone and at the foot of the column on a wide screen.
+ * It opens the page's dialog over the lesson; a draft written there is still in the dialog of the
+ * page's own button on the course page. At 390 × 640 and 1280 × 800.
  *
  * The frame is a small package built here from the real SDK. It speaks the protocol to the real
  * host and adapters: task start, submission and completion request go to skills, here synthetic.
@@ -492,6 +495,64 @@ function clean(f, label) {
   assert.deepEqual(f.consoleErrors, [], `${label}: console errors`);
   assert.deepEqual(f.foreign, [], `${label}: foreign requests`);
 }
+const barFeedback = (page) => bar(page).getByRole("button", { name: "Feedback", exact: true });
+const feedbackDialog = (page) =>
+  page.getByRole("dialog", { name: "Feedback zur Bootstrap Academy" });
+const DRAFT = "Ein Knopf fehlt";
+/**
+ * The frame covers the page's own feedback button, which steps back; the bar's "Feedback" is the
+ * only one on the page, inside the window and on top, in the one row below the frame on a phone
+ * and at the foot of the column beside it on a wide screen.
+ */
+async function feedbackInBar(page, label) {
+  assert.equal(await page.locator(".feedback-open").isVisible(), false, `${label}: page button`);
+  assert.equal(
+    await page.getByRole("button", { name: "Feedback", exact: true }).count(),
+    1,
+    `${label}: one Feedback on the page`
+  );
+  const place = await barFeedback(page).evaluate((button) => {
+    const box = button.getBoundingClientRect();
+    const nav = button.closest("nav");
+    const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+    const tops = [...nav.querySelectorAll("button")].map((b) =>
+      Math.round(b.getBoundingClientRect().top)
+    );
+    return {
+      inWindow:
+        box.left >= 0 && box.top >= 0 && box.right <= innerWidth && box.bottom <= innerHeight,
+      onTop: button.contains(hit),
+      rows: new Set(tops).size,
+      foot: Math.round(nav.getBoundingClientRect().bottom - box.bottom),
+      phone: innerWidth < 1024,
+    };
+  });
+  assert.equal(place.inWindow, true, `${label}: Feedback inside the window`);
+  assert.equal(place.onTop, true, `${label}: Feedback not covered`);
+  if (place.phone) assert.equal(place.rows, 1, `${label}: the bar keeps one row`);
+  else assert.ok(place.foot <= 16, `${label}: Feedback at the foot of the column (${place.foot})`);
+}
+/**
+ * The bar's "Feedback" opens the page's dialog over the lesson. A draft written there stays when
+ * it closes, and the focus comes back to the bar.
+ */
+async function feedbackDraft(page, label, name) {
+  await barFeedback(page).click();
+  const dialog = feedbackDialog(page);
+  await dialog.waitFor();
+  const title = dialog.getByLabel("Titel", { exact: true });
+  await title.fill(DRAFT);
+  const onTop = await title.evaluate((field) => {
+    const box = field.getBoundingClientRect();
+    return field === document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+  });
+  assert.equal(onTop, true, `${label}: the dialog lies over the lesson`);
+  await picture(page, name);
+  await dialog.getByRole("button", { name: "Schließen", exact: true }).click();
+  await dialog.waitFor({ state: "hidden" });
+  await page.waitForFunction(() => document.activeElement?.classList.contains("protocol-feedback"));
+  assert.equal(await page.locator(".feedback-open").isVisible(), false, `${label}: page button`);
+}
 
 async function engineLesson(size) {
   const label = `engine ${size.join("x")}`;
@@ -503,14 +564,24 @@ async function engineLesson(size) {
     const frame = page.frameLocator(".protocol-surface iframe");
     await frame.getByText("Welle 1 von 2").waitFor();
     await bar(page).getByRole("button", { name: "Schließen" }).waitFor();
-    assert.deepEqual(await barLabels(page), ["Schließen", "Vollbild"], `${label}: at the start`);
+    assert.deepEqual(
+      await barLabels(page),
+      ["Schließen", "Vollbild", "Feedback"],
+      `${label}: at the start`
+    );
+    await feedbackInBar(page, `${label}: at the start`);
     await picture(page, `${size.join("x")}-engine-1-start`);
+    await feedbackDraft(page, label, `${size.join("x")}-engine-1b-feedback-dialog`);
 
     // The first task passes: the frame offers its own "Weiter" to the next one, alone on the page.
     await press(frame, "Prüfen");
     await frame.getByRole("button", { name: "Weiter" }).waitFor();
     assert.equal(await frame.getByText("Bestanden.").count(), 1, label);
-    assert.deepEqual(await barLabels(page), ["Schließen", "Vollbild"], `${label}: after a pass`);
+    assert.deepEqual(
+      await barLabels(page),
+      ["Schließen", "Vollbild", "Feedback"],
+      `${label}: after a pass`
+    );
     assert.equal(await pageNext(page).count(), 0, `${label}: no page Weiter after a pass`);
     assert.equal(f.room.progress.status, "new", label);
     await picture(page, `${size.join("x")}-engine-2-pass-frame-weiter`);
@@ -530,9 +601,10 @@ async function engineLesson(size) {
     await pageNext(page).waitFor();
     assert.deepEqual(
       await barLabels(page),
-      ["Weiter", "Schließen", "Vollbild"],
+      ["Weiter", "Schließen", "Vollbild", "Feedback"],
       `${label}: after completion`
     );
+    await feedbackInBar(page, `${label}: after completion`);
     assert.equal(await frame.getByRole("button", { name: "Weiter" }).isVisible(), false, label);
     assert.equal(await pageNext(page).count(), 1, `${label}: one Weiter on the page`);
     assert.equal(f.room.progress.status, "completed", label);
@@ -549,6 +621,14 @@ async function engineLesson(size) {
     await pageNext(page).click();
     await coursePage(page, subject);
     await picture(page, `${size.join("x")}-engine-4-course-page`);
+    // Without the frame the page's own button is back, and its dialog holds the draft.
+    await page.locator(".feedback-open").click();
+    assert.equal(
+      await feedbackDialog(page).getByLabel("Titel", { exact: true }).inputValue(),
+      DRAFT,
+      `${label}: the draft from the lesson`
+    );
+    await picture(page, `${size.join("x")}-engine-5-course-page-feedback`);
     // The frame's operations reached skills on the service's paths, for this course and revision.
     const engine = f.calls.filter(({ path }) => path.startsWith("/skills/engine/"));
     assert.deepEqual(
@@ -591,6 +671,8 @@ async function api1Room(size) {
     assert.equal(await bar(page).count(), 0, label);
     assert.equal(await page.locator(".protocol-activity").count(), 0, label);
     assert.equal(await pageNext(page).count(), 0, label);
+    // Nothing covers the page here, so its own feedback button stays.
+    assert.equal(await page.locator(".feedback-open").isVisible(), true, label);
     await picture(page, `${size.join("x")}-api1-1-open`);
     // Its completion continues to the course page.
     await page.getByRole("button", { name: "Prüfen" }).click();

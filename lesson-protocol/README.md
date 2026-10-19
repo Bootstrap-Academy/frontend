@@ -192,7 +192,7 @@ alone does not meet that requirement. Tab stays native; scene arrows and
 Space/Enter act only on the focused scene handle. Host arrows act only on its
 focused navigation buttons. Text inputs retain their ordinary keys.
 
-The host offers Previous, Next, Skip and Close, with a 260 CSS-px sidebar on
+The host offers Previous, Next, Skip and Close, with a 200 CSS-px sidebar on
 wide screens. Next and its arrow keys come once the room is completed or
 skipped, the only state in which the continuation acts; until then a next step
 inside the lesson is the only one on the page. Previous uses session-local,
@@ -202,6 +202,12 @@ belongs to the surviving parent room, because completion can remove the frame
 before its event arrives. Course players supply their own continuation; the
 standalone learning room opens the server-selected next room. Existing v1
 navigation is unchanged.
+
+The frame covers the page's feedback button, so the host's controls end with
+Feedback, which opens the page's own dialog and draft (`docs/feedback.md`): at
+the foot of the sidebar, at the end of the row below the frame on narrow
+screens, and as its symbol alone below 600 CSS px so that the row keeps one
+line.
 
 `display.fullscreen` requests a host affordance; it never performs fullscreen
 from an asynchronous frame RPC. A host click synchronously requests fullscreen
