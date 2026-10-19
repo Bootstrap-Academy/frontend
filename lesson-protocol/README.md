@@ -90,12 +90,32 @@ fetched without credentials, redirects or referrers; MIME types, every byte
 hash, the complete resource inventory and a restrictive CSP are checked before
 the document starts. The frame is sandboxed with `allow-scripts` only, so the
 lesson document has an opaque origin: it cannot read the platform's cookies or
-storage, the page around it, or call an API (`connect-src 'none'`). A content
-origin inside bootstrap.academy (for example a path on the API host) must also
-send `sandbox allow-scripts` in its CSP, which keeps a package opaque when its
-address is opened directly; the loader refuses such an origin without it. The
-transferred MessagePort is tied to that iframe and session. Navigation, error,
-unmount and owner/session changes close the port.
+storage or the page around it, and `connect-src 'none'` blocks fetch, XHR,
+WebSocket and EventSource. A content origin inside bootstrap.academy (for
+example a path on the API host) must also send `sandbox allow-scripts` in its
+CSP, which keeps a package opaque when its address is opened directly; the
+loader refuses such an origin without it. The transferred MessagePort belongs to
+that iframe element and session; it goes to whatever document the frame holds
+when the host connects (see residual risks below). Navigation, error, unmount
+and owner/session changes close the port.
+
+### Residual risks (accepted)
+
+Two ways out remain for lesson code, and both are accepted because every
+package is our own, reviewed and pinned by its hash:
+
+- The package can navigate its frame before the load event. The host then
+  hands `host.connect` and the port to that page, which runs sandboxed but
+  without the package's CSP, and which can drive the protocol session: read the
+  state and context the host hands out, save state, request completion or an
+  assessment. No CSP can name an opaque origin as a target; the iframe `csp`
+  attribute would refuse such a page, but only Chromium enforces it.
+- No CSP directive that browsers enforce stops a frame navigation to a foreign
+  address or WebRTC traffic to a STUN server. Through them a package can send
+  out what it holds: the learner's state, answers and the host context.
+
+Neither way reaches the session tokens, the platform's cookies or storage, or
+the API with the learner's credentials.
 
 `rooms.ts` adapts state/read/save/reset and completion to the existing Skills
 room routes and their CAS/idempotency/recovery controller. A retry retains the
