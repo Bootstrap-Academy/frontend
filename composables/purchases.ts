@@ -44,6 +44,10 @@ export type PurchaseOffer = {
 export const buttonAccepts = (offer: PurchaseOffer | null | undefined) =>
   offer?.acceptance === "button" && offerWording(offer, "de") !== null;
 
+/** The interface locale (`de`, `en-US`) of an offer wording's language (`de`, `en`); empty for none. */
+export const offerLocale = (language: string) =>
+  language === "en" ? "en-US" : language === "de" ? "de" : "";
+
 /** What the page says when the order button is pressed before the boxes are ticked. */
 export const consentMissingKey = (offer: PurchaseOffer | null | undefined) =>
   buttonAccepts(offer) ? "Error.EarlyStartMissing" : "Error.WithdrawalConsentMissing";
@@ -264,19 +268,21 @@ export async function discardStaleOffer(offer: PurchaseOffer): Promise<boolean> 
 /**
  * The acceptance of `offer` as the dialog gives it. The order button only works once the
  * boxes are ticked, so it states the early start whenever the offer asks for it: every
- * paid offer of stage 1, and of stage 2 only one with a declaration. For that declaration it
- * also names the language the dialog showed it in on the interface of `locale`, so that the
- * confirmation repeats it as it was ticked, next to the binding German wording.
+ * paid offer of stage 1, and of stage 2 only one with a declaration. For a declaration the
+ * dialog shows from the offer's summary, in stage 1 and stage 2 alike, it also names the
+ * language it was shown in on the interface of `locale`, so that the confirmation repeats it
+ * as it was ticked, next to the binding German wording. An offer without a summary (other
+ * services, older offers) shows its German text, and its acceptance stays as it was.
  */
 export function purchaseAcceptance(offer: PurchaseOffer, locale = "de") {
-  const declared = buttonAccepts(offer) && offer.declaration !== "";
+  const early = !buttonAccepts(offer) || offer.declaration !== "";
   const acceptance = {
     order_id: offer.id,
     offer_hash: offer.hash,
     accepted: true,
-    early_performance_requested: !buttonAccepts(offer) || declared,
+    early_performance_requested: early,
   };
-  const shown = declared ? offerWording(offer, locale)?.lang : undefined;
+  const shown = early && offer.declaration !== "" ? offerWording(offer, locale)?.lang : undefined;
   return shown ? { ...acceptance, declaration_language: shown } : acceptance;
 }
 /** The quote for one product: an accepted original first, then a still open quote of

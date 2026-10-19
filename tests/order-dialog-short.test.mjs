@@ -288,14 +288,16 @@ test("an offer of stage 2 without a matching summary needs both boxes it shows",
 
 test("the acceptance and the note on a missing box follow the stage of the offer", () => {
   const { purchaseAcceptance, consentMissingKey } = purchases;
-  // `declared`: the declaration of stage 2 is shown, so the acceptance names its language.
+  // `declared`: a declaration from the summary is shown, in stage 1 or stage 2, so the
+  // acceptance names its language. The offer text without a summary is German and names none.
   for (const [subject, early, key, declared] of [
-    [offer(), true, "Error.WithdrawalConsentMissing", false],
+    [offer(), true, "Error.WithdrawalConsentMissing", true],
     [stage2(), false, "Error.EarlyStartMissing", false],
     [stage2(PREMIUM_EARLY), true, "Error.EarlyStartMissing", true],
     // Without a summary the dialog asks for both boxes, and both go out.
     [unmatched(PREMIUM_EARLY), true, "Error.WithdrawalConsentMissing", false],
     [unmatched(), true, "Error.WithdrawalConsentMissing", false],
+    [offer({ summary: undefined }), true, "Error.WithdrawalConsentMissing", false],
   ]) {
     for (const [locale, language] of [
       [undefined, "de"],

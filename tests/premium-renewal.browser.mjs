@@ -380,11 +380,13 @@ async function purchase(expectedPlan, expectedRenewal) {
   await until(`!${modalText}`);
   assert.equal(writes().length, before + 1);
   const offer = offers.at(-1);
+  // The declaration was shown from the offer's summary on the German interface.
   assert.deepEqual(writes().at(-1).body, {
     order_id: offer.id,
     offer_hash: offer.hash,
     accepted: true,
     early_performance_requested: true,
+    declaration_language: "de",
   });
   assert.equal(
     writes().at(-1).kind,

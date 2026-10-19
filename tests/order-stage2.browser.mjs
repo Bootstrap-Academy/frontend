@@ -6,7 +6,8 @@
  * early start, only when its period begins within the withdrawal period. The order goes out
  * with the early start only where the box was ticked, and then with the language the
  * declaration was shown in. The monthly renewal shows its offer and boxes in the language of
- * the interface, and its consent names that language. The statement above the button is one
+ * its wording (English only where the offer has an English one), its consent names that
+ * language, and a language switch empties the boxes. The statement above the button is one
  * block with the accent border. The coin order page offers "Zurück" to the amount, which it
  * keeps together with the way back to Premium, and "Abbrechen", which leaves the purchase. In
  * German and English, on a phone and on a laptop; the order button stands in the first view.
@@ -169,9 +170,18 @@ function wording(kind, coins) {
 /**
  * The synthetic shop of stage 2; `early` says whether a Premium offer carries the box. With
  * `issuedBefore`, the first quote is one of stage 1, issued before the effective date, which
- * the backend refuses as changed when it is accepted.
+ * the backend refuses as changed when it is accepted. Without `renewalEnglish` the renewal
+ * offer comes from a backend before its English wording.
  */
-function shop({ hearts, paidUntil = null, early = true, renewal = null, issuedBefore = false }) {
+function shop({
+  hearts,
+  paidUntil = null,
+  early = true,
+  renewal = null,
+  issuedBefore = false,
+  renewalEnglish = true,
+}) {
+  const { text_en, ...german } = RENEWAL;
   const S = {
     hearts,
     accepted: [],
@@ -183,6 +193,7 @@ function shop({ hearts, paidUntil = null, early = true, renewal = null, issuedBe
     early,
     renewal,
     renewalId: "11111111-1111-4111-8111-111111111115",
+    renewalOffer: renewalEnglish ? { ...german, text_en } : german,
   };
   S.quote = (kind, coins = 0) => {
     if (issuedBefore && !S.offers.length) {
@@ -328,12 +339,13 @@ async function fixture(S, language, [width, height]) {
     const coins = path.match(/^\/shop\/coins\/paypal\/offers\/(\d+)$/)?.[1];
     if (coins && method === "POST")
       return answer({ state: "offered", offer: S.quote("coins", Number(coins)) });
-    if (path === "/shop/premium/renewal-offer/me" && method === "GET") return answer(RENEWAL);
+    if (path === "/shop/premium/renewal-offer/me" && method === "GET")
+      return answer(S.renewalOffer);
     if (path === "/shop/premium/autopay" && method === "PUT") {
       const body = req.postDataJSON();
       S.autopay.push(body);
       if (body.plan === "MONTHLY") {
-        S.renewal = RENEWAL.monthly_price;
+        S.renewal = S.renewalOffer.monthly_price;
         S.renewalId = body.consent.request_id;
       }
       return answer({ ok: true });
@@ -443,6 +455,91 @@ const premiumButton = (page) =>
     .first();
 /** The language the dialog shows an offer in on the interface of `language`. */
 const shownIn = (language) => (language === "de" ? "de" : "en");
+const RENEWAL_BOXES = [
+  "RenewalAgreementAccepted",
+  "WithdrawalConsentPerformance",
+  "WithdrawalConsentLoss",
+];
+
+/** Opens the dialog of the monthly renewal on the Premium page. */
+async function openRenewal(f, language) {
+  await f.page.goto(app + "/subscription");
+  const monthly = f.page.locator('[aria-labelledby="premium-renewal-label"] button', {
+    hasText: tr(language, "Buttons.Monthly"),
+  });
+  await monthly.waitFor({ state: "visible" });
+  await monthly.click();
+  const section = f.page.locator("#premium-renewal-order");
+  await section.waitFor();
+  await settle(f.page);
+  return section;
+}
+/** What the renewal dialog shows: its wording, every box with its language, the order button. */
+const renewalSeen = (section) =>
+  section.evaluate((root, boxes) => {
+    const wording = root.querySelector("[data-renewal-wording]");
+    const button = root.querySelector("[data-order-actions] button:last-child");
+    return {
+      lang: wording?.getAttribute("lang"),
+      text: wording?.querySelector("p")?.textContent,
+      labels: boxes.map((id) =>
+        root.querySelector(`label[for="${id}"]`)?.textContent.replace(/\s+/g, " ").trim()
+      ),
+      boxLanguages: boxes.map((id) =>
+        root.querySelector(`#${id}`)?.closest("[lang]")?.getAttribute("lang")
+      ),
+      ticked: boxes.map((id) => root.querySelector(`#${id}`)?.checked),
+      blocked: button?.getAttribute("aria-disabled"),
+      all: root.textContent.replace(/\s+/g, " "),
+    };
+  }, RENEWAL_BOXES);
+async function tickRenewal(section) {
+  for (const id of RENEWAL_BOXES) await section.locator(`#${id}`).check({ force: true });
+}
+const renewalOrderButton = (section, language) =>
+  section.locator("[data-order-actions] button", {
+    hasText: tr(language, "Buttons.OrderWithObligationToPay"),
+  });
+/**
+ * The renewal dialog on the interface of `language`, for an offer with an English wording or
+ * without one: text and boxes in one language, the binding note only under the English wording.
+ */
+async function renewalDialog(f, S, language, label, withEnglish) {
+  const section = await openRenewal(f, language);
+  if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`), fullPage: true });
+  const seen = await renewalSeen(section);
+  const shown = withEnglish ? shownIn(language) : "de";
+  const wordingLocale = shown === "en" ? "en-US" : "de";
+  const text = shown === "en" ? RENEWAL.text_en : RENEWAL.text;
+  assert.equal(seen.lang, shown);
+  assert.equal(seen.text, text);
+  // The note on the binding German wording stands once, and only under the English wording.
+  const notes = ["de", "en-US"].map(
+    (locale) => seen.all.split(tr(locale, "Body.OfferGermanBinding")).length - 1
+  );
+  assert.deepEqual(notes, shown === "en" ? [0, 1] : [0, 0], "the binding note");
+  // Every box speaks the language of the wording; the two declarations are its sentences.
+  assert.deepEqual(seen.boxLanguages, [shown, shown, shown]);
+  assert.equal(seen.labels[0], tr(wordingLocale, "Body.RenewalAgreementAccepted"));
+  for (const [index, key] of [
+    [1, "WithdrawalConsentServicePerformance"],
+    [2, "WithdrawalConsentServiceLoss"],
+  ]) {
+    const sentence = tr(wordingLocale, `Body.${key}`);
+    assert.ok(text.includes(sentence), key);
+    assert.equal(seen.labels[index], sentence, key);
+  }
+  await tickRenewal(section);
+  await renewalOrderButton(section, language).click();
+  for (let i = 0; !S.autopay.length && i < 50; i++) await f.page.waitForTimeout(100);
+  assert.equal(S.autopay.length, 1);
+  const { consent } = S.autopay[0];
+  assert.deepEqual(
+    [consent.offer_id, consent.accepted, consent.withdrawal_consent, consent.language],
+    [RENEWAL.id, true, true, shown]
+  );
+  return seen;
+}
 const orderButton = (page, root, language) =>
   page.locator(`${root} [data-order-actions] button`, {
     hasText: tr(language, "Buttons.OrderWithObligationToPay"),
@@ -588,64 +685,44 @@ const cases = {
     assert.deepEqual(
       S.accepted.map((a) => [a.order_id, a.early_performance_requested, a.declaration_language]),
       [
-        [S.offers[0].id, true, undefined],
+        // The declaration of stage 1 was shown from the summary as well.
+        [S.offers[0].id, true, shownIn(language)],
         [S.offers[1].id, true, shownIn(language)],
       ]
     );
     return seen;
   },
-  "renewal-dialog": async (f, S, language, label) => {
-    await f.page.goto(app + "/subscription");
-    const monthly = f.page.locator('[aria-labelledby="premium-renewal-label"] button', {
-      hasText: tr(language, "Buttons.Monthly"),
-    });
-    await monthly.waitFor({ state: "visible" });
-    await monthly.click();
-    const section = f.page.locator("#premium-renewal-order");
-    await section.waitFor();
+  // A backend with the English wording of the renewal offer.
+  "renewal-dialog": async (f, S, language, label) => renewalDialog(f, S, language, label, true),
+  // A backend before it: the offer has no `text_en`, so text and boxes stay German on the
+  // English interface too, and no note on the binding wording is needed.
+  "renewal-dialog-old-backend": async (f, S, language, label) =>
+    renewalDialog(f, S, language, label, false),
+  // The interface language is switched with the dialog open and the boxes ticked: the boxes
+  // follow the new wording and start empty, so the consent names the language it was ticked in.
+  "renewal-language-switch": async (f, S, language, label) => {
+    const section = await openRenewal(f, language);
+    await tickRenewal(section);
+    const other = language === "de" ? "en-US" : "de";
+    await f.page
+      .getByRole("button", { name: other === "de" ? "Deutsch" : "English", exact: true })
+      .click();
+    await f.page.waitForFunction(
+      (lang) => document.querySelector("[data-renewal-wording]")?.getAttribute("lang") === lang,
+      shownIn(other)
+    );
     await settle(f.page);
     if (evidence) await f.page.screenshot({ path: join(evidence, `${label}.png`), fullPage: true });
-    const seen = await section.evaluate((root) => {
-      const wording = root.querySelector("[data-renewal-wording]");
-      return {
-        lang: wording?.getAttribute("lang"),
-        text: wording?.querySelector("p")?.textContent,
-        labels: [...root.querySelectorAll("label")].map((l) =>
-          l.textContent.replace(/\s+/g, " ").trim()
-        ),
-        all: root.textContent.replace(/\s+/g, " "),
-      };
-    });
-    // The English interface shows the English offer and says once that the German one binds.
-    const english = language !== "de";
-    const text = english ? RENEWAL.text_en : RENEWAL.text;
-    assert.equal(seen.lang, shownIn(language));
-    assert.equal(seen.text, text);
-    const binding = tr(language, "Body.OfferGermanBinding");
-    assert.equal(seen.all.split(binding).length - 1, english ? 1 : 0, "the binding note once");
-    // Each box repeats a declaration of the offer above it, in the same language.
-    for (const key of ["WithdrawalConsentServicePerformance", "WithdrawalConsentServiceLoss"]) {
-      const sentence = tr(language, `Body.${key}`);
-      assert.ok(text.includes(sentence), key);
-      assert.ok(seen.labels.includes(sentence), key);
-    }
-    for (const id of [
-      "RenewalAgreementAccepted",
-      "WithdrawalConsentPerformance",
-      "WithdrawalConsentLoss",
-    ])
-      await section.locator(`#${id}`).check({ force: true });
-    await section
-      .locator("[data-order-actions] button", {
-        hasText: tr(language, "Buttons.OrderWithObligationToPay"),
-      })
-      .click();
+    const seen = await renewalSeen(section);
+    assert.deepEqual(seen.ticked, [false, false, false], "every box starts empty again");
+    assert.equal(seen.blocked, "true");
+    assert.ok(seen.labels.includes(tr(other, "Body.RenewalAgreementAccepted")));
+    await tickRenewal(section);
+    await renewalOrderButton(section, other).click();
     for (let i = 0; !S.autopay.length && i < 50; i++) await f.page.waitForTimeout(100);
-    assert.equal(S.autopay.length, 1);
-    const { consent } = S.autopay[0];
     assert.deepEqual(
-      [consent.offer_id, consent.accepted, consent.withdrawal_consent, consent.language],
-      [RENEWAL.id, true, true, shownIn(language)]
+      S.autopay.map((write) => write.consent.language),
+      [shownIn(other)]
     );
     return seen;
   },
@@ -720,6 +797,10 @@ const shops = {
   "coin-order-page": () => shop({ hearts: 6 }),
   "premium-offer-from-before-the-date": () => shop({ hearts: 6, issuedBefore: true }),
   "renewal-dialog": () => shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false }),
+  "renewal-dialog-old-backend": () =>
+    shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false, renewalEnglish: false }),
+  "renewal-language-switch": () =>
+    shop({ hearts: 6, paidUntil: seconds() + 86400 * 30, early: false }),
 };
 
 try {

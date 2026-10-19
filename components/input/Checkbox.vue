@@ -21,7 +21,7 @@
       </div>
       <label class="flex gap-3 text-body font-body" :for="inputId">
         <span :class="sm ? 'text-xs' : 'text-body-1'"
-          >{{ $t(label) }}
+          >{{ locale ? $t(label, {}, { locale }) : $t(label) }}
 
           <NuxtLink
             v-if="link"
@@ -67,6 +67,8 @@ export default defineComponent({
      */
     showError: { type: Boolean, default: false },
     label: { type: String, default: "" },
+    /** The locale of the label (`de`, `en-US`) when it differs from the interface's. */
+    locale: { type: String, default: "" },
     link: {
       type: Object as PropType<{ to: string; label: string }>,
       default: null,
