@@ -363,8 +363,10 @@ export function createLessonFrame(
         if (closed) return;
         if (message.type === "host.connect" && !connected) {
           connected = true;
-          // contentWindow is this exact iframe, loaded once; the receiver checks both origin and parent
-          // source. An opaque document matches no target origin, so the target is "*".
+          // An opaque document matches no target origin, so the target is "*". The window is this
+          // iframe's, but its document is whatever the package navigated to before its load event;
+          // that document gets the port (accepted residual, see README "Residual risks"). The receiver
+          // checks the parent's origin and source.
           frame.contentWindow!.postMessage(message, "*", [channel.port2]);
         } else if (connected) channel.port1.postMessage(message);
       },
