@@ -155,10 +155,11 @@
     <article id="ziffer-3">
       <h2>3. Registrierung, Vertragsschluss und Vertragstext</h2>
       <p>
-        3.1 Für die Nutzung der Plattform legst du ein Nutzerkonto an. Die Registrierung ist
-        kostenlos. Erforderlich sind ein Nickname (Anmeldename; ein Pseudonym ist zulässig), ein
-        Anzeigename, deine E-Mail-Adresse und ein Passwort. Statt eines Passworts kannst du dich mit
-        einem bestehenden Konto bei GitHub, Discord oder Google registrieren und anmelden;
+        3.1 Alle Kurse kannst du auch als Gast öffnen. Um in ihnen zu lernen, legst du ein
+        Nutzerkonto an. Die Registrierung ist kostenlos. Erforderlich sind ein Nickname
+        (Anmeldename; ein Pseudonym ist zulässig), deine E-Mail-Adresse und ein Passwort. Als
+        Anzeigenamen verwenden wir zunächst deinen Nickname. Statt eines Passworts kannst du dich
+        mit einem bestehenden Konto bei GitHub, Discord oder Google registrieren und anmelden;
         Verknüpfungen mit diesen Anbietern kannst du in den Kontoeinstellungen hinzufügen und
         entfernen, die letzte verbleibende Anmeldemethode jedoch nicht entfernen.
       </p>
@@ -504,28 +505,29 @@
         11.1 Ablauf einer Einzelbestellung: Du wählst die Leistung aus (MorphCoins, Premium,
         Auffüllen der Herzen); für die gesonderte Bestellung der monatlichen Verlängerung gilt
         Ziffer 8.4. Beim Kauf von MorphCoins nennen wir dir schon auf der ersten Seite, dass du mit
-        PayPal bezahlst. In der Bestellübersicht zeigen wir dir unmittelbar über der
-        Bestellschaltfläche in einem hervorgehobenen Block die wesentlichen Eigenschaften der
-        Leistung mit Menge oder Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf
-        von MorphCoins ihre Menge und den Euro-Betrag, bei Premium und Herzen den Preis in
-        MorphCoins und seinen Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne
-        automatische Verlängerung endet oder dass eine schon vereinbarte monatliche Verlängerung
-        danach zu ihrem Preis weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu
-        zahlenden Gesamtpreis den rechnerischen Betrag je Monat. Dazu nennen wir die
-        Bereitstellungsfrist und die Zahlungsart und verlinken diese AGB und die Widerrufsbelehrung
-        in der Fassung, die für dieses Angebot gilt. Bis zum Klick auf die Bestellschaltfläche
-        kannst du deine Eingaben korrigieren, zum vorigen Schritt zurückgehen oder die Bestellung
-        abbrechen. Mit dem Klick auf „Zahlungspflichtig bestellen“ nimmst du das konkrete Angebot
-        mit diesen AGB und der Widerrufsbelehrung verbindlich an; ein Kontrollkästchen für die
-        Annahme gibt es bei diesen Einzelbestellungen nicht. Beim Kauf von MorphCoins bezahlst du
-        danach bei PayPal; diese Schritte dienen nur der Zahlung. Beginnt ein bestelltes Premium vor
-        Ablauf der Widerrufsfrist, gibst du vorher über ein Kontrollkästchen die Erklärung ab, dass
-        es so früh starten soll; ohne diese Erklärung ist eine solche Premium-Bestellung nicht
-        möglich. Beginnt es erst nach Ablauf der Widerrufsfrist, weil noch ein bezahlter
-        Premium-Zeitraum läuft, entfällt das Kontrollkästchen. Wortlaut und Folge der Erklärung
-        stehen in der Widerrufsbelehrung. Bei MorphCoins und beim Auffüllen der Herzen gibst du
-        keine Erklärung zum Widerrufsrecht ab. Eine Bestätigung, dass du vom vorzeitigen Verlust
-        deines Widerrufsrechts weißt, verlangen wir bei diesen Einzelbestellungen nicht.
+        PayPal bezahlst. In der Bestellübersicht zeigen wir dir oberhalb der Bestellschaltfläche in
+        einem hervorgehobenen Block die wesentlichen Eigenschaften der Leistung mit Menge oder
+        Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf von MorphCoins ihre
+        Menge und den Euro-Betrag, bei Premium und Herzen den Preis in MorphCoins und seinen
+        Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne automatische Verlängerung
+        endet oder dass eine schon vereinbarte monatliche Verlängerung danach zu ihrem Preis
+        weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu zahlenden Gesamtpreis den
+        rechnerischen Betrag je Monat. Dazu nennen wir die Bereitstellungsfrist und die Zahlungsart
+        und verlinken diese AGB und die Widerrufsbelehrung in der Fassung, die für dieses Angebot
+        gilt. Bis zum Klick auf die Bestellschaltfläche kannst du die Bestellübersicht mit
+        „Abbrechen“ verlassen, ohne etwas zu bestellen, und neu wählen. Beim Kauf von MorphCoins
+        kommst du außerdem mit „Zurück“ zur ersten Seite und kannst dort den Betrag ändern. Mit dem
+        Klick auf „Zahlungspflichtig bestellen“ nimmst du das konkrete Angebot mit diesen AGB und
+        der Widerrufsbelehrung verbindlich an; ein Kontrollkästchen für die Annahme gibt es bei
+        diesen Einzelbestellungen nicht. Beim Kauf von MorphCoins bezahlst du danach bei PayPal;
+        diese Schritte dienen nur der Zahlung. Beginnt ein bestelltes Premium vor Ablauf der
+        Widerrufsfrist, gibst du vorher über ein Kontrollkästchen die Erklärung ab, dass es so früh
+        starten soll; ohne diese Erklärung ist eine solche Premium-Bestellung nicht möglich. Beginnt
+        es erst nach Ablauf der Widerrufsfrist, weil noch ein bezahlter Premium-Zeitraum läuft,
+        entfällt das Kontrollkästchen. Wortlaut und Folge der Erklärung stehen in der
+        Widerrufsbelehrung. Bei MorphCoins und beim Auffüllen der Herzen gibst du keine Erklärung
+        zum Widerrufsrecht ab. Eine Bestätigung, dass du vom vorzeitigen Verlust deines
+        Widerrufsrechts weißt, verlangen wir bei diesen Einzelbestellungen nicht.
       </p>
       <p>
         11.2 Vertragsschluss und Bereitstellung: Der Vertrag kommt mit Eingang deiner Annahme des
@@ -576,15 +578,17 @@
         gilt Ziffer 6.7 entsprechend.
       </p>
       <p>
-        12.2 Nutzer, die 16 oder 17 Jahre alt sind, dürfen die kostenlosen Leistungen ohne
-        Zustimmung ihrer gesetzlichen Vertreter nutzen. Für kostenpflichtige Leistungen (MorphCoins,
-        Premium, Auffüllen der Herzen) gelten die §§ 107 bis 110 BGB: Der Vertrag ist wirksam, wenn
-        die gesetzlichen Vertreter vorher eingewilligt haben oder ihn nachträglich genehmigen (§§
-        107, 108 BGB) oder wenn der Minderjährige den Preis mit Mitteln bezahlt, die ihm zu diesem
-        Zweck oder zur freien Verfügung von den gesetzlichen Vertretern oder mit deren Zustimmung
-        von einem Dritten überlassen wurden (§ 110 BGB). Bestellst du als Minderjähriger eine
-        kostenpflichtige Leistung, bestätigst du damit, dass eine dieser Voraussetzungen vorliegt;
-        bei Zweifeln dürfen wir einen Nachweis verlangen und die Bestellung bis dahin zurückstellen.
+        12.2 Bist du 16 oder 17 Jahre alt, brauchst du für den Abschluss des Nutzungsvertrags mit
+        den in diesen AGB geregelten Pflichten die Einwilligung deiner gesetzlichen Vertreter. Fehlt
+        sie, hängt die Wirksamkeit des Nutzungsvertrags von ihrer Genehmigung ab (§§ 107, 108 BGB).
+        Für kostenpflichtige Leistungen (MorphCoins, Premium, Auffüllen der Herzen) gelten die §§
+        107 bis 110 BGB: Der Vertrag ist wirksam, wenn die gesetzlichen Vertreter vorher
+        eingewilligt haben oder ihn nachträglich genehmigen (§§ 107, 108 BGB) oder wenn der
+        Minderjährige den Preis mit Mitteln bezahlt, die ihm zu diesem Zweck oder zur freien
+        Verfügung von den gesetzlichen Vertretern oder mit deren Zustimmung von einem Dritten
+        überlassen wurden (§ 110 BGB). Deine Bestellung ersetzt eine erforderliche Einwilligung oder
+        Genehmigung nicht. Bei Zweifeln dürfen wir einen Nachweis verlangen und die Bestellung bis
+        zur Klärung zurückstellen.
       </p>
       <p>
         12.3 Gesetzliche Vertreter erreichen uns bei Fragen zu einem Konto unter
