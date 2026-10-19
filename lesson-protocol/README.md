@@ -83,13 +83,19 @@ appends streaming chunks as text nodes and parses schema-checked JSON as data.
 ## WebHost and synthetic example
 
 `ProtocolActivity.vue` requires an authenticated room binding, a configured
-`lessonContentOrigin` on another registrable domain and a server-selected
+`lessonContentOrigin` other than the app's own host and a server-selected
 `api_version: 2` descriptor containing the immutable entry, manifest and package
 hashes. Tokens, owner IDs and HTTP clients stay in the parent. Public assets are
 fetched without credentials, redirects or referrers; MIME types, every byte
 hash, the complete resource inventory and a restrictive CSP are checked before
-the document starts. The transferred MessagePort is tied to that iframe and
-session. Navigation, error, unmount and owner/session changes close the port.
+the document starts. The frame is sandboxed with `allow-scripts` only, so the
+lesson document has an opaque origin: it cannot read the platform's cookies or
+storage, the page around it, or call an API (`connect-src 'none'`). A content
+origin inside bootstrap.academy (for example a path on the API host) must also
+send `sandbox allow-scripts` in its CSP, which keeps a package opaque when its
+address is opened directly; the loader refuses such an origin without it. The
+transferred MessagePort is tied to that iframe and session. Navigation, error,
+unmount and owner/session changes close the port.
 
 `rooms.ts` adapts state/read/save/reset and completion to the existing Skills
 room routes and their CAS/idempotency/recovery controller. A retry retains the
