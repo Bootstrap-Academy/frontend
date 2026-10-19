@@ -544,7 +544,7 @@ export default {
       const offerVersion = offerGeneration;
       const orderBody = JSON.stringify({
         coins: acceptedOffer.product.coins,
-        ...purchaseAcceptance(acceptedOffer),
+        ...purchaseAcceptance(acceptedOffer, locale.value),
       });
       const current = () =>
         active &&

@@ -568,7 +568,6 @@
     "ConfirmationEmailSent": "Wir haben die Bestätigung an {email} verschickt.",
     "ConfirmationEmailNotSent": "Die Bestätigung schicken wir dir noch per E-Mail. Du kannst sie hier schon speichern.",
     "CancelPremiumHint": "Hier kannst du Premium kündigen.",
-    "WithdrawalConsentLanguageNote": "Die folgenden Erklärungen sind Teil des Vertrags und daher nur auf Deutsch verfügbar.",
     "WithdrawalConsentServicePerformance": "Ich verlange ausdrücklich und stimme zu, dass Sie vor Ablauf der Widerrufsfrist mit der Erbringung der Dienstleistung beginnen.",
     "WithdrawalConsentServiceLoss": "Mir ist bekannt, dass mein Widerrufsrecht mit vollständiger Erbringung der Dienstleistung erlischt.",
     "WithdrawalConsentDigitalPerformance": "Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrags beginnen.",

@@ -264,15 +264,20 @@ export async function discardStaleOffer(offer: PurchaseOffer): Promise<boolean> 
 /**
  * The acceptance of `offer` as the dialog gives it. The order button only works once the
  * boxes are ticked, so it states the early start whenever the offer asks for it: every
- * paid offer of stage 1, and of stage 2 only one with a declaration.
+ * paid offer of stage 1, and of stage 2 only one with a declaration. For that declaration it
+ * also names the language the dialog showed it in on the interface of `locale`, so that the
+ * confirmation repeats it as it was ticked, next to the binding German wording.
  */
-export function purchaseAcceptance(offer: PurchaseOffer) {
-  return {
+export function purchaseAcceptance(offer: PurchaseOffer, locale = "de") {
+  const declared = buttonAccepts(offer) && offer.declaration !== "";
+  const acceptance = {
     order_id: offer.id,
     offer_hash: offer.hash,
     accepted: true,
-    early_performance_requested: !buttonAccepts(offer) || offer.declaration !== "",
+    early_performance_requested: !buttonAccepts(offer) || declared,
   };
+  const shown = declared ? offerWording(offer, locale)?.lang : undefined;
+  return shown ? { ...acceptance, declaration_language: shown } : acceptance;
 }
 /** The quote for one product: an accepted original first, then a still open quote of
  * the backend (see `openOffer`), otherwise a new one. `fits` applies to an open original
@@ -352,14 +357,18 @@ const OFFER_CHANGED = "offer_changed";
  * Accepts `offer`. Returns `true` when the order has an outcome (the dialog closes), `false`
  * when the outcome is unknown (the dialog and the recovery entry stay), and `"renew"` when the
  * server refused the quote as changed: nothing was ordered or charged, and the caller shows a
- * new quote in its place.
+ * new quote in its place. That includes a quote issued before terms 2026-10 took effect and
+ * accepted from then on. `locale` is the language of the interface the dialog is shown in.
  */
-export async function acceptPurchase(offer: PurchaseOffer): Promise<boolean | "renew"> {
+export async function acceptPurchase(
+  offer: PurchaseOffer,
+  locale = "de"
+): Promise<boolean | "renew"> {
   try {
     const result = await withPurchaseRecovery(offer, () =>
       (POST as (url: string, body: unknown) => Promise<any>)(
         "/shop/purchases/accept",
-        purchaseAcceptance(offer)
+        purchaseAcceptance(offer, locale)
       )
     );
     finishPurchaseRecovery(offer, result);

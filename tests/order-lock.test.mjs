@@ -150,14 +150,20 @@ test("the Premium renewal is not ordered while one of its declarations is open",
   ]) {
     const GET = spy({ id: "renewal-1" });
     const updatePremiumAutoPay = spy([{ renewal: { id: "request-1" } }, null]);
-    const { confirmRenewal } = await pieces("pages/subscription/index.vue", ["confirmRenewal"], {
-      renewalOrder: Vue.ref({ id: "renewal-1", request_id: "request-1" }),
-      premiumBusy: Vue.ref(false),
-      renewalAccepted: Vue.ref(accepted),
-      renewalWithdrawalConsent: Vue.ref(withdrawal),
-      GET,
-      updatePremiumAutoPay,
-    });
+    const { confirmRenewal } = await pieces(
+      "pages/subscription/index.vue",
+      ["confirmRenewal", "renewalWording"],
+      {
+        renewalOrder: Vue.ref({ id: "renewal-1", request_id: "request-1", text: "Angebot" }),
+        premiumBusy: Vue.ref(false),
+        renewalAccepted: Vue.ref(accepted),
+        renewalWithdrawalConsent: Vue.ref(withdrawal),
+        locale: Vue.ref("de"),
+        computed: Vue.computed,
+        GET,
+        updatePremiumAutoPay,
+      }
+    );
     await confirmRenewal();
     const ordered = accepted && withdrawal;
     assert.equal(GET.calls.length, ordered ? 1 : 0);
@@ -168,7 +174,45 @@ test("the Premium renewal is not ordered while one of its declarations is open",
         offer_id: "renewal-1",
         accepted: true,
         withdrawal_consent: true,
+        language: "de",
       });
+  }
+});
+
+test("the Premium renewal is shown and confirmed in the language of the interface", async () => {
+  // English only where the interface is English and the offer has an English wording.
+  for (const [locale, text_en, lang] of [
+    ["de", "Offer", "de"],
+    ["en-US", "Offer", "en"],
+    ["en-US", undefined, "de"],
+    ["en-US", "", "de"],
+  ]) {
+    const updatePremiumAutoPay = spy([{ renewal: { id: "request-1" } }, null]);
+    const { confirmRenewal, renewalWording } = await pieces(
+      "pages/subscription/index.vue",
+      ["confirmRenewal", "renewalWording"],
+      {
+        renewalOrder: Vue.ref({
+          id: "renewal-1",
+          request_id: "request-1",
+          text: "Angebot",
+          text_en,
+        }),
+        premiumBusy: Vue.ref(false),
+        renewalAccepted: Vue.ref(true),
+        renewalWithdrawalConsent: Vue.ref(true),
+        locale: Vue.ref(locale),
+        computed: Vue.computed,
+        GET: spy({ id: "renewal-1" }),
+        updatePremiumAutoPay,
+      }
+    );
+    assert.deepEqual(renewalWording.value, {
+      lang,
+      text: lang === "en" ? "Offer" : "Angebot",
+    });
+    await confirmRenewal();
+    assert.equal(updatePremiumAutoPay.calls[0][0].consent.language, lang, `${locale} ${text_en}`);
   }
 });
 

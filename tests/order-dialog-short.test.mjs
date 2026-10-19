@@ -288,22 +288,35 @@ test("an offer of stage 2 without a matching summary needs both boxes it shows",
 
 test("the acceptance and the note on a missing box follow the stage of the offer", () => {
   const { purchaseAcceptance, consentMissingKey } = purchases;
-  for (const [subject, early, key] of [
-    [offer(), true, "Error.WithdrawalConsentMissing"],
-    [stage2(), false, "Error.EarlyStartMissing"],
-    [stage2(PREMIUM_EARLY), true, "Error.EarlyStartMissing"],
+  // `declared`: the declaration of stage 2 is shown, so the acceptance names its language.
+  for (const [subject, early, key, declared] of [
+    [offer(), true, "Error.WithdrawalConsentMissing", false],
+    [stage2(), false, "Error.EarlyStartMissing", false],
+    [stage2(PREMIUM_EARLY), true, "Error.EarlyStartMissing", true],
     // Without a summary the dialog asks for both boxes, and both go out.
-    [unmatched(PREMIUM_EARLY), true, "Error.WithdrawalConsentMissing"],
-    [unmatched(), true, "Error.WithdrawalConsentMissing"],
+    [unmatched(PREMIUM_EARLY), true, "Error.WithdrawalConsentMissing", false],
+    [unmatched(), true, "Error.WithdrawalConsentMissing", false],
   ]) {
-    assert.deepEqual(purchaseAcceptance(subject), {
-      order_id: subject.id,
-      offer_hash: subject.hash,
-      accepted: true,
-      early_performance_requested: early,
-    });
+    for (const [locale, language] of [
+      [undefined, "de"],
+      ["de", "de"],
+      ["en-US", "en"],
+    ]) {
+      const expected = {
+        order_id: subject.id,
+        offer_hash: subject.hash,
+        accepted: true,
+        early_performance_requested: early,
+      };
+      if (declared) expected.declaration_language = language;
+      assert.deepEqual(purchaseAcceptance(subject, locale), expected, `${key} ${locale}`);
+    }
     assert.equal(consentMissingKey(subject), key);
   }
+  // Without English lines the English interface shows the German declaration, and says so.
+  const germanOnly = stage2(PREMIUM_EARLY);
+  delete germanOnly.summary.en;
+  assert.equal(purchaseAcceptance(germanOnly, "en-US").declaration_language, "de");
   for (const language of ["de", "en-US"]) assert.ok(locales[language].Error.EarlyStartMissing);
 });
 

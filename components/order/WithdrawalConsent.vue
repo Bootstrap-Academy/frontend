@@ -4,16 +4,12 @@
   content). Both boxes are unticked by default and the order button stays
   disabled until both are ticked.
 
-  The wording is taken verbatim from the withdrawal instruction on
-  `/docs/right-of-withdrawal` and is therefore identical in both locales: the
-  contract language is German.
+  The wording is that of the declarations in the offer text above the boxes:
+  German, and English on the English interface, where the page says once that
+  the German wording is binding (AGB 1.4).
 -->
 <template>
   <div class="grid gap-box">
-    <p v-if="locale !== 'de'" class="text-body-2 m-0 text-body">
-      {{ t("Body.WithdrawalConsentLanguageNote") }}
-    </p>
-
     <InputCheckbox
       id="WithdrawalConsentPerformance"
       :label="`Body.WithdrawalConsent${part}Performance`"
@@ -29,7 +25,6 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import type { WithdrawalKind } from "~~/composables/withdrawal";
 
 const props = defineProps({
@@ -40,8 +35,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
-
-const { t, locale } = useI18n();
 
 const performance = ref(false);
 const loss = ref(false);
