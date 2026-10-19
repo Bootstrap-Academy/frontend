@@ -14,6 +14,8 @@ Geändert sind der Kopf mit Beginn und Geltungsbereich und diese Ziffern:
 
 - Bei MorphCoins und Herzen bestellst du ohne Häkchen. Bei einer einzelnen Premium-Bestellung bleibt ein Häkchen für den frühen Start, wenn sie innerhalb der Widerrufsfrist beginnt (Ziffer 11.1).
 
+- Für MorphCoins können neben PayPal weitere Zahlungsarten dazukommen; welche es gibt, zeigen wir dir beim Kauf. Erstattet wird über die Zahlungsart, mit der du bezahlt hast (Ziffern 2.2, 6.2, 6.7, 6.8, 11.1 und 11.4).
+
 - Kurse kannst du auch als Gast öffnen; um in ihnen zu lernen, legst du ein Konto an (Ziffer 3.1).
 
 - Mit 16 oder 17 Jahren brauchst du auch für das kostenlose Konto die Einwilligung deiner gesetzlichen Vertreter (Ziffer 12.2).
