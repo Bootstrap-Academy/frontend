@@ -38,10 +38,12 @@ const terms = await load("composables/terms.ts");
 // The reviewed drafts the pages are built from, each without its comments: the working notes
 // stay with the drafts of the company and are not published. Next to each fixture the SHA-256
 // of the draft it was taken from, so that a changed draft is noticed and the fixture renewed.
+// The terms come from draft v3 (19 October 2026); the withdrawal instructions are unchanged
+// since draft v2.
 const DRAFTS = {
   "agb-2026-10.md": {
-    fixture: "e3c6ef1cd08dc5edcc7d1e73951ff2cd195560ce84ac07d04ee4d53838eaafb2",
-    draft: "628d0a2f1a61b3948317e7c93b4b69afc102a58120d3be4640580fb38e3a5d1a",
+    fixture: "f7bd34de58107e573fac16e06eb7e88ea4ae019a645126a72cb97f62c1fdc3dd",
+    draft: "bff86b9a79425a586716af11e2575962765fda1ceea75473b0a00f12cc0f9db7",
   },
   "widerrufsbelehrung-2026-10.md": {
     fixture: "b99f539e738234b918526aada586eba2a142c4fa958a08a167882611f9250687",

@@ -65,9 +65,9 @@ const at = {
 };
 const termsKey = (subject) => updateNoticeKey(subject, TERMS_NOTICE_VERSION);
 const BODY = {
-  de: "Ab dem 9. Dezember 2026 gelten für neue Konten und neue Bestellungen neue AGB und eine neue Widerrufsbelehrung: Alle Kurse bleiben kostenlos, und du bestellst mit weniger Häkchen. Deine bestehenden Verträge ändern sich nicht. Was sich ändert",
+  de: "Ab dem 9. Dezember 2026 gelten für neue Konten und neue Bestellungen neue AGB und eine neue Widerrufsbelehrung: Alle Kurse bleiben kostenlos, und bei Einzelbestellungen brauchst du weniger Häkchen. Deine bestehenden Verträge ändern sich nicht. Die neue Fassung",
   "en-US":
-    "From 9 December 2026, new terms and conditions and new instructions on withdrawal apply to new accounts and new orders: all courses stay free, and you order with fewer checkboxes. Your existing contracts do not change. What changes",
+    "From 9 December 2026, new terms and conditions and new instructions on withdrawal apply to new accounts and new orders: all courses stay free, and for single orders you need fewer checkboxes. Your existing contracts do not change. The new version",
 };
 
 async function compile(relative, name) {
