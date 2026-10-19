@@ -13,6 +13,12 @@
  * It opens the page's dialog over the lesson; a draft written there is still in the dialog of the
  * page's own button on the course page. At 390 × 640 and 1280 × 800.
  *
+ * "Vollbild" puts the lesson into browser fullscreen; "Feedback" leaves it, the dialog opens over
+ * the lesson, and Escape brings the focus back to "Feedback". At 360 × 640 and 390 × 640, in
+ * German and English, the bar keeps one row with Überspringen before completion and with Zurück
+ * and Weiter on the second room of a path in the learning room (in English also with Previous
+ * and Skip), with targets of at least 44 px.
+ *
  * The frame is a small package built here from the real SDK. It speaks the protocol to the real
  * host and adapters: task start, submission and completion request go to skills, here synthetic.
  *
@@ -268,14 +274,14 @@ const browser = await chromium.launch({
 });
 const results = [];
 
-async function fixture(subject, [width, height]) {
+async function fixture(subject, [width, height], language = "de") {
   const context = await browser.newContext({
     viewport: { width, height },
-    locale: "de-DE",
+    locale: language === "de" ? "de-DE" : "en-US",
     reducedMotion: "reduce",
   });
   await context.addCookies(
-    Object.entries({ locale: "de", ...session }).map(([name, value]) => ({
+    Object.entries({ locale: language, ...session }).map(([name, value]) => ({
       name,
       value: encodeURIComponent(typeof value === "string" ? value : JSON.stringify(value)),
       url: app,
@@ -286,6 +292,10 @@ async function fixture(subject, [width, height]) {
   const consoleErrors = [];
   const foreign = [];
   const room = structuredClone(subject.room);
+  // A path in the learning room: the room skills opens after the one named in `after`.
+  const after = new Map(
+    Object.entries(subject.after ?? {}).map(([unitId, next]) => [unitId, structuredClone(next)])
+  );
   const cors = {
     "access-control-allow-origin": app,
     "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -394,9 +404,12 @@ async function fixture(subject, [width, height]) {
     if (path === "/skills/rooms/capabilities") return answer({ enabled: true });
     if (path === "/skills/rooms") {
       const learningPath = { id: subject.pathId, title: subject.title, chapters: [] };
-      return answer({ paths: [learningPath], path: learningPath, next: room });
+      const next = after.get(url.searchParams.get("after")) ?? room;
+      return answer({ paths: [learningPath], path: learningPath, next });
     }
     if (path === `/skills/rooms/${subject.unitId}` && method === "GET") return answer(room);
+    const later = [...after.values()].find(({ unit }) => path === `/skills/rooms/${unit.id}`);
+    if (later && method === "GET") return answer(later);
     if (path === `/skills/rooms/${subject.unitId}/state` && method === "PUT") {
       const body = req.postDataJSON();
       if (body.expected_revision !== room.progress.revision) return answer({ detail: "x" }, 409);
@@ -468,7 +481,7 @@ const record = (label, f) => ({ case: label, passed: true, requests: f.calls.len
 async function picture(page, name) {
   if (evidence) await page.screenshot({ path: join(evidence, `${name}.png`) });
 }
-const bar = (page) => page.getByRole("navigation", { name: "Lektion steuern" });
+const bar = (page) => page.getByRole("navigation", { name: /^(Lektion steuern|Lesson controls)$/ });
 const barLabels = async (page) =>
   (await bar(page).getByRole("button").allInnerTexts()).map((label) => label.trim());
 const pageNext = (page) => page.getByRole("button", { name: "Weiter", exact: true });
@@ -691,18 +704,195 @@ async function api1Room(size) {
   }
 }
 
-const failures = [];
-for (const size of [
-  [390, 640],
-  [1280, 800],
-])
-  for (const run of [engineLesson, api1Room])
+/**
+ * The real fullscreen path: "Vollbild" puts the lesson into browser fullscreen, the bar's
+ * "Feedback" leaves it, the dialog opens over the lesson with the focus in its title field, and
+ * Escape brings the focus back to the bar's "Feedback".
+ */
+async function engineFullscreen(size) {
+  const label = `fullscreen ${size.join("x")}`;
+  const subject = course("engine");
+  const f = await fixture(subject, size);
+  const { page } = f;
+  try {
+    await page.goto(`${app}/courses/${subject.courseId}/lessons/${subject.lessonId}`);
+    await page.frameLocator(".protocol-surface iframe").getByText("Welle 1 von 2").waitFor();
+    await bar(page).getByRole("button", { name: "Vollbild", exact: true }).click();
+    await page.waitForFunction(() =>
+      document.fullscreenElement?.classList.contains("protocol-activity")
+    );
+    await bar(page).getByRole("button", { name: "Vollbild verlassen" }).waitFor();
+    assert.deepEqual(
+      await barLabels(page),
+      ["Schließen", "Vollbild verlassen", "Feedback"],
+      `${label}: in fullscreen`
+    );
+    await picture(page, `${size.join("x")}-fullscreen-1`);
+    await barFeedback(page).click();
+    const dialog = feedbackDialog(page);
+    await dialog.waitFor();
+    assert.equal(await page.evaluate(() => !!document.fullscreenElement), false, label);
+    await page.waitForFunction(() =>
+      document.activeElement?.matches(".feedback-dialog input[type=text]")
+    );
+    const onTop = await page.evaluate(() => {
+      const field = document.activeElement;
+      const box = field.getBoundingClientRect();
+      return field === document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+    });
+    assert.equal(onTop, true, `${label}: the dialog lies over the lesson`);
+    await picture(page, `${size.join("x")}-fullscreen-2-feedback`);
+    await page.keyboard.press("Escape");
+    await dialog.waitFor({ state: "hidden" });
+    await page.waitForFunction(() =>
+      document.activeElement?.classList.contains("protocol-feedback")
+    );
+    clean(f, label);
+    results.push(record(label, f));
+  } finally {
+    await f.context.close();
+  }
+}
+
+/** The bar's buttons stand in one row with targets of at least 44 px; the widths for the record. */
+async function oneRow(page, label) {
+  const row = await bar(page).evaluate((nav) => {
+    const boxes = [...nav.querySelectorAll("button")].map((b) => b.getBoundingClientRect());
+    const style = getComputedStyle(nav);
+    return {
+      rows: new Set(boxes.map((box) => Math.round(box.top))).size,
+      used: Math.round(boxes.reduce((sum, box) => sum + box.width, 0)),
+      room: Math.round(
+        nav.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+      ),
+      smallest: Math.round(Math.min(...boxes.map((box) => Math.min(box.width, box.height)))),
+    };
+  });
+  assert.equal(row.rows, 1, `${label}: one row (${JSON.stringify(row)})`);
+  assert.ok(row.smallest >= 44, `${label}: 44 px targets (${JSON.stringify(row)})`);
+  return row;
+}
+
+/**
+ * On a phone the bar keeps one row also with the most buttons a room offers: Überspringen
+ * before completion on a room that allows skipping, and Zurück with Weiter on the second room of
+ * a path in the learning room (`/learn`), opened with the page's Weiter from the first. Both
+ * rooms there are completed, so both offer Weiter.
+ */
+async function barRow(size, language) {
+  const de = language === "de";
+  const word = (german, english) => (de ? german : english);
+  const label = `row ${language} ${size.join("x")}`;
+  const skipping = course("engine");
+  skipping.room.unit.skip_allowed = true;
+  let f = await fixture(skipping, size, language);
+  let skip;
+  try {
+    await f.page.goto(`${app}/courses/${skipping.courseId}/lessons/${skipping.lessonId}`);
+    await f.page.frameLocator(".protocol-surface iframe").getByText("Welle 1 von 2").waitFor();
+    await bar(f.page)
+      .getByRole("button", { name: word("Überspringen", "Skip") })
+      .waitFor();
+    assert.deepEqual(await barLabels(f.page), [
+      word("Überspringen", "Skip"),
+      word("Schließen", "Close"),
+      word("Vollbild", "Fullscreen"),
+      "Feedback",
+    ]);
+    skip = await oneRow(f.page, `${label}: skip`);
+    await picture(f.page, `${size.join("x")}-${language}-row-skip`);
+    clean(f, `${label}: skip`);
+  } finally {
+    await f.context.close();
+  }
+  const path = course("engine");
+  path.room.progress = { ...path.room.progress, status: "completed", result: { kind: "passed" } };
+  const second = structuredClone(path.room);
+  second.unit.id = "load-balancer-2";
+  second.unit.title = { de: "Load Balancer, Teil 2", en: "Load balancer, part 2" };
+  path.after = { [path.unitId]: second };
+  f = await fixture(path, size, language);
+  let back;
+  try {
+    await f.page.goto(`${app}/learn?path=${path.pathId}`);
+    await f.page.frameLocator(".protocol-surface iframe").getByText("Welle 1 von 2").waitFor();
+    await bar(f.page)
+      .getByRole("button", { name: word("Weiter", "Next"), exact: true })
+      .click();
+    await bar(f.page)
+      .getByRole("button", { name: word("Zurück", "Previous") })
+      .waitFor();
+    // The second room's player offers Vollbild once its package is verified.
+    await bar(f.page)
+      .getByRole("button", { name: word("Vollbild", "Fullscreen"), exact: true })
+      .waitFor();
+    assert.deepEqual(await barLabels(f.page), [
+      word("Zurück", "Previous"),
+      word("Weiter", "Next"),
+      word("Schließen", "Close"),
+      word("Vollbild", "Fullscreen"),
+      "Feedback",
+    ]);
+    back = await oneRow(f.page, `${label}: back and next`);
+    await picture(f.page, `${size.join("x")}-${language}-row-back-next`);
+    clean(f, `${label}: back and next`);
+  } finally {
+    await f.context.close();
+  }
+  // Previous with Skip, before completion. The German pair "Zurück" and "Überspringen" needs
+  // about 395 px beside Schließen, Vollbild and Feedback and takes two rows below 430 px, as it
+  // did before the bar had Feedback.
+  let backSkip;
+  if (!de) {
+    const skippable = course("engine");
+    skippable.room.progress = path.room.progress;
+    const open = structuredClone(second);
+    open.unit.skip_allowed = true;
+    open.progress = { ...open.progress, status: "new", result: null };
+    skippable.after = { [skippable.unitId]: open };
+    f = await fixture(skippable, size, language);
     try {
-      await run(size);
-    } catch (error) {
-      failures.push(`${run.name} ${size.join("x")}: ${error.message}`);
-      results.push({ case: `${run.name} ${size.join("x")}`, passed: false, error: error.message });
+      await f.page.goto(`${app}/learn?path=${skippable.pathId}`);
+      await f.page.frameLocator(".protocol-surface iframe").getByText("Welle 1 von 2").waitFor();
+      await bar(f.page).getByRole("button", { name: "Next", exact: true }).click();
+      await bar(f.page).getByRole("button", { name: "Skip" }).waitFor();
+      await bar(f.page).getByRole("button", { name: "Fullscreen", exact: true }).waitFor();
+      assert.deepEqual(await barLabels(f.page), [
+        "Previous",
+        "Skip",
+        "Close",
+        "Fullscreen",
+        "Feedback",
+      ]);
+      backSkip = await oneRow(f.page, `${label}: previous and skip`);
+      await picture(f.page, `${size.join("x")}-${language}-row-previous-skip`);
+      clean(f, `${label}: previous and skip`);
+    } finally {
+      await f.context.close();
     }
+  }
+  results.push({ case: label, passed: true, skip, back, backSkip });
+}
+
+const runs = [
+  ...[
+    [390, 640],
+    [1280, 800],
+  ].flatMap((size) => [engineLesson, api1Room, engineFullscreen].map((run) => [run, size])),
+  ...[
+    [360, 640],
+    [390, 640],
+  ].flatMap((size) => ["de", "en-US"].map((language) => [barRow, size, language])),
+];
+const failures = [];
+for (const [run, size, ...rest] of runs)
+  try {
+    await run(size, ...rest);
+  } catch (error) {
+    const name = [run.name, ...rest, size.join("x")].join(" ");
+    failures.push(`${name}: ${error.message}`);
+    results.push({ case: name, passed: false, error: error.message });
+  }
 await browser.close();
 console.log(JSON.stringify({ results }, null, 2));
 assert.deepEqual(failures, []);

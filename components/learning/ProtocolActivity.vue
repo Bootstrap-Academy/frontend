@@ -58,19 +58,49 @@
           {{ copy.close }}
         </button>
       </div>
+      <!-- Below 600 px these three show their symbol and keep the word for screen readers. -->
       <button
         v-if="fullscreenAvailable && mode === 'page'"
         type="button"
+        class="protocol-symbol"
         :class="{ 'fullscreen-requested': offerFullscreen }"
         @click="enterFullscreen"
       >
-        {{ copy.fullscreen }}
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+        </svg>
+        <span class="protocol-label">{{ copy.fullscreen }}</span>
       </button>
-      <button v-if="mode === 'browser-fullscreen'" type="button" @click="display?.request(false)">
-        {{ copy.exitFullscreen }}
+      <button
+        v-if="mode === 'browser-fullscreen'"
+        type="button"
+        class="protocol-symbol"
+        @click="display?.request(false)"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          aria-hidden="true"
+        >
+          <path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" />
+        </svg>
+        <span class="protocol-label">{{ copy.exitFullscreen }}</span>
       </button>
       <!-- The lesson covers the page's feedback button; this one opens the same dialog. -->
-      <button type="button" class="protocol-feedback" aria-haspopup="dialog" @click="openFeedback">
+      <button
+        type="button"
+        class="protocol-symbol protocol-feedback"
+        aria-haspopup="dialog"
+        @click="openFeedback"
+      >
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -83,7 +113,7 @@
           />
           <path d="M7 9h10M7 13h7" />
         </svg>
-        <span class="protocol-feedback-label">{{ copy.feedback }}</span>
+        <span class="protocol-label">{{ copy.feedback }}</span>
       </button>
       <p v-if="navigationMessage" role="status">{{ navigationMessage }}</p>
     </nav>
@@ -592,19 +622,21 @@ button:focus-visible {
 .fullscreen-requested {
   border-color: #67e8f9;
 }
-/* Below the lesson's controls and their messages, at the foot of the column. */
-.protocol-feedback {
-  order: 1;
-  margin-top: auto;
+.protocol-symbol {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-.protocol-feedback svg {
+.protocol-symbol svg {
   width: 20px;
   height: 20px;
   flex: none;
+}
+/* Below the lesson's controls and their messages, at the foot of the column. */
+.protocol-feedback {
+  order: 1;
+  margin-top: auto;
 }
 .protocol-activity:fullscreen {
   top: 0;
@@ -661,9 +693,23 @@ button:focus-visible {
     margin-left: auto;
   }
 }
-/* On a phone the row keeps to one line: the symbol of the page's button shows, the word is read. */
+/*
+ * On a phone the row keeps to one line, also with Zurück and Weiter or with Überspringen beside
+ * Schließen: tighter padding and gaps, 44 px targets, and Vollbild and Feedback as their symbols
+ * with the word kept for screen readers.
+ */
 @media (max-width: 599px) {
-  .protocol-feedback-label {
+  .protocol-controls,
+  .protocol-buttons {
+    gap: 6px;
+  }
+  .protocol-controls {
+    padding: 6px 8px;
+  }
+  button {
+    padding: 8px;
+  }
+  .protocol-label {
     position: absolute;
     width: 1px;
     height: 1px;

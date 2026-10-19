@@ -205,9 +205,12 @@ navigation is unchanged.
 
 The frame covers the page's feedback button, so the host's controls end with
 Feedback, which opens the page's own dialog and draft (`docs/feedback.md`): at
-the foot of the sidebar, at the end of the row below the frame on narrow
-screens, and as its symbol alone below 600 CSS px so that the row keeps one
-line.
+the foot of the sidebar and at the end of the row below the frame on narrow
+screens. Below 600 CSS px, Vollbild and Feedback show their symbols (the word
+stays their accessible name) and the row's padding and gaps are tighter, so
+that the row keeps one line with Zurück and Weiter or with Überspringen beside
+Schließen, with 44 CSS-px targets. Zurück with Überspringen in German still
+takes two rows below 430 CSS px, as it did without Feedback.
 
 `display.fullscreen` requests a host affordance; it never performs fullscreen
 from an asynchronous frame RPC. A host click synchronously requests fullscreen
