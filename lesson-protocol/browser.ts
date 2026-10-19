@@ -21,8 +21,16 @@ export interface VerifiedPackage {
 }
 const hex = /^[a-f0-9]{64}$/;
 const operationId = /^[A-Za-z0-9_-]{1,100}$/;
+/**
+ * Lesson code runs in a document with an opaque origin: the frame grants scripts and nothing else,
+ * so the code reaches neither the platform's cookies and storage nor the page around it. A content
+ * host inside the platform's own site must also send `sandbox allow-scripts` in its policy, which
+ * keeps the document opaque when somebody opens a package address directly.
+ */
+const sameSite = (hostname: string) =>
+  hostname === "bootstrap.academy" || hostname.endsWith(".bootstrap.academy");
 /** Parse sources, rather than accepting restrictive-looking substrings in a permissive policy. */
-export function validateLessonCsp(policy: string, appOrigin: string) {
+export function validateLessonCsp(policy: string, appOrigin: string, sandboxRequired = false) {
   const directives = new Map<string, string[]>();
   const rejected = () => new ProtocolError("no_access", "Content security policy mismatch.");
   for (const part of policy.split(";")) {
@@ -57,6 +65,10 @@ export function validateLessonCsp(policy: string, appOrigin: string) {
   if (!parents?.includes(appOrigin) || parents.some((source) => !approved.has(source)))
     throw rejected();
   directives.delete("frame-ancestors");
+  const sandbox = directives.get("sandbox");
+  if (sandbox ? sandbox.length !== 1 || sandbox[0] !== "allow-scripts" : sandboxRequired)
+    throw rejected();
+  directives.delete("sandbox");
   if (directives.size) throw rejected();
 }
 export async function sha256(bytes: Uint8Array): Promise<string> {
@@ -81,9 +93,7 @@ export function packageLocation(
     (!local && origin.protocol !== "https:") ||
     origin.username ||
     origin.password ||
-    origin.hostname === app.hostname ||
-    origin.hostname.endsWith(".bootstrap.academy") ||
-    origin.hostname === "bootstrap.academy"
+    origin.hostname === app.hostname
   )
     throw new ProtocolError("no_access", "Content needs a session-free origin.");
   if (
@@ -98,7 +108,7 @@ export function packageLocation(
   const base = `${origin.origin}/packages/${descriptor.package_hash}/`;
   if (descriptor.manifest_url !== base + "manifest.json" || !descriptor.entry_url.startsWith(base))
     throw new ProtocolError("no_access", "Package location mismatch.");
-  return { origin: origin.origin, base };
+  return { origin: origin.origin, base, sandboxRequired: sameSite(origin.hostname) };
 }
 /** Called only for an authenticated server-selected descriptor, never route content. */
 export async function verifyLessonPackage(
@@ -108,7 +118,7 @@ export async function verifyLessonPackage(
   signal: AbortSignal,
   load: typeof fetch = fetch
 ): Promise<VerifiedPackage> {
-  const { origin, base } = packageLocation(descriptor, contentOrigin, appOrigin);
+  const { origin, base, sandboxRequired } = packageLocation(descriptor, contentOrigin, appOrigin);
   const read = async (url: string, mediaType: string, maxBytes: number) => {
     const response = await load(url, {
       credentials: "omit",
@@ -189,7 +199,7 @@ export async function verifyLessonPackage(
       throw new ProtocolError("no_access", "Asset hash mismatch.");
     if (asset.path === manifest.entry) {
       const csp = actual.response.headers.get("content-security-policy") || "";
-      validateLessonCsp(csp, appOrigin);
+      validateLessonCsp(csp, appOrigin, sandboxRequired);
     }
     if (asset.path === manifest.state.schema)
       stateSchema = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(actual.bytes));
@@ -282,7 +292,8 @@ export function createLessonFrame(
 ): { element: HTMLIFrameElement; transport: Transport; dispose(): void; load: Promise<void> } {
   const frame = surface.ownerDocument.createElement("iframe");
   frame.title = verified.manifest.id;
-  frame.setAttribute("sandbox", "allow-scripts allow-same-origin");
+  // Scripts only: the document gets an opaque origin (see sameSite above).
+  frame.setAttribute("sandbox", "allow-scripts");
   frame.setAttribute(
     "allow",
     "camera 'none'; microphone 'none'; geolocation 'none'; clipboard-read 'none'; clipboard-write 'none'; fullscreen 'none'; payment 'none'; usb 'none'"
@@ -352,8 +363,9 @@ export function createLessonFrame(
         if (closed) return;
         if (message.type === "host.connect" && !connected) {
           connected = true;
-          // contentWindow is this exact iframe; the receiver checks both origin and parent source.
-          frame.contentWindow!.postMessage(message, verified.origin, [channel.port2]);
+          // contentWindow is this exact iframe, loaded once; the receiver checks both origin and parent
+          // source. An opaque document matches no target origin, so the target is "*".
+          frame.contentWindow!.postMessage(message, "*", [channel.port2]);
         } else if (connected) channel.port1.postMessage(message);
       },
       subscribe(listener) {

@@ -247,6 +247,25 @@ test("CSP source parsing rejects mixed-none, wildcards, duplicate and exfiltrati
       code: "no_access",
     });
 });
+test("a sandbox in the policy grants scripts only, and a content host in the app's site must send it", () => {
+  const sandboxed = strictCsp + "; sandbox allow-scripts";
+  validateLessonCsp(sandboxed, "https://test.bootstrap.academy");
+  validateLessonCsp(sandboxed, "https://test.bootstrap.academy", true);
+  assert.throws(() => validateLessonCsp(strictCsp, "https://test.bootstrap.academy", true), {
+    code: "no_access",
+  });
+  for (const policy of [
+    strictCsp + "; sandbox",
+    strictCsp + "; sandbox allow-scripts allow-same-origin",
+    strictCsp + "; sandbox allow-same-origin",
+    strictCsp + "; sandbox allow-scripts allow-top-navigation",
+    sandboxed + "; sandbox allow-scripts",
+  ])
+    for (const required of [false, true])
+      assert.throws(() => validateLessonCsp(policy, "https://test.bootstrap.academy", required), {
+        code: "no_access",
+      });
+});
 test("package verification checks immutable inventory, response type, byte hashes and state schema", async () => {
   const m = structuredClone(manifest);
   const content = new Map([
@@ -320,6 +339,95 @@ test("package verification checks immutable inventory, response type, byte hashe
   altered = false;
   type = true;
   await assert.rejects(verify(), { code: "no_access" });
+});
+test("a package on a host of the app's site loads only with the sandbox policy on its entry", async () => {
+  const m = structuredClone(manifest);
+  const content = new Map([
+    ["index.html", new TextEncoder().encode("<!doctype html><title>Sandbox test</title>")],
+    ["main.js", new TextEncoder().encode("export const inert = true;")],
+    [
+      "state.schema.json",
+      new TextEncoder().encode('{"type":"object","additionalProperties":false}'),
+    ],
+  ]);
+  m.assets = await Promise.all(
+    m.assets.map(async (asset) => ({
+      ...asset,
+      bytes: content.get(asset.path).length,
+      sha256: await sha256(content.get(asset.path)),
+    }))
+  );
+  const package_hash = await sha256(new TextEncoder().encode(canonicalJson(m.assets)));
+  const base = `https://api.bootstrap.academy/packages/${package_hash}/`;
+  const bytes = new TextEncoder().encode(JSON.stringify(m));
+  const descriptor = {
+    id: m.id,
+    api_version: 2,
+    entry_url: base,
+    manifest_url: base + "manifest.json",
+    manifest_hash: await sha256(bytes),
+    package_hash,
+  };
+  const policy = strictCsp.replace(
+    "https://test.bootstrap.academy http://localhost:58761",
+    "https://bootstrap.academy"
+  );
+  const verify = (csp) =>
+    verifyLessonPackage(
+      descriptor,
+      "https://api.bootstrap.academy",
+      "https://bootstrap.academy",
+      new AbortController().signal,
+      async (url) => {
+        const name = url === base ? "index.html" : url.slice(base.length);
+        const media =
+          name === "manifest.json"
+            ? "application/json"
+            : m.assets.find((a) => a.path === name).mediaType;
+        const response = new Response(name === "manifest.json" ? bytes : content.get(name), {
+          headers: { "content-type": media, "content-security-policy": csp },
+        });
+        Object.defineProperty(response, "url", { value: url });
+        return response;
+      }
+    );
+  assert.equal(
+    (await verify(policy + "; sandbox allow-scripts")).origin,
+    "https://api.bootstrap.academy"
+  );
+  await assert.rejects(verify(policy), { code: "no_access" });
+  await assert.rejects(verify(policy + "; sandbox allow-scripts allow-same-origin"), {
+    code: "no_access",
+  });
+});
+test("the frame grants scripts only and hands its port to the opaque document", async () => {
+  const attributes = new Map();
+  const posted = [];
+  const iframe = {
+    style: {},
+    setAttribute: (name, value) => attributes.set(name, value),
+    remove() {},
+    contentWindow: { postMessage: (...args) => posted.push(args) },
+  };
+  const frame = createLessonFrame(
+    { ownerDocument: { createElement: () => iframe }, replaceChildren() {} },
+    {
+      manifest,
+      origin: "https://api.bootstrap.academy",
+      descriptor: { entry_url: "https://api.bootstrap.academy/packages/x/" },
+    },
+    () => {}
+  );
+  assert.equal(attributes.get("sandbox"), "allow-scripts");
+  assert.equal(iframe.src, "https://api.bootstrap.academy/packages/x/");
+  iframe.onload();
+  await frame.load;
+  frame.transport.send({ type: "host.connect" });
+  frame.transport.send({ type: "host.connect" });
+  assert.equal(posted.length, 1);
+  assert.equal(posted[0][1], "*");
+  assert.equal(posted[0][2].length, 1);
+  frame.dispose();
 });
 test("lost confirmation retries the same server key and blocks conflicting new writes", async (t) => {
   let calls = 0;
@@ -442,17 +550,34 @@ test("content origin/package paths reject app domains, grants, mismatched hashes
     manifest_hash: "b".repeat(64),
     package_hash,
   };
-  assert.equal(
-    packageLocation(d, "https://content.pages.dev", "https://test.bootstrap.academy").origin,
-    "https://content.pages.dev"
+  assert.deepEqual(
+    packageLocation(d, "https://content.pages.dev", "https://test.bootstrap.academy"),
+    { origin: "https://content.pages.dev", base, sandboxRequired: false }
+  );
+  // A host inside the app's site serves packages only with the sandbox policy.
+  const sameSiteBase = `https://api.bootstrap.academy/packages/${package_hash}/`;
+  assert.deepEqual(
+    packageLocation(
+      { ...d, entry_url: sameSiteBase, manifest_url: sameSiteBase + "manifest.json" },
+      "https://api.bootstrap.academy",
+      "https://bootstrap.academy"
+    ),
+    { origin: "https://api.bootstrap.academy", base: sameSiteBase, sandboxRequired: true }
   );
   for (const origin of [
     "https://test.bootstrap.academy",
-    "https://content.bootstrap.academy",
     "https://user:pass@content.pages.dev",
     "https://content.pages.dev/path",
   ])
     assert.throws(() => packageLocation(d, origin, "https://test.bootstrap.academy"));
+  const appBase = `https://bootstrap.academy/packages/${package_hash}/`;
+  assert.throws(() =>
+    packageLocation(
+      { ...d, entry_url: appBase, manifest_url: appBase + "manifest.json" },
+      "https://bootstrap.academy",
+      "https://bootstrap.academy"
+    )
+  );
   assert.throws(() =>
     packageLocation(
       { ...d, manifest_url: d.manifest_url + "?grant=secret" },
