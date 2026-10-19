@@ -2,20 +2,18 @@
   Terms 2026-10 under their own address (`composables/terms.ts`). While no start is configured
   the page does not exist. From the announcement until the start it says that the version does
   not apply yet and leads to the version in force; from the start it shows the text alone.
-  The link of the notice on the platform leads here, so until the start the box names what
-  clause 20.1 asks the notice to name: the start, who the version applies to, the changed
-  clauses and the rights for existing contracts. Wording: draft v3, `seitenkaesten.md`.
+  The link of the notice on the platform leads here, so until the start the box names the
+  changed clauses (clause 20.1). The start, who the version applies to and the rights for
+  existing contracts stand in the header of the terms right below, and a page says each thing
+  once. Wording: draft v3, `seitenkaesten.md`.
 -->
 <template>
   <div>
     <aside v-if="!terms.inForce" class="mt-main container" aria-label="Angekündigte Fassung">
       <h1 class="text-heading-1">AGB – Fassung 2026-10</h1>
       <p class="mt-card">
-        Diese Fassung haben wir angekündigt. Sie gilt ab dem {{ terms.date }} für neue Konten und
-        neue Bestellungen; bis dahin gilt die
-        <a class="underline" href="/docs/terms-and-conditions">aktuelle AGB-Fassung</a>. Deine
-        bestehenden Verträge ändern sich nur, wenn du ausdrücklich zustimmst (Ziffern 20.2 und
-        20.3).
+        Diese Fassung haben wir angekündigt. Bis zu ihrem Beginn gilt die
+        <a class="underline" href="/docs/terms-and-conditions">aktuelle AGB-Fassung</a>.
       </p>
       <p class="mt-card">
         Geändert sind der Kopf mit Beginn und Geltungsbereich und diese Ziffern:

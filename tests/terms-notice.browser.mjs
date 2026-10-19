@@ -465,14 +465,24 @@ const cases = {
       await f.page.locator("main, body").first().waitFor();
       await settle(f.page);
       assert.equal(await noticeOn(f.page), null, "no notice on the document");
-      // Its box names the start, who the version applies to and the changed clauses (20.1).
-      const documentText = (await f.page.innerText("body")).replace(/\s+/g, " ");
+      // Its box names the changed clauses (20.1); the header of the terms below it names the
+      // start and who the version applies to, and the box does not say it a second time.
+      const flat = (text) => text.replace(/\s+/g, " ");
+      const boxText = flat(
+        await f.page.locator('aside[aria-label="Angekündigte Fassung"]').innerText()
+      );
       for (const part of [
-        "Diese Fassung haben wir angekündigt. Sie gilt ab dem 9. Dezember 2026 für neue Konten und neue Bestellungen",
+        "Diese Fassung haben wir angekündigt. Bis zu ihrem Beginn gilt die aktuelle AGB-Fassung.",
         "Geändert sind der Kopf mit Beginn und Geltungsbereich und diese Ziffern:",
         "(Ziffer 12.2)",
       ])
-        assert(documentText.includes(part), `the announced terms name: ${part}`);
+        assert(boxText.includes(part), `the box names: ${part}`);
+      assert(!boxText.includes("9. Dezember 2026"), "the box leaves the date to the header");
+      const header = "Diese Fassung gilt ab dem 9. Dezember 2026 für neue Verträge";
+      assert(
+        flat(await f.page.innerText("body")).includes(header),
+        "the header names start and scope"
+      );
       // Closed, it stays closed for this account.
       await f.page.goto(app + NOTICE_PAGE);
       await f.page.locator("[data-terms-notice]").waitFor();

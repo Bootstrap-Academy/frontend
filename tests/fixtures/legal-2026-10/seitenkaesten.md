@@ -4,7 +4,7 @@
 
 ### AGB – Fassung 2026-10
 
-Diese Fassung haben wir angekündigt. Sie gilt ab dem [Datum] für neue Konten und neue Bestellungen; bis dahin gilt die [aktuelle AGB-Fassung](/docs/terms-and-conditions). Deine bestehenden Verträge ändern sich nur, wenn du ausdrücklich zustimmst (Ziffern 20.2 und 20.3).
+Diese Fassung haben wir angekündigt. Bis zu ihrem Beginn gilt die [aktuelle AGB-Fassung](/docs/terms-and-conditions).
 
 Geändert sind der Kopf mit Beginn und Geltungsbereich und diese Ziffern:
 
@@ -26,6 +26,6 @@ Ab demselben Tag gilt die neue [Widerrufsbelehrung, Fassung 2026-10](/docs/right
 
 ### Widerrufsbelehrung – Fassung 2026-10
 
-Diese Fassung haben wir angekündigt, sie gilt ab dem [Datum] für neue Konten und neue Bestellungen. Bis dahin gilt die [aktuelle Widerrufsbelehrung](/docs/right-of-withdrawal).
+Diese Fassung haben wir angekündigt. Bis zu ihrem Beginn gilt die [aktuelle Widerrufsbelehrung](/docs/right-of-withdrawal).
 
 Ab demselben Tag gelten die neuen [AGB, Fassung 2026-10](/docs/terms-and-conditions-2026-10).

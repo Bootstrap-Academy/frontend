@@ -42,8 +42,8 @@ const terms = await load("composables/terms.ts");
 // withdrawal instructions are unchanged since draft v2.
 const DRAFTS = {
   "seitenkaesten.md": {
-    fixture: "48697723ac174cbb540817913f31e1f63c9f0c958a671036a5ae3700e5f0578c",
-    draft: "eec6610e96ebc348212af4faf90e52bca74fd342e160663bfcfd8c4511bf30bf",
+    fixture: "b88ca30cc250f98b04487c4a6f287d8a5414482ae26925dd388e9773e3d01e05",
+    draft: "30302ca1b5fc90912b029de662c58004e1d4d0bb500638d92c233c91abdb3f1d",
   },
   "agb-2026-10.md": {
     fixture: "ed0c26f22954a3a238dd2e993bd3a9c67c8b9956c93b7c0d37911a7e96cfae52",
@@ -233,35 +233,50 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
   assert(withdrawal.includes("Stand: Fassung 2026-10, gültig ab dem 1. Oktober 2026"));
   assert(withdrawal.includes("Version 2026-10, valid from 1 October 2026"));
 
-  // The boxes until the start, word for word as in draft v3 (`seitenkaesten.md`) with the date
-  // filled in. The notice on the platform links the box of the terms, so that box names what
-  // clause 20.1 asks the notice to name: the start, who it applies to, the changed clauses and
-  // the rights for existing contracts. The draft has one section per address, and the heading
-  // of each box is its title.
-  const [, ...sections] = (await draft("seitenkaesten.md"))
-    .replaceAll("[Datum]", "9. Dezember 2099")
-    .split(/^## \d+\. Kasten über (\S+)$/m);
+  // The boxes until the start, word for word as in draft v3 (`seitenkaesten.md`). The notice on
+  // the platform links the box of the terms, so that box names the changed clauses (clause
+  // 20.1). A page says each thing once: the start date and who the version applies to stand in
+  // the document below the box, so the box names neither. The draft has one section per
+  // address, and the heading of each box is its title.
+  const [, ...sections] = (await draft("seitenkaesten.md")).split(/^## \d+\. Kasten über (\S+)$/m);
   const boxes = {};
   for (let i = 0; i < sections.length; i += 2)
     boxes[sections[i]] = markdownBlocks(sections[i + 1], -2);
-  for (const [file, imports, title] of [
-    ["pages/docs/terms-and-conditions-2026-10.vue", TERMS, "AGB – Fassung 2026-10"],
+  for (const [file, imports, title, dated] of [
+    [
+      "pages/docs/terms-and-conditions-2026-10.vue",
+      TERMS,
+      "AGB – Fassung 2026-10",
+      // The header of the terms, the cut-off for earlier Premium (8.1) and the closing line.
+      [
+        "Diese Fassung gilt ab dem 9. Dezember 2099 für neue Verträge, wenn wir sie beim Abschluss vereinbaren.",
+        "Premium-Zeiträume, die du vor dem 9. Dezember 2099 bestellt hast",
+        "Fassung: 2026-10, gültig ab dem 9. Dezember 2099",
+      ],
+    ],
     [
       "pages/docs/right-of-withdrawal-2026-10.vue",
       WITHDRAWAL,
       "Widerrufsbelehrung – Fassung 2026-10",
+      // The closing line of the German text; the translation has its own in English.
+      ["Stand: Fassung 2026-10, gültig ab dem 9. Dezember 2099"],
     ],
   ]) {
     // Without a start the page does not exist.
     await assert.rejects(rendered(file, "", imports), { statusCode: 404, fatal: true });
-    // Announced: it says from when and for whom it applies and leads to the version in force.
+    // Announced: it says that it does not apply yet and leads to the version in force.
     const announced = await rendered(file, AHEAD, imports);
-    const box = htmlBlocks(announced.slice(0, announced.indexOf("</aside>")));
+    const end = announced.indexOf("</aside>");
+    const box = htmlBlocks(announced.slice(0, end));
     const reviewed = boxes[file.replace(/^pages/, "").replace(/\.vue$/, "")];
     assert(reviewed, `${file} has its box in the draft`);
     assert.deepEqual(box.blocks[0], ["h1", title], file);
     assert.deepEqual(box.blocks, reviewed.blocks, file);
     assert.deepEqual(box.links, reviewed.links, file);
+    // The start date stands in the document only, at the places it had before.
+    const documentText = plain(announced.slice(end));
+    assert.equal(plain(announced).split("9. Dezember 2099").length - 1, dated.length, file);
+    for (const line of dated) assert(documentText.includes(line), `${file}: ${line}`);
     // In force: the text alone.
     const current = await rendered(file, PASSED, imports);
     assert(!current.includes("angekündigt") && !current.includes(title), file);
