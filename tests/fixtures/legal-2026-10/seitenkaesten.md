@@ -26,6 +26,6 @@ Ab demselben Tag gilt die neue [Widerrufsbelehrung, Fassung 2026-10](/docs/right
 
 ### Widerrufsbelehrung – Fassung 2026-10
 
-Diese Fassung haben wir angekündigt. Bis zu ihrem Beginn gilt die [aktuelle Widerrufsbelehrung](/docs/right-of-withdrawal).
+Diese Fassung haben wir angekündigt, sie gilt ab dem [Datum]. Bis dahin gilt die [aktuelle Widerrufsbelehrung](/docs/right-of-withdrawal).
 
 Ab demselben Tag gelten die neuen [AGB, Fassung 2026-10](/docs/terms-and-conditions-2026-10).

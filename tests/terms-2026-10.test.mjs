@@ -42,8 +42,8 @@ const terms = await load("composables/terms.ts");
 // withdrawal instructions are unchanged since draft v2.
 const DRAFTS = {
   "seitenkaesten.md": {
-    fixture: "b88ca30cc250f98b04487c4a6f287d8a5414482ae26925dd388e9773e3d01e05",
-    draft: "30302ca1b5fc90912b029de662c58004e1d4d0bb500638d92c233c91abdb3f1d",
+    fixture: "5ae3c955ca18f7b34d67399ad6a44c501c96657e5c7207157ba836d707050c1e",
+    draft: "5749d93574452584a72e7510b4eb6b50dfe3000be0740ec863bed489ae3611b3",
   },
   "agb-2026-10.md": {
     fixture: "ed0c26f22954a3a238dd2e993bd3a9c67c8b9956c93b7c0d37911a7e96cfae52",
@@ -233,20 +233,25 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
   assert(withdrawal.includes("Stand: Fassung 2026-10, gültig ab dem 1. Oktober 2026"));
   assert(withdrawal.includes("Version 2026-10, valid from 1 October 2026"));
 
-  // The boxes until the start, word for word as in draft v3 (`seitenkaesten.md`). The notice on
-  // the platform links the box of the terms, so that box names the changed clauses (clause
-  // 20.1). A page says each thing once: the start date and who the version applies to stand in
-  // the document below the box, so the box names neither. The draft has one section per
-  // address, and the heading of each box is its title.
-  const [, ...sections] = (await draft("seitenkaesten.md")).split(/^## \d+\. Kasten über (\S+)$/m);
+  // The boxes until the start, word for word as in draft v3 (`seitenkaesten.md`) with the date
+  // filled in. The notice on the platform links the box of the terms, so that box names the
+  // changed clauses (clause 20.1); the start and who the version applies to stand in the header
+  // of the terms right below it, and a page says each thing once. The withdrawal instructions
+  // name their start only in their closing line, so their box names it, and a reader coming
+  // from the notice sees it at once. The draft has one section per address, and the heading of
+  // each box is its title.
+  const [, ...sections] = (await draft("seitenkaesten.md"))
+    .replaceAll("[Datum]", "9. Dezember 2099")
+    .split(/^## \d+\. Kasten über (\S+)$/m);
   const boxes = {};
   for (let i = 0; i < sections.length; i += 2)
     boxes[sections[i]] = markdownBlocks(sections[i + 1], -2);
-  for (const [file, imports, title, dated] of [
+  for (const [file, imports, title, boxDated, dated] of [
     [
       "pages/docs/terms-and-conditions-2026-10.vue",
       TERMS,
       "AGB – Fassung 2026-10",
+      false,
       // The header of the terms, the cut-off for earlier Premium (8.1) and the closing line.
       [
         "Diese Fassung gilt ab dem 9. Dezember 2099 für neue Verträge, wenn wir sie beim Abschluss vereinbaren.",
@@ -258,6 +263,7 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
       "pages/docs/right-of-withdrawal-2026-10.vue",
       WITHDRAWAL,
       "Widerrufsbelehrung – Fassung 2026-10",
+      true,
       // The closing line of the German text; the translation has its own in English.
       ["Stand: Fassung 2026-10, gültig ab dem 9. Dezember 2099"],
     ],
@@ -273,9 +279,13 @@ test("the main pages show the version in force, and the 2026-10 pages exist once
     assert.deepEqual(box.blocks[0], ["h1", title], file);
     assert.deepEqual(box.blocks, reviewed.blocks, file);
     assert.deepEqual(box.links, reviewed.links, file);
-    // The start date stands in the document only, at the places it had before.
+    // The box of the withdrawal instructions names the start, the box of the terms does not;
+    // the documents name it at the places they had before.
+    const count = (text) => text.split("9. Dezember 2099").length - 1;
+    const boxText = plain(announced.slice(0, end));
     const documentText = plain(announced.slice(end));
-    assert.equal(plain(announced).split("9. Dezember 2099").length - 1, dated.length, file);
+    assert.equal(count(boxText), boxDated ? 1 : 0, `${file}: date in the box`);
+    assert.equal(count(documentText), dated.length, `${file}: date in the document`);
     for (const line of dated) assert(documentText.includes(line), `${file}: ${line}`);
     // In force: the text alone.
     const current = await rendered(file, PASSED, imports);
