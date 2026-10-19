@@ -129,10 +129,11 @@
       </p>
       <p>
         2.2 Kostenpflichtig sind – jeweils gegen Bezahlung mit MorphCoins – Premium (Ziffer 8) und
-        das zusätzliche Auffüllen der Herzen (Ziffer 9). MorphCoins kaufst du mit PayPal (Ziffer 6).
-        Alle Kurse sind kostenlos; einzelne Kurse verkaufen wir nicht mehr (Ziffer 7). Den Preis
-        zeigen wir dir vor jeder Bestellung an: beim Kauf von MorphCoins in Euro, bei Premium und
-        Herzen in MorphCoins und in Euro (Ziffer 11).
+        das zusätzliche Auffüllen der Herzen (Ziffer 9). MorphCoins kaufst du mit den Zahlungsarten,
+        die wir dir beim Kauf anzeigen, derzeit PayPal (Ziffer 6). Alle Kurse sind kostenlos;
+        einzelne Kurse verkaufen wir nicht mehr (Ziffer 7). Den Preis zeigen wir dir vor jeder
+        Bestellung an: beim Kauf von MorphCoins in Euro, bei Premium und Herzen in MorphCoins und in
+        Euro (Ziffer 11).
       </p>
       <p>
         2.3 Neue Kurs- und Aufgabeninhalte stellen wir zentral bereit. Eine Funktion zum
@@ -276,11 +277,11 @@
       <p>
         6.2 Kauf: 100 MorphCoins kosten 1,00 € einschließlich der gesetzlichen Umsatzsteuer. Je Kauf
         kannst du mindestens 500 und höchstens 1.000.000 MorphCoins erwerben. Die Bezahlung erfolgt
-        über PayPal; andere Zahlungsarten bieten wir derzeit nicht an. Voraussetzung ist eine
-        bestätigte E-Mail-Adresse und die Angabe deiner Rechnungsdaten: Als Verbraucher gibst du
-        mindestens an, dass du nicht als Unternehmer handelst, und dein Land; als Unternehmer gibst
-        du die vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer an
-        (Ziffer 22.3). Die MorphCoins werden nach nachgewiesenem Zahlungseingang und
+        mit den Zahlungsarten, die wir dir beim Kauf anzeigen, derzeit PayPal. Voraussetzung ist
+        eine bestätigte E-Mail-Adresse und die Angabe deiner Rechnungsdaten: Als Verbraucher gibst
+        du mindestens an, dass du nicht als Unternehmer handelst, und dein Land; als Unternehmer
+        gibst du die vollständigen Rechnungsdaten einschließlich Umsatzsteuer-Identifikationsnummer
+        an (Ziffer 22.3). Die MorphCoins werden nach nachgewiesenem Zahlungseingang und
         Vertragsbestätigung deinem Guthaben gutgeschrieben. Die Bestätigungs- und
         Bereitstellungsfrist zeigen wir im konkreten Angebot an. Du erhältst die Vertragsbestätigung
         und nach der Gutschrift die Rechnung per E-Mail (Ziffer 11).
@@ -319,8 +320,8 @@
         jederzeit auf Anfrage per E-Mail an hallo@bootstrap.academy zum Erwerbskurs (100 MorphCoins
         = 1,00 €). Nicht verbraucht ist der Teil deines aktuellen Guthabens, der die Summe der von
         dir gekauften und noch nicht erstatteten MorphCoins nicht übersteigt. Wir erstellen eine
-        Gutschrift und zahlen den Betrag innerhalb von 14 Tagen nach Eingang deiner Anfrage auf das
-        PayPal-Konto zurück, mit dem du bezahlt hast; Kosten berechnen wir dafür nicht. Die
+        Gutschrift und zahlen den Betrag innerhalb von 14 Tagen nach Eingang deiner Anfrage über die
+        Zahlungsart zurück, mit der du bezahlt hast; Kosten berechnen wir dafür nicht. Die
         erstatteten MorphCoins ziehen wir von deinem Guthaben ab. Stelle die Anfrage möglichst,
         bevor du dein Konto löschst. Besteht bei der Löschung deines Kontos ein nicht verbrauchter
         Anteil gekaufter MorphCoins, halten wir ihn in einer Schlussabrechnung fest, die deinen
@@ -336,9 +337,10 @@
         6.8 Gesetzliche und in diesen AGB vorgesehene Erstattungen (zum Beispiel nach Widerruf,
         Minderung oder Vertragsbeendigung nach §§ 327m bis 327o BGB oder nach Ziffer 4.4) leisten
         wir mit demselben Zahlungsmittel, das du verwendet hast: Hast du mit gekauften MorphCoins
-        bezahlt, erstatten wir nach deiner Wahl in MorphCoins oder in Euro zum Erwerbskurs auf dein
-        PayPal-Konto. Hast du mit Belohnungs-Coins bezahlt, erstatten wir in Belohnungs-Coins. Eine
-        Erstattung ausschließlich in MorphCoins gegen deinen Willen findet nicht statt.
+        bezahlt, erstatten wir nach deiner Wahl in MorphCoins oder in Euro zum Erwerbskurs über die
+        Zahlungsart, mit der du diese MorphCoins gekauft hast. Hast du mit Belohnungs-Coins bezahlt,
+        erstatten wir in Belohnungs-Coins. Eine Erstattung ausschließlich in MorphCoins gegen deinen
+        Willen findet nicht statt.
       </p>
       <p>
         6.9 Preise in MorphCoins können wir für die Zukunft ändern. Änderungen gelten nicht für
@@ -504,30 +506,31 @@
       <p>
         11.1 Ablauf einer Einzelbestellung: Du wählst die Leistung aus (MorphCoins, Premium,
         Auffüllen der Herzen); für die gesonderte Bestellung der monatlichen Verlängerung gilt
-        Ziffer 8.4. Beim Kauf von MorphCoins nennen wir dir schon auf der ersten Seite, dass du mit
-        PayPal bezahlst. In der Bestellübersicht zeigen wir dir oberhalb der Bestellschaltfläche in
-        einem hervorgehobenen Block die wesentlichen Eigenschaften der Leistung mit Menge oder
-        Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf von MorphCoins ihre
-        Menge und den Euro-Betrag, bei Premium und Herzen den Preis in MorphCoins und seinen
-        Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne automatische Verlängerung
-        endet oder dass eine schon vereinbarte monatliche Verlängerung danach zu ihrem Preis
-        weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu zahlenden Gesamtpreis den
-        rechnerischen Betrag je Monat. Dazu nennen wir die Bereitstellungsfrist und die Zahlungsart
-        und verlinken diese AGB und die Widerrufsbelehrung in der Fassung, die für dieses Angebot
-        gilt. Bis zum Klick auf die Bestellschaltfläche kannst du die Bestellübersicht mit
-        „Abbrechen“ verlassen, ohne etwas zu bestellen, und neu wählen. Beim Kauf von MorphCoins
-        kommst du außerdem mit „Zurück“ zur ersten Seite und kannst dort den Betrag ändern. Mit dem
-        Klick auf „Zahlungspflichtig bestellen“ nimmst du das konkrete Angebot mit diesen AGB und
-        der Widerrufsbelehrung verbindlich an; ein Kontrollkästchen für die Annahme gibt es bei
-        diesen Einzelbestellungen nicht. Beim Kauf von MorphCoins bezahlst du danach bei PayPal;
-        diese Schritte dienen nur der Zahlung. Beginnt ein bestelltes Premium vor Ablauf der
-        Widerrufsfrist, gibst du vorher über ein Kontrollkästchen die Erklärung ab, dass es so früh
-        starten soll; ohne diese Erklärung ist eine solche Premium-Bestellung nicht möglich. Beginnt
-        es erst nach Ablauf der Widerrufsfrist, weil noch ein bezahlter Premium-Zeitraum läuft,
-        entfällt das Kontrollkästchen. Wortlaut und Folge der Erklärung stehen in der
-        Widerrufsbelehrung. Bei MorphCoins und beim Auffüllen der Herzen gibst du keine Erklärung
-        zum Widerrufsrecht ab. Eine Bestätigung, dass du vom vorzeitigen Verlust deines
-        Widerrufsrechts weißt, verlangen wir bei diesen Einzelbestellungen nicht.
+        Ziffer 8.4. Beim Kauf von MorphCoins nennen wir dir schon auf der ersten Seite die
+        Zahlungsarten, derzeit PayPal. In der Bestellübersicht zeigen wir dir oberhalb der
+        Bestellschaltfläche in einem hervorgehobenen Block die wesentlichen Eigenschaften der
+        Leistung mit Menge oder Laufzeit und den Gesamtpreis einschließlich Umsatzsteuer: beim Kauf
+        von MorphCoins ihre Menge und den Euro-Betrag, bei Premium und Herzen den Preis in
+        MorphCoins und seinen Euro-Gegenwert. Bei Premium steht dort außerdem, dass es ohne
+        automatische Verlängerung endet oder dass eine schon vereinbarte monatliche Verlängerung
+        danach zu ihrem Preis weiterläuft; beim Jahreszeitraum nennen wir neben dem einmal zu
+        zahlenden Gesamtpreis den rechnerischen Betrag je Monat. Dazu nennen wir die
+        Bereitstellungsfrist und die Zahlungsart und verlinken diese AGB und die Widerrufsbelehrung
+        in der Fassung, die für dieses Angebot gilt. Bis zum Klick auf die Bestellschaltfläche
+        kannst du die Bestellübersicht mit „Abbrechen“ verlassen, ohne etwas zu bestellen, und neu
+        wählen. Beim Kauf von MorphCoins kommst du außerdem mit „Zurück“ zur ersten Seite und kannst
+        dort den Betrag ändern. Mit dem Klick auf „Zahlungspflichtig bestellen“ nimmst du das
+        konkrete Angebot mit diesen AGB und der Widerrufsbelehrung verbindlich an; ein
+        Kontrollkästchen für die Annahme gibt es bei diesen Einzelbestellungen nicht. Beim Kauf von
+        MorphCoins bezahlst du danach beim jeweiligen Zahlungsdienst, derzeit PayPal; diese Schritte
+        dienen nur der Zahlung. Beginnt ein bestelltes Premium vor Ablauf der Widerrufsfrist, gibst
+        du vorher über ein Kontrollkästchen die Erklärung ab, dass es so früh starten soll; ohne
+        diese Erklärung ist eine solche Premium-Bestellung nicht möglich. Beginnt es erst nach
+        Ablauf der Widerrufsfrist, weil noch ein bezahlter Premium-Zeitraum läuft, entfällt das
+        Kontrollkästchen. Wortlaut und Folge der Erklärung stehen in der Widerrufsbelehrung. Bei
+        MorphCoins und beim Auffüllen der Herzen gibst du keine Erklärung zum Widerrufsrecht ab.
+        Eine Bestätigung, dass du vom vorzeitigen Verlust deines Widerrufsrechts weißt, verlangen
+        wir bei diesen Einzelbestellungen nicht.
       </p>
       <p>
         11.2 Vertragsschluss und Bereitstellung: Der Vertrag kommt mit Eingang deiner Annahme des
@@ -558,9 +561,10 @@
         selbst.
       </p>
       <p>
-        11.4 Zahlung: MorphCoins bezahlst du über PayPal; die Zahlung ist mit der Bestellung fällig.
-        Alle anderen Leistungen bezahlst du mit MorphCoins aus deinem Guthaben; reicht das Guthaben
-        nicht aus, kommt keine Bestellung zustande. Eine Bezahlung in Raten bieten wir nicht an.
+        11.4 Zahlung: MorphCoins bezahlst du mit den Zahlungsarten, die wir dir beim Kauf anzeigen,
+        derzeit PayPal; die Zahlung ist mit der Bestellung fällig. Alle anderen Leistungen bezahlst
+        du mit MorphCoins aus deinem Guthaben; reicht das Guthaben nicht aus, kommt keine Bestellung
+        zustande. Eine Bezahlung in Raten bieten wir nicht an.
       </p>
       <p>
         11.5 Rechnungen über den Kauf von MorphCoins stellen wir elektronisch als PDF aus und senden

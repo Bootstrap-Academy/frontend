@@ -71,7 +71,7 @@ const termsKey = (subject) => updateNoticeKey(subject, TERMS_NOTICE_VERSION);
 // that a changed draft is noticed and the fixture renewed.
 const NOTICE_DRAFT = {
   fixture: "ada74e65a502f7ef4f12438549a68c58fc0ac825d2c86f62b11ac87226ef8a0b",
-  draft: "9d62733d47e810c7cf534c67161a24aef09970bb00b7ffdfe021a837a97618b3",
+  draft: "6224962efbf7da53b65cd3def74bbc03f237fa4262e0bb73f295c2b976346229",
 };
 const noticeDraft = await readFile(
   new URL("./fixtures/legal-2026-10/ankuendigung-hinweis.md", import.meta.url),

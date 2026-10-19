@@ -33,6 +33,11 @@
           Widerrufsfrist beginnt (Ziffer 11.1).
         </li>
         <li class="ml-10 list-disc mt-box">
+          Für MorphCoins können neben PayPal weitere Zahlungsarten dazukommen; welche es gibt,
+          zeigen wir dir beim Kauf. Erstattet wird über die Zahlungsart, mit der du bezahlt hast
+          (Ziffern 2.2, 6.2, 6.7, 6.8, 11.1 und 11.4).
+        </li>
+        <li class="ml-10 list-disc mt-box">
           Kurse kannst du auch als Gast öffnen; um in ihnen zu lernen, legst du ein Konto an (Ziffer
           3.1).
         </li>

@@ -199,13 +199,13 @@
           BGB); einen eigenen Widerruf brauchst du dafür nicht. Für die Frage, womit du eine
           Bestellung bezahlt hast, gelten Belohnungs-Coins als zuerst verbraucht (Ziffer 6.1 der
           AGB), danach gekaufte MorphCoins in der Reihenfolge ihrer Käufe. Wir erstatten dir den
-          Euro-Betrag des widerrufenen Coin-Kaufs auf dein PayPal-Konto. Davon ziehen wir nur bei
-          Premium etwas ab, und nur wenn du den frühen Start verlangt hast: den Anteil des
-          Premium-Preises für die Tage, an denen dieses Premium bis zu deinem Widerruf schon lief (§
-          357a Abs. 2 BGB). Dieses Premium endet mit dem Widerruf. War eine solche Bestellung nur
-          zum Teil mit Coins aus diesem Kauf bezahlt, erstatten wir dir den übrigen Teil ihres
-          Preises nach Ziffer 6.8 der AGB. Denselben Betrag erstatten wir nur einmal, und du
-          bekommst von uns eine nachvollziehbare Abrechnung.
+          Euro-Betrag des widerrufenen Coin-Kaufs über die Zahlungsart, mit der du ihn bezahlt hast.
+          Davon ziehen wir nur bei Premium etwas ab, und nur wenn du den frühen Start verlangt hast:
+          den Anteil des Premium-Preises für die Tage, an denen dieses Premium bis zu deinem
+          Widerruf schon lief (§ 357a Abs. 2 BGB). Dieses Premium endet mit dem Widerruf. War eine
+          solche Bestellung nur zum Teil mit Coins aus diesem Kauf bezahlt, erstatten wir dir den
+          übrigen Teil ihres Preises nach Ziffer 6.8 der AGB. Denselben Betrag erstatten wir nur
+          einmal, und du bekommst von uns eine nachvollziehbare Abrechnung.
         </li>
         <li>
           Dienstleistungen, die auf dein Verlangen vor Ablauf der Widerrufsfrist begonnen haben: Du
@@ -213,7 +213,7 @@
           2 BGB); den Rest erstatten wir.
         </li>
         <li>
-          Zahlungsmittel: Den Kauf von MorphCoins erstatten wir auf das PayPal-Konto, mit dem du
+          Zahlungsmittel: Den Kauf von MorphCoins erstatten wir über die Zahlungsart, mit der du
           bezahlt hast. Leistungen, die du mit gekauften MorphCoins bezahlt hast, erstatten wir nach
           deiner Wahl in MorphCoins oder in Euro zum Erwerbskurs (100 MorphCoins = 1,00 €);
           Leistungen, die du mit Belohnungs-Coins bezahlt hast, in Belohnungs-Coins (Ziffer 6.8 der
@@ -465,13 +465,13 @@
             BGB); you do not need to withdraw from them separately. To determine what you paid for
             an order with, reward coins count as used first (clause 6.1 of the terms and
             conditions), followed by purchased MorphCoins in the sequence in which you bought them.
-            We refund the euro amount of the withdrawn coin purchase to your PayPal account. We
-            deduct something from it only for Premium, and only if you requested the early start:
-            the share of the Premium price for the days on which this Premium had already been
-            running up to your withdrawal (section 357a (2) BGB). This Premium ends with the
-            withdrawal. If such an order was paid only partly with coins from this purchase, we
-            refund the remaining part of its price to you under clause 6.8 of the terms and
-            conditions. We refund the same amount only once, and you receive a statement from us
+            We refund the euro amount of the withdrawn coin purchase via the payment method you used
+            for it. We deduct something from it only for Premium, and only if you requested the
+            early start: the share of the Premium price for the days on which this Premium had
+            already been running up to your withdrawal (section 357a (2) BGB). This Premium ends
+            with the withdrawal. If such an order was paid only partly with coins from this
+            purchase, we refund the remaining part of its price to you under clause 6.8 of the terms
+            and conditions. We refund the same amount only once, and you receive a statement from us
             that lets you follow the calculation.
           </li>
           <li>
@@ -480,7 +480,7 @@
             BGB); we refund the rest.
           </li>
           <li>
-            Means of payment: We refund a purchase of MorphCoins to the PayPal account you paid
+            Means of payment: We refund a purchase of MorphCoins via the payment method you paid
             with. Services you paid for with purchased MorphCoins are refunded, as you choose, in
             MorphCoins or in euros at the rate at which you bought them (100 MorphCoins = €1.00);
             services you paid for with reward coins are refunded in reward coins (clause 6.8 of the

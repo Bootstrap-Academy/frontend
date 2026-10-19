@@ -38,24 +38,23 @@ const terms = await load("composables/terms.ts");
 // The reviewed drafts the pages are built from, each without its comments: the working notes
 // stay with the drafts of the company and are not published. Next to each fixture the SHA-256
 // of the draft it was taken from, so that a changed draft is noticed and the fixture renewed.
-// The terms and the boxes over the 2026-10 pages come from draft v3 (19 October 2026); the
-// withdrawal instructions are unchanged since draft v2.
+// All of them come from draft v3 (19 October 2026).
 const DRAFTS = {
   "seitenkaesten.md": {
-    fixture: "5ae3c955ca18f7b34d67399ad6a44c501c96657e5c7207157ba836d707050c1e",
-    draft: "5749d93574452584a72e7510b4eb6b50dfe3000be0740ec863bed489ae3611b3",
+    fixture: "88c13a5acf76ebc6618d988cfe23180d34abbd133ba06d973f5da22bf545785e",
+    draft: "759b2b8395446526a22fc272b58ee160c1e4ef52468c21d5e8f0f1ddc2149945",
   },
   "agb-2026-10.md": {
-    fixture: "ed0c26f22954a3a238dd2e993bd3a9c67c8b9956c93b7c0d37911a7e96cfae52",
-    draft: "3a8b586b79ef7dc7f337d3acd7d1c17a447afa465ccc926116024e2dcf387633",
+    fixture: "c08d87b072a05331fd8abc3b17a565307f749c6a9096d8fd4a30cba3194cf175",
+    draft: "e7b2fb9d5bb3c39d5780665b56b66c8663e8c3a94314c07d81966c3070b85279",
   },
   "widerrufsbelehrung-2026-10.md": {
-    fixture: "b99f539e738234b918526aada586eba2a142c4fa958a08a167882611f9250687",
-    draft: "999c3bc72fc677caf99d590a6bb7265741755afa05346f9e7d1e4684f31f6200",
+    fixture: "9ccfb224339e27818afe907391e1946cfa8934b580adcc63837c73d5a64b0c18",
+    draft: "d659dbd256ad71be7be5a40f4d5c625a792cc56cd7ceeae12d671bb00bf010b2",
   },
   "widerrufsbelehrung-2026-10-en.md": {
-    fixture: "d9d646bad4ac30175b8a764a1ee32dfa09664a232334128551371e60734712de",
-    draft: "99803313fa63f23c5400e9a0412bfe3db3f87955694587335838dd7c829887cf",
+    fixture: "0b3566e1b044f3b92608a83cf96a2697afd1084f13725b4c1a8cb4bb370ee4d7",
+    draft: "c2a9d0128149c64e0e1e5168558a08b5370e0b94039f2a1126c1f5beb8c8d87c",
   },
 };
 const sha = (text) => createHash("sha256").update(text).digest("hex");
