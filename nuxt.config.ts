@@ -80,7 +80,7 @@ export default defineNuxtConfig({
       learningRoomsEnabled: true,
       // Lesson protocol v2 with packages from the content origin of Test; production keeps false and "".
       lessonProtocolV2: true,
-      lessonContentOrigin: "https://49.13.123.1",
+      lessonContentOrigin: "https://api.test.bootstrap.academy",
       // Disabled until the reviewed registration cohort and documents are published.
       registrationTermsVersion: "",
       registrationTermsUrl: "",
