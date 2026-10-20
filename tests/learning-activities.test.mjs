@@ -456,7 +456,7 @@ async function activityFixture(
     evaluateScript(
       source,
       bindings,
-      "complete,canLeave,posting,completing,draft,save,change,finished,saveError"
+      "complete,canLeave,posting,completing,completed,draft,save,change,finished,saveError"
     )
   );
   return {
@@ -524,7 +524,12 @@ const escapeHtml = (text) =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
-async function renderLessonActivity(view, locale) {
+async function renderLessonActivity(
+  view,
+  locale,
+  activity = adapters.roomActivity(room()),
+  course = { id: "course-a", learning_path_id: "old-path", sections: [] }
+) {
   const vueUrl = JSON.stringify(import.meta.resolve("vue"));
   const hostStub = url(
     `import { h } from ${vueUrl};
@@ -562,12 +567,12 @@ export default { inheritAttrs: false, props: ["state", "disabled"], setup: (prop
     retry: () => {},
   });
   try {
-    const app = Vue.createSSRApp(LessonActivity, {
-      activity: adapters.roomActivity(room()),
-      course: { id: "course-a", learning_path_id: "old-path", sections: [] },
-      locale,
+    const app = Vue.createSSRApp(LessonActivity, { activity, course, locale });
+    app.component("CoursePractice", {
+      props: ["section", "lecture"],
+      setup: (props) => () =>
+        Vue.h("div", { "data-practice": `${props.section}/${props.lecture}` }),
     });
-    app.component("CoursePractice", { render: () => null });
     app.use(createI18n({ legacy: false, locale, messages: locales }));
     return await renderToString(app);
   } finally {
@@ -620,7 +625,10 @@ test("a reopened completed lesson of the engine keeps its frame; another finishe
   for (const [value, framed] of [
     [finished(engine, "passed"), true],
     [finished(room(), "introduced"), false],
-    [{ ...finished(room(), "introduced"), progress: { ...room().progress, status: "skipped" } }, false],
+    [
+      { ...finished(room(), "introduced"), progress: { ...room().progress, status: "skipped" } },
+      false,
+    ],
   ]) {
     const html = await renderLessonActivity(readyRoom({ room: value }), "de");
     assert.equal(html.includes("data-state="), framed);
@@ -630,6 +638,62 @@ test("a reopened completed lesson of the engine keeps its frame; another finishe
   }
   assert.equal(adapters.roomFinished(engine), false);
   assert.equal(adapters.roomFinished(null), false);
+});
+
+test("a watched video keeps its video and exercises, with a short note and Weiter; a finished challenge keeps its card", async () => {
+  const lecture = (completed) => ({
+    id: "lecture-a",
+    title: "Was ist ein Netzwerk?",
+    description: "Kurz erklärt.",
+    type: "youtube",
+    video_id: "abcdefghijk",
+    completed,
+  });
+  const course = (value) => ({
+    id: "netzwerktechnik",
+    learning_path_id: null,
+    sections: [{ id: "section-a", title: "Grundlagen", lectures: [value] }],
+  });
+  const video = (completed) => {
+    const value = lecture(completed);
+    return [
+      adapters.legacyLectureLesson(course(value), value, course(value).sections[0]).activities[0],
+      course(value),
+    ];
+  };
+  const words = {
+    de: { done: "Abgeschlossen", next: "Weiter", finish: "Fertig" },
+    en: { done: "Completed", next: "Continue", finish: "Done" },
+  };
+  for (const locale of ["de", "en"]) {
+    const { done, next, finish } = words[locale];
+    // Watched: the video and its exercises stay, "Fertig" gives way to the note and "Weiter".
+    const watched = await renderLessonActivity(null, locale, ...video(true));
+    assert.ok(watched.includes("data-state="), `${locale}: the video stays`);
+    assert.ok(watched.includes('data-practice="section-a/lecture-a"'), `${locale}: its exercises`);
+    assert.ok(watched.includes("Kurz erklärt."), `${locale}: its description`);
+    assert.match(watched, new RegExp(`<p>${done}</p><button[^>]*>${next}</button>`), locale);
+    assert.ok(!watched.includes(`>${finish}</button>`), `${locale}: no second completion`);
+    // Not yet watched: as before.
+    const open = await renderLessonActivity(null, locale, ...video(false));
+    assert.ok(open.includes("data-state=") && open.includes("data-practice="), locale);
+    assert.ok(open.includes(`>${finish}</button>`), locale);
+    assert.ok(!open.includes(`<p>${done}</p>`), locale);
+  }
+  // A completed challenge outside a room ends with its card, as before.
+  const challenge = {
+    id: "quiz-step",
+    kind: "quiz",
+    roles: ["practice"],
+    title: { de: "Quiz", en: "Quiz" },
+    source: { kind: "challenge", type: "multiple_choice", task_id: "task", subtask_id: "question" },
+    exercise: { type: "multiple_choice", task_id: "task", subtask_id: "question" },
+    content: {},
+    completed: true,
+  };
+  const card = await renderLessonActivity(null, "de", challenge);
+  assert.ok(!card.includes("data-state="));
+  assert.match(card, /<p>Abgeschlossen<\/p><button[^>]*>Weiter<\/button>/);
 });
 
 test("technical save and completion errors in the lesson player keep the retryable save error", async () => {
@@ -663,8 +727,11 @@ test("legacy completion uncertainty is reconciled with a read and never automati
   await fixture.complete({});
   assert.equal(calls.filter((call) => call.method === "PUT").length, 1);
   assert.equal(calls.filter((call) => call.method === "GET").length, 1);
-  assert.equal(fixture.finished.value, true);
+  assert.equal(fixture.completed.value, true);
+  // A watched video does not end in the card; it stays to be watched again.
+  assert.equal(fixture.finished.value, false);
   assert.equal(fixture.saveError.value, false);
+  assert.equal(fixture.events.filter((event) => event.name === "completed").length, 1);
   fixture.stop();
 });
 

@@ -66,8 +66,12 @@
           :heading="copy.practice"
           hide-empty
         />
+        <div v-if="activity.source.kind === 'lecture' && completed" class="lecture-done">
+          <p>{{ copy.done }}</p>
+          <button type="button" @click="emit('next')">{{ copy.next }}</button>
+        </div>
         <button
-          v-if="activity.source.kind === 'lecture'"
+          v-else-if="activity.source.kind === 'lecture'"
           type="button"
           :disabled="locked"
           @click="complete({})"
@@ -201,7 +205,13 @@ const locked = computed(
 // The server rejects a completed answer that does not match with 422. That is
 // feedback on the answer, not a failed save: the work is kept and can be changed.
 const answerRejected = computed(() => view.value?.error === "CheckIntroduction");
-const finished = computed(() => (roomSource ? roomFinished(view.value?.room) : completed.value));
+// A watched video stays a video with its exercises, to watch again and to practise; it only
+// trades "Fertig" for a short note. Rooms and challenges end with the card.
+const finished = computed(() =>
+  roomSource
+    ? roomFinished(view.value?.room)
+    : completed.value && props.activity.source.kind !== "lecture"
+);
 const renderActivity = computed(() =>
   roomSource ? (view.value?.room ? roomActivity(view.value.room) : null) : props.activity
 );
@@ -432,6 +442,12 @@ onBeforeUnmount(() => {
   min-width: 0;
   display: grid;
   gap: 1rem;
+}
+.lecture-done {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1rem;
 }
 button {
   min-height: 44px;
