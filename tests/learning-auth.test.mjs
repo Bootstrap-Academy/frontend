@@ -36,13 +36,17 @@ const { createLearningTransport: transportFactory, createLearningRecovery } = ev
   ["createLearningTransport", "createLearningRecovery"]
 );
 
-const { renewSession } = evaluate(
-  await readFile(new URL("../utils/sessionRefresh.ts", import.meta.url), "utf8"),
-  { Mutex },
-  ["renewSession"]
+const sessionRefreshSource = await readFile(
+  new URL("../utils/sessionRefresh.ts", import.meta.url),
+  "utf8"
 );
+// One module instance per transport or mounted composable, as one per browser tab: its
+// renewal limit counts per tab.
+const loadSessionRefresh = () =>
+  evaluate(sessionRefreshSource, { Mutex }, ["renewSession", "serverNow"]);
 function createLearningTransport(options) {
   if (options.renew) return transportFactory(options);
+  const { renewSession } = loadSessionRefresh();
   return transportFactory({
     ...options,
     renew: (expected) =>
@@ -442,6 +446,7 @@ test("a delayed refresh cannot restore a session after an account-switch ABA", a
 });
 
 function fixture(t, options = {}) {
+  const { renewSession, serverNow } = loadSessionRefresh();
   const user = vue.ref({ id: "A" });
   const session = vue.ref({ id: "session-A" });
   const access = vue.ref(fresh());
@@ -503,6 +508,7 @@ function fixture(t, options = {}) {
     createLearningRecovery,
     createLearningRooms,
     bindEngineAssessment,
+    serverNow,
     mutex: new Mutex(),
     useRuntimeConfig: () => ({
       public: { learningRoomsEnabled: true, BASE_API_URL: "https://fixture.invalid" },

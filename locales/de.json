@@ -459,6 +459,7 @@
     "WantToDisable": "Wenn du MFA jemals deaktivieren möchtest, geht das auf der Kontoseite unter:",
     "ChallengesNickname": "Alle Accounts von the-morpheus.cc wurden in die Bootstrap Academy migriert, du kannst dich also weiterhin mit deinem alten Coding Challenges-Account anmelden.",
     "ChallengesNicknameQuestion": "Konto von the-morpheus.cc?",
+    "SessionRenewalStopped": "Deine Anmeldung ließ sich nicht mehr verlängern, deshalb haben wir dich abgemeldet. Melde dich einfach neu an.",
     "Download": "Hier gibt's die kostenlose App",
     "ComingSoon": "Demnächst!",
     "Copyright": "Bootstrap Academy. Alle Rechte vorbehalten",

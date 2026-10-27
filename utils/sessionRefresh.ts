@@ -26,15 +26,48 @@ export function sameSessionPair(a: SessionSnapshot, b: SessionSnapshot) {
   return sameSession(a, b) && a.accessToken === b.accessToken && a.refreshToken === b.refreshToken;
 }
 
+// The server's clock minus the device clock, in milliseconds. A device clock that runs a few
+// minutes fast would otherwise make every fresh token look expired, and each request would
+// renew the session and revoke the token of the request before it.
+let serverClockOffset = 0;
+
+/** Learn the server clock from a login or renewal: `session.last_update` is its time of issue. */
+export function observeServerTime(response: any, received = Date.now()) {
+  const issued = response?.session?.last_update;
+  if (typeof issued === "number" && Number.isFinite(issued) && issued > 0)
+    serverClockOffset = issued * 1000 - received;
+}
+
+/** The current time as the server counts it, as far as this tab has seen. */
+export function serverNow() {
+  return Date.now() + serverClockOffset;
+}
+
 export function accessTokenExpired(token: string, margin = 100) {
   try {
     const encoded = token.split(".")[1];
     if (!encoded) return false;
     const payload = JSON.parse(atob(encoded.replace(/-/g, "+").replace(/_/g, "/")));
-    return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now() + margin * 1000;
+    return typeof payload.exp === "number" && payload.exp * 1000 <= serverNow() + margin * 1000;
   } catch {
     return false;
   }
+}
+
+// A tab renews about once per token lifetime. More renewals than this within the window mean
+// that fresh tokens do not help; renewing on would only load the server in a loop.
+const RENEWAL_LIMIT = 3;
+const RENEWAL_WINDOW = 60000;
+let renewals: { context: string; times: number[] } = { context: "", times: [] };
+
+function renewalAllowed(snapshot: SessionSnapshot) {
+  const context = `${snapshot.identity}\n${snapshot.generation}`;
+  const now = Date.now();
+  if (renewals.context !== context) renewals = { context, times: [] };
+  renewals.times = renewals.times.filter((time) => time <= now && now - time < RENEWAL_WINDOW);
+  if (renewals.times.length >= RENEWAL_LIMIT) return false;
+  renewals.times.push(now);
+  return true;
 }
 
 /** Storage only carries a short lived lock identifier, never credentials. */
@@ -156,6 +189,8 @@ export async function renewSession(options: {
   apply: (response: any) => void;
   discard?: (response: any, expected: SessionSnapshot) => Promise<unknown>;
   refused: () => void;
+  /** The renewal limit is reached: end the session cleanly instead of renewing on. */
+  halted?: () => void;
   fallback?: boolean;
   wait?: (ms: number) => Promise<unknown>;
 }) {
@@ -166,6 +201,10 @@ export async function renewSession(options: {
     if (!sameSessionPair(before, options.expected) && !accessTokenExpired(before.accessToken))
       return before;
     if (!before.refreshToken) throw stale();
+    if (!renewalAllowed(before)) {
+      (options.halted || options.refused)();
+      throw { statusCode: 401, data: { error: "session_renewal_halted" } };
+    }
     let response;
     try {
       response = await options.raw(before.refreshToken);
@@ -188,6 +227,7 @@ export async function renewSession(options: {
       if (!fallback && [400, 401, 403].includes(status(error))) options.refused();
       throw error;
     }
+    observeServerTime(response);
     const valid =
       response?.user?.id === before.userId &&
       response?.session?.id === before.sessionId &&

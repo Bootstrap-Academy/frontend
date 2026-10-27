@@ -1,6 +1,6 @@
-import { jwtDecode } from "jwt-decode";
 import { decodeApiError } from "~/utils/apiError";
 import {
+  accessTokenExpired,
   sessionRefreshMutex,
   sameSession,
   sameSessionContext,
@@ -140,23 +140,9 @@ const onResponseError = async (context) => {
     payload.retry_after = decoded.retryAfter || 0;
 };
 
+/** Judged by the server's clock, so a device clock that runs fast does not renew every request. */
 function isAccessTokenExpired() {
-  const accessToken = getAccessToken();
-
-  try {
-    if (!!!accessToken) {
-      throw { data: "Invalid Access Token: " + accessToken };
-    }
-
-    let exp = jwtDecode(accessToken).exp;
-    let time = parseInt(Math.round(new Date().getTime() / 1000));
-    let difference = exp - time;
-    let isTokenExpired = difference <= 100 ? true : false;
-
-    return isTokenExpired;
-  } catch (error) {
-    return false;
-  }
+  return accessTokenExpired(getAccessToken() || "", 100);
 }
 
 async function attemptAuthRetry(error, url, options) {

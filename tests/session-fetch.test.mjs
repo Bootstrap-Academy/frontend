@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { Mutex, Semaphore, withTimeout } from "async-mutex";
-import { jwtDecode } from "jwt-decode";
 import { createFetch } from "ofetch";
 import ts from "typescript";
 
@@ -12,12 +11,15 @@ const utilitySource = (
 )
   .replace(/^import[\s\S]*?;\n/gm, "")
   .replace(/^export /gm, "");
-const utility = new Function(
-  "Mutex",
-  ts.transpileModule(utilitySource, {
-    compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
-  }).outputText + "\nreturn { renewSession, sameSession, sameSessionContext, sameSessionPair };"
-)(Mutex);
+const utilityCode = ts.transpileModule(utilitySource, {
+  compilerOptions: { target: ts.ScriptTarget.ES2023, module: ts.ModuleKind.None },
+}).outputText;
+// One module instance per fixture, as one per browser tab: its renewal limit counts per tab.
+const loadUtility = () =>
+  new Function(
+    "Mutex",
+    `${utilityCode}\nreturn { renewSession, sameSession, sameSessionContext, sameSessionPair, accessTokenExpired };`
+  )(Mutex);
 
 const source = (await readFile(new URL("../composables/fetch.js", import.meta.url), "utf8"))
   .replace(/^import[\s\S]*?;\n/gm, "")
@@ -36,6 +38,7 @@ function fixture({
   refreshFailure,
   fullPath = "/subscription",
 } = {}) {
+  const utility = loadUtility();
   let accessToken = token("original", expired ? -3600 : 3600);
   let generation = "first";
   let identity = "A:S";
@@ -75,7 +78,7 @@ function fixture({
   };
   const api = new Function(
     "decodeApiError",
-    "jwtDecode",
+    "accessTokenExpired",
     "sessionRefreshMutex",
     "sameSession",
     "sameSessionContext",
@@ -95,7 +98,7 @@ function fixture({
     `${source}\nreturn { GET, POST, mutex };`
   )(
     decodeApiError,
-    jwtDecode,
+    utility.accessTokenExpired,
     mutex,
     utility.sameSession,
     utility.sameSessionContext,

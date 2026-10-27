@@ -9,6 +9,11 @@
 
       <FormLogin />
 
+      <!-- Why the session ended, right below the form, which keeps its place at the top. -->
+      <p v-if="renewalStopped" role="status" class="text-body-1 text-center mt-card">
+        {{ t("Body.SessionRenewalStopped") }}
+      </p>
+
       <!--
         The note about accounts that moved here from the-morpheus.cc concerns few who log in.
         It stands below the form and unfolds for those it is for.
@@ -49,8 +54,13 @@ export default {
   setup() {
     const { t } = useI18n();
     useHead(() => ({ title: `${t("Buttons.Login")} · Bootstrap Academy` }));
+    // The note explains one ended session; it goes once the page is left, after a login too.
+    const renewalStopped = useSessionRenewalStopped();
+    onBeforeUnmount(() => {
+      renewalStopped.value = false;
+    });
 
-    return { t };
+    return { t, renewalStopped };
   },
 };
 </script>

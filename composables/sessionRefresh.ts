@@ -15,6 +15,9 @@ export function getSessionSnapshot(): SessionSnapshot {
   };
 }
 
+/** Set when renewing the session stopped helping and it ended; the login page says so. */
+export const useSessionRenewalStopped = () => useState("sessionRenewalStopped", () => false);
+
 export async function refreshSession(expected = getSessionSnapshot(), clearOnInvalid = true) {
   const config = useRuntimeConfig().public;
   const app = useNuxtApp();
@@ -40,6 +43,14 @@ export async function refreshSession(expected = getSessionSnapshot(), clearOnInv
       }),
     refused: () => {
       if (clearOnInvalid) app.runWithContext(() => setStates(null));
+    },
+    // A learning room (clearOnInvalid false) asks for a new login itself and keeps its draft.
+    halted: () => {
+      if (!clearOnInvalid) return;
+      app.runWithContext(() => {
+        useSessionRenewalStopped().value = true;
+        setStates(null);
+      });
     },
     fallback: typeof navigator === "undefined" || !navigator.locks,
   });

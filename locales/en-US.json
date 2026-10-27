@@ -460,6 +460,7 @@
     "WantToDisable": "If you ever want to disable your MFA, you can go to your account page at: ",
     "ChallengesNickname": "All user accounts from the-morpheus.cc have been migrated to the Academy, so you can still login with your Coding Challenges account.",
     "ChallengesNicknameQuestion": "Account from the-morpheus.cc?",
+    "SessionRenewalStopped": "We couldn't extend your login any more, so we logged you out. Just log in again.",
     "Download": "Download the app now for free",
     "ComingSoon": "Coming Soon!",
     "Copyright": "by Bootstrap Academy. All rights reserved",

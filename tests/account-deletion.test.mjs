@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { Mutex } from "async-mutex";
-import { jwtDecode } from "jwt-decode";
 import { createFetch } from "ofetch";
 import ts from "typescript";
 import { decodeApiError } from "../utils/apiError.ts";
@@ -14,7 +13,7 @@ const compile = (source) =>
 const session = new Function(
   "Mutex",
   `${compile(await readFile(new URL("../utils/sessionRefresh.ts", import.meta.url), "utf8"))}
-  return { sameSession, sameSessionContext, sameSessionPair };`
+  return { sameSession, sameSessionContext, sameSessionPair, accessTokenExpired };`
 )(Mutex);
 const fetchCode = compile(
   await readFile(new URL("../composables/fetch.js", import.meta.url), "utf8")
@@ -64,7 +63,6 @@ function fixture({
   };
   const bindings = {
     ...session,
-    jwtDecode,
     decodeApiError,
     sessionRefreshMutex: new Mutex(),
     useRuntimeConfig: () => ({

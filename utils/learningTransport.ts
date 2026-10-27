@@ -8,12 +8,12 @@ export interface LearningSessionSnapshot {
   refreshToken: string;
 }
 
-function expired(token: string) {
+function expired(token: string, now: number) {
   try {
     const segment = token.split(".")[1];
     if (!segment) return false;
     const payload = JSON.parse(atob(segment.replace(/-/g, "+").replace(/_/g, "/")));
-    return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now() + 60000;
+    return typeof payload.exp === "number" && payload.exp * 1000 <= now + 60000;
   } catch {
     return false;
   }
@@ -32,7 +32,10 @@ export function createLearningTransport(options: {
     token?: string
   ) => Promise<any>;
   expired: (required: boolean) => void;
+  /** The server's time (`serverNow`), so a device clock that runs fast does not renew each request. */
+  now?: () => number;
 }) {
+  const now = options.now || (() => Date.now());
   let renewing: { snapshot: LearningSessionSnapshot; promise: Promise<void> } | null = null;
   let refused: LearningSessionSnapshot | null = null;
   function current(expected: LearningSessionSnapshot) {
@@ -108,7 +111,7 @@ export function createLearningTransport(options: {
       refused = null;
       options.expired(false);
     }
-    if (expired(expected.accessToken)) await renew(expected);
+    if (expired(expected.accessToken, now())) await renew(expected);
     if (!current(expected)) throw sessionError();
     const attempted = options.snapshot();
     try {
