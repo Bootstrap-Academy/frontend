@@ -6,6 +6,7 @@ import type { LearningRequest, LearningRoomsView } from "~/types/learningRooms";
 import { createLearningRooms } from "~/utils/learningRooms";
 import { createLearningRecovery, createLearningTransport } from "~/utils/learningTransport";
 import { registerLearningLogout } from "~/utils/learningStorage";
+import { serverNow } from "~/utils/sessionRefresh";
 
 export function useLearningRooms(
   options: {
@@ -83,6 +84,7 @@ export function useLearningRooms(
     expired: (required) => {
       reauthRequired.value = required;
     },
+    now: serverNow,
   });
   const startRequests = new Map<string, string>();
   const transport: LearningRequest = async (path, method, body) => {
