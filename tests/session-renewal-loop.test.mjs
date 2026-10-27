@@ -60,6 +60,8 @@ const expiry = (token) =>
 // The older fetch composable decoded the token with `jwt-decode`; this stands in for it.
 const jwtDecode = (token) => ({ exp: expiry(token) });
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// Successful renewals a tab may make within a minute (`RENEWAL_LIMIT`).
+const LIMIT = 5;
 
 /** Auth and a service behind it, on the server clock, with five-minute access tokens. */
 function server({ refuseAll = false } = {}) {
@@ -284,13 +286,13 @@ test("renewals that do not help stop at the limit and end the session cleanly", 
   const api = server();
   const browser = tab(api);
   // As after each 401: the pair the request was sent with is still the current one.
-  for (let i = 0; i < 3; i++) await browser.renew(browser.snapshot());
-  assert.equal(api.state.renewals, 3);
+  for (let i = 0; i < LIMIT; i++) await browser.renew(browser.snapshot());
+  assert.equal(api.state.renewals, LIMIT);
   await assert.rejects(
     browser.renew(browser.snapshot()),
     (error) => error.data?.error === "session_renewal_halted"
   );
-  assert.equal(api.state.renewals, 3, "the fourth renewal never reaches the server");
+  assert.equal(api.state.renewals, LIMIT, "the renewal over the limit never reaches the server");
   assert.equal(browser.halted, 1);
   assert.equal(browser.cleared, 1);
   assert.equal(browser.snapshot().identity, null);
@@ -329,27 +331,60 @@ test("the limit counts per login and frees up after a minute", async () => {
       refused: () => assert.fail("no refusal"),
       halted: () => halted++,
     });
-  for (let i = 0; i < 3; i++) await renew();
+  for (let i = 0; i < LIMIT; i++) await renew();
   await assert.rejects(renew());
   assert.equal(halted, 1);
   // A minute later the earlier renewals no longer count.
   offset = 61000;
-  for (let i = 0; i < 3; i++) await renew();
-  assert.equal(api.state.renewals, 6);
+  for (let i = 0; i < LIMIT; i++) await renew();
+  assert.equal(api.state.renewals, 2 * LIMIT);
   await assert.rejects(renew());
   assert.equal(halted, 2);
   // A new login starts its own count.
   generation = "second";
   await renew();
-  assert.equal(api.state.renewals, 7);
+  assert.equal(api.state.renewals, 2 * LIMIT + 1);
   assert.equal(halted, 2);
 });
 
-test("the service rejecting even fresh tokens ends the session after at most three renewals", async () => {
+test("failed renewal attempts do not count: after an outage the session stays and renews", async () => {
+  const api = server();
+  const browser = tab(api);
+  let outage = true;
+  const attempt = () =>
+    browser.renew(browser.snapshot(), {
+      raw: async (token) => {
+        await pause(1);
+        if (outage) throw { statusCode: 502, data: { detail: "Bad gateway" } };
+        return api.renew(token);
+      },
+    });
+  // Offline, then a restarting server: many failed attempts within the minute.
+  for (let i = 0; i < 2 * LIMIT; i++)
+    await assert.rejects(attempt(), (error) => error.statusCode === 502);
+  for (let i = 0; i < LIMIT; i++)
+    await assert.rejects(
+      browser.renew(browser.snapshot(), {
+        raw: async () => {
+          throw new TypeError("fetch failed");
+        },
+      })
+    );
+  outage = false;
+  await attempt();
+  assert.equal(api.state.renewals, 1);
+  assert.equal(browser.halted, 0);
+  assert.equal(browser.cleared, 0);
+  assert.ok(browser.snapshot().identity);
+});
+
+// A guard rather than a proof: here the existing logout after a refused retry usually ends the
+// session first, on develop as well.
+test("the service rejecting even fresh tokens ends the session within the renewal limit", async () => {
   const api = server({ refuseAll: true });
   const browser = tab(api);
   await openCharacterPage(browser, api);
-  assert.ok(api.state.renewals <= 3, `renewals: ${api.state.renewals}`);
+  assert.ok(api.state.renewals <= LIMIT, `renewals: ${api.state.renewals}`);
   assert.equal(browser.snapshot().identity, null);
 });
 
@@ -376,8 +411,9 @@ test("a learning room polling against rejected tokens stops renewing and asks fo
     },
     now: browser.session.serverNow,
   });
-  for (let i = 0; i < 10; i++) await request("/skills/rooms?continuous=true").catch(() => {});
-  assert.ok(api.state.renewals <= 3, `renewals: ${api.state.renewals}`);
+  for (let i = 0; i < 2 * LIMIT; i++)
+    await request("/skills/rooms?continuous=true").catch(() => {});
+  assert.equal(api.state.renewals, LIMIT);
   assert.equal(reauth, true);
 });
 
@@ -408,6 +444,7 @@ test("a learning room on a fast device clock renews once, not before every reque
 test("a stopped renewal logs out with a note on the log-in page; a learning room keeps its login", async () => {
   const states = new Map();
   const calls = [];
+  let legalPage = false;
   const { refreshSession, useSessionRenewalStopped } = evaluate(
     sources.refreshComposable,
     {
@@ -424,6 +461,7 @@ test("a stopped renewal logs out with a note on the log-in page; a learning room
         return states.get(key);
       },
       setStates: (value) => calls.push(value),
+      isOnPublicLegalRoute: () => legalPage,
       navigator: { locks: {} },
     },
     ["refreshSession", "useSessionRenewalStopped"]
@@ -433,8 +471,14 @@ test("a stopped renewal logs out with a note on the log-in page; a learning room
   await assert.rejects(refreshSession(expected, false));
   assert.deepEqual(calls, []);
   assert.equal(useSessionRenewalStopped().value, false);
+  // On a public legal page the session ends without a redirect, so no note waits for later.
+  legalPage = true;
   await assert.rejects(refreshSession(expected));
   assert.deepEqual(calls, [null]);
+  assert.equal(useSessionRenewalStopped().value, false);
+  legalPage = false;
+  await assert.rejects(refreshSession(expected));
+  assert.deepEqual(calls, [null, null]);
   assert.equal(useSessionRenewalStopped().value, true);
   // The log-in page shows the note below its form and forgets it once left.
   const form = sources.loginPage.indexOf("<FormLogin />");

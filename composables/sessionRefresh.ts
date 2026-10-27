@@ -48,7 +48,9 @@ export async function refreshSession(expected = getSessionSnapshot(), clearOnInv
     halted: () => {
       if (!clearOnInvalid) return;
       app.runWithContext(() => {
-        useSessionRenewalStopped().value = true;
+        // A public legal page stays open (setStates does not redirect there), so no note waits
+        // for a later visit to the log-in page.
+        if (!isOnPublicLegalRoute()) useSessionRenewalStopped().value = true;
         setStates(null);
       });
     },
