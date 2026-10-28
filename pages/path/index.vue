@@ -69,7 +69,7 @@
               :steps="plan.steps"
               :tracks="tracks"
               :aria-busy="view.saving"
-              @move="(key, by) => change(movePlanStep(key, by))"
+              @move="(key, by) => change(movePlanStep(plan?.steps ?? [], key, by))"
               @remove="(key) => change(removePlanStep(key))"
               @confirm="(key, done) => change(confirmPlanStep(key, done))"
             />

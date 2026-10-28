@@ -2094,7 +2094,9 @@
       "NextAfterKnown": "Builds on what you already know",
       "NewArea": "A new area, and you have the basics for it",
       "InTrack": "Fits your learning path “{track}”",
-      "InSomeTrack": "Fits one of your learning paths"
+      "InSomeTrack": "Fits one of your learning paths",
+      "Deepen": "Goes deeper into an area you are already learning",
+      "LevelFit": "Fits your level"
     },
     "Tracks": "Learning paths",
     "TracksError": "We couldn't load the learning paths just now.",

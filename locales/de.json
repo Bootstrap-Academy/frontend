@@ -2097,7 +2097,9 @@
       "NextAfterKnown": "Baut auf dem auf, was du schon kannst",
       "NewArea": "Neues Gebiet, die Grundlagen dafür hast du",
       "InTrack": "Passt zu deinem Lernpfad „{track}“",
-      "InSomeTrack": "Passt zu einem deiner Lernpfade"
+      "InSomeTrack": "Passt zu einem deiner Lernpfade",
+      "Deepen": "Vertieft ein Gebiet, in dem du schon lernst",
+      "LevelFit": "Passt zu deinem Niveau"
     },
     "Tracks": "Lernpfade",
     "TracksError": "Die Lernpfade ließen sich gerade nicht laden.",

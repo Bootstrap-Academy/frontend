@@ -106,7 +106,7 @@ export interface PlanMutation {
   state: PlanState;
 }
 
-export type SuggestionReason = "next_after" | "new_area" | "in_track";
+export type SuggestionReason = "next_after" | "new_area" | "in_track" | "deepen" | "level_fit";
 
 export interface PlanSuggestion {
   type: "course";

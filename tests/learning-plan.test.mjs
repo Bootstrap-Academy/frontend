@@ -137,7 +137,7 @@ const deferred = () => {
  * A plan service as the contract describes it: revisions, 409 with the current plan, and the
  * same answer for a repeated `request_id`. `conflict` says where a 409 carries the plan.
  */
-function service({ conflict = "plan" } = {}) {
+function service({ conflict = "contract" } = {}) {
   const titles = {
     docker: "Docker",
     cloud: "Cloud Technologien",
@@ -197,11 +197,13 @@ function service({ conflict = "plan" } = {}) {
       const current = s.answer();
       throw refusal(
         409,
-        conflict === "plan"
-          ? current
-          : conflict === "detail"
-            ? { detail: current }
-            : { detail: "Error.LearningConflict" }
+        conflict === "contract"
+          ? { detail: "Error.LearningConflict", code: "plan_conflict", plan: current }
+          : conflict === "top"
+            ? current
+            : conflict === "detail"
+              ? { detail: current }
+              : { detail: "Error.LearningConflict" }
       );
     }
     s.revision++;
@@ -268,6 +270,9 @@ test("a plan is read as the contract writes it, and nothing else passes for one"
   assert.equal(odd.steps.length, 2);
   assert.equal(odd.steps[0].title, "Git (en)");
   assert.equal(odd.steps[0].status, "open");
+  // A course without countable lessons has no numbers (skills-ms answers `null`).
+  assert.equal(odd.steps[0].done_units, null);
+  assert.equal(odd.steps[0].total_units, null);
   assert.equal(odd.steps[1].url, null);
   // `next` is the first step that is not done, whatever the answer said.
   assert.deepEqual(odd.next, { type: "course", course: "git" });
@@ -331,6 +336,10 @@ test("the request names each step once, a step from a path with its path and sta
     steps: [DOCKER_STATE, WORKSHOP_STATE],
   });
   const fromTrack = plan.trackSteps(plan.readTrack(TRACK, "de"), "fundamentals");
+  // A course names its path and stage both or neither.
+  assert.deepEqual(plan.planState({ ...draft, steps: [{ ...fromTrack[0], stage: null }] }).steps, [
+    { type: "course", course: "cloud" },
+  ]);
   assert.deepEqual(plan.planState({ ...draft, steps: fromTrack }).steps, [
     { type: "course", course: "cloud", track: "cloud-engineer", stage: "fundamentals" },
     { type: "course", course: "linux", track: "cloud-engineer", stage: "fundamentals" },
@@ -341,12 +350,20 @@ test("moving, removing, adding and ticking off name the step, never its place", 
   const draft = plan.planDraft(plan.readPlan(PLAN, "de"));
   const keys = (d) => d.steps.map((step) => plan.planStepKey(step));
   const workshop = "external:cloud-engineer:practitioner:workshop-practitioner";
-  assert.deepEqual(keys(plan.movePlanStep("course:docker", 1)(draft)), [workshop, "course:docker"]);
-  assert.deepEqual(keys(plan.movePlanStep(workshop, -1)(draft)), [workshop, "course:docker"]);
+  const move = (key, by) => plan.movePlanStep(draft.steps, key, by)(draft);
+  assert.deepEqual(keys(move("course:docker", 1)), [workshop, "course:docker"]);
+  assert.deepEqual(keys(move(workshop, -1)), [workshop, "course:docker"]);
   // At either end, or for a step that is gone, nothing moves.
-  assert.equal(plan.movePlanStep("course:docker", -1)(draft), draft);
-  assert.equal(plan.movePlanStep(workshop, 1)(draft), draft);
-  assert.equal(plan.movePlanStep("course:gone", 1)(draft), draft);
+  assert.equal(move("course:docker", -1), draft);
+  assert.equal(move(workshop, 1), draft);
+  assert.equal(move("course:gone", 1), draft);
+  // A move means "past the neighbour shown": made again where it already happened, it is nothing.
+  const down = plan.movePlanStep(draft.steps, "course:docker", 1);
+  const moved = down(draft);
+  assert.equal(down(moved), moved);
+  // On a plan that grew elsewhere the step still goes past that same neighbour.
+  const grown = { ...draft, steps: [...draft.steps, plan.suggestionStep(SUGGESTIONS[1])] };
+  assert.deepEqual(keys(down(grown)), [workshop, "course:docker", "course:git"]);
   assert.deepEqual(keys(plan.removePlanStep("course:docker")(draft)), [workshop]);
   // A course already planned keeps its place; a new one goes to the end, once.
   const git = plan.suggestionStep(SUGGESTIONS[1]);
@@ -397,6 +414,11 @@ test("every suggestion says why, with the names that are known", () => {
     values: { course: "IT-Grundlagen" },
   });
   assert.deepEqual(reason(SUGGESTIONS[1]), { key: "LearningPlan.Reason.NewArea", values: {} });
+  assert.equal(reason({ ...SUGGESTIONS[1], reason: "deepen" }).key, "LearningPlan.Reason.Deepen");
+  assert.equal(
+    reason({ ...SUGGESTIONS[1], reason: "level_fit" }).key,
+    "LearningPlan.Reason.LevelFit"
+  );
   assert.deepEqual(reason(SUGGESTIONS[2]), {
     key: "LearningPlan.Reason.InTrack",
     values: { track: "Cloud Engineer" },
@@ -406,7 +428,15 @@ test("every suggestion says why, with the names that are known", () => {
   assert.equal(reason(SUGGESTIONS[2], nothing).key, "LearningPlan.Reason.InSomeTrack");
   assert.equal(reason({ ...SUGGESTIONS[1], reason: "popular" }), null);
   for (const locale of ["de", "en-US"])
-    for (const key of ["NextAfter", "NextAfterKnown", "NewArea", "InTrack", "InSomeTrack"])
+    for (const key of [
+      "NextAfter",
+      "NextAfterKnown",
+      "NewArea",
+      "InTrack",
+      "InSomeTrack",
+      "Deepen",
+      "LevelFit",
+    ])
       assert.equal(typeof messages[locale].LearningPlan.Reason[key], "string", `${locale} ${key}`);
 });
 
@@ -415,7 +445,7 @@ test("a change shows at once and is saved against the revision it was made on", 
   const { editor, settled, last } = editorFor(s);
   await editor.load();
   assert.equal(last().status, "ready");
-  const saved = editor.apply(plan.movePlanStep("course:docker", 1));
+  const saved = editor.apply(plan.movePlanStep(last().plan.steps, "course:docker", 1));
   // Before any answer the plan already shows the new order.
   assert.deepEqual(order(last()), [
     "external:cloud-engineer:practitioner:workshop-practitioner",
@@ -462,7 +492,8 @@ test("quick changes go one after another, each on the answer to the one before",
 });
 
 test("a plan changed elsewhere is read again and the change made once more, without a word", async () => {
-  for (const conflict of ["plan", "detail", "none"]) {
+  // `contract` is the answer skills-ms gives (`plan` beside `detail` and `code`).
+  for (const conflict of ["contract", "top", "detail", "none"]) {
     const s = service({ conflict });
     const { editor, views, last } = editorFor(s);
     await editor.load();
@@ -491,6 +522,20 @@ test("a plan changed elsewhere is read again and the change made once more, with
       conflict
     );
   }
+});
+
+test("a move made once more after a conflict does not move the step twice", async () => {
+  const s = service();
+  const { editor, last } = editorFor(s);
+  await editor.load();
+  const down = plan.movePlanStep(last().plan.steps, "course:docker", 1);
+  // Another device made the same move first.
+  s.elsewhere((state) => ({ ...state, steps: [state.steps[1], state.steps[0]] }));
+  assert.equal(await editor.apply(down), true);
+  assert.equal(s.puts.length, 1);
+  assert.deepEqual(s.state.steps, [WORKSHOP_STATE, DOCKER_STATE]);
+  assert.equal(last().plan.revision, 4);
+  assert.equal(last().failed, false);
 });
 
 test("a request without an answer is sent again as it was, so it is saved once", async () => {
@@ -530,7 +575,7 @@ test("a change that changes nothing asks nothing, and an endless conflict stops"
   const s = service();
   const { editor, last } = editorFor(s);
   await editor.load();
-  assert.equal(await editor.apply(plan.movePlanStep("course:docker", -1)), true);
+  assert.equal(await editor.apply(plan.movePlanStep(last().plan.steps, "course:docker", -1)), true);
   assert.equal(s.puts.length, 0);
   for (let n = 0; n < 4; n++) s.fail.push(refusal(409, { detail: "Error.LearningConflict" }));
   assert.equal(await editor.apply(plan.choosePlanCharacter("profi")), false);

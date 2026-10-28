@@ -207,7 +207,10 @@ export function planDraft(plan: Plan): PlanDraft {
   return { character: plan.character, preference: plan.preference, steps: [...plan.steps] };
 }
 
-/** The draft as `PUT /skills/plan` takes it. An external step without its path cannot be named. */
+/**
+ * The draft as `PUT /skills/plan` takes it: a course with its path and stage both or neither,
+ * an external step always with both, since only they name it.
+ */
 export function planState(draft: PlanDraft): PlanState {
   const steps: PlanStateStep[] = [];
   for (const step of draft.steps)
@@ -215,8 +218,7 @@ export function planState(draft: PlanDraft): PlanState {
       steps.push({
         type: "course",
         course: step.course,
-        ...(step.track ? { track: step.track } : {}),
-        ...(step.track && step.stage ? { stage: step.stage } : {}),
+        ...(step.track && step.stage ? { track: step.track, stage: step.stage } : {}),
       });
     else if (step.track && step.stage)
       steps.push({
@@ -250,16 +252,30 @@ export const choosePlanPreference =
   (value: PlanPreference): PlanChange =>
   (draft) => ({ ...draft, preference: value });
 
-export const movePlanStep =
-  (key: string, by: -1 | 1): PlanChange =>
+/**
+ * Puts a step right before or after another one. Made once more on a plan that already has
+ * it there, it changes nothing.
+ */
+export const placePlanStep =
+  (key: string, anchor: string, side: "before" | "after"): PlanChange =>
   (draft) => {
-    const from = draft.steps.findIndex((step) => planStepKey(step) === key);
-    const to = from + by;
-    if (from < 0 || to < 0 || to >= draft.steps.length) return draft;
-    const steps = [...draft.steps];
-    [steps[from], steps[to]] = [steps[to]!, steps[from]!];
-    return { ...draft, steps };
+    const moving = draft.steps.find((step) => planStepKey(step) === key);
+    const rest = draft.steps.filter((step) => step !== moving);
+    const at = rest.findIndex((step) => planStepKey(step) === anchor);
+    if (!moving || at < 0) return draft;
+    rest.splice(side === "before" ? at : at + 1, 0, moving);
+    return rest.every((step, index) => step === draft.steps[index])
+      ? draft
+      : { ...draft, steps: rest };
   };
+
+/** One place up or down, as the learner sees `steps`: past the neighbour shown there. */
+export function movePlanStep(steps: PlanStep[], key: string, by: -1 | 1): PlanChange {
+  const neighbour = steps[steps.findIndex((step) => planStepKey(step) === key) + by];
+  return neighbour && planStepKey(neighbour) !== key
+    ? placePlanStep(key, planStepKey(neighbour), by < 0 ? "before" : "after")
+    : (draft) => draft;
+}
 
 export const removePlanStep =
   (key: string): PlanChange =>
@@ -380,6 +396,8 @@ export function suggestionReason(
       : { key: "LearningPlan.Reason.NextAfterKnown", values: {} };
   }
   if (suggestion.reason === "new_area") return { key: "LearningPlan.Reason.NewArea", values: {} };
+  if (suggestion.reason === "deepen") return { key: "LearningPlan.Reason.Deepen", values: {} };
+  if (suggestion.reason === "level_fit") return { key: "LearningPlan.Reason.LevelFit", values: {} };
   if (suggestion.reason === "in_track") {
     const track = suggestion.reason_track ? titles.track(suggestion.reason_track) : undefined;
     return track
@@ -454,12 +472,16 @@ export function createPlanEditor(options: {
     for (const item of dropped) item.done(false);
   }
 
-  /** The plan a 409 carries, at the top or in `detail`; otherwise it is read again. */
+  /** The plan a 409 carries (in `plan`, at the top or in `detail`); otherwise it is read again. */
   async function latest(error: unknown) {
     const body = object(error)
       ? (error.data ?? (object(error.response) && error.response._data))
       : null;
-    for (const candidate of [body, object(body) ? body.detail : null])
+    for (const candidate of [
+      body,
+      object(body) ? body.plan : null,
+      object(body) ? body.detail : null,
+    ])
       if (object(candidate) && typeof candidate.revision === "number")
         try {
           return options.read(candidate);
