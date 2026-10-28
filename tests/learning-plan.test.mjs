@@ -966,6 +966,61 @@ test("the page of a path: stages, how far the learner is, and each stage onto th
   assert(missing.ui.text().includes("Diesen Lernpfad gibt es nicht."));
 });
 
+test("on the page of a course it goes onto the journey with one tap", async (t) => {
+  const s = service();
+  const children = await parts("de");
+  const api = await evaluate("composables/learningPlan.ts", {
+    GET: async () => s.load(),
+    PUT: async (path, body) => s.save(body),
+    require: () => plan,
+  });
+  const AddCourse = await component(
+    "components/learning-path/AddCourse.vue",
+    {},
+    { ...children.modules, "~/composables/learningPlan": api }
+  );
+  const box = async (course, title) => {
+    const ui = host();
+    mount(t, ui, AddCourse, { course, title }, children);
+    await settle();
+    return ui;
+  };
+  const linux = await box("linux", "Linux");
+  find(linux, "button", "Auf meinen Weg").props.onClick();
+  await settle();
+  assert.deepEqual(s.state.steps.at(-1), { type: "course", course: "linux" });
+  const planned = find(linux, "a", "Liegt auf deinem Weg");
+  assert.equal(planned.props.href, "/path");
+  assert(!find(linux, "button", "Auf meinen Weg"));
+  // A course already on the plan leads to it straight away.
+  const docker = await box("docker", "Docker");
+  assert(find(docker, "a", "Liegt auf deinem Weg"));
+  assert.equal(s.puts.length, 1);
+  // Without a plan to read, the course page stays as it was.
+  const silent = await component(
+    "components/learning-path/AddCourse.vue",
+    {},
+    {
+      ...children.modules,
+      "~/composables/learningPlan": await evaluate("composables/learningPlan.ts", {
+        GET: async () => {
+          throw refusal(503);
+        },
+        require: () => plan,
+      }),
+    }
+  );
+  const ui = host();
+  mount(t, ui, silent, { course: "linux", title: "Linux" }, children);
+  await settle();
+  assert.equal(ui.text().trim(), "");
+  // The course page shows it to an account only, afresh for another account.
+  assert.match(
+    await read("pages/courses/[id]/index.vue"),
+    /<LearningPathAddCourse\n\s+v-if="!guest"\n\s+:key="`\$\{user\?\.id\}:\$\{session\?\.id\}`"\n\s+:course="id"/
+  );
+});
+
 test("both languages have every text, per du and without gendering", () => {
   const keys = (value, prefix = "") =>
     Object.entries(value).flatMap(([key, inner]) =>
@@ -1013,6 +1068,7 @@ for (const file of [
   "components/learning-path/TrackCard.vue",
   "components/learning-path/StageSymbol.vue",
   "components/learning-path/Invitation.vue",
+  "components/learning-path/AddCourse.vue",
 ]) {
   test(`${file}: Vue compiles the script and template, and i18n comes from vue-i18n`, async () => {
     const parsed = parse(await read(file), { filename: file });

@@ -322,17 +322,22 @@ export function trackSteps(track: Track, stageId?: string): PlanStep[] {
     );
 }
 
-export function suggestionStep(suggestion: PlanSuggestion): PlanCourseStep {
+/** A course on its own, as it goes onto the plan; the server's answer says how far it is. */
+export function planCourseStep(course: string, title: string): PlanCourseStep {
   return {
     type: "course",
-    course: suggestion.course,
-    title: suggestion.title,
+    course,
+    title,
     track: null,
     stage: null,
     status: "open",
     done_units: null,
     total_units: null,
   };
+}
+
+export function suggestionStep(suggestion: PlanSuggestion): PlanCourseStep {
+  return planCourseStep(suggestion.course, suggestion.title);
 }
 
 /** How much of a path, or of one stage, already lies on the plan. */

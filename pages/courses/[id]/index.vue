@@ -35,6 +35,14 @@
           :skill-i-d="skillID"
           :sub-skill-i-d="subSkillID"
         />
+        <!-- Another account is another plan: the key starts the box afresh. -->
+        <LearningPathAddCourse
+          v-if="!guest"
+          :key="`${user?.id}:${session?.id}`"
+          :course="id"
+          :title="course.title"
+          class="add-to-path"
+        />
       </aside>
 
       <div class="course-content">
@@ -371,6 +379,9 @@ h2 {
   color: var(--color-primary);
   font-weight: 700;
   text-align: center;
+}
+.add-to-path {
+  margin-top: 0.75rem;
 }
 .login-link {
   justify-self: center;
