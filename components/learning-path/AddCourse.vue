@@ -1,7 +1,7 @@
 <!--
   On the page of a course: the way to put it onto the own learning journey, or, once it is
-  there, the way to the journey. Until the plan is known nothing shows, and a plan that cannot
-  be read leaves the course page as it was.
+  there, the way to the journey. Until the plan is known nothing shows; without learning paths
+  in skills-ms, or with a plan that cannot be read, the course page stays as it was.
 -->
 <template>
   <div v-if="plan" class="add-course">
@@ -17,10 +17,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, shallowRef } from "vue";
+import { computed, onBeforeUnmount, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { ArrowRightIcon, CheckIcon, PlusIcon } from "@heroicons/vue/24/outline";
-import { useLearningPlan } from "~/composables/learningPlan";
+import { useLearningPathsAvailable, useLearningPlan } from "~/composables/learningPlan";
 import {
   addPlanSteps,
   planCourseStep,
@@ -45,7 +45,15 @@ function add() {
   void editor.apply(addPlanSteps([planCourseStep(props.course, props.title)]));
 }
 
-onMounted(() => void editor.load());
+// The plan is asked for only where skills-ms offers learning paths at all.
+const available = useLearningPathsAvailable();
+watch(
+  available,
+  (offered) => {
+    if (offered === true) void editor.load();
+  },
+  { immediate: true }
+);
 onBeforeUnmount(() => editor.dispose());
 </script>
 

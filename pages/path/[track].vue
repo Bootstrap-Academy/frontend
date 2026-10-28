@@ -50,9 +50,6 @@
           <p v-else-if="whole.total" class="planned">
             <CheckIcon aria-hidden="true" />{{ t("LearningPlan.Planned") }}
           </p>
-          <NuxtLink v-if="whole.planned" to="/path" class="quiet-link"
-            >{{ t("LearningPlan.ToPlan") }}<ArrowRightIcon aria-hidden="true"
-          /></NuxtLink>
         </div>
         <p v-if="view.failed" class="notice" role="status">{{ t("LearningPlan.SaveFailed") }}</p>
       </header>
@@ -121,7 +118,7 @@
 import type { Ref } from "vue";
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { ArrowRightIcon, ArrowTopRightOnSquareIcon, CheckIcon } from "@heroicons/vue/24/outline";
+import { ArrowTopRightOnSquareIcon, CheckIcon } from "@heroicons/vue/24/outline";
 import type { SessionIdentity } from "~/types/sessionIdentity";
 import type { Track, TrackItem } from "~/types/learningPlan";
 import { getTrack, useLearningPlan } from "~/composables/learningPlan";
@@ -135,6 +132,8 @@ import {
 } from "~/utils/learningPlan";
 import { pageTitle, shortDescription } from "~/utils/siteHead";
 
+// Without learning paths in skills-ms the page leads home (`middleware/learning-paths.ts`).
+definePageMeta({ middleware: ["learning-paths"] });
 const { t, locale } = useI18n();
 const route = useRoute();
 const user = useUser();
@@ -357,22 +356,10 @@ h1 {
   font-weight: 600;
 }
 .planned svg,
-.quiet-link svg,
 .item-title svg {
   width: 17px;
   height: 17px;
   flex-shrink: 0;
-}
-.quiet-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  color: #b5c7d9;
-  font-size: 0.9rem;
-}
-.quiet-link:hover {
-  color: #0cc9ab;
 }
 .notice {
   margin: 0;

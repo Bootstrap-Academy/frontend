@@ -191,7 +191,7 @@ export function planNext(steps: PlanStep[]): PlanNext | null {
   if (!step) return null;
   return step.type === "course"
     ? { type: "course", course: step.course }
-    : { type: "external", id: step.id };
+    : { type: "external", id: step.id, track: step.track, stage: step.stage };
 }
 
 export function planProgress(steps: PlanStep[]) {

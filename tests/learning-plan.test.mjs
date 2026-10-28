@@ -991,7 +991,9 @@ test("the page of a path: stages, how far the learner is, and each stage onto th
     { type: "course", course: "linux", track: "cloud-engineer", stage: "fundamentals" },
   ]);
   assert(!ui.text().includes("Ganzen Pfad übernehmen"));
-  assert(ui.text().includes("Zu deinem Lernweg"));
+  // One way back to the journey: the link above the title.
+  assert(!ui.text().includes("Zu deinem Lernweg"));
+  assert.equal(ui.text().split("Dein Lernweg").length - 1, 1);
   // After the change the path is read again, so its items say how far the learner is.
   assert.equal(calls.filter((call) => call.path === "/skills/tracks/cloud-engineer").length, 2);
 
@@ -1022,7 +1024,10 @@ test("on the page of a course it goes onto the journey with one tap", async (t) 
   const AddCourse = await component(
     "components/learning-path/AddCourse.vue",
     {},
-    { ...children.modules, "~/composables/learningPlan": api }
+    {
+      ...children.modules,
+      "~/composables/learningPlan": { ...api, useLearningPathsAvailable: () => Vue.ref(true) },
+    }
   );
   const box = async (course, title) => {
     const ui = host();
@@ -1047,12 +1052,15 @@ test("on the page of a course it goes onto the journey with one tap", async (t) 
     {},
     {
       ...children.modules,
-      "~/composables/learningPlan": await evaluate("composables/learningPlan.ts", {
-        GET: async () => {
-          throw refusal(503);
-        },
-        require: () => plan,
-      }),
+      "~/composables/learningPlan": {
+        ...(await evaluate("composables/learningPlan.ts", {
+          GET: async () => {
+            throw refusal(503);
+          },
+          require: () => plan,
+        })),
+        useLearningPathsAvailable: () => Vue.ref(true),
+      },
     }
   );
   const ui = host();
@@ -1080,29 +1088,183 @@ test("both languages have every text, per du and without gendering", () => {
   }
 });
 
-test("the learning journey is in the navigation, the footer and on the dashboard", async () => {
-  const layout = async (token) => {
-    const options = await evaluate("layouts/default.vue", {
-      computed: Vue.computed,
-      useAccessToken: () => Vue.ref(token),
-    });
-    return options.setup().links.value;
-  };
-  assert((await layout("token-a")).some((link) => link.pathname === "/path"));
-  assert((await layout("")).some((link) => link.pathname === "/path"));
-  const footer = await evaluate("components/Footer.vue", {
-    require: (name) => ({ vue: Vue, "vue-i18n": { useI18n: () => ({ t: (key) => key }) } })[name],
-    defineComponent: (options) => options,
+/** The composable against a stand-in for the service; `answer` is what `GET /skills/tracks` gives. */
+async function offering(answer, more = {}) {
+  const asked = [];
+  const states = new Map();
+  const api = await evaluate("composables/learningPlan.ts", {
+    $fetch: async (path, options) => {
+      asked.push([path, options]);
+      if (answer instanceof Error) throw answer;
+      return structuredClone(answer);
+    },
+    useRuntimeConfig: () => ({ public: { BASE_API_URL: "https://api.example.invalid" } }),
+    useState: (key, init) => {
+      if (!states.has(key)) states.set(key, Vue.ref(init()));
+      return states.get(key);
+    },
+    require: () => plan,
+    ...more,
   });
-  assert(footer.setup().webLinks.some((link) => link.pathname === "/path"));
+  return { api, asked };
+}
+
+test("the ways to the journey show only where skills-ms offers learning paths, else its pages lead home", async (t) => {
+  const children = await parts("de");
+  for (const [name, answer, offered] of [
+    ["a list", [TRACK], true],
+    ["404", refusal(404, { detail: "Not Found" }), false],
+    ["no answer", new TypeError("fetch failed"), false],
+    ["not a list", { detail: "Not Found" }, false],
+  ]) {
+    const planCalls = [];
+    const { api, asked } = await offering(answer, {
+      GET: async (path) => (planCalls.push(path), structuredClone(PLAN)),
+    });
+    // Nothing shows before the answer, so nothing appears and vanishes again.
+    const shown = api.useLearningPathsAvailable();
+    assert.equal(shown.value, null, name);
+    assert.equal(await api.learningPathsAvailable(), offered, name);
+    await settle();
+    assert.equal(shown.value, offered, name);
+    assert.equal(api.useLearningPathsAvailable().value, offered, name);
+    // Asked once for the session, without the account, however often the answer is needed.
+    assert.deepEqual(
+      asked,
+      [["/skills/tracks", { baseURL: "https://api.example.invalid", retry: 0, timeout: 6000 }]],
+      name
+    );
+
+    // The navigation with and without an account, and the footer.
+    for (const token of ["token-a", ""]) {
+      const layout = await evaluate("layouts/default.vue", {
+        computed: Vue.computed,
+        useAccessToken: () => Vue.ref(token),
+        useLearningPathsAvailable: api.useLearningPathsAvailable,
+      });
+      const links = layout.setup().links.value;
+      assert.equal(
+        links.some((link) => link.pathname === "/path"),
+        offered,
+        `${name} ${token}`
+      );
+      // With an account the journey follows the character; a visitor keeps the courses second.
+      assert.equal(
+        links[1].pathname,
+        token ? (offered ? "/path" : "/skill-tree") : "/courses",
+        `${name} ${token}`
+      );
+    }
+    const footer = await evaluate("components/Footer.vue", {
+      require: (module) =>
+        ({ vue: Vue, "vue-i18n": { useI18n: () => ({ t: (key) => key }) } })[module],
+      defineComponent: (options) => options,
+      useLearningPathsAvailable: api.useLearningPathsAvailable,
+    });
+    const shownLinks = footer.setup().shownWebLinks.value;
+    assert.equal(
+      shownLinks.some((link) => link.pathname === "/path"),
+      offered,
+      name
+    );
+    assert.equal(shownLinks.length, offered ? 5 : 4, name);
+
+    // The line above the title of the character page: a link, or the plain line.
+    const Link = await component(
+      "components/learning-path/Link.vue",
+      {},
+      {
+        "@heroicons/vue/24/outline": icons,
+        "~/composables/learningPlan": api,
+      }
+    );
+    const line = host();
+    mount(
+      t,
+      line,
+      { render: () => Vue.h(Link, null, { default: () => "Dein Lernweg" }) },
+      {},
+      children
+    );
+    await settle();
+    const link = line.all().find((node) => node.type === "a");
+    assert.equal(link?.props.href ?? null, offered ? "/path" : null, name);
+    assert(find(line, offered ? "a" : "p", "Dein Lernweg"), name);
+
+    // The box on the course page asks for the plan only where paths are offered.
+    const AddCourse = await component(
+      "components/learning-path/AddCourse.vue",
+      {},
+      {
+        ...children.modules,
+        "~/composables/learningPlan": api,
+      }
+    );
+    const box = host();
+    mount(t, box, AddCourse, { course: "linux", title: "Linux" }, children);
+    await settle();
+    assert.equal(!!find(box, "button", "Auf meinen Weg"), offered, name);
+    assert.deepEqual(planCalls, offered ? ["/skills/plan"] : [], name);
+    if (!offered) assert.equal(box.text().trim(), "", name);
+
+    // `/path` and `/path/<track>` lead home without a word: an account to its dashboard,
+    // a visitor to the start page.
+    for (const token of ["token-a", ""]) {
+      const middleware = await evaluate("middleware/learning-paths.ts", {
+        defineNuxtRouteMiddleware: (handler) => handler,
+        navigateTo: (to, options) => ({ to, options }),
+        useAppCookie: () => ({ value: token }),
+        require: () => api,
+      });
+      assert.deepEqual(
+        await middleware.default(),
+        offered ? undefined : { to: token ? "/dashboard" : "/", options: { replace: true } },
+        `${name} ${token}`
+      );
+    }
+  }
+  for (const file of ["pages/path/index.vue", "pages/path/[track].vue"])
+    assert.match(
+      await read(file),
+      /definePageMeta\(\{ middleware: \["learning-paths"\] \}\);/,
+      file
+    );
   assert.match(
     await read("pages/dashboard/index.vue"),
-    /<NuxtLink to="\/path" class="eyebrow eyebrow-link"\n\s+>\{\{ t\("CharacterDashboard.Eyebrow"\) \}\}/
+    /<LearningPathLink class="eyebrow eyebrow-link">\{\{\s*t\("CharacterDashboard\.Eyebrow"\)\s*\}\}<\/LearningPathLink>/
   );
   for (const locale of ["de", "en-US"]) {
     assert.equal(typeof messages[locale].LearningPlan.Nav, "string");
     assert.equal(typeof messages[locale].LearningPlan.NavGuest, "string");
   }
+});
+
+test("when the next step lies outside without an address, the page says so where the button is", async (t) => {
+  const external = { ...PLAN.steps[1], url: null, status: "open", self_confirmed: false };
+  const raw = { ...PLAN, steps: [external, PLAN.steps[0]] };
+  // `next` names an external step with its path and stage, as the contract does.
+  assert.deepEqual(plan.readPlan(raw, "de").next, {
+    type: "external",
+    id: "workshop-practitioner",
+    track: "cloud-engineer",
+    stage: "practitioner",
+  });
+  const { ui } = await page(t, "pages/path/index.vue", {
+    answers: {
+      "GET /skills/tracks": [TRACK],
+      "GET /skills/plan": raw,
+      "GET /skills/plan/suggestions": [],
+    },
+  });
+  assert(
+    ui
+      .text()
+      .includes(
+        "Als Nächstes: Workshop Practitioner. Das machst du außerhalb der Academy und hakst es unten ab."
+      )
+  );
+  assert(!find(ui, "button", "Weiter lernen"));
+  assert(!ui.all().some((node) => node.type === "progress" && node.props["aria-label"]));
 });
 
 for (const file of [
@@ -1114,12 +1276,13 @@ for (const file of [
   "components/learning-path/StageSymbol.vue",
   "components/learning-path/Invitation.vue",
   "components/learning-path/AddCourse.vue",
+  "components/learning-path/Link.vue",
 ]) {
   test(`${file}: Vue compiles the script and template, and i18n comes from vue-i18n`, async () => {
     const parsed = parse(await read(file), { filename: file });
     assert.deepEqual(parsed.errors, []);
     const compiled = compileScript(parsed.descriptor, { id: file, inlineTemplate: true });
-    if (file !== "components/learning-path/StageSymbol.vue")
+    if (!file.endsWith("StageSymbol.vue") && !file.endsWith("Link.vue"))
       assert.equal(compiled.imports.useI18n?.source, "vue-i18n");
   });
 }

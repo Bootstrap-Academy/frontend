@@ -14,6 +14,33 @@ import {
 
 const language = (value: PlanLanguage) => ({ "Accept-Language": value });
 
+let offered: Promise<boolean> | null = null;
+/**
+ * Whether skills-ms offers learning paths at all, so the ways to the learning journey can
+ * show: `GET /skills/tracks` answers with a list. A service without the route (404), an
+ * error or no answer means no. Asked once per session of the app, without the account,
+ * and kept only in memory.
+ */
+export function learningPathsAvailable(): Promise<boolean> {
+  offered ||= $fetch<unknown>("/skills/tracks", {
+    baseURL: useRuntimeConfig().public.BASE_API_URL,
+    retry: 0,
+    timeout: 6000,
+  }).then(
+    (answer) => Array.isArray(answer),
+    () => false
+  );
+  return offered;
+}
+
+/** The same as a value for templates: `null` until the answer is there, so nothing flickers. */
+export function useLearningPathsAvailable() {
+  const available = useState<boolean | null>("learningPathsAvailable", () => null);
+  if (available.value === null)
+    void learningPathsAvailable().then((value) => (available.value = value));
+  return available;
+}
+
 /** The curated paths; public. */
 export async function getTracks(lang: PlanLanguage) {
   return readTracks(await GET("/skills/tracks", undefined, language(lang)), lang);

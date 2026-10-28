@@ -72,7 +72,10 @@ export interface PlanExternalStep extends StepOrigin {
 
 export type PlanStep = PlanCourseStep | PlanExternalStep;
 
-export type PlanNext = { type: "course"; course: string } | { type: "external"; id: string };
+/** The first step that is not done; an external one is named with its path and stage. */
+export type PlanNext =
+  | { type: "course"; course: string }
+  | { type: "external"; id: string; track: string | null; stage: string | null };
 
 export interface Plan {
   revision: number;

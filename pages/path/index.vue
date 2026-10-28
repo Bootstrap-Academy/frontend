@@ -31,11 +31,12 @@
                 {{ t("LearningPlan.Progress", progress, progress.total) }}
               </p>
             </div>
+            <!-- The sentence above says the same; a screen reader hears it once. -->
             <progress
               v-if="progress.total"
               :value="progress.done"
               :max="progress.total"
-              :aria-label="t('LearningPlan.Progress', progress, progress.total)"
+              aria-hidden="true"
             />
             <p v-if="view.failed" class="notice" role="status">
               {{ t("LearningPlan.SaveFailed") }}
@@ -62,6 +63,10 @@
               >
                 {{ t("LearningPlan.Continue") }}<ArrowRightIcon aria-hidden="true" />
               </button>
+              <!-- Something outside without an address: what comes next, said where the button is. -->
+              <p v-else class="next-outside">
+                {{ t("LearningPlan.NextOutside", { title: upcoming.title }) }}
+              </p>
             </template>
             <p v-else-if="progress.total" class="quiet">{{ t("LearningPlan.AllDone") }}</p>
             <LearningPathStepList
@@ -203,6 +208,8 @@ import {
 } from "~/utils/learningPlan";
 import { pageTitle } from "~/utils/siteHead";
 
+// Without learning paths in skills-ms the page leads home (`middleware/learning-paths.ts`).
+definePageMeta({ middleware: ["learning-paths"] });
 const { t, locale } = useI18n();
 const router = useRouter();
 const user = useUser();
@@ -578,6 +585,15 @@ progress::-moz-progress-bar {
 .continue svg {
   width: 18px;
   height: 18px;
+}
+.next-outside {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid #0cc9ab;
+  border-radius: 14px;
+  background: #0f2a35;
+  color: #edf3fb;
+  line-height: 1.45;
 }
 .suggestion-list {
   display: grid;
