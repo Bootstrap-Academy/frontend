@@ -80,12 +80,7 @@
 import { useI18n } from "vue-i18n";
 import type { CourseLearningPlan } from "~/types/courseTypes";
 import type { CourseCurriculum } from "~/types/learningActivities";
-import {
-  courseProgress,
-  courseResumeStep,
-  courseRoomLocation,
-  courseWatchLocation,
-} from "~/utils/courseJourney";
+import { courseContinueLocation, courseProgress } from "~/utils/courseJourney";
 
 const props = defineProps({
   learningPlan: { type: Object as PropType<CourseLearningPlan | null>, default: null },
@@ -104,20 +99,10 @@ const selectedDaily = computed(() => {
 const { copy } = useCourseExperienceCopy();
 
 const link = computed(() =>
-  props.data?.has_explicit_curriculum
-    ? (() => {
-        const lesson =
-          props.curriculum?.lessons.find((item) => !item.completed) || props.curriculum?.lessons[0];
-        return lesson
-          ? `/courses/${encodeURIComponent(props.data.id)}/lessons/${encodeURIComponent(lesson.id)}`
-          : `/courses/${encodeURIComponent(props.data.id)}`;
-      })()
-    : props.data?.learning_path_id
-      ? courseRoomLocation(props.data.id, props.data.learning_path_id)
-      : courseWatchLocation(props.data?.id || "", courseResumeStep(props.data), {
-          skillID: props.skillID || undefined,
-          subSkillID: props.subSkillID || undefined,
-        })
+  courseContinueLocation({ ...props.data, id: props.data?.id || "" }, props.curriculum, {
+    skillID: props.skillID || undefined,
+    subSkillID: props.subSkillID || undefined,
+  })
 );
 const progress = computed(() =>
   props.curriculum
