@@ -9,8 +9,9 @@ import {
 
 export const mutex = sessionRefreshMutex;
 
-export function GET(url, query) {
-  return createApiFetch(url, "GET", null, query);
+/** `headers` go with the request (e.g. `Accept-Language`); the session sets `Authorization`. */
+export function GET(url, query, headers) {
+  return createApiFetch(url, "GET", null, query, undefined, headers);
 }
 
 /** @param {unknown} body */
@@ -22,8 +23,12 @@ export function PATCH(url, body = null) {
   return createApiFetch(url, "PATCH", body);
 }
 
-export function PUT(url, body = null) {
-  return createApiFetch(url, "PUT", body);
+/**
+ * @param {unknown} body
+ * @param {Record<string, string>} [headers]
+ */
+export function PUT(url, body = null, headers) {
+  return createApiFetch(url, "PUT", body, undefined, undefined, headers);
 }
 
 export function DELETE(url, body = null) {
@@ -41,7 +46,7 @@ export function DELETE_ACCOUNT(expected) {
   );
 }
 
-async function createApiFetch(url, method, body, query, deletedAccount) {
+async function createApiFetch(url, method, body, query, deletedAccount, headers) {
   const config = useRuntimeConfig().public;
   const snapshot = deletedAccount ?? getSessionSnapshot();
   const accessToken = snapshot.accessToken;
@@ -54,6 +59,7 @@ async function createApiFetch(url, method, body, query, deletedAccount) {
     _session: snapshot,
     _deletedAccountId: deletedAccount?.userId,
     headers: {
+      ...headers,
       Authorization: `Bearer ${accessToken}`,
     },
     onRequest,

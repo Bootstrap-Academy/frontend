@@ -52,3 +52,23 @@ export function courseRoomLocation(courseId: string, pathId: string, unitId?: st
     query: { course: courseId, path: pathId, ...(unitId ? { unit: unitId } : {}) },
   };
 }
+
+/**
+ * Where "continue" leads in a course the learner may open: the first unfinished lesson of an
+ * explicit curriculum, the learning room of a course with a learning path, or the first
+ * unwatched video. Without a lesson to name it is the course page.
+ */
+export function courseContinueLocation(
+  course: Pick<Course, "id" | "sections" | "learning_path_id" | "has_explicit_curriculum">,
+  curriculum?: { lessons: { id: string; completed?: boolean }[] } | null,
+  context: { skillID?: string; subSkillID?: string } = {}
+) {
+  const page = `/courses/${encodeURIComponent(course.id)}`;
+  if (course.has_explicit_curriculum) {
+    const lesson =
+      curriculum?.lessons.find((item) => !item.completed) || curriculum?.lessons[0] || null;
+    return lesson ? `${page}/lessons/${encodeURIComponent(lesson.id)}` : page;
+  }
+  if (course.learning_path_id) return courseRoomLocation(course.id, course.learning_path_id);
+  return courseWatchLocation(course.id, courseResumeStep(course), context);
+}

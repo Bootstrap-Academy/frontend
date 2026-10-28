@@ -2,7 +2,10 @@
   <main class="character-page">
     <header class="page-heading">
       <div>
-        <p class="eyebrow">{{ t("CharacterDashboard.Eyebrow") }}</p>
+        <!-- A link to the learning journey where skills-ms offers it, the plain line elsewhere. -->
+        <LearningPathLink class="eyebrow eyebrow-link">{{
+          t("CharacterDashboard.Eyebrow")
+        }}</LearningPathLink>
         <h1>{{ t("CharacterDashboard.Title") }}</h1>
       </div>
       <NuxtLink to="/profile/edit" class="quiet-link edit-profile">
@@ -561,6 +564,17 @@ h2 {
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: #adbdce !important;
+}
+.eyebrow-link {
+  font-family: inherit;
+}
+a.eyebrow-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+a.eyebrow-link:hover {
+  color: #0cc9ab !important;
 }
 .quiet-link {
   font-family: inherit;

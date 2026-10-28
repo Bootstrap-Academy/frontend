@@ -13,6 +13,10 @@ export default {
       const accessToken = useAccessToken();
       return !!accessToken.value;
     });
+    // The learning journey shows once skills-ms has answered that it offers learning paths.
+    const pathsAvailable = useLearningPathsAvailable();
+    const journey = (label) =>
+      pathsAvailable?.value === true ? [{ label, pathname: "/path" }] : [];
     const links = computed(() => {
       return authorized.value
         ? [
@@ -20,6 +24,7 @@ export default {
               label: "CharacterDashboard.Nav",
               pathname: "/dashboard",
             },
+            ...journey("LearningPlan.Nav"),
             {
               label: "Links.SkillTree",
               pathname: "/skill-tree",
@@ -42,6 +47,7 @@ export default {
               label: "Links.SkillTree",
               pathname: "/skill-tree",
             },
+            ...journey("LearningPlan.NavGuest"),
             {
               label: "Links.Contact",
               pathname: "/contact",

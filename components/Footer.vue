@@ -9,7 +9,7 @@
     />
 
     <nav :aria-label="t('Navigation.Footer')" class="flex flex-wrap justify-center gap-container">
-      <NuxtLink v-for="({ label, pathname }, i) of webLinks" :key="i" :to="pathname">
+      <NuxtLink v-for="({ label, pathname }, i) of shownWebLinks" :key="i" :to="pathname">
         {{ t(label) }}
       </NuxtLink>
     </nav>
@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -91,6 +91,10 @@ export default defineComponent({
       {
         label: "Links.SkillTree",
         pathname: "/skill-tree",
+      },
+      {
+        label: "LearningPlan.NavGuest",
+        pathname: "/path",
       },
       {
         label: "Links.Contact",
@@ -126,8 +130,15 @@ export default defineComponent({
       },
     ];
 
+    // The learning paths show once skills-ms has answered that it offers them.
+    const pathsAvailable = useLearningPathsAvailable();
+    const shownWebLinks = computed(() =>
+      webLinks.filter(({ pathname }) => pathname !== "/path" || pathsAvailable?.value === true)
+    );
+
     return {
       webLinks,
+      shownWebLinks,
       usefulLinks,
       t,
     };
