@@ -21,6 +21,10 @@ export default {
               pathname: "/dashboard",
             },
             {
+              label: "LearningPlan.Nav",
+              pathname: "/path",
+            },
+            {
               label: "Links.SkillTree",
               pathname: "/skill-tree",
             },
@@ -41,6 +45,10 @@ export default {
             {
               label: "Links.SkillTree",
               pathname: "/skill-tree",
+            },
+            {
+              label: "LearningPlan.NavGuest",
+              pathname: "/path",
             },
             {
               label: "Links.Contact",

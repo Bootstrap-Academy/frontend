@@ -93,6 +93,10 @@ export default defineComponent({
         pathname: "/skill-tree",
       },
       {
+        label: "LearningPlan.NavGuest",
+        pathname: "/path",
+      },
+      {
         label: "Links.Contact",
         pathname: "/contact",
       },
