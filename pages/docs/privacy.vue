@@ -146,8 +146,8 @@
               <td>Kurse, Lernfortschritt, Erfahrungspunkte (XP)</td>
               <td>
                 Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP je
-                Skill sowie private Bearbeitungsstände, Antworten und Ergebnisse der Lernräume
-                (Abschnitt 12)
+                Skill, dein Lernweg (Schwierigkeitsgrad, Vorliebe, Schritte) sowie private
+                Bearbeitungsstände, Antworten und Ergebnisse der Lernräume (Abschnitt 12)
               </td>
             </tr>
             <tr>
@@ -380,10 +380,14 @@
             </tr>
             <tr>
               <td>Lernplattform (Abschnitt 12)</td>
-              <td>Kurse, Fortschrittsanzeige, XP; nach deiner Freigabe Bestenlisten</td>
+              <td>
+                Kurse, Fortschrittsanzeige, XP, dein Lernweg mit Vorschlägen; nach deiner Freigabe
+                Bestenlisten
+              </td>
               <td>
                 Kurszugriffe, abgeschlossene Lektionen, zuletzt angesehener Kurs, Lesezeichen, XP,
-                Skill-Level, Lösungsstand, Versuche und private Zwischenstände in Lernräumen
+                Skill-Level, dein Lernweg, Lösungsstand, Versuche und private Zwischenstände in
+                Lernräumen
               </td>
               <td>Art. 6 Abs. 1 lit. b DSGVO; Profilfreigabe: lit. a, ihr Nachweis: lit. c</td>
               <td>Bis zur Kontolöschung</td>
@@ -1119,6 +1123,25 @@
         Wiederholung. Überspringen werten wir nicht als falsche Lösung. Du kannst auch selbst einen
         anderen verfügbaren Kurs wählen. Wir zeichnen dafür keine Mausbewegungen, Lesedauer oder
         sonstige allgemeine Nutzungsaktivität auf und erstellen kein Werbeprofil.
+      </p>
+      <p>
+        Unter „Dein Lernweg“ kannst du dir einen eigenen Lernweg zusammenstellen. Dafür speichern
+        wir im Dienst Skills, was du dort festlegst: deinen Charakter, also den Schwierigkeitsgrad,
+        den du dir aussuchst (Einsteiger, Fortgeschritten oder Profi), ob du lieber breit oder in
+        die Tiefe lernst, und die Kurse und Schritte deines Wegs in deiner Reihenfolge, bei
+        Schritten aus einem Lernpfad mit Pfad und Stufe und bei Schritten außerhalb der Academy mit
+        dem Vermerk, ob du sie selbst abgehakt hast. Dazu kommen eine Bearbeitungsnummer, der
+        Zeitpunkt der letzten Änderung sowie eine zufällige Anfragekennung und ein Prüfwert der
+        letzten Speicherung, damit eine wiederholte Anfrage nicht doppelt speichert. Im laufenden
+        System überschreibt jedes Speichern den vorigen Stand; Datensicherungen unterliegen
+        Abschnitt 7.3. Vorschläge für weitere Kurse berechnen wir bei jedem Aufruf aus diesen
+        Angaben, deinen XP, deinen abgeschlossenen Kursen und dem Aufbau der Skills. Die Vorschläge
+        selbst und ob du sie dir ansiehst, speichern wir nicht; übernimmst du einen Kurs in deinen
+        Weg, steht er dort wie jeder andere Schritt, ohne Vermerk, dass er ein Vorschlag war. Deinen
+        Charakter leiten wir nicht aus deinem Verhalten ab; du wählst ihn selbst und kannst ihn
+        jederzeit ändern. Dein Lernweg ist für andere Nutzer nicht abrufbar, gehört zu deinem
+        Datenexport und wird mit deinem Konto gelöscht. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
+        DSGVO.
       </p>
       <p>
         Im Dienst Challenges speichern wir zu Quizfragen, Zuordnungsaufgaben und Programmieraufgaben
@@ -1874,7 +1897,9 @@
               <td>Zwölf Monate, auch nach Kontolöschung</td>
             </tr>
             <tr>
-              <td>Lern- und Fortschrittsdaten, XP, Lesezeichen, private Lernraumstände</td>
+              <td>
+                Lern- und Fortschrittsdaten, XP, Lesezeichen, dein Lernweg, private Lernraumstände
+              </td>
               <td>
                 Bis zur Kontolöschung; je Lerneinheit nur die vier jüngsten Speicher- oder
                 Abschlussbestätigungen (Abschnitt 12.1)
@@ -2059,20 +2084,21 @@
           Premium-Status, MorphCoins-Bestellungen, die Datensätze deiner Rechnungen und
           Gutschriften, deine Kündigungs- und Widerrufserklärungen und deine Erklärungen zum
           Widerrufsrecht; aus dem Dienst Skills Kurszugriffe, zuletzt angesehene Kurse,
-          abgeschlossene Lektionen, Lesezeichen, XP sowie private Lernraumstände, Wiederholungen und
-          die noch gespeicherten Bestätigungen zu Speicher- und Abschlussanfragen; aus dem Dienst
-          Challenges Lösungsstand, Versuche, Einreichungen mit Quellcode und Ergebnis, Bewertungen,
-          selbst erstellte Aufgaben und die für dich bestimmten Moderationsmitteilungen mit
-          Beschwerde- und Maßnahmenstand; aus dem früheren Eventangebot noch vorhandene eigene
-          Angebots-, Buchungs-, Zeitfenster-, Bewertungs- und Anspruchsdaten. Nicht enthalten sind
-          Passwort-Hash, Zwei-Faktor-Geheimnisse, Sitzungstoken, die Kalender-Abo-Kennung, deine
-          Kundennummer (sie ist Teil der Nummern von Gutschriften und Schlussabrechnungen), die
-          Einträge des Verwaltungsprotokolls, Server-Logs und Fehlerberichte sowie der Zeitpunkt
-          deiner Altersbestätigung; Auskunft dazu erhältst du auf Anfrage. Ist einer der Dienste
-          beim Abruf nicht erreichbar, erhältst du die übrigen Daten, und die Datei nennt den
-          fehlenden Teil. Der Abruf ist auf einmal je zehn Minuten begrenzt. Auf Anfrage erstellen
-          wir die Datei auch für dich; dieser Abruf durch einen Administrator wird im
-          Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
+          abgeschlossene Lektionen, Lesezeichen, XP, deinen Lernweg mit Bearbeitungsnummer,
+          Zeitpunkt, Kennung und Prüfwert der letzten Speicherung sowie private Lernraumstände,
+          Wiederholungen und die noch gespeicherten Bestätigungen zu Speicher- und
+          Abschlussanfragen; aus dem Dienst Challenges Lösungsstand, Versuche, Einreichungen mit
+          Quellcode und Ergebnis, Bewertungen, selbst erstellte Aufgaben und die für dich bestimmten
+          Moderationsmitteilungen mit Beschwerde- und Maßnahmenstand; aus dem früheren Eventangebot
+          noch vorhandene eigene Angebots-, Buchungs-, Zeitfenster-, Bewertungs- und Anspruchsdaten.
+          Nicht enthalten sind Passwort-Hash, Zwei-Faktor-Geheimnisse, Sitzungstoken, die
+          Kalender-Abo-Kennung, deine Kundennummer (sie ist Teil der Nummern von Gutschriften und
+          Schlussabrechnungen), die Einträge des Verwaltungsprotokolls, Server-Logs und
+          Fehlerberichte sowie der Zeitpunkt deiner Altersbestätigung; Auskunft dazu erhältst du auf
+          Anfrage. Ist einer der Dienste beim Abruf nicht erreichbar, erhältst du die übrigen Daten,
+          und die Datei nennt den fehlenden Teil. Der Abruf ist auf einmal je zehn Minuten begrenzt.
+          Auf Anfrage erstellen wir die Datei auch für dich; dieser Abruf durch einen Administrator
+          wird im Verwaltungsprotokoll festgehalten (Abschnitt 10.5).
         </li>
         <li>
           <strong>Widerruf von Einwilligungen</strong> (Art. 7 Abs. 3 DSGVO) mit Wirkung für die
@@ -2148,16 +2174,10 @@
         und die Newsletter-Funktion.
       </p>
       <p>
-        Neu in dieser Fassung: Dein Lernstand ist privat, bis du dein Profil freigibst (<a
-          href="#profilfreigabe"
-          >Abschnitt 12.2</a
-        >). Einzelne Einheiten kannst du ohne Konto ausprobieren (<a href="#lernen"
-          >Abschnitt 12.1</a
-        >). Wir erstellen zusammengefasste Statistiken aus vorhandenen Daten (<a href="#statistiken"
-          >Abschnitt 6.1</a
-        >). <a href="#cookies">Abschnitt 9</a> beschreibt neu, was wir in deinem Browser speichern.
+        Neu in dieser Fassung: Du kannst dir unter „Dein Lernweg“ einen eigenen Lernweg
+        zusammenstellen (<a href="#lernen">Abschnitt 12.1</a>).
       </p>
-      <p><strong>Fassung:</strong> 2026-10-r2 · <strong>Stand:</strong> 5. Oktober 2026</p>
+      <p><strong>Fassung:</strong> 2026-11-r1 · <strong>Stand:</strong> 1. November 2026</p>
     </section>
   </main>
 </template>
