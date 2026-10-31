@@ -90,6 +90,7 @@ const props = defineProps({
   skillID: { type: String, default: null },
   subSkillID: { type: String, default: null },
 });
+const emit = defineEmits<{ open: [] }>();
 const { t } = useI18n();
 const { daily, forLesson } = useDailyLearning();
 const selectedDaily = computed(() => {
@@ -129,6 +130,13 @@ const confirming = ref(false);
 async function onclickEnroll() {
   if (props.isCourseAccessible) {
     router.push(link.value);
+    return;
+  }
+  // A free course is never sold, so there is no offer to ask for: the server opens it to every
+  // account with a confirmed address. The page asks it again, because what it showed may be older
+  // than the confirmation (made in another tab, for instance).
+  if (price.value <= 0) {
+    emit("open");
     return;
   }
 

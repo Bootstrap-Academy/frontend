@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { compileScript, parse } from "@vue/compiler-sfc";
 import ts from "typescript";
+import { pieces } from "./helpers/component-pieces.mjs";
 
 async function moduleAt(file) {
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
@@ -14,6 +15,7 @@ async function moduleAt(file) {
 const journey = await moduleAt("utils/courseJourney.ts");
 const practice = await moduleAt("utils/coursePractice.ts");
 const visits = await moduleAt("utils/courseVisit.ts");
+const apiError = await moduleAt("utils/apiError.ts");
 const course = {
   sections: [
     {
@@ -181,7 +183,7 @@ async function pageFixture(
     .join("\n");
   const user = Vue.ref({ id: "user-a" });
   const session = Vue.ref({ id: "session-a" });
-  const route = Vue.reactive({ params: { id: "python" }, query: {} });
+  const route = Vue.reactive({ params: { id: "python" }, query: {}, fullPath: "/courses/python" });
   const navigation = [];
   const bindings = {
     useLessonStart: () => ({
@@ -192,6 +194,12 @@ async function pageFixture(
       start: async () => true,
     }),
     ...journey,
+    decodeApiError: apiError.decodeApiError,
+    emailVerificationRoute: (target) => ({
+      path: "/auth/verify-account",
+      query: { redirect: target },
+    }),
+    navigateTo: async (next) => navigation.push(next),
     courseVisit: visit,
     ref: Vue.ref,
     computed: Vue.computed,
@@ -230,7 +238,7 @@ async function pageFixture(
   }).outputText;
   const exports = file.endsWith("watch.vue")
     ? "{ load, course, error, saving, saveError, finishLecture, active }"
-    : "{ load, course, error, accessible, learningPlan }";
+    : "{ load, course, error, accessible, learningPlan, openFreeCourse, unverified }";
   const scope = Vue.effectScope();
   const page = scope.run(() =>
     new Function(...Object.keys(bindings), `${compiled}\nreturn ${exports}`)(
@@ -259,6 +267,76 @@ test("course page keeps the purchase preview after an explicit access refusal", 
   assert.equal(f.accessible.value, false);
   assert.equal(f.error.value, false);
   assert.equal(calls.length, 2);
+});
+
+// A tab that loaded the course before the address was confirmed (in another tab) still shows it
+// closed. Free courses have no offer: the server answers every request for one with 412.
+const unconfirmed = { statusCode: 403, data: { detail: "Email not verified" } };
+
+test("a free course shown closed opens once the address is confirmed, without an offer", async () => {
+  let confirmed = false;
+  const calls = [];
+  const f = await pageFixture("pages/courses/[id]/index.vue", async (path, method) => {
+    calls.push(`${method} ${path}`);
+    if (path.endsWith("/summary")) return { id: "python", price: 0, ...structuredClone(course) };
+    if (!confirmed) throw unconfirmed;
+    return { id: "python", price: 0, ...structuredClone(course) };
+  });
+  await f.load();
+  assert.equal(f.accessible.value, false);
+  assert.equal(f.unverified.value, true);
+  confirmed = true;
+  calls.length = 0;
+  await f.openFreeCourse();
+  assert.deepEqual(calls, ["GET /skills/courses/python"]);
+  assert.equal(f.accessible.value, true);
+  assert.deepEqual(f.navigation, [
+    journey.courseWatchLocation("python", { sectionID: "first", id: "variables" }),
+  ]);
+});
+
+test("a free course of an unconfirmed account leads to the confirmation, not to an offer", async () => {
+  const calls = [];
+  const f = await pageFixture("pages/courses/[id]/index.vue", async (path, method) => {
+    calls.push(`${method} ${path}`);
+    if (path.endsWith("/summary")) return { id: "python", price: 0, ...structuredClone(course) };
+    throw unconfirmed;
+  });
+  await f.openFreeCourse();
+  assert.ok(!calls.some((call) => call.startsWith("POST")));
+  assert.deepEqual(f.navigation, [
+    { path: "/auth/verify-account", query: { redirect: "/courses/python" } },
+  ]);
+});
+
+test("another refusal neither opens the course nor sends to the confirmation", async () => {
+  const f = await pageFixture("pages/courses/[id]/index.vue", async (path) => {
+    if (path.endsWith("/summary")) return { id: "python", price: 0, ...structuredClone(course) };
+    throw { statusCode: 401, data: { detail: "Invalid token" } };
+  });
+  await f.openFreeCourse();
+  assert.equal(f.unverified.value, false);
+  assert.deepEqual(f.navigation, []);
+});
+
+test("the course button asks for an offer only for a course with a price", async () => {
+  for (const price of [0, 100]) {
+    const emitted = [];
+    const offers = [];
+    const { onclickEnroll } = await pieces("components/course/Overview.vue", ["onclickEnroll"], {
+      props: { isCourseAccessible: false, data: { id: "python", price } },
+      price: { value: price },
+      emit: (...args) => emitted.push(args),
+      requestPurchaseOffer: async (path) => {
+        offers.push(path);
+        return null;
+      },
+      router: { push: () => assert.fail("a closed course is not opened directly") },
+    });
+    await onclickEnroll();
+    assert.deepEqual(emitted, price ? [] : [["open"]]);
+    assert.deepEqual(offers, price ? ["/skills/course_access/python/offer"] : []);
+  }
 });
 
 test("a transport outage never turns an owned course into a purchase prompt", async () => {
