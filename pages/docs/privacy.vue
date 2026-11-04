@@ -2177,7 +2177,7 @@
         Neu in dieser Fassung: Du kannst dir unter „Dein Lernweg“ einen eigenen Lernweg
         zusammenstellen (<a href="#lernen">Abschnitt 12.1</a>).
       </p>
-      <p><strong>Fassung:</strong> 2026-11-r1 · <strong>Stand:</strong> 1. November 2026</p>
+      <p><strong>Fassung:</strong> 2026-11-r1 · <strong>Stand:</strong> 4. November 2026</p>
     </section>
   </main>
 </template>
