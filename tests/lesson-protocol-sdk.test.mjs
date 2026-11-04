@@ -627,6 +627,60 @@ test("a failed lifecycle callback can retry its exact host ID without committing
   assert.deepEqual(f.lessonMessages().at(-1).payload.data, { phase: "running", dirty: true });
 });
 
+test("throwing lifecycle notifications retain one cached acknowledgement and notify other listeners", async (t) => {
+  const f = fixture(t);
+  await f.connect();
+  f.sdk.ready("recover");
+  const phases = [];
+  f.sdk.on("host.lifecycle", () => {
+    throw new Error("Local scene failed to attach");
+  });
+  f.sdk.on("host.lifecycle", (payload) => phases.push(payload.phase));
+  const request = await f.lifecycle("running", "throwing-notification");
+  const replies = () => f.lessonMessages().filter((message) => message.replyTo === request.id);
+  assert.equal(replies().length, 1);
+  assert.deepEqual(replies()[0].payload, {
+    ok: true,
+    data: { phase: "running", dirty: false },
+  });
+  assert.equal(f.sdk.phase, "running");
+  assert.deepEqual(phases, ["running"]);
+  assert.deepEqual(
+    f.errors.map((error) => error.code),
+    ["internal"]
+  );
+  await f.lifecycle("running", request.id);
+  assert.equal(replies().length, 2);
+  assert.deepEqual(replies()[1].payload, replies()[0].payload);
+  assert.deepEqual(phases, ["running"]);
+  assert.equal(f.errors.length, 1);
+});
+
+test("a throwing disposed notification still acknowledges once and closes local resources", async (t) => {
+  const f = await running(t);
+  let disposed = 0;
+  f.sdk.onDispose(() => disposed++);
+  f.sdk.on("host.lifecycle", () => {
+    throw new Error("Local scene cleanup notification failed");
+  });
+  const request = await f.lifecycle("disposed");
+  const replies = f.lessonMessages().filter((message) => message.replyTo === request.id);
+  assert.equal(replies.length, 1);
+  assert.deepEqual(replies[0].payload, {
+    ok: true,
+    data: { phase: "disposed", dirty: false },
+  });
+  assert.deepEqual(
+    f.errors.map((error) => error.code),
+    ["internal"]
+  );
+  assert.equal(disposed, 1);
+  assert.equal(f.sdk.phase, "disposed");
+  assert.equal(f.sdk.context, undefined);
+  assert.equal(f.clock.pending, 0);
+  assert.equal(f.pair.listenerCount(), 0);
+});
+
 test("disposing during an async lifecycle callback prevents its late acknowledgement", async (t) => {
   const barrier = deferred();
   const f = fixture(t, { sdk: { onLifecycle: () => barrier.promise } });

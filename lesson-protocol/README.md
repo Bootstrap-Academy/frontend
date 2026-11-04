@@ -49,6 +49,11 @@ response. An optional `validateState` callback validates the lesson's own
 state schema. A schema-version mismatch requires an explicitly tested migration;
 the SDK never resets or invents one. `onLifecycle` pauses/stops local resources
 and returns whether the lesson has unsaved work. The host controls lifecycle.
+An `onLifecycle` failure receives one RPC error response before the phase changes.
+Listeners registered with `on("host.lifecycle", listener)` are notifications after
+the acknowledgement, so they can use the accepted host phase. A throwing listener
+reports its error through `onError`; the confirmed reply stays cached, other
+listeners still run and a disposed phase still closes local resources.
 
 RPCs time out after 10 seconds with a retryable `ProtocolError`. A timeout does
 not say whether a server write committed. Retry with the same ID, type and
