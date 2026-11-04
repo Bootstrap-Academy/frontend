@@ -10,6 +10,7 @@ const read = (file) => readFile(new URL(`../${file}`, import.meta.url), "utf8");
 const siteHead = await evaluate("utils/siteHead.ts", {});
 const guestCopy = await evaluate("utils/guest/copy.ts", {});
 const journey = await evaluate("utils/courseJourney.ts", {});
+const apiError = await evaluate("utils/apiError.ts", {});
 
 /** The real texts of the course pages in one language. */
 async function courseCopy(locale) {
@@ -70,6 +71,7 @@ async function coursePage({ token, answer, locale = "de" }) {
     },
     {
       "vue-i18n": i18n,
+      "~/utils/apiError": apiError,
       "~/utils/courseJourney": journey,
       "~/utils/guest/copy": guestCopy,
       "~/utils/siteHead": siteHead,

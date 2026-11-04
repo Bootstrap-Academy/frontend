@@ -34,6 +34,7 @@
           :is-course-accessible="accessible"
           :skill-i-d="skillID"
           :sub-skill-i-d="subSkillID"
+          @open="openFreeCourse"
         />
         <!-- Another account is another plan: the key starts the box afresh. -->
         <LearningPathAddCourse
@@ -130,7 +131,8 @@ import { useI18n } from "vue-i18n";
 import type { SessionIdentity } from "~/types/sessionIdentity";
 import type { Course, CourseLearningPlan } from "~/types/courseTypes";
 import type { CourseCurriculum } from "~/types/learningActivities";
-import { courseSteps, courseWatchLocation } from "~/utils/courseJourney";
+import { decodeApiError } from "~/utils/apiError";
+import { courseContinueLocation, courseSteps, courseWatchLocation } from "~/utils/courseJourney";
 import { guestCopy } from "~/utils/guest/copy";
 import { pageTitle, shortDescription } from "~/utils/siteHead";
 
@@ -162,6 +164,8 @@ const error = ref(false);
 const missing = ref(false);
 const learningError = ref(false);
 const accessible = ref(false);
+// The server refused the course because the address of the account is not confirmed yet.
+const unverified = ref(false);
 const id = computed(() => String(route.params.id || ""));
 const skillID = computed(() =>
   typeof route.query.skillID === "string" ? route.query.skillID : ""
@@ -201,10 +205,11 @@ async function load() {
   originalCourse.value = null;
   learningPlan.value = null;
   curriculum.value = null;
-  accessible.value = false;
+  accessible.value = unverified.value = false;
   try {
     let detail: Course;
     let owns = false;
+    let refused = false;
     const summary = () => GET(`/skills/courses/${encodeURIComponent(id.value)}/summary`);
     // Without an account only the summary is public, so nothing else is asked for.
     if (guest.value) detail = await summary();
@@ -215,11 +220,13 @@ async function load() {
       } catch (cause: any) {
         const status = cause?.response?.status || cause?.statusCode || cause?.status;
         if (![401, 403].includes(status)) throw cause;
+        refused = decodeApiError(cause).messageKey === "Error.AccountNotVerified";
         detail = await summary();
       }
     if (!current()) return;
     originalCourse.value = detail;
     accessible.value = owns;
+    unverified.value = refused;
     if (owns && detail.has_explicit_curriculum) {
       try {
         const outline = await GET(`/skills/courses/${encodeURIComponent(id.value)}/curriculum`);
@@ -259,6 +266,19 @@ function openLecture({ sectionID, lectureID }: { sectionID: string; lectureID: s
       { skillID: skillID.value, subSkillID: subSkillID.value }
     )
   );
+}
+// The button of a free course that this page still shows closed: the page asks the server again
+// and goes on to the course, or to the confirmation while the address is still unconfirmed.
+async function openFreeCourse() {
+  await load();
+  if (accessible.value && course.value)
+    await router.push(
+      courseContinueLocation(course.value, curriculum.value, {
+        skillID: skillID.value || undefined,
+        subSkillID: subSkillID.value || undefined,
+      })
+    );
+  else if (unverified.value) await navigateTo(emailVerificationRoute(route.fullPath));
 }
 onMounted(load);
 watch([id, () => user.value?.id, () => session.value?.id, guest], load, { flush: "sync" });
