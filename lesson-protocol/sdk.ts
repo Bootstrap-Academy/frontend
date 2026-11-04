@@ -700,10 +700,6 @@ export class LessonSDK {
       };
       validateMessage(response, { sender: "lesson", requestType: message.type });
       this.send("rpc.result", "response", { ok: true, data }, undefined, message.id);
-      if (message.type === "host.lifecycle" && !existing?.result)
-        for (const listener of this.listeners.get("host.lifecycle") ?? [])
-          listener(cloneJson(message.payload));
-      if (data.phase === "disposed") this.dispose();
     } catch (error) {
       if (!this.sessionId) return;
       const failure = this.asError(error);
@@ -721,6 +717,22 @@ export class LessonSDK {
         undefined,
         message.id
       );
+      return;
+    }
+    if (message.type === "host.lifecycle" && !existing?.result) {
+      // The host has accepted the phase before lesson notifications can use it.
+      // A notification failure cannot replace that acknowledgement or its cached result.
+      try {
+        for (const listener of this.listeners.get("host.lifecycle") ?? []) {
+          try {
+            listener(cloneJson(message.payload));
+          } catch (error) {
+            this.report(error);
+          }
+        }
+      } finally {
+        if (message.payload.phase === "disposed") this.dispose();
+      }
     }
   }
   private applyResult(record: RequestRecord, data: JsonObject): void {
