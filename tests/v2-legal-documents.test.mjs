@@ -123,7 +123,7 @@ test("statistics explanation keeps its existing-data limits, legal basis and obj
   }
   assert(statistics.includes('href="#datenschutz-ansprechstelle"'));
   assert(statistics.includes('href="#rechte"'));
-  assert(text(privacy).includes("Fassung: 2026-10-r2"));
+  assert(text(privacy).includes("Fassung: 2026-11-r1"));
 });
 
 test("profile sharing is described as consent with its exact audience, scope and withdrawal", () => {
