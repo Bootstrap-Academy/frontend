@@ -74,6 +74,7 @@ async function fixture(t, overrides = {}) {
   const writes = [];
   const progress = [];
   const phases = [];
+  const errors = [];
   const actions = {
     current: () => owner,
     read: async () => structuredClone(state),
@@ -105,7 +106,9 @@ async function fixture(t, overrides = {}) {
     transport: pair.lesson,
     clock,
     onLifecycle: overrides.onLifecycle,
+    onError: (error) => errors.push(error),
   });
+  overrides.configureSDK?.(sdk);
   t.after(() => {
     sdk.dispose();
     host.dispose();
@@ -123,6 +126,7 @@ async function fixture(t, overrides = {}) {
     writes,
     progress,
     phases,
+    errors,
     clock,
     actions,
     setOwner: () => {
@@ -147,6 +151,53 @@ test("real SDK/host handshake saves before acknowledgement; progress awards noth
     f.pair.messages.some((row) => row.message.type === "reward.committed"),
     false
   );
+});
+test("throwing lifecycle notifications keep the real host connected through start, pause and resume", async (t) => {
+  const observed = [];
+  const f = await fixture(t, {
+    configureSDK(sdk) {
+      sdk.on("host.lifecycle", () => {
+        throw new Error("Synthetic local scene failure");
+      });
+      sdk.on("host.lifecycle", (payload) => {
+        observed.push(payload.phase);
+        // Notifications can already use the host that accepted the transition.
+        sdk.progress("restore-openable", 0.5);
+      });
+    },
+  });
+  assert.equal(await f.host.prepareNavigation(), true);
+  assert.equal(f.host.phase, "paused");
+  await f.host.visibility(false);
+  assert.equal(f.host.phase, "running");
+  assert.equal(f.sdk.phase, "running");
+  assert.deepEqual(observed, ["running", "paused", "running"]);
+  assert.deepEqual(
+    f.errors.map((error) => error.code),
+    ["internal", "internal", "internal"]
+  );
+  const lifecycle = f.pair.messages.filter(
+    ({ sender, message }) => sender === "host" && message.type === "host.lifecycle"
+  );
+  assert.equal(lifecycle.length, 3);
+  for (const { message: request } of lifecycle) {
+    const replies = f.pair.messages.filter(
+      ({ sender, message }) => sender === "lesson" && message.replyTo === request.id
+    );
+    assert.equal(replies.length, 1);
+    assert.equal(replies[0].message.payload.ok, true);
+  }
+  assert.equal(f.progress.length, 3);
+  assert.deepEqual(await f.sdk.saveState({ note: "still connected" }), {
+    revision: 1,
+    persisted: true,
+  });
+  assert.equal(f.writes.length, 1);
+  f.clock.advanceTo(10000);
+  await flush();
+  assert.equal(f.clock.pending, 0);
+  assert.equal(f.host.phase, "running");
+  assert.ok(!f.phases.includes("recoverable-error"));
 });
 test("planned navigation flushes local SDK state before the host can leave", async (t) => {
   let sdk;
