@@ -19,6 +19,18 @@ export const useShowConfetti = () => useState("showConfetti", () => false);
  */
 export const useProfileLoaded = () => useState("profileLoaded", () => false);
 
+/** Private learning reads wait for the full profile, also after a login in another tab. */
+export function useLearningAccountReady() {
+  const user = useUser();
+  const loaded = useProfileLoaded();
+  return computed(
+    () =>
+      !!loaded.value &&
+      !!user.value?.id &&
+      (user.value.email_verified === true || user.value.admin === true)
+  );
+}
+
 /**
  * The `user` cookie only carries what the interface needs before the profile
  * has been loaded from the API: the id and the two names. Everything else

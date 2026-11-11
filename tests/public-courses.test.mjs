@@ -60,6 +60,8 @@ async function coursePage({ token, answer, locale = "de" }) {
       ...shared,
       useRouter: () => ({ push() {} }),
       useAccessToken: () => Vue.ref(token),
+      useProfileLoaded: () => Vue.ref(!!token),
+      useLearningAccountReady: () => Vue.ref(!!token),
       useUser: () => Vue.ref(token ? { id: "user-a" } : null),
       useSession: () => Vue.ref(token ? { id: "session-a" } : null),
       useSeoMeta: (entries) => Object.assign(head, entries),

@@ -38,7 +38,7 @@
         />
         <!-- Another account is another plan: the key starts the box afresh. -->
         <LearningPathAddCourse
-          v-if="!guest"
+          v-if="!guest && learningReady"
           :key="`${user?.id}:${session?.id}`"
           :course="id"
           :title="course.title"
@@ -153,6 +153,8 @@ const accountSentence = computed(() =>
     : copy.value.accountNeeded
 );
 const user = useUser();
+const profileLoaded = useProfileLoaded();
+const learningReady = useLearningAccountReady();
 const session: Ref<SessionIdentity | null> = useSession();
 const originalCourse = ref<Course | null>(null);
 const course = computed(() => (originalCourse.value ? localizeCourse(originalCourse.value) : null));
@@ -191,7 +193,8 @@ useSeoMeta({
 });
 let generation = 0;
 let alive = true;
-async function load() {
+// Private reads wait until the account may learn; pressing the course button asks anyway.
+async function load(ask = false) {
   const ticket = ++generation;
   const expectedUser = user.value?.id;
   const expectedSession = session.value?.id;
@@ -212,8 +215,10 @@ async function load() {
     let refused = false;
     const summary = () => GET(`/skills/courses/${encodeURIComponent(id.value)}/summary`);
     // Without an account only the summary is public, so nothing else is asked for.
-    if (guest.value) detail = await summary();
-    else
+    if (guest.value || !(ask || learningReady.value)) {
+      refused = !guest.value && profileLoaded.value && user.value?.email_verified === false;
+      detail = await summary();
+    } else
       try {
         detail = await GET(`/skills/courses/${encodeURIComponent(id.value)}`);
         owns = true;
@@ -270,7 +275,7 @@ function openLecture({ sectionID, lectureID }: { sectionID: string; lectureID: s
 // The button of a free course that this page still shows closed: the page asks the server again
 // and goes on to the course, or to the confirmation while the address is still unconfirmed.
 async function openFreeCourse() {
-  await load();
+  await load(true);
   if (accessible.value && course.value)
     await router.push(
       courseContinueLocation(course.value, curriculum.value, {
@@ -280,8 +285,9 @@ async function openFreeCourse() {
     );
   else if (unverified.value) await navigateTo(emailVerificationRoute(route.fullPath));
 }
-onMounted(load);
-watch([id, () => user.value?.id, () => session.value?.id, guest], load, { flush: "sync" });
+onMounted(() => load());
+// One cookie update changes user, session and token together. Read once after that batch.
+watch([id, () => user.value?.id, () => session.value?.id, guest, learningReady], () => load());
 onBeforeUnmount(() => {
   alive = false;
   generation++;
