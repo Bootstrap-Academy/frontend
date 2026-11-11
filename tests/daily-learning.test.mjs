@@ -74,6 +74,7 @@ async function stateFixture(t, get) {
   const bindings = {
     ...Object.fromEntries(Object.entries(Vue).filter(([name]) => name !== "module.exports")),
     ...helpers,
+    useLearningAccountReady: () => Vue.ref(true),
     useUser: () => user,
     useSession: () => session,
     usePremiumInfo: () => premium,

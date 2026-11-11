@@ -171,7 +171,7 @@ for (const file of [
 async function pageFixture(
   file,
   request,
-  { reactiveWatches = false, visit = visits.createCourseVisit() } = {}
+  { reactiveWatches = false, visit = visits.createCourseVisit(), ready = true } = {}
 ) {
   const Vue = await import("vue");
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
@@ -208,6 +208,8 @@ async function pageFixture(
     // These pages are opened with an account; the course page without one is in
     // public-courses.test.mjs.
     useAccessToken: () => Vue.ref("token-a"),
+    useProfileLoaded: () => Vue.ref(true),
+    useLearningAccountReady: () => Vue.ref(ready),
     useSeoMeta: () => {},
     useI18n: () => ({ locale: Vue.ref("de") }),
     useRoute: () => route,
@@ -286,6 +288,27 @@ test("a free course shown closed opens once the address is confirmed, without an
   assert.equal(f.accessible.value, false);
   assert.equal(f.unverified.value, true);
   confirmed = true;
+  calls.length = 0;
+  await f.openFreeCourse();
+  assert.deepEqual(calls, ["GET /skills/courses/python"]);
+  assert.equal(f.accessible.value, true);
+  assert.deepEqual(f.navigation, [
+    journey.courseWatchLocation("python", { sectionID: "first", id: "variables" }),
+  ]);
+});
+
+test("a tab whose profile still says unconfirmed asks the server when the course button is pressed", async () => {
+  const calls = [];
+  const f = await pageFixture(
+    "pages/courses/[id]/index.vue",
+    async (path, method) => {
+      calls.push(`${method} ${path}`);
+      return { id: "python", price: 0, ...structuredClone(course) };
+    },
+    { ready: false }
+  );
+  await f.load();
+  assert.deepEqual(calls, ["GET /skills/courses/python/summary"]);
   calls.length = 0;
   await f.openFreeCourse();
   assert.deepEqual(calls, ["GET /skills/courses/python"]);

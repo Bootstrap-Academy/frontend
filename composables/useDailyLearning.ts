@@ -10,8 +10,9 @@ type Policy = {
 export function useDailyLearning() {
   const user = useUser();
   const session = useSession();
+  const ready = useLearningAccountReady();
   const owner = computed(() =>
-    user.value?.id && session.value?.id ? `${user.value.id}:${session.value.id}` : ""
+    ready.value && user.value?.id && session.value?.id ? `${user.value.id}:${session.value.id}` : ""
   );
   const premium = usePremiumInfo();
   const lessons = useState<Record<string, DailyLearning>>("daily-learning-lessons", () => ({}));

@@ -2,7 +2,7 @@
   <Popover v-slot="{ close }" class="relative py-3">
     <div class="flex items-center gap-1 sm:gap-2 md:gap-4">
       <UserHearts v-if="showHearts" />
-      <UserCoins />
+      <UserCoins v-if="learningReady" />
 
       <div class="relative">
         <Tooltip
@@ -64,6 +64,7 @@ export default {
   setup() {
     const { t } = useI18n();
     const premiumInfo = usePremiumInfo();
+    const learningReady = useLearningAccountReady();
     const { showHearts } = useDailyLearning();
     const isPremium = computed(() => {
       return premiumInfo.value?.premium;
@@ -99,6 +100,7 @@ export default {
     });
     return {
       showHearts,
+      learningReady,
       links,
       onclickLogout,
 

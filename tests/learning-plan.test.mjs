@@ -844,6 +844,8 @@ async function page(t, file, { token = "token-a", locale = "de", answers, route 
       useUser: () => Vue.ref(token ? { id: "user-a" } : null),
       useSession: () => Vue.ref(token ? { id: "session-a" } : null),
       useAccessToken: () => Vue.ref(token),
+      useProfileLoaded: () => Vue.ref(!!token),
+      useLearningAccountReady: () => Vue.ref(!!token),
       useHead: () => {},
       useSeoMeta: () => {},
     },
@@ -1070,7 +1072,7 @@ test("on the page of a course it goes onto the journey with one tap", async (t) 
   // The course page shows it to an account only, afresh for another account.
   assert.match(
     await read("pages/courses/[id]/index.vue"),
-    /<LearningPathAddCourse\n\s+v-if="!guest"\n\s+:key="`\$\{user\?\.id\}:\$\{session\?\.id\}`"\n\s+:course="id"/
+    /<LearningPathAddCourse\n\s+v-if="!guest && learningReady"\n\s+:key="`\$\{user\?\.id\}:\$\{session\?\.id\}`"\n\s+:course="id"/
   );
 });
 
