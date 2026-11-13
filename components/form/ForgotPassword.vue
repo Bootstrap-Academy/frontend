@@ -67,6 +67,7 @@ export default defineComponent({
         for (const key in form) {
           if (key != "validate" && key != "body" && key != "submitting") obj[key] = form[key].value;
         }
+        obj.email = obj.email.trim();
         return obj;
       },
     });
@@ -105,7 +106,11 @@ export default defineComponent({
     }
 
     function errorHandler(res: any) {
-      openSnackbar("error", res?.detail ?? "");
+      const msg =
+        typeof res?.detail === "string" && res.detail.trim()
+          ? res.detail
+          : "Error.InvalidCredentials";
+      openSnackbar("error", msg);
     }
 
     return {
